@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2014 Advanced Community Information Systems (ACIS) Group,
+Chair of Computer Science 5 (Databases & Information Systems), RWTH Aachen University, Germany
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the ACIS Group nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>las2peer Template Service - Frontend Example</title>
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+</head>
+<body>
+
+  <!-- Fixed navbar -->
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">My App</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#url1">Navigation Button 1</a></li>
+          <li><a href="#url2">Navigation Button 2</a></li>
+        </ul>
+        <!-- OpenID Connect Button: add HTML element representing button -->
+        <span id="signinButton">
+          <span class="oidc-signin navbar-btn navbar-right btn-default"
+                data-callback="signinCallback"
+                data-name="OpenID Connect"
+                data-logo="logo.png"
+                data-size="sm"
+                data-server="https://api.learning-layers.eu/o/oauth2"
+                data-clientid="YOUR OIDC CLIENT ID HERE"
+                data-scope="openid email profile">
+          </span>
+        </span>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+
+  <!-- Container for actual page content -->
+  <div class="container" style="margin-top:60px">
+    <h2 class="authenticated hidden">Hello, <span id="uname"></span>!</h2>
+    <button onclick="getExample();" class="btn btn-default"><span class="glyphicon glyphicon-hand-right"> Click me!</span></button>
+    <p id="getExampleOutput"></p>
+    <button onclick="postExample('Yeeehaaaa!');" class="btn btn-default"><span class="glyphicon glyphicon-hand-right"> Click me, too!</span></button>
+    <p id="postExampleOutput"></p>
+  </div>
+
+  <!-- import jQuery for AJAX calls (must) -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <!-- import Bootstrap for responsive UI (must) -->
+  <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+  <!-- import JWS and JSRSASIGN (must) -->
+  <script type="text/javascript" src="js/jws-2.0.min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/ext/base64-min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/base64x-1.1.min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/ext/jsbn-min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/ext/jsbn2-min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/asn1hex-1.1.min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/crypto-1.1.min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/ext/rsa-min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/ext/rsa2-min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/rsapem-1.1.min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/rsasign-1.2.min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/x509-1.1.min.js"></script>
+  <script type="text/javascript" src="js/jsrsasign/crypto-1.1.min.js"></script>
+
+  <!-- import OpenID Connect Button -->
+  <script type="text/javascript">
+
+    (function() {
+      var po = document.createElement('script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'js/oidc-button.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(po, s);
+    })();
+
+    // OpenID Connect Button: implement a callback function
+    function signinCallback(result) {
+      if(result === "success"){
+        // authenticated
+
+        // OpenID Connect user info
+        console.log(oidc_userinfo);
+        $("#uname").html(oidc_userinfo.name);
+        $(".authenticated").removeClass("hidden");
+      } else {
+        // anonymous
+      }
+    }
+
+  </script>
+
+  <!-- import client library for service -->
+  <script type="text/javascript" src="js/client.js"></script>
+
+  <!-- instantiate and use the client library -->
+  <script type="text/javascript">
+    // create new instance of TemplateServiceClient, given its endpoint URL
+    var client = new TemplateServiceClient("http://localhost:8080/");
+
+    // function defined as response to a click on the first button (see below)
+    function getExample() {
+      client.getMethod(
+        function(data,type) {
+          // this is the success callback
+          console.log(data);
+          $("#getExampleOutput").html(data);
+        },
+        function(error) {
+          // this is the error callback
+          console.log(error);
+          $("#getExampleOutput").html(error);
+        }
+      );
+    }
+
+    // function defined as response to a click on the second button (see below)
+    function postExample(input) {
+      client.postMethod(input,
+        function(data,type) {
+          // this is the success callback
+          console.log(data);
+          $("#postExampleOutput").html(data);
+        },
+        function(error) {
+          // this is the error callback
+          console.log(error);
+          $("#postExampleOutput").html(error);
+        }
+      );
+    }
+
+  </script>
+</body>
+</html>

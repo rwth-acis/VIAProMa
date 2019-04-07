@@ -1,0 +1,26 @@
+<ivy-module version="2.0">
+    <info organisation="i5" module="${ant.project.name}" />
+    <configurations defaultconf="bundle->*">
+        <conf name="bundle" description="Service dependencies bundled with the service" visibility="private" />
+        <conf name="platform" description="Jars needded for the las2peer platform" visibility="private" />
+    </configurations>
+    <publications>
+        <artifact type="pom" ext="pom" conf="*" />
+        <artifact type="jar" ext="jar" conf="*" />
+    </publications>
+    <dependencies>
+        <!-- las2peer core -->
+        <dependency org="i5" name="las2peer-bundle" rev="${core.version}" changing="true" conf="platform->*" />
+        <!-- JUnit -->
+        <dependency org="junit" name="junit" rev="4.12" conf="platform->*" />
+
+        <!-- service dependencies -->
+        <!-- Add service dependencies here -->
+        <!-- All dependencies with (default) conf="bundle->*" are packaged into the service jar -->
+        <!-- example:
+        <dependency org="net.minidev" name="json-smart" rev="1.3.1" conf="bundle->*" />
+        -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.0.1"
+                    conf="bundle->default" />
+    </dependencies>
+</ivy-module>
