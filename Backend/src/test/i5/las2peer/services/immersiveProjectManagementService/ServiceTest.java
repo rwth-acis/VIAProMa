@@ -85,50 +85,50 @@ public class ServiceTest {
 			}
 		}
 
-		/**
-		 * 
-		 * Tests the validation method.
-		 * 
-		 */
-		@Test
-		public void testGet() {
-			try {
-				MiniClient client = new MiniClient();
-				client.setConnectorEndpoint(connector.getHttpEndpoint());
-				client.setLogin(testAgent.getIdentifier(), testPass);
-				
-				ClientResponse result = client.sendRequest("GET", mainPath + "get", "");
-				Assert.assertEquals(200, result.getHttpCode());
-				Assert.assertEquals("adam", result.getResponse().trim());// YOUR RESULT VALUE HERE
-				System.out.println("Result of 'testGet': " + result.getResponse().trim());
-			} catch (Exception e) {
-				e.printStackTrace();
-				Assert.fail(e.toString());
-			}
-		}
-
-		/**
-		 * 
-		 * Test the example method that consumes one path parameter which we give the value "testInput" in this test.
-		 * 
-		 */
-		@Test
-		public void testPost() {
-			try {
-				MiniClient client = new MiniClient();
-				client.setConnectorEndpoint(connector.getHttpEndpoint());
-				client.setLogin(testAgent.getIdentifier(), testPass);
-				
-				// testInput is the pathParam
-				ClientResponse result = client.sendRequest("POST", mainPath + "post/testInput", "");
-				Assert.assertEquals(200, result.getHttpCode());
-				// "testInput" name is part of response
-				Assert.assertTrue(result.getResponse().trim().contains("testInput"));
-				System.out.println("Result of 'testPost': " + result.getResponse().trim());
-			} catch (Exception e) {
-				e.printStackTrace();
-				Assert.fail(e.toString());
-			}
-		}
+//		/**
+//		 *
+//		 * Tests the validation method.
+//		 *
+//		 */
+//		@Test
+//		public void testGet() {
+//			try {
+//				MiniClient client = new MiniClient();
+//				client.setConnectorEndpoint(connector.getHttpEndpoint());
+//				client.setLogin(testAgent.getIdentifier(), testPass);
+//
+//				ClientResponse result = client.sendRequest("GET", mainPath + "get", "");
+//				Assert.assertEquals(200, result.getHttpCode());
+//				Assert.assertEquals("adam", result.getResponse().trim());// YOUR RESULT VALUE HERE
+//				System.out.println("Result of 'testGet': " + result.getResponse().trim());
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				Assert.fail(e.toString());
+//			}
+//		}
+//
+//		/**
+//		 *
+//		 * Test the example method that consumes one path parameter which we give the value "testInput" in this test.
+//		 *
+//		 */
+//		@Test
+//		public void testPost() {
+//			try {
+//				MiniClient client = new MiniClient();
+//				client.setConnectorEndpoint(connector.getHttpEndpoint());
+//				client.setLogin(testAgent.getIdentifier(), testPass);
+//
+//				// testInput is the pathParam
+//				ClientResponse result = client.sendRequest("POST", mainPath + "post/testInput", "");
+//				Assert.assertEquals(200, result.getHttpCode());
+//				// "testInput" name is part of response
+//				Assert.assertTrue(result.getResponse().trim().contains("testInput"));
+//				System.out.println("Result of 'testPost': " + result.getResponse().trim());
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				Assert.fail(e.toString());
+//			}
+//		}
 
 	}
