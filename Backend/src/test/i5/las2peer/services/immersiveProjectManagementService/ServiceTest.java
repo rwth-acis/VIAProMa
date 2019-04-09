@@ -106,6 +106,22 @@ public class ServiceTest {
 //				Assert.fail(e.toString());
 //			}
 //		}
+
+	@Test
+	public void testGitHubPunchCard()
+	{
+		try
+		{
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Assert.fail(e.toString());
+		}
+	}
+
+
 //
 //		/**
 //		 *

@@ -1,5 +1,8 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
 import io.swagger.annotations.*;
@@ -8,9 +11,11 @@ import net.minidev.json.JSONArray;
 import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 /**
@@ -39,6 +44,7 @@ import java.net.HttpURLConnection;
 @ServicePath("/resources")
 public class ImmersiveProjectManagementService extends RESTService {
 
+
 	/**
 	 * Template of a get function.
 	 * 
@@ -56,13 +62,24 @@ public class ImmersiveProjectManagementService extends RESTService {
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getPunchCard(@PathParam("owner") String owner, @PathParam("repo") String repositoryName) {
 
-//		Client client = ClientBuilder.newClient();
-//		WebTarget webTarget = client.target("https://api.github.com/");
-//		WebTarget punchCardTarget = webTarget.path("repos/rwth-acis/RequirementsBazaar/stats/punch_card");
-//		List<List<Integer>> response = punchCardTarget.request(MediaType.APPLICATION_JSON).get(List<List<int>>.class);
-		String result = "hello";
+		try {
+			Client client = ClientBuilder.newClient();
+			WebTarget webTarget = client.target("https://api.github.com/repos/rwth-acis/RequirementsBazaar/stats/punch_card");
+			Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+			Response response = invocationBuilder.get();
+			String origJson = response.readEntity(String.class);
 
-		return Response.ok().entity(result).build();
+			ObjectMapper mapper = new ObjectMapper();
+			int[][] commitTimeData = mapper.readValue(origJson, int[][].class);
+
+			String result = unityCompatibleArray(commitTimeData);
+
+			return Response.ok().entity(result).build();
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
 	}
 
 	/**
@@ -88,5 +105,12 @@ public class ImmersiveProjectManagementService extends RESTService {
 	}
 
 	// TODO your own service methods, e. g. for RMI
+
+	private String unityCompatibleArray(Object obj) throws JsonProcessingException
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectWriter writer = mapper.writer().withRootName("array");
+		return writer.writeValueAsString(obj);
+	}
 
 }
