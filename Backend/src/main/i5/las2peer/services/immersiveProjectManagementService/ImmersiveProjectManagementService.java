@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
 import io.swagger.annotations.*;
 import net.minidev.json.JSONArray;
 
@@ -17,6 +18,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ImmersiveProjectManagementService
@@ -69,10 +72,50 @@ public class ImmersiveProjectManagementService extends RESTService {
 			Response response = invocationBuilder.get();
 			String origJson = response.readEntity(String.class);
 
+			// parse JSON data
 			ObjectMapper mapper = new ObjectMapper();
 			int[][] commitTimeData = mapper.readValue(origJson, int[][].class);
 
-			String result = unityCompatibleArray(commitTimeData);
+			// transform 2D array to special data type
+
+			List<GitHubPunchCardHour> entries = new ArrayList<GitHubPunchCardHour>();
+
+			for (int i=0;i<commitTimeData.length;i++)
+			{
+				if (commitTimeData[i].length != 3)
+				{
+					return Response.serverError().entity("received malformed GitHub response (not 3 fields in one entry)").build();
+				}
+				GitHubPunchCardHour entry = new GitHubPunchCardHour();
+				for (int j=0;j<commitTimeData[i].length;j++)
+				{
+					if (j==0)
+					{
+						if (commitTimeData[i][j] < 0 || commitTimeData[i][j] > 6)
+						{
+							return Response.serverError().entity("received malformed GitHub response (days out of range)").build();
+						}
+						entry.day = commitTimeData[i][j];
+					}
+					else if (j==1)
+					{
+						if (commitTimeData[i][j] < 0 || commitTimeData[i][j] > 23)
+						{
+							return Response.serverError().entity("received malformed GitHub response (hours out of range)").build();
+						}
+						entry.hour = commitTimeData[i][j];
+					}
+					else if (j==2)
+					{
+						entry.numberOfCommits = commitTimeData[i][j];
+						// entry is finished that this point => add it to the list
+						entries.add(entry);
+					}
+				}
+			}
+
+			// pack resulting array in a Unity-compatible object
+			String result = unityCompatibleArray(entries);
 
 			return Response.ok().entity(result).build();
 		}
