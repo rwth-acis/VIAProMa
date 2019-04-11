@@ -10,7 +10,9 @@ public class Scatterplot : MonoBehaviour
     private List<Vector3> points;
     private List<GameObject> pointRepresentations;
 
-    List<Vector3> Points { get { return points; } set { points = value; UpdateVisuals(); } }
+    public List<Vector3> Points { get { return points; } set { points = value; UpdateVisuals(); } }
+
+    public float PointSize { get; set; } = 0.1f;
 
     private void Awake()
     {
@@ -32,6 +34,7 @@ public class Scatterplot : MonoBehaviour
         foreach (Vector3 point in Points)
         {
             GameObject instance = Instantiate(pointPrefab, pointsParent);
+            instance.transform.localScale = new Vector3(PointSize, PointSize, PointSize);
             instance.transform.localPosition = point;
             pointRepresentations.Add(instance);
         }
