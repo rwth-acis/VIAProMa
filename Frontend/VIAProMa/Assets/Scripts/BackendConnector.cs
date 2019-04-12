@@ -17,7 +17,6 @@ public static class BackendConnector
         }
         else
         {
-            Debug.Log(resp.ResponseBody);
             PunchCardEntry[] gitHubPunchCard = JsonArrayUtility.FromJson<PunchCardEntry>(resp.ResponseBody);
             return new ApiResult<PunchCardEntry[]>(gitHubPunchCard);
         }
