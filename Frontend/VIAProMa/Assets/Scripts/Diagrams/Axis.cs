@@ -29,7 +29,31 @@ public class Axis : MonoBehaviour
         }
     }
 
-    public ValueRange ValueRange { get; set; }
+    private ValueRange valueRange;
+
+    public ValueRange ValueRange
+    {
+        get
+        {
+            return valueRange;
+        }
+
+        set
+        {
+            valueRange = value;
+            if (valueRange == ValueRange.STRING)
+            {
+            }
+        }
+    }
+
+    public List<string> strLabels { get; set; }
+
+    private void SetLabels(List<string> labelsToSet)
+    {
+
+    }
+
 }
 
 public enum ValueRange

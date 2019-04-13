@@ -67,7 +67,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 
 		try {
 			Client client = ClientBuilder.newClient();
-			WebTarget webTarget = client.target("https://api.github.com/repos/rwth-acis/RequirementsBazaar/stats/punch_card");
+			WebTarget webTarget = client.target("https://api.github.com/repos/" + owner + "/" + repositoryName + "/stats/punch_card");
 			Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 			Response response = invocationBuilder.get();
 			String origJson = response.readEntity(String.class);
