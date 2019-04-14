@@ -22,11 +22,11 @@ public class Scatterplot : Diagram
     {
         if (pointPrefab == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError("Scatterplot", "pointPrefab", this);
+            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(pointPrefab));
         }
         if (pointsParent == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError("Scatterplot", "pointsParent", this);
+            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(pointsParent));
         }
 
         pointRepresentations = new List<GameObject>();

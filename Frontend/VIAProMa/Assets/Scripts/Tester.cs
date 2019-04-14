@@ -10,10 +10,7 @@ public class Tester : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ExtendedWilkinson w = new ExtendedWilkinson();
-
-            w.SimplicityMax(2.5f, 2);
-
+            Debug.Log(TextSize.Instance.GetTextSize("This is a test", 100));
 
             ////Bounds b = new Bounds();
             ////b.Encapsulate(new Vector3(0, 1, 0));
