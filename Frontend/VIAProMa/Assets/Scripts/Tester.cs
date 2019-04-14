@@ -10,7 +10,14 @@ public class Tester : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log(TextSize.Instance.GetTextSize("This is a test", 100));
+            ExtendedWilkinson wil = new ExtendedWilkinson();
+            List<AxisConfiguration> confs = AxisConfiguration.GeneratePossibleConfigurations();
+            List<string> labels = new List<string>() { "Monday", "Tuesday", "WednesdayLongLong", "Thursday", "Friday", "Saturday", "Sunday" };
+            float bestScore;
+            AxisConfiguration conf = AxisConfiguration.OptimizeLegibility(labels, true, confs, 7f, 20, 100, out bestScore);
+
+            Debug.Log(bestScore);
+            Debug.Log(conf.FontSize + " " + conf.HorizontalTextOrientation);
 
             ////Bounds b = new Bounds();
             ////b.Encapsulate(new Vector3(0, 1, 0));

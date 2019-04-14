@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ExtendedWilkinson
@@ -88,9 +89,11 @@ public class ExtendedWilkinson
         }
     }
 
-    public void PerformExtendedWilkinson(float availableSpace, float targetDensity, float dataMin, float dataMax)
+    public AxisConfiguration PerformExtendedWilkinson(float availableSpace, bool horizontalAxis, float targetDensity, float dataMin, float dataMax)
     {
         float bestScore = -2;
+        AxisConfiguration bestOption = null;
+
         for (int j = 1; j < int.MaxValue; j++)
         {
             foreach(float q in Q) // (j,q): determines step size
@@ -131,12 +134,24 @@ public class ExtendedWilkinson
                                 continue;
                             }
 
-                            // optimize legibility
+                            List<float> stepSequence = Enumerable.Range(0, k).Select(x => lmin + x * lStep).ToList();
+                            List<string> labels = stepSequence.Select(value => value.ToString()).ToList();
 
+                            // optimize legibility
+                            List<AxisConfiguration> possibilities = AxisConfiguration.GeneratePossibleConfigurations();
+                            float legibility;
+                            bestOption = AxisConfiguration.OptimizeLegibility(labels, horizontalAxis, possibilities, availableSpace, 20, 80, out legibility);
+
+                            float score = Vector4.Dot(new Vector4(s, c, d, legibility), weights);
+                            if (score > bestScore)
+                            {
+                                bestScore = score;
+                            }
                         }
                     }
                 }
             }
         }
+        return bestOption;
     }
 }
