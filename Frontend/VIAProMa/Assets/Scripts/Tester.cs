@@ -11,13 +11,15 @@ public class Tester : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ExtendedWilkinson wil = new ExtendedWilkinson();
-            List<AxisConfiguration> confs = AxisConfiguration.GeneratePossibleConfigurations();
-            List<string> labels = new List<string>() { "Monday", "Tuesday", "WednesdayLongLong", "Thursday", "Friday", "Saturday", "Sunday" };
-            float bestScore;
-            AxisConfiguration conf = AxisConfiguration.OptimizeLegibility(labels, true, confs, 7f, 20, 100, out bestScore);
+            AxisConfiguration conf = wil.PerformExtendedWilkinson(3f, transform, 1f, 0f, 7f);
 
-            Debug.Log(bestScore);
-            Debug.Log(conf.FontSize + " " + conf.HorizontalTextOrientation);
+            string res = "";
+            for (int i=0;i<conf.Labels.Count;i++)
+            {
+                res += conf.Labels[i] + ", ";
+            }
+
+            Debug.Log(res);
 
             ////Bounds b = new Bounds();
             ////b.Encapsulate(new Vector3(0, 1, 0));

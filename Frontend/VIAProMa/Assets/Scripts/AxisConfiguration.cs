@@ -19,13 +19,16 @@ public class AxisConfiguration
     /// </summary>
     public int FontSize { get; set; }
 
-    public AxisConfiguration(int fontSize, bool horizontalTextOrientation)
+    public List<string> Labels { get; set; }
+
+    public AxisConfiguration(List<string> labels, int fontSize, bool horizontalTextOrientation)
     {
         FontSize = fontSize;
         HorizontalTextOrientation = horizontalTextOrientation;
+        Labels = labels;
     }
 
-    private float FormatScore(List<string> labels)
+    private float FormatScore()
     {
         return 1; // changed since we do not want a factored representation
     }
@@ -58,9 +61,9 @@ public class AxisConfiguration
         }
     }
 
-    private float OverlapScore(List<string> labels, bool horizontalAxisOrientation, float availableSpace)
+    private float OverlapScore(bool horizontalAxisOrientation, float availableSpace)
     {
-        float labelsMinimumGap = GetMinimumGap(labels, horizontalAxisOrientation, availableSpace);
+        float labelsMinimumGap = GetMinimumGap(horizontalAxisOrientation, availableSpace);
 
         if (labelsMinimumGap < 0)
         {
@@ -76,17 +79,17 @@ public class AxisConfiguration
         }
     }
 
-    private float GetMinimumGap(List<string> labels, bool horizontalAxisOrientation, float availableSpace)
+    private float GetMinimumGap(bool horizontalAxisOrientation, float availableSpace)
     {
-        float spaceBetweenTwoEntries = availableSpace / labels.Count;
+        float spaceBetweenTwoEntries = availableSpace / Labels.Count;
 
         Vector2 lastSize = Vector2.zero;
 
         float minGap = float.MaxValue;
 
-        for (int i = 0; i < labels.Count; i++)
+        for (int i = 0; i < Labels.Count; i++)
         {
-            Vector2 size = TextSize.Instance.GetTextSize(labels[i], FontSize);
+            Vector2 size = TextSize.Instance.GetTextSize(Labels[i], FontSize);
             if (i > 0)
             {
                 float gap;
@@ -111,10 +114,10 @@ public class AxisConfiguration
         return minGap;
     }
 
-    public float LegibilityScore(List<string> labels, bool horizontalAxisOrientation, float availableSpace, int minFontSize, int targetFontSize)
+    public float LegibilityScore(bool horizontalAxisOrientation, float availableSpace, int minFontSize, int targetFontSize)
     {
-        return (FormatScore(labels) + FontScore(minFontSize, targetFontSize) 
-            + OrientationScore() + OverlapScore(labels, horizontalAxisOrientation, availableSpace)) / 4f;
+        return (FormatScore() + FontScore(minFontSize, targetFontSize) 
+            + OrientationScore() + OverlapScore(horizontalAxisOrientation, availableSpace)) / 4f;
     }
 
     public static AxisConfiguration OptimizeLegibility(
@@ -131,7 +134,7 @@ public class AxisConfiguration
 
         for (int i = 0; i < possibilities.Count; i++)
         {
-            float score = possibilities[i].LegibilityScore(labels, horizontalAxisOrientation, availableSpace, minFontSize, targetFontSize);
+            float score = possibilities[i].LegibilityScore(horizontalAxisOrientation, availableSpace, minFontSize, targetFontSize);
             if (score > bestScore)
             {
                 best = possibilities[i];
@@ -142,14 +145,14 @@ public class AxisConfiguration
         return best;
     }
 
-    public static List<AxisConfiguration> GeneratePossibleConfigurations()
+    public static List<AxisConfiguration> GeneratePossibleConfigurations(List<string> labels)
     {
         List<AxisConfiguration> possibilities = new List<AxisConfiguration>();
         for (int fontSize = 20; fontSize <= 100; fontSize += 10)
         {
             for (int i = 0; i < 2; i++)
             {
-                AxisConfiguration conf = new AxisConfiguration(fontSize, i == 0);
+                AxisConfiguration conf = new AxisConfiguration(labels, fontSize, i == 0);
                 possibilities.Add(conf);
             }
         }

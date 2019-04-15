@@ -138,7 +138,7 @@ public class ExtendedWilkinson
                             List<string> labels = stepSequence.Select(value => value.ToString()).ToList();
 
                             // optimize legibility
-                            List<AxisConfiguration> possibilities = AxisConfiguration.GeneratePossibleConfigurations();
+                            List<AxisConfiguration> possibilities = AxisConfiguration.GeneratePossibleConfigurations(labels);
                             float legibility;
                             bestOption = AxisConfiguration.OptimizeLegibility(labels, horizontalAxis, possibilities, availableSpace, 20, 80, out legibility);
 
