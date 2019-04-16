@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Axis : MonoBehaviour
 {
+    [SerializeField] GameObject labelPrefab;
+    [SerializeField] private bool isHorizontal;
+
+    private TextMesh textMesh;
+
     private float length;
 
     public float Length
@@ -29,34 +34,57 @@ public class Axis : MonoBehaviour
         }
     }
 
-    private ValueRange valueRange;
+    public float TargetLength { get; set; }
 
-    public ValueRange ValueRange
+    public bool IsHorizontal { get { return isHorizontal; } }
+
+
+    private void Awake()
     {
-        get
+        if (labelPrefab == null)
         {
-            return valueRange;
+            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(labelPrefab));
+            return;
         }
 
-        set
+        textMesh = labelPrefab.GetComponent<TextMesh>();
+        if (textMesh == null)
         {
-            valueRange = value;
-            if (valueRange == ValueRange.STRING)
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(TextMesh), labelPrefab);
+        }
+    }
+
+
+    public void SetNumbericLabels(float dataMin, float dataMax)
+    {
+        ExtendedWilkinson wil = new ExtendedWilkinson();
+        AxisConfiguration best = wil.PerformExtendedWilkinson(TargetLength, IsHorizontal, 1f, dataMin, dataMax);
+        RealizeConfiguration(best);
+    }
+
+    public void SetStringLabels(List<string> labels)
+    {
+        List<AxisConfiguration> confs =  AxisConfiguration.GeneratePossibleConfigurations(labels);
+        float bestScore;
+        AxisConfiguration best = AxisConfiguration.OptimizeLegibility(labels, IsHorizontal, confs, TargetLength, 20, 80, out bestScore);
+        RealizeConfiguration(best);
+    }
+
+    private void RealizeConfiguration(AxisConfiguration conf)
+    {
+        Length = TargetLength;
+        float stepSize = Length / (conf.Labels.Count -1);
+        for (int i=0; i<conf.Labels.Count;i++)
+        {
+            TextMesh instantiatedLabel = Instantiate(labelPrefab).GetComponent<TextMesh>();
+            instantiatedLabel.text = conf.Labels[i];
+            instantiatedLabel.fontSize = conf.FontSize;
+            if (!conf.HorizontalTextOrientation)
             {
+                instantiatedLabel.transform.Rotate(new Vector3(0, 0, -90));
             }
+            instantiatedLabel.transform.position = new Vector3(i * stepSize, 0, 0);
         }
     }
 
-    public List<string> strLabels { get; set; }
-
-    private void SetLabels(List<string> labelsToSet)
-    {
-
-    }
-
-}
-
-public enum ValueRange
-{
-    INT, FLOAT, STRING
 }

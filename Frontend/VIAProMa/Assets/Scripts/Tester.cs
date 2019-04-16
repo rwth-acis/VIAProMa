@@ -4,22 +4,17 @@ using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
-    public Scatterplot scatterplot;
+    public Axis axis;
 
     private async void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ExtendedWilkinson wil = new ExtendedWilkinson();
-            AxisConfiguration conf = wil.PerformExtendedWilkinson(3f, transform, 1f, 0f, 7f);
+            axis.TargetLength = 2f;
+            //List<string> labels = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+            //axis.SetStringLabels(labels);
 
-            string res = "";
-            for (int i=0;i<conf.Labels.Count;i++)
-            {
-                res += conf.Labels[i] + ", ";
-            }
-
-            Debug.Log(res);
+            axis.SetNumbericLabels(0, 10);
 
             ////Bounds b = new Bounds();
             ////b.Encapsulate(new Vector3(0, 1, 0));
