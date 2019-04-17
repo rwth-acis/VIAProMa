@@ -14,7 +14,7 @@ public class Tester : MonoBehaviour
             //List<string> labels = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
             //axis.SetStringLabels(labels);
 
-            axis.SetNumbericLabels(0, 10);
+            axis.SetNumbericLabels(0, 10, 1f, axis.transform);
 
             ////Bounds b = new Bounds();
             ////b.Encapsulate(new Vector3(0, 1, 0));
