@@ -9,32 +9,23 @@ public class Axis : MonoBehaviour
 
     private TextMesh textMesh;
 
-    private float length;
+    public AxisType Type { get; set; }
 
     public float Length
     {
-        get { return length; }
+        get
+        {
+            return transform.localScale.y * transform.parent.localScale.x; // parent should be scaled uniformly with all values the same, so just take x
+        }
         set
         {
-            length = value;
-            if (value <= 0)
-            {
-                gameObject.SetActive(false);
-                Debug.Log("deactivated gameobject", this);
-            }
-            else
-            {
-                Debug.Log("set length", this);
-                gameObject.SetActive(true);
-                transform.localScale = new Vector3(
-                    transform.localScale.x,
-                    value,
-                    transform.localScale.z);
-            }
+            transform.localScale = new Vector3(
+                transform.localScale.x,
+                value / transform.parent.localScale.x, // x because all three values of parent scale should be the same
+                transform.localScale.z
+                );
         }
     }
-
-    public float TargetLength { get; set; }
 
     public bool IsHorizontal { get { return isHorizontal; } }
 
@@ -58,23 +49,22 @@ public class Axis : MonoBehaviour
     public void SetNumbericLabels(float dataMin, float dataMax, float labelDensity, Transform parent)
     {
         ExtendedWilkinson wil = new ExtendedWilkinson();
-        AxisConfiguration best = wil.PerformExtendedWilkinson(TargetLength, IsHorizontal, labelDensity, dataMin, dataMax);
+        AxisConfiguration best = wil.PerformExtendedWilkinson(Length, IsHorizontal, labelDensity, dataMin, dataMax);
         RealizeConfiguration(best, parent);
     }
 
     public void SetStringLabels(List<string> labels, Transform parent)
     {
-        List<AxisConfiguration> confs =  AxisConfiguration.GeneratePossibleConfigurations(labels);
+        List<AxisConfiguration> confs = AxisConfiguration.GeneratePossibleConfigurations(labels);
         float bestScore;
-        AxisConfiguration best = AxisConfiguration.OptimizeLegibility(labels, IsHorizontal, confs, TargetLength, 20, 80, out bestScore);
+        AxisConfiguration best = AxisConfiguration.OptimizeLegibility(labels, IsHorizontal, confs, Length, 20, 80, out bestScore);
         RealizeConfiguration(best, parent);
     }
 
     private void RealizeConfiguration(AxisConfiguration conf, Transform parent)
     {
-        Length = TargetLength;
-        float stepSize = Length / (conf.Labels.Count -1);
-        for (int i=0; i<conf.Labels.Count;i++)
+        float stepSize = Length / (conf.Labels.Count - 1);
+        for (int i = 0; i < conf.Labels.Count; i++)
         {
             TextMesh instantiatedLabel = Instantiate(labelPrefab).GetComponent<TextMesh>();
             instantiatedLabel.transform.parent = parent; // set parent after instantiation so that it has the correct world-size independnet of the parent's size
