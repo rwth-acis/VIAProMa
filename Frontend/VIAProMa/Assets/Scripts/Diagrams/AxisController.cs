@@ -82,7 +82,7 @@ public class AxisController : MonoBehaviour
         {
             List<AxisConfiguration> confs = AxisConfiguration.GeneratePossibleConfigurations(Axis.Labels);
             float bestScore;
-            AxisConfiguration best = AxisConfiguration.OptimizeLegibility(Axis.Labels, IsHorizontal, confs, Length, 20, 400, out bestScore);
+            AxisConfiguration best = AxisConfiguration.OptimizeLegibility(Axis.Labels, IsHorizontal, confs, Length, 20, 100, out bestScore);
             RealizeConfiguration(best, parent);
         }
     }

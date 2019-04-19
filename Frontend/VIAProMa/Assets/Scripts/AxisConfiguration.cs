@@ -148,7 +148,7 @@ public class AxisConfiguration
     public static List<AxisConfiguration> GeneratePossibleConfigurations(List<string> labels)
     {
         List<AxisConfiguration> possibilities = new List<AxisConfiguration>();
-        for (int fontSize = 20; fontSize <= 450; fontSize += 15)
+        for (int fontSize = 20; fontSize <= 100; fontSize += 5)
         {
             for (int i = 0; i < 2; i++)
             {

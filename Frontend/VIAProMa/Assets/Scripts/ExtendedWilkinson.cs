@@ -142,7 +142,7 @@ public static class ExtendedWilkinson
                             // optimize legibility
                             List<AxisConfiguration> possibilities = AxisConfiguration.GeneratePossibleConfigurations(labels);
                             float legibility;
-                            bestOption = AxisConfiguration.OptimizeLegibility(labels, horizontalAxis, possibilities, availableSpace, 20, 400, out legibility);
+                            bestOption = AxisConfiguration.OptimizeLegibility(labels, horizontalAxis, possibilities, availableSpace, 20, 100, out legibility);
 
                             float score = Vector4.Dot(new Vector4(s, c, d, legibility), weights);
                             if (score > bestScore)
