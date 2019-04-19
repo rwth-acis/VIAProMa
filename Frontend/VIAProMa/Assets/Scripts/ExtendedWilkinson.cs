@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ExtendedWilkinson
+public static class ExtendedWilkinson
 {
-    List<float> Q = new List<float>() { 1, 5, 2, 2.5f, 4, 3 };
-    Vector4 weights = new Vector4(0.2f, 0.25f, 0.5f, 0.05f);
+    static List<float> Q = new List<float>() { 1, 5, 2, 2.5f, 4, 3 };
+    static Vector4 weights = new Vector4(0.2f, 0.25f, 0.5f, 0.05f);
 
-    public float Simplicity(float q, int j, float lmin, float lmax, float lstep)
+    public static float Simplicity(float q, int j, float lmin, float lmax, float lstep)
     {
         int n = Q.Count;
         int i = Q.FindIndex((x) => { return x == q; });
@@ -32,7 +32,7 @@ public class ExtendedWilkinson
         return 1f - (i - 1f) / (n - 1f) - j + v;
     }
 
-    public float SimplicityMax(float q, int j)
+    public static float SimplicityMax(float q, int j)
     {
         int n = Q.Count;
         int i = Q.FindIndex((x) => { return x == q; });
@@ -52,12 +52,12 @@ public class ExtendedWilkinson
         return res;
     }
 
-    public float Density(float r, float rt)
+    public static float Density(float r, float rt)
     {
         return 2f - Mathf.Max(r / rt, rt / r);
     }
 
-    public float DensityMax(float r, float rt)
+    public static float DensityMax(float r, float rt)
     {
         if (r >= rt)
         {
@@ -69,13 +69,13 @@ public class ExtendedWilkinson
         }
     }
 
-    public float Coverage(float dmin, float dmax, float lmin, float lmax)
+    public static float Coverage(float dmin, float dmax, float lmin, float lmax)
     {
         float range = dmax - dmin;
         return 1f - 0.5f * (Mathf.Pow(dmax - lmax, 2) + Mathf.Pow(dmin - lmin, 2)) / Mathf.Pow(0.1f * range, 2);
     }
 
-    public float CoverageMax(float dmin, float dmax, float span)
+    public static float CoverageMax(float dmin, float dmax, float span)
     {
         float range = dmax - dmin;
         if (span > range)
@@ -89,9 +89,11 @@ public class ExtendedWilkinson
         }
     }
 
-    public AxisConfiguration PerformExtendedWilkinson(float availableSpace, bool horizontalAxis, float targetDensity, float dataMin, float dataMax)
+    public static AxisConfiguration PerformExtendedWilkinson(float availableSpace, bool horizontalAxis, float targetDensity, float dataMin, float dataMax, out float axisMin, out float axisMax)
     {
         float bestScore = -2;
+        axisMin = dataMin;
+        axisMax = dataMax;
         AxisConfiguration bestOption = null;
 
         for (int j = 1; j < int.MaxValue; j++)
@@ -135,17 +137,19 @@ public class ExtendedWilkinson
                             }
 
                             List<float> stepSequence = Enumerable.Range(0, k).Select(x => lmin + x * lStep).ToList();
-                            List<string> labels = stepSequence.Select(value => value.ToString()).ToList();
+                            List<string> labels = stepSequence.Select(value => value.ToString("0.##")).ToList();
 
                             // optimize legibility
                             List<AxisConfiguration> possibilities = AxisConfiguration.GeneratePossibleConfigurations(labels);
                             float legibility;
-                            bestOption = AxisConfiguration.OptimizeLegibility(labels, horizontalAxis, possibilities, availableSpace, 20, 80, out legibility);
+                            bestOption = AxisConfiguration.OptimizeLegibility(labels, horizontalAxis, possibilities, availableSpace, 20, 400, out legibility);
 
                             float score = Vector4.Dot(new Vector4(s, c, d, legibility), weights);
                             if (score > bestScore)
                             {
                                 bestScore = score;
+                                axisMax = lmax;
+                                axisMin = lmin;
                             }
                         }
                     }

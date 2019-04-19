@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class AxisConfiguration
 {
-    private const float minimumGap = 0.03f;
+    private const float minimumGap = 0.1f;
 
     /// <summary>
     /// If true, labels have a horizontal orientation, otherwise vertical orientation is used
@@ -148,7 +148,7 @@ public class AxisConfiguration
     public static List<AxisConfiguration> GeneratePossibleConfigurations(List<string> labels)
     {
         List<AxisConfiguration> possibilities = new List<AxisConfiguration>();
-        for (int fontSize = 20; fontSize <= 100; fontSize += 10)
+        for (int fontSize = 20; fontSize <= 450; fontSize += 15)
         {
             for (int i = 0; i < 2; i++)
             {

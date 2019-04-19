@@ -10,11 +10,11 @@ public class Scatterplot : Diagram
     [SerializeField] private Transform pointsParent;
 
     [Tooltip("X-Axis of the diagram")]
-    [SerializeField] private Axis xAxis;
+    [SerializeField] private AxisController xAxis;
     [Tooltip("Y-Axis of the diagram")]
-    [SerializeField] private Axis yAxis;
+    [SerializeField] private AxisController yAxis;
     [Tooltip("Z-Axis of the diagram")]
-    [SerializeField] private Axis zAxis;
+    [SerializeField] private AxisController zAxis;
 
     private DataSet dataSet;
     /// <summary>
@@ -35,7 +35,14 @@ public class Scatterplot : Diagram
     public Vector3 BoxSize
     {
         get { return boxSize; }
-        set { boxSize = value; UpdateVisuals(); }
+        set
+        {
+            boxSize = value;
+            xAxis.Length = boxSize.x;
+            yAxis.Length = boxSize.y;
+            zAxis.Length = boxSize.z;
+            UpdateVisuals();
+        }
     }
 
     public DataSet DataSet
@@ -47,10 +54,16 @@ public class Scatterplot : Diagram
         set
         {
             dataSet = value;
-            GetBoundsOfData(dataSet.Points);
-            xAxis.Type = dataSet.XAxisType;
-            yAxis.Type = dataSet.YAxisType;
-            zAxis.Type = dataSet.ZAxisType;
+            pointBounds = GetBoundsOfData(dataSet.Points);
+            dataSet.XAxis.DataMin = pointBounds.min.x;
+            dataSet.YAxis.DataMin = pointBounds.min.y;
+            dataSet.ZAxis.DataMin = pointBounds.min.z;
+            dataSet.XAxis.DataMax = pointBounds.max.x;
+            dataSet.YAxis.DataMax = pointBounds.max.y;
+            dataSet.ZAxis.DataMax = pointBounds.max.z;
+            xAxis.Axis = dataSet.XAxis;
+            yAxis.Axis = dataSet.YAxis;
+            zAxis.Axis = dataSet.ZAxis;
             UpdateVisuals();
         }
     }
@@ -96,41 +109,27 @@ public class Scatterplot : Diagram
     protected override void UpdateVisuals()
     {
         ClearPointRepresentations();
-        if (xAxis.Type == AxisType.NUMERIC)
+
+        if (DataSet == null)
         {
-            UpdateAxis(xAxis, boxSize.x, pointBounds.min.x, pointBounds.max.x);
-        }
-        else
-        {
-            UpdateAxis(xAxis, boxSize.x, dataSet.XAxisLabels);
+            return;
         }
 
-        if (yAxis.Type == AxisType.NUMERIC)
-        {
-            UpdateAxis(yAxis, boxSize.y, pointBounds.min.y, pointBounds.max.y);
-        }
-        else
-        {
-            UpdateAxis(yAxis, boxSize.y, dataSet.YAxisLabels);
-        }
+        xAxis.VisualizeAxis(1f, transform);
+        yAxis.VisualizeAxis(1f, transform);
+        zAxis.VisualizeAxis(1f, transform);
 
-        if (zAxis.Type == AxisType.NUMERIC)
-        {
-            UpdateAxis(zAxis, boxSize.z, pointBounds.min.z, pointBounds.max.z);
-        }
-        else
-        {
-            UpdateAxis(zAxis, boxSize.z, dataSet.ZAxisLabels);
-        }
+        scalingFactors = CalcScalingFactors();
+        Debug.Log(scalingFactors);
 
-
-
-        //scalingFactors = DetermineScalingFactors(boxSize, pointBounds);
         foreach (DataPoint point in DataSet.Points)
         {
             GameObject instance = Instantiate(pointPrefab, pointsParent);
             instance.transform.localScale = new Vector3(PointSize, PointSize, PointSize);
-            instance.transform.localPosition = point.position;
+            instance.transform.localPosition = new Vector3(
+                point.position.x * scalingFactors.x,
+                point.position.y * scalingFactors.y,
+                point.position.z * scalingFactors.z);
             instance.GetComponent<Renderer>().material.color = point.color;
             pointRepresentations.Add(instance);
         }
@@ -147,37 +146,25 @@ public class Scatterplot : Diagram
         return b;
     }
 
-    /// <summary>
-    /// Updates a axis
-    /// </summary>
-    /// <param name="axis">The axis to update</param>
-    /// <param name="length">The target length of the axis</param>
-    /// <param name="scaleFactor">The scaling factor of the data points along this axis</param>
-    private void UpdateAxis(Axis axis, float length, float dataMin, float dataMax)
+    private Vector3 CalcScalingFactors()
     {
-        if (axis == null)
-        {
-            return;
-        }
+        float xFactor = SingleScalingFactor(boxSize.x, xAxis.AxisMax - xAxis.AxisMin);
+        float yFactor = SingleScalingFactor(boxSize.y, yAxis.AxisMax - yAxis.AxisMin);
+        float zFactor = SingleScalingFactor(boxSize.z, zAxis.AxisMax - zAxis.AxisMin);
 
-        axis.Length = length;
-        axis.SetNumbericLabels(dataMin, dataMax, 1f, transform);
+        return new Vector3(xFactor, yFactor, zFactor);
     }
 
-    private void UpdateAxis(Axis axis, float length, List<string> labels)
+    private float SingleScalingFactor(float worldLength, float dataRange)
     {
-        if (axis == null)
+        if (dataRange == 0)
         {
-            return;
+            return 1;
         }
-
-        axis.Length = length;
-        axis.SetStringLabels(labels, transform);
-    }
-
-    private void SetScalingFactors()
-    {
-
+        else
+        {
+            return worldLength / dataRange;
+        }
     }
 
     private void ClearPointRepresentations()

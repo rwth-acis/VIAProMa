@@ -4,12 +4,28 @@ using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
-    public Axis axis;
+    public Scatterplot scatterplot;
+    public Vector3 boxSize = Vector3.one;
 
     private async void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            List<DataPoint> points = new List<DataPoint>();
+            points.Add(new DataPoint(new Vector3(1, 1, 1), Color.black));
+            points.Add(new DataPoint(new Vector3(0, 1, 1), Color.green));
+            points.Add(new DataPoint(new Vector3(1, 0, 1), Color.grey));
+            points.Add(new DataPoint(new Vector3(0, 5, 0), Color.red));
+            points.Add(new DataPoint(new Vector3(0, 0, 1), Color.white));
+
+            Axis xAxis = new Axis();
+            Axis yAxis = new Axis();
+            Axis zAxis = new Axis();
+
+            DataSet set = new DataSet() { Points = points, XAxis = xAxis, YAxis = yAxis, ZAxis = zAxis } ;
+
+            scatterplot.BoxSize = boxSize;
+            scatterplot.DataSet = set;
 
             ////Bounds b = new Bounds();
             ////b.Encapsulate(new Vector3(0, 1, 0));
