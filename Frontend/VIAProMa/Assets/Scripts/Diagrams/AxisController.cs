@@ -83,6 +83,8 @@ public class AxisController : MonoBehaviour
             List<AxisConfiguration> confs = AxisConfiguration.GeneratePossibleConfigurations(Axis.Labels);
             float bestScore;
             AxisConfiguration best = AxisConfiguration.OptimizeLegibility(Axis.Labels, IsHorizontal, confs, Length, 20, 100, out bestScore);
+            axisMin = 0;
+            axisMax = Axis.Labels.Count - 1;
             RealizeConfiguration(best, parent);
         }
     }
@@ -93,7 +95,7 @@ public class AxisController : MonoBehaviour
         for (int i = 0; i < conf.Labels.Count; i++)
         {
             TextMesh instantiatedLabel = Instantiate(labelPrefab).GetComponent<TextMesh>();
-            instantiatedLabel.name = "Label " + transform.name; 
+            instantiatedLabel.name = "Label " + transform.name;
             instantiatedLabel.transform.parent = parent; // set parent after instantiation so that it has the correct world-size independent of the parent's size
             instantiatedLabel.text = conf.Labels[i];
             instantiatedLabel.fontSize = conf.FontSize;
@@ -113,11 +115,34 @@ public class AxisController : MonoBehaviour
             }
             labelInstances.Add(instantiatedLabel);
         }
+        TextMesh instantiatedTitle = Instantiate(labelPrefab).GetComponent<TextMesh>();
+        instantiatedTitle.text = Axis.Title;
+        instantiatedTitle.fontSize = conf.FontSize + 5;
+        instantiatedTitle.transform.localPosition = transform.localRotation * new Vector3(0, relativeStepSize * conf.Labels.Count, 0);
+        if (transform.localEulerAngles.x == 90)
+        {
+            instantiatedTitle.transform.Rotate(0, 90f, 0);
+        }
+        if (IsHorizontal)
+        {
+            if (transform.localEulerAngles.x == 90)
+            {
+                instantiatedTitle.anchor = TextAnchor.MiddleRight;
+            }
+            else
+            {
+                instantiatedTitle.anchor = TextAnchor.MiddleLeft;
+            }
+        }
+        else
+        {
+            instantiatedTitle.anchor = TextAnchor.LowerCenter;
+        }
     }
 
     private void ClearExistingLabels()
     {
-        for (int i=0;i<labelInstances.Count;i++)
+        for (int i = 0; i < labelInstances.Count; i++)
         {
             Destroy(labelInstances[i].gameObject);
         }

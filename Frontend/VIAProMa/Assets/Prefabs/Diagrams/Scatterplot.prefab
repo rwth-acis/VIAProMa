@@ -104,7 +104,7 @@ Transform:
   m_GameObject: {fileID: 1941783283785846}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 1, z: 0.01}
+  m_LocalScale: {x: 0.03, y: 1, z: 0.03}
   m_Children: []
   m_Father: {fileID: 4889097816941572}
   m_RootOrder: 1
@@ -117,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 1943058091029724}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 1, z: 0.01}
+  m_LocalScale: {x: 0.03, y: 1, z: 0.03}
   m_Children: []
   m_Father: {fileID: 4889097816941572}
   m_RootOrder: 3
@@ -128,9 +128,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1133132082353976}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 1, z: 0.01}
+  m_LocalScale: {x: 0.03, y: 1, z: 0.03}
   m_Children: []
   m_Father: {fileID: 4889097816941572}
   m_RootOrder: 2
@@ -299,6 +299,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f66c52341d35df49bd7dcfa94359af3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  labelPrefab: {fileID: 1539273636719898, guid: cdefbcb6e3ef67d4693a992fab09754f,
+    type: 2}
+  isHorizontal: 1
 --- !u!114 &114365769446297066
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -310,6 +313,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f66c52341d35df49bd7dcfa94359af3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  labelPrefab: {fileID: 1539273636719898, guid: cdefbcb6e3ef67d4693a992fab09754f,
+    type: 2}
+  isHorizontal: 1
 --- !u!114 &114634916477126172
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -321,6 +327,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f66c52341d35df49bd7dcfa94359af3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  labelPrefab: {fileID: 1539273636719898, guid: cdefbcb6e3ef67d4693a992fab09754f,
+    type: 2}
+  isHorizontal: 0
 --- !u!114 &114756381206106276
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -338,3 +347,4 @@ MonoBehaviour:
   xAxis: {fileID: 114026574680257758}
   yAxis: {fileID: 114634916477126172}
   zAxis: {fileID: 114365769446297066}
+  pointSize: 0.1

@@ -11,54 +11,31 @@ public class Tester : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("Test routine started");
+            ApiResult<PunchCardEntry[]> res = await BackendConnector.GetGitHubPunchCard("rwth-acis", "GaMR");
+            if (res.HasError)
+            {
+                return;
+            }
+
             List<DataPoint> points = new List<DataPoint>();
-            points.Add(new DataPoint(new Vector3(1, 1, 1), Color.black));
-            points.Add(new DataPoint(new Vector3(0, 1, 1), Color.green));
-            points.Add(new DataPoint(new Vector3(1, 0, 1), Color.grey));
-            points.Add(new DataPoint(new Vector3(0, 5, 0), Color.red));
-            points.Add(new DataPoint(new Vector3(0, 0, 1), Color.white));
 
-            Axis xAxis = new Axis();
-            Axis yAxis = new Axis();
-            Axis zAxis = new Axis();
+            Color[] colors = { Color.black, Color.blue, Color.cyan, Color.green, Color.magenta, Color.white, Color.yellow };
 
-            DataSet set = new DataSet() { Points = points, XAxis = xAxis, YAxis = yAxis, ZAxis = zAxis } ;
+            foreach (PunchCardEntry entry in res.Value)
+            {
+                Color color = colors[entry.day];
+                points.Add(new DataPoint(new Vector3(entry.day, entry.numberOfCommits, entry.hour), color));
+            }
+
+            Axis xAxis = new Axis() { Labels = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" }, Title = "Weekday" };
+            Axis yAxis = new Axis() { Title = "Number of Commits" };
+            Axis zAxis = new Axis() { Title = "Hour" };
+
+            DataSet set = new DataSet() { Points = points, XAxis = xAxis, YAxis = yAxis, ZAxis = zAxis };
 
             scatterplot.BoxSize = boxSize;
             scatterplot.DataSet = set;
-
-            ////Bounds b = new Bounds();
-            ////b.Encapsulate(new Vector3(0, 1, 0));
-            ////b.Encapsulate(new Vector3(0, -1, 0));
-
-            ////Debug.Log(b);
-
-            //Debug.Log("Test routine started");
-            //ApiResult<PunchCardEntry[]> res = await BackendConnector.GetGitHubPunchCard("rwth-acis", "GaMR");
-            //if (res.HasError)
-            //{
-            //    return;
-            //}
-
-            //List<DataPoint> points = new List<DataPoint>();
-
-            //Color[] colors = { Color.black, Color.blue, Color.cyan, Color.green, Color.magenta, Color.white, Color.yellow };
-
-            //foreach (PunchCardEntry entry in res.Value)
-            //{
-            //    Color color = colors[entry.day];
-            //    points.Add(new DataPoint(new Vector3(entry.day, entry.numberOfCommits, entry.hour), color));
-            //}
-
-
-            ////List<Vector3> points = new List<Vector3>();
-            ////points.Add(new Vector3(0, 0, 0));
-            ////points.Add(new Vector3(0, 1, 0));
-            ////points.Add(new Vector3(1, 1, 1));
-            ////points.Add(new Vector3(0, 0, 1));
-            ////points.Add(new Vector3(1, 0, 0));
-
-            //scatterplot.Points = points;
         }
     }
 }

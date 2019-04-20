@@ -16,6 +16,8 @@ public class Scatterplot : Diagram
     [Tooltip("Z-Axis of the diagram")]
     [SerializeField] private AxisController zAxis;
 
+    public float pointSize = 0.1f;
+
     private DataSet dataSet;
     /// <summary>
     /// The instantiated representations of data points as gameobjects in the 3D scene
@@ -69,11 +71,6 @@ public class Scatterplot : Diagram
     }
 
     /// <summary>
-    /// The size of the displayed points
-    /// </summary>
-    public float PointSize { get; set; } = 0.3f;
-
-    /// <summary>
     /// Initializes the required fields, checks if the component was set up correctly
     /// </summary>
     private void Awake()
@@ -120,12 +117,11 @@ public class Scatterplot : Diagram
         zAxis.VisualizeAxis(1f, transform);
 
         scalingFactors = CalcScalingFactors();
-        Debug.Log(scalingFactors);
 
         foreach (DataPoint point in DataSet.Points)
         {
             GameObject instance = Instantiate(pointPrefab, pointsParent);
-            instance.transform.localScale = new Vector3(PointSize, PointSize, PointSize);
+            instance.transform.localScale = new Vector3(pointSize, pointSize, pointSize);
             instance.transform.localPosition = new Vector3(
                 point.position.x * scalingFactors.x,
                 point.position.y * scalingFactors.y,
