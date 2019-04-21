@@ -7,6 +7,9 @@ using UnityEngine;
 /// </summary>
 public class AxisConfiguration
 {
+    /// <summary>
+    /// The gap in world units which should be between two labels
+    /// </summary>
     private const float minimumGap = 0.1f;
 
     /// <summary>
@@ -19,8 +22,17 @@ public class AxisConfiguration
     /// </summary>
     public int FontSize { get; set; }
 
+    /// <summary>
+    /// Labeling used in this configuration
+    /// </summary>
     public List<string> Labels { get; set; }
 
+    /// <summary>
+    /// Creates an axis configuration object
+    /// </summary>
+    /// <param name="labels">The labels to use</param>
+    /// <param name="fontSize">The font size which is used in this configuration</param>
+    /// <param name="horizontalTextOrientation">If true, the labels are oriented horizontally</param>
     public AxisConfiguration(List<string> labels, int fontSize, bool horizontalTextOrientation)
     {
         FontSize = fontSize;
@@ -28,11 +40,22 @@ public class AxisConfiguration
         Labels = labels;
     }
 
+    /// <summary>
+    /// Scores the used format, e.g. decimal number (100) or scientific 1 * 10^2
+    /// Note, that in this implementation it will always return 1 since no formatting is used
+    /// </summary>
+    /// <returns>A score for the formating (here always 1)</returns>
     private float FormatScore()
     {
         return 1; // changed since we do not want a factored representation
     }
 
+    /// <summary>
+    /// Scores the font size based on some minimum font size and a target font size
+    /// </summary>
+    /// <param name="minFontSize">Hard limit on how small the font may become</param>
+    /// <param name="targetFontSize">Optimum font size which should be used if possible</param>
+    /// <returns>A score on how good the font size is</returns>
     private float FontScore(int minFontSize, int targetFontSize)
     {
         if (FontSize >= targetFontSize)
