@@ -17,13 +17,13 @@ public class AxisController : MonoBehaviour
     {
         get
         {
-            return transform.localScale.y; // parent should be scaled uniformly with all values the same, so just take x
+            return transform.localScale.y;
         }
         set
         {
             transform.localScale = new Vector3(
                 transform.localScale.x,
-                value, // x because all three values of parent scale should be the same
+                value,
                 transform.localScale.z
                 );
         }

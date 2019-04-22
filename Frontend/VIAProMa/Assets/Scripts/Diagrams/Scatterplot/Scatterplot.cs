@@ -9,13 +9,6 @@ public class Scatterplot : Diagram
     [Tooltip("Parent transform which will have all data point transforms as children")]
     [SerializeField] private Transform pointsParent;
 
-    [Tooltip("X-Axis of the diagram")]
-    [SerializeField] private AxisController xAxis;
-    [Tooltip("Y-Axis of the diagram")]
-    [SerializeField] private AxisController yAxis;
-    [Tooltip("Z-Axis of the diagram")]
-    [SerializeField] private AxisController zAxis;
-
     public float pointSize = 0.1f;
 
     private DataSet dataSet;
@@ -23,29 +16,6 @@ public class Scatterplot : Diagram
     /// The instantiated representations of data points as gameobjects in the 3D scene
     /// </summary>
     private List<GameObject> pointRepresentations;
-
-    /// <summary>
-    /// How much the data points should be scaled on each axis so that the diagram fits into the boxSize
-    /// </summary>
-    private Vector3 scalingFactors;
-
-    private Vector3 boxSize;
-
-    /// <summary>
-    /// Specifies how big in global units the diagram should be
-    /// </summary>
-    public Vector3 BoxSize
-    {
-        get { return boxSize; }
-        set
-        {
-            boxSize = value;
-            xAxis.Length = boxSize.x;
-            yAxis.Length = boxSize.y;
-            zAxis.Length = boxSize.z;
-            UpdateVisuals();
-        }
-    }
 
     public DataSet DataSet
     {
@@ -73,8 +43,9 @@ public class Scatterplot : Diagram
     /// <summary>
     /// Initializes the required fields, checks if the component was set up correctly
     /// </summary>
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         if (pointPrefab == null)
         {
             SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(pointPrefab));
@@ -83,21 +54,8 @@ public class Scatterplot : Diagram
         {
             SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(pointsParent));
         }
-        if (xAxis == null)
-        {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(xAxis));
-        }
-        if (yAxis == null)
-        {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(yAxis));
-        }
-        if (zAxis == null)
-        {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(zAxis));
-        }
 
         pointRepresentations = new List<GameObject>();
-        pointBounds = new Bounds();
     }
 
     /// <summary>
@@ -140,27 +98,6 @@ public class Scatterplot : Diagram
             b.Encapsulate(point.position);
         }
         return b;
-    }
-
-    private Vector3 CalcScalingFactors()
-    {
-        float xFactor = SingleScalingFactor(boxSize.x, xAxis.AxisMax - xAxis.AxisMin);
-        float yFactor = SingleScalingFactor(boxSize.y, yAxis.AxisMax - yAxis.AxisMin);
-        float zFactor = SingleScalingFactor(boxSize.z, zAxis.AxisMax - zAxis.AxisMin);
-
-        return new Vector3(xFactor, yFactor, zFactor);
-    }
-
-    private float SingleScalingFactor(float worldLength, float dataRange)
-    {
-        if (dataRange == 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return worldLength / dataRange;
-        }
     }
 
     private void ClearPointRepresentations()
