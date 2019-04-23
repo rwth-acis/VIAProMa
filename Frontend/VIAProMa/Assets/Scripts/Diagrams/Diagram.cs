@@ -53,15 +53,15 @@ public abstract class Diagram : MonoBehaviour
     {
         if (xAxis == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(xAxis));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(xAxis));
         }
         if (yAxis == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(yAxis));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(yAxis));
         }
         if (zAxis == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(zAxis));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(zAxis));
         }
         pointBounds = new Bounds();
     }

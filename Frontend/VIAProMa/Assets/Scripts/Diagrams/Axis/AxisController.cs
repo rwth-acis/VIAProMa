@@ -52,7 +52,7 @@ public class AxisController : MonoBehaviour
     {
         if (labelPrefab == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(labelPrefab));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(labelPrefab));
             return;
         }
 

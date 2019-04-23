@@ -48,11 +48,11 @@ public class Scatterplot : Diagram
         base.Awake();
         if (pointPrefab == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(pointPrefab));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pointPrefab));
         }
         if (pointsParent == null)
         {
-            SpecialDebugMessages.LogComponentMissingReferenceError(this, nameof(pointsParent));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pointsParent));
         }
 
         pointRepresentations = new List<GameObject>();

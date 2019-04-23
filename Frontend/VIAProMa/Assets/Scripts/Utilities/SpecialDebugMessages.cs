@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SpecialDebugMessages
 {
-    public static void LogComponentMissingReferenceError(MonoBehaviour thisComponent, string referenceName)
+    public static void LogMissingReferenceError(MonoBehaviour thisComponent, string referenceName)
     {
         Debug.LogError("Error: Reference In Inspector not Set Up\n" + thisComponent.GetType().Name + " is missing a reference for " + referenceName + ". Set it up in the inspector", thisComponent);
     }
