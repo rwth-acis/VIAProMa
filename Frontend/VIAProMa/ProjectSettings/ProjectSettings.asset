@@ -67,7 +67,7 @@ PlayerSettings:
   defaultIsFullScreen: 1
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
-  runInBackground: 0
+  runInBackground: 1
   captureSingleScreen: 0
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
@@ -262,6 +262,7 @@ PlayerSettings:
   - m_BuildTarget: Metro
     m_Enabled: 1
     m_Devices:
+    - OpenVR
     - WindowsMR
   m_BuildTargetEnableVuforiaSettings: []
   openGLRequireES31: 0
@@ -587,10 +588,12 @@ PlayerSettings:
   platformCapabilities:
     WindowsStoreApps:
       HumanInterfaceDevice: False
-      InternetClient: False
+      InternetClient: True
       InternetClientServer: False
+      Microphone: False
       PrivateNetworkClientServer: False
       SpatialPerception: True
+      WebCam: False
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: 
@@ -644,7 +647,7 @@ PlayerSettings:
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled: {}
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: 
   projectName: 
   organizationId: 
