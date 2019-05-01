@@ -155,6 +155,8 @@ ModelImporter:
     7400074: Armature|OpenFile
     7400076: Armature|FileClosed
     7400078: Armature|FileOpen
+    7400080: Armature|FileOpening
+    7400082: Armature|Idle
     9500000: //RootNode
     13700000: File Back
     13700002: File Top
@@ -188,10 +190,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Armature|FileClosed
-      takeName: Armature|FileClosed
+      name: Armature|FileOpening
+      takeName: Armature|FileOpening
       firstFrame: 0
-      lastFrame: 1
+      lastFrame: 24
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -210,14 +212,28 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 1
+        functionName: OnFolderOpen
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0
+        functionName: OnFolderClosed
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Armature|FileOpen
-      takeName: Armature|FileOpen
+      name: Armature|Idle
+      takeName: Armature|Idle
       firstFrame: 0
       lastFrame: 1
       wrapMode: 0
