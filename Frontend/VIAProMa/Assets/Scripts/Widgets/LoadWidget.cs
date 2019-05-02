@@ -9,18 +9,19 @@ public class LoadWidget : MonoBehaviour
     private Animator fileAnimator;
     private Animator[] pageAnimators;
     private bool fileOpen = false;
+    private Particles3D particles3D;
 
     private void Awake()
     {
         fileAnimator = GetComponent<Animator>();
-
         pageAnimators = new Animator[pages.Length];
+        particles3D = GetComponent<Particles3D>();
 
         if (pages.Length == 0)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pages));
         }
-        for (int i=0;i<pages.Length;i++)
+        for (int i = 0; i < pages.Length; i++)
         {
             if (pages[i] == null)
             {
@@ -40,16 +41,12 @@ public class LoadWidget : MonoBehaviour
         {
             fileOpen = value;
             fileAnimator.SetBool("File Open", value);
-            for(int i=0;i<pages.Length;i++)
+            for (int i = 0; i < pages.Length; i++)
             {
                 pages[i].SetActive(false);
             }
+            particles3D.Spawning = fileOpen;
         }
-    }
-
-    private void OnFolderClosed()
-    {
-
     }
 
     private void OnFolderOpen()
@@ -60,19 +57,37 @@ public class LoadWidget : MonoBehaviour
             StartCoroutine(ActivatePages());
         }
     }
-    
+
+    private void OnFolderClosed()
+    {
+
+    }
+
     private IEnumerator ActivatePages()
     {
-        for (int i = 0; i < pages.Length; i++)
+        int pageIndex = 0;
+        while (fileOpen)
         {
-            yield return new WaitForSeconds(i);
-            pages[i].SetActive(true);
+            yield return new WaitForSeconds(2f);
+            if (fileOpen) // situation could have changed while waiting
+            {
+                int secondPrevious = pageIndex - 2;
+                if (secondPrevious < 0)
+                {
+                    secondPrevious = pages.Length + secondPrevious;
+                }
+                pages[secondPrevious].SetActive(false);
+                pageAnimators[secondPrevious].Play("Idle");
+                pages[pageIndex].SetActive(true);
+                pageAnimators[pageIndex].Play("Turn Page");
+                pageIndex = (pageIndex + 1) % pages.Length;
+            }
         }
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             FileOpen = !FileOpen;
         }
