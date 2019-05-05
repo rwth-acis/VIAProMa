@@ -20,4 +20,19 @@ public static class BackendConnector
             return new ApiResult<PunchCardEntry[]>(gitHubPunchCard);
         }
     }
+
+    public static async Task<ApiResult<string[]>> GetProjects()
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/");
+        if (!resp.Successful)
+        {
+            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+            return new ApiResult<string[]>(resp.ResponseCode, resp.ResponseBody);
+        }
+        else
+        {
+            string[] projects = JsonArrayUtility.FromJson<string>(resp.ResponseBody);
+            return new ApiResult<string[]>(projects);
+        }
+    }
 }

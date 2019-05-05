@@ -125,6 +125,33 @@ public class ImmersiveProjectManagementService extends RESTService {
 		}
 	}
 
+	@GET
+	@Path("/projects")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Get Projects",
+			notes = "Returns the list of projects which are saved on the server")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getProjects() {
+		String[] projects = new String[64];
+		for (int i=0;i<64;i++)
+		{
+			projects[i] = "Project " + (i+1);
+		}
+		try {
+			String result = unityCompatibleArray(projects);
+			return  Response.ok().entity(result).build();
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+
+
 	/**
 	 * Template of a post function.
 	 * 
@@ -149,6 +176,12 @@ public class ImmersiveProjectManagementService extends RESTService {
 
 	// TODO your own service methods, e. g. for RMI
 
+	/**
+	 * Creates a JSON array which is compatible to Unity's JSON parser
+	 * @param obj The object to convert to a JSON string
+	 * @return Returns the JSON string which represents the given array
+	 * @throws JsonProcessingException Exception if the conversion to JSON failed
+	 */
 	private String unityCompatibleArray(Object obj) throws JsonProcessingException
 	{
 		ObjectMapper mapper = new ObjectMapper();
