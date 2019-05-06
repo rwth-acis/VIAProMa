@@ -6,6 +6,7 @@ public class ProjectLoader : MonoBehaviour
 {
     [SerializeField] GameObject filePrefab;
     [SerializeField] ObjectArray[] shelfBoards;
+    [SerializeField] GameObject noConnectionMessage;
 
     [SerializeField] int filesPerBoard = 3;
 
@@ -14,17 +15,26 @@ public class ProjectLoader : MonoBehaviour
 
     private int pageOffset = 0;
 
-    private void OnEnable()
+    private void Start()
     {
         if (filePrefab == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(filePrefab));
+        }
+        if (shelfBoards == null || shelfBoards.Length == 0)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelfBoards));
+        }
+        if (noConnectionMessage == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(noConnectionMessage));
         }
         LoadProjects();
     }
 
     private async void LoadProjects()
     {
+        noConnectionMessage.SetActive(false);
         ApiResult<string[]> projectRes = await BackendConnector.GetProjects();
         if (projectRes.Successful)
         {
@@ -32,6 +42,13 @@ public class ProjectLoader : MonoBehaviour
             files = new File[projects.Length];
 
             InstantiateProjectRepresentations();
+        }
+        else
+        {
+            if (projectRes.ResponseCode == 0)
+            {
+                noConnectionMessage.SetActive(true);
+            }
         }
     }
 
