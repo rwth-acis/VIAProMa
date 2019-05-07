@@ -6,7 +6,7 @@ public class ProjectLoader : MonoBehaviour
 {
     [SerializeField] GameObject filePrefab;
     [SerializeField] ObjectArray[] shelfBoards;
-    [SerializeField] GameObject noConnectionMessage;
+    [SerializeField] MessageBadge messageBadge;
 
     [SerializeField] int filesPerBoard = 3;
 
@@ -25,19 +25,22 @@ public class ProjectLoader : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelfBoards));
         }
-        if (noConnectionMessage == null)
+        if (messageBadge == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(noConnectionMessage));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(messageBadge));
         }
         LoadProjects();
     }
 
-    private async void LoadProjects()
+    public async void LoadProjects()
     {
-        noConnectionMessage.SetActive(false);
+        messageBadge.gameObject.SetActive(true);
+        messageBadge.ShowProcessing();
         ApiResult<string[]> projectRes = await BackendConnector.GetProjects();
+        messageBadge.DoneProcessing();
         if (projectRes.Successful)
         {
+            messageBadge.gameObject.SetActive(false);
             projects = projectRes.Value;
             files = new File[projects.Length];
 
@@ -45,10 +48,7 @@ public class ProjectLoader : MonoBehaviour
         }
         else
         {
-            if (projectRes.ResponseCode == 0)
-            {
-                noConnectionMessage.SetActive(true);
-            }
+            messageBadge.ShowMessage(projectRes.ResponseCode);
         }
     }
 

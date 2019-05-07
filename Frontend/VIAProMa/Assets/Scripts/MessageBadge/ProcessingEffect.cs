@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProcessingBadge : MonoBehaviour
+public class ProcessingEffect : MonoBehaviour
 {
     [SerializeField] Material defaultMaterial;
     [SerializeField] Material processingMaterial;
@@ -11,7 +11,7 @@ public class ProcessingBadge : MonoBehaviour
 
     private Renderer rend;
 
-    private bool isProcessing = true;
+    private bool isProcessing;
 
     public bool IsProcessing
     {
@@ -25,6 +25,7 @@ public class ProcessingBadge : MonoBehaviour
             if (isProcessing)
             {
                 rend.material = processingMaterial;
+                rend.material.mainTextureOffset = Vector2.zero;
             }
             else
             {
