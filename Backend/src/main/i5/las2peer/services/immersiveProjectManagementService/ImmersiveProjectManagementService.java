@@ -115,7 +115,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			}
 
 			// pack resulting array in a Unity-compatible object
-			String result = unityCompatibleArray(entries);
+			String result = Utilities.unityCompatibleArray(entries);
 
 			return Response.ok().entity(result).build();
 		}
@@ -142,7 +142,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			projects[i] = "Project " + (i+1);
 		}
 		try {
-			String result = unityCompatibleArray(projects);
+			String result = Utilities.unityCompatibleArray(projects);
 			return  Response.ok().entity(result).build();
 		}
 		catch (IOException e)
@@ -174,19 +174,24 @@ public class ImmersiveProjectManagementService extends RESTService {
 		return Response.ok().entity(returnString).build();
 	}
 
-	// TODO your own service methods, e. g. for RMI
 
-	/**
-	 * Creates a JSON array which is compatible to Unity's JSON parser
-	 * @param obj The object to convert to a JSON string
-	 * @return Returns the JSON string which represents the given array
-	 * @throws JsonProcessingException Exception if the conversion to JSON failed
-	 */
-	private String unityCompatibleArray(Object obj) throws JsonProcessingException
-	{
-		ObjectMapper mapper = new ObjectMapper();
-		ObjectWriter writer = mapper.writer().withRootName("array");
-		return writer.writeValueAsString(obj);
+	// region RequirementsBazaar
+
+	@GET
+	@Path("/requirementsBazaar/categories/{categoryId}/requirements")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Get all Requirements in a Requirements Bazaar category",
+			notes = "Returns the list requirements")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getReqBazRequirementsInCategory(@PathParam("categoryId") int categoryId) {
+		return RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId);
 	}
+
+
+	// endregion
 
 }
