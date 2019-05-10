@@ -3,11 +3,16 @@ package i5.las2peer.services.immersiveProjectManagementService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import io.swagger.annotations.*;
 import net.minidev.json.JSONArray;
+import rice.p2p.util.tuples.Tuple;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
@@ -19,6 +24,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -189,6 +195,65 @@ public class ImmersiveProjectManagementService extends RESTService {
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getReqBazRequirementsInCategory(@PathParam("categoryId") int categoryId) {
 		return RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId);
+	}
+
+	@GET
+	@Path("/requirementsBazaar/projectNames")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Gets the list of all project names and their Ids",
+			notes = "Returns the list of all project names and their IDs")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getReqBazProjectNames() {
+		int itemsPerPage = 100;
+		APIResult<Project[]> res;
+		ArrayList<Project> allProjects = new ArrayList<>();
+
+		int page = 0;
+
+		// go over each page and collect all projects
+		do {
+			res = RequirementsBazaarAdapter.GetProjects(page, itemsPerPage);
+			if (res.successful())
+			{
+				allProjects.addAll(Arrays.asList(res.getValue()));
+				page++;
+			}
+		}
+		while (res.successful() && res.getValue().length == itemsPerPage);
+
+		try {
+			if (res.hasError())
+			{
+				return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
+			}
+			// filter the properties of a project so that it only returns the name and id
+			SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+			filterProvider.addFilter("projectFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name"));
+			String result = Utilities.unityCompatibleArray(allProjects, filterProvider);
+			return  Response.ok().entity(result).build();
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path("/requirementsBazaar/projects/{projectId}/categories")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Gets all categories in a project",
+			notes = "Returns the list of requirements in a project")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getReqBazCategoriesInProject(@PathParam("projectId") int projectId) {
+		return RequirementsBazaarAdapter.GetCategoriesInProject(projectId);
 	}
 
 

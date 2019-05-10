@@ -1,6 +1,8 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
 import javax.ws.rs.client.Client;
@@ -20,6 +22,40 @@ public class RequirementsBazaarAdapter {
     {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/categories/" + categoryId + "/requirements");
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.get();
+        return response;
+    }
+
+    public static APIResult<Project[]> GetProjects(int page, int itemsPerPage)
+    {
+        try {
+            Client client = ClientBuilder.newClient();
+            WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/projects?page=" + page + "&per_page=" + itemsPerPage);
+            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+            Response response = invocationBuilder.get();
+
+            if (response.getStatus() != 200 && response.getStatus() != 201)
+            {
+                return  new APIResult<Project[]>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            Project[] projects = mapper.readValue(origJson, Project[].class);
+            return  new APIResult<Project[]>(response.getStatus(), projects);
+        }
+        catch (IOException e) {
+            return  new APIResult<>(e.getMessage(), 500);
+        }
+    }
+
+    public static Response GetCategoriesInProject(int projectId)
+    {
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         return response;
