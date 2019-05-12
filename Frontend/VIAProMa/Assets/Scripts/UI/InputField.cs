@@ -35,6 +35,11 @@ public class InputField : MonoBehaviour
         }
     }
 
+    public void ResetText()
+    {
+        Text = "";
+    }
+
     private void OnValidate()
     {
         ApplyTextToDisplay();
