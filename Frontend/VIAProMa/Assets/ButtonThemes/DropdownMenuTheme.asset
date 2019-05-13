@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7e7db9a2688ed540af9819c456ba2e2, type: 3}
-  m_Name: StandardButtonSeeItSayItLabelTheme
+  m_Name: DropdownMenuTheme
   m_EditorClassIdentifier: 
   Name: 
   Settings:
-  - Name: InteractableScaleTheme
-    AssemblyQualifiedName: Microsoft.MixedReality.Toolkit.UI.InteractableScaleTheme,
+  - Name: InteractableColorTheme
+    AssemblyQualifiedName: Microsoft.MixedReality.Toolkit.UI.InteractableColorTheme,
       Microsoft.MixedReality.Toolkit.SDK
     Properties:
-    - Name: Scale
-      Type: 6
+    - Name: Color
+      Type: 2
       Values:
       - Name: Default
         String: 
@@ -32,7 +32,7 @@ MonoBehaviour:
         Vector2: {x: 0, y: 0}
         Vector3: {x: 0, y: 0, z: 0}
         Vector4: {x: 0, y: 0, z: 0, w: 0}
-        Color: {r: 0, g: 0, b: 0, a: 0}
+        Color: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
         Quaternion: {x: 0, y: 0, z: 0, w: 0}
         AudioClip: {fileID: 0}
         Animation: {fileID: 0}
@@ -45,9 +45,9 @@ MonoBehaviour:
         Material: {fileID: 0}
         GameObject: {fileID: 0}
         Vector2: {x: 0, y: 0}
-        Vector3: {x: 1, y: 1, z: 1}
+        Vector3: {x: 0, y: 0, z: 0}
         Vector4: {x: 0, y: 0, z: 0, w: 0}
-        Color: {r: 0, g: 0, b: 0, a: 0}
+        Color: {r: 0.5372549, g: 0.69803923, b: 0.9568628, a: 1}
         Quaternion: {x: 0, y: 0, z: 0, w: 0}
         AudioClip: {fileID: 0}
         Animation: {fileID: 0}
@@ -62,7 +62,7 @@ MonoBehaviour:
         Vector2: {x: 0, y: 0}
         Vector3: {x: 0, y: 0, z: 0}
         Vector4: {x: 0, y: 0, z: 0, w: 0}
-        Color: {r: 0, g: 0, b: 0, a: 0}
+        Color: {r: 0.34950158, g: 0.5842983, b: 0.9622642, a: 1}
         Quaternion: {x: 0, y: 0, z: 0, w: 0}
         AudioClip: {fileID: 0}
         Animation: {fileID: 0}
@@ -77,7 +77,7 @@ MonoBehaviour:
         Vector2: {x: 0, y: 0}
         Vector3: {x: 0, y: 0, z: 0}
         Vector4: {x: 0, y: 0, z: 0, w: 0}
-        Color: {r: 0, g: 0, b: 0, a: 0}
+        Color: {r: 0.8490566, g: 0.8490566, b: 0.8490566, a: 1}
         Quaternion: {x: 0, y: 0, z: 0, w: 0}
         AudioClip: {fileID: 0}
         Animation: {fileID: 0}
@@ -98,8 +98,44 @@ MonoBehaviour:
         AudioClip: {fileID: 0}
         Animation: {fileID: 0}
       PropId: 0
-      ShaderOptions: []
-      ShaderOptionNames: []
+      ShaderOptions:
+      - Name: _Color
+        Type: 0
+        Range: {x: 1, y: 1}
+      - Name: _EmissiveColor
+        Type: 0
+        Range: {x: 0, y: 0}
+      - Name: _RimColor
+        Type: 0
+        Range: {x: 0.5, y: 0.5}
+      - Name: _ClippingBorderColor
+        Type: 0
+        Range: {x: 0.2, y: 0}
+      - Name: _HoverColorOverride
+        Type: 0
+        Range: {x: 1, y: 1}
+      - Name: _InnerGlowColor
+        Type: 0
+        Range: {x: 1, y: 1}
+      - Name: _EnvironmentColorX
+        Type: 0
+        Range: {x: 0, y: 0}
+      - Name: _EnvironmentColorY
+        Type: 0
+        Range: {x: 1, y: 0}
+      - Name: _EnvironmentColorZ
+        Type: 0
+        Range: {x: 0, y: 1}
+      ShaderOptionNames:
+      - _Color
+      - _EmissiveColor
+      - _RimColor
+      - _ClippingBorderColor
+      - _HoverColorOverride
+      - _InnerGlowColor
+      - _EnvironmentColorX
+      - _EnvironmentColorY
+      - _EnvironmentColorZ
       Default:
         Name: 
         String: 
@@ -116,7 +152,7 @@ MonoBehaviour:
         Quaternion: {x: 0, y: 0, z: 0, w: 0}
         AudioClip: {fileID: 0}
         Animation: {fileID: 0}
-      ShaderName: 
+      ShaderName: Mixed Reality Toolkit/Standard
     History:
     - Name: Color
       Type: 2
@@ -422,35 +458,26 @@ MonoBehaviour:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
+          value: 1
           inSlope: 0
           outSlope: 0
-          tangentMode: 34
+          tangentMode: 0
           weightedMode: 0
           inWeight: 0
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 0.9975596
-          value: 0
-          inSlope: Infinity
-          outSlope: Infinity
-          tangentMode: 103
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.67829245
+          outWeight: 0
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 229.23996
-          outSlope: 229.23996
+          inSlope: 0
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
-          inWeight: 0.14519444
+          inWeight: 0
           outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      LerpTime: 1
+      LerpTime: 0.25
     NoEasing: 0
     IsValid: 1
     ThemeTarget:
