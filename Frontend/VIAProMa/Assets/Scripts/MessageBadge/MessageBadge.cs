@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Class which controls the behavior of a MessageBadge
+/// The MessageBadge is used to give feedback to the user about the success or error type of operations
+/// </summary>
 public class MessageBadge : MonoBehaviour
 {
     [SerializeField] private ProcessingEffect processingEffect;
@@ -13,6 +17,10 @@ public class MessageBadge : MonoBehaviour
     private MessageContent content;
     private int processing = 0;
 
+    /// <summary>
+    /// Initialization
+    /// Checks if the component was set up correctly
+    /// </summary>
     private void Awake()
     {
         if (processingEffect == null)
@@ -33,12 +41,19 @@ public class MessageBadge : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shows the processing animation on the badge
+    /// </summary>
     public void ShowProcessing()
     {
         processing++;
         processingEffect.IsProcessing = true;
     }
 
+    /// <summary>
+    /// Decrements the number of running operations
+    /// If no operations are active anymore, the processing animation is deactivated
+    /// </summary>
     public void DoneProcessing()
     {
         processing--;
@@ -49,6 +64,10 @@ public class MessageBadge : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the content of the message badge based on the newContent
+    /// </summary>
+    /// <param name="newContent">The new message content which should be displayed on the badge</param>
     private void SetContent(MessageContent newContent)
     {
         content = newContent;
@@ -56,6 +75,11 @@ public class MessageBadge : MonoBehaviour
         messageText.text = content.Text;
     }
 
+    /// <summary>
+    /// Display a message which is based on some message code
+    /// The message codes should be set up in a way that they correspond to HTTP status codes + some extras
+    /// </summary>
+    /// <param name="messageCode">The code of the message to display</param>
     public void ShowMessage(long messageCode)
     {
         SetContent(messages.GetMessage(messageCode));
