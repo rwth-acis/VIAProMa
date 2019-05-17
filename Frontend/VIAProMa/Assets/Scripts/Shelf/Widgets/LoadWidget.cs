@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handles the load animation of a file
+/// </summary>
 public class LoadWidget : MonoBehaviour
 {
+    /// <summary>
+    /// Available pages which can be animated
+    /// </summary>
     [SerializeField] private GameObject[] pages;
 
     private Animator fileAnimator;
@@ -11,6 +17,9 @@ public class LoadWidget : MonoBehaviour
     private bool fileOpen = false;
     private Particles3D particles3D;
 
+    /// <summary>
+    /// Gets the references to necessary components and checks the setup
+    /// </summary>
     private void Awake()
     {
         fileAnimator = GetComponent<Animator>();
@@ -34,6 +43,9 @@ public class LoadWidget : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// True if the file is currently opened
+    /// </summary>
     public bool FileOpen
     {
         get { return fileOpen; }
@@ -49,6 +61,10 @@ public class LoadWidget : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called if the folder has fully opened (i.e. after the animation has finished)
+    /// The event is defined in the animation of the file
+    /// </summary>
     private void OnFolderOpen()
     {
         // flag is set to open => means that the event is called when the folder has just opened
@@ -58,11 +74,19 @@ public class LoadWidget : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called if the folder is fully closed (i.e. after the animation has finished)
+    /// The event is defined in the animation of the file
+    /// </summary>
     private void OnFolderClosed()
     {
 
     }
 
+    /// <summary>
+    /// Handles the activation and deactivation, as well as the animation of the pages
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator ActivatePages()
     {
         int pageIndex = 0;
@@ -87,6 +111,7 @@ public class LoadWidget : MonoBehaviour
 
     private void Update()
     {
+        // TODO: remove debug code
         if (Input.GetKeyDown(KeyCode.Space))
         {
             FileOpen = !FileOpen;

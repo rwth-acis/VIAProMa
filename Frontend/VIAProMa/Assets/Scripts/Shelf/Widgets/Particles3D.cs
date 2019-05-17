@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Script which spawn a number of 3D objects as 3D object particles
+/// Do not use this in huge numbers or with complex objects
+/// </summary>
 public class Particles3D : MonoBehaviour
 {
     [SerializeField] private GameObject[] objectPrefabs;
