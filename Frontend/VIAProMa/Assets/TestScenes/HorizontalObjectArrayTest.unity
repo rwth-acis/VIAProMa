@@ -138,10 +138,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 188572013}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d49d777ca26b266489323ca02ea64255, type: 3}
+  m_Script: {fileID: 11500000, guid: df6ce0ad7164b06459484d594a4357a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: {x: 0.55, y: 0, z: 0}
+  collection:
+  - {fileID: 759473966}
+  - {fileID: 1415475543}
+  - {fileID: 393118075}
+  - {fileID: 1422825413}
+  - {fileID: 2031338727}
+  gap: 0.1
 --- !u!4 &188572015
 Transform:
   m_ObjectHideFlags: 0
@@ -150,14 +156,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 188572013}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.573, y: 0, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 759473971}
-  - {fileID: 1415475548}
-  - {fileID: 393118080}
-  - {fileID: 1422825418}
-  - {fileID: 2031338732}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -193,11 +194,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1150546458}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.42299998}
+  m_AnchoredPosition: {x: 0, y: -0.089}
   m_SizeDelta: {x: 0.88, y: 0.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &339597068
@@ -220,8 +221,13 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: The object array arranges its child transforms according to the offset.
-    This works in the editor and during runtime.
+  m_text: 'The object array takes a list of GameObjects and aligns them as child objects
+    along the local x-axis. It makes sure that the objects cannot overlap. Use the
+    gap parameter to add additional space between the objects.
+
+    The objects themselves have been equipped with the "Rotate on Focus" script. It
+    is set up in way that the cube''s flat side faces the user if it is focused. The
+    object array takes this change of rotation into account.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -267,7 +273,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
+  m_firstOverflowCharacterIndex: 400
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -290,12 +296,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 339597068}
-    characterCount: 116
+    characterCount: 432
     spriteCount: 0
-    spaceCount: 18
-    wordCount: 19
+    spaceCount: 76
+    wordCount: 77
     linkCount: 0
-    lineCount: 4
+    lineCount: 13
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 0
@@ -470,12 +476,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 393118075}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 1.1, y: 0, z: 0}
-  m_LocalScale: {x: 0.10000006, y: 0.5, z: 0.50000024}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.2924805, y: -0.015625, z: 1.3095703}
+  m_LocalScale: {x: 0.1, y: 0.5, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 188572015}
-  m_RootOrder: 2
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &570845916
 GameObject:
@@ -764,12 +770,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 759473966}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.10000006, y: 0.5, z: 0.50000024}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.2924805, y: -0.015625, z: 1.3095703}
+  m_LocalScale: {x: 0.1, y: 0.5, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 188572015}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &890302399
 GameObject:
@@ -829,7 +835,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 950865620}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.018, z: 0}
+  m_LocalPosition: {x: 0, y: 0.316, z: 0}
   m_LocalScale: {x: 0.9, y: 0.005, z: 1}
   m_Children: []
   m_Father: {fileID: 1150546458}
@@ -921,9 +927,9 @@ Transform:
   m_LocalPosition: {x: 2, y: 0.5, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1192419409}
   - {fileID: 339597067}
   - {fileID: 1154994292}
+  - {fileID: 1192419409}
   - {fileID: 950865621}
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -960,11 +966,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1150546458}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.085999995}
+  m_AnchoredPosition: {x: 0, y: 0.364}
   m_SizeDelta: {x: 0.88, y: 0.11}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1154994293
@@ -987,7 +993,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Object Array Test
+  m_text: Horizontal Object Array Test
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1015,7 +1021,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 0.95
+  m_fontSize: 0.65
   m_fontSizeBase: 0.7
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1056,10 +1062,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1154994293}
-    characterCount: 17
+    characterCount: 28
     spriteCount: 0
-    spaceCount: 2
-    wordCount: 3
+    spaceCount: 3
+    wordCount: 4
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -1221,10 +1227,10 @@ Transform:
   m_GameObject: {fileID: 1192419405}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.085, z: 0.024}
-  m_LocalScale: {x: 1, y: 0.59, z: 0.04}
+  m_LocalScale: {x: 1, y: 1.27, z: 0.04}
   m_Children: []
   m_Father: {fileID: 1150546458}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1415475543
 GameObject:
@@ -1327,12 +1333,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1415475543}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.55, y: 0, z: 0}
-  m_LocalScale: {x: 0.10000006, y: 0.5, z: 0.50000024}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.2924805, y: -0.015625, z: 1.3095703}
+  m_LocalScale: {x: 0.1, y: 0.5, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 188572015}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1422825413
 GameObject:
@@ -1435,12 +1441,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1422825413}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 1.6500001, y: 0, z: 0}
-  m_LocalScale: {x: 0.10000006, y: 0.5, z: 0.50000024}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.2924805, y: -0.015625, z: 1.3095703}
+  m_LocalScale: {x: 0.1, y: 0.5, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 188572015}
-  m_RootOrder: 3
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1636873890
 GameObject:
@@ -1612,10 +1618,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2031338727}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 2.2, y: 0, z: 0}
-  m_LocalScale: {x: 0.10000006, y: 0.5, z: 0.50000024}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.2924805, y: -0.015625, z: 1.3095703}
+  m_LocalScale: {x: 0.1, y: 0.5, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 188572015}
-  m_RootOrder: 4
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectArray : MonoBehaviour
+public class HorizontalObjectArray : MonoBehaviour
 {
     [SerializeField] GameObject[] collection = new GameObject[0];
 

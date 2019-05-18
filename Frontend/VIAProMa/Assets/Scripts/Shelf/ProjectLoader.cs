@@ -5,7 +5,7 @@ using UnityEngine;
 public class ProjectLoader : MonoBehaviour
 {
     [SerializeField] GameObject filePrefab;
-    [SerializeField] ObjectArray[] shelfBoards;
+    [SerializeField] HorizontalObjectArray[] shelfBoards;
     [SerializeField] MessageBadge messageBadge;
 
     [SerializeField] int filesPerBoard = 3;
