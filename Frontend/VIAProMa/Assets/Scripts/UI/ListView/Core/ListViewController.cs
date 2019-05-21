@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ListViewController<DataType, ItemAdapter> : MonoBehaviour
+public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListViewController
     where DataType : IListViewItemData
     where ItemAdapter : ListViewItemAdapter<DataType>
 {
@@ -41,7 +41,7 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour
             }
             else
             {
-                instanceAdapter.Setup(items[i]);
+                instanceAdapter.Setup(items[i], i, this);
             }
         }
     }
@@ -49,6 +49,11 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour
     protected virtual void RemoveInstances()
     {
 
+    }
+
+    public void ItemSelected(int index)
+    {
+        Debug.Log(index);
     }
 }
 
