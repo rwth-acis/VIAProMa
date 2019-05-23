@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IListViewController
 {
-    void ItemSelected(int index);
+    void OnItemSelected(int index);
 }
