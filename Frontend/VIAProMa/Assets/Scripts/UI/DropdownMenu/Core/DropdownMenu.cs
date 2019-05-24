@@ -16,6 +16,28 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
         get { return itemController?.Items; }
     }
 
+    public int SelectedItemIndex { get { return itemController.SelectedItem; } }
+
+    public DataType SelectedItem
+    {
+        get
+        {
+            return Items[SelectedItemIndex];
+        }
+    }
+
+    public bool DropdownListShown
+    {
+        get
+        {
+            return itemController.gameObject.activeSelf;
+        }
+        set
+        {
+            itemController.gameObject.SetActive(value);
+        }
+    }
+
     protected virtual void Awake()
     {
         if (selectedItemDisplay == null)
@@ -27,11 +49,23 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(itemController));
         }
         itemController.ItemSelected += ItemSelected;
+        // by standard select the first element
+        if (Items != null && Items.Count > 0)
+        {
+            selectedItemDisplay.Setup(Items[0]);
+        }
+        // hide the dropdownlist
+        DropdownListShown = false;
     }
 
     private void ItemSelected(object sender, ListViewItemSelectedArgs e)
     {
         selectedItemDisplay.Setup(Items[e.SelectedItem]);
+    }
+
+    public void ToggleListVisibility()
+    {
+        DropdownListShown = !DropdownListShown;
     }
 
     private void OnDestroy()
