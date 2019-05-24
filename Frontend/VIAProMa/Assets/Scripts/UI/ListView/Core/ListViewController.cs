@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListViewController
+public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewController
     where DataType : IListViewItemData
-    where ItemAdapter : ListViewItemAdapter<DataType>
+    where ItemType : ListViewItem<DataType>
 {
     [SerializeField] protected GameObject itemPrefab;
 
@@ -13,7 +13,7 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListVie
 
     public event EventHandler<ListViewItemSelectedArgs> ItemSelected;
 
-    protected List<ItemAdapter> instances;
+    protected List<ItemType> instances;
 
     public List<DataType> Items { get => items; protected set => items = value; }
 
@@ -21,16 +21,16 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListVie
 
     private void Awake()
     {
-        instances = new List<ItemAdapter>();
+        instances = new List<ItemType>();
         if (itemPrefab == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(itemPrefab));
         }
         else
         {
-            if (itemPrefab.GetComponent<ItemAdapter>() == null)
+            if (itemPrefab.GetComponent<ItemType>() == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ItemAdapter), itemPrefab);
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ItemType), itemPrefab);
             }
         }
     }
@@ -39,10 +39,10 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListVie
     {
         for (int i=0;i<Items.Count;i++)
         {
-            ItemAdapter instanceAdapter = Instantiate(itemPrefab, transform).GetComponent<ItemAdapter>();
+            ItemType instanceAdapter = Instantiate(itemPrefab, transform).GetComponent<ItemType>();
             if (instanceAdapter == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ItemAdapter), itemPrefab);
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ItemType), itemPrefab);
             }
             else
             {
@@ -53,7 +53,10 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListVie
 
     protected virtual void RemoveInstances()
     {
-
+        for (int i=0;i<transform.childCount;i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
     }
 
     public void OnItemSelected(int index)
@@ -62,6 +65,7 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListVie
         EventHandler<ListViewItemSelectedArgs> handler = ItemSelected;
         if (handler != null)
         {
+            Debug.Log("Event fired");
             ListViewItemSelectedArgs args = new ListViewItemSelectedArgs();
             args.SelectedItem = index;
             handler(this, args);
@@ -70,7 +74,7 @@ public class ListViewController<DataType, ItemAdapter> : MonoBehaviour, IListVie
     }
 }
 
-public class ListViewController : ListViewController<ListViewItemInspectorData, ListViewItemAdapter>
+public class ListViewController : ListViewController<ListViewItemInspectorData, ListViewItem>
 {
 }
 

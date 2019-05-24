@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class StringAdapter : ListViewItemAdapter<StringData>
+public class StringDataDisplay : DataDisplay<StringData>
 {
     [SerializeField] private TextMeshPro label;
 
-    protected override void UpdateView()
+    public override void UpdateView()
     {
         base.UpdateView();
         label.text = content.text;

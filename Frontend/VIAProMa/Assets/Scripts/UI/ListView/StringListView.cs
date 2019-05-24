@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StringListView : ListViewController<StringData, StringAdapter>
+public class StringListView : ListViewController<StringData, StringListViewItem>
 {
     private void Awake()
     {
