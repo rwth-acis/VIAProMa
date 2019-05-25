@@ -61,6 +61,7 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
     private void ItemSelected(object sender, ListViewItemSelectedArgs e)
     {
         selectedItemDisplay.Setup(Items[e.SelectedItem]);
+        DropdownListShown = false;
     }
 
     public void ToggleListVisibility()

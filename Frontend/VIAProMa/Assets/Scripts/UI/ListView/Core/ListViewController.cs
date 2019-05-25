@@ -65,12 +65,10 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
         EventHandler<ListViewItemSelectedArgs> handler = ItemSelected;
         if (handler != null)
         {
-            Debug.Log("Event fired");
             ListViewItemSelectedArgs args = new ListViewItemSelectedArgs();
             args.SelectedItem = index;
             handler(this, args);
         }
-        Debug.Log(index);
     }
 }
 
