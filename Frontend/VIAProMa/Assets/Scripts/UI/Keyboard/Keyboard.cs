@@ -70,6 +70,7 @@ public class Keyboard : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(inputField));
         }
         StartCoroutine(BlinkingCursor());
+        UpdateView();
     }
 
     public void Open(Vector3 position, Vector3 eulerRotation)
@@ -103,6 +104,7 @@ public class Keyboard : MonoBehaviour
     private void UpdateView()
     {
         inputField.Text = text;
+        inputField.ContentField.ForceMeshUpdate(true);
         PositionCursor();
     }
 
