@@ -34,7 +34,7 @@ public class LetterKey : Key, IShiftableKey
         {
             applyToText = char.ToUpper(letter);
         }
-        keyboard.Text += applyToText;
+        keyboard.AddLetter(applyToText);
     }
 
     private void UpdateView()

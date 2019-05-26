@@ -19,6 +19,8 @@ public class InputField : MonoBehaviour
         }
     }
 
+    public TextMeshPro ContentField { get => contentField; }
+
     private void Awake()
     {
         if (contentField == null)

@@ -15,7 +15,7 @@ public class Key : MonoBehaviour
         Interactable interactable = GetComponent<Interactable>();
         interactable.OnClick.AddListener(KeyPressed);
 
-        keyboard = transform.parent.GetComponent<Keyboard>();
+        keyboard = transform.parent.parent.GetComponent<Keyboard>();
         if (keyboard == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Keyboard), transform.parent.gameObject);
