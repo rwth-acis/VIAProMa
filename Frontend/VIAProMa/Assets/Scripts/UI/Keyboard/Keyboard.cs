@@ -57,7 +57,7 @@ public class Keyboard : MonoBehaviour
         get { return cursorPos; }
         set
         {
-            cursorPos = value;
+            cursorPos = Mathf.Clamp(value, 0, text.Length); // 
             UpdateView();
         }
     }
@@ -83,7 +83,7 @@ public class Keyboard : MonoBehaviour
         if (cursorPos > 0)
         {
             // remove the char in front of the cursor
-            Text = Text.Remove(cursorPos - 1);
+            Text = Text.Remove(cursorPos - 1, 1);
             CursorPos--;
         }
     }
@@ -96,7 +96,7 @@ public class Keyboard : MonoBehaviour
         }
         else
         {
-            Text.Insert(cursorPos, letter.ToString());
+            Text = Text.Insert(cursorPos, letter.ToString());
         }
         CursorPos++;
     }
