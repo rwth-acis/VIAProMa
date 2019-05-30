@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,18 +7,25 @@ using UnityEngine;
 public class Keyboard : MonoBehaviour
 {
     [SerializeField] private InputField inputField;
-    [SerializeField] private GameObject cursorObject;
 
+    [SerializeField] private GameObject cursorObject;
     public float cursorBlinkTime = 0.53f;
+
+    [SerializeField] private GameObject[] keySetPages;
+
+    public event EventHandler InputFinished;
+    public event EventHandler TextChanged;
 
     private string text = "";
     private bool shiftActive;
     private bool capslockActive;
 
-    [SerializeField] private int cursorPos = 0;
+    private int cursorPos = 0;
     private bool cursorShowing;
 
     private IShiftableKey[] shiftableKeys;
+
+    private int currentKeySetPageIndex;
 
     public string Text
     {
@@ -62,6 +70,16 @@ public class Keyboard : MonoBehaviour
         }
     }
 
+    public int CurrentKeySetPageIndex
+    {
+        get => currentKeySetPageIndex;
+        set
+        {
+            currentKeySetPageIndex = value;
+            UpdateKeySetPageVisibility();
+        }
+    }
+
     private void Awake()
     {
         shiftableKeys = GetComponentsInChildren<IShiftableKey>();
@@ -75,7 +93,18 @@ public class Keyboard : MonoBehaviour
 
     public void Open(Vector3 position, Vector3 eulerRotation)
     {
+        Open(position, eulerRotation, "");
+    }
 
+    public void Open(Vector3 position, Vector3 eulerRotation, string text)
+    {
+        gameObject.SetActive(true);
+
+        CurrentKeySetPageIndex = 0;
+
+        Text = "";
+        transform.position = position;
+        transform.eulerAngles = eulerRotation;
     }
 
     public void Backspace()
@@ -85,6 +114,7 @@ public class Keyboard : MonoBehaviour
             // remove the char in front of the cursor
             Text = Text.Remove(cursorPos - 1, 1);
             CursorPos--;
+            TextChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -99,6 +129,17 @@ public class Keyboard : MonoBehaviour
             Text = Text.Insert(cursorPos, letter.ToString());
         }
         CursorPos++;
+        TextChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void InputDone(bool aborted)
+    {
+        InputFinishedEventArgs args = new InputFinishedEventArgs();
+        args.Aborted = aborted;
+        args.Text = Text;
+        InputFinished?.Invoke(this, args);
+
+        gameObject.SetActive(false);
     }
 
     private void UpdateView()
@@ -146,6 +187,21 @@ public class Keyboard : MonoBehaviour
                     inputField.ContentField.textInfo.characterInfo[cursorPos].bottomLeft, 0.5f)
                     )
                     + new Vector3(0, 0, -0.0051f); // also move it to the front so that it is not inside of the input field
+        }
+    }
+
+    private void UpdateKeySetPageVisibility()
+    {
+        for (int i=0;i<keySetPages.Length;i++)
+        {
+            if (i== currentKeySetPageIndex)
+            {
+                keySetPages[i].SetActive(true);
+            }
+            else
+            {
+                keySetPages[i].SetActive(false);
+            }
         }
     }
 }

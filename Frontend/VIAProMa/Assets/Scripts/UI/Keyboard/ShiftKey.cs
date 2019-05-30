@@ -12,7 +12,11 @@ public class ShiftKey : Key, IShiftableKey
         if (shiftIndicator == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(shiftIndicator));
+            return;
         }
+
+        SetShift(false);
+
     }
 
     protected override void KeyPressed()
