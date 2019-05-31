@@ -9,6 +9,6 @@ public class KeySetSwitchKey : Key
     protected override void KeyPressed()
     {
         base.KeyPressed();
-        keyboard.
+        keyboard.CurrentKeySetPageIndex = targetPageIndex;
     }
 }
