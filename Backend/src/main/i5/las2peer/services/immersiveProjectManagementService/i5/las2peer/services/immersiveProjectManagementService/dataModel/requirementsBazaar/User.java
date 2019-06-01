@@ -13,7 +13,7 @@ public class User {
     public String lastName;
     public boolean admin;
     public long las2peerId;
-    public String profileImiage;
+    public String profileImage;
     public boolean emailLeadSubscription;
     public boolean emailFollowSubscription;
 }

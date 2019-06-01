@@ -1,18 +1,15 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import io.swagger.annotations.*;
-import net.minidev.json.JSONArray;
-import rice.p2p.util.tuples.Tuple;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
@@ -194,7 +191,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 					code = HttpURLConnection.HTTP_OK,
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getReqBazRequirementsInCategory(@PathParam("categoryId") int categoryId) {
-		return RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId);
+		return RequirementsBazaarAdapter.RequestRequirementsInCategory(categoryId);
 	}
 
 	@GET
@@ -232,7 +229,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			}
 			// filter the properties of a project so that it only returns the name and id
 			SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-			filterProvider.addFilter("projectFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name"));
+			filterProvider.addFilter("shortFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name"));
 			String result = Utilities.unityCompatibleArray(allProjects, filterProvider);
 			return  Response.ok().entity(result).build();
 		}
@@ -253,7 +250,51 @@ public class ImmersiveProjectManagementService extends RESTService {
 					code = HttpURLConnection.HTTP_OK,
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getReqBazCategoriesInProject(@PathParam("projectId") int projectId) {
-		return RequirementsBazaarAdapter.GetCategoriesInProject(projectId);
+		return RequirementsBazaarAdapter.RequestCategoriesInProject(projectId);
+	}
+
+	@GET
+	@Path("/requirementsBazaar/projects/{projectId}/categoriesShort")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Gets the short version of all categories in a project",
+			notes = "Returns the list of requirements in a project (in a shortened version)")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getReqBazShortCategoriesInProject(@PathParam("projectId") int projectId) {
+		int itemsPerPage = 100;
+		APIResult<Category[]> res;
+		ArrayList<Category> allCategories = new ArrayList<>();
+
+		int page = 0;
+
+		// go over each page and collect all projects
+		do {
+			res = RequirementsBazaarAdapter.GetCategoriesInProject(projectId);
+			if (res.successful())
+			{
+				allCategories.addAll(Arrays.asList(res.getValue()));
+				page++;
+			}
+		}
+		while (res.successful() && res.getValue().length == itemsPerPage);
+
+		try {
+			if (res.hasError()) {
+				return Response.status(res.getCode()).entity(res.getErrorMessage()).build();
+			}
+			// filter the properties of a category so that it only returns the name, id and projectId
+			SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+			filterProvider.addFilter("shortFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name", "projectId"));
+			String result = Utilities.unityCompatibleArray(allCategories, filterProvider);
+			return Response.ok().entity(result).build();
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
 	}
 
 

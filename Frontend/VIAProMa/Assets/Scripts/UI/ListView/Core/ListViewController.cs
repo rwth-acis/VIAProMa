@@ -33,6 +33,7 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ItemType), itemPrefab);
             }
         }
+        CreateInstances();
     }
 
     protected virtual void CreateInstances()

@@ -4,8 +4,4 @@ using UnityEngine;
 
 public class StringListView : ListViewController<StringData, StringListViewItem>
 {
-    private void Awake()
-    {
-        base.CreateInstances();
-    }
 }

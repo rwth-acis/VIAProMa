@@ -2,6 +2,7 @@ package i5.las2peer.services.immersiveProjectManagementService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
@@ -18,7 +19,7 @@ import java.io.IOException;
  */
 public class RequirementsBazaarAdapter {
 
-    public static Response GetRequirementsInCategory(int categoryId)
+    public static Response RequestRequirementsInCategory(int categoryId)
     {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/categories/" + categoryId + "/requirements");
@@ -52,13 +53,36 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static Response GetCategoriesInProject(int projectId)
+    public static Response RequestCategoriesInProject(int projectId)
     {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories");
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         return response;
+    }
+
+    public  static  APIResult<Category[]> GetCategoriesInProject(int projectId)
+    {
+        try
+        {
+            Response response = RequestCategoriesInProject(projectId);
+
+            if (response.getStatus() != 200 && response.getStatus() != 201)
+            {
+                return new APIResult<Category[]>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            Category[] categories = mapper.readValue(origJson, Category[].class);
+            return  new APIResult<Category[]>(response.getStatus(), categories);
+        }
+        catch (IOException e) {
+            return  new APIResult<>(e.getMessage(), 500);
+        }
     }
 
 }
