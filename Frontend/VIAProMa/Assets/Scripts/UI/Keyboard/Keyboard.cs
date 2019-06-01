@@ -1,10 +1,11 @@
-﻿using System;
+﻿using HoloToolkit.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Keyboard : MonoBehaviour
+public class Keyboard : Singleton<Keyboard>
 {
     [SerializeField] private InputField inputField;
 
@@ -13,7 +14,7 @@ public class Keyboard : MonoBehaviour
 
     [SerializeField] private GameObject[] keySetPages;
 
-    public event EventHandler InputFinished;
+    public event InputFinishedEventHandler InputFinished;
     public event EventHandler TextChanged;
 
     private string text = "";
@@ -36,6 +37,7 @@ public class Keyboard : MonoBehaviour
         set
         {
             text = value;
+            cursorPos = Mathf.Clamp(cursorPos, 0, text.Length); // make sure that the position of the cursor is still in bounds
             UpdateView();
         }
     }
@@ -65,7 +67,7 @@ public class Keyboard : MonoBehaviour
         get { return cursorPos; }
         set
         {
-            cursorPos = Mathf.Clamp(value, 0, text.Length); // 
+            cursorPos = Mathf.Clamp(value, 0, text.Length); // make sure that the position of the cursor is still in bounds
             UpdateView();
         }
     }
@@ -80,8 +82,9 @@ public class Keyboard : MonoBehaviour
         }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         shiftableKeys = GetComponentsInChildren<IShiftableKey>();
         if (inputField == null)
         {
