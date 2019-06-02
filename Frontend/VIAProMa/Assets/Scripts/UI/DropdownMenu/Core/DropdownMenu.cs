@@ -11,6 +11,8 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
 
     protected ListViewController<DataType, ItemType> itemController;
 
+    public event EventHandler<EventArgs> ItemSelected;
+
     public List<DataType> Items
     {
         get { return itemController?.Items; }
@@ -48,7 +50,7 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(itemController));
         }
-        itemController.ItemSelected += ItemSelected;
+        itemController.ItemSelected += OnItemSelected;
         // by standard select the first element
         if (Items != null && Items.Count > 0)
         {
@@ -58,10 +60,11 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
         DropdownListShown = false;
     }
 
-    private void ItemSelected(object sender, ListViewItemSelectedArgs e)
+    private void OnItemSelected(object sender, ListViewItemSelectedArgs e)
     {
         selectedItemDisplay.Setup(Items[e.SelectedItem]);
         DropdownListShown = false;
+        ItemSelected?.Invoke(this, EventArgs.Empty);
     }
 
     public void ToggleListVisibility()
@@ -73,7 +76,7 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
     {
         if (itemController != null)
         {
-            itemController.ItemSelected -= ItemSelected;
+            itemController.ItemSelected -= OnItemSelected;
         }
     }
 }

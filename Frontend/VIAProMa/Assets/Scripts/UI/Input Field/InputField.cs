@@ -10,6 +10,8 @@ public class InputField : MonoBehaviour
 
     [SerializeField] private string text = "Content";
 
+    public event EventHandler TextChanged;
+
     public string Text
     {
         get { return text; }
@@ -17,6 +19,7 @@ public class InputField : MonoBehaviour
         {
             text = value;
             ApplyTextToDisplay();
+            TextChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -39,7 +42,10 @@ public class InputField : MonoBehaviour
     private void OnKeyboardInputFinished(object sender, InputFinishedEventArgs e)
     {
         Keyboard.Instance.InputFinished -= OnKeyboardInputFinished;
-        Text = e.Text;
+        if (!e.Aborted)
+        {
+            Text = e.Text;
+        }
     }
 
     private void OnKeyboardTextChanged(object sender, EventArgs e)

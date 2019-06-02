@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectLoader : MonoBehaviour
+public class ProjectLoader : MonoBehaviour, ILoadShelf
 {
     [SerializeField] GameObject filePrefab;
     [SerializeField] HorizontalObjectArray[] shelfBoards;
@@ -14,6 +14,8 @@ public class ProjectLoader : MonoBehaviour
     private File[] files;
 
     private int pageOffset = 0;
+
+    public MessageBadge MessageBadge { get => messageBadge; }
 
     private void Start()
     {
@@ -29,10 +31,10 @@ public class ProjectLoader : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(messageBadge));
         }
-        LoadProjects();
+        LoadContent();
     }
 
-    public async void LoadProjects()
+    public async void LoadContent()
     {
         messageBadge.gameObject.SetActive(true);
         messageBadge.ShowProcessing();
