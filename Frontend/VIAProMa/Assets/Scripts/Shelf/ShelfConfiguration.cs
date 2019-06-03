@@ -5,13 +5,18 @@ using UnityEngine;
 
 public class ShelfConfiguration : MonoBehaviour
 {
+    private RequirementsLoader shelf;
+
     [SerializeField] private StringDropdownMenu sourceSelection;
     [SerializeField] private InputField projectInput;
     [SerializeField] private CategoryDropdownMenu categoryDropdownMenu;
 
-    private ILoadShelf shelf;
+    private Project[] projects;
+    private Category[] categories;
 
-    Project[] projects;
+    public Project SelectedProject { get; private set; }
+
+    public Category SelectedCategory { get; private set; }
 
     private void Awake()
     {
@@ -32,14 +37,50 @@ public class ShelfConfiguration : MonoBehaviour
         else
         {
             shelf.MessageBadge.ShowMessage(res.ResponseCode);
+            projects = null;
         }
+        categories = null;
+        SelectedProject = null;
+        SelectedCategory = null;
     }
 
-    private void ProjectSelected(object sender, EventArgs e)
+    private async void ProjectSelected(object sender, EventArgs e)
     {
+        int projectId = GetProjectId(projectInput.Text);
+        if (projectId < 0) // project was not found
+        {
+            Debug.LogWarning("Project not found");
+        }
+        else // fetch categories
+        {
+            shelf.MessageBadge.ShowProcessing();
+            ApiResult<Category[]> res = await RequirementsBazaar.GetCategoriesInProject(id);
+            shelf.MessageBadge.DoneProcessing();
+            if (res.Successful)
+            {
+                categories = res.Value;
+            }
+            else
+            {
+                shelf.MessageBadge.ShowMessage(res.ResponseCode);
+                categories = null;
+            }
+        }
     }
 
     private void CategorySelected(object sender, EventArgs e)
     {
+    }
+
+    private int GetProjectId(string projectName)
+    {
+        for(int i=0;i<projects.Length;i++)
+        {
+            if (projects[i].name == projectName)
+            {
+                return projects[i].id;
+            }
+        }
+        return -1;
     }
 }

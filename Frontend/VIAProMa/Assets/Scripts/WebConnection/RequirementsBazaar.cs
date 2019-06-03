@@ -20,4 +20,19 @@ public static class RequirementsBazaar
             return new ApiResult<Project[]>(projects);
         }
     }
+
+    public static async Task<ApiResult<Category[]>> GetCategoriesInProject(int projectId)
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/" + projectId + "/categories");
+        if (!resp.Successful)
+        {
+            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+            return new ApiResult<Category[]>(resp.ResponseCode, resp.ResponseBody);
+        }
+        else
+        {
+            Category[] categories = JsonArrayUtility.FromJson<Category>(resp.ResponseBody);
+            return new ApiResult<Category[]>(categories);
+        }
+    }
 }

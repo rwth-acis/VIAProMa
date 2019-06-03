@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectLoader : MonoBehaviour, ILoadShelf
+public class ProjectLoader : Shelf, ILoadShelf
 {
     [SerializeField] GameObject filePrefab;
     [SerializeField] HorizontalObjectArray[] shelfBoards;
-    [SerializeField] MessageBadge messageBadge;
 
     [SerializeField] int filesPerBoard = 3;
 
