@@ -3,6 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Main controller of the list view
+/// Takes items of an DataType and transforms them to GameObject instances.
+/// The ItemType is a class which can apply the DataType to the GameObject's representation, e.g. fill the text meshes
+/// </summary>
+/// <typeparam name="DataType">The DataType of the list</typeparam>
+/// <typeparam name="ItemType">The class which converts a DataType to a GameObject representation</typeparam>
 public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewController
     where DataType : IListViewItemData
     where ItemType : ListViewItem<DataType>

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ShelfConfiguration : MonoBehaviour
 {
-    private RequirementsLoader shelf;
+    [SerializeField] private RequirementsLoader shelf;
 
     [SerializeField] private StringDropdownMenu sourceSelection;
     [SerializeField] private InputField projectInput;
@@ -20,8 +20,25 @@ public class ShelfConfiguration : MonoBehaviour
 
     private void Awake()
     {
+        if (shelf == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelf));
+        }
+        if (sourceSelection == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(sourceSelection));
+        }
+        if (projectInput == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(projectInput));
+        }
+        if (categoryDropdownMenu == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(categoryDropdownMenu));
+        }
+
         sourceSelection.ItemSelected += SourceSelected;
-        projectInput.TextChanged += ProjectSelected;
+        projectInput.TextChanged += ProjectInputFinished;
         categoryDropdownMenu.ItemSelected += CategorySelected;
     }
 
@@ -44,17 +61,17 @@ public class ShelfConfiguration : MonoBehaviour
         SelectedCategory = null;
     }
 
-    private async void ProjectSelected(object sender, EventArgs e)
+    private async void ProjectInputFinished(object sender, EventArgs e)
     {
-        int projectId = GetProjectId(projectInput.Text);
-        if (projectId < 0) // project was not found
+        SelectedProject = GetProject(projectInput.Text);
+        if (SelectedProject == null) // project was not found
         {
             Debug.LogWarning("Project not found");
         }
         else // fetch categories
         {
             shelf.MessageBadge.ShowProcessing();
-            ApiResult<Category[]> res = await RequirementsBazaar.GetCategoriesInProject(id);
+            ApiResult<Category[]> res = await RequirementsBazaar.GetCategoriesInProject(SelectedProject.id);
             shelf.MessageBadge.DoneProcessing();
             if (res.Successful)
             {
@@ -72,15 +89,15 @@ public class ShelfConfiguration : MonoBehaviour
     {
     }
 
-    private int GetProjectId(string projectName)
+    private Project GetProject(string projectName)
     {
         for(int i=0;i<projects.Length;i++)
         {
             if (projects[i].name == projectName)
             {
-                return projects[i].id;
+                return projects[i];
             }
         }
-        return -1;
+        return null;
     }
 }
