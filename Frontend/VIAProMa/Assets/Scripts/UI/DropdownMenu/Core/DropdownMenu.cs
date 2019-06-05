@@ -16,6 +16,7 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
     public List<DataType> Items
     {
         get { return itemController?.Items; }
+        set { itemController.Items = value; }
     }
 
     public int SelectedItemIndex { get { return itemController.SelectedItem; } }

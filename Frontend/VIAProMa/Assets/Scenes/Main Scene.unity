@@ -553,9 +553,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7b5bd2b08ff1742b763ebc8dcaf27f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shelf: {fileID: 740083387}
   sourceSelection: {fileID: 1136107612}
   projectInput: {fileID: 1568661603}
-  categoryDropdownMenu: {fileID: 0}
+  categoryDropdownMenu: {fileID: 719624146}
+--- !u!1 &740083386 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1136539183282164811, guid: 8fbf5f2477b9d3a4b86d7874db0ee9a9,
+    type: 3}
+  m_PrefabInstance: {fileID: 740083383}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &740083387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740083386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c802a94a96cb35a479dee7d76de65ae6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messageBadge: {fileID: 1832448267}
+  configuration: {fileID: 740083385}
 --- !u!1 &769912043
 GameObject:
   m_ObjectHideFlags: 0
@@ -1317,6 +1338,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Project InputField
       objectReference: {fileID: 0}
+    - target: {fileID: 4001549260016502119, guid: a6a506e649f6f544a8a1f83501246aa5,
+        type: 3}
+      propertyPath: text
+      value: Sample Content
+      objectReference: {fileID: 0}
     - target: {fileID: 1193923580483524227, guid: a6a506e649f6f544a8a1f83501246aa5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1416,11 +1442,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0.06
-      objectReference: {fileID: 0}
-    - target: {fileID: 4001549260016502119, guid: a6a506e649f6f544a8a1f83501246aa5,
-        type: 3}
-      propertyPath: text
-      value: Sample Content
       objectReference: {fileID: 0}
     - target: {fileID: 4632135323614363753, guid: a6a506e649f6f544a8a1f83501246aa5,
         type: 3}
@@ -1622,6 +1643,18 @@ MonoBehaviour:
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
+--- !u!114 &1832448267 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3011964071617071373, guid: 8fbf5f2477b9d3a4b86d7874db0ee9a9,
+    type: 3}
+  m_PrefabInstance: {fileID: 740083383}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71186f3e5f2c78d4b8d988b8221c51cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1956362851
 GameObject:
   m_ObjectHideFlags: 0

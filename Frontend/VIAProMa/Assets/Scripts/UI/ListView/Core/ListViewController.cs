@@ -22,7 +22,16 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
 
     protected List<ItemType> instances;
 
-    public List<DataType> Items { get => items; protected set => items = value; }
+    public List<DataType> Items
+    {
+        get => items;
+        set
+        {
+            items = value;
+            RemoveInstances();
+            CreateInstances();
+        }
+    }
 
     public int SelectedItem { get; private set; }
 
@@ -45,7 +54,7 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
 
     protected virtual void CreateInstances()
     {
-        for (int i=0;i<Items.Count;i++)
+        for (int i = 0; i < Items.Count; i++)
         {
             ItemType instanceAdapter = Instantiate(itemPrefab, transform).GetComponent<ItemType>();
             if (instanceAdapter == null)
@@ -61,7 +70,7 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
 
     protected virtual void RemoveInstances()
     {
-        for (int i=0;i<transform.childCount;i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             Destroy(transform.GetChild(i).gameObject);
         }

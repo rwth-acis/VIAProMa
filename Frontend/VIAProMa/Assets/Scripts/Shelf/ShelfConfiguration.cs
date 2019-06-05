@@ -40,9 +40,34 @@ public class ShelfConfiguration : MonoBehaviour
         sourceSelection.ItemSelected += SourceSelected;
         projectInput.TextChanged += ProjectInputFinished;
         categoryDropdownMenu.ItemSelected += CategorySelected;
+
+        LoadProjectList();
     }
 
-    private async void SourceSelected(object sender, EventArgs e)
+    private void SourceSelected(object sender, EventArgs e)
+    {
+        LoadProjectList();
+    }
+
+    private void ProjectInputFinished(object sender, EventArgs e)
+    {
+        SelectedProject = GetProject(projectInput.Text);
+        if (SelectedProject == null) // project was not found
+        {
+            Debug.LogWarning("Project not found");
+        }
+        else // fetch categories
+        {
+            LoadCategoryList();
+        }
+    }
+
+    private void CategorySelected(object sender, EventArgs e)
+    {
+        SelectedCategory = categories[categoryDropdownMenu.SelectedItemIndex];
+    }
+
+    private async void LoadProjectList()
     {
         shelf.MessageBadge.ShowProcessing();
         ApiResult<Project[]> res = await RequirementsBazaar.GetProjects();
@@ -61,32 +86,22 @@ public class ShelfConfiguration : MonoBehaviour
         SelectedCategory = null;
     }
 
-    private async void ProjectInputFinished(object sender, EventArgs e)
+    private async void LoadCategoryList()
     {
-        SelectedProject = GetProject(projectInput.Text);
-        if (SelectedProject == null) // project was not found
+        shelf.MessageBadge.ShowProcessing();
+        ApiResult<Category[]> res = await RequirementsBazaar.GetCategoriesInProject(SelectedProject.id);
+        shelf.MessageBadge.DoneProcessing();
+        if (res.Successful)
         {
-            Debug.LogWarning("Project not found");
+            categories = res.Value;
+            categoryDropdownMenu.Items = new List<Category>(categories);
         }
-        else // fetch categories
+        else
         {
-            shelf.MessageBadge.ShowProcessing();
-            ApiResult<Category[]> res = await RequirementsBazaar.GetCategoriesInProject(SelectedProject.id);
-            shelf.MessageBadge.DoneProcessing();
-            if (res.Successful)
-            {
-                categories = res.Value;
-            }
-            else
-            {
-                shelf.MessageBadge.ShowMessage(res.ResponseCode);
-                categories = null;
-            }
+            shelf.MessageBadge.ShowMessage(res.ResponseCode);
+            categories = null;
+            categoryDropdownMenu.Items = new List<Category>();
         }
-    }
-
-    private void CategorySelected(object sender, EventArgs e)
-    {
     }
 
     private Project GetProject(string projectName)
