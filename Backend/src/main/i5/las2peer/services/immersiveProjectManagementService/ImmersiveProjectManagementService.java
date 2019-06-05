@@ -195,7 +195,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 	}
 
 	@GET
-	@Path("/requirementsBazaar/projectNames")
+	@Path("/requirementsBazaar/projects")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 			value = "Gets the list of all project names and their Ids",
@@ -227,10 +227,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			{
 				return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
 			}
-			// filter the properties of a project so that it only returns the name and id
-			SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-			filterProvider.addFilter("shortFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name"));
-			String result = Utilities.unityCompatibleArray(allProjects, filterProvider);
+			String result = Utilities.unityCompatibleArray(allProjects);
 			return  Response.ok().entity(result).build();
 		}
 		catch (IOException e)
@@ -241,20 +238,6 @@ public class ImmersiveProjectManagementService extends RESTService {
 
 	@GET
 	@Path("/requirementsBazaar/projects/{projectId}/categories")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(
-			value = "Gets all categories in a project",
-			notes = "Returns the list of requirements in a project")
-	@ApiResponses(
-			value = { @ApiResponse(
-					code = HttpURLConnection.HTTP_OK,
-					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
-	public Response getReqBazCategoriesInProject(@PathParam("projectId") int projectId) {
-		return RequirementsBazaarAdapter.RequestCategoriesInProject(projectId);
-	}
-
-	@GET
-	@Path("/requirementsBazaar/projects/{projectId}/categoriesShort")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
 			value = "Gets the short version of all categories in a project",
@@ -286,9 +269,9 @@ public class ImmersiveProjectManagementService extends RESTService {
 				return Response.status(res.getCode()).entity(res.getErrorMessage()).build();
 			}
 			// filter the properties of a category so that it only returns the name, id and projectId
-			SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-			filterProvider.addFilter("shortFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name", "projectId"));
-			String result = Utilities.unityCompatibleArray(allCategories, filterProvider);
+			//SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+			//filterProvider.addFilter("shortFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name", "projectId"));
+			String result = Utilities.unityCompatibleArray(allCategories);
 			return Response.ok().entity(result).build();
 		}
 		catch (IOException e)

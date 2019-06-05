@@ -82,8 +82,11 @@ public class ShelfConfiguration : MonoBehaviour
             projects = null;
         }
         categories = null;
-        SelectedProject = null;
-        SelectedCategory = null;
+
+        for(int i=0;i<projects.Length;i++)
+        {
+            Debug.Log(projects[i].name);
+        }
     }
 
     private async void LoadCategoryList()

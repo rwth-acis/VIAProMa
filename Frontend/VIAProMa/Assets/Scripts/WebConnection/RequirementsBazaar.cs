@@ -8,7 +8,8 @@ public static class RequirementsBazaar
 {
     public static async Task<ApiResult<Project[]>> GetProjects()
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/");
+        Debug.Log("Requirements Baazar: GetProjects");
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects");
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
@@ -16,6 +17,7 @@ public static class RequirementsBazaar
         }
         else
         {
+            Debug.Log(resp.ResponseBody);
             Project[] projects = JsonArrayUtility.FromJson<Project>(resp.ResponseBody);
             return new ApiResult<Project[]>(projects);
         }
@@ -23,7 +25,7 @@ public static class RequirementsBazaar
 
     public static async Task<ApiResult<Category[]>> GetCategoriesInProject(int projectId)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/" + projectId + "/categories");
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories");
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);

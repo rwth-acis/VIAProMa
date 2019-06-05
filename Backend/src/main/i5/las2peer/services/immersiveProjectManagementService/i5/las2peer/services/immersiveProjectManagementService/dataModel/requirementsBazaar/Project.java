@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 /**
  * Created by bened on 10.05.2019.
  */
-@JsonFilter("shortFilter")
+//@JsonFilter("shortFilter")
 public class Project {
     public int id;
     public String name;
