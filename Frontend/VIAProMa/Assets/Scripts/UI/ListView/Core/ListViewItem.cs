@@ -13,6 +13,14 @@ public class ListViewItem<DataType> : MonoBehaviour
 
     private void Awake()
     {
+        if (display == null)
+        {
+            Initialize();
+        }
+    }
+
+    private void Initialize()
+    {
         display = GetComponent<DataDisplay<DataType>>();
         if (display == null)
         {
@@ -22,6 +30,10 @@ public class ListViewItem<DataType> : MonoBehaviour
 
     public virtual void Setup(DataType content, int index, IListViewController controller)
     {
+        if (display == null)
+        {
+            Initialize();
+        }
         display.Setup(content);
         this.index = index;
         this.controller = controller;

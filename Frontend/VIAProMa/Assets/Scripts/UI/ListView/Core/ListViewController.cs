@@ -30,6 +30,7 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
             items = value;
             RemoveInstances();
             CreateInstances();
+            SelectedItem = 0;
         }
     }
 

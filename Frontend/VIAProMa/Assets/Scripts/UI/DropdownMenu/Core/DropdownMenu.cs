@@ -16,7 +16,15 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
     public List<DataType> Items
     {
         get { return itemController?.Items; }
-        set { itemController.Items = value; }
+        set
+        {
+            itemController.Items = value;
+            // by standard select the first element
+            if (Items != null && Items.Count > 0)
+            {
+                selectedItemDisplay.Setup(Items[0]);
+            }
+        }
     }
 
     public int SelectedItemIndex { get { return itemController.SelectedItem; } }
