@@ -17,17 +17,41 @@ public class PhysicalKeyboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // handle special keys, e.g. DEL, left arrow, right arrow, Pos1, End
         if (IsCapturingKeyboard)
         {
-            foreach(char c in Input.inputString)
+            if (Input.GetKeyDown(KeyCode.Delete))
             {
-                if (c == '\b') // backspace
+                keyboard.Delete();
+            }
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                keyboard.CursorPos--;
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                keyboard.CursorPos++;
+            }
+            else if (Input.GetKeyDown(KeyCode.End))
+            {
+                keyboard.CursorPos = keyboard.Text.Length;
+            }
+            else if (Input.GetKeyDown(KeyCode.Home))
+            {
+                keyboard.CursorPos = 0;
+            }
+            else // handle general input
+            {
+                foreach (char c in Input.inputString)
                 {
-                    keyboard.Backspace();
-                }
-                else
-                {
-                    keyboard.AddLetter(c);
+                    if (c == '\b') // backspace
+                    {
+                        keyboard.Backspace();
+                    }
+                    else
+                    {
+                        keyboard.AddLetter(c);
+                    }
                 }
             }
         }

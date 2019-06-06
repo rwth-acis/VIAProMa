@@ -114,9 +114,19 @@ public class Keyboard : Singleton<Keyboard>
     {
         if (cursorPos > 0)
         {
-            // remove the char in front of the cursor
-            Text = Text.Remove(cursorPos - 1, 1);
+            // move the cursor one to the left
             CursorPos--;
+            // remove the char which is now on the right of the cursor
+            Text = Text.Remove(cursorPos, 1);
+            TextChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public void Delete()
+    {
+        if (cursorPos < Text.Length)
+        {
+            Text = text.Remove(cursorPos, 1);
             TextChanged?.Invoke(this, EventArgs.Empty);
         }
     }
