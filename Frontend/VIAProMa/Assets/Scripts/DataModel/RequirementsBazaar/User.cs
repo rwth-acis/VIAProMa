@@ -1,4 +1,7 @@
-﻿public class User
+﻿/// <summary>
+/// Represents a user in the Requirements Bazaar
+/// </summary>
+public class User
 {
     public int id;
     public string userName;

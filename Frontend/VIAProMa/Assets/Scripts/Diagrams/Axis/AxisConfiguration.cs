@@ -58,58 +58,84 @@ public class AxisConfiguration
     /// <returns>A score on how good the font size is</returns>
     private float FontScore(int minFontSize, int targetFontSize)
     {
-        if (FontSize >= targetFontSize)
+        if (FontSize >= targetFontSize) // best score for a font size which is bigger or equal to the ideal font size
         {
             return 1;
         }
-        else if (FontSize < targetFontSize && FontSize >= minFontSize)
+        else if (FontSize < targetFontSize && FontSize >= minFontSize) // font size is larger than minimum but smaller than ideal => penalty for smaller fonts
         {
             return 0.2f * (FontSize - minFontSize + 1) / (targetFontSize - minFontSize);
         }
-        else
+        else // worst score for font sizes smaller than the minimum font size
         {
             return float.MinValue;
         }
     }
 
+    /// <summary>
+    /// Calculates an orientation score for this axis configuration
+    /// The score is between -infinity and 1 (in this case only -0.5 or 1)
+    /// 1 is the best score
+    /// </summary>
+    /// <returns>The orientation score of this axis configuration</returns>
     private float OrientationScore()
     {
+        // prefer horizontal text since it is more comfortable to read
         if (HorizontalTextOrientation)
         {
             return 1;
         }
         else
         {
-            return -0.5f;
+            return -0.5f; // assign a small penalty for vertical text
         }
     }
 
+    /// <summary>
+    /// Calculates the overlap score of the axis configuration
+    /// Score is between -infinity and 1
+    /// 1 is the best score
+    /// </summary>
+    /// <param name="horizontalAxisOrientation">True if the axis is oriented horizontally</param>
+    /// <param name="availableSpace">The available space of this axis' length in world units</param>
+    /// <returns>The overlap score of the axis configuration</returns>
     private float OverlapScore(bool horizontalAxisOrientation, float availableSpace)
     {
+        // get the minimum gap and judge it
         float labelsMinimumGap = GetMinimumGap(horizontalAxisOrientation, availableSpace);
 
-        if (labelsMinimumGap < 0)
+        if (labelsMinimumGap < 0) // a configuration with overlapping labels gets the worst score
         {
             return float.MinValue;
         }
-        else if (labelsMinimumGap > minimumGap)
+        else if (labelsMinimumGap > minimumGap) //  best score for a configuration where all gaps are bigger than the ideal minimum gap
         {
             return 1;
         }
-        else
+        else // labels are not overlapping but smaller than the ideal minimum gap => assign a penalty based on how small the gap is
         {
             return 2f - minimumGap / labelsMinimumGap;
         }
     }
 
+    /// <summary>
+    /// Returns the minimum gap between labels in this configuration
+    /// If this value is negative, it means that the labels overlaps
+    /// </summary>
+    /// <param name="horizontalAxisOrientation">True if the axis is oriented horizontally</param>
+    /// <param name="availableSpace">The available space of the axis' length in world units</param>
+    /// <returns>The minimum gap in world units between the labels of this axis configuration</returns>
     private float GetMinimumGap(bool horizontalAxisOrientation, float availableSpace)
     {
+        // spaceBetweenTwoEntries is the distance between the midpoints of two labels
+        // the labels are scattered uniformly across the axis
         float spaceBetweenTwoEntries = availableSpace / Labels.Count;
 
         Vector2 lastSize = Vector2.zero;
 
         float minGap = float.MaxValue;
 
+        // go over all labels, calculate the gap to the previous label and return the minimum gap
         for (int i = 0; i < Labels.Count; i++)
         {
             Vector2 size = TextSize.Instance.GetTextSize(Labels[i], FontSize);
@@ -137,12 +163,34 @@ public class AxisConfiguration
         return minGap;
     }
 
+    /// <summary>
+    /// Calculates the legibility score of this axis configuration
+    /// Score is between -infinity and 1
+    /// 1 is the best score
+    /// </summary>
+    /// <param name="horizontalAxisOrientation">True if the axis should be oriented horizontally</param>
+    /// <param name="availableSpace">The available space for the axis length in world units</param>
+    /// <param name="minFontSize">The minimum font size</param>
+    /// <param name="targetFontSize">The optimal font size which should be used if possible</param>
+    /// <returns>The legibility score sof this axis configuration</returns>
     public float LegibilityScore(bool horizontalAxisOrientation, float availableSpace, int minFontSize, int targetFontSize)
     {
+        // legibility score is the average of the format, font, orientation and overlap scores
         return (FormatScore() + FontScore(minFontSize, targetFontSize) 
             + OrientationScore() + OverlapScore(horizontalAxisOrientation, availableSpace)) / 4f;
     }
 
+    /// <summary>
+    /// Optimizes the legibility of the labels on the axis and returns the best configuration
+    /// </summary>
+    /// <param name="labels">The list of labels which should be placed on the axis</param>
+    /// <param name="horizontalAxisOrientation">If set to true, the axis is oriented horizontally</param>
+    /// <param name="possibilities">The possible configurations from which the function will choose the best one</param>
+    /// <param name="availableSpace">Space in world units which is available for the entire axis length</param>
+    /// <param name="minFontSize">Minimum font size</param>
+    /// <param name="targetFontSize">Optimal font size which should be used if possible</param>
+    /// <param name="bestScore">The legibility score of the best configuration</param>
+    /// <returns></returns>
     public static AxisConfiguration OptimizeLegibility(
         List<string> labels,
         bool horizontalAxisOrientation,
@@ -155,6 +203,8 @@ public class AxisConfiguration
         AxisConfiguration best = null;
         bestScore = float.MinValue;
 
+        // go over all possible configuraitons and get their score
+        // return the best score
         for (int i = 0; i < possibilities.Count; i++)
         {
             float score = possibilities[i].LegibilityScore(horizontalAxisOrientation, availableSpace, minFontSize, targetFontSize);
@@ -168,6 +218,11 @@ public class AxisConfiguration
         return best;
     }
 
+    /// <summary>
+    /// Generates a list of all possible axis configurations based on the given labels
+    /// </summary>
+    /// <param name="labels">The labels which should be displayed on hte axis</param>
+    /// <returns>The list of all possible axis configurations which have the given labels</returns>
     public static List<AxisConfiguration> GeneratePossibleConfigurations(List<string> labels)
     {
         List<AxisConfiguration> possibilities = new List<AxisConfiguration>();

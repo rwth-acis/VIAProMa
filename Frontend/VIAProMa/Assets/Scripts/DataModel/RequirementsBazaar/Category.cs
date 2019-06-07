@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a category in the Requirements Bazaar
+/// </summary>
 [Serializable]
 public class Category : IListViewItemData
 {

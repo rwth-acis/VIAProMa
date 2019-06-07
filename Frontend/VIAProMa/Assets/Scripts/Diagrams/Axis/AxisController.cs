@@ -2,17 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the GameObject representation of an axis in the scenes
+/// </summary>
 public class AxisController : MonoBehaviour
 {
+    [Tooltip("Prefab of a text mesh which should be used to create the labels")]
     [SerializeField] GameObject labelPrefab;
+    [Tooltip("If true, the axis is aligned horizontally")]
     [SerializeField] private bool isHorizontal;
     private float axisMin;
     private float axisMax;
 
     private List<TextMesh> labelInstances;
 
+    /// <summary>
+    /// The axis object which is represented
+    /// </summary>
+    /// <value></value>
     public Axis Axis { get; set; }
 
+    /// <summary>
+    /// The length of the axis
+    /// </summary>
+    /// <value></value>
     public float Length
     {
         get
@@ -29,8 +42,17 @@ public class AxisController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// True if the axis is oriented horizontally
+    /// </summary>
+    /// <value></value>
     public bool IsHorizontal { get { return isHorizontal; } }
 
+    /// <summary>
+    /// The minimum value which is shown on the axis
+    /// This is not necessarily equal to the minimum of the data range
+    /// </summary>
+    /// <value></value>
     public float AxisMin
     {
         get
@@ -39,6 +61,11 @@ public class AxisController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The maximum value which is shown on the axis
+    /// This is not necessarily equal to the maximum of the data range
+    /// </summary>
+    /// <value></value>
     public float AxisMax
     {
         get
@@ -48,6 +75,10 @@ public class AxisController : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Initializes the axis configuration
+    /// Checks the setup
+    /// </summary>
     private void Awake()
     {
         if (labelPrefab == null)
@@ -64,6 +95,11 @@ public class AxisController : MonoBehaviour
         labelInstances = new List<TextMesh>();
     }
 
+    /// <summary>
+    /// Updates the visualization of the axis
+    /// </summary>
+    /// <param name="labelDensity">The target label density per world unit</param>
+    /// <param name="parent">The parent of the axis</param>
     public void VisualizeAxis(float labelDensity, Transform parent)
     {
         if (Axis == null)
@@ -73,12 +109,12 @@ public class AxisController : MonoBehaviour
 
         ClearExistingLabels();
 
-        if (Axis.Type == AxisType.NUMERIC)
+        if (Axis.Type == AxisType.NUMERIC) // for numeric axes: perform extended Wilkinson and realize the best configuration
         {
             AxisConfiguration best = ExtendedWilkinson.PerformExtendedWilkinson(Length, IsHorizontal, labelDensity, Axis.DataMin, Axis.DataMax, out axisMin, out axisMax);
             RealizeConfiguration(best, parent);
         }
-        else
+        else // for string labels: just perform the legibility optimization and realize the best configuration
         {
             List<AxisConfiguration> confs = AxisConfiguration.GeneratePossibleConfigurations(Axis.Labels);
             float bestScore;
@@ -89,6 +125,11 @@ public class AxisController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Takes an axis configuration as realizes it as a 3D representation of the axis
+    /// </summary>
+    /// <param name="conf">The configuration which should be realized</param>
+    /// <param name="parent">The parent of the axis GameObject</param>
     private void RealizeConfiguration(AxisConfiguration conf, Transform parent)
     {
         float relativeStepSize = Length / (conf.Labels.Count - 1);
@@ -140,6 +181,9 @@ public class AxisController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Removes the existing labels
+    /// </summary>
     private void ClearExistingLabels()
     {
         for (int i = 0; i < labelInstances.Count; i++)
