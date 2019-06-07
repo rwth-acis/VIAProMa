@@ -35,7 +35,7 @@ public class InputField : MonoBehaviour
 
     public void OnClick()
     {
-        Keyboard.Instance.Open(transform.position - transform.forward * 0.05f, transform.eulerAngles);
+        Keyboard.Instance.Open(transform.position - transform.forward * 0.05f, transform.eulerAngles, Text);
         Keyboard.Instance.InputFinished += OnKeyboardInputFinished;
     }
 

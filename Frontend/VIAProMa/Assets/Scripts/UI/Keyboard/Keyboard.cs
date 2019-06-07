@@ -5,16 +5,34 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Controls the keyboard UI element
+/// </summary>
 public class Keyboard : Singleton<Keyboard>
 {
+    [Tooltip("Reference to the input field which shows the typed text")]
     [SerializeField] private InputField inputField;
 
+    [Tooltip("Reference to the object which indicates where new text is inserted (typical text cursor)")]
     [SerializeField] private GameObject cursorObject;
+
+    /// <summary>
+    /// Length of the interval in after which the cursor's visibility is toggled
+    /// This achieves the typical blinking effect of text cursors
+    /// </summary>
     public float cursorBlinkTime = 0.53f;
 
+    [Tooltip("References to key set pages between the user can switch in order to type standard letters and special characters")]
     [SerializeField] private GameObject[] keySetPages;
 
+    /// <summary>
+    /// Event which is raised once the user has finished typing and dismisses the keyboard
+    /// Contains information about the typed text and whether the input was aborted or accepted by the user
+    /// </summary>
     public event InputFinishedEventHandler InputFinished;
+    /// <summary>
+    /// Event which is raised every time that the text is changed
+    /// </summary>
     public event EventHandler TextChanged;
 
     private string text = "";
@@ -28,6 +46,9 @@ public class Keyboard : Singleton<Keyboard>
 
     private int currentKeySetPageIndex;
 
+    /// <summary>
+    /// The text on the keyboard
+    /// </summary>
     public string Text
     {
         get
@@ -39,9 +60,14 @@ public class Keyboard : Singleton<Keyboard>
             text = value;
             cursorPos = Mathf.Clamp(cursorPos, 0, text.Length); // make sure that the position of the cursor is still in bounds
             UpdateView();
+            TextChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
+    /// <summary>
+    /// True if shift is enabled
+    /// Updates all shiftable keys
+    /// </summary>
     public bool ShiftActive
     {
         get { return shiftActive; }
@@ -52,6 +78,11 @@ public class Keyboard : Singleton<Keyboard>
         }
     }
 
+    /// <summary>
+    /// True if capslock is enabled
+    /// Overrules the value of ShiftActive
+    /// Updates all shiftable keys
+    /// </summary>
     public bool CapslockActive
     {
         get { return capslockActive; }
@@ -62,6 +93,9 @@ public class Keyboard : Singleton<Keyboard>
         }
     }
 
+    /// <summary>
+    /// The position of the cursor in the text
+    /// </summary>
     public int CursorPos
     {
         get { return cursorPos; }
@@ -72,6 +106,9 @@ public class Keyboard : Singleton<Keyboard>
         }
     }
 
+    /// <summary>
+    /// The index of the current key set page
+    /// </summary>
     public int CurrentKeySetPageIndex
     {
         get => currentKeySetPageIndex;
@@ -82,34 +119,75 @@ public class Keyboard : Singleton<Keyboard>
         }
     }
 
+    /// <summary>
+    /// Initializes the GameObject
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
         shiftableKeys = GetComponentsInChildren<IShiftableKey>();
+
         if (inputField == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(inputField));
         }
+        if (cursorObject == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(cursorObject));
+        }
+        if (keySetPages.Length == 0)
+        {
+            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(keySetPages));
+        }
+        else
+        {
+            for (int i=0;i<keySetPages.Length;i++)
+            {
+                SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(keySetPages), i);
+            }
+        }
+
+        // start the infinite coroutine which makes the cursor blink
         StartCoroutine(BlinkingCursor());
+        // update the view to set the input field's text
         UpdateView();
     }
 
+    /// <summary>
+    /// Displays the keyboard UI element at the given (global) position with the given (global) euler rotation
+    /// The keyboard will be initialized with an empty text
+    /// </summary>
+    /// <param name="position">The global position where the keyboard should appear</param>
+    /// <param name="eulerRotation">THe keyboard's global rotation in euler angles</param>
     public void Open(Vector3 position, Vector3 eulerRotation)
     {
         Open(position, eulerRotation, "");
     }
 
+    /// <summary>
+    /// Displays the keyboard UI element at the given (global) position with the given (global) euler rotation
+    /// The keyboard will be set up with the given text
+    /// </summary>
+    /// <param name="position">The global position where the keyboard should appear</param>
+    /// <param name="eulerRotation">THe keyboard's global rotation in euler angles</param>
+    /// <param name="text">The text which will initially be shown on the keyboard</param>
     public void Open(Vector3 position, Vector3 eulerRotation, string text)
     {
+        // show keyboard
         gameObject.SetActive(true);
-
+        // go back to the standard letters
         CurrentKeySetPageIndex = 0;
 
-        Text = "";
+        // set up the keyboard according to the given parameters
+        Text = text;
         transform.position = position;
         transform.eulerAngles = eulerRotation;
     }
 
+    /// <summary>
+    /// Backspace is applied to the keyboard
+    /// Deletes the letter in front of the current cursor position
+    /// </summary>
     public void Backspace()
     {
         if (cursorPos > 0)
@@ -118,46 +196,63 @@ public class Keyboard : Singleton<Keyboard>
             CursorPos--;
             // remove the char which is now on the right of the cursor
             Text = Text.Remove(cursorPos, 1);
-            TextChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
+    /// <summary>
+    /// Causes a delete operation
+    /// Deletes the letter behind the current cursor position
+    /// </summary>
     public void Delete()
     {
         if (cursorPos < Text.Length)
         {
             Text = text.Remove(cursorPos, 1);
-            TextChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    public void AddLetter(char letter)
+    /// <summary>
+    /// Inserts the given character behind the current cursor position
+    /// </summary>
+    /// <param name="character">The character to insert</param>
+    public void AddLetter(char character)
     {
         if (cursorPos == text.Length)
         {
-            Text += letter;
+            Text += character;
         }
         else
         {
-            Text = Text.Insert(cursorPos, letter.ToString());
+            Text = Text.Insert(cursorPos, character.ToString());
         }
+        // also move the cursor forward so that we can keep typing
         CursorPos++;
-        TextChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Finishes the input
+    /// Should usually be called by the Unity event on the accept and abort keys
+    /// </summary>
+    /// <param name="aborted">Setting this to true indicates that the input was aborted (and not regularly finished)</param>
     public void InputDone(bool aborted)
     {
+        // raise the input finished event
         InputFinishedEventArgs args = new InputFinishedEventArgs();
         args.Aborted = aborted;
         args.Text = Text;
         InputFinished?.Invoke(this, args);
 
+        // deactivate the keyboard again
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Causes the input field to update the applied text
+    /// </summary>
     private void UpdateView()
     {
         inputField.Text = text;
+        // force a mesh update so that the text is already applied when the text cursor tries to find the correct position
         inputField.ContentField.ForceMeshUpdate(true);
         PositionCursor();
     }
