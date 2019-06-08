@@ -47,6 +47,7 @@ public class ShelfConfiguration : MonoBehaviour
     private void SourceSelected(object sender, EventArgs e)
     {
         LoadProjectList();
+        shelf.LoadContent();
     }
 
     private void ProjectInputFinished(object sender, EventArgs e)
@@ -60,11 +61,13 @@ public class ShelfConfiguration : MonoBehaviour
         {
             LoadCategoryList();
         }
+        shelf.LoadContent();
     }
 
     private void CategorySelected(object sender, EventArgs e)
     {
         SelectedCategory = categories[categoryDropdownMenu.SelectedItemIndex];
+        shelf.LoadContent();
     }
 
     private async void LoadProjectList()

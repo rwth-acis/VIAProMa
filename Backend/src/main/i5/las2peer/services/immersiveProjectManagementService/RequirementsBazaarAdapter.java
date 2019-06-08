@@ -19,13 +19,35 @@ import java.io.IOException;
  */
 public class RequirementsBazaarAdapter {
 
-    public static Response RequestRequirementsInCategory(int categoryId)
+    public static Response RequestRequirementsInCategory(int categoryId, int page, int itemsPerPage)
     {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/categories/" + categoryId + "/requirements");
+        WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         return response;
+    }
+
+    public static  APIResult<Requirement[]> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage)
+    {
+        try {
+            Response response = RequestRequirementsInCategory(categoryId, page, itemsPerPage);
+
+            if (response.getStatus() != 200 && response.getStatus() != 201) {
+                return new APIResult<Requirement[]>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            Requirement[] requirements = mapper.readValue(origJson, Requirement[].class);
+            return new APIResult<Requirement[]>(response.getStatus(), requirements);
+        }
+        catch (IOException e)
+        {
+            return new APIResult<Requirement[]>(e.getMessage(), 500);
+        }
     }
 
     public static APIResult<Project[]> GetProjects(int page, int itemsPerPage)
@@ -55,11 +77,7 @@ public class RequirementsBazaarAdapter {
 
     public static Response RequestCategoriesInProject(int projectId)
     {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories");
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-        Response response = invocationBuilder.get();
-        return response;
+        return Utilities.GetResponse("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories");
     }
 
     public  static  APIResult<Category[]> GetCategoriesInProject(int projectId)
@@ -79,6 +97,34 @@ public class RequirementsBazaarAdapter {
             ObjectMapper mapper = new ObjectMapper();
             Category[] categories = mapper.readValue(origJson, Category[].class);
             return  new APIResult<Category[]>(response.getStatus(), categories);
+        }
+        catch (IOException e) {
+            return  new APIResult<>(e.getMessage(), 500);
+        }
+    }
+
+    public static Response RequestRequirementsInProject(int projectId, int page, int itemsPerPage)
+    {
+        return Utilities.GetResponse("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/requirements?page=" + page + "&itmes_per_page=" + itemsPerPage);
+    }
+
+    public static APIResult<Requirement[]> GetRequirementsInProject(int projectId, int page, int itemsPerPage)
+    {
+        try
+        {
+            Response response = RequestRequirementsInProject(projectId, page, itemsPerPage);
+
+            if (response.getStatus() != 200 && response.getStatus() != 201)
+            {
+                return new APIResult<Requirement[]>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            Requirement[] categories = mapper.readValue(origJson, Requirement[].class);
+            return  new APIResult<Requirement[]>(response.getStatus(), categories);
         }
         catch (IOException e) {
             return  new APIResult<>(e.getMessage(), 500);

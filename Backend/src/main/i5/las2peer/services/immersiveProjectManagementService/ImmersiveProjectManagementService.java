@@ -9,6 +9,7 @@ import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.servic
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 import io.swagger.annotations.*;
 
 import javax.ws.rs.*;
@@ -190,8 +191,22 @@ public class ImmersiveProjectManagementService extends RESTService {
 			value = { @ApiResponse(
 					code = HttpURLConnection.HTTP_OK,
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
-	public Response getReqBazRequirementsInCategory(@PathParam("categoryId") int categoryId) {
-		return RequirementsBazaarAdapter.RequestRequirementsInCategory(categoryId);
+	public Response getReqBazRequirementsInCategory(@PathParam("categoryId") int categoryId,
+	@PathParam("page") int page,
+	@PathParam("items_per_page") int itemsPerPage) {
+		APIResult<Requirement[]> res = RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId, page, itemsPerPage);
+		if (res.hasError())
+		{
+			return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
+		}
+		try {
+			String result = Utilities.unityCompatibleArray(res.getValue());
+			return Response.ok().entity(result).build();
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
 	}
 
 	@GET
