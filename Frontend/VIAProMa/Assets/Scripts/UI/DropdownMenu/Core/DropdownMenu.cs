@@ -27,7 +27,7 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
         }
     }
 
-    public int SelectedItemIndex { get { return itemController.SelectedItem; } }
+    public int SelectedItemIndex { get { return itemController.SelectedItemIndex; } }
 
     public DataType SelectedItem
     {
@@ -71,7 +71,7 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
 
     private void OnItemSelected(object sender, ListViewItemSelectedArgs e)
     {
-        selectedItemDisplay.Setup(Items[e.SelectedItem]);
+        selectedItemDisplay.Setup(Items[e.SelectedItemIndex]);
         DropdownListShown = false;
         ItemSelected?.Invoke(this, EventArgs.Empty);
     }

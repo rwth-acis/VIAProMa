@@ -8,12 +8,23 @@ public class Launcher : MonoBehaviourPunCallbacks
 {
     string gameVersion = "1";
 
+    public static Launcher Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError("Multiple instances of " + nameof(Launcher));
+        }
+        Instance = this;
+    }
+
     private void Start()
     {
         Connect();
     }
 
-    public void Connect()
+    private void Connect()
     {
         if (PhotonNetwork.IsConnected)
         {
@@ -45,5 +56,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("Client is now in the lobby");
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log("Room join failed");
     }
 }

@@ -30,11 +30,13 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
             items = value;
             RemoveInstances();
             CreateInstances();
-            SelectedItem = 0;
+            SelectedItemIndex = 0;
         }
     }
 
-    public int SelectedItem { get; private set; }
+    public int SelectedItemIndex { get; private set; }
+
+    public DataType SeletedItem { get { return items[SelectedItemIndex]; } }
 
     private void Awake()
     {
@@ -79,12 +81,12 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
 
     public void OnItemSelected(int index)
     {
-        SelectedItem = index;
+        SelectedItemIndex = index;
         EventHandler<ListViewItemSelectedArgs> handler = ItemSelected;
         if (handler != null)
         {
             ListViewItemSelectedArgs args = new ListViewItemSelectedArgs();
-            args.SelectedItem = index;
+            args.SelectedItemIndex = index;
             handler(this, args);
         }
     }
@@ -96,5 +98,5 @@ public class ListViewController : ListViewController<ListViewItemInspectorData, 
 
 public class ListViewItemSelectedArgs : EventArgs
 {
-    public int SelectedItem { get; set; }
+    public int SelectedItemIndex { get; set; }
 }

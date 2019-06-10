@@ -1,6 +1,7 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,6 +34,8 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
         }
+
+        roomListView.ItemSelected += OnRoomSelected;
     }
 
     private void OnEnable()
@@ -65,6 +68,11 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         UpdateRoomList(roomList);
         UpdateRoomDisplay();
         SetPageButtonStates();
+    }
+
+    private void OnRoomSelected(object sender, ListViewItemSelectedArgs e)
+    {
+        PhotonNetwork.JoinRoom(roomListView.SeletedItem.RoomInfo.Name);
     }
 
     public void PageUp()
