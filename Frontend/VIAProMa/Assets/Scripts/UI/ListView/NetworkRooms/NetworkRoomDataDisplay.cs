@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,6 +8,9 @@ public class NetworkRoomDataDisplay : DataDisplay<NetworkRoomData>
 {
     [SerializeField] private TextMeshPro roomNameLabel;
     [SerializeField] private TextMeshPro memberNumberLabel;
+    [SerializeField] private GameObject lockIcon;
+
+    private Interactable button;
 
     private void Awake()
     {
@@ -17,6 +21,16 @@ public class NetworkRoomDataDisplay : DataDisplay<NetworkRoomData>
         if (memberNumberLabel == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(memberNumberLabel));
+        }
+        if (lockIcon == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(lockIcon));
+        }
+
+        button = GetComponent<Interactable>();
+        if (button == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Interactable), gameObject);
         }
     }
 
@@ -41,6 +55,10 @@ public class NetworkRoomDataDisplay : DataDisplay<NetworkRoomData>
             {
                 memberNumberLabel.text = content.RoomInfo.PlayerCount + "/" + content.RoomInfo.MaxPlayers + "\nmembers";
             }
+
+            bool roomOpen = content.RoomInfo.IsOpen && !content.IsFull;
+            button.Enabled = roomOpen;
+            lockIcon.SetActive(!roomOpen);
         }
         else
         {

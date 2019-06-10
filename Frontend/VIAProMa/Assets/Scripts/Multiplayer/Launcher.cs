@@ -37,12 +37,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("OnDisconnected()");
     }
 
-    public override void OnJoinRandomFailed(short returnCode, string message)
-    {
-        Debug.Log("No random room available");
-        PhotonNetwork.CreateRoom(null, new RoomOptions());
-    }
-
     public override void OnJoinedRoom()
     {
         Debug.Log("Client is now in a room");
