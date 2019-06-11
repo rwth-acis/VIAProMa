@@ -144,7 +144,10 @@ public class Keyboard : Singleton<Keyboard>
         {
             for (int i=0;i<keySetPages.Length;i++)
             {
-                SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(keySetPages), i);
+                if (keySetPages[i] == null)
+                {
+                    SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(keySetPages), i);
+                }
             }
         }
 

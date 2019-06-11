@@ -60,6 +60,6 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        Debug.Log("Room join failed");
+        Debug.Log("Room join failed\n" + returnCode + ": " + message);
     }
 }

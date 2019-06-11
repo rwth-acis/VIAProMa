@@ -60,8 +60,6 @@ public class SliderExtension : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(maxValueLabel));
         }
-
-        slider.OnValueUpdated.AddListener(UpdateDisplay);
     }
 
     private void UpdateDisplay(SliderEventData data)
@@ -77,6 +75,11 @@ public class SliderExtension : MonoBehaviour
 
         minValueLabel.text = minValue.ToString();
         maxValueLabel.text = maxValue.ToString();
+    }
+
+    private void OnEnable()
+    {
+        slider.OnValueUpdated.AddListener(UpdateDisplay);
     }
 
     private void OnDisable()

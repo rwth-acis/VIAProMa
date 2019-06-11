@@ -89,6 +89,18 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         UpdateRoomDisplay();
     }
 
+    public bool CheckIfRoomExists(string roomName)
+    {
+        for (int i=0;i<rooms.Count;i++)
+        {
+            if (roomName == rooms[i].RoomInfo.Name)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void SetPageButtonStates()
     {
         if (page == 0) // first page
