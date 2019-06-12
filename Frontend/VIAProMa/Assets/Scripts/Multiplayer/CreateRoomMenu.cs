@@ -54,7 +54,7 @@ public class CreateRoomMenu : MonoBehaviour
     {
         bool roomExists = roomMenu.CheckIfRoomExists(roomNameField.Text);
         errorMessage.SetActive(roomExists);
-        createRoomButton.Enabled = !roomExists;
+        createRoomButton.Enabled = !roomExists && roomNameField.Text != "";
     }
 
     private void OnCheckboxMaxNumberOfMembersClicked(object sender, EventArgs e)
@@ -64,6 +64,11 @@ public class CreateRoomMenu : MonoBehaviour
 
     public void OnCreateRoomButtonClicked()
     {
+        // do not try to create a room if not connected
+        if (!PhotonNetwork.IsConnected)
+        {
+            return;
+        }
 
         RoomOptions roomOptions = null; // if null is passed to CreateRoom, the options are ignored
         if (memberNumberCheckbox.IsChecked)

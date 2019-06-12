@@ -127,7 +127,10 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         rooms.Clear();
         foreach (RoomInfo roomInfo in roomList)
         {
-            rooms.Add(new NetworkRoomData(roomInfo));
+            if (!roomInfo.RemovedFromList)
+            {
+                rooms.Add(new NetworkRoomData(roomInfo));
+            }
         }
     }
 

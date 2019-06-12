@@ -33,6 +33,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         else
         {
             PhotonNetwork.GameVersion = gameVersion;
+            PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();
         }
     }
@@ -50,7 +51,9 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("Client is now in a room");
+        Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
+
+        PhotonNetwork.LoadLevel(1);
     }
 
     public override void OnJoinedLobby()
