@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomMenu : MonoBehaviour, ILobbyCallbacks
+public class RoomMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private NetworkRoomListView roomListView;
 
@@ -14,11 +14,31 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
     [SerializeField] private Interactable pageUpButton;
     [SerializeField] private Interactable pageDownButton;
 
+    [SerializeField] private CreateRoomMenu createRoomSubMenu;
+
     public int entriesPerPage = 5;
 
     private List<NetworkRoomData> rooms = new List<NetworkRoomData>();
 
     private int page = 0;
+    private bool windowEnabled = true;
+
+    public bool WindowEnabled
+    {
+        get
+        {
+            return windowEnabled;
+        }
+        set
+        {
+            windowEnabled = value;
+            createRoomButton.Enabled = value;
+            pageUpButton.Enabled = value;
+            pageDownButton.Enabled = value;
+        }
+    }
+
+    public event EventHandler WindowClosed;
 
     private void Awake()
     {
@@ -34,45 +54,48 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
         }
+        if (createRoomSubMenu == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(createRoomSubMenu));
+        }
 
         roomListView.ItemSelected += OnRoomSelected;
+        createRoomSubMenu.WindowClosed += CreateRoomMenuClosed;
+
+        LobbyManager.Instance.RoomListChanged += UpdateRoomList;
+        LobbyManager.Instance.LobbyJoinStatusChanged += OnLobbyStatusChanged;
+
+        Close();
+    }
+
+    private void OnLobbyStatusChanged(object sender, EventArgs e)
+    {
+        if (LobbyManager.Instance.InLobby)
+        {
+            Open();
+        }
+        else
+        {
+            Close();
+        }
     }
 
     private void OnEnable()
     {
-        // register to get callbacks
-        PhotonNetwork.AddCallbackTarget(this);
+        createRoomSubMenu.Close();
     }
 
-    private void OnDisable()
+    private void CreateRoomMenuClosed(object sender, EventArgs e)
     {
-        // unregister from callbacks
-        PhotonNetwork.RemoveCallbackTarget(this);
-    }
-
-    public void OnJoinedLobby()
-    {
-        Debug.Log("Joined Lobby");
-    }
-
-    public void OnLeftLobby()
-    {
-    }
-
-    public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
-    {
-    }
-
-    public void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
-        UpdateRoomList(roomList);
-        UpdateRoomDisplay();
-        SetPageButtonStates();
+        WindowEnabled = true;
     }
 
     private void OnRoomSelected(object sender, ListViewItemSelectedArgs e)
     {
-        PhotonNetwork.JoinRoom(roomListView.SeletedItem.RoomInfo.Name);
+        if (windowEnabled)
+        {
+            PhotonNetwork.JoinRoom(roomListView.SeletedItem.RoomInfo.Name);
+        }
     }
 
     public void PageUp()
@@ -89,9 +112,15 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         UpdateRoomDisplay();
     }
 
+    public void OpenCreateRoomMenu()
+    {
+        createRoomSubMenu.Open();
+        WindowEnabled = false;
+    }
+
     public bool CheckIfRoomExists(string roomName)
     {
-        for (int i=0;i<rooms.Count;i++)
+        for (int i = 0; i < rooms.Count; i++)
         {
             if (roomName == rooms[i].RoomInfo.Name)
             {
@@ -122,16 +151,11 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         }
     }
 
-    private void UpdateRoomList(List<RoomInfo> roomList)
+    private void UpdateRoomList(object sender, EventArgs e)
     {
-        rooms.Clear();
-        foreach (RoomInfo roomInfo in roomList)
-        {
-            if (!roomInfo.RemovedFromList)
-            {
-                rooms.Add(new NetworkRoomData(roomInfo));
-            }
-        }
+        rooms = LobbyManager.Instance.Rooms;
+        UpdateRoomDisplay();
+        SetPageButtonStates();
     }
 
     private void UpdateRoomDisplay()
@@ -146,5 +170,15 @@ public class RoomMenu : MonoBehaviour, ILobbyCallbacks
         {
             roomListView.Items = new List<NetworkRoomData>();
         }
+    }
+
+    public void Open()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
     }
 }

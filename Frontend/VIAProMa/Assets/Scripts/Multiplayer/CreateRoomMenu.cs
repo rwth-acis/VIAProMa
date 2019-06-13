@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateRoomMenu : MonoBehaviour
+public class CreateRoomMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private RoomMenu roomMenu;
 
@@ -16,6 +16,23 @@ public class CreateRoomMenu : MonoBehaviour
     [SerializeField] private Checkbox memberNumberCheckbox;
     [SerializeField] private SliderExtension memberNumberSlider;
     [SerializeField] private Interactable createRoomButton;
+
+    private bool windowEnabled = true;
+
+    public bool WindowEnabled
+    {
+        get
+        {
+            return windowEnabled;
+        }
+        set
+        {
+            windowEnabled = value;
+            createRoomButton.Enabled = false;
+        }
+    }
+
+    public event EventHandler WindowClosed;
 
     private void Awake()
     {
@@ -76,5 +93,16 @@ public class CreateRoomMenu : MonoBehaviour
             roomOptions = new RoomOptions { MaxPlayers = (byte)memberNumberSlider.ValueInt };
         }
         PhotonNetwork.CreateRoom(roomNameField.Text, roomOptions);
+    }
+
+    public void Open()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Close()
+    {
+        WindowClosed?.Invoke(this, EventArgs.Empty);
+        gameObject.SetActive(false);
     }
 }
