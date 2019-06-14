@@ -1,10 +1,14 @@
 ﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class AvatarController : MonoBehaviourPun, IPunObservable
+public class AvatarMovementController : MonoBehaviourPun, IPunObservable
 {
+    private Vector3 targetPosition;
+    private Quaternion targetRotation;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -14,8 +18,8 @@ public class AvatarController : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            transform.position = (Vector3)stream.ReceiveNext();
-            transform.eulerAngles = (Vector3)stream.ReceiveNext();
+            targetPosition = (Vector3)stream.ReceiveNext();
+            targetRotation = Quaternion.Euler((Vector3)stream.ReceiveNext());
         }
     }
 
@@ -23,8 +27,14 @@ public class AvatarController : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
+            // set the position based on the camera
             transform.position = Camera.main.transform.position;
             transform.rotation = Camera.main.transform.rotation;
+        }
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime);
         }
     }
 }
