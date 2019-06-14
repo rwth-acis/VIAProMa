@@ -9,6 +9,8 @@ public class AvatarMovementController : MonoBehaviourPun, IPunObservable
     private Vector3 targetPosition;
     private Quaternion targetRotation;
 
+    public float lerpSpeed = 1f;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -33,8 +35,8 @@ public class AvatarMovementController : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, lerpSpeed * Time.deltaTime);
         }
     }
 }

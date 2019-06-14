@@ -40,4 +40,10 @@ public class AvatarVisualController : MonoBehaviourPun
     {
         nameDisplay.transform.position = transform.position + new Vector3(0, 0.3f, 0);
     }
+
+    private void OnDestroy()
+    {
+        // remember to remove the name display separately since it is not part of the object anymore
+        Destroy(nameDisplay.gameObject);
+    }
 }
