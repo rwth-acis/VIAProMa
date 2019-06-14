@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AvatarController : MonoBehaviour, IPunObservable
+public class AvatarController : MonoBehaviourPun, IPunObservable
 {
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -21,7 +21,10 @@ public class AvatarController : MonoBehaviour, IPunObservable
 
     void Update()
     {
-        transform.position = Camera.main.transform.position;
-        transform.rotation = Camera.main.transform.rotation;
+        if (photonView.IsMine)
+        {
+            transform.position = Camera.main.transform.position;
+            transform.rotation = Camera.main.transform.rotation;
+        }
     }
 }
