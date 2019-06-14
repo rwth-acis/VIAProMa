@@ -10,12 +10,23 @@ using UnityEngine;
 /// </summary>
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private GameObject playerAvatarPrefab;
+
+    private void Awake()
+    {
+        if (playerAvatarPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(playerAvatarPrefab));
+        }
+    }
+
     /// <summary>
     /// Called when the client joins a room
     /// </summary>
     public override void OnJoinedRoom()
     {
         Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
+        PrefabResourceCollection.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
     }
 
     /// <summary>

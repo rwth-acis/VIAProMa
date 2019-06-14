@@ -19,8 +19,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public List<NetworkRoomData> Rooms { get; private set; } = new List<NetworkRoomData>();
 
-    public bool InLobby { get; private set; }
-
     private void Awake()
     {
         if (Instance != null)
@@ -33,14 +31,12 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("Joined Lobby");
-        InLobby = true;
         LobbyJoinStatusChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public override void OnLeftLobby()
     {
         Debug.Log("Left Lobby");
-        InLobby = false;
         LobbyJoinStatusChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -64,7 +60,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        InLobby = false;
         LobbyJoinStatusChanged?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -70,7 +70,7 @@ public class RoomMenu : MonoBehaviour, IWindow
 
     private void OnLobbyStatusChanged(object sender, EventArgs e)
     {
-        if (LobbyManager.Instance.InLobby)
+        if (PhotonNetwork.InLobby)
         {
             Open();
         }
