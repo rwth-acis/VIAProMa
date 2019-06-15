@@ -6,9 +6,29 @@ using UnityEngine;
 
 public static class BackendConnector
 {
+
+    /// <summary>
+    /// Method which checks whether the backend server is reachable
+    /// </summary>
+    /// <returns>returns true if the server is reachable, false otherwise</returns>
+    public static async Task<bool> Ping()
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "ping");
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (resp.ResponseCode == 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     public static async Task<ApiResult<PunchCardEntry[]>> GetGitHubPunchCard(string owner, string repository)
     {
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "githubPunchCard/" + owner + "/" + repository);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
@@ -24,6 +44,7 @@ public static class BackendConnector
     public static async Task<ApiResult<string[]>> GetProjects()
     {
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/");
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);

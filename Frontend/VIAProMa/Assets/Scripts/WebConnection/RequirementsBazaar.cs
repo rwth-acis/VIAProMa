@@ -10,6 +10,7 @@ public static class RequirementsBazaar
     {
         Debug.Log("Requirements Baazar: GetProjects");
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects");
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
@@ -26,6 +27,7 @@ public static class RequirementsBazaar
     public static async Task<ApiResult<Category[]>> GetCategoriesInProject(int projectId)
     {
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories");
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);

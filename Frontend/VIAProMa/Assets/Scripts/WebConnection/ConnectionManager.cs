@@ -1,4 +1,5 @@
 ﻿using HoloToolkit.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,4 +36,33 @@ public class ConnectionManager : Singleton<ConnectionManager>
             return backendAddress + "/" + basePath + "/";
         }
     }
+
+    public bool BackendReachable
+    {
+        get;private set;
+    }
+
+    public void CheckStatusCode(long code)
+    {
+        if (code == 0) // device unavailable
+        {
+            SetBackendReachableStatus(false);
+        }
+        else
+        {
+            SetBackendReachableStatus(true);
+        }
+    }
+
+    private void SetBackendReachableStatus(bool reachable)
+    {
+        bool previousStatus = BackendReachable;
+        BackendReachable = reachable;
+        if (previousStatus != BackendReachable)
+        {
+            BackendOnlineStatusChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public event EventHandler BackendOnlineStatusChanged;
 }
