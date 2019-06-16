@@ -178,6 +178,20 @@ public class ImmersiveProjectManagementService extends RESTService {
 		return Response.ok().entity(returnString).build();
 	}
 
+	@GET
+	@Path("/ping")
+	@Produces(MediaType.TEXT_PLAIN)
+	@ApiOperation(
+			value = "Check if the server is online",
+			notes = "Returns a string")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response ping() {
+		return Response.ok().entity("pong").build();
+	}
+
 
 	// region RequirementsBazaar
 
