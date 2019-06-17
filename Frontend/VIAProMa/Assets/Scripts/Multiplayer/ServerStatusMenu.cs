@@ -3,12 +3,14 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ServerStatusMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject backendLed;
     [SerializeField] private GameObject sharingLed;
+    [SerializeField] private TextMeshPro sharingConnectButtonText;
 
     [SerializeField] private Color serverOnlineColor = new Color(0f, 135f/255f, 3f/255f); // green
     [SerializeField] private Color serverOfflineColor = new Color(188f/255f, 2f/255f, 0f); // red
@@ -26,6 +28,10 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(sharingLed));
         }
+        if (sharingConnectButtonText == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(sharingConnectButtonText));
+        }
 
         backendLedRenderer = backendLed?.GetComponent<Renderer>();
         sharingLedRenderer = sharingLed?.GetComponent<Renderer>();
@@ -40,7 +46,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
         }
 
         SetLED(backendLedRenderer, false);
-        SetLED(sharingLedRenderer, false);
+        SetSharingServerStatus(false);
     }
 
     private void Start()
@@ -56,18 +62,44 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
 
     public override void OnConnected()
     {
-        SetLED(sharingLedRenderer, true);
+        SetSharingServerStatus(true);
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        SetLED(sharingLedRenderer, false);
+        SetSharingServerStatus(false);
     }
 
-    private async void TestBackendConnection()
+    public async void TestBackendConnection()
     {
         bool res = await BackendConnector.Ping();
         SetLED(backendLedRenderer, res);
+    }
+
+    public void SharingConnectDisconnectButtonClicked()
+    {
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonNetwork.Disconnect();
+        }
+        else
+        {
+            // settings are set up in the launcher
+            PhotonNetwork.ConnectUsingSettings();
+        }
+    }
+
+    private void SetSharingServerStatus(bool online)
+    {
+        SetLED(sharingLedRenderer, online);
+        if (online)
+        {
+            sharingConnectButtonText.text = "Disconnect";
+        }
+        else
+        {
+            sharingConnectButtonText.text = "Connect";
+        }
     }
 
     private void SetLED(Renderer ledRenderer, bool online)
