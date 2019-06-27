@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls a diagram GameObject
+/// </summary>
 public abstract class Diagram : MonoBehaviour
 {
 
@@ -20,6 +23,9 @@ public abstract class Diagram : MonoBehaviour
 
     protected Bounds pointBounds; // field is required because otherwise Bounds.Encapsulate does not work as intended
 
+    /// <summary>
+    /// Event which fires if the diagram is updated
+    /// </summary>
     public event EventHandler DiagramUpdated;
 
     protected Vector3 boxSize;
@@ -40,7 +46,10 @@ public abstract class Diagram : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// The bounds of the data points
+    /// </summary>
+    /// <value></value>
     public Bounds PointBounds
     {
         get
@@ -49,6 +58,10 @@ public abstract class Diagram : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Initializes the component
+    /// Checks if it is set up correctly
+    /// </summary>
     protected virtual void Awake()
     {
         if (xAxis == null)
@@ -66,6 +79,10 @@ public abstract class Diagram : MonoBehaviour
         pointBounds = new Bounds();
     }
 
+    /// <summary>
+    /// Calculates the scaling factors by which the data space needs to be multiplied in order to fit it into the size of the diagram
+    /// </summary>
+    /// <returns>The scaling factors for all three axis</returns>
     protected Vector3 CalcScalingFactors()
     {
         float xFactor = SingleScalingFactor(boxSize.x, xAxis.AxisMax - xAxis.AxisMin);
@@ -75,8 +92,16 @@ public abstract class Diagram : MonoBehaviour
         return new Vector3(xFactor, yFactor, zFactor);
     }
 
+    /// <summary>
+    /// Calculates a single scaling factor for one axis
+    /// </summary>
+    /// <param name="worldLength">The length of the diagram along this axis in world units
+    /// This is the available space.</param>
+    /// <param name="dataRange">The difference between the maximum and minimum in the data range on this axis</param>
+    /// <returns></returns>
     protected float SingleScalingFactor(float worldLength, float dataRange)
     {
+        // check if the data range is 0, then scaling is irrelevant (and so that we do not divide by 0)
         if (dataRange == 0)
         {
             return 1;
@@ -87,11 +112,18 @@ public abstract class Diagram : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the visual representation of the diagram
+    /// </summary>
     protected virtual void UpdateVisuals()
     {
         OnDiagramUpdated(EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Invokes the DiagramUpdated event
+    /// </summary>
+    /// <param name="e">Arguments of th event</param>
     protected virtual void OnDiagramUpdated(EventArgs e)
     {
         DiagramUpdated?.Invoke(this, e);

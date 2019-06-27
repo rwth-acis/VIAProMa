@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Represents a requirement in the Requirements Bazaar
+/// </summary>
 public class Requirement : IListViewItemData
 {
     public int id;

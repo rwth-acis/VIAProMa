@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// Transforms data from one format to another
+/// </summary>
 public static class DataAdapter
 {
+    /// <summary>
+    /// Converts punch card data from GitHub to a generic data set which can be inserted into diagrams
+    /// </summary>
+    /// <returns>The async task which returns the data set containing the GitHub punch card data</returns>
     public static async Task<DataSet> GitHubPunchCardToDataSet()
     {
+        
         ApiResult<PunchCardEntry[]> res = await BackendConnector.GetGitHubPunchCard("rwth-acis", "GaMR");
         if (res.HasError)
         {
