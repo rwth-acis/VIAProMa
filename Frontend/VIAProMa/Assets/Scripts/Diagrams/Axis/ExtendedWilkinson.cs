@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Handles the extended Wilkinson algorithm
+/// It handles the numberings and labels on the axes on a diagram
+/// </summary>
 public static class ExtendedWilkinson
 {
     /// <summary>
