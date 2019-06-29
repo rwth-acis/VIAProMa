@@ -100,6 +100,9 @@ public class Scatterplot : Diagram
         return b;
     }
 
+    /// <summary>
+    /// Clears the visual representation of the data points
+    /// </summary>
     private void ClearPointRepresentations()
     {
         for (int i = 0; i < pointRepresentations.Count; i++)

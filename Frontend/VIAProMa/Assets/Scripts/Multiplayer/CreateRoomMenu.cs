@@ -7,6 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the UI menu for creating a new network room
+/// </summary>
 public class CreateRoomMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private RoomMenu roomMenu;
@@ -19,6 +22,12 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
 
     private bool windowEnabled = true;
 
+    /// <summary>
+    /// States whether the window is enabled
+    /// This is different from the window's visibility
+    /// If disabled, all controls will be disabled but the window will remain visible
+    /// </summary>
+    /// <value></value>
     public bool WindowEnabled
     {
         get
@@ -32,8 +41,15 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Event which is invoked if the window is closed
+    /// </summary>
     public event EventHandler WindowClosed;
 
+    /// <summary>
+    /// Initializes the window
+    /// Makes sure that all UI elements are referenced and that the component is set up correctly
+    /// </summary>
     private void Awake()
     {
         if (roomMenu == null)
@@ -67,6 +83,12 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         createRoomButton.Enabled = false;
     }
 
+    /// <summary>
+    /// Called if the text in the input field for the room name is changed
+    /// Checks if the entered room name already exists; if yes, an error message is displayed and the room creation cannot be finished
+    /// </summary>
+    /// <param name="sender">The sender of this event</param>
+    /// <param name="e">Generic event arguments</param>
     private void OnInputFieldRoomNameChanged(object sender, EventArgs e)
     {
         bool roomExists = roomMenu.CheckIfRoomExists(roomNameField.Text);
@@ -74,11 +96,21 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         createRoomButton.Enabled = !roomExists && roomNameField.Text != "";
     }
 
+    /// <summary>
+    /// Called if the checkbox is clicked which enables the limiation of members
+    /// If it is checked, it displays the slider to specify the maximum number of members
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void OnCheckboxMaxNumberOfMembersClicked(object sender, EventArgs e)
     {
         memberNumberSlider.gameObject.SetActive(memberNumberCheckbox.IsChecked);
     }
 
+    /// <summary>
+    /// Called if the create room button is clicked
+    /// Invokes the room creation process
+    /// </summary>
     public void OnCreateRoomButtonClicked()
     {
         // do not try to create a room if not connected
@@ -88,6 +120,8 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         }
 
         RoomOptions roomOptions = null; // if null is passed to CreateRoom, the options are ignored
+        // use the maximum member settings if the checkbox for this is checked
+        // otherwise, roomOptions will remain null and so Photon will use default options
         if (memberNumberCheckbox.IsChecked)
         {
             roomOptions = new RoomOptions { MaxPlayers = (byte)memberNumberSlider.ValueInt };
@@ -95,11 +129,18 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         PhotonNetwork.CreateRoom(roomNameField.Text, roomOptions);
     }
 
+    /// <summary>
+    /// Opens the window, i.e. makes it visible
+    /// </summary>
     public void Open()
     {
         gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides the window
+    /// Invokes the WindowClosed event
+    /// </summary>
     public void Close()
     {
         WindowClosed?.Invoke(this, EventArgs.Empty);
