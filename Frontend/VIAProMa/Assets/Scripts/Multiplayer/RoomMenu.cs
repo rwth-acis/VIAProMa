@@ -6,6 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the menu which allows a user to select existing rooms (or navigate to the menu where a new room can be created)
+/// </summary>
 public class RoomMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private NetworkRoomListView roomListView;
@@ -16,6 +19,9 @@ public class RoomMenu : MonoBehaviour, IWindow
 
     [SerializeField] private CreateRoomMenu createRoomSubMenu;
 
+    /// <summary>
+    /// The number of room entries which are shown on one page
+    /// </summary>
     public int entriesPerPage = 5;
 
     private List<NetworkRoomData> rooms = new List<NetworkRoomData>();
@@ -23,6 +29,11 @@ public class RoomMenu : MonoBehaviour, IWindow
     private int page = 0;
     private bool windowEnabled = true;
 
+    /// <summary>
+    /// States whether the window is enabled
+    /// If set to false, the window will remain visible but all interactable controls are disabled
+    /// </summary>
+    /// <value></value>
     public bool WindowEnabled
     {
         get
@@ -38,8 +49,14 @@ public class RoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Event which is invoked if the window is closed
+    /// </summary>
     public event EventHandler WindowClosed;
 
+    /// <summary>
+    /// Initializes the component, makes sure that it is set up correctly
+    /// </summary>
     private void Awake()
     {
         if (createRoomButton == null)
@@ -59,6 +76,7 @@ public class RoomMenu : MonoBehaviour, IWindow
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(createRoomSubMenu));
         }
 
+        // subscribe to the necessary events
         roomListView.ItemSelected += OnRoomSelected;
         createRoomSubMenu.WindowClosed += CreateRoomMenuClosed;
 
@@ -68,6 +86,12 @@ public class RoomMenu : MonoBehaviour, IWindow
         Close();
     }
 
+    /// <summary>
+    /// Called if the client joined or left the lobby
+    /// Handles the visibility of the menu: it is only visible if the client is in the lobby
+    /// </summary>
+    /// <param name="sender">The sender of the event</param>
+    /// <param name="e">Generic event arguments</param>
     private void OnLobbyStatusChanged(object sender, EventArgs e)
     {
         if (PhotonNetwork.InLobby)
@@ -80,16 +104,30 @@ public class RoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Makes sure that if the menu becomes visible, it will start in its original state
+    /// </summary>
     private void OnEnable()
     {
         createRoomSubMenu.Close();
     }
 
+    /// <summary>
+    /// Called if the sub menu for creating a room is closed
+    /// </summary>
+    /// <param name="sender">The sender of the event</param>
+    /// <param name="e">Generic event arguments</param>
     private void CreateRoomMenuClosed(object sender, EventArgs e)
     {
         WindowEnabled = true;
     }
 
+    /// <summary>
+    /// Called if a element of the room list view was selected by the user
+    /// Makes sure that the client joins the selected room
+    /// </summary>
+    /// <param name="sender">The sender of the event</param>
+    /// <param name="e">Arguments about the list view selection event</param>
     private void OnRoomSelected(object sender, ListViewItemSelectedArgs e)
     {
         if (windowEnabled)
@@ -98,6 +136,10 @@ public class RoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Called if the user pushes the page up button
+    /// Swiches to the previous page
+    /// </summary>
     public void PageUp()
     {
         page = Mathf.Max(0, page - 1);
@@ -105,6 +147,10 @@ public class RoomMenu : MonoBehaviour, IWindow
         UpdateRoomDisplay();
     }
 
+    /// <summary>
+    /// Called if the user pages the page down button
+    /// Switches to the next page
+    /// </summary>
     public void PageDown()
     {
         page = Mathf.Min(page + 1, ((rooms.Count - 1) / entriesPerPage));
@@ -112,12 +158,21 @@ public class RoomMenu : MonoBehaviour, IWindow
         UpdateRoomDisplay();
     }
 
+    /// <summary>
+    /// Called if the user pushes the "create room" menu
+    /// Opens the sub menu for creating a room
+    /// </summary>
     public void OpenCreateRoomMenu()
     {
         createRoomSubMenu.Open();
         WindowEnabled = false;
     }
 
+    /// <summary>
+    /// Checks if the given roomName already exists
+    /// </summary>
+    /// <param name="roomName">Name for a room</param>
+    /// <returns>True if a room with this name already exists, else false</returns>
     public bool CheckIfRoomExists(string roomName)
     {
         for (int i = 0; i < rooms.Count; i++)
@@ -130,6 +185,10 @@ public class RoomMenu : MonoBehaviour, IWindow
         return false;
     }
 
+    /// <summary>
+    /// Adapts the button states of the page up and page down buttons
+    /// If the first page is shown, the up button is disabled and if the last page is shown, the down button is disabled
+    /// </summary>
     private void SetPageButtonStates()
     {
         if (page == 0) // first page
@@ -151,6 +210,11 @@ public class RoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Called if the room list is updated
+    /// </summary>
+    /// <param name="sender">Sender of the event</param>
+    /// <param name="e">Generic event arguments</param>
     private void UpdateRoomList(object sender, EventArgs e)
     {
         rooms = LobbyManager.Instance.Rooms;
@@ -158,10 +222,15 @@ public class RoomMenu : MonoBehaviour, IWindow
         SetPageButtonStates();
     }
 
+    /// <summary>
+    /// Updates the list view showing the room lists (on the current page)
+    /// </summary>
     private void UpdateRoomDisplay()
     {
         if (rooms.Count > 0)
         {
+            // get the start index and length of the sub array to display
+            // make sure that it stays within the bounds of the room list
             int startIndex = Mathf.Min(page * entriesPerPage, rooms.Count - 1);
             int length = Mathf.Min(rooms.Count - startIndex, entriesPerPage);
             roomListView.Items = rooms.GetRange(startIndex, length);
@@ -172,11 +241,17 @@ public class RoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Opens the window
+    /// </summary>
     public void Open()
     {
         gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Closes the window
+    /// </summary>
     public void Close()
     {
         gameObject.SetActive(false);

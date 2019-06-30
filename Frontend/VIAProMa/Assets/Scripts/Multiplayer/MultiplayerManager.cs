@@ -12,6 +12,9 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject playerAvatarPrefab;
 
+    /// <summary>
+    /// Checks if the component is set up correctly
+    /// </summary>
     private void Awake()
     {
         if (playerAvatarPrefab == null)
@@ -40,11 +43,19 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Debug.Log("Room join failed\n" + returnCode + ": " + message);
     }
 
+    /// <summary>
+    /// Called by Photon if another person enters the room that the client is currently in
+    /// </summary>
+    /// <param name="newPlayer"></param>
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log(newPlayer.NickName + " joined");
     }
 
+    /// <summary>
+    /// Called by Photon if another person leaves the room that the client is currently in
+    /// </summary>
+    /// <param name="otherPlayer"></param>
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log(otherPlayer.NickName + " left");

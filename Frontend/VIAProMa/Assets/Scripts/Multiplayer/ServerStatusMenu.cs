@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Controls the UI for the server status menu
+/// This menu indicates whether the backend servers are online
+/// </summary>
 public class ServerStatusMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject backendLed;
@@ -18,6 +22,9 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
     private Renderer backendLedRenderer;
     private Renderer sharingLedRenderer;
 
+    /// <summary>
+    /// Initializes the component and makes sure that it is set up correctly
+    /// </summary>
     private void Awake()
     {
         if (backendLed == null)
@@ -49,33 +56,60 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
         SetSharingServerStatus(false);
     }
 
+    /// <summary>
+    /// Check the connection
+    /// Subscribe for the backend status changed event
+    /// </summary>
     private void Start()
     {
         ConnectionManager.Instance.BackendOnlineStatusChanged += BackendOnlineStatusChanged;
         TestBackendConnection();
     }
 
+    /// <summary>
+    /// Called if the client finds out that the backend changed its status from online to offline or vice versa
+    /// Changes the LED for the backend based on the online/offline status
+    /// </summary>
+    /// <param name="sender">The sender of the event</param>
+    /// <param name="e">Generic event arguments</param>
     private void BackendOnlineStatusChanged(object sender, EventArgs e)
     {
         SetLED(backendLedRenderer, ConnectionManager.Instance.BackendReachable);
     }
 
+    /// <summary>
+    /// Called by Photon if the client connects to the networking server
+    /// Shows the networking server as connected
+    /// </summary>
     public override void OnConnected()
     {
         SetSharingServerStatus(true);
     }
 
+    /// <summary>
+    /// Called by Photon if the client disconnects from the networking server
+    /// Shows teh networking server as disconnected
+    /// </summary>
+    /// <param name="cause">Contains information about the cause for the disconnect</param>
     public override void OnDisconnected(DisconnectCause cause)
     {
         SetSharingServerStatus(false);
     }
 
+    /// <summary>
+    /// Tests the backend connection by sending a "ping" message to the server
+    /// </summary>
+    /// <returns>async operation</returns>
     public async void TestBackendConnection()
     {
         bool res = await BackendConnector.Ping();
         SetLED(backendLedRenderer, res);
     }
 
+    /// <summary>
+    /// Called if the user clicks the connect/disconnect button for the networking server
+    /// Depending on the current conneciton status, it either connects or disconnects to/from the server
+    /// </summary>
     public void SharingConnectDisconnectButtonClicked()
     {
         if (PhotonNetwork.IsConnected)
@@ -84,14 +118,21 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
         }
         else
         {
-            // settings are set up in the launcher
+            // settings are set up in the launcher on application startup
             PhotonNetwork.ConnectUsingSettings();
         }
     }
 
+    /// <summary>
+    /// Sets the connection status of the sharing server
+    /// </summary>
+    /// <param name="online">True, if the sharing server is online</param>
     private void SetSharingServerStatus(bool online)
     {
+        // indicate the status
         SetLED(sharingLedRenderer, online);
+        // change the text on the connect/disconnect button to the operation which will happen when pushing the button
+        // if connected, the button will show "Disconnect" and vice versa
         if (online)
         {
             sharingConnectButtonText.text = "Disconnect";
@@ -102,6 +143,11 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
         }
     }
 
+    /// <summary>
+    /// Sets the emission color of the given LED renderer based on the online status of the corresponding server
+    /// </summary>
+    /// <param name="ledRenderer">The renderer of the LED to change</param>
+    /// <param name="online">True, if the corresponding server is online; otherwise false</param>
     private void SetLED(Renderer ledRenderer, bool online)
     {
         if (online)
