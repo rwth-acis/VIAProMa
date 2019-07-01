@@ -87,9 +87,12 @@ public class ShelfConfiguration : MonoBehaviour
         }
         categories = null;
 
-        for(int i=0;i<projects.Length;i++)
+        if (projects != null)
         {
-            Debug.Log(projects[i].name);
+            for (int i = 0; i < projects.Length; i++)
+            {
+                Debug.Log(projects[i].name);
+            }
         }
     }
 

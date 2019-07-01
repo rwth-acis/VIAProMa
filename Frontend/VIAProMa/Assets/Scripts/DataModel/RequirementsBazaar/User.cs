@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Represents a user in the Requirements Bazaar
 /// </summary>
-public class User
+public class User : IListViewItemData
 {
     public int id;
     public string userName;

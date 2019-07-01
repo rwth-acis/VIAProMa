@@ -39,4 +39,8 @@ public static class RequirementsBazaar
             return new ApiResult<Category[]>(categories);
         }
     }
+
+    public static async Task<ApiResult<Requirement>> GetRequirement(int requirementId)
+    {
+    }
 }
