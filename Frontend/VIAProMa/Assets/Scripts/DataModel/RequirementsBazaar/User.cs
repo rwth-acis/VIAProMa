@@ -3,7 +3,7 @@
 /// Represents a user in the Requirements Bazaar
 /// </summary>
 [Serializable]
-public class User : IListViewItemData
+public class User : IListViewItemData, IUninitializable
 {
     public int id;
     public string userName;
@@ -14,4 +14,19 @@ public class User : IListViewItemData
     public string profileImage;
     public bool emailLeadSubscription;
     public bool emailFollowSubscription;
+
+    public bool IsUninitialized
+    {
+        get
+        {
+            if (id == 0 && las2peerId == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 }

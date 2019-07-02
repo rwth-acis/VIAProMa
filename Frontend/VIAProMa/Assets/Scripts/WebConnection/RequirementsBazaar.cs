@@ -55,4 +55,20 @@ public static class RequirementsBazaar
             return new ApiResult<Requirement>(requirement);
         }
     }
+
+    public static async Task<ApiResult<Contributors>> GetRequirementContributors(int requirementId)
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId + "/contributors");
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (!resp.Successful)
+        {
+            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+            return new ApiResult<Contributors>(resp.ResponseCode, resp.ResponseBody);
+        }
+        else
+        {
+            Contributors contributors = JsonUtility.FromJson<Contributors>(resp.ResponseBody);
+            return new ApiResult<Contributors>(contributors);
+        }
+    }
 }

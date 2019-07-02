@@ -7,6 +7,7 @@ import i5.las2peer.restMapper.annotations.ServicePath;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Contributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 import io.swagger.annotations.*;
@@ -317,7 +318,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 	@Path("/requirementsBazaar/requirements/{requirementId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(
-			value = "Gets the requirements in a project",
+			value = "Gets a requirement",
 			notes = "Returns the requirement with the given id")
 	@ApiResponses(
 			value = { @ApiResponse(
@@ -325,8 +326,38 @@ public class ImmersiveProjectManagementService extends RESTService {
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getRequirement(@PathParam("requirementId") int requirementId) {
 		try {
-			APIResult<Requirement> res;
-			res = RequirementsBazaarAdapter.GetRequirement(requirementId);
+			APIResult<Requirement> res = RequirementsBazaarAdapter.GetRequirement(requirementId);
+			if (res.successful())
+			{
+				ObjectMapper mapper = new ObjectMapper();
+				ObjectWriter writer = mapper.writer();
+				String result = writer.writeValueAsString(res.getValue());
+				return Response.ok().entity(result).build();
+			}
+			else
+			{
+				return Response.status(res.getCode()).entity(res.getErrorMessage()).build();
+			}
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path("/requirementsBazaar/requirements/{requirementId}/contributors")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Gets the contributors of a requirement",
+			notes = "Returns contributors of the requirement with the given id")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getRequirementContributors(@PathParam("requirementId") int requirementId) {
+		try {
+			APIResult<Contributors> res = RequirementsBazaarAdapter.GetRequirementContributors(requirementId);
 			if (res.successful())
 			{
 				ObjectMapper mapper = new ObjectMapper();

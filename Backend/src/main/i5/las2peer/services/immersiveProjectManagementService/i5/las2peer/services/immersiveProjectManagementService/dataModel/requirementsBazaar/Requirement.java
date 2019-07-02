@@ -7,6 +7,7 @@ public class Requirement {
     public int id;
     public String name;
     public String description;
+    public String realized;
     public int projectId;
     public User creator;
     public Category[] categories;

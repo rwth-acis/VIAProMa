@@ -3,6 +3,7 @@ package i5.las2peer.services.immersiveProjectManagementService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Contributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
@@ -146,6 +147,25 @@ public class RequirementsBazaarAdapter {
             ObjectMapper mapper = new ObjectMapper();
             Requirement requirement = mapper.readValue(origJson, Requirement.class);
             return new APIResult<Requirement>(response.getStatus(), requirement);
+        } catch (IOException e) {
+            return new APIResult<>(e.getMessage(), 500);
+        }
+    }
+
+    public static APIResult<Contributors> GetRequirementContributors(int requirementId)
+    {
+        try {
+            Response response = Utilities.getResponse(baseUrl + "requirements/" + requirementId + "/contributors");
+            if (response.getStatus() != 200 && response.getStatus() != 201) {
+                return new APIResult<Contributors>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            Contributors contributors = mapper.readValue(origJson, Contributors.class);
+            return new APIResult<Contributors>(response.getStatus(), contributors);
         } catch (IOException e) {
             return new APIResult<>(e.getMessage(), 500);
         }
