@@ -15,4 +15,10 @@ public class Requirement : IListViewItemData
     public Category[] categories;
     public string creationDate;
     public string lastUpdatedDate;
+    public int numberOfComments;
+    public int numberOfAttachments;
+    public int numberOfFollowers;
+    public int upVotes;
+    public int downVotes;
+    public string userVoted;
 }

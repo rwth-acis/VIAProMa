@@ -12,4 +12,10 @@ public class Requirement {
     public Category[] categories;
     public String creationDate;
     public String lastUpdatedDate;
+    public int numberOfComments;
+    public int numberOfAttachments;
+    public int numberOfFollowers;
+    public int upVotes;
+    public int downVotes;
+    public String userVoted;
 }

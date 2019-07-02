@@ -11,7 +11,9 @@ public class UserDataDisplay : DataDisplay<User>
     [SerializeField] private SpriteRenderer profileImageSprite;
     [SerializeField] TextMeshPro userNameLabel;
 
-    private static Dictionary<string, Texture2D> profileImages;
+    private const float pixelDensity = 2000f / 512f;
+
+    private static Dictionary<string, Texture2D> profileImages = new Dictionary<string, Texture2D>();
 
     private void Awake()
     {
@@ -36,7 +38,8 @@ public class UserDataDisplay : DataDisplay<User>
         }
         else
         {
-            Sprite sprite = Sprite.Create(profileImage, new Rect(0, 0, profileImage.width, profileImage.height), new Vector2(0.5f, 0.5f), 2000f);
+            float pixelsPerUnit = Mathf.Min(profileImage.width, profileImage.height) * pixelDensity;
+            Sprite sprite = Sprite.Create(profileImage, new Rect(0, 0, profileImage.width, profileImage.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
             profileImageSprite.sprite = sprite;
         }
 

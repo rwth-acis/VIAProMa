@@ -1,8 +1,7 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
@@ -192,7 +191,6 @@ public class ImmersiveProjectManagementService extends RESTService {
 		return Response.ok().entity("pong").build();
 	}
 
-
 	// region RequirementsBazaar
 
 	@GET
@@ -206,8 +204,14 @@ public class ImmersiveProjectManagementService extends RESTService {
 					code = HttpURLConnection.HTTP_OK,
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getReqBazRequirementsInCategory(@PathParam("categoryId") int categoryId,
-	@PathParam("page") int page,
-	@PathParam("items_per_page") int itemsPerPage) {
+	@QueryParam("page") int page,
+	@QueryParam("items_per_page") int itemsPerPage) {
+		// if items per page is 0, it was probably not set
+		// default the items per page to 5 in order to avoid errors when requesting items with a page size of 0
+		if (itemsPerPage == 0)
+		{
+			itemsPerPage = 5;
+		}
 		APIResult<Requirement[]> res = RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId, page, itemsPerPage);
 		if (res.hasError())
 		{
@@ -302,6 +306,38 @@ public class ImmersiveProjectManagementService extends RESTService {
 			//filterProvider.addFilter("shortFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name", "projectId"));
 			String result = Utilities.unityCompatibleArray(allCategories);
 			return Response.ok().entity(result).build();
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path("/requirementsBazaar/requirements/{requirementId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Gets the requirements in a project",
+			notes = "Returns the requirement with the given id")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getRequirement(@PathParam("requirementId") int requirementId) {
+		try {
+			APIResult<Requirement> res;
+			res = RequirementsBazaarAdapter.GetRequirement(requirementId);
+			if (res.successful())
+			{
+				ObjectMapper mapper = new ObjectMapper();
+				ObjectWriter writer = mapper.writer();
+				String result = writer.writeValueAsString(res.getValue());
+				return Response.ok().entity(result).build();
+			}
+			else
+			{
+				return Response.status(res.getCode()).entity(res.getErrorMessage()).build();
+			}
 		}
 		catch (IOException e)
 		{

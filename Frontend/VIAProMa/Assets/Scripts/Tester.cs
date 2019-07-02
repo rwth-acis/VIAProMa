@@ -13,6 +13,8 @@ public class Tester : MonoBehaviour
         {
             Debug.Log("Test routine started");
 
+
+
             //ApiResult<PunchCardEntry[]> res = await BackendConnector.GetGitHubPunchCard("rwth-acis", "GaMR");
             //if (res.HasError)
             //{

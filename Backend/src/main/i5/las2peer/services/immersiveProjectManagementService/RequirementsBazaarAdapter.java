@@ -19,10 +19,12 @@ import java.io.IOException;
  */
 public class RequirementsBazaarAdapter {
 
+    private  static String baseUrl = "https://requirements-bazaar.org/bazaar/";
+
     public static Response RequestRequirementsInCategory(int categoryId, int page, int itemsPerPage)
     {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage);
+        WebTarget webTarget = client.target(baseUrl + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage);
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         return response;
@@ -54,7 +56,7 @@ public class RequirementsBazaarAdapter {
     {
         try {
             Client client = ClientBuilder.newClient();
-            WebTarget webTarget = client.target("https://requirements-bazaar.org/bazaar/projects?page=" + page + "&per_page=" + itemsPerPage);
+            WebTarget webTarget = client.target(baseUrl + "projects?page=" + page + "&per_page=" + itemsPerPage);
             Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
             Response response = invocationBuilder.get();
 
@@ -77,7 +79,7 @@ public class RequirementsBazaarAdapter {
 
     public static Response RequestCategoriesInProject(int projectId)
     {
-        return Utilities.GetResponse("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories");
+        return Utilities.getResponse(baseUrl + "projects/" + projectId + "/categories");
     }
 
     public  static  APIResult<Category[]> GetCategoriesInProject(int projectId)
@@ -105,7 +107,7 @@ public class RequirementsBazaarAdapter {
 
     public static Response RequestRequirementsInProject(int projectId, int page, int itemsPerPage)
     {
-        return Utilities.GetResponse("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/requirements?page=" + page + "&itmes_per_page=" + itemsPerPage);
+        return Utilities.getResponse(baseUrl + "projects/" + projectId + "/requirements?page=" + page + "&itmes_per_page=" + itemsPerPage);
     }
 
     public static APIResult<Requirement[]> GetRequirementsInProject(int projectId, int page, int itemsPerPage)
@@ -128,6 +130,24 @@ public class RequirementsBazaarAdapter {
         }
         catch (IOException e) {
             return  new APIResult<>(e.getMessage(), 500);
+        }
+    }
+
+    public static APIResult<Requirement> GetRequirement(int requirementId) {
+        try {
+            Response response = Utilities.getResponse(baseUrl + "requirements/" + requirementId);
+            if (response.getStatus() != 200 && response.getStatus() != 201) {
+                return new APIResult<Requirement>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            Requirement requirement = mapper.readValue(origJson, Requirement.class);
+            return new APIResult<Requirement>(response.getStatus(), requirement);
+        } catch (IOException e) {
+            return new APIResult<>(e.getMessage(), 500);
         }
     }
 

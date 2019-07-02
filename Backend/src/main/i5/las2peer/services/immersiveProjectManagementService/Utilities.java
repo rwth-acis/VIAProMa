@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -39,7 +40,7 @@ public class Utilities {
         return writer.writeValueAsString(obj);
     }
 
-    public static Response GetResponse(String url)
+    public static Response getResponse(String url)
     {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(url);
