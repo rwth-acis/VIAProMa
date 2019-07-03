@@ -14,9 +14,27 @@ public class RequirementsLoader : Shelf, ILoadShelf
 
     private int topPage;
 
-    private void Awake()
+    protected override void Awake()
     {
-        
+        base.Awake();
+        if (configuration == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(configuration));
+        }
+        if (boards.Length == 0)
+        {
+            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(boards));
+        }
+        else
+        {
+            for (int i=0;i<boards.Length;i++)
+            {
+                if (boards[i] == null)
+                {
+                    SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(boards), i);
+                }
+            }
+        }
     }
 
     public void LoadContent()

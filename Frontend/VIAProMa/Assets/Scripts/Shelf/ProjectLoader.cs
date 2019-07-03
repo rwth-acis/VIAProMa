@@ -16,8 +16,9 @@ public class ProjectLoader : Shelf, ILoadShelf
 
     public MessageBadge MessageBadge { get => messageBadge; }
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         if (filePrefab == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(filePrefab));
@@ -25,10 +26,6 @@ public class ProjectLoader : Shelf, ILoadShelf
         if (shelfBoards == null || shelfBoards.Length == 0)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelfBoards));
-        }
-        if (messageBadge == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(messageBadge));
         }
         LoadContent();
     }
