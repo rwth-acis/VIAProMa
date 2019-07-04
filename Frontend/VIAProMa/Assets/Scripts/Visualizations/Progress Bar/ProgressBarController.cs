@@ -53,9 +53,9 @@ public class ProgressBarController : MonoBehaviour
             newLength = minLength;
         }
 
-
+        // move the object so that scaling operation has its pivot at one of the caps
         float relativeScale = newLength / Length;
-        Vector3 objectPosRelativeToPivot = new Vector3(Length / 2f, 0, 0);
+        Vector3 objectPosRelativeToPivot = new Vector3(transform.localScale.x * Length / 2f, 0, 0);
         if (manipulationOnPosCap)
         {
             objectPosRelativeToPivot *= -1f;
@@ -65,7 +65,7 @@ public class ProgressBarController : MonoBehaviour
 
         transform.localPosition = (relativeScale * (transform.localRotation * objectPosRelativeToPivot)) + pivotPosition;
 
-
+        // scale the tubes to the new length and update the caps' position
         tubes.localScale = new Vector3(newLength, 1f, 1f);
         capPos.localPosition = new Vector3(newLength / 2f, 0f, 0f);
         capNeg.localPosition = new Vector3(-newLength / 2f, 0f, 0f);
