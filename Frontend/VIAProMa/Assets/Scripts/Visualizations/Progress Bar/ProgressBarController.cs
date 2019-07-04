@@ -12,7 +12,30 @@ public class ProgressBarController : MonoBehaviour
 
     public float minLength = 0.05f;
 
+    private float percentageDone;
+    private float percentageInProgress;
+
     public float Length { get => tubes.localScale.x; }
+
+    public float PercentageDone
+    {
+        get => percentageDone;
+        set
+        {
+            percentageDone = Mathf.Clamp01(value);
+            UpdateVisuals();
+        }
+    }
+
+    public float PercentageInProgress
+    {
+        get => percentageInProgress;
+        set
+        {
+            percentageInProgress = Mathf.Clamp01(value);
+            UpdateVisuals();
+        }
+    }
 
     private void Awake()
     {
@@ -36,6 +59,31 @@ public class ProgressBarController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(innerBarInProgress));
         }
+
+        UpdateVisuals();
+    }
+
+    private void UpdateVisuals()
+    {
+        float doneBarScale = percentageDone;
+        float inProgressBarScale = percentageInProgress;
+
+        if (percentageDone == 0)
+        {
+            doneBarScale = 0.001f;
+        }
+        if (percentageInProgress == 0)
+        {
+            inProgressBarScale = 0.001f;
+        }
+        else
+        {
+            inProgressBarScale = Mathf.Clamp(percentageInProgress, 0, 1 - percentageDone);
+        }
+
+        innerBarDone.localScale = new Vector3(doneBarScale, 1f, 1f);
+        innerBarInProgress.localPosition = new Vector3(-0.5f + doneBarScale, 0f, 0f);
+        innerBarInProgress.localScale = new Vector3(inProgressBarScale, 1f, 1f);
     }
 
     public void SetLength(bool manipulationOnPosCap, float newLength)
