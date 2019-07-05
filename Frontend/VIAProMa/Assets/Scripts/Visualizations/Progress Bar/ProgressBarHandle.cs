@@ -3,15 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeightChanger : MonoBehaviour, IMixedRealityPointerHandler
+public class ProgressBarHandle : MonoBehaviour, IMixedRealityPointerHandler
 {
+    [SerializeField] private ProgressBarController progressBar;
+
+    public bool handleOnPositiveCap;
+
     private IMixedRealityPointer activePointer;
     private Vector3 startPosition;
-    private float startHeight;
+    private float startLength;
 
-    public float maxMovement = 0.4f;
-
-    public float Height { get; private set; }
+    private void Awake()
+    {
+        if (progressBar == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
+        }
+    }
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
@@ -23,9 +31,9 @@ public class HeightChanger : MonoBehaviour, IMixedRealityPointerHandler
         {
             activePointer = eventData.Pointer;
             startPosition = activePointer.Position;
-            startHeight = Height;
+            startLength = progressBar.Length;
 
-            // Mark the pointer data as used to prevent other behaviors from handling input events
+            // Mark pointer data as used
             eventData.Use();
         }
     }
@@ -35,11 +43,14 @@ public class HeightChanger : MonoBehaviour, IMixedRealityPointerHandler
         if (eventData.Pointer == activePointer && !eventData.used)
         {
             Vector3 delta = activePointer.Position - startPosition;
-            float handDelta = Vector3.Dot(Vector3.up, delta);
+            float handDelta = Vector3.Dot(progressBar.transform.right, delta);
+            if (handleOnPositiveCap)
+            {
+                handDelta *= -1f;
+            }
+            progressBar.SetLength(handleOnPositiveCap, startLength - handDelta);
 
-            Height = startHeight + handDelta / maxMovement;
-
-            // Mark the pointer data as used to prevent other behaviors from handling input events
+            // mark pointer data as used
             eventData.Use();
         }
     }

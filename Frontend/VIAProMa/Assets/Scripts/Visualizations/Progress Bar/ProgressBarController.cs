@@ -11,6 +11,7 @@ public class ProgressBarController : MonoBehaviour
     [SerializeField] private Transform innerBarInProgress;
 
     public float minLength = 0.05f;
+    public float maxLength = 3f;
 
     private float percentageDone;
     private float percentageInProgress;
@@ -95,16 +96,13 @@ public class ProgressBarController : MonoBehaviour
             minLength = 0.001f;
         }
 
-        // ensure that the newLength is greater than minLength
-        if (newLength < minLength)
-        {
-            newLength = minLength;
-        }
+        // ensure that the newLength is between minLength and maxLength
+        newLength = Mathf.Clamp(newLength, minLength, maxLength);
 
         // move the object so that scaling operation has its pivot at one of the caps
         float relativeScale = newLength / Length;
         Vector3 objectPosRelativeToPivot = new Vector3(transform.localScale.x * Length / 2f, 0, 0);
-        if (manipulationOnPosCap)
+        if (!manipulationOnPosCap)
         {
             objectPosRelativeToPivot *= -1f;
         }

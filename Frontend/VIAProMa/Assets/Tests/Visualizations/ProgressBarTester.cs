@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ProgressBarTester : MonoBehaviour
 {
-    public bool scaleOnPosSide;
-    public float length = 1f;
     [Range(0, 1)]
     public float percentDone = 0f;
     [Range(0, 1)]
@@ -24,7 +22,6 @@ public class ProgressBarTester : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        progressBar.SetLength(scaleOnPosSide, length);
         progressBar.PercentageDone = percentDone;
         progressBar.PercentageInProgress = percentInProgress;
     }
