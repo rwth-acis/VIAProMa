@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProgressBarController : MonoBehaviour
+public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
 {
     [SerializeField] private Transform capPos;
     [SerializeField] private Transform capNeg;

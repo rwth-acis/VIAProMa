@@ -202,28 +202,42 @@ PrefabInstance:
 
         Instructions:
 
+        The values of the progress bar can be changed in the test runner''s script.
 
-        Expected Result:'
+        The length of the progress bar can be altered by pulling on the handles.
+
+
+        Expected Result:
+
+        The green part represents the fraction of done tasks, the yellow part represents
+        the fraction of tasks which are in progress.
+
+        When pulling on the handles, the length of the progress bar can be altered.'
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 103
+      value: 453
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 13
+      value: 76
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 12
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.lineCount
-      value: 6
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: 322
       objectReference: {fileID: 0}
     - target: {fileID: 4301431890908147799, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
@@ -546,8 +560,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleOnPosSide: 0
-  length: 1
   percentDone: 0
   percentInProgress: 0
   progressBar: {fileID: 3440714514492623110}
