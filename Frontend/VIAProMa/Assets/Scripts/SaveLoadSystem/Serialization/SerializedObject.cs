@@ -4,14 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class SerializedData
+public class SerializedObject
 {
+    [SerializeField] private string id;
+    [SerializeField] private ObjectType objectType;
+
     [SerializeField] private SerializableDictionaryInt integers;
     [SerializeField] private SerializableDictionaryString strings;
     [SerializeField] private SerializableDictionaryFloat floats;
     [SerializeField] private SerializableDictionaryBool bools;
     [SerializeField] private SerializableDictionaryVector3 vector3s;
     [SerializeField] private SerializableDictionaryQuaternion quaternions;
+
+    public string Id { get; set; }
+    public ObjectType ObjectType { get; set; }
 
     public Dictionary<string, int> Integers { get; private set; }
     public Dictionary<string, string> Strings { get; private set; }
@@ -20,7 +26,7 @@ public class SerializedData
     public Dictionary<string, Vector3> Vector3s { get; private set; }
     public Dictionary<string, Quaternion> Quaternions { get; private set; }
 
-    public SerializedData()
+    public SerializedObject()
     {
         Integers = new Dictionary<string, int>();
         Strings = new Dictionary<string, string>();
@@ -32,6 +38,8 @@ public class SerializedData
 
     public void ApplyDataSerialization()
     {
+        id = Id;
+        objectType = ObjectType;
         integers = new SerializableDictionaryInt(Integers);
         strings = new SerializableDictionaryString(Strings);
         floats = new SerializableDictionaryFloat(Floats);
@@ -40,7 +48,7 @@ public class SerializedData
         quaternions = new SerializableDictionaryQuaternion(Quaternions);
     }
 
-    public static SerializedData Merge(SerializedData data1, SerializedData data2)
+    public static SerializedObject Merge(SerializedObject data1, SerializedObject data2)
     {
         data1.Integers = MergeDictionary(data1.Integers, data2.Integers);
         data1.Strings = MergeDictionary(data1.Strings, data2.Strings);

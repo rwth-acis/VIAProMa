@@ -5,12 +5,9 @@ using UnityEngine;
 
 public class Serializer : MonoBehaviour
 {
-    private const string objectTypeKey = "objectType";
-    private const string idKey = "id";
-
     public ObjectType objectType;
 
-    private ISerializer[] iserializers;
+    private ISerializable[] iserializers;
 
     public string Id { get; private set; }
 
@@ -32,35 +29,35 @@ public class Serializer : MonoBehaviour
         }
     }
 
-    public virtual void Deserialize(SerializedData serializedData)
+    public virtual void Deserialize(SerializedObject serializedObject)
     {
-        objectType = (ObjectType)serializedData.Integers[objectTypeKey];
-        Id = serializedData.Strings[idKey];
+        Id = serializedObject.Id;
+        objectType = serializedObject.ObjectType;
 
         // get the serializers on the object
-        iserializers = GetComponentsInChildren<ISerializer>(true);
+        iserializers = GetComponentsInChildren<ISerializable>(true);
 
         for (int i=0; i<iserializers.Length; i++)
         {
-            iserializers[i].Deserialize(serializedData);
+            iserializers[i].Deserialize(serializedObject);
         }
     }
 
-    public virtual SerializedData Serialize()
+    public virtual SerializedObject Serialize()
     {
         // get the serializers on the object
-        iserializers = GetComponentsInChildren<ISerializer>(true);
+        iserializers = GetComponentsInChildren<ISerializable>(true);
 
         // create a dictionary which stores the values which should be serialized
-        SerializedData serializedData = new SerializedData();
-        serializedData.Integers.Add(objectTypeKey, (int)objectType);
-        serializedData.Strings.Add(idKey, Id);
+        SerializedObject serializedObject = new SerializedObject();
+        serializedObject.Id = Id;
+        serializedObject.ObjectType = objectType;
         // serialize each serializer and add the result to the dictionary of serialized values
         for (int i = 0; i < iserializers.Length; i++)
         {
-            serializedData = SerializedData.Merge(serializedData, iserializers[i].Serialize());
+            serializedObject = SerializedObject.Merge(serializedObject, iserializers[i].Serialize());
         }
-        return serializedData;
+        return serializedObject;
     }
 }
 

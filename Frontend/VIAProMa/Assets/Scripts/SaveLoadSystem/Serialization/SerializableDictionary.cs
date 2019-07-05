@@ -6,15 +6,33 @@ using UnityEngine;
 [Serializable]
 public class SerializableDictionary<T>
 {
-    [SerializeField] private List<DictionaryValue<T>> keyValues;
+    [SerializeField] private List<string> keys;
+    [SerializeField] private List<T> values;
 
     public SerializableDictionary(Dictionary<string, T> originalDictionary)
     {
-        keyValues = new List<DictionaryValue<T>>();
+        keys = new List<string>();
+        values = new List<T>();
         foreach(KeyValuePair<string, T> pair in originalDictionary)
         {
-            keyValues.Add(new DictionaryValue<T>(pair.Key, pair.Value));
+            keys.Add(pair.Key);
+            values.Add(pair.Value);
         }
+    }
+
+    public Dictionary<string, T> ToDictionary()
+    {
+        Dictionary<string, T> res = new Dictionary<string, T>();
+        if (keys.Count != values.Count)
+        {
+            Debug.LogWarning("Converting SerializableDictionary to Dictionary may miss some values because key and value lists have different lengths. This should not happen.");
+        }
+
+        for (int i=0;i<Math.Min(keys.Count, values.Count); i++)
+        {
+            res.Add(keys[i], values[i]);
+        }
+        return res;
     }
 
     public static SerializableDictionary<T> FromDictionary(Dictionary<string, T> dictionary)

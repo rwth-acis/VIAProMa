@@ -15,15 +15,15 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
 
     public string SerializeSaveGame()
     {
-        List<SerializedData> serializedObjects = new List<SerializedData>();
+        List<SerializedObject> serializedObjects = new List<SerializedObject>();
         for (int i=0;i<Serializers.Count;i++)
         {
-            SerializedData data = Serializers[i].Serialize();
+            SerializedObject data = Serializers[i].Serialize();
             data.ApplyDataSerialization();
             serializedObjects.Add(data);
         }
 
-        return JsonArrayUtility.ToJson<SerializedData>(serializedObjects.ToArray());
+        return JsonArrayUtility.ToJson<SerializedObject>(serializedObjects.ToArray());
     }
 
     public void DeserializeSaveGame()
