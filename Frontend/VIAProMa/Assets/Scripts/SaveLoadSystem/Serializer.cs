@@ -7,12 +7,14 @@ public class Serializer : MonoBehaviour
 {
 
     private ISerializable[] iserializers;
+    private string prefabName;
 
     public string Id { get; private set; }
 
     private void Awake()
     {
         Id = Guid.NewGuid().ToString();
+        prefabName = gameObject.name.Replace("(Clone)", "");
     }
 
     private void Start()
@@ -49,7 +51,7 @@ public class Serializer : MonoBehaviour
         // create a dictionary which stores the values which should be serialized
         SerializedObject serializedObject = new SerializedObject();
         serializedObject.Id = Id;
-        serializedObject.PrefabName = gameObject.name;
+        serializedObject.PrefabName = prefabName;
         // serialize each serializer and add the result to the dictionary of serialized values
         for (int i = 0; i < iserializers.Length; i++)
         {

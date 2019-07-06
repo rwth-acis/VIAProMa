@@ -39,7 +39,7 @@ public class PrefabResourceCollection : ScriptableObject
         return null;
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    //[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public void FindNetworkPrefabsInResources()
     {
 #if UNITY_EDITOR
