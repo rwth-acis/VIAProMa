@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Serializer : MonoBehaviour
 {
-    public ObjectType objectType;
 
     private ISerializable[] iserializers;
 
@@ -32,7 +31,6 @@ public class Serializer : MonoBehaviour
     public virtual void Deserialize(SerializedObject serializedObject)
     {
         Id = serializedObject.Id;
-        objectType = serializedObject.ObjectType;
 
         // get the serializers on the object
         iserializers = GetComponentsInChildren<ISerializable>(true);
@@ -51,7 +49,7 @@ public class Serializer : MonoBehaviour
         // create a dictionary which stores the values which should be serialized
         SerializedObject serializedObject = new SerializedObject();
         serializedObject.Id = Id;
-        serializedObject.ObjectType = objectType;
+        serializedObject.PrefabName = gameObject.name;
         // serialize each serializer and add the result to the dictionary of serialized values
         for (int i = 0; i < iserializers.Length; i++)
         {
@@ -59,10 +57,4 @@ public class Serializer : MonoBehaviour
         }
         return serializedObject;
     }
-}
-
-[Serializable]
-public enum ObjectType
-{
-    PREFAB
 }

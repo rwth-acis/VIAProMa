@@ -7,7 +7,7 @@ using UnityEngine;
 public class SerializedObject
 {
     [SerializeField] private string id;
-    [SerializeField] private ObjectType objectType;
+    [SerializeField] private string prefabName;
 
     [SerializeField] private SerializableDictionaryInt integers;
     [SerializeField] private SerializableDictionaryString strings;
@@ -16,8 +16,8 @@ public class SerializedObject
     [SerializeField] private SerializableDictionaryVector3 vector3s;
     [SerializeField] private SerializableDictionaryQuaternion quaternions;
 
-    public string Id { get; set; }
-    public ObjectType ObjectType { get; set; }
+    public string Id { get => id; set { id = value; } }
+    public string PrefabName { get => prefabName; set { prefabName = value; } }
 
     public Dictionary<string, int> Integers { get; private set; }
     public Dictionary<string, string> Strings { get; private set; }
@@ -36,16 +36,24 @@ public class SerializedObject
         Quaternions = new Dictionary<string, Quaternion>();
     }
 
-    public void ApplyDataSerialization()
+    public void PackData()
     {
-        id = Id;
-        objectType = ObjectType;
         integers = new SerializableDictionaryInt(Integers);
         strings = new SerializableDictionaryString(Strings);
         floats = new SerializableDictionaryFloat(Floats);
         bools = new SerializableDictionaryBool(Bools);
         vector3s = new SerializableDictionaryVector3(Vector3s);
         quaternions = new SerializableDictionaryQuaternion(Quaternions);
+    }
+
+    public void UnPackData()
+    {
+        Integers = integers.ToDictionary();
+        Strings = strings.ToDictionary();
+        Floats = floats.ToDictionary();
+        Bools = bools.ToDictionary();
+        Vector3s = vector3s.ToDictionary();
+        Quaternions = quaternions.ToDictionary();
     }
 
     public static SerializedObject Merge(SerializedObject data1, SerializedObject data2)
