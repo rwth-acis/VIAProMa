@@ -10,8 +10,6 @@ public class NetworkPrefab
 
     [SerializeField] private string path;
 
-    [SerializeField] private string debugPath;
-
     public GameObject Prefab { get => prefab; }
     public string Path
     {
@@ -33,10 +31,17 @@ public class NetworkPrefab
         }
     }
 
+    public string Name
+    {
+        get
+        {
+            return System.IO.Path.GetFileNameWithoutExtension(path);
+        }
+    }
+
     public NetworkPrefab(GameObject prefab, string path)
     {
         this.prefab = prefab;
         this.path = path;
-        debugPath = Path;
     }
 }

@@ -41,15 +41,16 @@ public class Launcher : MonoBehaviourPunCallbacks
     /// </summary>
     private void Connect()
     {
-        if (PhotonNetwork.IsConnected)
+        if (PhotonNetwork.IsConnected && !PhotonNetwork.OfflineMode)
         {
             PhotonNetwork.JoinLobby();
         }
         else
         {
             PhotonNetwork.GameVersion = gameVersion;
-            PhotonNetwork.NickName = "Guest" + Random.Range(0, 1000);
             PhotonNetwork.ConnectUsingSettings();
+            Debug.Log("now the offline mode is " + PhotonNetwork.OfflineMode);
+            PhotonNetwork.NickName = "Guest" + Random.Range(0, 1000);
         }
     }
 
@@ -60,9 +61,15 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster()");
-        PhotonNetwork.JoinLobby();
+        if (!PhotonNetwork.OfflineMode)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+        else
+        {
+            PhotonNetwork.JoinRoom("offline");
+        }
     }
-
 
     /// <summary>
     /// Called when the client disconnects from the server

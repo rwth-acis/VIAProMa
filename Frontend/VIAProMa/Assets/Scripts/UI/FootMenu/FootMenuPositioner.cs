@@ -18,6 +18,7 @@ public class FootMenuPositioner : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(heightChanger));
         }
+        targetRotation = transform.rotation;
     }
 
     // Update is called once per frame
@@ -32,7 +33,6 @@ public class FootMenuPositioner : MonoBehaviour
 
 
         float angleDifference = Mathf.Abs(Camera.main.transform.eulerAngles.y - transform.eulerAngles.y);
-        Debug.Log(angleDifference);
         if (angleDifference > maxDegreeDeviation)
         {
             targetRotation = Quaternion.Euler(new Vector3(

@@ -29,7 +29,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
-        PrefabResourceCollection.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
+        ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
     }
 
     /// <summary>

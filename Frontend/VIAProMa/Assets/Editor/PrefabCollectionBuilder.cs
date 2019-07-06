@@ -17,7 +17,7 @@ public class PrefabCollectionBuilder : IPreprocessBuildWithReport
 
     public void OnPreprocessBuild(BuildReport report)
     {
-        PrefabResourceCollection.FindNetworkPrefabsInResources();
+        //PrefabResourceCollection.FindNetworkPrefabsInResources();
     }
 }
 #endif

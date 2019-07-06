@@ -64,5 +64,5 @@ public class Serializer : MonoBehaviour
 [Serializable]
 public enum ObjectType
 {
-
+    PREFAB
 }
