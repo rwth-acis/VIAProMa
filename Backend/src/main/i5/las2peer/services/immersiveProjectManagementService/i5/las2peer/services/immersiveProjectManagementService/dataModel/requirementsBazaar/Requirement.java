@@ -9,7 +9,7 @@ public class Requirement {
     public String description;
     public String realized;
     public int projectId;
-    public User creator;
+    public ReqBazUser creator;
     public Category[] categories;
     public String creationDate;
     public String lastUpdatedDate;

@@ -3,7 +3,7 @@ package i5.las2peer.services.immersiveProjectManagementService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Contributors;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
@@ -152,20 +152,20 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static APIResult<Contributors> GetRequirementContributors(int requirementId)
+    public static APIResult<ReqBazContributors> GetRequirementContributors(int requirementId)
     {
         try {
             Response response = Utilities.getResponse(baseUrl + "requirements/" + requirementId + "/contributors");
             if (response.getStatus() != 200 && response.getStatus() != 201) {
-                return new APIResult<Contributors>(response.readEntity(String.class), response.getStatus());
+                return new APIResult<ReqBazContributors>(response.readEntity(String.class), response.getStatus());
             }
 
             String origJson = response.readEntity(String.class);
 
             // parse JSON data
             ObjectMapper mapper = new ObjectMapper();
-            Contributors contributors = mapper.readValue(origJson, Contributors.class);
-            return new APIResult<Contributors>(response.getStatus(), contributors);
+            ReqBazContributors contributors = mapper.readValue(origJson, ReqBazContributors.class);
+            return new APIResult<ReqBazContributors>(response.getStatus(), contributors);
         } catch (IOException e) {
             return new APIResult<>(e.getMessage(), 500);
         }

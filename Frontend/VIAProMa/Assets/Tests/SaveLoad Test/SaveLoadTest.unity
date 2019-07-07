@@ -439,22 +439,47 @@ PrefabInstance:
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_text
-      value: Save Load Test
+      value: 'The save load test shows how to serialize and deserialize prefabs.
+
+
+        Instructions:
+
+        - Push the space bar. This yields a debug message with the serialization.
+
+        - Paste the json into the Load Json field of the test script and push "L"
+        on the keyboard.
+
+
+        Troubleshooting:
+
+        Prefabs must have a serializer, a photon view and a component which implements
+        ISerializer, e.g. TransformSerializer). The prefab must be in a Resources
+        folder.'
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 14
+      value: 425
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.spaceCount
-      value: 2
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 3
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: 299
       objectReference: {fileID: 0}
     - target: {fileID: 4301431890908147799, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
@@ -490,6 +515,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.wordCount
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8466432240301364509, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.035
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bf39913b7d9e7b46816f871fff478f7, type: 3}

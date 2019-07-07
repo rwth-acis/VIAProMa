@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Created by bened on 09.05.2019.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class ReqBazUser {
     public int id;
     public String userName;
     public String firstName;

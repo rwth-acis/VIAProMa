@@ -6,8 +6,9 @@ import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossIssue;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Contributors;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 import io.swagger.annotations.*;
@@ -357,7 +358,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getRequirementContributors(@PathParam("requirementId") int requirementId) {
 		try {
-			APIResult<Contributors> res = RequirementsBazaarAdapter.GetRequirementContributors(requirementId);
+			APIResult<ReqBazContributors> res = RequirementsBazaarAdapter.GetRequirementContributors(requirementId);
 			if (res.successful())
 			{
 				ObjectMapper mapper = new ObjectMapper();

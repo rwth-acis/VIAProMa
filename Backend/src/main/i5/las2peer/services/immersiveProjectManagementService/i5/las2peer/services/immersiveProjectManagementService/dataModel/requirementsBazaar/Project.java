@@ -1,7 +1,5 @@
 package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-
 /**
  * Created by bened on 10.05.2019.
  */
@@ -12,7 +10,7 @@ public class Project {
     public String description;
     public boolean visibility;
     public int defaultCategoryId;
-    public User leader;
+    public ReqBazUser leader;
     public String creationDate;
     public String lastUpdatedDate;
     public int numberOfCategories;
