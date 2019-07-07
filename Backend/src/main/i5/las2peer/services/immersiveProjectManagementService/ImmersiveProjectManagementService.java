@@ -120,7 +120,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			}
 
 			// pack resulting array in a Unity-compatible object
-			String result = Utilities.unityCompatibleArray(entries);
+			String result = Utilities.toUnityCompatibleArray(entries);
 
 			return Response.ok().entity(result).build();
 		}
@@ -147,7 +147,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			projects[i] = "Project " + (i+1);
 		}
 		try {
-			String result = Utilities.unityCompatibleArray(projects);
+			String result = Utilities.toUnityCompatibleArray(projects);
 			return  Response.ok().entity(result).build();
 		}
 		catch (IOException e)
@@ -220,7 +220,8 @@ public class ImmersiveProjectManagementService extends RESTService {
 			return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
 		}
 		try {
-			String result = Utilities.unityCompatibleArray(res.getValue());
+			CrossIssue[] issues = CrossIssue.FromRequirements(res.getValue());
+			String result = Utilities.toUnityCompatibleArray(issues);
 			return Response.ok().entity(result).build();
 		}
 		catch (IOException e)
@@ -262,7 +263,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			{
 				return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
 			}
-			String result = Utilities.unityCompatibleArray(allProjects);
+			String result = Utilities.toUnityCompatibleArray(allProjects);
 			return  Response.ok().entity(result).build();
 		}
 		catch (IOException e)
@@ -306,7 +307,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			// filter the properties of a category so that it only returns the name, id and projectId
 			//SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 			//filterProvider.addFilter("shortFilter", SimpleBeanPropertyFilter.filterOutAllExcept("id", "name", "projectId"));
-			String result = Utilities.unityCompatibleArray(allCategories);
+			String result = Utilities.toUnityCompatibleArray(allCategories);
 			return Response.ok().entity(result).build();
 		}
 		catch (IOException e)
@@ -330,9 +331,11 @@ public class ImmersiveProjectManagementService extends RESTService {
 			APIResult<Requirement> res = RequirementsBazaarAdapter.GetRequirement(requirementId);
 			if (res.successful())
 			{
+				CrossIssue issue = CrossIssue.FromRequirement(res.getValue()); // convert to CrossIssue
+				// serialize to json
 				ObjectMapper mapper = new ObjectMapper();
 				ObjectWriter writer = mapper.writer();
-				String result = writer.writeValueAsString(res.getValue());
+				String result = writer.writeValueAsString(issue);
 				return Response.ok().entity(result).build();
 			}
 			else

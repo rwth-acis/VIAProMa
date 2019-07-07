@@ -19,6 +19,11 @@ public class CrossIssue {
     private IssueStatus status;
     private CrossUser[] developers;
 
+    public CrossIssue()
+    {
+
+    }
+
     public CrossIssue(DataSource source, int id, String name, String description, int projectId, IssueStatus status, CrossUser[] developers) {
         this.source = source;
         this.id = id;
@@ -98,6 +103,16 @@ public class CrossIssue {
         {
             return null;
         }
+    }
+
+    public static CrossIssue[] FromRequirements(Requirement[] reqs)
+    {
+        CrossIssue[] issues = new CrossIssue[reqs.length];
+        for (int i=0;i<reqs.length;i++)
+        {
+            issues[i] = FromRequirement(reqs[i]);
+        }
+        return issues;
     }
 
     /**

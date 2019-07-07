@@ -3,6 +3,8 @@ package i5.las2peer.services.immersiveProjectManagementService;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossIssue;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -108,11 +110,84 @@ public class ServiceTest {
 //		}
 
 	@Test
-	public void testGitHubPunchCard()
+	public void testPing_StatusCode()
 	{
 		try
 		{
+			MiniClient client = new MiniClient();
+			client.setConnectorEndpoint(connector.getHttpEndpoint());
+			client.setLogin(testAgent.getIdentifier(), testPass);
 
+			ClientResponse result = client.sendRequest("GET", mainPath + "ping", "");
+			Assert.assertEquals(200, result.getHttpCode());
+			System.out.println("Result of 'testPing_StatusCode': " + result.getHttpCode());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Assert.fail(e.toString());
+		}
+	}
+
+	@Test
+	public void testPing_Response()
+	{
+		try
+		{
+			MiniClient client = new MiniClient();
+			client.setConnectorEndpoint(connector.getHttpEndpoint());
+			client.setLogin(testAgent.getIdentifier(), testPass);
+
+			ClientResponse result = client.sendRequest("GET", mainPath + "ping", "");
+			Assert.assertEquals("pong", result.getResponse().trim());
+			System.out.println("Result of 'testPing_Response': " + result.getResponse().trim());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Assert.fail(e.toString());
+		}
+	}
+
+	@Test
+	public void testGetReqBazRequirementsInCategory_StatusCode()
+	{
+		try
+		{
+			MiniClient client = new MiniClient();
+			client.setConnectorEndpoint(connector.getHttpEndpoint());
+			client.setLogin(testAgent.getIdentifier(), testPass);
+
+			ClientResponse result = client.sendRequest("GET", mainPath + "requirementsBazaar/categories/145/requirements", "");
+			Assert.assertEquals(200, result.getHttpCode());
+			System.out.println("Result of 'testGetReqBazRequirementsInCategory_StatusCode': " + result.getHttpCode());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			Assert.fail(e.toString());
+		}
+	}
+
+	@Test
+	public void testGetReqBazRequirementsInCategory_Response()
+	{
+		try
+		{
+			MiniClient client = new MiniClient();
+			client.setConnectorEndpoint(connector.getHttpEndpoint());
+			client.setLogin(testAgent.getIdentifier(), testPass);
+
+			ClientResponse result = client.sendRequest("GET", mainPath + "requirementsBazaar/categories/145/requirements", "");
+			System.out.println("Result of 'testPing_GetReqBazRequirementsInCategory_Response': " + result.getResponse());
+
+			ObjectMapper mapper = new ObjectMapper();
+			CrossIssue[] issues = Utilities.fromUnityCompatibleArray(result.getResponse(), CrossIssue[].class);
+			Assert.assertTrue(issues.length > 0);
+			for (int i=0;i<issues.length;i++)
+			{
+				Assert.assertNotNull(issues);
+			}
 		}
 		catch (Exception e)
 		{

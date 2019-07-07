@@ -1,10 +1,11 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
+import jdk.internal.org.objectweb.asm.TypeReference;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -12,6 +13,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 
 /**
  * Created by bened on 09.05.2019.
@@ -24,12 +26,12 @@ public class Utilities {
      * @return Returns the JSON string which represents the given array
      * @throws JsonProcessingException Exception if the conversion to JSON failed
      */
-    public static String unityCompatibleArray(Object obj) throws JsonProcessingException
+    public static String toUnityCompatibleArray(Object obj) throws JsonProcessingException
     {
-        return  unityCompatibleArray(obj, null);
+        return  toUnityCompatibleArray(obj, null);
     }
 
-    public static String unityCompatibleArray(Object obj, SimpleFilterProvider filter) throws JsonProcessingException
+    public static String toUnityCompatibleArray(Object obj, SimpleFilterProvider filter) throws JsonProcessingException
     {
         ObjectMapper mapper = new ObjectMapper();
         if (filter != null)
@@ -38,6 +40,20 @@ public class Utilities {
         }
         ObjectWriter writer = mapper.writer().withRootName("array");
         return writer.writeValueAsString(obj);
+    }
+
+    public static <T> T fromUnityCompatibleArray(String json, Class<T> ref) throws IOException
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode arrayNode = mapper.readTree(json).get("array");
+        if (arrayNode.isArray())
+        {
+            return mapper.readValue(mapper.treeAsTokens(arrayNode), ref);
+        }
+        else
+        {
+            throw new IOException("provided JSON is not in the Unity-array format.");
+        }
     }
 
     public static Response getResponse(String url)
