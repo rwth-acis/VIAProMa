@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import jdk.internal.org.objectweb.asm.TypeReference;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

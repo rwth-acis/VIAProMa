@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RequirementListView : ListViewController<Requirement, RequirementListViewItem>
+public enum IssueStatus
 {
+    OPEN, IN_PROGRESS, CLOSED
 }

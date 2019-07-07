@@ -14,7 +14,7 @@ public class Project
     public string description;
     public bool visibility;
     public int defaultCategoryId;
-    public User leader;
+    public ReqBazUser leader;
     public string creationDate;
     public string lastUpdatedDate;
     public int numberOfCategories;

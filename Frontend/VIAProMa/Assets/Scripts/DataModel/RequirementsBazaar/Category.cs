@@ -13,7 +13,7 @@ public class Category : IListViewItemData
     public string name;
     public string description;
     public int projectId;
-    public User leader;
+    public ReqBazUser leader;
     public string creationDate;
     public string lastUpdatedDate;
     public int numberOfRequirements;

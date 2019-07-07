@@ -3,7 +3,7 @@
 /// Represents a user in the Requirements Bazaar
 /// </summary>
 [Serializable]
-public class User : IListViewItemData, IUninitializable
+public class ReqBazUser : IListViewItemData, IUninitializable
 {
     public int id;
     public string userName;

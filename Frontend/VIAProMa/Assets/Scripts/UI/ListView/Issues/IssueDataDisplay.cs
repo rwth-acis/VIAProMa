@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class RequirementDataDisplay : DataDisplay<Requirement>
+public class IssueDataDisplay : DataDisplay<Issue>
 {
     [SerializeField] private TextMeshPro titleField;
     [SerializeField] private TextMeshPro descriptionField;
     [SerializeField] private UserDataDisplay creatorDisplay;
-    [SerializeField] private RequirementStatusDisplay statusDisplay;
+    [SerializeField] private IssueStatusDisplay statusDisplay;
 
     private void Awake()
     {
@@ -33,9 +33,9 @@ public class RequirementDataDisplay : DataDisplay<Requirement>
     public override void UpdateView()
     {
         base.UpdateView();
-        titleField.text = content.name;
-        descriptionField.text = content.description;
-        creatorDisplay.Setup(content.creator);
+        titleField.text = content.Name;
+        descriptionField.text = content.Description;
+        creatorDisplay.Setup(content.Creator);
         statusDisplay.Setup(content);
     }
 }

@@ -3,11 +3,11 @@
 [Serializable]
 public class Contributors : IListViewItemData, IUninitializable
 {
-    public User creator;
-    public User leadDeveloper;
-    public User[] developers;
-    public User[] commentCreator;
-    public User[] attachmentCreator;
+    public ReqBazUser creator;
+    public ReqBazUser leadDeveloper;
+    public ReqBazUser[] developers;
+    public ReqBazUser[] commentCreator;
+    public ReqBazUser[] attachmentCreator;
 
     public bool IsUninitialized
     {

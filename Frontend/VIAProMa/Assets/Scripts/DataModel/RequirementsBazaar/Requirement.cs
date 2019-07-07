@@ -12,7 +12,7 @@ public class Requirement : IListViewItemData, IUninitializable
     public string description;
     public string realized; // the date when the requirement was realized
     public int projectId;
-    public User creator;
+    public ReqBazUser creator;
     public Category[] categories;
     public string creationDate;
     public string lastUpdatedDate;

@@ -16,6 +16,7 @@ public class CrossIssue {
     private String name;
     private String description;
     private int projectId;
+    private CrossUser creator;
     private IssueStatus status;
     private CrossUser[] developers;
 
@@ -24,12 +25,13 @@ public class CrossIssue {
 
     }
 
-    public CrossIssue(DataSource source, int id, String name, String description, int projectId, IssueStatus status, CrossUser[] developers) {
+    public CrossIssue(DataSource source, int id, String name, String description, int projectId, CrossUser creator, IssueStatus status, CrossUser[] developers) {
         this.source = source;
         this.id = id;
         this.name = name;
         this.description = description;
         this.projectId = projectId;
+        this.creator = creator;
         this.status = status;
         this.developers = developers;
     }
@@ -52,6 +54,10 @@ public class CrossIssue {
 
     public int getProjectId() {
         return projectId;
+    }
+
+    public CrossUser getCreator() {
+        return creator;
     }
 
     public IssueStatus getStatus() {
@@ -94,6 +100,7 @@ public class CrossIssue {
                     req.name,
                     req.description,
                     req.projectId,
+                    CrossUser.FromReqBazUser(req.creator),
                     DetermineIssueStatusFromRequirement(req, contributors),
                     developers
                     );

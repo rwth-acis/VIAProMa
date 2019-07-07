@@ -40,19 +40,19 @@ public static class RequirementsBazaar
         }
     }
 
-    public static async Task<ApiResult<Requirement>> GetRequirement(int requirementId)
+    public static async Task<ApiResult<Issue>> GetRequirement(int requirementId)
     {
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-            return new ApiResult<Requirement>(resp.ResponseCode, resp.ResponseBody);
+            return new ApiResult<Issue>(resp.ResponseCode, resp.ResponseBody);
         }
         else
         {
-            Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
-            return new ApiResult<Requirement>(requirement);
+            Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+            return new ApiResult<Issue>(issue);
         }
     }
 

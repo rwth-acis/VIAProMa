@@ -5,12 +5,17 @@ using UnityEngine;
 
 public class ResourceManager : Singleton<ResourceManager>
 {
-    public PrefabResourceCollection resourcePrefabCollection;
+    [SerializeField] private PrefabResourceCollection resourcePrefabCollection;
+    [SerializeField] private Texture2D defaultProfileImage;
 
     protected override void Awake()
     {
         base.Awake();
         resourcePrefabCollection.FindNetworkPrefabsInResources();
+        if (defaultProfileImage == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(defaultProfileImage));
+        }
     }
 
     public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation)
@@ -23,4 +28,6 @@ public class ResourceManager : Singleton<ResourceManager>
     {
         return resourcePrefabCollection.NetworkInstantiate(name, position, rotation);
     }
+
+    public Texture2D DefaultProfileImage { get => defaultProfileImage; }
 }

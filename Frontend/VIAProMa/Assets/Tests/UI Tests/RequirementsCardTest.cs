@@ -6,7 +6,7 @@ namespace i5.ViaProMa.Tests
 {
     public class RequirementsCardTest : MonoBehaviour
     {
-        [SerializeField] RequirementDataDisplay dataDisplay;
+        [SerializeField] IssueDataDisplay dataDisplay;
 
         public int requirementId = 2127;
 
@@ -23,7 +23,7 @@ namespace i5.ViaProMa.Tests
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                ApiResult<Requirement> res = await RequirementsBazaar.GetRequirement(requirementId);
+                ApiResult<Issue> res = await RequirementsBazaar.GetRequirement(requirementId);
                 if (res.Successful)
                 {
                     dataDisplay.Setup(res.Value);

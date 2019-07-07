@@ -43,15 +43,20 @@ public class UserDataDisplay : DataDisplay<User>
             profileImageSprite.sprite = sprite;
         }
 
-        userNameLabel.text = content.firstName + " " + content.lastName;
+        userNameLabel.text = content.FirstName + " " + content.LastName;
     }
 
     private static async Task<Texture2D> GetProfileImage(User user)
     {
-        // first check if we downloaded the profile picture before
-        if (profileImages.ContainsKey(user.profileImage))
+        if (string.IsNullOrEmpty(user.ProfileImageUrl))
         {
-            return profileImages[user.profileImage];
+            return ResourceManager.Instance.DefaultProfileImage;
+        }
+
+        // first check if we downloaded the profile picture before
+        if (profileImages.ContainsKey(user.ProfileImageUrl))
+        {
+            return profileImages[user.ProfileImageUrl];
         }
         else // fetch it from the web
         {
@@ -63,14 +68,14 @@ public class UserDataDisplay : DataDisplay<User>
             else
             {
                 Debug.LogError(res.ResponseCode + ": " + res.ErrorMessage);
-                return null;
+                return ResourceManager.Instance.DefaultProfileImage;
             }
         }
     }
 
     private static async Task<ApiResult<Texture2D>> FetchProfileImage(User user)
     {
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(user.profileImage);
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(user.ProfileImageUrl);
         await www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
