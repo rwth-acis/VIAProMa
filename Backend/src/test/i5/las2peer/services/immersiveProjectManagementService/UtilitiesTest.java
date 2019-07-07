@@ -1,6 +1,7 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossIssue;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossUser;
 import org.junit.Assert;
 import org.junit.Test;
 

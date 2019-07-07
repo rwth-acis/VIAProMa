@@ -13,6 +13,10 @@ public class CrossUser {
     private String lastName;
     private String profileImageUrl;
 
+    public CrossUser()
+    {
+    }
+
     public CrossUser(DataSource source, int id, String userName, String firstName, String lastName, String profileImageUrl) {
         this.source = source;
         this.id = id;
