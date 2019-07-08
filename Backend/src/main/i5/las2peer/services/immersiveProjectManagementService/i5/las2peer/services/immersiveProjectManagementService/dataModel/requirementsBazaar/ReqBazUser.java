@@ -16,4 +16,13 @@ public class ReqBazUser {
     public String profileImage;
     public boolean emailLeadSubscription;
     public boolean emailFollowSubscription;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ReqBazUser))
+        {
+            return false;
+        }
+        return this.id == ((ReqBazUser) obj).id;
+    }
 }

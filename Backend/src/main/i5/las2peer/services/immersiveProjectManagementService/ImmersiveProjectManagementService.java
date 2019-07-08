@@ -206,15 +206,16 @@ public class ImmersiveProjectManagementService extends RESTService {
 					code = HttpURLConnection.HTTP_OK,
 					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
 	public Response getReqBazRequirementsInCategory(@PathParam("categoryId") int categoryId,
-	@QueryParam("page") int page,
-	@QueryParam("items_per_page") int itemsPerPage) {
+													@QueryParam("page") int page,
+													@QueryParam("per_page") int itemsPerPage,
+													@QueryParam("search") String searchFilter) {
 		// if items per page is 0, it was probably not set
 		// default the items per page to 5 in order to avoid errors when requesting items with a page size of 0
 		if (itemsPerPage == 0)
 		{
 			itemsPerPage = 5;
 		}
-		APIResult<Requirement[]> res = RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId, page, itemsPerPage);
+		APIResult<Requirement[]> res = RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId, page, itemsPerPage, searchFilter);
 		if (res.hasError())
 		{
 			return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
@@ -367,6 +368,44 @@ public class ImmersiveProjectManagementService extends RESTService {
 				ObjectMapper mapper = new ObjectMapper();
 				ObjectWriter writer = mapper.writer();
 				String result = writer.writeValueAsString(res.getValue());
+				return Response.ok().entity(result).build();
+			}
+			else
+			{
+				return Response.status(res.getCode()).entity(res.getErrorMessage()).build();
+			}
+		}
+		catch (IOException e)
+		{
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path("/requirementsBazaar/projects/{projectId}/requirements")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(
+			value = "Gets the requirements in a project",
+			notes = "Returns the requirements in a project")
+	@ApiResponses(
+			value = { @ApiResponse(
+					code = HttpURLConnection.HTTP_OK,
+					message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+	public Response getRequirementsInProject(@PathParam("projectId") int projectId,
+											 @QueryParam("page") int page,
+											 @QueryParam("per_page") int itemsPerPage,
+											 @QueryParam("search") String searchFilter) {
+		try {
+			if (itemsPerPage == 0)
+			{
+				itemsPerPage = 5;
+			}
+			APIResult<Requirement[]> res = RequirementsBazaarAdapter.GetRequirementsInProject(projectId, page, itemsPerPage, searchFilter);
+			if (res.successful())
+			{
+				CrossIssue[] issues = CrossIssue.FromRequirements(res.getValue()); // convert to CrossIssues
+				// serialize to json
+				String result = Utilities.toUnityCompatibleArray(issues);
 				return Response.ok().entity(result).build();
 			}
 			else

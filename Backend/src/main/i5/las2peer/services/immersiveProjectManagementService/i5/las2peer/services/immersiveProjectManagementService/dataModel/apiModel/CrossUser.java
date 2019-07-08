@@ -72,4 +72,14 @@ public class CrossUser {
         }
         return  users;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CrossUser))
+        {
+            return false;
+        }
+        CrossUser other = (CrossUser)obj;
+        return this.source == other.source && this.id == other.id;
+    }
 }

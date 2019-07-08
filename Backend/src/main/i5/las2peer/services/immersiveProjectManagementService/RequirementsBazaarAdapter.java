@@ -22,19 +22,22 @@ public class RequirementsBazaarAdapter {
 
     private  static String baseUrl = "https://requirements-bazaar.org/bazaar/";
 
-    public static Response RequestRequirementsInCategory(int categoryId, int page, int itemsPerPage)
+    public static Response RequestRequirementsInCategory(int categoryId, int page, int itemsPerPage, String searchFilter)
     {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(baseUrl + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage);
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-        Response response = invocationBuilder.get();
-        return response;
+        String path = baseUrl + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+        if (searchFilter != null)
+        {
+            searchFilter = Utilities.RemoveSpecialSymbols(searchFilter);
+            path += "&search=" + searchFilter;
+        }
+        return  Utilities.getResponse(path);
     }
 
-    public static  APIResult<Requirement[]> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage)
+    public static  APIResult<Requirement[]> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage, String searchFilter)
     {
         try {
-            Response response = RequestRequirementsInCategory(categoryId, page, itemsPerPage);
+
+            Response response = RequestRequirementsInCategory(categoryId, page, itemsPerPage, searchFilter);
 
             if (response.getStatus() != 200 && response.getStatus() != 201) {
                 return new APIResult<Requirement[]>(response.readEntity(String.class), response.getStatus());
@@ -106,17 +109,21 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static Response RequestRequirementsInProject(int projectId, int page, int itemsPerPage)
+    public static Response RequestRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
     {
-        return Utilities.getResponse(baseUrl + "projects/" + projectId + "/requirements?page=" + page + "&itmes_per_page=" + itemsPerPage);
+        String path = baseUrl + "projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+        if (searchFilter != null) {
+            searchFilter = Utilities.RemoveSpecialSymbols(searchFilter);
+            path += "&search=" + searchFilter;
+        }
+        return Utilities.getResponse(path);
     }
 
-    public static APIResult<Requirement[]> GetRequirementsInProject(int projectId, int page, int itemsPerPage)
+    public static APIResult<Requirement[]> GetRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
     {
         try
         {
-            Response response = RequestRequirementsInProject(projectId, page, itemsPerPage);
-
+            Response response = RequestRequirementsInProject(projectId, page, itemsPerPage, searchFilter);
             if (response.getStatus() != 200 && response.getStatus() != 201)
             {
                 return new APIResult<Requirement[]>(response.readEntity(String.class), response.getStatus());

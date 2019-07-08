@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -62,5 +63,19 @@ public class Utilities {
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         return response;
+    }
+
+    public static String RemoveSpecialSymbols(String text)
+    {
+        if (text == null)
+        {
+            return null;
+        }
+        return text.replaceAll("[^a-zA-Z0-9\\s]", "");
+    }
+
+    public static void RemoveDuplicates()
+    {
+
     }
 }

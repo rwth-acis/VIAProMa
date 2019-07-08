@@ -129,7 +129,7 @@ public class CrossIssue {
      * @return The status of the corresponding issue
      */
     private static IssueStatus DetermineIssueStatusFromRequirement(Requirement req, ReqBazContributors contributors) {
-        if (req.getRealized() != "")
+        if (req.getRealized() != null)
         {
             return  IssueStatus.CLOSED;
         }
@@ -144,5 +144,15 @@ public class CrossIssue {
                 return  IssueStatus.OPEN;
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CrossIssue))
+        {
+            return false;
+        }
+        CrossIssue other = (CrossIssue)obj;
+        return this.source == other.source && this.id == other.id;
     }
 }

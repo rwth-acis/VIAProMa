@@ -1,7 +1,5 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossIssue;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossUser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,5 +49,16 @@ public class UtilitiesTest {
             e.printStackTrace();
             Assert.fail(e.toString());
         }
+    }
+
+    @Test
+    public void testRemoveSpecialSymbols()
+    {
+        final String text = "Hello! ~World+ ?!#//\\";
+        final String expected = "Hello World ";
+
+        String result = Utilities.RemoveSpecialSymbols(text);
+        System.out.println("Result of 'testRemoveSpecialSymbols': " + result);
+        Assert.assertEquals(expected, result);
     }
 }
