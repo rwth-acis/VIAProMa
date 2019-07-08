@@ -4,12 +4,19 @@ using UnityEngine;
 
 namespace i5.ViaProMa.Tests
 {
+    /// <summary>
+    /// Tests the issue cards
+    /// If the user presses space, a requirement from the Requirements Bazaar is loaded and displayed on the given dataDisplay
+    /// </summary>
     public class RequirementsCardTest : MonoBehaviour
     {
         [SerializeField] IssueDataDisplay dataDisplay;
 
         public int requirementId = 2127;
 
+        /// <summary>
+        /// Checks the setup
+        /// </summary>
         private void Awake()
         {
             if (dataDisplay == null)
@@ -18,7 +25,9 @@ namespace i5.ViaProMa.Tests
             }
         }
 
-        // Update is called once per frame
+        /// <summary>
+        /// If the user presses space, a request to the Requirements Bazaar is started
+        /// </summary>
         private async void Update()
         {
             if (Input.GetKeyDown(KeyCode.Space))

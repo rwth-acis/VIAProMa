@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Controls the visual presentation of the status of an issue
+/// </summary>
 public class IssueStatusDisplay : DataDisplay<Issue>
 {
     [SerializeField] private TextMeshPro statusLabel;
     [SerializeField] private Renderer statusLabelBackground;
 
+    /// <summary>
+    /// Checks the setup
+    /// </summary>
     private void Awake()
     {
         if (statusLabel == null)
@@ -20,12 +26,9 @@ public class IssueStatusDisplay : DataDisplay<Issue>
         }
     }
 
-    public override void Setup(Issue issue)
-    {
-        content = issue;
-        UpdateView();
-    }
-
+    /// <summary>
+    /// Updates the view representation
+    /// </summary>
     public override void UpdateView()
     {
         base.UpdateView();
@@ -44,12 +47,17 @@ public class IssueStatusDisplay : DataDisplay<Issue>
                 SetStatusDisplay("Closed", new Color(181f / 255f, 25f / 255f, 25f / 255)); // red
             }
         }
-        else
+        else // if no issue is provided, just show an error status
         {
             SetStatusDisplay("Error", new Color(134f / 255f, 4f / 255f, 127f / 255f)); // purple
         }
     }
 
+    /// <summary>
+    /// Sets the text and color of the status display
+    /// </summary>
+    /// <param name="text">The text for the label of the status display</param>
+    /// <param name="backgroundColor">The background color of the status display</param>
     private void SetStatusDisplay(string text, Color backgroundColor)
     {
         statusLabel.text = text;

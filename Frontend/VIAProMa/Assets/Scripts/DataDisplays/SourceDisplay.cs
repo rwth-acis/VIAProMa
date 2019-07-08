@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Controls the view representation of the source display of an issue
+/// </summary>
 public class SourceDisplay : DataDisplay<Issue>
 {
     [SerializeField] private TextMeshPro sourceLabel;
     [SerializeField] private Renderer backgroundRenderer;
 
+    /// <summary>
+    /// Checks the setup of the component
+    /// </summary>
     private void Awake()
     {
         if (sourceLabel == null)
@@ -20,6 +26,9 @@ public class SourceDisplay : DataDisplay<Issue>
         }
     }
 
+    /// <summary>
+    /// Updates the view based on the 
+    /// </summary>
     public override void UpdateView()
     {
         base.UpdateView();
@@ -41,6 +50,12 @@ public class SourceDisplay : DataDisplay<Issue>
         }
     }
 
+    /// <summary>
+    /// Sets the text and colors for the source view
+    /// </summary>
+    /// <param name="text">The text for the source label</param>
+    /// <param name="textColor">The text color of the source label</param>
+    /// <param name="backgroundColor">The color of the background color</param>
     private void SetSourceView(string text, Color textColor, Color backgroundColor)
     {
         sourceLabel.text = text;
