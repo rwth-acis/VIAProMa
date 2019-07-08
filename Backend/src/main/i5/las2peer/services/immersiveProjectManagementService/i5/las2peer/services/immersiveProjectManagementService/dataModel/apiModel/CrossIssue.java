@@ -76,7 +76,7 @@ public class CrossIssue {
     public static CrossIssue FromRequirement(Requirement req)
     {
         // we need the contributors in order to determine the developers and the issue status
-        APIResult<ReqBazContributors> contrRes = RequirementsBazaarAdapter.GetRequirementContributors(req.id);
+        APIResult<ReqBazContributors> contrRes = RequirementsBazaarAdapter.GetRequirementContributors(req.getId());
         if (contrRes.successful())
         {
             ReqBazContributors contributors = contrRes.getValue();
@@ -96,11 +96,11 @@ public class CrossIssue {
                 developers = CrossUser.FromReqBazUsers(contributors.developers);
             }
             CrossIssue issue = new CrossIssue(DataSource.REQUIREMENTS_BAZAAR,
-                    req.id,
-                    req.name,
-                    req.description,
-                    req.projectId,
-                    CrossUser.FromReqBazUser(req.creator),
+                    req.getId(),
+                    req.getName(),
+                    req.getDescription(),
+                    req.getProjectId(),
+                    CrossUser.FromReqBazUser(req.getCreator()),
                     DetermineIssueStatusFromRequirement(req, contributors),
                     developers
                     );
@@ -129,7 +129,7 @@ public class CrossIssue {
      * @return The status of the corresponding issue
      */
     private static IssueStatus DetermineIssueStatusFromRequirement(Requirement req, ReqBazContributors contributors) {
-        if (req.realized != "")
+        if (req.getRealized() != "")
         {
             return  IssueStatus.CLOSED;
         }

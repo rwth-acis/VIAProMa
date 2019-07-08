@@ -31,6 +31,7 @@ namespace i5.ViaProMa.Tests
                 else
                 {
                     Debug.LogError("Error fetching the requirement: (Code " + res.ResponseCode + ") " + res.ErrorMessage);
+                    dataDisplay.Setup(null);
                 }
             }
         }

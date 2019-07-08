@@ -30,20 +30,26 @@ public class UserDataDisplay : DataDisplay<User>
     public override async void UpdateView()
     {
         base.UpdateView();
-        // update profile image
-        Texture2D profileImage = await GetProfileImage(content);
-        if (profileImage == null)
+        if (content != null)
         {
-            // use the standard profile image instead
+            // update profile image
+            Texture2D profileImage = await GetProfileImage(content);
+            SetProfileImage(profileImage);
+
+            userNameLabel.text = content.FirstName + " " + content.LastName;
         }
         else
         {
-            float pixelsPerUnit = Mathf.Min(profileImage.width, profileImage.height) * pixelDensity;
-            Sprite sprite = Sprite.Create(profileImage, new Rect(0, 0, profileImage.width, profileImage.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
-            profileImageSprite.sprite = sprite;
+            SetProfileImage(ResourceManager.Instance.DefaultProfileImage);
+            userNameLabel.text = "";
         }
+    }
 
-        userNameLabel.text = content.FirstName + " " + content.LastName;
+    private void SetProfileImage(Texture2D profileImage)
+    {
+        float pixelsPerUnit = Mathf.Min(profileImage.width, profileImage.height) * pixelDensity;
+        Sprite sprite = Sprite.Create(profileImage, new Rect(0, 0, profileImage.width, profileImage.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
+        profileImageSprite.sprite = sprite;
     }
 
     private static async Task<Texture2D> GetProfileImage(User user)
