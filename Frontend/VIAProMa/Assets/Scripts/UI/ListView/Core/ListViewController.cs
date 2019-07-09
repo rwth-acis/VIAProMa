@@ -90,6 +90,11 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
             handler(this, args);
         }
     }
+
+    public void Clear()
+    {
+        Items = new List<DataType>();
+    }
 }
 
 public class ListViewController : ListViewController<ListViewItemInspectorData, ListViewItem>

@@ -36,6 +36,14 @@ public class MultiListView<DataType, ItemType> : MonoBehaviour
             }
         }
     }
+
+    public void Clear()
+    {
+        for (int i=0;i<listViews.Length;i++)
+        {
+            listViews[i].Clear();
+        }
+    }
 }
 
 public class MultiListView : MultiListView<ListViewItemInspectorData, ListViewItem>

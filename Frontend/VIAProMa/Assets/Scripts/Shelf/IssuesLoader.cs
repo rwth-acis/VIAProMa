@@ -5,8 +5,7 @@ using UnityEngine;
 public class IssuesLoader : Shelf, ILoadShelf
 {
     [SerializeField] private ShelfConfiguration configuration;
-
-    [SerializeField] private Transform[] boards;
+    [SerializeField] private IssuesMultiListView issuesMultiListView;
 
     public MessageBadge MessageBadge { get => messageBadge; }
 
@@ -22,46 +21,37 @@ public class IssuesLoader : Shelf, ILoadShelf
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(configuration));
         }
-        if (boards.Length == 0)
+        if(issuesMultiListView == null)
         {
-            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(boards));
-        }
-        else
-        {
-            for (int i=0;i<boards.Length;i++)
-            {
-                if (boards[i] == null)
-                {
-                    SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(boards), i);
-                }
-            }
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issuesMultiListView));
         }
     }
 
     public void LoadContent()
     {
-        // load requirements from the correct project or category
-        for (int i=0;i<boards.Length;i++)
+        switch (configuration.SelectedSource)
         {
-            if (configuration.SelectedCategory != null) // project and category were selected
-            {
-
-            }
-            else if (configuration.SelectedProject != null) // just a project was selected
-            {
-
-            }
+            case DataSource.REQUIREMENTS_BAZAAR:
+                LoadRequirements();
+                break;
+            case DataSource.GITHUB:
+                break;
         }
     }
 
-    private void RemoveContent()
+    private void LoadRequirements()
     {
-        for (int i=0;i<boards.Length;i++)
+        // load requirements from the correct project or category
+        if (configuration.SelectedCategory != null) // project and category were selected
         {
-            foreach(Transform obj in boards[i])
-            {
-                Destroy(obj);
-            }
+        }
+        else if (configuration.SelectedProject != null) // just a project was selected
+        {
+
+        }
+        else
+        {
+            issuesMultiListView.Clear();
         }
     }
 
