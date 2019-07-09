@@ -40,6 +40,7 @@ public class ShelfConfiguration : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(categoryDropdownMenu));
         }
 
+        // populate the source dropdown menu with the available data sources
         List<StringData> sources = new List<StringData>();
         foreach(DataSource source in Enum.GetValues(typeof(DataSource)))
         {
