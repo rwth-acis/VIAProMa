@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ShelfConfiguration : MonoBehaviour
 {
-    [SerializeField] private RequirementsLoader shelf;
+    [SerializeField] private IssuesLoader shelf;
 
     [SerializeField] private StringDropdownMenu sourceSelection;
     [SerializeField] private InputField projectInput;
@@ -14,6 +14,8 @@ public class ShelfConfiguration : MonoBehaviour
 
     private Project[] projects;
     private Category[] categories;
+
+    public DataSource SelectedSource { get; private set; }
 
     public Project SelectedProject { get; private set; }
 
@@ -38,6 +40,13 @@ public class ShelfConfiguration : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(categoryDropdownMenu));
         }
 
+        List<StringData> sources = new List<StringData>();
+        foreach(DataSource source in Enum.GetValues(typeof(DataSource)))
+        {
+            sources.Add(new StringData(source.GetDescription()));
+        }
+        sourceSelection.Items = sources;
+
         sourceSelection.ItemSelected += SourceSelected;
         projectInput.TextChanged += ProjectInputFinished;
         categoryDropdownMenu.ItemSelected += CategorySelected;
@@ -48,6 +57,7 @@ public class ShelfConfiguration : MonoBehaviour
     private void SourceSelected(object sender, EventArgs e)
     {
         LoadProjectList();
+        SelectedSource = (DataSource)sourceSelection.SelectedItemIndex;
         shelf.LoadContent();
     }
 

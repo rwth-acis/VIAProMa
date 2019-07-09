@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RequirementsLoader : Shelf, ILoadShelf
+public class IssuesLoader : Shelf, ILoadShelf
 {
     [SerializeField] private ShelfConfiguration configuration;
 
@@ -10,9 +10,10 @@ public class RequirementsLoader : Shelf, ILoadShelf
 
     public MessageBadge MessageBadge { get => messageBadge; }
 
-    private List<Requirement[]> requirements;
+    private Issue[] issues;
+    private Issue[] nextIssues;
 
-    private int topPage;
+    private int page;
 
     protected override void Awake()
     {
@@ -66,11 +67,11 @@ public class RequirementsLoader : Shelf, ILoadShelf
 
     public void ScrollUp()
     {
-        topPage++; // check if there are requirements left
+        page++;
     }
 
     public void ScrollDown()
     {
-        topPage--;
+        page--;
     }
 }

@@ -7,4 +7,13 @@ using UnityEngine;
 public class StringData : IListViewItemData
 {
     public string text;
+
+    public StringData()
+    {
+    }
+
+    public StringData(string text)
+    {
+        this.text = text;
+    }
 }
