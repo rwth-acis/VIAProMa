@@ -151,10 +151,24 @@ public class Keyboard : Singleton<Keyboard>
             }
         }
 
-        // start the infinite coroutine which makes the cursor blink
-        StartCoroutine(BlinkingCursor());
         // update the view to set the input field's text
         UpdateView();
+    }
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        // start the infinite coroutine which makes the cursor blink
+        StartCoroutine(BlinkingCursor());
+    }
+
+    private void OnDisable()
+    {
+        
     }
 
     /// <summary>
@@ -186,6 +200,8 @@ public class Keyboard : Singleton<Keyboard>
         Text = text;
         transform.position = position;
         transform.eulerAngles = eulerRotation;
+
+        CursorPos = text.Length;
     }
 
     /// <summary>
