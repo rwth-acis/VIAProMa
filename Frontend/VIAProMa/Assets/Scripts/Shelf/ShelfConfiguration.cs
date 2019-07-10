@@ -73,12 +73,14 @@ public class ShelfConfiguration : MonoBehaviour
         {
             LoadCategoryList();
         }
+        shelf.ResetPage();
         shelf.LoadContent();
     }
 
     private void CategorySelected(object sender, EventArgs e)
     {
         SelectedCategory = categories[categoryDropdownMenu.SelectedItemIndex];
+        shelf.ResetPage();
         shelf.LoadContent();
     }
 

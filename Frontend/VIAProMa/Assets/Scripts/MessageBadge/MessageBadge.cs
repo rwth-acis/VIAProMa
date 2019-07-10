@@ -46,6 +46,7 @@ public class MessageBadge : MonoBehaviour
     /// </summary>
     public void ShowProcessing()
     {
+        gameObject.SetActive(true);
         processing++;
         processingEffect.IsProcessing = true;
     }
@@ -61,6 +62,7 @@ public class MessageBadge : MonoBehaviour
         {
             processing = 0;
             processingEffect.IsProcessing = false;
+            Hide();
         }
     }
 
@@ -70,6 +72,7 @@ public class MessageBadge : MonoBehaviour
     /// <param name="newContent">The new message content which should be displayed on the badge</param>
     private void SetContent(MessageContent newContent)
     {
+        gameObject.SetActive(true);
         content = newContent;
         iconRenderer.sprite = content.Icon;
         messageText.text = content.Text;
@@ -83,5 +86,19 @@ public class MessageBadge : MonoBehaviour
     public void ShowMessage(long messageCode)
     {
         SetContent(messages.GetMessage(messageCode));
+    }
+
+    /// <summary>
+    /// Shortcut for show processing and show message(load message)
+    /// </summary>
+    public void ShowLoadMessage()
+    {
+        ShowMessage(-2);
+        ShowProcessing();
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
     }
 }

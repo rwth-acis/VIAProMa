@@ -38,7 +38,7 @@ public class ProjectLoader : Shelf, ILoadShelf
         messageBadge.DoneProcessing();
         if (projectRes.Successful)
         {
-            messageBadge.gameObject.SetActive(false);
+            messageBadge.Hide();
             projects = projectRes.Value;
             files = new File[projects.Length];
 
