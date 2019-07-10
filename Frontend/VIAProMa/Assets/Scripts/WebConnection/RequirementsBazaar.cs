@@ -71,4 +71,36 @@ public static class RequirementsBazaar
             return new ApiResult<Contributors>(contributors);
         }
     }
+
+    public static async Task<ApiResult<Issue[]>> GetRequirementsInProject(int projectId, int page, int itemsPerPage)
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (!resp.Successful)
+        {
+            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+            return new ApiResult<Issue[]>(resp.ResponseCode, resp.ResponseBody);
+        }
+        else
+        {
+            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+            return new ApiResult<Issue[]>(requirements);
+        }
+    }
+
+    public static async Task<ApiResult<Issue[]>> GetRequirementsInCategory(int categoryId)
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/categories/" + categoryId + "/requirements");
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (!resp.Successful)
+        {
+            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+            return new ApiResult<Issue[]>(resp.ResponseCode, resp.ResponseBody);
+        }
+        else
+        {
+            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+            return new ApiResult<Issue[]>(requirements);
+        }
+    }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,29 +40,49 @@ public class IssuesLoader : Shelf, ILoadShelf
         }
     }
 
-    private void LoadRequirements()
+    private async void LoadRequirements()
     {
+        ApiResult<Issue[]> apiResult = null;
         // load requirements from the correct project or category
         if (configuration.SelectedCategory != null) // project and category were selected
         {
+            // TODO: add page and search query
+            apiResult = await RequirementsBazaar.GetRequirementsInCategory(configuration.SelectedCategory.id);
         }
         else if (configuration.SelectedProject != null) // just a project was selected
         {
-
+            // TODO: add page and search query
+            apiResult = await RequirementsBazaar.GetRequirementsInProject(configuration.SelectedProject.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
         }
         else
         {
             issuesMultiListView.Clear();
         }
+
+        if (apiResult != null) // web request was made
+        {
+            if (apiResult.HasError)
+            {
+                messageBadge.ShowMessage(apiResult.ResponseCode);
+            }
+            else
+            {
+                List<Issue> items = new List<Issue>(apiResult.Value);
+                Debug.Log("items count: " + items.Count);
+                issuesMultiListView.Items = items;
+            }
+        }
     }
 
     public void ScrollUp()
     {
-        page++;
+        page--;
+        LoadContent();
     }
 
     public void ScrollDown()
     {
-        page--;
+        page++;
+        LoadContent();
     }
 }
