@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShelfConfiguration : MonoBehaviour
+public class ShelfConfiguration : MonoBehaviour, IWindow
 {
     [SerializeField] private IssuesLoader shelf;
 
@@ -15,11 +15,16 @@ public class ShelfConfiguration : MonoBehaviour
     private Project[] projects;
     private Category[] categories;
 
+    public event EventHandler WindowClosed;
+
     public DataSource SelectedSource { get; private set; }
 
     public Project SelectedProject { get; private set; }
 
     public Category SelectedCategory { get; private set; }
+    public bool WindowEnabled { // not needed for configuration window => does not have an effect
+        get;set;
+    }
 
     private void Awake()
     {
@@ -137,5 +142,15 @@ public class ShelfConfiguration : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void Open()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
     }
 }

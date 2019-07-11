@@ -7,6 +7,11 @@ public class DataDisplay<DataType> : MonoBehaviour, IViewContainer
 {
     protected DataType content;
 
+    public DataType Content
+    {
+        get => content;
+    }
+
     public virtual void Setup(DataType content)
     {
         this.content = content;

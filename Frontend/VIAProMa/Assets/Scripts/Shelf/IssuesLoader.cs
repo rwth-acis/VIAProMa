@@ -74,7 +74,6 @@ public class IssuesLoader : Shelf, ILoadShelf
             else
             {
                 List<Issue> items = new List<Issue>(apiResult.Value);
-                Debug.Log("items count: " + items.Count);
                 issuesMultiListView.Items = items;
             }
         }
