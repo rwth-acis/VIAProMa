@@ -1,4 +1,5 @@
-﻿using System;
+﻿using i5.ViaProMa.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class IssuesLoader : Shelf, ILoadShelf
 {
     [SerializeField] private ShelfConfiguration configuration;
     [SerializeField] private IssuesMultiListView issuesMultiListView;
+    [SerializeField] private InputField searchField;
 
     public MessageBadge MessageBadge { get => messageBadge; }
 
@@ -25,6 +27,10 @@ public class IssuesLoader : Shelf, ILoadShelf
         if(issuesMultiListView == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(issuesMultiListView));
+        }
+        if (searchField == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchField));
         }
     }
 
@@ -52,13 +58,11 @@ public class IssuesLoader : Shelf, ILoadShelf
         // load requirements from the correct project or category
         if (configuration.SelectedCategory != null) // project and category were selected
         {
-            // TODO: search query
-            apiResult = await RequirementsBazaar.GetRequirementsInCategory(configuration.SelectedCategory.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
+            apiResult = await RequirementsBazaar.GetRequirementsInCategory(configuration.SelectedCategory.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews, searchField.Text);
         }
         else if (configuration.SelectedProject != null) // just a project was selected
         {
-            // TODO: search query
-            apiResult = await RequirementsBazaar.GetRequirementsInProject(configuration.SelectedProject.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
+            apiResult = await RequirementsBazaar.GetRequirementsInProject(configuration.SelectedProject.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews, searchField.Text);
         }
         else
         {

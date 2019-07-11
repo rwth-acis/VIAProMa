@@ -73,7 +73,18 @@ public static class RequirementsBazaar
 
     public static async Task<ApiResult<Issue[]>> GetRequirementsInProject(int projectId, int page, int itemsPerPage)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage);
+        return await GetRequirementsInProject(projectId, page, itemsPerPage, "");
+    }
+
+    public static async Task<ApiResult<Issue[]>> GetRequirementsInProject(int projectId, int page, int itemsPerPage, string search)
+    {
+        string path = ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+        search = StringUtilities.RemoveSpecialCharacters(search);
+        if (!string.IsNullOrEmpty(search))
+        {
+            path += "&search=" + search;
+        }
+        Response resp = await Rest.GetAsync(path);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -89,7 +100,18 @@ public static class RequirementsBazaar
 
     public static async Task<ApiResult<Issue[]>> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage);
+        return await GetRequirementsInCategory(categoryId, page, itemsPerPage, "");
+    }
+
+    public static async Task<ApiResult<Issue[]>> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage, string search)
+    {
+        string path = ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+        search = StringUtilities.RemoveSpecialCharacters(search);
+        if (!string.IsNullOrEmpty(search))
+        {
+            path += "&search=" + search;
+        }
+        Response resp = await Rest.GetAsync(path);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
