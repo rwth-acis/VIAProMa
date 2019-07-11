@@ -15,7 +15,10 @@ public class SaveLoadTester : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.L))
         {
-            SaveLoadManager.Instance.DeserializeSaveGame(loadJson);
+            if (!string.IsNullOrEmpty(loadJson))
+            {
+                SaveLoadManager.Instance.DeserializeSaveGame(loadJson);
+            }
         }
     }
 }

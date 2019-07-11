@@ -10,7 +10,7 @@ using UnityEngine;
 /// Controls the UI for the server status menu
 /// This menu indicates whether the backend servers are online
 /// </summary>
-public class ServerStatusMenu : MonoBehaviourPunCallbacks
+public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
 {
     [SerializeField] private GameObject backendLed;
     [SerializeField] private GameObject sharingLed;
@@ -21,6 +21,10 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
 
     private Renderer backendLedRenderer;
     private Renderer sharingLedRenderer;
+
+    public bool WindowEnabled { get; set; } // not used here
+
+    public event EventHandler WindowClosed;
 
     /// <summary>
     /// Initializes the component and makes sure that it is set up correctly
@@ -160,4 +164,14 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks
         }
     }
 
+    public void Open()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Close()
+    {
+        WindowClosed?.Invoke(this, EventArgs.Empty);
+        gameObject.SetActive(false);
+    }
 }

@@ -128,4 +128,26 @@ public abstract class Diagram : MonoBehaviour
     {
         DiagramUpdated?.Invoke(this, e);
     }
+
+    protected virtual void ClearContent()
+    {
+
+    }
+
+    /// <summary>
+    /// Returns the bounds of the given data set
+    /// Encapsulates each data point in a axis aligned bounding volume
+    /// This way, one can get the minimum and maximum values for each axis and the average point
+    /// </summary>
+    /// <param name="points">The data points</param>
+    /// <returns></returns>
+    protected static Bounds GetBoundsOfData(List<DataPoint> points)
+    {
+        Bounds b = new Bounds(); // bounds can be initialized this way because the origin should always be included in the diagram
+        foreach (DataPoint point in points)
+        {
+            b.Encapsulate(point.position);
+        }
+        return b;
+    }
 }

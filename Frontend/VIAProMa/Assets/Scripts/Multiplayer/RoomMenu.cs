@@ -254,6 +254,7 @@ public class RoomMenu : MonoBehaviour, IWindow
     /// </summary>
     public void Close()
     {
+        WindowClosed?.Invoke(this, EventArgs.Empty);
         gameObject.SetActive(false);
     }
 }

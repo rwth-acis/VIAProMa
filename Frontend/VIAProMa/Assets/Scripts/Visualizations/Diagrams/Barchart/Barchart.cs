@@ -73,7 +73,7 @@ public class Barchart : Diagram
     protected override void UpdateVisuals()
     {
         // first clear the existing bars
-        ClearBarRepresentations();
+        ClearContent();
 
         // if there is no data set, there is nothing to display
         if (DataSet == null)
@@ -110,7 +110,7 @@ public class Barchart : Diagram
     /// <summary>
     /// Removes existing bar representations
     /// </summary>
-    private void ClearBarRepresentations()
+    protected override void ClearContent()
     {
         for (int i = 0; i < instantiatedBars.Count; i++)
         {
@@ -118,22 +118,5 @@ public class Barchart : Diagram
         }
 
         instantiatedBars.Clear();
-    }
-
-    /// <summary>
-    /// Returns the bounds of the given data set
-    /// Encapsulates each data point in a axis aligned bounding volume
-    /// This way, one can get the minimum and maximum values for each axis and the average point
-    /// </summary>
-    /// <param name="points">The data points</param>
-    /// <returns></returns>
-    private static Bounds GetBoundsOfData(List<DataPoint> points)
-    {
-        Bounds b = new Bounds(); // bounds can be initialized this way because the origin should always be included in the diagram
-        foreach (DataPoint point in points)
-        {
-            b.Encapsulate(point.position);
-        }
-        return b;
     }
 }

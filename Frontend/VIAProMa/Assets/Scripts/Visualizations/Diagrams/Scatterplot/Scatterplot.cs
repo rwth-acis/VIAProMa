@@ -63,7 +63,7 @@ public class Scatterplot : Diagram
     /// </summary>
     protected override void UpdateVisuals()
     {
-        ClearPointRepresentations();
+        ClearContent();
 
         if (DataSet == null)
         {
@@ -90,20 +90,10 @@ public class Scatterplot : Diagram
         base.UpdateVisuals();
     }
 
-    private static Bounds GetBoundsOfData(List<DataPoint> points)
-    {
-        Bounds b = new Bounds(); // bounds can be initialized this way because the origin should always be included in the diagram
-        foreach (DataPoint point in points)
-        {
-            b.Encapsulate(point.position);
-        }
-        return b;
-    }
-
     /// <summary>
     /// Clears the visual representation of the data points
     /// </summary>
-    private void ClearPointRepresentations()
+    protected override void ClearContent()
     {
         for (int i = 0; i < pointRepresentations.Count; i++)
         {

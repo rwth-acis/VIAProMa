@@ -18,7 +18,6 @@ public static class RequirementsBazaar
         }
         else
         {
-            Debug.Log(resp.ResponseBody);
             Project[] projects = JsonArrayUtility.FromJson<Project>(resp.ResponseBody);
             return new ApiResult<Project[]>(projects);
         }
