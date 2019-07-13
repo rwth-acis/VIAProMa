@@ -26,9 +26,11 @@ public class EyeTargetFollower : MonoBehaviour
         Vector3 eyeToTarget = eyeTarget.position - transform.position;
         Vector3 projectedForward = new Vector3(0, 0, -1);
 
+        Vector3 horizontalForward = Vector3.ProjectOnPlane(-transform.right, headBone.up);
         Vector3 horizontalEyeToTarget = Vector3.ProjectOnPlane(eyeToTarget, headBone.up);
         float horizontalAngle = Vector3.SignedAngle(projectedForward, horizontalEyeToTarget, headBone.up);
 
+        Vector3 verticalForward = Vector3.ProjectOnPlane(-transform.right, headBone.right);
         Vector3 verticalEyeToTarget = Vector3.ProjectOnPlane(eyeToTarget, headBone.right);
         float verticalAngle = Vector3.SignedAngle(projectedForward, verticalEyeToTarget, headBone.right);
 
