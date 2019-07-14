@@ -136,11 +136,26 @@ public static class RequirementsBazaar
         }
     }
 
+    /// <summary>
+    /// Gets the requirements in a Requirements Bazaar Category
+    /// </summary>
+    /// <param name="categoryId">The id of the category</param>
+    /// <param name="page">Page of the content (the overall list is divided into pages)</param>
+    /// <param name="itemsPerPage">Specifies how many items should be on one page</param>
+    /// <returns>The list of requirements in the category on hte given page, contained in the APIResult object</returns>
     public static async Task<ApiResult<Issue[]>> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage)
     {
         return await GetRequirementsInCategory(categoryId, page, itemsPerPage, "");
     }
 
+    /// <summary>
+    /// Gets the requirements in a Requirements Bazaar Category
+    /// </summary>
+    /// <param name="categoryId">The id of the category</param>
+    /// <param name="page">Page of the content (the overall list is divided into pages)</param>
+    /// <param name="itemsPerPage">Specifies how many items should be on one page</param>
+    /// <param name="search">Search pattern which filters the requirements</param>
+    /// <returns>The list of requirements in the category on hte given page, contained in the APIResult object</returns>
     public static async Task<ApiResult<Issue[]>> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage, string search)
     {
         string path = ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Stores the reference to a networked prefab which can be instantiated in a multiplayer scene
+/// </summary>
 [Serializable]
 public class NetworkPrefab
 {
@@ -10,12 +13,21 @@ public class NetworkPrefab
 
     [SerializeField] private string path;
 
+    /// <summary>
+    /// The network prefab
+    /// </summary>
+    /// <value></value>
     public GameObject Prefab { get => prefab; }
+
+    /// <summary>
+    /// The relative path to the prefab, starting inside of a resources folder and without the file ending
+    /// </summary>
+    /// <value></value>
     public string Path
     {
         get
         {
-            // first cut away the path leading to the Resources
+            // first cut away the path leading to the resources
             int startIndex = path.ToLower().IndexOf("resources");
             if (startIndex == -1)
             {
@@ -31,6 +43,11 @@ public class NetworkPrefab
         }
     }
 
+    /// <summary>
+    /// The name of the prefab
+    /// This is identical to the file name
+    /// </summary>
+    /// <value></value>
     public string Name
     {
         get
@@ -39,6 +56,11 @@ public class NetworkPrefab
         }
     }
 
+    /// <summary>
+    /// Creates the network prefab object
+    /// </summary>
+    /// <param name="prefab">The prefab to reference</param>
+    /// <param name="path">The full path to the prefab</param>
     public NetworkPrefab(GameObject prefab, string path)
     {
         this.prefab = prefab;

@@ -164,11 +164,18 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         }
     }
 
+    /// <summary>
+    /// Opens the window by making the GameObject active
+    /// </summary>
     public void Open()
     {
         gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Closes the window and raises the WindowClosed event
+    /// Deactivates the GameObject (so the window still exists but is invisible)
+    /// </summary>
     public void Close()
     {
         WindowClosed?.Invoke(this, EventArgs.Empty);
