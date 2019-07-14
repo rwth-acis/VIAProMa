@@ -41,6 +41,10 @@ public static class BackendConnector
         }
     }
 
+    /// <summary>
+    /// Gets the saved projects and scene configurations
+    /// </summary>
+    /// <returns></returns>
     public static async Task<ApiResult<string[]>> GetProjects()
     {
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/");

@@ -37,11 +37,20 @@ public class ConnectionManager : Singleton<ConnectionManager>
         }
     }
 
+    /// <summary>
+    /// True if the backend server is reachable
+    /// This value is updated automatically with every request which is made to the server
+    /// </summary>
+    /// <value></value>
     public bool BackendReachable
     {
         get;private set;
     }
 
+    /// <summary>
+    /// Checks the status code in order to determine if the backend is reachable
+    /// </summary>
+    /// <param name="code"></param>
     public void CheckStatusCode(long code)
     {
         if (code == 0) // device unavailable
@@ -54,6 +63,11 @@ public class ConnectionManager : Singleton<ConnectionManager>
         }
     }
 
+    /// <summary>
+    /// Sets the backend reachable status to the given value
+    /// If the value is different from the previous state, the BackendOnlineStatusChanged event is invoked
+    /// </summary>
+    /// <param name="reachable"></param>
     private void SetBackendReachableStatus(bool reachable)
     {
         bool previousStatus = BackendReachable;
@@ -64,5 +78,8 @@ public class ConnectionManager : Singleton<ConnectionManager>
         }
     }
 
+    /// <summary>
+    /// Raised if the reachability status of the backend is changed
+    /// </summary>
     public event EventHandler BackendOnlineStatusChanged;
 }
