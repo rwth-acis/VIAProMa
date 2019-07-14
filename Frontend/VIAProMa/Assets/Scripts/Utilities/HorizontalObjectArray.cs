@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Aligns objects stored in the collection array horizontally with regard to the axis-aligned bounding boxes of the individual items
+/// </summary>
 public class HorizontalObjectArray : MonoBehaviour
 {
     [SerializeField] GameObject[] collection = new GameObject[0];
@@ -16,11 +19,17 @@ public class HorizontalObjectArray : MonoBehaviour
         set { collection = value; Initialize(); }
     }
 
+    /// <summary>
+    /// Initializes the component
+    /// </summary>
     private void Awake()
     {
         Initialize();
     }
 
+    /// <summary>
+    /// Initializes the array by fetching the box colliders of the GameObjects in the collection
+    /// </summary>
     private void Initialize()
     {
         colliders = new BoxCollider[collection.Length];
@@ -31,6 +40,9 @@ public class HorizontalObjectArray : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Aligns the transforms of the collection array with respect to their axis aligned bounding boxes and the gap between them
+    /// </summary>
     private void Update()
     {
         if (collection.Length == 0)

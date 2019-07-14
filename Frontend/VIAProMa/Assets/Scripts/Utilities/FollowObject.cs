@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Makes the object follow the given target transform (position only)
+/// </summary>
 public class FollowObject : MonoBehaviour
 {
     public Transform target;
 
-    // Update is called once per frame
+    /// <summary>
+    /// Copies the position of a target transform to this transform
+    /// </summary>
     void Update()
     {
         if (target != null)
