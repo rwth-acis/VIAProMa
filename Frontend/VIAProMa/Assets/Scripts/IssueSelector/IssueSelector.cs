@@ -11,9 +11,13 @@ using Microsoft.MixedReality.Toolkit.Input;
 public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointerHandler
 {
     [SerializeField] private GameObject selectionIndicator;
+    [SerializeField] private Renderer backgroundRenderer;
 
     private IssueDataDisplay issueDataDisplay;
     private bool selected;
+    private Color originalRendererColor;
+
+    public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
 
     /// <summary>
     /// True if the issue is currently selected
@@ -41,6 +45,14 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         if (issueDataDisplay == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), gameObject);
+        }
+        if (backgroundRenderer == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(backgroundRenderer));
+        }
+        else
+        {
+            originalRendererColor = backgroundRenderer.material.color;
         }
     }
 
@@ -107,6 +119,7 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         else // selection mode has ended
         {
             selectionIndicator.SetActive(false);
+            backgroundRenderer.material.color = originalRendererColor;
         }
     }
 
@@ -135,10 +148,19 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         if (IssueSelectionManager.Instance.SelectionModeActive)
         {
             selectionIndicator.SetActive(Selected);
+            if (Selected)
+            {
+                backgroundRenderer.material.color = selectedColor;
+            }
+            else
+            {
+                backgroundRenderer.material.color = originalRendererColor;
+            }
         }
         else
         {
             selectionIndicator.SetActive(false);
+            backgroundRenderer.material.color = originalRendererColor;
         }
     }
 
