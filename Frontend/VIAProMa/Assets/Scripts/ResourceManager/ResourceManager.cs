@@ -20,6 +20,10 @@ public class ResourceManager : Singleton<ResourceManager>
     {
         base.Awake();
         resourcePrefabCollection.FindNetworkPrefabsInResources();
+        if (resourcePrefabCollection == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(resourcePrefabCollection));
+        }
         if (defaultProfileImage == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(defaultProfileImage));

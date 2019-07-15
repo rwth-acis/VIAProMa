@@ -74,27 +74,6 @@ public static class RequirementsBazaar
     }
 
     /// <summary>
-    /// Gets the contributors of a Requirements Bazaar requirement
-    /// </summary>
-    /// <param name="requirementId">The id of the requirement</param>
-    /// <returns>The contributors in a special contributor object, contained in the APIResult object</returns>
-    public static async Task<ApiResult<Contributors>> GetRequirementContributors(int requirementId)
-    {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId + "/contributors");
-        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-        if (!resp.Successful)
-        {
-            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-            return new ApiResult<Contributors>(resp.ResponseCode, resp.ResponseBody);
-        }
-        else
-        {
-            Contributors contributors = JsonUtility.FromJson<Contributors>(resp.ResponseBody);
-            return new ApiResult<Contributors>(contributors);
-        }
-    }
-
-    /// <summary>
     /// Gets the list of requirements in a Requirements Bazaar project
     /// </summary>
     /// <param name="projectId">The id of the project</param>
