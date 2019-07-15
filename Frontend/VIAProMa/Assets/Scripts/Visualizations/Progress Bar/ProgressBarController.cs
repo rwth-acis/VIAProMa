@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
     [SerializeField] private Transform tubes;
     [SerializeField] private Transform innerBarDone;
     [SerializeField] private Transform innerBarInProgress;
+    [SerializeField] private BoxCollider boundingCollider;
 
     public float minLength = 0.05f;
     public float maxLength = 3f;
@@ -59,6 +61,10 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
         if (innerBarInProgress == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(innerBarInProgress));
+        }
+        if (boundingCollider == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingCollider));
         }
 
         UpdateVisuals();
@@ -115,5 +121,7 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
         tubes.localScale = new Vector3(newLength, 1f, 1f);
         capPos.localPosition = new Vector3(newLength / 2f, 0f, 0f);
         capNeg.localPosition = new Vector3(-newLength / 2f, 0f, 0f);
+        // also update box collider for bounding box
+        boundingCollider.transform.localScale = new Vector3(newLength, 1, 1);
     }
 }
