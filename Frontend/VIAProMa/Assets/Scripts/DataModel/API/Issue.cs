@@ -35,4 +35,29 @@ public class Issue : IListViewItemData
         this.status = status;
         this.developers = developers;
     }
+
+    public override bool Equals(object obj)
+    {
+        Issue issue = obj as Issue;
+        if (issue == null)
+        {
+            return false;
+        }
+
+        return (source == issue.source && id == issue.id);
+    }
+
+    public bool Equals(Issue issue)
+    {
+        if (issue == null)
+        {
+            return false;
+        }
+        return (source == issue.source && id == issue.id);
+    }
+
+    public override int GetHashCode()
+    {
+        return (int)source ^ id;
+    }
 }
