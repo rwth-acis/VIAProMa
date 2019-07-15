@@ -4,6 +4,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 using Photon.Pun;
 using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.UI;
 
 [RequireComponent(typeof(IssueDataDisplay))]
 public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
@@ -11,7 +12,7 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
     public GameObject copyObject;
 
     private GameObject copyInstance;
-    private IMixedRealityPointerHandler handlerOnCopy;
+    private ManipulationHandler handlerOnCopy;
 
     private IssueDataDisplay localDataDisplay;
 
@@ -26,25 +27,28 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
 
     public void OnPointerDown(MixedRealityPointerEventData eventData)
     {
-        copyInstance = ResourceManager.Instance.NetworkInstantiate(copyObject, transform.position, transform.rotation);
-        handlerOnCopy = copyInstance?.GetComponent<IMixedRealityPointerHandler>();
-        IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
-        if (handlerOnCopy == null || remoteDataDisplay == null)
+        if (!IssueSelectionManager.Instance.SelectionModeActive)
         {
-            if (handlerOnCopy == null)
+            copyInstance = ResourceManager.Instance.NetworkInstantiate(copyObject, transform.position, transform.rotation);
+            handlerOnCopy = copyInstance?.GetComponent<ManipulationHandler>();
+            IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
+            if (handlerOnCopy == null || remoteDataDisplay == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IMixedRealityPointerHandler), copyInstance);
+                if (handlerOnCopy == null)
+                {
+                    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IMixedRealityPointerHandler), copyInstance);
+                }
+                if (remoteDataDisplay == null)
+                {
+                    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), copyInstance);
+                }
+                PhotonNetwork.Destroy(copyInstance);
             }
-            if (remoteDataDisplay == null)
+            else
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), copyInstance);
+                remoteDataDisplay.Setup(localDataDisplay.Content);
+                handlerOnCopy.OnPointerDown(eventData);
             }
-            PhotonNetwork.Destroy(copyInstance);
-        }
-        else
-        {
-            remoteDataDisplay.Setup(localDataDisplay.Content);
-            handlerOnCopy.OnPointerDown(eventData);
         }
     }
 
@@ -52,6 +56,7 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
     {
         if (handlerOnCopy != null)
         {
+            handlerOnCopy.gameObject.SetActive(true);
             handlerOnCopy.OnPointerDragged(eventData);
         }
     }

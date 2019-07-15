@@ -54,6 +54,16 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         IssueSelectionManager.Instance.IssueSelectionChanged += ReactToIssueSelectionChanged;
     }
 
+    private void Start()
+    {
+        // check selection mode in start => all other components which use awake should now be set up
+        if (IssueSelectionManager.Instance.SelectionModeActive)
+        {
+            Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
+            UpdateView();
+        }
+    }
+
     /// <summary>
     /// Called if the GameObject is disabled
     /// De-registers from the IssueSelectionManager's events
@@ -92,7 +102,7 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
     {
         if (IssueSelectionManager.Instance.SelectionModeActive) // selection mode was just activated
         {
-            IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
+            Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
         }
         else // selection mode has ended
         {
@@ -149,6 +159,7 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         if (IssueSelectionManager.Instance.SelectionModeActive)
         {
             ToggleSelection();
+            eventData.Use();
         }
     }
 }
