@@ -84,6 +84,10 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
 
     private void UpdateVisuals()
     {
+        if (innerBarDone == null || innerBarInProgress == null)
+        {
+            return;
+        }
         float doneBarScale = percentageDone;
         float inProgressBarScale = percentageInProgress;
 
