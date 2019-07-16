@@ -10,13 +10,16 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
     [SerializeField] private Transform tubes;
     [SerializeField] private Transform innerBarDone;
     [SerializeField] private Transform innerBarInProgress;
-    [SerializeField] private BoxCollider boundingCollider;
+    [SerializeField] private CapsuleCollider tubeCollider;
+    [SerializeField] private BoundingBox boundingBox;
 
     public float minLength = 0.05f;
     public float maxLength = 3f;
 
     private float percentageDone;
     private float percentageInProgress;
+
+    private BoxCollider boundingBoxCollider;
 
     public float Length { get => tubes.localScale.x; }
 
@@ -62,9 +65,18 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(innerBarInProgress));
         }
-        if (boundingCollider == null)
+        if (tubeCollider == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingCollider));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(tubeCollider));
+        }
+        if (boundingBox == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+        }
+        boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
+        if (boundingBox == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBox), boundingBoxCollider?.gameObject);
         }
 
         UpdateVisuals();
@@ -121,7 +133,13 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
         tubes.localScale = new Vector3(newLength, 1f, 1f);
         capPos.localPosition = new Vector3(newLength / 2f, 0f, 0f);
         capNeg.localPosition = new Vector3(-newLength / 2f, 0f, 0f);
-        // also update box collider for bounding box
-        boundingCollider.transform.localScale = new Vector3(newLength, 1, 1);
+
+        // also update box colliders and bounding box
+        tubeCollider.height = newLength + 0.1f; // add 0.1 so that the cylindrical part covers the full length (otherwise it is too short because of the rounded caps)
+        boundingBoxCollider.size = new Vector3(
+            newLength + 0.05f, // add 0.05f to encapsulate the end caps
+            boundingBoxCollider.size.y,
+            boundingBoxCollider.size.z);
+        boundingBox.RefreshDisplay();
     }
 }
