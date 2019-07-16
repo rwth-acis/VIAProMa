@@ -10,7 +10,7 @@ public class AppBarStateController : MonoBehaviour
     [SerializeField] private GameObject adjustmentView;
 
     private AppBarState state = AppBarState.COLLAPSED;
-    private AppBarPlacer appBarPlacer;
+    private BoundingBoxStateController boundingBoxStateController;
 
     public AppBarState State
     {
@@ -36,14 +36,16 @@ public class AppBarStateController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(adjustmentView));
         }
-        appBarPlacer = GetComponent<AppBarPlacer>();
+        AppBarPlacer appBarPlacer = GetComponent<AppBarPlacer>();
         if (appBarPlacer == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
         }
-
-
-        State = AppBarState.COLLAPSED;
+        boundingBoxStateController = appBarPlacer?.TargetBoundingBox.gameObject.GetComponent<BoundingBoxStateController>();
+        if (boundingBoxStateController == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), appBarPlacer?.TargetBoundingBox.gameObject);
+        }
     }
 
     private void UpdateView()
@@ -54,11 +56,11 @@ public class AppBarStateController : MonoBehaviour
 
         if (state == AppBarState.ADJUSTMENT_VIEW)
         {
-            appBarPlacer.TargetBoundingBox.Active = true;
+            boundingBoxStateController.BoundingBoxActive = true;
         }
         else
         {
-            appBarPlacer.TargetBoundingBox.Active = false;
+            boundingBoxStateController.BoundingBoxActive = false;
         }
     }
 
