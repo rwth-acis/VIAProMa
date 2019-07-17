@@ -36,12 +36,16 @@ public class AppBarStateController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(adjustmentView));
         }
+    }
+
+    private void Start()
+    {
         AppBarPlacer appBarPlacer = GetComponent<AppBarPlacer>();
         if (appBarPlacer == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
         }
-        boundingBoxStateController = appBarPlacer?.TargetBoundingBox.gameObject.GetComponent<BoundingBoxStateController>();
+        boundingBoxStateController = appBarPlacer?.TargetBoundingBox?.gameObject.GetComponent<BoundingBoxStateController>();
         if (boundingBoxStateController == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), appBarPlacer?.TargetBoundingBox.gameObject);

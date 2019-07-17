@@ -8,6 +8,8 @@ public class Spawner : MonoBehaviour
 
     protected GameObject instance;
 
+    public GameObject SpawnedInstance { get => instance; }
+
     protected virtual void Awake()
     {
         instance = Instantiate(prefab);
