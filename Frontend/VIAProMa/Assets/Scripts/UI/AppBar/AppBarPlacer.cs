@@ -24,7 +24,11 @@ public class AppBarPlacer : MonoBehaviour
     private BoundingBoxHelper helper = new BoundingBoxHelper();
     private List<Vector3> boundsPoints = new List<Vector3>();
 
-    public BoundingBox TargetBoundingBox { get => boundingBox; }
+    public BoundingBox TargetBoundingBox
+    {
+        get => boundingBox;
+        set => boundingBox = value;
+    }
 
     /// <summary>
     /// Pushes the app bar away from the object

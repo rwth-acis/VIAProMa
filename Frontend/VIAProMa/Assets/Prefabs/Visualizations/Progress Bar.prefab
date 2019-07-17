@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1080186937}
   - component: {fileID: 1080186938}
   - component: {fileID: 5978160494925032327}
+  - component: {fileID: 10746060}
   m_Layer: 0
   m_Name: Bounding Box
   m_TagString: Untagged
@@ -164,6 +165,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a781ec9d2a644534d8933950f16e9f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &10746060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080186934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00893cefe72b93f4bad6aa4989db932b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4698399378176166983, guid: 8fd2995fc2a2fc64199f2e748b74956e, type: 3}
+  targetBoundingBox: {fileID: 1080186937}
 --- !u!1 &1282063186
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,7 +356,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 0}
   viewIdField: 0
-  InstantiationId: 0
+  InstantiationId: 1
   isRuntimeInstantiated: 0
 --- !u!1 &4182497719721084561
 GameObject:
