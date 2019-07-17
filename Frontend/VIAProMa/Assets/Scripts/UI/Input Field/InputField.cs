@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,11 +10,15 @@ namespace i5.ViaProMa.UI
 
     public class InputField : MonoBehaviour
     {
+        [Header("UI Elements")]
         [SerializeField] private TextMeshPro contentField;
 
+        [Header("Content")]
         [SerializeField] private string text = "Content";
 
         public event EventHandler TextChanged;
+
+        private Interactable fieldButton;
 
         public string Text
         {
@@ -28,11 +33,22 @@ namespace i5.ViaProMa.UI
 
         public TextMeshPro ContentField { get => contentField; }
 
+        public bool Enabled
+        {
+            get => fieldButton.Enabled;
+            set => fieldButton.Enabled = value;
+        }
+
         private void Awake()
         {
             if (contentField == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(contentField));
+            }
+            fieldButton = GetComponent<Interactable>();
+            if (fieldButton == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Interactable), gameObject);
             }
         }
 

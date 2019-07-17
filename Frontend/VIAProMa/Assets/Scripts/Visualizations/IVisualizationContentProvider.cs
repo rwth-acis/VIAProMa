@@ -8,4 +8,7 @@ public interface IVisualizationContentProvider
     List<Issue> Issues { get; }
 
     event EventHandler ContentChanged;
+
+    void SelectContent();
+    void EndContentSelection();
 }

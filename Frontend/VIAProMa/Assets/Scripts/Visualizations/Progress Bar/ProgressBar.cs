@@ -13,13 +13,23 @@ public class ProgressBar : Visualization
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IProgressBarVisuals), gameObject);
         }
+
+        ContentProvider = new SingleIssuesProvider();
     }
 
     public override void UpdateView()
     {
-        int[] states = CountStates(ContentProvider.Issues);
-        progressBarVisuals.PercentageInProgress = ((float)states[1]) / ContentProvider.Issues.Count;
-        progressBarVisuals.PercentageDone = ((float)states[2]) / ContentProvider.Issues.Count;
+        if (ContentProvider.Issues.Count == 0)
+        {
+            progressBarVisuals.PercentageDone = 0f;
+            progressBarVisuals.PercentageInProgress = 0f;
+        }
+        else
+        {
+            int[] states = CountStates(ContentProvider.Issues);
+            progressBarVisuals.PercentageInProgress = ((float)states[1]) / ContentProvider.Issues.Count;
+            progressBarVisuals.PercentageDone = ((float)states[2]) / ContentProvider.Issues.Count;
+        }
         base.UpdateView();
     }
 

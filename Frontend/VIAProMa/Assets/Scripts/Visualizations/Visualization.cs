@@ -11,7 +11,7 @@ public class Visualization : MonoBehaviour, IViewContainer
     /// <summary>
     /// The data content provider for this visualization
     /// </summary>
-    protected IVisualizationContentProvider visualizationContentProvider;
+    private IVisualizationContentProvider visualizationContentProvider;
 
     /// <summary>
     /// Invoked if the visualization was updated
@@ -24,7 +24,7 @@ public class Visualization : MonoBehaviour, IViewContainer
     public IVisualizationContentProvider ContentProvider
     {
         get => visualizationContentProvider;
-        set
+        protected set
         {
             if (visualizationContentProvider != null)
             {

@@ -13,4 +13,15 @@ public class SingleIssuesProvider : IVisualizationContentProvider
     {
         Issues = new List<Issue>();
     }
+
+    public void SelectContent()
+    {
+        IssueSelectionManager.Instance.StartSelectionMode(Issues);
+    }
+
+    public void EndContentSelection()
+    {
+        Issues = IssueSelectionManager.Instance.EndSelectionMode();
+        ContentChanged?.Invoke(this, EventArgs.Empty);
+    }
 }
