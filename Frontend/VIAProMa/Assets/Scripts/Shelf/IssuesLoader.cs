@@ -6,16 +6,15 @@ using UnityEngine;
 
 public class IssuesLoader : Shelf, ILoadShelf
 {
+    [SerializeField] private InputField searchField;
+    [Header("References")]
     [SerializeField] private ShelfConfiguration configuration;
     [SerializeField] private IssuesMultiListView issuesMultiListView;
-    [SerializeField] private InputField searchField;
 
     public MessageBadge MessageBadge { get => messageBadge; }
 
     private Issue[] issues;
     private Issue[] nextIssues;
-
-    private int page;
 
     protected override void Awake()
     {
@@ -32,11 +31,7 @@ public class IssuesLoader : Shelf, ILoadShelf
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchField));
         }
-    }
-
-    public void ResetPage()
-    {
-        page = 0;
+        upButton.Enabled = false;
     }
 
     public void LoadContent()
@@ -49,6 +44,8 @@ public class IssuesLoader : Shelf, ILoadShelf
             case DataSource.GITHUB:
                 break;
         }
+
+        CheckControls();
     }
 
     private async void LoadRequirements()
@@ -83,15 +80,15 @@ public class IssuesLoader : Shelf, ILoadShelf
         }
     }
 
-    public void ScrollUp()
+    public override void ScrollUp()
     {
-        page--;
+        base.ScrollUp();
         LoadContent();
     }
 
-    public void ScrollDown()
+    public override void ScrollDown()
     {
-        page++;
+        base.ScrollDown();
         LoadContent();
     }
 }
