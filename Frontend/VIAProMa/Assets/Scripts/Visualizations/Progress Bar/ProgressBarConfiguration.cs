@@ -12,8 +12,10 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
     [SerializeField] private ProgressBar progressBar;
 
     [Header("UI Elements")]
+    [SerializeField] private Interactable closeButton;
     [SerializeField] private InputField progressBarTitleField;
     [SerializeField] private Interactable selectionButton;
+    [SerializeField] private GameObject selectionActiveMessage;
 
     public event EventHandler WindowClosed;
 
@@ -25,6 +27,7 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
         set
         {
             windowEnabled = value;
+            closeButton.Enabled = windowEnabled;
             progressBarTitleField.Enabled = windowEnabled;
             selectionButton.Enabled = windowEnabled;
         }
@@ -32,6 +35,10 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
 
     private void Awake()
     {
+        if (closeButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(closeButton));
+        }
         if (appBarSpawner == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(appBarSpawner));
@@ -39,6 +46,14 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
         if (progressBar == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
+        }
+        if (selectionActiveMessage == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionActiveMessage));
+        }
+        else
+        {
+            selectionActiveMessage.SetActive(false);
         }
     }
 
@@ -51,15 +66,20 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
     {
         gameObject.SetActive(true);
         transform.position = appBarSpawner.SpawnedInstance.transform.position - 0.05f * appBarSpawner.SpawnedInstance.transform.forward;
+        transform.rotation = appBarSpawner.SpawnedInstance.transform.rotation;
     }
 
     public void SelectIssues()
     {
         progressBar.ContentProvider.SelectContent();
+        WindowEnabled = false;
+        selectionActiveMessage.SetActive(true);
     }
 
     public void EndIssueSelection()
     {
         progressBar.ContentProvider.EndContentSelection();
+        WindowEnabled = true;
+        selectionActiveMessage.SetActive(false);
     }
 }
