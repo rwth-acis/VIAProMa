@@ -3,15 +3,10 @@ package i5.las2peer.services.immersiveProjectManagementService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
@@ -134,12 +129,18 @@ public class RequirementsBazaarConnector {
 
     public static Response requestRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
     {
-        String path = baseUrl + "projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                .path("projects/{projectId}/requirements")
+                .queryParam("page", page)
+                .queryParam("per_page", itemsPerPage);
         if (searchFilter != null) {
             searchFilter = Utilities.RemoveSpecialSymbols(searchFilter);
-            path += "&search=" + searchFilter;
+            uriBuilder.queryParam("search", searchFilter);
         }
-        return Utilities.getResponse(path);
+
+        URI uri = uriBuilder.build(projectId);
+        return Utilities.getResponse(uri);
     }
 
     public static APIResult<Requirement[]> getRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
@@ -164,9 +165,18 @@ public class RequirementsBazaarConnector {
         }
     }
 
+    public static Response requestRequirement(int requirementId)
+    {
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                .path("requirements/{requirementId}");
+        URI uri = uriBuilder.build(requirementId);
+        return Utilities.getResponse(uri);
+    }
+
     public static APIResult<Requirement> getRequirement(int requirementId) {
         try {
-            Response response = Utilities.getResponse(baseUrl + "requirements/" + requirementId);
+            Response response = requestRequirement(requirementId);
             if (response.getStatus() != 200 && response.getStatus() != 201) {
                 return new APIResult<Requirement>(response.readEntity(String.class), response.getStatus());
             }
@@ -182,10 +192,19 @@ public class RequirementsBazaarConnector {
         }
     }
 
+    public static Response requestRequirementContributors(int requirementId)
+    {
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                .path("requirements/{requirementId}/contributors");
+        URI uri = uriBuilder.build(requirementId);
+        return Utilities.getResponse(uri);
+    }
+
     public static APIResult<ReqBazContributors> getRequirementContributors(int requirementId)
     {
         try {
-            Response response = Utilities.getResponse(baseUrl + "requirements/" + requirementId + "/contributors");
+            Response response = requestRequirementContributors(requirementId);
             if (response.getStatus() != 200 && response.getStatus() != 201) {
                 return new APIResult<ReqBazContributors>(response.readEntity(String.class), response.getStatus());
             }
