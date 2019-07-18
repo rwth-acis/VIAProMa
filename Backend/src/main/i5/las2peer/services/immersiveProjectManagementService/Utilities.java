@@ -13,7 +13,9 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Created by bened on 09.05.2019.
@@ -63,6 +65,11 @@ public class Utilities {
         Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
         return response;
+    }
+
+    public static Response getResponse(URI uri)
+    {
+        return getResponse(uri.toString());
     }
 
     public static String RemoveSpecialSymbols(String text)

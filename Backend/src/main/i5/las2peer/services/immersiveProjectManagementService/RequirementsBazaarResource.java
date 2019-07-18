@@ -2,31 +2,21 @@ package i5.las2peer.services.immersiveProjectManagementService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import i5.las2peer.api.Context;
-import i5.las2peer.restMapper.RESTService;
-import i5.las2peer.restMapper.annotations.ServicePath;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossIssue;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 import io.swagger.annotations.*;
-import org.glassfish.hk2.utilities.ImmediateErrorHandler;
 
 import javax.ws.rs.*;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * RequirementsBazaarResource
@@ -78,7 +68,7 @@ public class RequirementsBazaarResource
         {
             itemsPerPage = 5;
         }
-        APIResult<Requirement[]> res = RequirementsBazaarAdapter.GetRequirementsInCategory(categoryId, page, itemsPerPage, searchFilter);
+        APIResult<Requirement[]> res = RequirementsBazaarConnector.getRequirementsInCategory(categoryId, page, itemsPerPage, searchFilter);
         if (res.hasError())
         {
             return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
@@ -113,7 +103,7 @@ public class RequirementsBazaarResource
 
         // go over each page and collect all projects
         do {
-            res = RequirementsBazaarAdapter.GetProjects(page, itemsPerPage);
+            res = RequirementsBazaarConnector.getProjects(page, itemsPerPage);
             if (res.successful())
             {
                 allProjects.addAll(Arrays.asList(res.getValue()));
@@ -155,7 +145,7 @@ public class RequirementsBazaarResource
 
         // go over each page and collect all projects
         do {
-            res = RequirementsBazaarAdapter.GetCategoriesInProject(projectId);
+            res = RequirementsBazaarConnector.getCategoriesInProject(projectId);
             if (res.successful())
             {
                 allCategories.addAll(Arrays.asList(res.getValue()));
@@ -192,7 +182,7 @@ public class RequirementsBazaarResource
                     message = "REPLACE THIS WITH YOUR OK MESSAGE") })
     public Response getRequirement(@PathParam("requirementId") int requirementId) {
         try {
-            APIResult<Requirement> res = RequirementsBazaarAdapter.GetRequirement(requirementId);
+            APIResult<Requirement> res = RequirementsBazaarConnector.getRequirement(requirementId);
             if (res.successful())
             {
                 CrossIssue issue = CrossIssue.FromRequirement(res.getValue()); // convert to CrossIssue
@@ -225,7 +215,7 @@ public class RequirementsBazaarResource
                     message = "REPLACE THIS WITH YOUR OK MESSAGE") })
     public Response getRequirementContributors(@PathParam("requirementId") int requirementId) {
         try {
-            APIResult<ReqBazContributors> res = RequirementsBazaarAdapter.GetRequirementContributors(requirementId);
+            APIResult<ReqBazContributors> res = RequirementsBazaarConnector.getRequirementContributors(requirementId);
             if (res.successful())
             {
                 ObjectMapper mapper = new ObjectMapper();
@@ -263,7 +253,7 @@ public class RequirementsBazaarResource
             {
                 itemsPerPage = 5;
             }
-            APIResult<Requirement[]> res = RequirementsBazaarAdapter.GetRequirementsInProject(projectId, page, itemsPerPage, searchFilter);
+            APIResult<Requirement[]> res = RequirementsBazaarConnector.getRequirementsInProject(projectId, page, itemsPerPage, searchFilter);
             if (res.successful())
             {
                 CrossIssue[] issues = CrossIssue.FromRequirements(res.getValue()); // convert to CrossIssues

@@ -13,31 +13,40 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Created by bened on 09.05.2019.
  */
-public class RequirementsBazaarAdapter {
+public class RequirementsBazaarConnector {
 
     private  static String baseUrl = "https://requirements-bazaar.org/bazaar/";
 
-    public static Response RequestRequirementsInCategory(int categoryId, int page, int itemsPerPage, String searchFilter)
+    public static Response requestRequirementsInCategory(int categoryId, int page, int itemsPerPage, String searchFilter)
     {
-        String path = baseUrl + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                .path("categories/{categoryId}/requirements")
+                .queryParam("page", page)
+                .queryParam("per_page", itemsPerPage);
+
         if (searchFilter != null)
         {
             searchFilter = Utilities.RemoveSpecialSymbols(searchFilter);
-            path += "&search=" + searchFilter;
+            uriBuilder.queryParam("search", searchFilter);
         }
-        return  Utilities.getResponse(path);
+
+        URI uri = uriBuilder.build(categoryId);
+        return  Utilities.getResponse(uri);
     }
 
-    public static  APIResult<Requirement[]> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage, String searchFilter)
+    public static  APIResult<Requirement[]> getRequirementsInCategory(int categoryId, int page, int itemsPerPage, String searchFilter)
     {
         try {
 
-            Response response = RequestRequirementsInCategory(categoryId, page, itemsPerPage, searchFilter);
+            Response response = requestRequirementsInCategory(categoryId, page, itemsPerPage, searchFilter);
 
             if (response.getStatus() != 200 && response.getStatus() != 201) {
                 return new APIResult<Requirement[]>(response.readEntity(String.class), response.getStatus());
@@ -56,13 +65,22 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static APIResult<Project[]> GetProjects(int page, int itemsPerPage)
+    public static Response requestProjects(int page, int itemsPerPage)
+    {
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                        .path("projects")
+                        .queryParam("page", page)
+                        .queryParam("per_page", itemsPerPage);
+
+        URI uri = uriBuilder.build();
+        return  Utilities.getResponse(uri);
+    }
+
+    public static APIResult<Project[]> getProjects(int page, int itemsPerPage)
     {
         try {
-            Client client = ClientBuilder.newClient();
-            WebTarget webTarget = client.target(baseUrl + "projects?page=" + page + "&per_page=" + itemsPerPage);
-            Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-            Response response = invocationBuilder.get();
+            Response response = requestProjects(page, itemsPerPage);
 
             if (response.getStatus() != 200 && response.getStatus() != 201)
             {
@@ -81,16 +99,21 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static Response RequestCategoriesInProject(int projectId)
+    public static Response requestCategoriesInProject(int projectId)
     {
-        return Utilities.getResponse(baseUrl + "projects/" + projectId + "/categories");
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                .path("projects/{projectId}/categories");
+
+        URI uri = uriBuilder.build(projectId);
+        return Utilities.getResponse(uri);
     }
 
-    public  static  APIResult<Category[]> GetCategoriesInProject(int projectId)
+    public  static  APIResult<Category[]> getCategoriesInProject(int projectId)
     {
         try
         {
-            Response response = RequestCategoriesInProject(projectId);
+            Response response = requestCategoriesInProject(projectId);
 
             if (response.getStatus() != 200 && response.getStatus() != 201)
             {
@@ -109,7 +132,7 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static Response RequestRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
+    public static Response requestRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
     {
         String path = baseUrl + "projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
         if (searchFilter != null) {
@@ -119,11 +142,11 @@ public class RequirementsBazaarAdapter {
         return Utilities.getResponse(path);
     }
 
-    public static APIResult<Requirement[]> GetRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
+    public static APIResult<Requirement[]> getRequirementsInProject(int projectId, int page, int itemsPerPage, String searchFilter)
     {
         try
         {
-            Response response = RequestRequirementsInProject(projectId, page, itemsPerPage, searchFilter);
+            Response response = requestRequirementsInProject(projectId, page, itemsPerPage, searchFilter);
             if (response.getStatus() != 200 && response.getStatus() != 201)
             {
                 return new APIResult<Requirement[]>(response.readEntity(String.class), response.getStatus());
@@ -141,7 +164,7 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static APIResult<Requirement> GetRequirement(int requirementId) {
+    public static APIResult<Requirement> getRequirement(int requirementId) {
         try {
             Response response = Utilities.getResponse(baseUrl + "requirements/" + requirementId);
             if (response.getStatus() != 200 && response.getStatus() != 201) {
@@ -159,7 +182,7 @@ public class RequirementsBazaarAdapter {
         }
     }
 
-    public static APIResult<ReqBazContributors> GetRequirementContributors(int requirementId)
+    public static APIResult<ReqBazContributors> getRequirementContributors(int requirementId)
     {
         try {
             Response response = Utilities.getResponse(baseUrl + "requirements/" + requirementId + "/contributors");

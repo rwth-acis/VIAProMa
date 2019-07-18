@@ -1,6 +1,6 @@
 package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel;
 
-import i5.las2peer.services.immersiveProjectManagementService.RequirementsBazaarAdapter;
+import i5.las2peer.services.immersiveProjectManagementService.RequirementsBazaarConnector;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
@@ -76,7 +76,7 @@ public class CrossIssue {
     public static CrossIssue FromRequirement(Requirement req)
     {
         // we need the contributors in order to determine the developers and the issue status
-        APIResult<ReqBazContributors> contrRes = RequirementsBazaarAdapter.GetRequirementContributors(req.getId());
+        APIResult<ReqBazContributors> contrRes = RequirementsBazaarConnector.getRequirementContributors(req.getId());
         if (contrRes.successful())
         {
             ReqBazContributors contributors = contrRes.getValue();
