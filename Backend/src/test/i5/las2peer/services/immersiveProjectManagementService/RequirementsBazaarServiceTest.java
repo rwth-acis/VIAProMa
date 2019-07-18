@@ -1,13 +1,14 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import i5.las2peer.api.p2p.ServiceNameVersion;
 import i5.las2peer.connectors.webConnector.WebConnector;
+import i5.las2peer.connectors.webConnector.client.ClientResponse;
+import i5.las2peer.connectors.webConnector.client.MiniClient;
 import i5.las2peer.p2p.LocalNode;
 import i5.las2peer.p2p.LocalNodeManager;
 import i5.las2peer.security.UserAgentImpl;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.IssueStatus;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.gitHub.GitHubIssue;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossIssue;
 import i5.las2peer.testing.MockAgentFactory;
 import org.junit.After;
 import org.junit.Assert;
@@ -20,7 +21,7 @@ import java.io.PrintStream;
 /**
  * Created by bened on 18.07.2019.
  */
-public class GitHubConnectorTest {
+public class RequirementsBazaarServiceTest {
 
     private static final String testPass = "adamspass";
     private static final String mainPath = "resources/";
@@ -82,10 +83,40 @@ public class GitHubConnectorTest {
     }
 
     @Test
-    public void testGetIssuesInRepository()
-    {
-        APIResult<GitHubIssue[]> result = GitHubConnector.getIssuesInRepository("microsoft", "MixedRealityToolkit-Unity", 0, 10);
-        Assert.assertTrue(result.successful());
+    public void testGetReqBazRequirementsInCategory_StatusCode() {
+        try {
+            MiniClient client = new MiniClient();
+            client.setConnectorEndpoint(connector.getHttpEndpoint());
+            client.setLogin(testAgent.getIdentifier(), testPass);
+
+            ClientResponse result = client.sendRequest("GET", mainPath + "requirementsBazaar/categories/145/requirements", "");
+            Assert.assertEquals(200, result.getHttpCode());
+            System.out.println("Result of 'testGetReqBazRequirementsInCategory_StatusCode': " + result.getHttpCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.toString());
+        }
     }
 
+    @Test
+    public void testGetReqBazRequirementsInCategory_Response() {
+        try {
+            MiniClient client = new MiniClient();
+            client.setConnectorEndpoint(connector.getHttpEndpoint());
+            client.setLogin(testAgent.getIdentifier(), testPass);
+
+            ClientResponse result = client.sendRequest("GET", mainPath + "requirementsBazaar/categories/145/requirements", "");
+            System.out.println("Result of 'testPing_GetReqBazRequirementsInCategory_Response': " + result.getResponse());
+
+            ObjectMapper mapper = new ObjectMapper();
+            CrossIssue[] issues = Utilities.fromUnityCompatibleArray(result.getResponse(), CrossIssue[].class);
+            Assert.assertTrue(issues.length > 0);
+            for (int i = 0; i < issues.length; i++) {
+                Assert.assertNotNull(issues);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.toString());
+        }
+    }
 }

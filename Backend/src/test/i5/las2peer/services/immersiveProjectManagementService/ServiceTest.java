@@ -141,44 +141,6 @@ public class ServiceTest {
 		}
 	}
 
-	@Test
-	public void testGetReqBazRequirementsInCategory_StatusCode() {
-		try {
-			MiniClient client = new MiniClient();
-			client.setConnectorEndpoint(connector.getHttpEndpoint());
-			client.setLogin(testAgent.getIdentifier(), testPass);
-
-			ClientResponse result = client.sendRequest("GET", mainPath + "requirementsBazaar/categories/145/requirements", "");
-			Assert.assertEquals(200, result.getHttpCode());
-			System.out.println("Result of 'testGetReqBazRequirementsInCategory_StatusCode': " + result.getHttpCode());
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.toString());
-		}
-	}
-
-	@Test
-	public void testGetReqBazRequirementsInCategory_Response() {
-		try {
-			MiniClient client = new MiniClient();
-			client.setConnectorEndpoint(connector.getHttpEndpoint());
-			client.setLogin(testAgent.getIdentifier(), testPass);
-
-			ClientResponse result = client.sendRequest("GET", mainPath + "requirementsBazaar/categories/145/requirements", "");
-			System.out.println("Result of 'testPing_GetReqBazRequirementsInCategory_Response': " + result.getResponse());
-
-			ObjectMapper mapper = new ObjectMapper();
-			CrossIssue[] issues = Utilities.fromUnityCompatibleArray(result.getResponse(), CrossIssue[].class);
-			Assert.assertTrue(issues.length > 0);
-			for (int i = 0; i < issues.length; i++) {
-				Assert.assertNotNull(issues);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.toString());
-		}
-	}
-
 
 //
 //		/**

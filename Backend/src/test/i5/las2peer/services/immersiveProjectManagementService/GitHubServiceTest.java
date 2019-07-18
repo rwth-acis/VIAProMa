@@ -5,14 +5,9 @@ import i5.las2peer.connectors.webConnector.WebConnector;
 import i5.las2peer.p2p.LocalNode;
 import i5.las2peer.p2p.LocalNodeManager;
 import i5.las2peer.security.UserAgentImpl;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.IssueStatus;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.gitHub.GitHubIssue;
 import i5.las2peer.testing.MockAgentFactory;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -20,7 +15,7 @@ import java.io.PrintStream;
 /**
  * Created by bened on 18.07.2019.
  */
-public class GitHubConnectorTest {
+public class GitHubServiceTest {
 
     private static final String testPass = "adamspass";
     private static final String mainPath = "resources/";
@@ -80,12 +75,4 @@ public class GitHubConnectorTest {
             logStream = null;
         }
     }
-
-    @Test
-    public void testGetIssuesInRepository()
-    {
-        APIResult<GitHubIssue[]> result = GitHubConnector.getIssuesInRepository("microsoft", "MixedRealityToolkit-Unity", 0, 10);
-        Assert.assertTrue(result.successful());
-    }
-
 }
