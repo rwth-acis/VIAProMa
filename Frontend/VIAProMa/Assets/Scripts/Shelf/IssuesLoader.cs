@@ -8,7 +8,7 @@ public class IssuesLoader : Shelf, ILoadShelf
 {
     [SerializeField] private InputField searchField;
     [Header("References")]
-    [SerializeField] private ShelfConfiguration configuration;
+    [SerializeField] private ShelfConfigurationMenu configurationMenu;
     [SerializeField] private IssuesMultiListView issuesMultiListView;
 
     public MessageBadge MessageBadge { get => messageBadge; }
@@ -19,11 +19,11 @@ public class IssuesLoader : Shelf, ILoadShelf
     protected override void Awake()
     {
         base.Awake();
-        if (configuration == null)
+        if (configurationMenu == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(configuration));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(configurationMenu));
         }
-        if(issuesMultiListView == null)
+        if (issuesMultiListView == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(issuesMultiListView));
         }
@@ -36,7 +36,7 @@ public class IssuesLoader : Shelf, ILoadShelf
 
     public void LoadContent()
     {
-        switch (configuration.SelectedSource)
+        switch (configurationMenu.ShelfConfiguration.SelectedSource)
         {
             case DataSource.REQUIREMENTS_BAZAAR:
                 LoadRequirements();
@@ -50,16 +50,17 @@ public class IssuesLoader : Shelf, ILoadShelf
 
     private async void LoadRequirements()
     {
+        ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
         messageBadge.ShowLoadMessage();
         ApiResult<Issue[]> apiResult = null;
         // load requirements from the correct project or category
-        if (configuration.SelectedCategory != null) // project and category were selected
+        if (reqBazShelfConfiguration.SelectedCategory != null) // project and category were selected
         {
-            apiResult = await RequirementsBazaar.GetRequirementsInCategory(configuration.SelectedCategory.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews, searchField.Text);
+            apiResult = await RequirementsBazaar.GetRequirementsInCategory(reqBazShelfConfiguration.SelectedCategory.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews, searchField.Text);
         }
-        else if (configuration.SelectedProject != null) // just a project was selected
+        else if (reqBazShelfConfiguration.SelectedProject != null) // just a project was selected
         {
-            apiResult = await RequirementsBazaar.GetRequirementsInProject(configuration.SelectedProject.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews, searchField.Text);
+            apiResult = await RequirementsBazaar.GetRequirementsInProject(reqBazShelfConfiguration.SelectedProject.id, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews, searchField.Text);
         }
         else
         {
@@ -77,6 +78,22 @@ public class IssuesLoader : Shelf, ILoadShelf
                 List<Issue> items = new List<Issue>(apiResult.Value);
                 issuesMultiListView.Items = items;
             }
+        }
+    }
+
+    private async void LoadGitHubIssues()
+    {
+        messageBadge.ShowProcessing();
+        ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository("", "");
+        messageBadge.DoneProcessing();
+        if (apiResult.HasError)
+        {
+            messageBadge.ShowMessage(apiResult.ResponseCode);
+        }
+        else
+        {
+            List<Issue> items = new List<Issue>(apiResult.Value);
+            issuesMultiListView.Items = items;
         }
     }
 

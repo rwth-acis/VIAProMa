@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShelfConfiguration : MonoBehaviour, IWindow
+public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private IssuesLoader shelf;
 
@@ -17,11 +17,8 @@ public class ShelfConfiguration : MonoBehaviour, IWindow
 
     public event EventHandler WindowClosed;
 
-    public DataSource SelectedSource { get; private set; }
+    public IShelfConfiguration ShelfConfiguration { get; private set; }
 
-    public Project SelectedProject { get; private set; }
-
-    public Category SelectedCategory { get; private set; }
     public bool WindowEnabled { // not needed for configuration window => does not have an effect
         get;set;
     }
@@ -57,26 +54,43 @@ public class ShelfConfiguration : MonoBehaviour, IWindow
         projectInput.TextChanged += ProjectInputFinished;
         categoryDropdownMenu.ItemSelected += CategorySelected;
 
-        LoadProjectList();
+        ShelfConfiguration = new ReqBazShelfConfiguration();
+        LoadReqBazProjectList();
     }
 
     private void SourceSelected(object sender, EventArgs e)
     {
-        LoadProjectList();
-        SelectedSource = (DataSource)sourceSelection.SelectedItemIndex;
+        LoadReqBazProjectList();
+        DataSource selectedSource = (DataSource)sourceSelection.SelectedItemIndex;
+        switch(selectedSource)
+        {
+            case DataSource.REQUIREMENTS_BAZAAR:
+                ShelfConfiguration = new ReqBazShelfConfiguration();
+                break;
+            case DataSource.GITHUB:
+                break;
+        }
         shelf.LoadContent();
     }
 
     private void ProjectInputFinished(object sender, EventArgs e)
     {
-        SelectedProject = GetProject(projectInput.Text);
-        if (SelectedProject == null) // project was not found
+        if (ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
         {
-            Debug.LogWarning("Project not found");
+            Project selectedProject = GetProject(projectInput.Text);
+            ShelfConfiguration = new ReqBazShelfConfiguration(selectedProject);
+            if (selectedProject == null) // project was not found
+            {
+                Debug.LogWarning("Project not found");
+            }
+            else // fetch categories
+            {
+                LoadReqBazCategoryList();
+            }
         }
-        else // fetch categories
+        else if (ShelfConfiguration.SelectedSource == DataSource.GITHUB)
         {
-            LoadCategoryList();
+            throw new NotImplementedException();
         }
         shelf.ResetPage();
         shelf.LoadContent();
@@ -84,12 +98,20 @@ public class ShelfConfiguration : MonoBehaviour, IWindow
 
     private void CategorySelected(object sender, EventArgs e)
     {
-        SelectedCategory = categories[categoryDropdownMenu.SelectedItemIndex];
+        Category selectedCategory = categories[categoryDropdownMenu.SelectedItemIndex];
+        if (ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+        {
+            ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedCategory = selectedCategory;
+        }
+        else if (ShelfConfiguration.SelectedSource == DataSource.GITHUB)
+        {
+            throw new NotImplementedException();
+        }
         shelf.ResetPage();
         shelf.LoadContent();
     }
 
-    private async void LoadProjectList()
+    private async void LoadReqBazProjectList()
     {
         shelf.MessageBadge.ShowProcessing();
         ApiResult<Project[]> res = await RequirementsBazaar.GetProjects();
@@ -106,10 +128,15 @@ public class ShelfConfiguration : MonoBehaviour, IWindow
         categories = null;
     }
 
-    private async void LoadCategoryList()
+    private async void LoadReqBazCategoryList()
     {
+        if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR)
+        {
+            return;
+        }
+
         shelf.MessageBadge.ShowProcessing();
-        ApiResult<Category[]> res = await RequirementsBazaar.GetCategoriesInProject(SelectedProject.id);
+        ApiResult<Category[]> res = await RequirementsBazaar.GetCategoriesInProject(((ReqBazShelfConfiguration)ShelfConfiguration).SelectedProject.id);
         shelf.MessageBadge.DoneProcessing();
         if (res.Successful)
         {
