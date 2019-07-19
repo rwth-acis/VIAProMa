@@ -54,20 +54,21 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         projectInput.TextChanged += ProjectInputFinished;
         categoryDropdownMenu.ItemSelected += CategorySelected;
 
-        ShelfConfiguration = new ReqBazShelfConfiguration();
+        ShelfConfiguration = new ReqBazShelfConfiguration(); // first entry of dropdown box is Requirements Bazaar, so set this as the default configuration
         LoadReqBazProjectList();
     }
 
     private void SourceSelected(object sender, EventArgs e)
     {
-        LoadReqBazProjectList();
         DataSource selectedSource = (DataSource)sourceSelection.SelectedItemIndex;
         switch(selectedSource)
         {
             case DataSource.REQUIREMENTS_BAZAAR:
                 ShelfConfiguration = new ReqBazShelfConfiguration();
+                LoadReqBazProjectList();
                 break;
             case DataSource.GITHUB:
+                ShelfConfiguration = new GitHubShelfConfiguration();
                 break;
         }
         shelf.LoadContent();
@@ -77,7 +78,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     {
         if (ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
         {
-            Project selectedProject = GetProject(projectInput.Text);
+            Project selectedProject = GetReqBazProject(projectInput.Text);
             ShelfConfiguration = new ReqBazShelfConfiguration(selectedProject);
             if (selectedProject == null) // project was not found
             {
@@ -130,8 +131,9 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private async void LoadReqBazCategoryList()
     {
-        if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR)
+        if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR || ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedProject == null)
         {
+            // this can only be done if the current configuration is set to requirements bazaar
             return;
         }
 
@@ -151,7 +153,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         }
     }
 
-    private Project GetProject(string projectName)
+    private Project GetReqBazProject(string projectName)
     {
         for(int i=0;i<projects.Length;i++)
         {
