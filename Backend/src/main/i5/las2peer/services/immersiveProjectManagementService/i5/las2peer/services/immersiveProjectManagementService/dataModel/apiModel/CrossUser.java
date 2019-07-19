@@ -1,5 +1,6 @@
 package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel;
 
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.gitHub.GitHubUser;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazUser;
 
 /**
@@ -50,7 +51,7 @@ public class CrossUser {
         return profileImageUrl;
     }
 
-    public static CrossUser FromReqBazUser(ReqBazUser rbUser)
+    public static CrossUser fromReqBazUser(ReqBazUser rbUser)
     {
         CrossUser user = new CrossUser(
                 DataSource.REQUIREMENTS_BAZAAR,
@@ -63,14 +64,37 @@ public class CrossUser {
         return user;
     }
 
-    public static CrossUser[] FromReqBazUsers(ReqBazUser[] rbUsers)
+    public static CrossUser[] fromReqBazUsers(ReqBazUser[] rbUsers)
     {
         CrossUser[] users = new CrossUser[rbUsers.length];
         for(int i=0;i<rbUsers.length;i++)
         {
-            users[i] = FromReqBazUser(rbUsers[i]);
+            users[i] = fromReqBazUser(rbUsers[i]);
         }
         return  users;
+    }
+
+    public static CrossUser fromGitHubUser(GitHubUser ghUser)
+    {
+        CrossUser user = new CrossUser(
+                DataSource.GITHUB,
+                ghUser.getId(),
+                ghUser.getLogin(),
+                "",
+                ghUser.getLogin(),
+                ghUser.getAvatar_url()
+        );
+        return user;
+    }
+
+    public static CrossUser[] fromGitHubUsers(GitHubUser[] ghUsers)
+    {
+        CrossUser[] users = new CrossUser[ghUsers.length];
+        for (int i=0;i<ghUsers.length;i++)
+        {
+            users[i] = fromGitHubUser(ghUsers[i]);
+        }
+        return users;
     }
 
     @Override

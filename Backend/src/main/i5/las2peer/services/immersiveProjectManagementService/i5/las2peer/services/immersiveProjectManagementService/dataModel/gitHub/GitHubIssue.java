@@ -1,6 +1,7 @@
 package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.gitHub;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.IssueStatus;
 import net.minidev.json.annotate.JsonIgnore;
 
 /**
@@ -54,5 +55,24 @@ public class GitHubIssue {
 
     public boolean isLocked() {
         return locked;
+    }
+
+    public IssueStatus getIssueStatus()
+    {
+        if (state == "closed")
+        {
+            return IssueStatus.CLOSED;
+        }
+        else
+        {
+            if (assignees != null && assignees.length > 0)
+            {
+                return IssueStatus.IN_PROGRESS;
+            }
+            else
+            {
+                return IssueStatus.OPEN;
+            }
+        }
     }
 }

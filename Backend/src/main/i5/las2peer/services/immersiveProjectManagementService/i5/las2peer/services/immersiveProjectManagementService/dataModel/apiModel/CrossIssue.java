@@ -2,6 +2,7 @@ package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.servi
 
 import i5.las2peer.services.immersiveProjectManagementService.RequirementsBazaarConnector;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.gitHub.GitHubIssue;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
@@ -73,7 +74,7 @@ public class CrossIssue {
      * @param req The requirement from the requirements bazaar
      * @return corresponding CrossIssue
      */
-    public static CrossIssue FromRequirement(Requirement req)
+    public static CrossIssue fromRequirement(Requirement req)
     {
         // we need the contributors in order to determine the developers and the issue status
         APIResult<ReqBazContributors> contrRes = RequirementsBazaarConnector.getRequirementContributors(req.getId());
@@ -87,21 +88,21 @@ public class CrossIssue {
                 developers = new CrossUser[contributors.developers.length + 1];
                 for (int i=0;i<contributors.developers.length;i++)
                 {
-                    developers[i] = CrossUser.FromReqBazUser(contributors.developers[i]);
+                    developers[i] = CrossUser.fromReqBazUser(contributors.developers[i]);
                 }
-                developers[developers.length - 1] = CrossUser.FromReqBazUser(contributors.leadDeveloper);
+                developers[developers.length - 1] = CrossUser.fromReqBazUser(contributors.leadDeveloper);
             }
             else
             {
-                developers = CrossUser.FromReqBazUsers(contributors.developers);
+                developers = CrossUser.fromReqBazUsers(contributors.developers);
             }
             CrossIssue issue = new CrossIssue(DataSource.REQUIREMENTS_BAZAAR,
                     req.getId(),
                     req.getName(),
                     req.getDescription(),
                     req.getProjectId(),
-                    CrossUser.FromReqBazUser(req.getCreator()),
-                    DetermineIssueStatusFromRequirement(req, contributors),
+                    CrossUser.fromReqBazUser(req.getCreator()),
+                    determineIssueStatusFromRequirement(req, contributors),
                     developers
                     );
             return  issue;
@@ -112,12 +113,12 @@ public class CrossIssue {
         }
     }
 
-    public static CrossIssue[] FromRequirements(Requirement[] reqs)
+    public static CrossIssue[] fromRequirements(Requirement[] reqs)
     {
         CrossIssue[] issues = new CrossIssue[reqs.length];
         for (int i=0;i<reqs.length;i++)
         {
-            issues[i] = FromRequirement(reqs[i]);
+            issues[i] = fromRequirement(reqs[i]);
         }
         return issues;
     }
@@ -128,7 +129,7 @@ public class CrossIssue {
      * @param contributors The contributors of the requirement
      * @return The status of the corresponding issue
      */
-    private static IssueStatus DetermineIssueStatusFromRequirement(Requirement req, ReqBazContributors contributors) {
+    private static IssueStatus determineIssueStatusFromRequirement(Requirement req, ReqBazContributors contributors) {
         if (req.getRealized() != null)
         {
             return  IssueStatus.CLOSED;
@@ -144,6 +145,31 @@ public class CrossIssue {
                 return  IssueStatus.OPEN;
             }
         }
+    }
+
+    public static CrossIssue fromGitHubIssue(GitHubIssue gitHubIssue)
+    {
+        CrossIssue issue = new CrossIssue(
+                DataSource.GITHUB,
+                gitHubIssue.getId(),
+                gitHubIssue.getTitle(),
+                gitHubIssue.getBody(),
+                0,
+                CrossUser.fromGitHubUser(gitHubIssue.getUser()),
+                gitHubIssue.getIssueStatus(),
+                CrossUser.fromGitHubUsers(gitHubIssue.getAssignees())
+        );
+        return issue;
+    }
+
+    public static CrossIssue[] fromGitHubIssues(GitHubIssue[] gitHubIssues)
+    {
+        CrossIssue[] issues = new CrossIssue[gitHubIssues.length];
+        for (int i=0;i<gitHubIssues.length;i++)
+        {
+            issues[i] = CrossIssue.fromGitHubIssue(gitHubIssues[i]);
+        }
+        return issues;
     }
 
     @Override

@@ -74,7 +74,7 @@ public class RequirementsBazaarResource
             return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
         }
         try {
-            CrossIssue[] issues = CrossIssue.FromRequirements(res.getValue());
+            CrossIssue[] issues = CrossIssue.fromRequirements(res.getValue());
             String result = Utilities.toUnityCompatibleArray(issues);
             return Response.ok().entity(result).build();
         }
@@ -185,7 +185,7 @@ public class RequirementsBazaarResource
             APIResult<Requirement> res = RequirementsBazaarConnector.getRequirement(requirementId);
             if (res.successful())
             {
-                CrossIssue issue = CrossIssue.FromRequirement(res.getValue()); // convert to CrossIssue
+                CrossIssue issue = CrossIssue.fromRequirement(res.getValue()); // convert to CrossIssue
                 // serialize to json
                 ObjectMapper mapper = new ObjectMapper();
                 ObjectWriter writer = mapper.writer();
@@ -256,7 +256,7 @@ public class RequirementsBazaarResource
             APIResult<Requirement[]> res = RequirementsBazaarConnector.getRequirementsInProject(projectId, page, itemsPerPage, searchFilter);
             if (res.successful())
             {
-                CrossIssue[] issues = CrossIssue.FromRequirements(res.getValue()); // convert to CrossIssues
+                CrossIssue[] issues = CrossIssue.fromRequirements(res.getValue()); // convert to CrossIssues
                 // serialize to json
                 String result = Utilities.toUnityCompatibleArray(issues);
                 return Response.ok().entity(result).build();

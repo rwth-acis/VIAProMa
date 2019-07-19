@@ -48,6 +48,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 	protected void initResources() {
 		getResourceConfig().register(Resource.class);
 		getResourceConfig().register(RequirementsBazaarResource.class);
+		getResourceConfig().register(GitHubResource.class);
 	}
 
 
