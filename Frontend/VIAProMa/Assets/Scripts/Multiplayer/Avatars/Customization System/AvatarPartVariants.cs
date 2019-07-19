@@ -37,7 +37,10 @@ public class AvatarPartVariants : ScriptableObject
                 MaterialConfigurationOption matVar = options[variantIndex].MaterialVariants[materialVariantIndex];
                 Material mat = Instantiate(matVar.Material);
                 mat.color = matVar.Color;
-                mat.mainTexture = matVar.Teture;
+                if (matVar.Teture != null)
+                {
+                    mat.mainTexture = matVar.Teture;
+                }
                 return mat;
             }
             else
