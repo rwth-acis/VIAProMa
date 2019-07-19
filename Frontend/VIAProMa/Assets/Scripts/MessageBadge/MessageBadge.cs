@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class MessageBadge : MonoBehaviour
     [SerializeField] private SpriteRenderer iconRenderer;
     [SerializeField] private TextMeshPro messageText;
     [SerializeField] private MessagePack messages;
+    [SerializeField] private Interactable tryAgainButton;
 
     private MessageContent content;
     private int processing = 0;
@@ -49,6 +51,7 @@ public class MessageBadge : MonoBehaviour
         gameObject.SetActive(true);
         processing++;
         processingEffect.IsProcessing = true;
+        tryAgainButton.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -62,6 +65,7 @@ public class MessageBadge : MonoBehaviour
         {
             processing = 0;
             processingEffect.IsProcessing = false;
+            tryAgainButton.gameObject.SetActive(true);
             Hide();
         }
     }
