@@ -18,6 +18,8 @@ public class CrossIssue {
     private String name;
     private String description;
     private int projectId;
+    private String owner;
+    private String repositoryName;
     private CrossUser creator;
     private IssueStatus status;
     private CrossUser[] developers;
@@ -33,6 +35,19 @@ public class CrossIssue {
         this.name = name;
         this.description = description;
         this.projectId = projectId;
+        this.creator = creator;
+        this.status = status;
+        this.developers = developers;
+    }
+
+    public CrossIssue(DataSource source, int id, String name, String description, String owner, String repositoryName, CrossUser creator, IssueStatus status, CrossUser[] developers)
+    {
+        this.source = source;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.owner = owner;
+        this.repositoryName = repositoryName;
         this.creator = creator;
         this.status = status;
         this.developers = developers;
@@ -60,6 +75,10 @@ public class CrossIssue {
     public int getProjectId() {
         return projectId;
     }
+
+    public String getOwner() { return owner; }
+
+    public String getRepositoryName() { return repositoryName; }
 
     public CrossUser getCreator() {
         return creator;
@@ -154,14 +173,15 @@ public class CrossIssue {
         }
     }
 
-    public static CrossIssue fromGitHubIssue(GitHubIssue gitHubIssue)
+    public static CrossIssue fromGitHubIssue(GitHubIssue gitHubIssue, String owner, String repositoryName)
     {
         CrossIssue issue = new CrossIssue(
                 DataSource.GITHUB,
                 gitHubIssue.getId(),
                 gitHubIssue.getTitle(),
                 gitHubIssue.getBody(),
-                0,
+                owner,
+                repositoryName,
                 CrossUser.fromGitHubUser(gitHubIssue.getUser()),
                 gitHubIssue.getIssueStatus(),
                 CrossUser.fromGitHubUsers(gitHubIssue.getAssignees())
@@ -169,12 +189,12 @@ public class CrossIssue {
         return issue;
     }
 
-    public static CrossIssue[] fromGitHubIssues(GitHubIssue[] gitHubIssues)
+    public static CrossIssue[] fromGitHubIssues(GitHubIssue[] gitHubIssues, String owner, String repositoryName)
     {
         CrossIssue[] issues = new CrossIssue[gitHubIssues.length];
         for (int i=0;i<gitHubIssues.length;i++)
         {
-            issues[i] = CrossIssue.fromGitHubIssue(gitHubIssues[i]);
+            issues[i] = CrossIssue.fromGitHubIssue(gitHubIssues[i], owner, repositoryName);
         }
         return issues;
     }

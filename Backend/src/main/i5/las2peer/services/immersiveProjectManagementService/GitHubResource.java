@@ -75,7 +75,7 @@ public class GitHubResource
             return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
         }
         try {
-            CrossIssue[] issues = CrossIssue.fromGitHubIssues(res.getValue());
+            CrossIssue[] issues = CrossIssue.fromGitHubIssues(res.getValue(), owner, repositoryName);
             String result = Utilities.toUnityCompatibleArray(issues);
             return Response.ok().entity(result).build();
         }
@@ -105,7 +105,7 @@ public class GitHubResource
             return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
         }
         try {
-            CrossIssue issues = CrossIssue.fromGitHubIssue(res.getValue());
+            CrossIssue issues = CrossIssue.fromGitHubIssue(res.getValue(), owner, repositoryName);
             String result = Utilities.toUnityCompatibleArray(issues);
             return Response.ok().entity(result).build();
         }

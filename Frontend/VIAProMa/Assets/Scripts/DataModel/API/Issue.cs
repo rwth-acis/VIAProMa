@@ -11,6 +11,8 @@ public class Issue : IListViewItemData
     [SerializeField] private string name;
     [SerializeField] private string description;
     [SerializeField] private int projectId;
+    [SerializeField] private string owner;
+    [SerializeField] private string repositoryName;
     [SerializeField] private User creator;
     [SerializeField] private IssueStatus status;
     [SerializeField] private User[] developers;
@@ -20,6 +22,8 @@ public class Issue : IListViewItemData
     public string Name { get => name; }
     public string Description { get => description; }
     public int ProjectId { get => projectId; }
+    public string Owner { get => owner;}
+    public string RepositoryName { get => repositoryName; }
     public User Creator { get => creator; }
     public IssueStatus Status { get => status; }
     public User[] Developers { get => developers; }
