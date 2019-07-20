@@ -22,4 +22,20 @@ public static class GitHub
             return new ApiResult<Issue[]>(issues);
         }
     }
+
+    public static async Task<ApiResult<Issue>> GetIssue(string owner, string repositoryName, int issueNumber)
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues/" + issueNumber);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (!resp.Successful)
+        {
+            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+            return new ApiResult<Issue>(resp.ResponseCode, resp.ResponseBody);
+        }
+        else
+        {
+            Issue issues = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+            return new ApiResult<Issue>(issues);
+        }
+    }
 }
