@@ -20,6 +20,8 @@ public class CrossIssue {
     private int projectId;
     private CrossUser creator;
     private IssueStatus status;
+    private String creationDate;
+    private String closedDate;
     private CrossUser[] developers;
 
     public CrossIssue()
@@ -27,7 +29,7 @@ public class CrossIssue {
 
     }
 
-    public CrossIssue(DataSource source, int id, String name, String description, int projectId, CrossUser creator, IssueStatus status, CrossUser[] developers) {
+    public CrossIssue(DataSource source, int id, String name, String description, int projectId, CrossUser creator, IssueStatus status, String creationDate, String closedDate, CrossUser[] developers) {
         this.source = source;
         this.id = id;
         this.name = name;
@@ -35,6 +37,8 @@ public class CrossIssue {
         this.projectId = projectId;
         this.creator = creator;
         this.status = status;
+        this.creationDate = creationDate;
+        this.closedDate = closedDate;
         this.developers = developers;
     }
 
@@ -71,6 +75,10 @@ public class CrossIssue {
     }
 
     public int getStatus() {return status.ordinal(); }
+
+    public String getCreationDate() { return creationDate; }
+
+    public String getClosedDate() { return closedDate; }
 
     public CrossUser[] getDevelopers() {
         return developers;
@@ -110,6 +118,8 @@ public class CrossIssue {
                     req.getProjectId(),
                     CrossUser.fromReqBazUser(req.getCreator()),
                     determineIssueStatusFromRequirement(req, contributors),
+                    req.getCreationDate(),
+                    req.getRealized(),
                     developers
                     );
             return  issue;
@@ -164,6 +174,8 @@ public class CrossIssue {
                 repositoryId,
                 CrossUser.fromGitHubUser(gitHubIssue.getUser()),
                 gitHubIssue.getIssueStatus(),
+                gitHubIssue.getCreated_at(),
+                gitHubIssue.getClosed_at(),
                 CrossUser.fromGitHubUsers(gitHubIssue.getAssignees())
         );
         return issue;

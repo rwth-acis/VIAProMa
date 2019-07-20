@@ -13,6 +13,8 @@ public class Issue : IListViewItemData
     [SerializeField] private int projectId;
     [SerializeField] private User creator;
     [SerializeField] private IssueStatus status;
+    [SerializeField] private string creationDate;
+    [SerializeField] private string closedDate;
     [SerializeField] private User[] developers;
 
     public DataSource Source { get => source; }
@@ -22,19 +24,9 @@ public class Issue : IListViewItemData
     public int ProjectId { get => projectId; }
     public User Creator { get => creator; }
     public IssueStatus Status { get => status; }
+    public string CreationDateString { get => creationDate; }
+    public string ClosedDateString { get => closedDate; }
     public User[] Developers { get => developers; }
-
-    public Issue(DataSource source, int id, string name, string description, int projectId, User creator, IssueStatus status, User[] developers)
-    {
-        this.source = source;
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.projectId = projectId;
-        this.creator = creator;
-        this.status = status;
-        this.developers = developers;
-    }
 
     public override bool Equals(object obj)
     {

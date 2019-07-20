@@ -15,6 +15,8 @@ public class GitHubIssue {
     private String title;
     private String body;
     private GitHubUser user;
+    private String created_at;
+    private String closed_at;
     private GitHubLabel[] labels;
     private GitHubUser[] assignees;
     private boolean locked;
@@ -44,6 +46,10 @@ public class GitHubIssue {
     public GitHubUser getUser() {
         return user;
     }
+
+    public String getCreated_at() { return created_at; }
+
+    public String getClosed_at() { return closed_at; }
 
     public GitHubLabel[] getLabels() {
         return labels;
