@@ -36,7 +36,7 @@ public class IssueStatusDisplay : DataDisplay<Issue>
         {
             if (content.Status == IssueStatus.OPEN)
             {
-                SetStatusDisplay("Open", new Color(7f / 255f, 187f / 255f, 40f / 255f)); // green
+                SetStatusDisplay("Open", new Color(181f / 255f, 25f / 255f, 25f / 255)); // red
             }
             else if (content.Status == IssueStatus.IN_PROGRESS)
             {
@@ -44,7 +44,7 @@ public class IssueStatusDisplay : DataDisplay<Issue>
             }
             else if (content.Status == IssueStatus.CLOSED)
             {
-                SetStatusDisplay("Closed", new Color(181f / 255f, 25f / 255f, 25f / 255)); // red
+                SetStatusDisplay("Closed", new Color(7f / 255f, 187f / 255f, 40f / 255f)); // green
             }
         }
         else // if no issue is provided, just show an error status
