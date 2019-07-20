@@ -4,5 +4,7 @@ using UnityEngine;
 
 public interface IShelfConfiguration
 {
+    bool IsValidConfiguration { get; }
+
     DataSource SelectedSource { get; }
 }

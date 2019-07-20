@@ -6,21 +6,30 @@ using UnityEngine;
 
 public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 {
+    [Header("References")]
     [SerializeField] private IssuesLoader shelf;
 
+    [Header("UI Elements")]
     [SerializeField] private StringDropdownMenu sourceSelection;
-    [SerializeField] private InputField projectInput;
-    [SerializeField] private CategoryDropdownMenu categoryDropdownMenu;
+    [SerializeField] private GameObject reqBazDisplays;
+    [SerializeField] private GameObject gitHubDisplays;
+    [SerializeField] private InputField reqBazProjectInput;
+    [SerializeField] private CategoryDropdownMenu reqBazCategoryDropdownMenu;
+    [SerializeField] private InputField gitHubOwnerInput;
+    [SerializeField] private InputField gitHubRepositoryInput;
 
     private Project[] projects;
     private Category[] categories;
 
     public event EventHandler WindowClosed;
 
+    private bool isConfiguring = true;
+
     public IShelfConfiguration ShelfConfiguration { get; private set; }
 
-    public bool WindowEnabled { // not needed for configuration window => does not have an effect
-        get;set;
+    public bool WindowEnabled
+    { // not needed for configuration window => does not have an effect
+        get; set;
     }
 
     private void Awake()
@@ -33,35 +42,62 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(sourceSelection));
         }
-        if (projectInput == null)
+        if (reqBazDisplays == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(projectInput));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(reqBazDisplays));
         }
-        if (categoryDropdownMenu == null)
+        if (gitHubDisplays == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(categoryDropdownMenu));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(gitHubDisplays));
+        }
+        if (reqBazProjectInput == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(reqBazProjectInput));
+        }
+        if (reqBazCategoryDropdownMenu == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(reqBazCategoryDropdownMenu));
+        }
+        if (gitHubOwnerInput == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(gitHubOwnerInput));
+        }
+        if (gitHubRepositoryInput == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(gitHubRepositoryInput));
         }
 
         // populate the source dropdown menu with the available data sources
         List<StringData> sources = new List<StringData>();
-        foreach(DataSource source in Enum.GetValues(typeof(DataSource)))
+        foreach (DataSource source in Enum.GetValues(typeof(DataSource)))
         {
             sources.Add(new StringData(source.GetDescription()));
         }
         sourceSelection.Items = sources;
 
         sourceSelection.ItemSelected += SourceSelected;
-        projectInput.TextChanged += ProjectInputFinished;
-        categoryDropdownMenu.ItemSelected += CategorySelected;
+        reqBazProjectInput.TextChanged += ReqBazProjectInputFinished;
+        reqBazCategoryDropdownMenu.ItemSelected += ReqBazCategorySelected;
+        gitHubOwnerInput.TextChanged += GitHubOwnerInputFinished;
+        gitHubRepositoryInput.TextChanged += GitHubRepositoryInputFinished;
 
-        ShelfConfiguration = new ReqBazShelfConfiguration(); // first entry of dropdown box is Requirements Bazaar, so set this as the default configuration
-        LoadReqBazProjectList();
+        SetDataSource(DataSource.REQUIREMENTS_BAZAAR); // first entry of dropdown box is Requirements Bazaar, so set this as the default source
+
+        reqBazProjectInput.Text = "";
+        gitHubOwnerInput.Text = "";
+        gitHubRepositoryInput.Text = "";
+        isConfiguring = false;
     }
 
     private void SourceSelected(object sender, EventArgs e)
     {
         DataSource selectedSource = (DataSource)sourceSelection.SelectedItemIndex;
-        switch(selectedSource)
+        SetDataSource(selectedSource);
+    }
+
+    private void SetDataSource(DataSource selectedSource)
+    {
+        switch (selectedSource)
         {
             case DataSource.REQUIREMENTS_BAZAAR:
                 ShelfConfiguration = new ReqBazShelfConfiguration();
@@ -71,43 +107,79 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
                 ShelfConfiguration = new GitHubShelfConfiguration();
                 break;
         }
+        ShowControlsForSource();
         shelf.LoadContent();
     }
 
-    private void ProjectInputFinished(object sender, EventArgs e)
+    private void ShowControlsForSource()
     {
-        if (ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+        reqBazDisplays.SetActive(ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR);
+        gitHubDisplays.SetActive(ShelfConfiguration.SelectedSource == DataSource.GITHUB);
+    }
+
+    private void ReqBazProjectInputFinished(object sender, EventArgs e)
+    {
+        if (isConfiguring)
         {
-            Project selectedProject = GetReqBazProject(projectInput.Text);
-            ShelfConfiguration = new ReqBazShelfConfiguration(selectedProject);
-            if (selectedProject == null) // project was not found
-            {
-                Debug.LogWarning("Project not found");
-            }
-            else // fetch categories
-            {
-                LoadReqBazCategoryList();
-            }
+            return;
         }
-        else if (ShelfConfiguration.SelectedSource == DataSource.GITHUB)
+        Debug.Log("Project input finished");
+        Debug.Log(ShelfConfiguration.SelectedSource);
+        Debug.Log(reqBazProjectInput.Text);
+        if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR || string.IsNullOrEmpty(reqBazProjectInput.Text))
         {
-            throw new NotImplementedException();
+            return;
         }
+        Project selectedProject = GetReqBazProject(reqBazProjectInput.Text);
+        ShelfConfiguration = new ReqBazShelfConfiguration(selectedProject);
+        if (selectedProject == null) // project was not found
+        {
+            Debug.LogWarning("Project not found");
+        }
+        else // fetch categories
+        {
+            LoadReqBazCategoryList();
+            shelf.ResetPage();
+            shelf.LoadContent();
+        }
+    }
+
+    private void ReqBazCategorySelected(object sender, EventArgs e)
+    {
+        if (isConfiguring)
+        {
+            return;
+        }
+        Category selectedCategory = categories[reqBazCategoryDropdownMenu.SelectedItemIndex];
+        if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR)
+        {
+            return;
+        }
+        ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedCategory = selectedCategory;
         shelf.ResetPage();
         shelf.LoadContent();
     }
 
-    private void CategorySelected(object sender, EventArgs e)
+    private void GitHubOwnerInputFinished(object sender, EventArgs e)
     {
-        Category selectedCategory = categories[categoryDropdownMenu.SelectedItemIndex];
-        if (ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+        if (isConfiguring)
         {
-            ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedCategory = selectedCategory;
+            return;
         }
-        else if (ShelfConfiguration.SelectedSource == DataSource.GITHUB)
+        ShelfConfiguration = new GitHubShelfConfiguration(gitHubOwnerInput.Text);
+        // the owner was changed, so the repository is also different
+        gitHubRepositoryInput.Text = "";
+        shelf.ResetPage();
+        shelf.LoadContent();
+    }
+
+    private void GitHubRepositoryInputFinished(object sender, EventArgs e)
+    {
+        if (isConfiguring)
         {
-            throw new NotImplementedException();
+            return;
         }
+        ShelfConfiguration = new GitHubShelfConfiguration(gitHubOwnerInput.Text, gitHubRepositoryInput.Text);
         shelf.ResetPage();
         shelf.LoadContent();
     }
@@ -143,19 +215,19 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         if (res.Successful)
         {
             categories = res.Value;
-            categoryDropdownMenu.Items = new List<Category>(categories);
+            reqBazCategoryDropdownMenu.Items = new List<Category>(categories);
         }
         else
         {
             shelf.MessageBadge.ShowMessage(res.ResponseCode);
             categories = null;
-            categoryDropdownMenu.Items = new List<Category>();
+            reqBazCategoryDropdownMenu.Items = new List<Category>();
         }
     }
 
     private Project GetReqBazProject(string projectName)
     {
-        for(int i=0;i<projects.Length;i++)
+        for (int i = 0; i < projects.Length; i++)
         {
             if (projects[i].name == projectName)
             {

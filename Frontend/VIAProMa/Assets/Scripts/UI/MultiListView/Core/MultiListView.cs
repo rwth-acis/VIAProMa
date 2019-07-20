@@ -25,16 +25,19 @@ public class MultiListView<DataType, ItemType> : MonoBehaviour
         get => items;
         set
         {
-            items = value;
-            for (int listViewIndex = 0; listViewIndex < listViews.Length; listViewIndex++)
+            if (listViews != null)
             {
-                List<DataType> subItems = new List<DataType>();
-                int startIndex = listViewIndex * numberOfItemsPerListView;
-                for (int itemIndex = startIndex; itemIndex < Mathf.Min(items.Count, startIndex + numberOfItemsPerListView); itemIndex++)
+                items = value;
+                for (int listViewIndex = 0; listViewIndex < listViews.Length; listViewIndex++)
                 {
-                    subItems.Add(items[itemIndex]);
+                    List<DataType> subItems = new List<DataType>();
+                    int startIndex = listViewIndex * numberOfItemsPerListView;
+                    for (int itemIndex = startIndex; itemIndex < Mathf.Min(items.Count, startIndex + numberOfItemsPerListView); itemIndex++)
+                    {
+                        subItems.Add(items[itemIndex]);
+                    }
+                    listViews[listViewIndex].Items = subItems;
                 }
-                listViews[listViewIndex].Items = subItems;
             }
         }
     }

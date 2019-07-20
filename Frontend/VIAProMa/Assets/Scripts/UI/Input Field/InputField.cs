@@ -25,9 +25,12 @@ namespace i5.ViaProMa.UI
             get { return text; }
             set
             {
-                text = value;
-                ApplyTextToDisplay();
-                TextChanged?.Invoke(this, EventArgs.Empty);
+                if (text != value) // only do something if the text was actually changed (and not the same text entered again)
+                {
+                    text = value;
+                    ApplyTextToDisplay();
+                    TextChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 

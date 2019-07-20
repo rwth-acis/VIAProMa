@@ -42,6 +42,7 @@ public class IssuesLoader : Shelf, ILoadShelf
                 LoadRequirements();
                 break;
             case DataSource.GITHUB:
+                LoadGitHubIssues();
                 break;
         }
 
@@ -50,6 +51,11 @@ public class IssuesLoader : Shelf, ILoadShelf
 
     private async void LoadRequirements()
     {
+        if (!configurationMenu.ShelfConfiguration.IsValidConfiguration)
+        {
+            issuesMultiListView.Items = new List<Issue>();
+            return;
+        }
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
         messageBadge.ShowLoadMessage();
         ApiResult<Issue[]> apiResult = null;
@@ -83,6 +89,12 @@ public class IssuesLoader : Shelf, ILoadShelf
 
     private async void LoadGitHubIssues()
     {
+        if (!configurationMenu.ShelfConfiguration.IsValidConfiguration)
+        {
+            issuesMultiListView.Items = new List<Issue>();
+            return;
+        }
+        GitHubShelfConfiguration gitHubShelfConfiguration = (GitHubShelfConfiguration)configurationMenu.ShelfConfiguration;
         messageBadge.ShowProcessing();
         ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository("", "");
         messageBadge.DoneProcessing();
