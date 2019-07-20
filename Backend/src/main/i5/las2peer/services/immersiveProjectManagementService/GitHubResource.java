@@ -84,4 +84,34 @@ public class GitHubResource
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
+
+    @GET
+    @Path("/repos/{owner}/{repositoryName}/issues/{issueNumber}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Get an issue in a GitHub repository by its number",
+            notes = "Returns the issue")
+    @ApiResponses(
+            value = { @ApiResponse(
+                    code = HttpURLConnection.HTTP_OK,
+                    message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+    public Response getIssue(@PathParam("owner") String owner,
+                                          @PathParam("repositoryName") String repositoryName,
+                                          @PathParam("issueNumber") int issueNumber) {
+
+        APIResult<GitHubIssue> res = GitHubConnector.getIssue(owner, repositoryName, issueNumber);
+        if (res.hasError())
+        {
+            return  Response.status(res.getCode()).entity(res.getErrorMessage()).build();
+        }
+        try {
+            CrossIssue issues = CrossIssue.fromGitHubIssue(res.getValue());
+            String result = Utilities.toUnityCompatibleArray(issues);
+            return Response.ok().entity(result).build();
+        }
+        catch (IOException e)
+        {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
 }

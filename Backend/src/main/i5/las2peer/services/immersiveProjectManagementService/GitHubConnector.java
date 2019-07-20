@@ -44,7 +44,6 @@ public class GitHubConnector {
             }
 
             String origJson = response.readEntity(String.class);
-            System.out.println(origJson);
 
             // parse JSON data
             ObjectMapper mapper = new ObjectMapper();
@@ -54,6 +53,39 @@ public class GitHubConnector {
         catch (IOException e)
         {
             return new APIResult<GitHubIssue[]>(e.getMessage(), 500);
+        }
+    }
+
+    public static Response requestIssue(String owner, String repository, int issueNumber)
+    {
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                .path("repos/{owner}/{repo}/issues/{issueNumber}");
+
+        URI uri = uriBuilder.build(owner, repository, issueNumber);
+        return Utilities.getResponse(uri);
+    }
+
+    public static APIResult<GitHubIssue> getIssue(String owner, String repository, int issueNumber)
+    {
+        try {
+
+            Response response = requestIssue(owner, repository, issueNumber);
+
+            if (response.getStatus() != 200 && response.getStatus() != 201) {
+                return new APIResult<GitHubIssue>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            GitHubIssue issue = mapper.readValue(origJson, GitHubIssue.class);
+            return new APIResult<GitHubIssue>(response.getStatus(), issue);
+        }
+        catch (IOException e)
+        {
+            return new APIResult<GitHubIssue>(e.getMessage(), 500);
         }
     }
 }
