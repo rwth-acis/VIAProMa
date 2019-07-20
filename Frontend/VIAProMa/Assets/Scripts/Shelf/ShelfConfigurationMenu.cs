@@ -100,11 +100,28 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         switch (selectedSource)
         {
             case DataSource.REQUIREMENTS_BAZAAR:
-                ShelfConfiguration = new ReqBazShelfConfiguration();
-                LoadReqBazProjectList();
+                // if the project was already set
+                if (projects != null && projects.Length > 0)
+                {
+                    // if a category was already loaded
+                    if (categories != null && categories.Length > 0)
+                    {
+                        ShelfConfiguration = new ReqBazShelfConfiguration(GetReqBazProject(reqBazProjectInput.Text), categories[reqBazCategoryDropdownMenu.SelectedItemIndex]);
+                    }
+                    else
+                    {
+                        ShelfConfiguration = new ReqBazShelfConfiguration(GetReqBazProject(reqBazProjectInput.Text));
+                        LoadReqBazCategoryList();
+                    }
+                }
+                else // nothing previously set
+                {
+                    ShelfConfiguration = new ReqBazShelfConfiguration();
+                    LoadReqBazProjectList();
+                }
                 break;
             case DataSource.GITHUB:
-                ShelfConfiguration = new GitHubShelfConfiguration();
+                ShelfConfiguration = new GitHubShelfConfiguration(gitHubOwnerInput.Text, gitHubRepositoryInput.Text);
                 break;
         }
         ShowControlsForSource();

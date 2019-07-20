@@ -96,7 +96,7 @@ public class IssuesLoader : Shelf, ILoadShelf
         }
         GitHubShelfConfiguration gitHubShelfConfiguration = (GitHubShelfConfiguration)configurationMenu.ShelfConfiguration;
         messageBadge.ShowProcessing();
-        ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository("", "");
+        ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository(gitHubShelfConfiguration.Owner, gitHubShelfConfiguration.RepositoryName, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
         messageBadge.DoneProcessing();
         if (apiResult.HasError)
         {
