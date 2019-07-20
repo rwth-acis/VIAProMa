@@ -1,5 +1,6 @@
 package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import i5.las2peer.services.immersiveProjectManagementService.RequirementsBazaarConnector;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.gitHub.GitHubIssue;
@@ -37,9 +38,12 @@ public class CrossIssue {
         this.developers = developers;
     }
 
-    public DataSource getSource() {
+    @JsonIgnore
+    public DataSource getDataSource() {
         return source;
     }
+
+    public int getSource() {return source.ordinal();}
 
     public int getId() {
         return id;

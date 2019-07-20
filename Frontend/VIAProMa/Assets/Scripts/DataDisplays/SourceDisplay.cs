@@ -27,7 +27,7 @@ public class SourceDisplay : DataDisplay<Issue>
     }
 
     /// <summary>
-    /// Updates the view based on the 
+    /// Updates the view based on the data source of the issue
     /// </summary>
     public override void UpdateView()
     {

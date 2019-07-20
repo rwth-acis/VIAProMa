@@ -1,5 +1,6 @@
 package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.gitHub.GitHubUser;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazUser;
 
@@ -27,9 +28,12 @@ public class CrossUser {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public DataSource getSource() {
+    @JsonIgnore
+    public DataSource getDataSource() {
         return source;
     }
+
+    public int getSource() {return source.ordinal();}
 
     public int getId() {
         return id;
