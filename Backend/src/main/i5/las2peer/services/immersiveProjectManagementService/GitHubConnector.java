@@ -44,6 +44,7 @@ public class GitHubConnector {
             }
 
             String origJson = response.readEntity(String.class);
+            System.out.println(origJson);
 
             // parse JSON data
             ObjectMapper mapper = new ObjectMapper();

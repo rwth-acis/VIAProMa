@@ -65,9 +65,12 @@ public class CrossIssue {
         return creator;
     }
 
-    public IssueStatus getStatus() {
+    @JsonIgnore
+    public IssueStatus getIssueStatus() {
         return status;
     }
+
+    public int getStatus() {return status.ordinal(); }
 
     public CrossUser[] getDevelopers() {
         return developers;

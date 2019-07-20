@@ -59,7 +59,7 @@ public class GitHubIssue {
 
     public IssueStatus getIssueStatus()
     {
-        if (state == "closed")
+        if (state.equals("closed"))
         {
             return IssueStatus.CLOSED;
         }
