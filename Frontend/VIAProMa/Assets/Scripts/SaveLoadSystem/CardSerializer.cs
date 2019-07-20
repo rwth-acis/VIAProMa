@@ -7,8 +7,7 @@ public class CardSerializer : MonoBehaviour, ISerializable
 {
     private const string sourceKey = "source";
     private const string issueIdKey = "issueId";
-    private const string ownerKey = "gitHubOwner";
-    private const string repositoryKey = "gitHubRepository";
+    private const string projectIdKey = "projectId";
 
     private IssueDataDisplay dataDisplay;
 
@@ -21,6 +20,7 @@ public class CardSerializer : MonoBehaviour, ISerializable
     {
         DataSource source = (DataSource)serializedObject.Integers[sourceKey];
         int issueId = serializedObject.Integers[issueIdKey];
+        int projectId = serializedObject.Integers[projectIdKey];
         Issue issue = null;
         ApiResult<Issue> res = null;
         switch (source)
@@ -29,9 +29,7 @@ public class CardSerializer : MonoBehaviour, ISerializable
                 res = await RequirementsBazaar.GetRequirement(issueId);
                 break;
             case DataSource.GITHUB:
-                string owner = serializedObject.Strings[ownerKey];
-                string repository = serializedObject.Strings[repositoryKey];
-                res = await GitHub.GetIssue(owner, repository, issueId);
+                res = await GitHub.GetIssue(projectId, issueId);
                 break;
         }
         if (res != null && res.Successful)
@@ -46,11 +44,7 @@ public class CardSerializer : MonoBehaviour, ISerializable
         SerializedObject serializedObject = new SerializedObject();
         serializedObject.Integers.Add(sourceKey, (int)dataDisplay.Content.Source);
         serializedObject.Integers.Add(issueIdKey, dataDisplay.Content.Id);
-        if (dataDisplay.Content.Source == DataSource.GITHUB)
-        {
-            serializedObject.Strings.Add(ownerKey, dataDisplay.Content.Owner);
-            serializedObject.Strings.Add(repositoryKey, dataDisplay.Content.RepositoryName);
-        }
+        serializedObject.Integers.Add(projectIdKey, dataDisplay.Content.ProjectId);
         return serializedObject;
     }
 }

@@ -30,7 +30,7 @@ import java.util.List;
 @Api
 @SwaggerDefinition(
 		info = @Info(
-				title = "Immersive Project Management Service",
+				title = "Immersive ReqBazProject Management Service",
 				version = "1.0.0",
 				description = "Backend service of the immersive analytics project management framework",
 				termsOfService = "",
@@ -145,7 +145,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 			String[] projects = new String[64];
 			for (int i=0;i<64;i++)
 			{
-				projects[i] = "Project " + (i+1);
+				projects[i] = "ReqBazProject " + (i+1);
 			}
 			try {
 				String result = Utilities.toUnityCompatibleArray(projects);

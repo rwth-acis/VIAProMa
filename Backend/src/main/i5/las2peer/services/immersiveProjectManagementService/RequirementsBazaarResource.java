@@ -6,7 +6,7 @@ import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.servic
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.apiModel.CrossIssue;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazProject;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 import io.swagger.annotations.*;
 
@@ -30,7 +30,7 @@ import java.util.Arrays;
 @Api(value="Requirements Bazaar", description = "Requirements Bazaar resources")
 @SwaggerDefinition(
         info = @Info(
-                title = "Immersive Project Management Service",
+                title = "Immersive ReqBazProject Management Service",
                 version = "1.0.0",
                 description = "Backend service of the immersive analytics project management framework",
                 termsOfService = "",
@@ -96,8 +96,8 @@ public class RequirementsBazaarResource
                     message = "REPLACE THIS WITH YOUR OK MESSAGE") })
     public Response getReqBazProjectNames() {
         int itemsPerPage = 100;
-        APIResult<Project[]> res;
-        ArrayList<Project> allProjects = new ArrayList<>();
+        APIResult<ReqBazProject[]> res;
+        ArrayList<ReqBazProject> allProjects = new ArrayList<>();
 
         int page = 0;
 

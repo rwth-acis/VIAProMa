@@ -3,7 +3,7 @@ package i5.las2peer.services.immersiveProjectManagementService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.APIResult;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Category;
-import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Project;
+import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazProject;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.ReqBazContributors;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar.Requirement;
 
@@ -72,22 +72,22 @@ public class RequirementsBazaarConnector {
         return  Utilities.getResponse(uri);
     }
 
-    public static APIResult<Project[]> getProjects(int page, int itemsPerPage)
+    public static APIResult<ReqBazProject[]> getProjects(int page, int itemsPerPage)
     {
         try {
             Response response = requestProjects(page, itemsPerPage);
 
             if (response.getStatus() != 200 && response.getStatus() != 201)
             {
-                return  new APIResult<Project[]>(response.readEntity(String.class), response.getStatus());
+                return  new APIResult<ReqBazProject[]>(response.readEntity(String.class), response.getStatus());
             }
 
             String origJson = response.readEntity(String.class);
 
             // parse JSON data
             ObjectMapper mapper = new ObjectMapper();
-            Project[] projects = mapper.readValue(origJson, Project[].class);
-            return  new APIResult<Project[]>(response.getStatus(), projects);
+            ReqBazProject[] projects = mapper.readValue(origJson, ReqBazProject[].class);
+            return  new APIResult<ReqBazProject[]>(response.getStatus(), projects);
         }
         catch (IOException e) {
             return  new APIResult<>(e.getMessage(), 500);

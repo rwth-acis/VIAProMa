@@ -4,7 +4,7 @@ package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.servi
  * Created by bened on 10.05.2019.
  */
 //@JsonFilter("shortFilter")
-public class Project {
+public class ReqBazProject {
     public int id;
     public String name;
     public String description;

@@ -23,9 +23,9 @@ public static class GitHub
         }
     }
 
-    public static async Task<ApiResult<Issue>> GetIssue(string owner, string repositoryName, int issueNumber)
+    public static async Task<ApiResult<Issue>> GetIssue(int repositoryId, int issueNumber)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues/" + issueNumber);
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repositories/" + repositoryId + "/issues/" + issueNumber);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -34,8 +34,8 @@ public static class GitHub
         }
         else
         {
-            Issue issues = JsonUtility.FromJson<Issue>(resp.ResponseBody);
-            return new ApiResult<Issue>(issues);
+            Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+            return new ApiResult<Issue>(issue);
         }
     }
 }
