@@ -88,4 +88,37 @@ public class GitHubConnector {
             return new APIResult<GitHubIssue>(e.getMessage(), 500);
         }
     }
+
+    public static Response requestIssue(int repositoryId, int issueNumber)
+    {
+        UriBuilder uriBuilder =
+                UriBuilder.fromPath(baseUrl)
+                        .path("repositories/{repositoryId}/issues/{issueNumber}");
+
+        URI uri = uriBuilder.build(repositoryId, issueNumber);
+        return Utilities.getResponse(uri);
+    }
+
+    public static APIResult<GitHubIssue> getIssue(int repositoryId, int issueNumber)
+    {
+        try {
+
+            Response response = requestIssue(repositoryId, issueNumber);
+
+            if (response.getStatus() != 200 && response.getStatus() != 201) {
+                return new APIResult<GitHubIssue>(response.readEntity(String.class), response.getStatus());
+            }
+
+            String origJson = response.readEntity(String.class);
+
+            // parse JSON data
+            ObjectMapper mapper = new ObjectMapper();
+            GitHubIssue issue = mapper.readValue(origJson, GitHubIssue.class);
+            return new APIResult<GitHubIssue>(response.getStatus(), issue);
+        }
+        catch (IOException e)
+        {
+            return new APIResult<GitHubIssue>(e.getMessage(), 500);
+        }
+    }
 }

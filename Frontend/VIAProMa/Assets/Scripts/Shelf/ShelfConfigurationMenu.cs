@@ -80,7 +80,10 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         reqBazCategoryDropdownMenu.ItemSelected += ReqBazCategorySelected;
         gitHubOwnerInput.TextChanged += GitHubOwnerInputFinished;
         gitHubRepositoryInput.TextChanged += GitHubRepositoryInputFinished;
+    }
 
+    private void Start()
+    {
         SetDataSource(DataSource.REQUIREMENTS_BAZAAR); // first entry of dropdown box is Requirements Bazaar, so set this as the default source
 
         reqBazProjectInput.Text = "";

@@ -177,7 +177,7 @@ public class CrossIssue {
     {
         CrossIssue issue = new CrossIssue(
                 DataSource.GITHUB,
-                gitHubIssue.getId(),
+                gitHubIssue.getNumber(),
                 gitHubIssue.getTitle(),
                 gitHubIssue.getBody(),
                 owner,
