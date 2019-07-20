@@ -36,20 +36,20 @@ public class IssueStatusDisplay : DataDisplay<Issue>
         {
             if (content.Status == IssueStatus.OPEN)
             {
-                SetStatusDisplay("Open", new Color(181f / 255f, 25f / 255f, 25f / 255)); // red
+                SetStatusDisplay("Open", Color.white, new Color(181f / 255f, 25f / 255f, 25f / 255)); // red
             }
             else if (content.Status == IssueStatus.IN_PROGRESS)
             {
-                SetStatusDisplay("Development", new Color(245f / 255f, 233f / 255f, 6f / 255f)); // yellow
+                SetStatusDisplay("Development", Color.black, new Color(245f / 255f, 233f / 255f, 6f / 255f)); // yellow
             }
             else if (content.Status == IssueStatus.CLOSED)
             {
-                SetStatusDisplay("Closed", new Color(7f / 255f, 187f / 255f, 40f / 255f)); // green
+                SetStatusDisplay("Closed", Color.black, new Color(7f / 255f, 187f / 255f, 40f / 255f)); // green
             }
         }
         else // if no issue is provided, just show an error status
         {
-            SetStatusDisplay("Error", new Color(134f / 255f, 4f / 255f, 127f / 255f)); // purple
+            SetStatusDisplay("Error", Color.black, new Color(134f / 255f, 4f / 255f, 127f / 255f)); // purple
         }
     }
 
@@ -58,9 +58,10 @@ public class IssueStatusDisplay : DataDisplay<Issue>
     /// </summary>
     /// <param name="text">The text for the label of the status display</param>
     /// <param name="backgroundColor">The background color of the status display</param>
-    private void SetStatusDisplay(string text, Color backgroundColor)
+    private void SetStatusDisplay(string text, Color textColor, Color backgroundColor)
     {
         statusLabel.text = text;
+        statusLabel.color = textColor;
         statusLabelBackground.material.color = backgroundColor;
     }
 }
