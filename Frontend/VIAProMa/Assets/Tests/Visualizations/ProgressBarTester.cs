@@ -9,7 +9,9 @@ public class ProgressBarTester : MonoBehaviour
     [Range(0, 1)]
     public float percentInProgress = 0f;
 
-    public ProgressBarController progressBar;
+    public GameObject progressBar;
+
+    private IProgressBarVisuals progressBarVisuals;
 
     private void Awake()
     {
@@ -17,12 +19,25 @@ public class ProgressBarTester : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
         }
+        progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        progressBar.PercentageDone = percentDone;
-        progressBar.PercentageInProgress = percentInProgress;
+        progressBarVisuals.PercentageDone = percentDone;
+        progressBarVisuals.PercentageInProgress = percentInProgress;
+    }
+
+    private void OnValidate()
+    {
+        if (progressBar != null)
+        {
+            progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
+            if (progressBarVisuals == null)
+            {
+                progressBar = null;
+            }
+        }
     }
 }
