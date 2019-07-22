@@ -13,7 +13,7 @@ public class BuildingSizeData : MonoBehaviour
         {
             // Draw a semitransparent blue cube at the transforms position
             Gizmos.color = new Color(1, 0, 0, 0.5f);
-            Gizmos.DrawCube(transform.localPosition + new Vector3(0, heightSize.y, 0), new Vector3(heightSize.x, 0.001f, heightSize.z));
+            Gizmos.DrawCube(transform.position + new Vector3(0, transform.lossyScale.y * heightSize.y, 0), Vector3.Scale(transform.lossyScale, new Vector3(heightSize.x, 0.001f, heightSize.z)));
         }
     }
 
