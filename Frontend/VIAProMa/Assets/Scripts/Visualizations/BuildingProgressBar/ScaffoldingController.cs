@@ -8,6 +8,7 @@ public class ScaffoldingController : MonoBehaviour
     [SerializeField] private Renderer innerScaffolding;
     [SerializeField] private Transform innerOccluder;
     [SerializeField] private ObjectArray floors;
+    [SerializeField] private GameObject crane;
 
     public float tilingFactor = 50;
     public float gapBetweenLayers = 0.008f;
@@ -42,6 +43,10 @@ public class ScaffoldingController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(floors));
         }
+        if (crane == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(crane));
+        }
     }
 
     private void UpdateScale()
@@ -63,6 +68,17 @@ public class ScaffoldingController : MonoBehaviour
 
         outerScaffolding.material.mainTextureScale = tilingFactor * tiling;
         innerScaffolding.material.mainTextureScale = tilingFactor * tiling;
+
+        crane.transform.localPosition = new Vector3(0, localSize.y / 2f, 0);
+
+        if (Mathf.Min(localSize.x, localSize.y, localSize.z) <= 0.1f) // deactivate crane on very small scaffolding to avoid ridiculous looks
+        {
+            crane.SetActive(false);
+        }
+        else
+        {
+            crane.SetActive(true);
+        }
     }
 
     private void SetFloorVisibility()
