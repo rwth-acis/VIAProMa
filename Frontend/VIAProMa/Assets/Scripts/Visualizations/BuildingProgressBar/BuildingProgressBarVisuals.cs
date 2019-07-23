@@ -1,15 +1,21 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.Utilities;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
 {
     [SerializeField] private ScaffoldingController scaffoldingController;
-    [SerializeField] private Transform clippingPlane;
+    [SerializeField] private ClippingPlane clippingPlane;
+    [SerializeField] private GameObject[] buildingPrefabs;
+
+    private GameObject instantiatedBuilding;
 
     private BuildingSizeData buildingSizeData;
     private float percentageDone;
     private float percentageInProgress;
+
+    private Renderer[] currentBuildingRenderers;
 
     public float PercentageDone
     {
@@ -30,12 +36,58 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         }
     }
 
-    private void Start()
+    private void Awake()
     {
-        buildingSizeData = GetComponentInChildren<BuildingSizeData>();
+        if (scaffoldingController == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(scaffoldingController));
+        }
+        if (clippingPlane == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(clippingPlane));
+        }
+        if (buildingPrefabs.Length == 0)
+        {
+            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(buildingPrefabs));
+        }
+        else
+        {
+            for (int i=0;i<buildingPrefabs.Length;i++)
+            {
+                if (buildingPrefabs[i] == null)
+                {
+                    SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(buildingPrefabs), i);
+                }
+            }
+        }
+
+        int buildingModelIndex = Random.Range(0, buildingPrefabs.Length);
+        InstantiateBuilding(buildingModelIndex);
+    }
+
+    private void InstantiateBuilding(int index)
+    {
+        if (instantiatedBuilding != null)
+        {
+            for (int i=0;i<currentBuildingRenderers.Length;i++)
+            {
+                clippingPlane.RemoveRenderer(currentBuildingRenderers[i]);
+            }
+            Destroy(instantiatedBuilding);
+        }
+
+        index = Mathf.Clamp(index, 0, buildingPrefabs.Length - 1);
+        instantiatedBuilding = Instantiate(buildingPrefabs[index], transform);
+
+        buildingSizeData = instantiatedBuilding.GetComponent<BuildingSizeData>();
         if (buildingSizeData == null)
         {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BuildingSizeData), gameObject);
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BuildingSizeData), instantiatedBuilding);
+        }
+        currentBuildingRenderers = instantiatedBuilding.GetComponentsInChildren<Renderer>();
+        for (int i=0;i<currentBuildingRenderers.Length;i++)
+        {
+            clippingPlane.AddRenderer(currentBuildingRenderers[i]);
         }
     }
 
@@ -44,7 +96,7 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         percentageDone = Mathf.Clamp01(percentageDone);
         percentageInProgress = Mathf.Clamp(percentageInProgress, 0, 1 - percentageDone);
 
-        clippingPlane.localPosition = new Vector3(0, percentageDone, 0);
+        clippingPlane.transform.localPosition = new Vector3(0, percentageDone, 0);
 
         if (percentageDone >= 1)
         {
