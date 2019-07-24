@@ -6,6 +6,18 @@ public class ProgressBar : Visualization
 {
     private IProgressBarVisuals progressBarVisuals;
 
+    private string title;
+
+    public string Title
+    {
+        get => title;
+        set
+        {
+            title = value;
+            progressBarVisuals.SetTitle(title);
+        }
+    }
+
     private void Awake()
     {
         progressBarVisuals = GetComponent<IProgressBarVisuals>();
@@ -15,6 +27,7 @@ public class ProgressBar : Visualization
         }
 
         ContentProvider = new SingleIssuesProvider();
+        Title = "";
     }
 
     public override void UpdateView()
@@ -36,7 +49,7 @@ public class ProgressBar : Visualization
     private static int[] CountStates(List<Issue> issues)
     {
         int[] states = new int[3];
-        for (int i=0;i<issues.Count;i++)
+        for (int i = 0; i < issues.Count; i++)
         {
             if (issues[i].Status == IssueStatus.OPEN)
             {

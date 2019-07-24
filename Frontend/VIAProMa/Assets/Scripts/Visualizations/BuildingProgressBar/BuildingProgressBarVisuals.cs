@@ -145,4 +145,8 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
                 );
         }
     }
+
+    public void SetTitle(string title)
+    {
+    }
 }

@@ -35,10 +35,6 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
 
     private void Awake()
     {
-        if (closeButton == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(closeButton));
-        }
         if (appBarSpawner == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(appBarSpawner));
@@ -46,6 +42,19 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
         if (progressBar == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
+        }
+
+        if (closeButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(closeButton));
+        }
+        if (progressBarTitleField == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBarTitleField));
+        }
+        if (selectionButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionButton));
         }
         if (selectionActiveMessage == null)
         {
@@ -55,6 +64,8 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
         {
             selectionActiveMessage.SetActive(false);
         }
+        progressBarTitleField.Text = progressBar.Title;
+        progressBarTitleField.TextChanged += ProgressBarTitleChanged;
     }
 
     public void Close()
@@ -82,4 +93,10 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
         WindowEnabled = true;
         selectionActiveMessage.SetActive(false);
     }
+
+    private void ProgressBarTitleChanged(object sender, EventArgs e)
+    {
+        progressBar.Title = progressBarTitleField.Text;
+    }
+
 }

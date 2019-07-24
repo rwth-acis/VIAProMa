@@ -12,6 +12,7 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
     [SerializeField] private Transform innerBarInProgress;
     [SerializeField] private CapsuleCollider tubeCollider;
     [SerializeField] private BoundingBox boundingBox;
+    [SerializeField] private TextLabel textLabel;
 
     public float minLength = 0.05f;
     public float maxLength = 3f;
@@ -79,7 +80,13 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBox), boundingBoxCollider?.gameObject);
         }
 
+        if (textLabel == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(textLabel));
+        }
+
         UpdateVisuals();
+        UpdateTextLabelPositioning(Length);
     }
 
     private void UpdateVisuals()
@@ -145,5 +152,21 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
             boundingBoxCollider.size.y,
             boundingBoxCollider.size.z);
         boundingBox.RefreshDisplay();
+
+        UpdateTextLabelPositioning(newLength);
+    }
+
+    private void UpdateTextLabelPositioning(float progressBarLength)
+    {
+        textLabel.Width = progressBarLength / 2f;
+        textLabel.transform.localPosition = new Vector3(
+            -progressBarLength / 2f + progressBarLength / 4f,
+        textLabel.transform.localPosition.y,
+            textLabel.transform.localPosition.z);
+    }
+
+    public void SetTitle(string title)
+    {
+        textLabel.Text = title;
     }
 }
