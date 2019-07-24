@@ -1,4 +1,5 @@
-﻿using Microsoft.MixedReality.Toolkit.Utilities;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
     [SerializeField] private ScaffoldingController scaffoldingController;
     [SerializeField] private ClippingPlane clippingPlane;
     [SerializeField] private GameObject[] buildingPrefabs;
+    [SerializeField] private BoundingBox boundingBox;
 
     private GameObject instantiatedBuilding;
 
@@ -16,6 +18,7 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
     private float percentageInProgress;
 
     private Renderer[] currentBuildingRenderers;
+    private BoxCollider boundingBoxCollider;
 
     public float PercentageDone
     {
@@ -60,6 +63,15 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
                 }
             }
         }
+        if (boundingBox == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+        }
+        boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
+        if (boundingBoxCollider == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox.gameObject);
+        }
 
         int buildingModelIndex = Random.Range(0, buildingPrefabs.Length);
         InstantiateBuilding(buildingModelIndex);
@@ -89,6 +101,13 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         {
             clippingPlane.AddRenderer(currentBuildingRenderers[i]);
         }
+
+        // set up the bounding box
+        // use the bounds of the buildingSizeData so that the scaffolding is also included in the bounding box
+        Bounds bounds = buildingSizeData.GetBounds();
+        boundingBoxCollider.center = bounds.center;
+        boundingBoxCollider.size = bounds.size;
+        boundingBox.RefreshDisplay();
     }
 
     private void UpdateVisuals()

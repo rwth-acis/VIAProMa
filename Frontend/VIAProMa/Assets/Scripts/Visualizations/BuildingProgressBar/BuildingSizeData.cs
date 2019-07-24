@@ -43,4 +43,19 @@ public class BuildingSizeData : MonoBehaviour
         }
         return new Vector2(heightSizes[heightSizes.Count - 1].x, heightSizes[heightSizes.Count-1].z);
     }
+
+    public Bounds GetBounds()
+    {
+        if (heightSizes.Count == 0)
+        {
+            return new Bounds();
+        }
+        Bounds bounds = new Bounds(new Vector3(0, heightSizes[0].y, 0), new Vector3(heightSizes[0].x, 0.001f, heightSizes[0].z));
+        for (int i=1;i<heightSizes.Count;i++)
+        {
+            Bounds cubeBounds = new Bounds(new Vector3(0, heightSizes[i].y, 0), new Vector3(heightSizes[i].x, 0.001f, heightSizes[i].z));
+            bounds.Encapsulate(cubeBounds);
+        }
+        return bounds;
+    }
 }
