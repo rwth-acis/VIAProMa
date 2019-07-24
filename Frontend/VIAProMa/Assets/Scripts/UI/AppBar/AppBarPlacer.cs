@@ -21,6 +21,8 @@ public class AppBarPlacer : MonoBehaviour
     [Tooltip("Pushes the app bar away from the object.")]
     private float hoverOffsetZ = 0.05f;
 
+    [SerializeField] private Vector2 positionOffset2D;
+
     private BoundingBoxHelper helper = new BoundingBoxHelper();
     private List<Vector3> boundsPoints = new List<Vector3>();
 
@@ -59,7 +61,7 @@ public class AppBarPlacer : MonoBehaviour
         Vector3 faceNormal = helper.GetFaceNormal(followingFaceIndex);
 
         //finally we have new position
-        finalPosition = helper.GetFaceBottomCentroid(followingFaceIndex) + (faceNormal * HoverOffsetZ);
+        finalPosition = helper.GetFaceBottomCentroid(followingFaceIndex) + (faceNormal * HoverOffsetZ) + new Vector3(positionOffset2D.x, positionOffset2D.y, 0);
 
         // Follow our bounding box
         transform.position = smooth ? Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * backgroundBarMoveSpeed) : finalPosition;

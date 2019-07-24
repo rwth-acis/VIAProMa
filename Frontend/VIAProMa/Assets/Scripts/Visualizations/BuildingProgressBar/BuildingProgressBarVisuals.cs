@@ -10,6 +10,7 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
     [SerializeField] private ClippingPlane clippingPlane;
     [SerializeField] private GameObject[] buildingPrefabs;
     [SerializeField] private BoundingBox boundingBox;
+    [SerializeField] private TextLabel titleLabel;
 
     private GameObject instantiatedBuilding;
 
@@ -73,6 +74,11 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox.gameObject);
         }
 
+        if (titleLabel == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(titleLabel));
+        }
+
         int buildingModelIndex = Random.Range(0, buildingPrefabs.Length);
         InstantiateBuilding(buildingModelIndex);
     }
@@ -108,6 +114,8 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         boundingBoxCollider.center = bounds.center;
         boundingBoxCollider.size = bounds.size;
         boundingBox.RefreshDisplay();
+
+        titleLabel.Width = Mathf.Min(bounds.size.x, bounds.size.z);
     }
 
     private void UpdateVisuals()
@@ -148,5 +156,6 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
 
     public void SetTitle(string title)
     {
+        titleLabel.Text = title;
     }
 }

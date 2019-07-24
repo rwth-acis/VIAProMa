@@ -13,6 +13,7 @@ public class TextLabel : MonoBehaviour
     [SerializeField] private string text;
     [SerializeField] private float width = 1f;
     [SerializeField] private float height = 0.1f;
+    [SerializeField] private float padding = 0.005f;
 
     private void Awake()
     {
@@ -56,6 +57,16 @@ public class TextLabel : MonoBehaviour
         }
     }
 
+    public float Padding
+    {
+        get => padding;
+        set
+        {
+            padding = value;
+            UpdateVisuals();
+        }
+    }
+
     public string Text
     {
         get => text;
@@ -73,12 +84,18 @@ public class TextLabel : MonoBehaviour
         for (int i = 0; i < textLabels.Length; i++)
         {
             textLabels[i].rectTransform.sizeDelta = new Vector2(width, height);
-            background.localScale = new Vector3(
-                width,
-                height,
-                background.localScale.z);
+            //background.localScale = new Vector3(
+            //    width,
+            //    height,
+            //    background.localScale.z);
             textLabels[i].text = text;
             textLabels[i].ForceMeshUpdate();
         }
+
+        background.localScale = new Vector3(
+            textLabels[0].textBounds.size.x + padding * 2f,
+            textLabels[0].textBounds.size.y + padding * 2f,
+            background.localScale.z
+            );
     }
 }
