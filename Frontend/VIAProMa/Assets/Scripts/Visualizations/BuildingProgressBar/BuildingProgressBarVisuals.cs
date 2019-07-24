@@ -112,6 +112,11 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
 
     private void UpdateVisuals()
     {
+        if (buildingSizeData == null)
+        {
+            return;
+        }
+
         percentageDone = Mathf.Clamp01(percentageDone);
         percentageInProgress = Mathf.Clamp(percentageInProgress, 0, 1 - percentageDone);
 
