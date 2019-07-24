@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
-{
+{ 
     [SerializeField] private ScaffoldingController scaffoldingController;
     [SerializeField] private ClippingPlane clippingPlane;
     [SerializeField] private GameObject[] buildingPrefabs;
@@ -96,7 +96,10 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         percentageDone = Mathf.Clamp01(percentageDone);
         percentageInProgress = Mathf.Clamp(percentageInProgress, 0, 1 - percentageDone);
 
-        clippingPlane.transform.localPosition = new Vector3(0, percentageDone, 0);
+        float doneHeight = percentageDone * buildingSizeData.BuildingHeight;
+        float progressHeight = percentageInProgress * buildingSizeData.BuildingHeight;
+
+        clippingPlane.transform.localPosition = new Vector3(0, doneHeight, 0);
 
         if (percentageDone >= 1)
         {
@@ -107,13 +110,13 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
             scaffoldingController.gameObject.SetActive(true);
             scaffoldingController.transform.localPosition = new Vector3(
             0,
-            percentageDone + percentageInProgress / 2f,
+            doneHeight + progressHeight / 2f,
             0
             );
-            Vector2 scaffoldingSize = buildingSizeData.GetBuildingSize(percentageDone);
+            Vector2 scaffoldingSize = buildingSizeData.GetBuildingSize(doneHeight);
             scaffoldingController.LocalSize = new Vector3(
                 scaffoldingSize.x,
-                percentageInProgress,
+                progressHeight,
                 scaffoldingSize.y
                 );
         }

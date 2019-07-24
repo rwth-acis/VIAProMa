@@ -5,9 +5,13 @@ using UnityEngine;
 
 public class BuildingSizeData : MonoBehaviour
 {
+    [SerializeField] private float buildingHeight = 1f;
+
     [SerializeField] private List<Vector3> heightSizes;
 
-    void OnDrawGizmosSelected()
+    public float BuildingHeight { get => buildingHeight; }
+
+    private void OnDrawGizmosSelected()
     {
         foreach (Vector3 heightSize in heightSizes)
         {
@@ -37,6 +41,6 @@ public class BuildingSizeData : MonoBehaviour
                 }
             }
         }
-        return Vector2.one;
+        return new Vector2(heightSizes[heightSizes.Count - 1].x, heightSizes[heightSizes.Count-1].z);
     }
 }
