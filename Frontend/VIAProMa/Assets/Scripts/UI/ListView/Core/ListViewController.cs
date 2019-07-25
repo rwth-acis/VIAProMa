@@ -34,6 +34,11 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
         }
     }
 
+    public GameObject ItemPrefab
+    {
+        get => itemPrefab;
+    }
+
     public int SelectedItemIndex { get; private set; }
 
     public DataType SeletedItem { get { return items[SelectedItemIndex]; } }
