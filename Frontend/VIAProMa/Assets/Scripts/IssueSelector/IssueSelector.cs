@@ -176,6 +176,10 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
     {
     }
 
+    /// <summary>
+    /// Called by the Mixed Reality Toolkit if the object was clicked
+    /// </summary>
+    /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         if (IssueSelectionManager.Instance.SelectionModeActive)
