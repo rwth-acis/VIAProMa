@@ -84,18 +84,19 @@ public class TextLabel : MonoBehaviour
         for (int i = 0; i < textLabels.Length; i++)
         {
             textLabels[i].rectTransform.sizeDelta = new Vector2(width, height);
-            //background.localScale = new Vector3(
-            //    width,
-            //    height,
-            //    background.localScale.z);
             textLabels[i].text = text;
             textLabels[i].ForceMeshUpdate();
         }
 
-        background.localScale = new Vector3(
-            textLabels[0].textBounds.size.x + padding * 2f,
-            textLabels[0].textBounds.size.y + padding * 2f,
-            background.localScale.z
-            );
+        if (textLabels.Length > 0)
+        {
+            // scale the background to fit the acutal text size
+            // assuming that all labels show the same in the same size
+            background.localScale = new Vector3(
+                textLabels[0].textBounds.size.x + padding * 2f,
+                textLabels[0].textBounds.size.y + padding * 2f,
+                background.localScale.z
+                );
+        }
     }
 }
