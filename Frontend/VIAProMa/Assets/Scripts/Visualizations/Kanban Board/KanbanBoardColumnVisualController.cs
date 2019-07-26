@@ -41,6 +41,8 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
         }
     }
 
+    private int ItemsPerPage { get => gridSize.x * gridSize.y; }
+
     public List<Issue> Issues
     {
         get => issues;
@@ -123,9 +125,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
             -headerBackground.localScale.y / 2f,
             grid.transform.localPosition.z);
 
-        DetermineGridSize();
-        grid.Columns = gridSize.x;
-        grid.UpdateGrid();
+        UpdateGrid();
     }
 
     private void DetermineGridSize()
@@ -135,9 +135,16 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
         Debug.Log(gridSize);
     }
 
+    private void UpdateGrid()
+    {
+        DetermineGridSize();
+        grid.Columns = gridSize.x;
+        grid.UpdateGrid();
+    }
+
     private void UpdateVisuals()
     {
-        // TODO: only add so many items to issues that the grid is filled correctly
-        issueListView.Items = issues;
+        issueListView.Items = issues.GetRange(0, ItemsPerPage);
+        UpdateGrid();
     }
 }
