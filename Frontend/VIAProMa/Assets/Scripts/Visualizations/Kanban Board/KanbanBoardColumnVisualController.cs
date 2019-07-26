@@ -1,4 +1,5 @@
-﻿using Microsoft.MixedReality.Toolkit.Utilities;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -13,6 +14,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
     [SerializeField] private TextMeshPro headerTitle;
     [SerializeField] private IssueListView issueListView;
     [SerializeField] private ObjectGrid grid;
+    [SerializeField] private BoundingBox boundingBox;
 
 
     private List<Issue> issues;
@@ -20,6 +22,11 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
 
     private Vector2 size;
     private Vector2Int gridSize;
+
+    private Renderer backgroundRenderer;
+    private Renderer headerBackgroundRenderer;
+
+    private BoxCollider boundingboxCollider;
 
     public float Width
     {
@@ -63,6 +70,19 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
         }
     }
 
+    public Color Color
+    {
+        get => backgroundRenderer.material.color;
+        set
+        {
+            backgroundRenderer.material.color = value;
+            headerBackgroundRenderer.material.color = new Color(
+                Mathf.Clamp01(value.r + 0.1f),
+                Mathf.Clamp01(value.g + 0.1f),
+                Mathf.Clamp01(value.b + 0.1f));
+        }
+    }
+
     private void Awake()
     {
         if (background == null)
@@ -88,6 +108,16 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
         if (grid == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(grid));
+        }
+        if (boundingBox == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+        }
+
+        boundingboxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
+        if (boundingboxCollider == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox?.gameObject);
         }
 
         BoxCollider issueCardColl = issueListView.ItemPrefab.GetComponentInChildren<BoxCollider>();
@@ -125,6 +155,10 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
             -headerBackground.localScale.y / 2f,
             grid.transform.localPosition.z);
 
+        boundingboxCollider.size = 1.01f * background.localScale;
+        boundingBox.Refresh();
+
+
         UpdateGrid();
     }
 
@@ -132,7 +166,6 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
     {
         gridSize.x = (int) (size.x / issueCardSize.x);
         gridSize.y = (int)(size.y / issueCardSize.y);
-        Debug.Log(gridSize);
     }
 
     private void UpdateGrid()

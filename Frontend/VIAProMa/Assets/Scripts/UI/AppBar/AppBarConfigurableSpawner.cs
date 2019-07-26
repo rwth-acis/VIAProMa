@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AppBarSpawner : Spawner
+public class AppBarConfigurableSpawner : AppBarSpanwer
 {
-    [SerializeField] private BoundingBox targetBoundingBox;
     [SerializeField] private GameObject configurationWindow;
 
     private IWindow configurationWindowInterface;
@@ -16,7 +15,7 @@ public class AppBarSpawner : Spawner
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(configurationWindow));
         }
-        configurationWindowInterface = configurationWindow.GetComponent<IWindow>();
+        configurationWindowInterface = configurationWindow?.GetComponent<IWindow>();
         if (configurationWindowInterface == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IWindow), configurationWindow);
@@ -28,22 +27,19 @@ public class AppBarSpawner : Spawner
     protected override void Setup()
     {
         base.Setup();
-        AppBarPlacer placer = instance.GetComponent<AppBarPlacer>();
-        if (placer == null)
-        {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), instance);
-        }
-        placer.TargetBoundingBox = targetBoundingBox;
         AppBarConfiguration configurationActions = instance.GetComponent<AppBarConfiguration>();
         configurationActions.ConfigurationWindow = configurationWindowInterface;
     }
 
     private void OnValidate()
     {
-        configurationWindowInterface = configurationWindow.GetComponent<IWindow>();
-        if (configurationWindowInterface == null)
+        if (configurationWindow != null)
         {
-            configurationWindow = null;
+            configurationWindowInterface = configurationWindow?.GetComponent<IWindow>();
+            if (configurationWindowInterface == null)
+            {
+                configurationWindow = null;
+            }
         }
     }
 }

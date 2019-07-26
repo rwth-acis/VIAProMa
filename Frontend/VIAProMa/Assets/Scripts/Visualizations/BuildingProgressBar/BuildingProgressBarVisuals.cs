@@ -113,7 +113,7 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         Bounds bounds = buildingSizeData.GetBounds();
         boundingBoxCollider.center = bounds.center;
         boundingBoxCollider.size = bounds.size;
-        boundingBox.RefreshDisplay();
+        boundingBox.Refresh();
 
         titleLabel.Width = Mathf.Min(bounds.size.x, bounds.size.z);
     }

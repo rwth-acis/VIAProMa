@@ -8,7 +8,7 @@ using UnityEngine;
 public class ProgressBarConfiguration : MonoBehaviour, IWindow
 {
     [Header("References")]
-    [SerializeField] private AppBarSpawner appBarSpawner;
+    [SerializeField] private AppBarConfigurableSpawner appBarSpawner;
     [SerializeField] private ProgressBar progressBar;
 
     [Header("UI Elements")]

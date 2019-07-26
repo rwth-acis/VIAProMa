@@ -1589,7 +1589,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
         /// <summary>
         /// Refreshes the bounding box display if the bounds where changed by another script
         /// </summary>
-        public void RefreshDisplay()
+        public void Refresh()
         {
             UpdateBounds();
             UpdateRigHandles();

@@ -2,17 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KanbanBoardColumn : MonoBehaviour
+[RequireComponent(typeof(KanbanBoardColumnVisualController))]
+public class KanbanBoardColumn : Visualization
 {
-    // Start is called before the first frame update
-    void Start()
+    KanbanBoardColumnVisualController visualController;
+
+    public string Title
     {
-        
+        get => visualController.Title;
+        set
+        {
+            visualController.Title = value;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        visualController = GetComponent<KanbanBoardColumnVisualController>();
+
+        ContentProvider = new SingleIssuesProvider();
+    }
+
+    public override void UpdateView()
+    {
+        visualController.Issues = ContentProvider.Issues;
+        base.UpdateView();
     }
 }
