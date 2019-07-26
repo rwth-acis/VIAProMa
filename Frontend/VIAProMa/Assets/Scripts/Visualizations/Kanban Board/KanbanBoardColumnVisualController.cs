@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.Utilities;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -11,12 +12,14 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
     [SerializeField] private Transform headerBackground;
     [SerializeField] private TextMeshPro headerTitle;
     [SerializeField] private IssueListView issueListView;
+    [SerializeField] private ObjectGrid grid;
 
 
     private List<Issue> issues;
     private Vector2 issueCardSize;
 
     private Vector2 size;
+    private Vector2Int gridSize;
 
     public float Width
     {
@@ -80,8 +83,17 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), issueListView.ItemPrefab);
             }
         }
+        if (grid == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(grid));
+        }
+
+        BoxCollider issueCardColl = issueListView.ItemPrefab.GetComponentInChildren<BoxCollider>();
+        issueCardSize = Vector2.Scale(issueCardColl.transform.localScale, issueCardColl.size);
 
         size = new Vector2(background.localScale.x, background.localScale.y);
+        grid.CellSize = issueCardSize;
+        grid.Centered = true;
         UpdateSize();
     }
 
@@ -106,29 +118,26 @@ public class KanbanBoardColumnVisualController : MonoBehaviour
             0);
         headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
 
-        // the list view should be underneath the header
-        issueListView.transform.localPosition = header.localPosition - new Vector3(0, header.localScale.y / 2f + issueCardSize.y / 2f, 0);
+        grid.transform.localPosition = new Vector3(
+            0,
+            -headerBackground.localScale.y / 2f,
+            grid.transform.localPosition.z);
+
+        DetermineGridSize();
+        grid.Columns = gridSize.x;
+        grid.UpdateGrid();
     }
 
-    private void SetHeight(float height)
+    private void DetermineGridSize()
     {
-        background.localScale = new Vector3(
-            background.localScale.x,
-            height,
-            background.localScale.z
-            );
-        header.localPosition = new Vector3(
-            0,
-            height / 2f - headerBackground.localScale.y / 2f, // position at top
-            0);
-        issueListView.transform.localPosition = new Vector3(
-            0,
-            height / 2 - headerBackground.localScale.y - 0.1f,
-            0);
+        gridSize.x = (int) (size.x / issueCardSize.x);
+        gridSize.y = (int)(size.y / issueCardSize.y);
+        Debug.Log(gridSize);
     }
 
     private void UpdateVisuals()
     {
+        // TODO: only add so many items to issues that the grid is filled correctly
         issueListView.Items = issues;
     }
 }
