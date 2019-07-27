@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConfigurationIssueSelectionUI : MonoBehaviour
+public class ConfigurationIssueSelectionUI : MonoBehaviour, IUiFragment
 {
     [SerializeField] private Interactable selectionButton;
     [SerializeField] private GameObject selectionActiveMessage;
