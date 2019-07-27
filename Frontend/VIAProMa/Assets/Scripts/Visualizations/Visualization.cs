@@ -27,6 +27,11 @@ public class Visualization : MonoBehaviour, IViewContainer
         }
     }
 
+    public Color Color
+    {
+        get; set;
+    }
+
     /// <summary>
     /// Invoked if the visualization was updated
     /// </summary>
