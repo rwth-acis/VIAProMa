@@ -7,8 +7,7 @@ using UnityEngine;
 
 public class ProgressBarConfiguration : ConfigurationWindow
 {
-    [SerializeField] private Interactable selectionButton;
-    [SerializeField] private GameObject selectionActiveMessage;
+    [SerializeField] private ConfigurationIssueSelectionUI issueSelectionUI;
 
     public override bool WindowEnabled
     {
@@ -16,30 +15,20 @@ public class ProgressBarConfiguration : ConfigurationWindow
         set
         {
             base.WindowEnabled = value;
-            progressBarTitleField.Enabled = value;
-            selectionButton.Enabled = value;
+            issueSelectionUI.UIEnabled = value;
         }
     }
 
     protected override void Awake()
     {
         base.Awake();
-
-        if (progressBarTitleField == null)
+        if (issueSelectionUI == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBarTitleField));
-        }
-        if (selectionButton == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionButton));
-        }
-        if (selectionActiveMessage == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionActiveMessage));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueSelectionUI));
         }
         else
         {
-            selectionActiveMessage.SetActive(false);
+            issueSelectionUI.Setup(visualization);
         }
     }
 
@@ -48,19 +37,5 @@ public class ProgressBarConfiguration : ConfigurationWindow
         base.Open();
         transform.position = appBarSpawner.SpawnedInstance.transform.position - 0.05f * appBarSpawner.SpawnedInstance.transform.forward;
         transform.rotation = appBarSpawner.SpawnedInstance.transform.rotation;
-    }
-
-    public void SelectIssues()
-    {
-        visualization.ContentProvider.SelectContent();
-        WindowEnabled = false;
-        selectionActiveMessage.SetActive(true);
-    }
-
-    public void EndIssueSelection()
-    {
-        visualization.ContentProvider.EndContentSelection();
-        WindowEnabled = true;
-        selectionActiveMessage.SetActive(false);
     }
 }
