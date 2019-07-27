@@ -8,12 +8,12 @@ using UnityEngine;
 public class ConfigurationWindow : MonoBehaviour, IWindow
 {
     [Header("References")]
-    [SerializeField] private AppBarConfigurableSpawner appBarSpawner;
-    [SerializeField] private Visualization visualization;
+    [SerializeField] protected AppBarConfigurableSpawner appBarSpawner;
+    [SerializeField] protected Visualization visualization;
 
     [Header("UI Elements")]
-    [SerializeField] private Interactable closeButton;
-    [SerializeField] private InputField progressBarTitleField;
+    [SerializeField] protected Interactable closeButton;
+    [SerializeField] protected InputField progressBarTitleField;
 
     private bool windowEnabled;
 
@@ -60,7 +60,7 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
         gameObject.SetActive(false);
     }
 
-    public void Open()
+    public virtual void Open()
     {
         gameObject.SetActive(true);
     }

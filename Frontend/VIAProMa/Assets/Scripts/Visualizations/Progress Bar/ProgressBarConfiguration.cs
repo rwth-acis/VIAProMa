@@ -5,49 +5,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProgressBarConfiguration : MonoBehaviour, IWindow
+public class ProgressBarConfiguration : ConfigurationWindow
 {
-    [Header("References")]
-    [SerializeField] private AppBarConfigurableSpawner appBarSpawner;
-    [SerializeField] private ProgressBar progressBar;
-
-    [Header("UI Elements")]
-    [SerializeField] private Interactable closeButton;
-    [SerializeField] private InputField progressBarTitleField;
     [SerializeField] private Interactable selectionButton;
     [SerializeField] private GameObject selectionActiveMessage;
 
-    public event EventHandler WindowClosed;
-
-    private bool windowEnabled;
-
-    public bool WindowEnabled
+    public override bool WindowEnabled
     {
-        get => windowEnabled;
+        get => base.WindowEnabled;
         set
         {
-            windowEnabled = value;
-            closeButton.Enabled = windowEnabled;
-            progressBarTitleField.Enabled = windowEnabled;
-            selectionButton.Enabled = windowEnabled;
+            base.WindowEnabled = value;
+            progressBarTitleField.Enabled = value;
+            selectionButton.Enabled = value;
         }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (appBarSpawner == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(appBarSpawner));
-        }
-        if (progressBar == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
-        }
+        base.Awake();
 
-        if (closeButton == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(closeButton));
-        }
         if (progressBarTitleField == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBarTitleField));
@@ -64,39 +41,26 @@ public class ProgressBarConfiguration : MonoBehaviour, IWindow
         {
             selectionActiveMessage.SetActive(false);
         }
-        progressBarTitleField.Text = progressBar.Title;
-        progressBarTitleField.TextChanged += ProgressBarTitleChanged;
     }
 
-    public void Close()
+    public override void Open()
     {
-        gameObject.SetActive(false);
-    }
-
-    public void Open()
-    {
-        gameObject.SetActive(true);
+        base.Open();
         transform.position = appBarSpawner.SpawnedInstance.transform.position - 0.05f * appBarSpawner.SpawnedInstance.transform.forward;
         transform.rotation = appBarSpawner.SpawnedInstance.transform.rotation;
     }
 
     public void SelectIssues()
     {
-        progressBar.ContentProvider.SelectContent();
+        visualization.ContentProvider.SelectContent();
         WindowEnabled = false;
         selectionActiveMessage.SetActive(true);
     }
 
     public void EndIssueSelection()
     {
-        progressBar.ContentProvider.EndContentSelection();
+        visualization.ContentProvider.EndContentSelection();
         WindowEnabled = true;
         selectionActiveMessage.SetActive(false);
     }
-
-    private void ProgressBarTitleChanged(object sender, EventArgs e)
-    {
-        progressBar.Title = progressBarTitleField.Text;
-    }
-
 }
