@@ -8,10 +8,24 @@ using UnityEngine;
 /// </summary>
 public class Visualization : MonoBehaviour, IViewContainer
 {
+    protected IVisualizationVisualController visualController;
+
     /// <summary>
     /// The data content provider for this visualization
     /// </summary>
     private IVisualizationContentProvider visualizationContentProvider;
+
+    /// <summary>
+    /// The title of the visualization
+    /// </summary>
+    public string Title
+    {
+        get => visualController.Title;
+        set
+        {
+            visualController.Title = value;
+        }
+    }
 
     /// <summary>
     /// Invoked if the visualization was updated
@@ -34,6 +48,11 @@ public class Visualization : MonoBehaviour, IViewContainer
             visualizationContentProvider.ContentChanged += OnContentChanged;
             OnContentProviderChanged();
         }
+    }
+
+    protected virtual void Awake()
+    {
+        visualController = GetComponent<IVisualizationVisualController>();
     }
 
     /// <summary>

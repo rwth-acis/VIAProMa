@@ -40,6 +40,12 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         }
     }
 
+    public string Title
+    {
+        get => titleLabel.Text;
+        set => titleLabel.Text = value;
+    }
+
     private void Awake()
     {
         if (scaffoldingController == null)
@@ -152,10 +158,5 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
                 scaffoldingSize.y
                 );
         }
-    }
-
-    public void SetTitle(string title)
-    {
-        titleLabel.Text = title;
     }
 }

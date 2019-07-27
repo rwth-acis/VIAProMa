@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class KanbanBoardColumnVisualController : MonoBehaviour
+public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVisualController
 {
     [Header("UI Elements")]
     [SerializeField] private Transform background;

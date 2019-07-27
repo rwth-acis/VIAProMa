@@ -24,6 +24,12 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
 
     public float Length { get => tubes.localScale.x; }
 
+    public string Title
+    {
+        get => textLabel.Text;
+        set => textLabel.Text = value;
+    }
+
     public float PercentageDone
     {
         get => percentageDone;
@@ -163,10 +169,5 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
             -progressBarLength / 2f + progressBarLength / 4f,
         textLabel.transform.localPosition.y,
             textLabel.transform.localPosition.z);
-    }
-
-    public void SetTitle(string title)
-    {
-        textLabel.Text = title;
     }
 }

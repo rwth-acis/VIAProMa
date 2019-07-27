@@ -5,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(KanbanBoardColumnVisualController))]
 public class KanbanBoardColumn : Visualization
 {
-    KanbanBoardColumnVisualController visualController;
 
     public string Title
     {
@@ -16,8 +15,10 @@ public class KanbanBoardColumn : Visualization
         }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         visualController = GetComponent<KanbanBoardColumnVisualController>();
 
         ContentProvider = new SingleIssuesProvider();
@@ -25,7 +26,7 @@ public class KanbanBoardColumn : Visualization
 
     public override void UpdateView()
     {
-        visualController.Issues = ContentProvider.Issues;
+        ((KanbanBoardColumnVisualController)visualController).Issues = ContentProvider.Issues;
         base.UpdateView();
     }
 }

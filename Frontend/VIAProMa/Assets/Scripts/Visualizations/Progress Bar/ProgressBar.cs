@@ -6,20 +6,9 @@ public class ProgressBar : Visualization
 {
     private IProgressBarVisuals progressBarVisuals;
 
-    private string title;
-
-    public string Title
+    protected override void Awake()
     {
-        get => title;
-        set
-        {
-            title = value;
-            progressBarVisuals.SetTitle(title);
-        }
-    }
-
-    private void Awake()
-    {
+        base.Awake();
         progressBarVisuals = GetComponent<IProgressBarVisuals>();
         if (progressBarVisuals == null)
         {
