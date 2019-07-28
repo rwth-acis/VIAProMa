@@ -9,6 +9,7 @@ using UnityEngine;
 public class Visualization : MonoBehaviour, IViewContainer
 {
     protected IVisualizationVisualController visualController;
+    protected IColorChangeable colorChanger;
 
     /// <summary>
     /// The data content provider for this visualization
@@ -27,9 +28,26 @@ public class Visualization : MonoBehaviour, IViewContainer
         }
     }
 
-    public Color Color
+    public virtual Color Color
     {
-        get; set;
+        get
+        {
+            if (colorChanger == null)
+            {
+                return Color.white;
+            }
+            else
+            {
+                return colorChanger.Color;
+            }
+        }
+        set
+        {
+            if (colorChanger != null)
+            {
+                colorChanger.Color = value;
+            }
+        }
     }
 
     /// <summary>
@@ -58,6 +76,7 @@ public class Visualization : MonoBehaviour, IViewContainer
     protected virtual void Awake()
     {
         visualController = GetComponent<IVisualizationVisualController>();
+        colorChanger = GetComponent<IColorChangeable>();
     }
 
     /// <summary>

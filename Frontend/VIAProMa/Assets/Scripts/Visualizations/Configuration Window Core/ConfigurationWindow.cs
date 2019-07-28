@@ -58,6 +58,7 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
     public virtual void Close()
     {
         gameObject.SetActive(false);
+        WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 
     public virtual void Open()

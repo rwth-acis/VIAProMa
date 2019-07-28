@@ -15,9 +15,7 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
     private InteractableToggleCollection toggleCollection;
 
     private bool uiEnabled = true;
-    private int colorIndex;
-
-    private Interactable selectedSquare;
+    private Color selectedColor;
 
     public bool UIEnabled
     {
@@ -25,21 +23,22 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
         set
         {
             uiEnabled = value;
+            for (int i=0;i<toggleCollection.ToggleList.Length;i++)
+            {
+                toggleCollection.ToggleList[i].Enabled = value;
+            }
         }
     }
 
     public Color SelectedColor
     {
-        get => colorConfiguration.Colors[colorIndex];
-    }
-
-    public int ColorIndex
-    {
-        get => colorIndex;
+        get => selectedColor;
         set
         {
-            colorIndex = Mathf.Clamp(value, 0, colorConfiguration.Colors.Count);
+            selectedColor = value;
+            visualization.Color = selectedColor;
         }
+
     }
 
     private void Awake()
@@ -65,24 +64,16 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
             GameObject instance = Instantiate(colorPreviewSquare, colorSquareArray.transform);
             ColorPreviewSquare square = instance.GetComponent<ColorPreviewSquare>();
             square.Color = colorConfiguration.Colors[i];
+            square.ColorChooser = this;
             Interactable interactable = instance.GetComponent<Interactable>();
             toggleCollection.ToggleList[i] = interactable;
         }
+        toggleCollection.enabled = true;
         colorSquareArray.UpdateCollection();
     }
 
     public void Setup(Visualization visualization)
     {
         this.visualization = visualization;
-    }
-
-    public void ChooseColor(Interactable square, Color color)
-    {
-        visualization.Color = color;
-    }
-
-    private void SelectSquare(Interactable newSelected, Color color)
-    {
-        visualization.Color = color;
     }
 }

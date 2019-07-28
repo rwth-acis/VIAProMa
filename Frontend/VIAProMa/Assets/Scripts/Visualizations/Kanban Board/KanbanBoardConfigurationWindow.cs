@@ -3,22 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KanbanBoardConfigurationWindow : MonoBehaviour, IWindow
+public class KanbanBoardConfigurationWindow : ConfigurationWindow
 {
-    [SerializeField] 
+    [SerializeField] ConfigurationColorChooser colorChooser;
 
-    public bool WindowEnabled { get; set; }
-
-    public event EventHandler WindowClosed;
-
-    public void Close()
+    public override bool WindowEnabled
     {
-        gameObject.SetActive(false);
-        WindowClosed?.Invoke(this, EventArgs.Empty);
+        get => base.WindowEnabled;
+        set
+        {
+            base.WindowEnabled = value;
+            colorChooser.UIEnabled = value;
+        }
     }
 
-    public void Open()
+    protected override void Awake()
     {
-        gameObject.SetActive(true);
+        base.Awake();
+        colorChooser.Setup(visualization);
     }
 }

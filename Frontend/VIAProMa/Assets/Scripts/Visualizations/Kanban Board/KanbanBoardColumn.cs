@@ -5,16 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(KanbanBoardColumnVisualController))]
 public class KanbanBoardColumn : Visualization
 {
-
-    public string Title
-    {
-        get => visualController.Title;
-        set
-        {
-            visualController.Title = value;
-        }
-    }
-
     protected override void Awake()
     {
         base.Awake();

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVisualController
+public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVisualController, IColorChangeable
 {
     [Header("UI Elements")]
     [SerializeField] private Transform background;
@@ -119,6 +119,9 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox?.gameObject);
         }
+
+        backgroundRenderer = background.gameObject.GetComponent<Renderer>();
+        headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
 
         BoxCollider issueCardColl = issueListView.ItemPrefab.GetComponentInChildren<BoxCollider>();
         issueCardSize = Vector2.Scale(issueCardColl.transform.localScale, issueCardColl.size);
