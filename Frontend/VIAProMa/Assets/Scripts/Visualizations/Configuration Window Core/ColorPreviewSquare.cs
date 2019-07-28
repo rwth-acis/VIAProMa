@@ -18,11 +18,6 @@ public class ColorPreviewSquare : MonoBehaviour
         }
     }
 
-    public int ColorIndex
-    {
-        get; set;
-    }
-
     private void Awake()
     {
         if (previewQuad == null)
