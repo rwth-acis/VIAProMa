@@ -57,8 +57,15 @@ namespace i5.ViaProMa.UI
 
         public void OnClick()
         {
-            Keyboard.Instance.Open(transform.position - transform.forward * 0.05f, transform.eulerAngles, Text);
-            Keyboard.Instance.InputFinished += OnKeyboardInputFinished;
+            if (Keyboard.Instance == null)
+            {
+                Debug.LogError("There is no keyboard in the scene. Add the keyboard prefab somewhere in the scene to use InputFields.");
+            }
+            else
+            {
+                Keyboard.Instance.Open(transform.position - transform.forward * 0.05f, transform.eulerAngles, Text);
+                Keyboard.Instance.InputFinished += OnKeyboardInputFinished;
+            }
         }
 
         private void OnKeyboardInputFinished(object sender, InputFinishedEventArgs e)

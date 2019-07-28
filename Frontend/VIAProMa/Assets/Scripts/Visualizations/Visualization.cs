@@ -28,6 +28,9 @@ public class Visualization : MonoBehaviour, IViewContainer
         }
     }
 
+    /// <summary>
+    /// The primary color for the visualization
+    /// </summary>
     public virtual Color Color
     {
         get

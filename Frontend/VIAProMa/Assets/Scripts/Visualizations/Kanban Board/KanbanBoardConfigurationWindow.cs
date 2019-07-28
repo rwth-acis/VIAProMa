@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(ConfigurationIssueSelectionUI))]
 public class KanbanBoardConfigurationWindow : ConfigurationWindow
 {
-    [SerializeField] ConfigurationColorChooser colorChooser;
+    [SerializeField] private ConfigurationColorChooser colorChooser;
+
+    private ConfigurationIssueSelectionUI issueSelection;
 
     public override bool WindowEnabled
     {
@@ -21,5 +24,7 @@ public class KanbanBoardConfigurationWindow : ConfigurationWindow
     {
         base.Awake();
         colorChooser.Setup(visualization);
+        issueSelection = GetComponent<ConfigurationIssueSelectionUI>();
+        issueSelection.Setup(visualization);
     }
 }

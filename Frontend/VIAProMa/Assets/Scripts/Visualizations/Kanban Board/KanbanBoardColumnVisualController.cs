@@ -76,10 +76,13 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         set
         {
             backgroundRenderer.material.color = value;
-            headerBackgroundRenderer.material.color = new Color(
-                Mathf.Clamp01(value.r + 0.1f),
-                Mathf.Clamp01(value.g + 0.1f),
-                Mathf.Clamp01(value.b + 0.1f));
+            //headerBackgroundRenderer.material.color = new Color(
+            //    Mathf.Clamp01(value.r - 0.5f),
+            //    Mathf.Clamp01(value.g - 0.5f),
+            //    Mathf.Clamp01(value.b - 0.5f));
+            float h, s, v;
+            Color.RGBToHSV(value, out h, out s, out v);
+            headerBackgroundRenderer.material.color = Color.HSVToRGB(h, s, Mathf.Clamp01(v - 0.2f));
         }
     }
 
@@ -180,7 +183,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
     private void UpdateVisuals()
     {
-        issueListView.Items = issues.GetRange(0, ItemsPerPage);
+        issueListView.Items = issues.GetRange(0, Mathf.Min(issues.Count, ItemsPerPage));
         UpdateGrid();
     }
 }
