@@ -99,4 +99,9 @@ public class TextLabel : MonoBehaviour
                 );
         }
     }
+
+    private void OnValidate()
+    {
+        UpdateVisuals();
+    }
 }
