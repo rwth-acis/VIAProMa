@@ -36,7 +36,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
     public float Width
     {
-        get => background.localScale.y;
+        get => background.localScale.x;
         set
         {
             size.x = Mathf.Max(issueCardSize.x, value); // do not allow values which are smaller than the issueCard
