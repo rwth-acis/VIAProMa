@@ -1,4 +1,5 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class BoundingBoxStateController : MonoBehaviour
     private ManipulationHandler manipulationHandler;
     private bool boundingBoxActive;
 
+    public event EventHandler BoundingBoxStateChanged;
+
     public bool BoundingBoxActive
     {
         get => boundingBoxActive;
@@ -18,6 +21,7 @@ public class BoundingBoxStateController : MonoBehaviour
         {
             boundingBoxActive = value;
             SetBoundingBoxState();
+            BoundingBoxStateChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -35,6 +39,11 @@ public class BoundingBoxStateController : MonoBehaviour
         }
         manipulationHandler = GetComponent<ManipulationHandler>();
         // manipulation handler is optional, so no check here
+    }
+
+    private void Start()
+    {
+        BoundingBoxActive = false;
     }
 
     private void SetBoundingBoxState()

@@ -1,5 +1,6 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -31,6 +32,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     private Renderer headerBackgroundRenderer;
 
     private BoxCollider boundingboxCollider;
+    private BoundingBoxStateController boundingBoxStateController;
 
     public float Width
     {
@@ -127,6 +129,29 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox?.gameObject);
         }
 
+        boundingBoxStateController = boundingBox?.gameObject.GetComponent<BoundingBoxStateController>();
+        if (boundingBoxStateController == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), boundingBox?.gameObject);
+        }
+
+        if (handleLeft == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(handleLeft));
+        }
+        if (handleRight == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(handleRight));
+        }
+        if (handleTop == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(handleTop));
+        }
+        if (handleBottom == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(handleBottom));
+        }
+
         backgroundRenderer = background.gameObject.GetComponent<Renderer>();
         headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
 
@@ -137,6 +162,24 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         grid.CellSize = issueCardSize;
         grid.Centered = true;
         UpdateSize();
+    }
+
+    private void OnEnable()
+    {
+        boundingBoxStateController.BoundingBoxStateChanged += OnBoundingBoxStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        boundingBoxStateController.BoundingBoxStateChanged -= OnBoundingBoxStateChanged;
+    }
+
+    private void OnBoundingBoxStateChanged(object sender, EventArgs e)
+    {
+        handleLeft.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
+        handleRight.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
+        handleTop.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
+        handleBottom.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
     }
 
     private void UpdateSize()
@@ -167,7 +210,22 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
         handleLeft.localPosition = new Vector3(
             -size.x / 2f,
-            0,
+            0f,
+            0.01f
+            );
+        handleRight.localPosition = new Vector3(
+            size.x / 2f,
+            0f,
+            0.01f
+            );
+        handleTop.localPosition = new Vector3(
+            0f,
+            size.y / 2f,
+            0.01f
+            );
+        handleBottom.localPosition = new Vector3(
+            0f,
+            -size.y / 2f,
             0.01f
             );
 
@@ -180,7 +238,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
     private void DetermineGridSize()
     {
-        gridSize.x = (int) (size.x / issueCardSize.x);
+        gridSize.x = (int)(size.x / issueCardSize.x);
         gridSize.y = (int)(size.y / issueCardSize.y);
     }
 
