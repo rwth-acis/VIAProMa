@@ -15,6 +15,10 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     [SerializeField] private IssueListView issueListView;
     [SerializeField] private ObjectGrid grid;
     [SerializeField] private BoundingBox boundingBox;
+    [SerializeField] private Transform handleLeft;
+    [SerializeField] private Transform handleRight;
+    [SerializeField] private Transform handleTop;
+    [SerializeField] private Transform handleBottom;
 
 
     private List<Issue> issues;
@@ -160,6 +164,12 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
             0,
             -headerBackground.localScale.y / 2f,
             grid.transform.localPosition.z);
+
+        handleLeft.localPosition = new Vector3(
+            -size.x / 2f,
+            0,
+            0.01f
+            );
 
         boundingboxCollider.size = 1.01f * background.localScale;
         boundingBox.Refresh();

@@ -5,7 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// Handles the positioning of the app bar
-/// Extracted from MRTK's AppBar script so that a custom menu structure can be used for the app bar
+/// Extracted and modified from MRTK's AppBar script so that a custom menu structure can be used for the app bar
 /// </summary>
 public class AppBarPlacer : MonoBehaviour
 {
@@ -56,6 +56,7 @@ public class AppBarPlacer : MonoBehaviour
         Vector3 headPosition = Camera.main.transform.position;
         boundsPoints.Clear();
 
+        helper.GetRawBBCorners(boundingBox);
         helper.UpdateNonAABoundingBoxCornerPositions(boundingBox, boundsPoints);
         int followingFaceIndex = helper.GetIndexOfForwardFace(headPosition);
         Vector3 faceNormal = helper.GetFaceNormal(followingFaceIndex);
