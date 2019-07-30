@@ -8,7 +8,14 @@ using UnityEngine;
 /// </summary>
 public class Visualization : MonoBehaviour, IViewContainer
 {
+    /// <summary>
+    /// The visual controller of the visualization
+    /// It determins its visual appearance
+    /// </summary>
     protected IVisualizationVisualController visualController;
+    /// <summary>
+    /// A color changer script which is responsible for exchanging colors on elements of the visualization
+    /// </summary>
     protected IColorChangeable colorChanger;
 
     /// <summary>
@@ -76,9 +83,14 @@ public class Visualization : MonoBehaviour, IViewContainer
         }
     }
 
+    /// <summary>
+    /// Gets the components
+    /// </summary>
     protected virtual void Awake()
     {
         visualController = GetComponent<IVisualizationVisualController>();
+        // color changer is optional, so no check if it was found
+        // just try to fetch it
         colorChanger = GetComponent<IColorChangeable>();
     }
 
@@ -92,11 +104,19 @@ public class Visualization : MonoBehaviour, IViewContainer
         UpdateView();
     }
 
+    /// <summary>
+    /// Called if the content provider was changed
+    /// </summary>
     protected virtual void OnContentProviderChanged()
     {
         UpdateView();
     }
 
+    /// <summary>
+    /// Updates the view of the visualization
+    /// Invokes the VisualizationUpdated event
+    /// Overwrite this method for custom behaviour on the update view
+    /// </summary>
     public virtual void UpdateView()
     {
         VisualizationUpdated?.Invoke(this, EventArgs.Empty);

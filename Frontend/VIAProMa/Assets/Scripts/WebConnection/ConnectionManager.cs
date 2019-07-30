@@ -83,9 +83,13 @@ public class ConnectionManager : Singleton<ConnectionManager>
         }
     }
 
+    /// <summary>
+    /// Posts a request to the backend in order to find out if the connection to the backend is valid
+    /// </summary>
     private async void TestConnection()
     {
         await BackendConnector.Ping();
+        // no need to check the result here; it is already checked in the Ping method
     }
 
     /// <summary>

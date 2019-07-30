@@ -3,20 +3,38 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Controls text label GameObjects
+/// They consist of a background and a number of textLabels with the same content
+/// </summary>
 public class TextLabel : MonoBehaviour
 {
     [Header("UI Elements")]
+    [Tooltip("The text labels which should display the content of the text label")]
     [SerializeField] private TextMeshPro[] textLabels;
+
+    [Tooltip("The background of the text label")]
     [SerializeField] private Transform background;
 
     [Header("Values")]
+    [Tooltip("The text content of the text label")]
     [SerializeField] private string text;
+
+    [Tooltip("Maximum width of the text label; if the text is shorted, the text label may appear smaller")]
     [SerializeField] private float width = 1f;
+
+    [Tooltip("Maximum height of the text label; if the text is smaller, the text label may appear smaller")]
     [SerializeField] private float height = 0.1f;
+
+    [Tooltip("Padding of the background to all sides")]
     [SerializeField] private float padding = 0.005f;
 
+    /// <summary>
+    /// Checks the setup of the text label and calls UpdateVisuals() for the first time
+    /// </summary>
     private void Awake()
     {
+        // check the text label array
         if (textLabels.Length == 0)
         {
             SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(textLabels));
@@ -29,6 +47,7 @@ public class TextLabel : MonoBehaviour
                 SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(textLabels), i);
             }
         }
+        // check the other components
         if (background == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(background));
@@ -37,6 +56,10 @@ public class TextLabel : MonoBehaviour
         UpdateVisuals();
     }
 
+    /// <summary>
+    /// Maximum width of the text label
+    /// If the text is shorted, the text label may appear smaller
+    /// </summary>
     public float Width
     {
         get => width;
@@ -47,6 +70,10 @@ public class TextLabel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Maximum height of the text label
+    /// If the text is smaller, the text label may appear smaller
+    /// </summary>
     public float Height
     {
         get => height;
@@ -57,6 +84,9 @@ public class TextLabel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Padding of the background to all sides
+    /// </summary>
     public float Padding
     {
         get => padding;
@@ -67,6 +97,9 @@ public class TextLabel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// The text content of the text label
+    /// </summary>
     public string Text
     {
         get => text;
@@ -77,10 +110,16 @@ public class TextLabel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the visuals of the text label based on the set properties
+    /// like Text, Width and Height
+    /// </summary>
     private void UpdateVisuals()
     {
+        // only show the text label if there is text to show
         gameObject.SetActive(!string.IsNullOrEmpty(text));
 
+        // set up all text components
         for (int i = 0; i < textLabels.Length; i++)
         {
             textLabels[i].rectTransform.sizeDelta = new Vector2(width, height);
@@ -100,6 +139,10 @@ public class TextLabel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called in the Editor if the serialized and public variables are changed
+    /// Updates the visual appearance so that the developer can see how the text label will look during runtime
+    /// </summary>
     private void OnValidate()
     {
         UpdateVisuals();
