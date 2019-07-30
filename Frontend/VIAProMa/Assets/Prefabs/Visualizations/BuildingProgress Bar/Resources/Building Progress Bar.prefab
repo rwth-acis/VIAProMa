@@ -291,6 +291,7 @@ GameObject:
   - component: {fileID: 513762739022804669}
   - component: {fileID: 3893177419329804840}
   - component: {fileID: 8195115283832244518}
+  - component: {fileID: 4932808067742171965}
   m_Layer: 0
   m_Name: Building Progress Bar
   m_TagString: Untagged
@@ -348,6 +349,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf641ac6ead0c3a4996f7e286eca41b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4932808067742171965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195115283832244517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &1071087019820251133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -976,7 +998,17 @@ PrefabInstance:
     - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_isInputParsingRequired
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 8362453174225159361, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
@@ -1041,7 +1073,37 @@ PrefabInstance:
     - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453174100900504, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.075
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453175129801602, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.075
       objectReference: {fileID: 0}
     - target: {fileID: 8362453174100900505, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
