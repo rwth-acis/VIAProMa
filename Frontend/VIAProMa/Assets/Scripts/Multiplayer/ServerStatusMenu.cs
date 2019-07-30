@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using i5.ViaProMa.UI;
+using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections;
@@ -12,10 +13,14 @@ using UnityEngine;
 /// </summary>
 public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
 {
+    [Header("UI Elements")]
     [SerializeField] private GameObject backendLed;
     [SerializeField] private GameObject sharingLed;
     [SerializeField] private TextMeshPro sharingConnectButtonText;
+    [SerializeField] private GameObject backendSettingsMenu;
+    [SerializeField] private InputField backendAddressField;
 
+    [Header("Values")]
     [SerializeField] private Color serverOnlineColor = new Color(0f, 135f/255f, 3f/255f); // green
     [SerializeField] private Color serverOfflineColor = new Color(188f/255f, 2f/255f, 0f); // red
 
@@ -43,6 +48,22 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(sharingConnectButtonText));
         }
+        if (backendSettingsMenu == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(backendSettingsMenu));
+        }
+        else
+        {
+            backendSettingsMenu.SetActive(false);
+        }
+        if (backendAddressField == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(backendAddressField));
+        }
+        else
+        {
+            backendAddressField.TextChanged += BackendAddressChanged;
+        }
 
         backendLedRenderer = backendLed?.GetComponent<Renderer>();
         sharingLedRenderer = sharingLed?.GetComponent<Renderer>();
@@ -60,6 +81,21 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         SetSharingServerStatus(false);
     }
 
+    private void BackendAddressChanged(object sender, EventArgs e)
+    {
+        ConnectionManager.Instance.BackendAddress = backendAddressField.Text;
+    }
+
+    public void OpenBackendSettings()
+    {
+        backendSettingsMenu.SetActive(true);
+    }
+
+    public void CloseBackendSettings()
+    {
+        backendSettingsMenu.SetActive(false);
+    }
+
     /// <summary>
     /// Check the connection
     /// Subscribe for the backend status changed event
@@ -67,7 +103,8 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
     private void Start()
     {
         ConnectionManager.Instance.BackendOnlineStatusChanged += BackendOnlineStatusChanged;
-        TestBackendConnection();
+        backendAddressField.Text = ConnectionManager.Instance.BackendAddress;
+        //TestBackendConnection();
     }
 
     /// <summary>

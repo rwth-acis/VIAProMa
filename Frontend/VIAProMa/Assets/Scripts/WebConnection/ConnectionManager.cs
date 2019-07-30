@@ -24,6 +24,11 @@ public class ConnectionManager : Singleton<ConnectionManager>
         {
             return backendAddress;
         }
+        set
+        {
+            backendAddress = value;
+            TestConnection();
+        }
     }
 
     /// <summary>
@@ -76,6 +81,11 @@ public class ConnectionManager : Singleton<ConnectionManager>
         {
             BackendOnlineStatusChanged?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    private async void TestConnection()
+    {
+        await BackendConnector.Ping();
     }
 
     /// <summary>
