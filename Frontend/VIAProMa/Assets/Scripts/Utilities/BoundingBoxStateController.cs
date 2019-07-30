@@ -43,7 +43,10 @@ public class BoundingBoxStateController : MonoBehaviour
 
     private void Start()
     {
-        BoundingBoxActive = false;
+        if (boundingBoxActive == false) // if the variable is already true, this means that another script set the property
+        {
+            BoundingBoxActive = false;
+        }
     }
 
     private void SetBoundingBoxState()
