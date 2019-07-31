@@ -60,7 +60,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23f9be7a3cb53794ead8b55e784b65aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focusEnabled: 0
   targetObject: {fileID: 7058412918980041460}
   boundsOverride: {fileID: 5284211624533914901}
   activation: 0
@@ -87,6 +86,7 @@ MonoBehaviour:
   showRotationHandleForZ: 0
   drawTetherWhenManipulating: 1
   debugText: {fileID: 0}
+  hideElementsInInspector: 1
   RotateStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -479,11 +479,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8335401534401949543}
     m_Modifications:
-    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
-        type: 3}
-      propertyPath: m_Name
-      value: TextLabel
-      objectReference: {fileID: 0}
     - target: {fileID: 8362453174225159361, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -553,6 +548,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_Name
+      value: TextLabel
       objectReference: {fileID: 0}
     - target: {fileID: 8362453174100900504, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}

@@ -60,7 +60,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23f9be7a3cb53794ead8b55e784b65aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focusEnabled: 0
   targetObject: {fileID: 9192698306843927720}
   boundsOverride: {fileID: 953254601440586513}
   activation: 0
@@ -87,6 +86,7 @@ MonoBehaviour:
   showRotationHandleForZ: 0
   drawTetherWhenManipulating: 1
   debugText: {fileID: 0}
+  hideElementsInInspector: 1
   RotateStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -128,11 +128,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 9192698306843927723}
     m_Modifications:
-    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
-        type: 3}
-      propertyPath: m_Name
-      value: TextLabel
-      objectReference: {fileID: 0}
     - target: {fileID: 8362453174225159361, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -202,6 +197,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_Name
+      value: TextLabel
       objectReference: {fileID: 0}
     - target: {fileID: 8362453174100900504, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
@@ -423,10 +423,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.3
       objectReference: {fileID: 0}
-    - target: {fileID: 2300012, guid: e25a611790739d74e95f47fdd4c96666, type: 3}
+    - target: {fileID: 2300006, guid: e25a611790739d74e95f47fdd4c96666, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: a6f03ad5c4ebc034eb90a525bcd1f8aa, type: 2}
+      objectReference: {fileID: 2100000, guid: cb66c5e366b22b14f9be7de28112edc1, type: 2}
     - target: {fileID: 2300008, guid: e25a611790739d74e95f47fdd4c96666, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -435,10 +435,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a6f03ad5c4ebc034eb90a525bcd1f8aa, type: 2}
-    - target: {fileID: 2300006, guid: e25a611790739d74e95f47fdd4c96666, type: 3}
+    - target: {fileID: 2300012, guid: e25a611790739d74e95f47fdd4c96666, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: cb66c5e366b22b14f9be7de28112edc1, type: 2}
+      objectReference: {fileID: 2100000, guid: a6f03ad5c4ebc034eb90a525bcd1f8aa, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e25a611790739d74e95f47fdd4c96666, type: 3}
 --- !u!4 &9192698307863862570 stripped

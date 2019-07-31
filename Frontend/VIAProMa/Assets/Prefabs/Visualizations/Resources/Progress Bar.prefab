@@ -60,7 +60,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23f9be7a3cb53794ead8b55e784b65aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focusEnabled: 1
   targetObject: {fileID: 3440714514617847667}
   boundsOverride: {fileID: 1080186936}
   activation: 4
@@ -90,6 +89,7 @@ MonoBehaviour:
   showRotationHandleForZ: 1
   drawTetherWhenManipulating: 1
   debugText: {fileID: 0}
+  hideElementsInInspector: 1
   RotateStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -557,21 +557,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3440714514617847666}
     m_Modifications:
-    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
-        type: 3}
-      propertyPath: m_Name
-      value: TextLabel
-      objectReference: {fileID: 0}
-    - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8362453174225159361, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -627,12 +612,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_Name
+      value: TextLabel
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+    - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
@@ -646,6 +636,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8362453175129801662, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 171f717c846f82349ae46e1af72a2966, type: 3}
