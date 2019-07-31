@@ -8,6 +8,9 @@ namespace Tests
 {
     public class UtilitiesTest
     {
+        /// <summary>
+        /// Tests the Utility function which removes special characters from strings
+        /// </summary>
         [Test]
         public void UtilitiesTestSimplePasses()
         {

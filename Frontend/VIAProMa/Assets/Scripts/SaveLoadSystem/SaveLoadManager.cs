@@ -4,12 +4,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Save Load Manager which handles the serialization and deserialization of a scene at runtime
+/// </summary>
 public class SaveLoadManager : Singleton<SaveLoadManager>
 {
+    /// <summary>
+    /// The serializers are placed on GameObjects which should be saved
+    /// When they are initialized, they register in this list
+    /// </summary>
     public List<Serializer> Serializers { get; private set; }
 
+    /// <summary>
+    /// The list of instance Ids which are tracked
+    /// This list is used in order to determine if a new instance of the GameObject must be created or if the settings can be applied to an existing instance
+    /// </summary>
     private List<string> trackedIds;
 
+    /// <summary>
+    /// Initializes the component's lists
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -17,6 +31,11 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         trackedIds = new List<string>();
     }
 
+    /// <summary>
+    /// Creates a serialized json string which contains the save data of the scene
+    /// It calls all serializers which return their save data
+    /// </summary>
+    /// <returns></returns>
     public string SerializeSaveGame()
     {
         List<SerializedObject> serializedObjects = new List<SerializedObject>();
