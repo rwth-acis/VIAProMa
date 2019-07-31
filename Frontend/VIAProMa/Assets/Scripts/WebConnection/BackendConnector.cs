@@ -1,6 +1,7 @@
 ﻿using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -23,6 +24,12 @@ public static class BackendConnector
         {
             return true;
         }
+    }
+
+    public static async void SendLogs(string log)
+    {
+        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "consoleLog", new UTF8Encoding().GetBytes(log));
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
     }
 
     public static async Task<ApiResult<PunchCardEntry[]>> GetGitHubPunchCard(string owner, string repository)

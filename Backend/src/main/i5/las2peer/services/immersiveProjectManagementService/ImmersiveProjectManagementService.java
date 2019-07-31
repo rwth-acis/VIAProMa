@@ -158,14 +158,8 @@ public class ImmersiveProjectManagementService extends RESTService {
 		}
 
 
-		/**
-		 * Template of a post function.
-		 *
-		 * @param myInput The post input the user will provide.
-		 * @return Returns an HTTP response with plain text string content derived from the path input param.
-		 */
 		@POST
-		@Path("/post/{input}")
+		@Path("/consoleLog")
 		@Produces(MediaType.TEXT_PLAIN)
 		@ApiResponses(
 				value = { @ApiResponse(
@@ -174,9 +168,10 @@ public class ImmersiveProjectManagementService extends RESTService {
 		@ApiOperation(
 				value = "REPLACE THIS WITH AN APPROPRIATE FUNCTION NAME",
 				notes = "Example method that returns a phrase containing the received input.")
-		public Response postTemplate(@PathParam("input") String myInput) {
+		public Response postConsoleLog(String log) {
 			String returnString = "";
-			returnString += "Input " + myInput;
+			returnString += "Log " + log;
+			System.out.println(log);
 			return Response.ok().entity(returnString).build();
 		}
 
