@@ -30,10 +30,6 @@ public class ResourceManager : Singleton<ResourceManager>
         }
 
         Debug.Log("Networked Prefabs: " + resourcePrefabCollection.NetworkPrefabs.Count);
-        for (int i=0;i<resourcePrefabCollection.NetworkPrefabs.Count;i++)
-        {
-            Debug.Log(resourcePrefabCollection.NetworkPrefabs[i].Name + " stored at " + resourcePrefabCollection.NetworkPrefabs[i].Path);
-        }
     }
 
     /// <summary>
