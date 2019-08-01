@@ -14,6 +14,8 @@ public class PrefabResourceCollection : ScriptableObject
 {
     [SerializeField] private List<NetworkPrefab> networkPrefabs;
 
+    public List<NetworkPrefab> NetworkPrefabs { get => networkPrefabs; }
+
     /// <summary>
     /// Instantiates the given GameObject in the network
     /// The GameObject must have a prefab in the resources folder with attached photon view
@@ -86,6 +88,8 @@ public class PrefabResourceCollection : ScriptableObject
                 networkPrefabs.Add(networkPrefab);
             }
         }
+
+        EditorUtility.SetDirty(this);
 #endif
     }
 }
