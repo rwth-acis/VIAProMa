@@ -21,6 +21,8 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
     private Renderer[] currentBuildingRenderers;
     private BoxCollider boundingBoxCollider;
 
+    private int buildingModelIndex;
+
     public float PercentageDone
     {
         get => percentageDone;
@@ -44,6 +46,16 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
     {
         get => titleLabel.Text;
         set => titleLabel.Text = value;
+    }
+
+    public int BuildingModelIndex
+    {
+        get => buildingModelIndex;
+        set
+        {
+            buildingModelIndex = value;
+            InstantiateBuilding(buildingModelIndex);
+        }
     }
 
     private void Awake()
@@ -85,7 +97,7 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(titleLabel));
         }
 
-        int buildingModelIndex = Random.Range(0, buildingPrefabs.Length);
+        buildingModelIndex = Random.Range(0, buildingPrefabs.Length);
         InstantiateBuilding(buildingModelIndex);
     }
 
