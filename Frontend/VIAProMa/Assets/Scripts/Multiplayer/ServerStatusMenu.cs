@@ -104,7 +104,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
     {
         ConnectionManager.Instance.BackendOnlineStatusChanged += BackendOnlineStatusChanged;
         backendAddressField.Text = ConnectionManager.Instance.BackendAddress;
-        //TestBackendConnection();
+        TestBackendConnection();
     }
 
     /// <summary>
