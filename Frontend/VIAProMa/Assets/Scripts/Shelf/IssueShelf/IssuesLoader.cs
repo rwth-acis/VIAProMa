@@ -57,7 +57,7 @@ public class IssuesLoader : Shelf, ILoadShelf
             return;
         }
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
-        messageBadge.ShowLoadMessage();
+        messageBadge.ShowProcessing();
         ApiResult<Issue[]> apiResult = null;
         // load requirements from the correct project or category
         if (reqBazShelfConfiguration.SelectedCategory != null) // project and category were selected
