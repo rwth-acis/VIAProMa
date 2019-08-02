@@ -86,7 +86,7 @@ public class KanbanBoardColumnHandle : MonoBehaviour, IMixedRealityPointerHandle
                 float newLength = startLength + handDelta;
                 float previousHeight = kanbanBoardController.Height;
                 kanbanBoardController.Height = newLength;
-                if (kanbanBoardController.Width != previousHeight) // only move if the height was actually changed (it could be unaffected if min or max size was reached)
+                if (kanbanBoardController.Height != previousHeight) // only move if the height was actually changed (it could be unaffected if min or max size was reached)
                 {
                     Vector3 pivotCorrection = new Vector3(0, handDelta / 2f, 0);
                     if (positiveEnd)
