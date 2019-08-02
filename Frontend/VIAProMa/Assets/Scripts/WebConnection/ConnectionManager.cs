@@ -9,11 +9,16 @@ using UnityEngine;
 /// </summary>
 public class ConnectionManager : Singleton<ConnectionManager>
 {
-    [Tooltip("The address of the backend, i.e. its url and port")]
-    [SerializeField] private string backendAddress = "http://localhost:8080";
+    [Tooltip("The address of the backend, i.e. its url")]
+    [SerializeField] private string backendAddress = "http://localhost";
 
     [Tooltip("The base path of the backend's API.")]
     [SerializeField] private string basePath = "resources";
+
+    [Tooltip("The port of the backend")]
+    [SerializeField] private int port = 8080;
+
+    private const string backendAddressPrefKey = "backendAddress";
 
     /// <summary>
     /// The address of the backend, i.e. its url and port
@@ -31,6 +36,11 @@ public class ConnectionManager : Singleton<ConnectionManager>
         }
     }
 
+    public string FullBackendAddress
+    {
+        get { return backendAddress + ":" + port; }
+    }
+
     /// <summary>
     /// Combination of hte backend address and the base path of the backend's API
     /// </summary>
@@ -38,7 +48,7 @@ public class ConnectionManager : Singleton<ConnectionManager>
     {
         get
         {
-            return backendAddress + "/" + basePath + "/";
+            return FullBackendAddress + "/" + basePath + "/";
         }
     }
 
@@ -50,6 +60,18 @@ public class ConnectionManager : Singleton<ConnectionManager>
     public bool BackendReachable
     {
         get;private set;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        BackendAddress = PlayerPrefs.GetString(backendAddressPrefKey, "http://localhost");
+    }
+
+    protected override void OnDestroy()
+    {
+        PlayerPrefs.SetString(backendAddressPrefKey, BackendAddress);
+        base.OnDestroy();
     }
 
     /// <summary>
