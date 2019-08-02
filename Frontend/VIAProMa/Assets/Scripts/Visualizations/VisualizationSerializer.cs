@@ -6,6 +6,7 @@ using UnityEngine;
 public class VisualizationSerializer : MonoBehaviour, ISerializable
 {
     private const string titleKey = "visualizationTitle";
+    private const string contentKey = "content";
 
     private Visualization visualization;
 
