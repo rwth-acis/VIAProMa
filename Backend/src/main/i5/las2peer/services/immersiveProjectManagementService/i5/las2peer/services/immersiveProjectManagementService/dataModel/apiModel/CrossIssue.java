@@ -23,13 +23,14 @@ public class CrossIssue {
     private String creationDate;
     private String closedDate;
     private CrossUser[] developers;
+    private CrossUser[] commenters;
 
     public CrossIssue()
     {
 
     }
 
-    public CrossIssue(DataSource source, int id, String name, String description, int projectId, CrossUser creator, IssueStatus status, String creationDate, String closedDate, CrossUser[] developers) {
+    public CrossIssue(DataSource source, int id, String name, String description, int projectId, CrossUser creator, IssueStatus status, String creationDate, String closedDate, CrossUser[] developers, CrossUser[] commenters) {
         this.source = source;
         this.id = id;
         this.name = name;
@@ -40,6 +41,7 @@ public class CrossIssue {
         this.creationDate = creationDate;
         this.closedDate = closedDate;
         this.developers = developers;
+        this.commenters = commenters;
     }
 
     @JsonIgnore
@@ -84,6 +86,8 @@ public class CrossIssue {
         return developers;
     }
 
+    public CrossUser[] getCommenters() { return commenters; }
+
     /**
      * Generates a CrossIssue object from a Requirement (from the Requirements Bazaar)
      * @param req The requirement from the requirements bazaar
@@ -120,7 +124,8 @@ public class CrossIssue {
                     determineIssueStatusFromRequirement(req, contributors),
                     req.getCreationDate(),
                     req.getRealized(),
-                    developers
+                    developers,
+                    CrossUser.fromReqBazUsers(contributors.commentCreator)
                     );
             return  issue;
         }
@@ -176,8 +181,8 @@ public class CrossIssue {
                 gitHubIssue.getIssueStatus(),
                 gitHubIssue.getCreated_at(),
                 gitHubIssue.getClosed_at(),
-                CrossUser.fromGitHubUsers(gitHubIssue.getAssignees())
-        );
+                CrossUser.fromGitHubUsers(gitHubIssue.getAssignees()),
+                null);
         return issue;
     }
 

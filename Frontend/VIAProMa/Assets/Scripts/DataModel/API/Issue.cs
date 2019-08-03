@@ -16,6 +16,7 @@ public class Issue : IListViewItemData
     [SerializeField] private string creationDate;
     [SerializeField] private string closedDate;
     [SerializeField] private User[] developers;
+    [SerializeField] private User[] commenters;
 
     /// <summary>
     /// The data source of the issue
@@ -57,6 +58,8 @@ public class Issue : IListViewItemData
     /// The list of developers who are assigned to the issue and are working on it
     /// </summary>
     public User[] Developers { get => developers; }
+
+    public User[] Commenters { get => commenters; }
 
     /// <summary>
     /// Deep-comparion between this issue and obj based on the issue's source and id
