@@ -21,6 +21,7 @@ public class CrossIssue {
     private CrossUser creator;
     private IssueStatus status;
     private String creationDate;
+    private String lastUpdated;
     private String closedDate;
     private CrossUser[] developers;
     private CrossUser[] commenters;
@@ -30,7 +31,7 @@ public class CrossIssue {
 
     }
 
-    public CrossIssue(DataSource source, int id, String name, String description, int projectId, CrossUser creator, IssueStatus status, String creationDate, String closedDate, CrossUser[] developers, CrossUser[] commenters) {
+    public CrossIssue(DataSource source, int id, String name, String description, int projectId, CrossUser creator, IssueStatus status, String creationDate, String lastUpdated, String closedDate, CrossUser[] developers, CrossUser[] commenters) {
         this.source = source;
         this.id = id;
         this.name = name;
@@ -39,6 +40,7 @@ public class CrossIssue {
         this.creator = creator;
         this.status = status;
         this.creationDate = creationDate;
+        this.lastUpdated = lastUpdated;
         this.closedDate = closedDate;
         this.developers = developers;
         this.commenters = commenters;
@@ -79,6 +81,8 @@ public class CrossIssue {
     public int getStatus() {return status.ordinal(); }
 
     public String getCreationDate() { return creationDate; }
+
+    public String getLastUpdated() { return lastUpdated; }
 
     public String getClosedDate() { return closedDate; }
 
@@ -123,6 +127,7 @@ public class CrossIssue {
                     CrossUser.fromReqBazUser(req.getCreator()),
                     determineIssueStatusFromRequirement(req, contributors),
                     req.getCreationDate(),
+                    req.getLastUpdatedDate(),
                     req.getRealized(),
                     developers,
                     CrossUser.fromReqBazUsers(contributors.commentCreator)
@@ -180,6 +185,7 @@ public class CrossIssue {
                 CrossUser.fromGitHubUser(gitHubIssue.getUser()),
                 gitHubIssue.getIssueStatus(),
                 gitHubIssue.getCreated_at(),
+                gitHubIssue.getUpdated_at(),
                 gitHubIssue.getClosed_at(),
                 CrossUser.fromGitHubUsers(gitHubIssue.getAssignees()),
                 null);

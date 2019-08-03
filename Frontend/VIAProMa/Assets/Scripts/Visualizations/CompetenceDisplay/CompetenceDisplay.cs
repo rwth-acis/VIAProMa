@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(CompetenceDisplayVisualController))]
 public class CompetenceDisplay : Visualization
 {
     public float creatorScore = 1f;
@@ -15,7 +17,9 @@ public class CompetenceDisplay : Visualization
     public override void UpdateView()
     {
         CalculateScore();
-
+        CompetenceDisplayVisualController competenceVisualController = (CompetenceDisplayVisualController)visualController;
+        competenceVisualController.Scores = scores.Values.ToList();
+        competenceVisualController.DisplayCompetences();
         base.UpdateView();
     }
 
