@@ -133,7 +133,7 @@ public class BuildingProgressBarVisuals : MonoBehaviour, IProgressBarVisuals
         boundingBoxCollider.size = bounds.size;
         boundingBox.Refresh();
 
-        titleLabel.Width = Mathf.Min(bounds.size.x, bounds.size.z);
+        titleLabel.MaxWidth = Mathf.Min(bounds.size.x, bounds.size.z);
     }
 
     private void UpdateVisuals()

@@ -25,16 +25,6 @@ public class UserScore
         }
     }
 
-    public float NormalizedScore
-    {
-        get
-        {
-            float sum = creatorScore + commenterScore + developerScore + closedDeveloperScore;
-            return creatorScore / sum * createdIssues.Count + commenterScore / sum * commentedIssues.Count
-                + developerScore / sum * developedIssues.Count + closedDeveloperScore / sum * closedDevelopedIssues.Count;
-        }
-    }
-
     public UserScore(User user, float creatorScore, float commenterScore, float developerScore, float closedDeveloperScore)
     {
         User = user;

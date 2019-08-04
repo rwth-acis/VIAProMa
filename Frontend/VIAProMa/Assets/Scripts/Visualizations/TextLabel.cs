@@ -22,10 +22,10 @@ public class TextLabel : MonoBehaviour
     [SerializeField] private string text;
 
     [Tooltip("Maximum width of the text label; if the text is shorted, the text label may appear smaller")]
-    [SerializeField] private float width = 1f;
+    [SerializeField] private float maxWidth = 1f;
 
     [Tooltip("Maximum height of the text label; if the text is smaller, the text label may appear smaller")]
-    [SerializeField] private float height = 0.1f;
+    [SerializeField] private float maxHeight = 0.1f;
 
     [Tooltip("Padding of the background to all sides")]
     [SerializeField] private float padding = 0.005f;
@@ -64,12 +64,12 @@ public class TextLabel : MonoBehaviour
     /// Maximum width of the text label
     /// If the text is shorted, the text label may appear smaller
     /// </summary>
-    public float Width
+    public float MaxWidth
     {
-        get => width;
+        get => maxWidth;
         set
         {
-            width = value;
+            maxWidth = value;
             UpdateVisuals();
         }
     }
@@ -78,12 +78,12 @@ public class TextLabel : MonoBehaviour
     /// Maximum height of the text label
     /// If the text is smaller, the text label may appear smaller
     /// </summary>
-    public float Height
+    public float MaxHeight
     {
-        get => height;
+        get => maxHeight;
         set
         {
-            height = value;
+            maxHeight = value;
             UpdateVisuals();
         }
     }
@@ -126,7 +126,7 @@ public class TextLabel : MonoBehaviour
         // set up all text components
         for (int i = 0; i < textLabels.Length; i++)
         {
-            textLabels[i].rectTransform.sizeDelta = new Vector2(width, height);
+            textLabels[i].rectTransform.sizeDelta = new Vector2(maxWidth, maxHeight);
             textLabels[i].text = text;
             textLabels[i].ForceMeshUpdate();
         }

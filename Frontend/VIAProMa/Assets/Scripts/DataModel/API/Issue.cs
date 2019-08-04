@@ -61,6 +61,27 @@ public class Issue : IListViewItemData
 
     public User[] Commenters { get => commenters; }
 
+    public Issue()
+    {
+    }
+
+    public Issue(DataSource source, int id, string name, string description, int projectId, User creator, IssueStatus status, string creationDate, string closedDate, User[] developers, User[] commenters)
+    {
+        this.source = source;
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.projectId = projectId;
+        this.creator = creator;
+        this.status = status;
+        this.creationDate = creationDate;
+        this.closedDate = closedDate;
+        this.developers = developers;
+        this.commenters = commenters;
+    }
+
+
+
     /// <summary>
     /// Deep-comparion between this issue and obj based on the issue's source and id
     /// </summary>
