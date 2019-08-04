@@ -69,9 +69,8 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             Destroy(previouslyInstantiated.gameObject);
         }
 
-        DetermineSizes();
-
         float maxScore = 0f;
+        float maxDiff = 0f;
         
         for (int i=0;i<Scores.Count;i++)
         {
@@ -84,18 +83,28 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             UserDataDisplay userDataDisplay = userBadgeInstance.GetComponent<UserDataDisplay>();
             userDataDisplay.Setup(Scores[i].User);
             userBadgeInstance.transform.localScale = Scores[i].Score / maxScore * maxSize / userBadgeSize.x * Vector3.one;
+            if (i > 0)
+            {
+                float diff = Mathf.Abs(Scores[i].Score - Scores[i - 1].Score);
+                maxDiff = Mathf.Max(maxDiff, diff);
+            }
         }
+
+        DetermineSizes();
 
         gridObjectCollection.UpdateCollection();
     }
 
     private void DetermineSizes()
     {
-        float middleSize = Mathf.Max(titleLabel.Width, titleLabel.Height); // this is the size of the text label in the middle
         Vector2 cellSize = new Vector2(gridObjectCollection.CellWidth, gridObjectCollection.CellHeight); // size of the cells
-        float minRadius = middleSize + cellSize.magnitude / 2f; // min Radius so that the user badges do not overlap with text label in middle
         float targetCirumference = Scores.Count * cellSize.magnitude;
         float targetRadius = targetCirumference / (2f * Mathf.PI);
-        gridObjectCollection.Radius = Mathf.Max(minRadius, targetRadius);
+        //targetRadius = Mathf.Max(cellSize.magnitude, targetRadius);
+        targetRadius = Mathf.Max(maxSize, targetRadius);
+        gridObjectCollection.Radius = targetRadius;
+
+        titleLabel.MaxWidth = targetRadius * 0.8f;
+        titleLabel.MaxHeight = targetRadius * 0.8f;
     }
 }
