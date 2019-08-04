@@ -14,6 +14,12 @@ public class CompetenceDisplay : Visualization
 
     private Dictionary<string, UserScore> scores = new Dictionary<string, UserScore>();
 
+    protected override void Awake()
+    {
+        base.Awake();
+        ContentProvider = new SingleIssuesProvider();
+    }
+
     public override void UpdateView()
     {
         CalculateScore();

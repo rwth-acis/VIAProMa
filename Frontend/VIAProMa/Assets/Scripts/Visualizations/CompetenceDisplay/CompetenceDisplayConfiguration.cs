@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(ConfigurationIssueSelectionUI))]
-public class KanbanBoardConfigurationWindow : ConfigurationWindow
+public class CompetenceDisplayConfiguration : ConfigurationWindow
 {
-    [SerializeField] private ConfigurationColorChooser colorChooser;
-
     private ConfigurationIssueSelectionUI issueSelection;
 
     public override bool WindowEnabled
@@ -17,14 +14,11 @@ public class KanbanBoardConfigurationWindow : ConfigurationWindow
         {
             base.WindowEnabled = value;
             issueSelection.UIEnabled = value;
-            colorChooser.UIEnabled = value;
         }
     }
 
     protected override void Awake()
     {
-        base.Awake();
-        colorChooser.Setup(visualization);
         issueSelection = GetComponent<ConfigurationIssueSelectionUI>();
         issueSelection.Setup(visualization);
     }
