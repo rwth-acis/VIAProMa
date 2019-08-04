@@ -50,6 +50,11 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
 
     public void DisplayCompetences()
     {
+        foreach(Transform previouslyInstantiated in userDisplayParent)
+        {
+            Destroy(previouslyInstantiated.gameObject);
+        }
+
         for (int i=0;i<Scores.Count;i++)
         {
             GameObject userBadgeInstance = Instantiate(userBadgePrefab, userDisplayParent);

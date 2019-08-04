@@ -7,6 +7,7 @@ using UnityEngine;
 /// Controls text label GameObjects
 /// They consist of a background and a number of textLabels with the same content
 /// </summary>
+[ExecuteInEditMode]
 public class TextLabel : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -34,23 +35,26 @@ public class TextLabel : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        // check the text label array
-        if (textLabels.Length == 0)
+        if (!Application.isEditor)
         {
-            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(textLabels));
-        }
-
-        for (int i = 0; i < textLabels.Length; i++)
-        {
-            if (textLabels[i] == null)
+            // check the text label array
+            if (textLabels.Length == 0)
             {
-                SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(textLabels), i);
+                SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(textLabels));
             }
-        }
-        // check the other components
-        if (background == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(background));
+
+            for (int i = 0; i < textLabels.Length; i++)
+            {
+                if (textLabels[i] == null)
+                {
+                    SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(textLabels), i);
+                }
+            }
+            // check the other components
+            if (background == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(background));
+            }
         }
 
         UpdateVisuals();
