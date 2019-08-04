@@ -89,6 +89,42 @@ public class TextLabel : MonoBehaviour
     }
 
     /// <summary>
+    /// The actual width of the text label
+    /// </summary>
+    public float Width
+    {
+        get
+        {
+            if (textLabels.Length > 0)
+            {
+                return textLabels[0].textBounds.size.x + padding * 2f;
+            }
+            else
+            {
+                return 0f;
+            }
+        }
+    }
+
+    /// <summary>
+    /// The actual height of the text label
+    /// </summary>
+    public float Height
+    {
+        get
+        {
+            if (textLabels.Length > 0)
+            {
+                return textLabels[0].textBounds.size.y + padding * 2f;
+            }
+            else
+            {
+                return 0f;
+            }
+        }
+    }
+
+    /// <summary>
     /// Padding of the background to all sides
     /// </summary>
     public float Padding

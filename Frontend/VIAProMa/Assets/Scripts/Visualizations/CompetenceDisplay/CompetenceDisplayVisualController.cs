@@ -53,6 +53,11 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(gridObjectCollection));
         }
+        else
+        {
+            gridObjectCollection.CellWidth = maxSize;
+            gridObjectCollection.CellHeight = maxSize;
+        }
     }
 
     public void DisplayCompetences()
@@ -63,7 +68,8 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             previouslyInstantiated.gameObject.SetActive(false);
             Destroy(previouslyInstantiated.gameObject);
         }
-        //gridObjectCollection.UpdateCollection();
+
+        DetermineSizes();
 
         float maxScore = 0f;
         
@@ -85,6 +91,11 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
 
     private void DetermineSizes()
     {
-        titleLabel.
+        float middleSize = Mathf.Max(titleLabel.Width, titleLabel.Height); // this is the size of the text label in the middle
+        Vector2 cellSize = new Vector2(gridObjectCollection.CellWidth, gridObjectCollection.CellHeight); // size of the cells
+        float minRadius = middleSize + cellSize.magnitude / 2f; // min Radius so that the user badges do not overlap with text label in middle
+        float targetCirumference = Scores.Count * cellSize.magnitude;
+        float targetRadius = targetCirumference / (2f * Mathf.PI);
+        gridObjectCollection.Radius = Mathf.Max(minRadius, targetRadius);
     }
 }
