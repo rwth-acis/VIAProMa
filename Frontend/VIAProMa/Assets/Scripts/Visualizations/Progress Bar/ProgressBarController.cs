@@ -164,7 +164,7 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
 
     private void UpdateTextLabelPositioning(float progressBarLength)
     {
-        textLabel.Width = progressBarLength / 2f;
+        textLabel.MaxWidth = progressBarLength / 2f;
         textLabel.transform.localPosition = new Vector3(
             -progressBarLength / 2f + progressBarLength / 4f,
         textLabel.transform.localPosition.y,

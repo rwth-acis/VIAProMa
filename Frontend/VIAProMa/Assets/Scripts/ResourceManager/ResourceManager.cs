@@ -28,6 +28,8 @@ public class ResourceManager : Singleton<ResourceManager>
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(defaultProfileImage));
         }
+
+        Debug.Log("Networked Prefabs: " + resourcePrefabCollection.NetworkPrefabs.Count);
     }
 
     /// <summary>

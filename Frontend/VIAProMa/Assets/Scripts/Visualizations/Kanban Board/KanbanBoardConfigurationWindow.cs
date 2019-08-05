@@ -16,6 +16,7 @@ public class KanbanBoardConfigurationWindow : ConfigurationWindow
         set
         {
             base.WindowEnabled = value;
+            issueSelection.UIEnabled = value;
             colorChooser.UIEnabled = value;
         }
     }

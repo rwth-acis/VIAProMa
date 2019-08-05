@@ -59,6 +59,12 @@ public static class RequirementsBazaar
     /// <returns>The requirement as a general issue, contained in the APIResult object</returns>
     public static async Task<ApiResult<Issue>> GetRequirement(int requirementId)
     {
+        Issue cached = IssueCache.GetRequirement(requirementId);
+        if (cached != null)
+        {
+            return new ApiResult<Issue>(cached);
+        }
+
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
@@ -69,6 +75,7 @@ public static class RequirementsBazaar
         else
         {
             Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+            IssueCache.AddIssue(issue);
             return new ApiResult<Issue>(issue);
         }
     }
@@ -111,6 +118,11 @@ public static class RequirementsBazaar
         else
         {
             Issue[] requirements = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+            // add to cache
+            foreach (Issue req in requirements)
+            {
+                IssueCache.AddIssue(req);
+            }
             return new ApiResult<Issue[]>(requirements);
         }
     }
@@ -153,6 +165,10 @@ public static class RequirementsBazaar
         else
         {
             Issue[] requirements = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+            foreach(Issue req in requirements)
+            {
+                IssueCache.AddIssue(req);
+            }
             return new ApiResult<Issue[]>(requirements);
         }
     }

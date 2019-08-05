@@ -247,6 +247,7 @@ public class Keyboard : Singleton<Keyboard>
         }
         // also move the cursor forward so that we can keep typing
         CursorPos++;
+        ShiftActive = false;
     }
 
     /// <summary>

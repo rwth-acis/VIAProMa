@@ -150,6 +150,17 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         {
             return;
         }
+        // if the projects list is not loaded at this point, try again
+        if (projects == null)
+        {
+            LoadReqBazProjectList();
+        }
+        // if the project list could still not be loaded => abort
+        if (projects == null)
+        {
+            shelf.MessageBadge.ShowMessage(0);
+            return;
+        }
         Project selectedProject = GetReqBazProject(reqBazProjectInput.Text);
         ShelfConfiguration = new ReqBazShelfConfiguration(selectedProject);
         if (selectedProject == null) // project was not found

@@ -48,7 +48,7 @@ public class MessageBadge : MonoBehaviour
     /// </summary>
     public void ShowProcessing()
     {
-        gameObject.SetActive(true);
+        ShowMessage(-2);
         processing++;
         processingEffect.IsProcessing = true;
         tryAgainButton.gameObject.SetActive(false);
@@ -90,15 +90,6 @@ public class MessageBadge : MonoBehaviour
     public void ShowMessage(long messageCode)
     {
         SetContent(messages.GetMessage(messageCode));
-    }
-
-    /// <summary>
-    /// Shortcut for show processing and show message(load message)
-    /// </summary>
-    public void ShowLoadMessage()
-    {
-        ShowMessage(-2);
-        ShowProcessing();
     }
 
     public void Hide()

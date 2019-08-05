@@ -31,6 +31,10 @@ public static class GitHub
         else
         {
             Issue[] issues = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+            foreach(Issue issue in issues)
+            {
+                IssueCache.AddIssue(issue);
+            }
             return new ApiResult<Issue[]>(issues);
         }
     }
@@ -43,6 +47,12 @@ public static class GitHub
     /// <returns>The issue; contained in an APIResult object</returns>
     public static async Task<ApiResult<Issue>> GetIssue(int repositoryId, int issueNumber)
     {
+        Issue cached = IssueCache.GetGitHubIssue(repositoryId, issueNumber);
+        if (cached != null)
+        {
+            return new ApiResult<Issue>(cached);
+        }
+
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repositories/" + repositoryId + "/issues/" + issueNumber);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
@@ -53,6 +63,7 @@ public static class GitHub
         else
         {
             Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+            IssueCache.AddIssue(issue);
             return new ApiResult<Issue>(issue);
         }
     }

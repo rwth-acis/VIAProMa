@@ -41,5 +41,17 @@ public class User : IListViewItemData
     /// </summary>
     public string ProfileImageUrl { get => profileImageUrl; }
 
+    public User()
+    {
+    }
 
+    public User(DataSource source, int id, string userName, string firstName, string lastName, string profileImageUrl)
+    {
+        this.source = source;
+        this.id = id;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profileImageUrl = profileImageUrl;
+    }
 }
