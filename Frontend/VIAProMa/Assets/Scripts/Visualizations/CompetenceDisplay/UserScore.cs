@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UserScore
+public class UserScore : IListViewItemData
 {
     public User User { get; private set; }
 
-    private float creatorScore;
-    private float commenterScore;
-    private float developerScore;
-    private float closedDeveloperScore;
+    private float creatorWeight;
+    private float commenterWeight;
+    private float developerWeight;
+    private float closedDeveloperWeight;
 
     private List<Issue> createdIssues;
     private List<Issue> commentedIssues;
@@ -20,24 +20,29 @@ public class UserScore
     {
         get
         {
-            return creatorScore * createdIssues.Count + commenterScore * commentedIssues.Count
-                + developerScore * developedIssues.Count + closedDeveloperScore * closedDevelopedIssues.Count;
+            return creatorWeight * createdIssues.Count + commenterWeight * commentedIssues.Count
+                + developerWeight * developedIssues.Count + closedDeveloperWeight * closedDevelopedIssues.Count;
         }
     }
 
-    public UserScore(User user, float creatorScore, float commenterScore, float developerScore, float closedDeveloperScore)
+    public UserScore(User user, float creatorWeight, float commenterWeight, float developerWeight, float closedDeveloperWeight)
     {
         User = user;
-        this.creatorScore = creatorScore;
-        this.commenterScore = commenterScore;
-        this.developerScore = developerScore;
-        this.closedDeveloperScore = closedDeveloperScore;
+        this.creatorWeight = creatorWeight;
+        this.commenterWeight = commenterWeight;
+        this.developerWeight = developerWeight;
+        this.closedDeveloperWeight = closedDeveloperWeight;
 
         createdIssues = new List<Issue>();
         commentedIssues = new List<Issue>();
         developedIssues = new List<Issue>();
         closedDevelopedIssues = new List<Issue>();
     }
+
+    public int CreatedIssuesCount { get => createdIssues.Count; }
+    public int CommentedIssuesCount { get => commentedIssues.Count; }
+    public int DevelopedIssuesCount { get => developedIssues.Count; }
+    public int ClosedIssuesCount { get => closedDevelopedIssues.Count; }
 
     public void AddCreatedIssue(Issue issue)
     {

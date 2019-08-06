@@ -100,7 +100,6 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         Vector2 cellSize = new Vector2(gridObjectCollection.CellWidth, gridObjectCollection.CellHeight); // size of the cells
         float targetCirumference = Scores.Count * cellSize.magnitude;
         float targetRadius = targetCirumference / (2f * Mathf.PI);
-        //targetRadius = Mathf.Max(cellSize.magnitude, targetRadius);
         targetRadius = Mathf.Max(maxSize, targetRadius);
         gridObjectCollection.Radius = targetRadius;
 
