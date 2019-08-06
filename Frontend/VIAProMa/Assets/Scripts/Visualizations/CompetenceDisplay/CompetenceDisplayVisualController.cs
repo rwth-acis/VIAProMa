@@ -13,7 +13,7 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
     [SerializeField] private float maxSize = 2f;
 
     private string title;
-    private Vector3 userBadgeSize;
+    //private Vector3 userBadgeSize;
 
     public string Title
     {
@@ -42,13 +42,6 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(userBadgePrefab));
         }
-        UserDataDisplay udd = userBadgePrefab?.GetComponent<UserDataDisplay>();
-        if (udd == null)
-        {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(UserDataDisplay), userBadgePrefab);
-        }
-        Renderer userBadgeRenderer = udd.GetComponent<Renderer>();
-        userBadgeSize = userBadgeRenderer.bounds.size;
         if (gridObjectCollection == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(gridObjectCollection));
@@ -70,7 +63,6 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         }
 
         float maxScore = 0f;
-        float maxDiff = 0f;
         
         for (int i=0;i<Scores.Count;i++)
         {
@@ -80,14 +72,12 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         for (int i=0;i<Scores.Count;i++)
         {
             GameObject userBadgeInstance = Instantiate(userBadgePrefab, gridObjectCollection.transform);
-            UserDataDisplay userDataDisplay = userBadgeInstance.GetComponent<UserDataDisplay>();
-            userDataDisplay.Setup(Scores[i].User);
-            userBadgeInstance.transform.localScale = Scores[i].Score / maxScore * maxSize / userBadgeSize.x * Vector3.one;
-            if (i > 0)
-            {
-                float diff = Mathf.Abs(Scores[i].Score - Scores[i - 1].Score);
-                maxDiff = Mathf.Max(maxDiff, diff);
-            }
+            UserScoreDisplay disp = userBadgeInstance.GetComponent<UserScoreDisplay>();
+            disp.MaxScore = maxScore;
+            disp.MaxSize = maxSize;
+            disp.BarLength = 1f;
+            disp.Setup(Scores[i]);
+            //disp.UserDisplaySize = Scores[i].Score / maxScore * maxSize / userBadgeSize.x * Vector3.one;
         }
 
         DetermineSizes();
