@@ -20,6 +20,9 @@ public class CompetenceDisplayTestRunner : MonoBehaviour
                 for (int j = 0; j < simulatedCompetences[i]; j++)
                 {
                     score.AddCreatedIssue(issue);
+                    score.AddCommentedIssue(issue);
+                    score.AddCreatedIssue(issue);
+                    score.AddDevelopedIssue(issue);
                 }
                 scores.Add(score);
             }

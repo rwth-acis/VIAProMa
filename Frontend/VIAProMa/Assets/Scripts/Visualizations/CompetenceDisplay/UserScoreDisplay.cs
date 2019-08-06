@@ -109,6 +109,6 @@ public class UserScoreDisplay : DataDisplay<UserScore>
     /// <param name="issueAmount">The amount of issues to visualize</param>
     private float CalculateBarLength(int issueAmount, int overallCount)
     {
-        return issueAmount / overallCount * BarLength;
+        return ((float)issueAmount) / overallCount * BarLength;
     }
 }
