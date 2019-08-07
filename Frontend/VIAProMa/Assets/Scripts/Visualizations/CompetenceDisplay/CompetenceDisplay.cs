@@ -56,6 +56,11 @@ public class CompetenceDisplay : Visualization
                         scores[dev.UserName].AddDevelopedIssue(issue);
                     }
                 }
+                foreach(User commenter in issue.Commenters)
+                {
+                    EnsureUserExistsInScores(commenter);
+                    scores[commenter.UserName].AddCommentedIssue(issue);
+                }
             }
         }
     }
