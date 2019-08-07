@@ -82,7 +82,7 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             UserScoreDisplay disp = userBadgeInstance.GetComponent<UserScoreDisplay>();
             disp.MaxScore = maxScore;
             disp.MaxSize = maxSize;
-            disp.BarLength = 1f;
+            disp.BarLength = 1f; // in local coordinates; will be scaled by the score scale
             disp.Setup(Scores[i]);
         }
 

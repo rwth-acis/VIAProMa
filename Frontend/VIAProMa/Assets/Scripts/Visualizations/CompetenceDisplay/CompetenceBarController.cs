@@ -89,25 +89,31 @@ public class CompetenceBarController : MonoBehaviour
                 thickness,
                 length
                 );
+
+        // calculate helper points for text meshes
+        // cache height so that it does not need to be re-calculated
+        float height = Height;
+        // get the coordinates of the face middle
+        Vector2 bottomRightCorner = new Vector2(thickness / 2f, 0f);
+        Vector2 topCorner = new Vector2(0f, height);
+        Vector2 faceMiddle2D = Vector2.Lerp(bottomRightCorner, topCorner, 0.5f);
+        // calculate vector from bottom to top corner (for normal calculation)
+        Vector2 bottomToTopCorner = topCorner - bottomRightCorner;
+
         for (int i = 0; i < textMeshes.Length; i++)
         {
-            textMeshes[i].rectTransform.sizeDelta = new Vector2(length, thickness);
-            // cache height so that it does not need to be re-calculated
-            float height = Height;
-            // determine the side
+            // set text mesh size
+            textMeshes[i].rectTransform.sizeDelta = 0.9f * new Vector2(length, thickness);
+            // determine the side of the text mesh
             float side = Mathf.Sign(textMeshes[i].rectTransform.localPosition.x);
 
-            // get the coordinates of the face middle
-            Vector2 bottomRightCorner = new Vector2(thickness / 2f, -height / 2f);
-            Vector2 topCorner = new Vector2(0f, height / 2f);
-            Vector2 faceMiddle2D = Vector2.Lerp(bottomRightCorner, topCorner, 0.5f);
-            // also calculate normal
-            Vector2 bottomToTopCorner = topCorner - bottomRightCorner;
-            //bottomToTopCorner.x *= -side;
+            // adapt the side
+            bottomToTopCorner.x *= side;
+            // calculate the normal vector
             Vector3 normal = Vector3.Cross(Vector3.back, bottomToTopCorner).normalized;
 
             // position text
-            textMeshes[i].rectTransform.localPosition = new Vector3(side * faceMiddle2D.x, faceMiddle2D.y, length / 2f);
+            textMeshes[i].rectTransform.localPosition = new Vector3(side * faceMiddle2D.x, faceMiddle2D.y, length / 2f) + side * 0.011f * normal;
             // apply text
             textMeshes[i].text = text;
             // automatically change text color for dark and light backgrounds

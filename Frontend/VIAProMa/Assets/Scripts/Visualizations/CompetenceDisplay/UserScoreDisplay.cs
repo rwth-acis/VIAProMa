@@ -102,7 +102,8 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         {
             float barLength = CalculateBarLength(issueAmount[i], overallCount);
             scoreBars[i].Length = barLength;
-            scoreBars[i].transform.localPosition = new Vector3(0, 0, barStart);
+            scoreBars[i].Thickness = 0.2f;
+            scoreBars[i].transform.localPosition = new Vector3(0, -scoreBars[i].Height / 2f, barStart);
             scoreBars[i].gameObject.SetActive(issueAmount[i] > 0);
             scoreBars[i].Text = GetBarText(i, issueAmount[i]);
             barStart += barLength;

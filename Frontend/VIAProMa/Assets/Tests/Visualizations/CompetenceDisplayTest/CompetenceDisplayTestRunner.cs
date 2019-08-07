@@ -21,8 +21,8 @@ public class CompetenceDisplayTestRunner : MonoBehaviour
                 {
                     score.AddCreatedIssue(issue);
                     score.AddCommentedIssue(issue);
-                    score.AddCreatedIssue(issue);
                     score.AddDevelopedIssue(issue);
+                    score.AddClosedDevelopedIssue(issue);
                 }
                 scores.Add(score);
             }
