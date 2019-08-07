@@ -46,10 +46,11 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
         string filterText = filterInputField.Text;
         // separate by ";"
         string[] filter = filterText.Split(';');
-        // clean up whitespace characters
+        // clean up whitespace characters and make everything lower case
         for (int i=0;i<filter.Length;i++)
         {
             filter[i] = filter[i].Trim();
+            filter[i] = filter[i].ToLowerInvariant();
         }
 
         // apply filter

@@ -34,11 +34,12 @@ public class CompetenceDisplay : Visualization
 
     private void CalculateScore()
     {
+        scores.Clear();
         foreach (Issue issue in ContentProvider.Issues)
         {
             // score only if no filter set or the issue must contains one of the filter words
             if (FilterWords.Length == 0
-                || StringUtilities.ContainsAny(issue.Name, FilterWords) || StringUtilities.ContainsAny(issue.Description, FilterWords))
+                || StringUtilities.ContainsAny(issue.Name.ToLowerInvariant(), FilterWords) || StringUtilities.ContainsAny(issue.Description.ToLowerInvariant(), FilterWords))
             {
                 EnsureUserExistsInScores(issue.Creator);
                 scores[issue.Creator.UserName].AddCreatedIssue(issue);
