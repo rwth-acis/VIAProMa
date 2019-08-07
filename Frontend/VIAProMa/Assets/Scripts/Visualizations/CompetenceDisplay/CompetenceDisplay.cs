@@ -14,10 +14,13 @@ public class CompetenceDisplay : Visualization
 
     private Dictionary<string, UserScore> scores = new Dictionary<string, UserScore>();
 
+    public string[] FilterWords { get; set; }
+
     protected override void Awake()
     {
         base.Awake();
         ContentProvider = new SingleIssuesProvider();
+        Title = "";
     }
 
     public override void UpdateView()
@@ -33,19 +36,24 @@ public class CompetenceDisplay : Visualization
     {
         foreach (Issue issue in ContentProvider.Issues)
         {
-            EnsureUserExistsInScores(issue.Creator);
-            scores[issue.Creator.UserName].AddCreatedIssue(issue);
-
-            foreach(User dev in issue.Developers)
+            // score only if no filter set or the issue must contains one of the filter words
+            if (FilterWords.Length == 0
+                || StringUtilities.ContainsAny(issue.Name, FilterWords) || StringUtilities.ContainsAny(issue.Description, FilterWords))
             {
-                EnsureUserExistsInScores(dev);
-                if (issue.Status == IssueStatus.CLOSED)
+                EnsureUserExistsInScores(issue.Creator);
+                scores[issue.Creator.UserName].AddCreatedIssue(issue);
+
+                foreach (User dev in issue.Developers)
                 {
-                    scores[dev.UserName].AddClosedDevelopedIssue(issue);
-                }
-                else
-                {
-                    scores[dev.UserName].AddDevelopedIssue(issue);
+                    EnsureUserExistsInScores(dev);
+                    if (issue.Status == IssueStatus.CLOSED)
+                    {
+                        scores[dev.UserName].AddClosedDevelopedIssue(issue);
+                    }
+                    else
+                    {
+                        scores[dev.UserName].AddDevelopedIssue(issue);
+                    }
                 }
             }
         }

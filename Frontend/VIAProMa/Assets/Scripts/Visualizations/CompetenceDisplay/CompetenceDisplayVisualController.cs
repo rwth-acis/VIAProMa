@@ -21,7 +21,14 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         set
         {
             title = value;
-            titleLabel.Text = title;
+            if (string.IsNullOrEmpty(title))
+            {
+                titleLabel.Text = "Contributions";
+            }
+            else
+            {
+                titleLabel.Text = title;
+            }
         }
     }
 
@@ -77,7 +84,6 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             disp.MaxSize = maxSize;
             disp.BarLength = 1f;
             disp.Setup(Scores[i]);
-            //disp.UserDisplaySize = Scores[i].Score / maxScore * maxSize / userBadgeSize.x * Vector3.one;
         }
 
         DetermineSizes();
