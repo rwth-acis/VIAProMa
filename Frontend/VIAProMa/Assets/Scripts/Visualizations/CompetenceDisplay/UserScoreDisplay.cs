@@ -13,7 +13,7 @@ public class UserScoreDisplay : DataDisplay<UserScore>
 
     private UserDataDisplay userDisplay;
     private Vector3 initialUserDisplaySize;
-    private GameObject[] scoreBars = new GameObject[numberOfScoredProperties];
+    private CompetenceBarController[] scoreBars = new CompetenceBarController[numberOfScoredProperties];
 
     public float BarLength { get; set; } = 1f;
 
@@ -36,6 +36,11 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(scoreBarPrefab));
         }
+        CompetenceBarController cbc = scoreBarPrefab?.GetComponent<CompetenceBarController>();
+        if (cbc == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(CompetenceBarController), scoreBarPrefab);
+        }
         if (scoreBarsParent == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(scoreBarsParent));
@@ -49,10 +54,10 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         for (int i=0;i<numberOfScoredProperties;i++)
         {
             GameObject scoreBarInstance = Instantiate(scoreBarPrefab, scoreBarsParent);
-            Renderer rend = scoreBarInstance.GetComponent<Renderer>();
-            rend.material.color = colors[i];
+            CompetenceBarController scoreBar = scoreBarInstance.GetComponent<CompetenceBarController>();
+            scoreBar.Color = colors[i];
             scoreBarInstance.SetActive(false);
-            scoreBars[i] = (scoreBarInstance);
+            scoreBars[i] = scoreBar;
         }
     }
 
@@ -96,9 +101,10 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         for (int i=0;i<numberOfScoredProperties;i++)
         {
             float barLength = CalculateBarLength(issueAmount[i], overallCount);
-            scoreBars[i].transform.localScale = new Vector3(1, 1, barLength);
+            scoreBars[i].Length = barLength;
             scoreBars[i].transform.localPosition = new Vector3(0, 0, barStart);
             scoreBars[i].gameObject.SetActive(issueAmount[i] > 0);
+            scoreBars[i].Text = GetBarText(i, issueAmount[i]);
             barStart += barLength;
         }
     }
@@ -110,5 +116,23 @@ public class UserScoreDisplay : DataDisplay<UserScore>
     private float CalculateBarLength(int issueAmount, int overallCount)
     {
         return ((float)issueAmount) / overallCount * BarLength;
+    }
+
+    private string GetBarText(int propertyIndex, int issueAmount)
+    {
+        switch(propertyIndex)
+        {
+            case 0:
+                return "Created " + issueAmount + " issues";
+            case 1:
+                return "Commented " + issueAmount + " issues";
+            case 2:
+                return "Develops " + issueAmount + " issues";
+            case 3:
+                return "Realized " + issueAmount + " issues";
+            default:
+                Debug.Log("Tried to get competence score bar with propertyIndex out of bounds", gameObject);
+                return "ERROR";
+        }
     }
 }
