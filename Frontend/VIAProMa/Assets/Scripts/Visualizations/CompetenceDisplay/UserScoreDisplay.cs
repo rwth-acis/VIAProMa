@@ -7,6 +7,7 @@ public class UserScoreDisplay : DataDisplay<UserScore>
 {
     [SerializeField] private GameObject scoreBarPrefab;
     [SerializeField] private Transform scoreBarsParent;
+    [SerializeField] private TextLabel nameLabel;
     [SerializeField] private Color[] colors = new Color[numberOfScoredProperties];
 
     private const int numberOfScoredProperties = 4;
@@ -45,6 +46,10 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(scoreBarsParent));
         }
+        if (nameLabel == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(nameLabel));
+        }
         if (colors.Length != numberOfScoredProperties)
         {
             Debug.Log("Number of colors for the user score bars does not match number of tracked properties. Change the number of defined colors for the bars to " + numberOfScoredProperties, gameObject);
@@ -72,6 +77,9 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         base.UpdateView();
         // show user image in userDisplay
         userDisplay.UpdateView();
+
+        nameLabel.Text = content.User.FirstName + " " + content.User.LastName;
+        nameLabel.transform.localPosition = new Vector3(0f, nameLabel.transform.localPosition.y, nameLabel.Width / 2f + 0.02f);
 
         // adapt the size of hte user display to the score
         float userDisplaySize = Content.Score / MaxScore * MaxSize / initialUserDisplaySize.x;
@@ -121,16 +129,17 @@ public class UserScoreDisplay : DataDisplay<UserScore>
 
     private string GetBarText(int propertyIndex, int issueAmount)
     {
+        bool singleIssue = issueAmount == 1;
         switch(propertyIndex)
         {
             case 0:
-                return "Created " + issueAmount + " issues";
+                return "Created " + issueAmount + (singleIssue ? " issue" : " issues");
             case 1:
-                return "Commented " + issueAmount + " issues";
+                return "Commented " + issueAmount + (singleIssue ? " issue" : " issues");
             case 2:
-                return "Develops " + issueAmount + " issues";
+                return "Develops " + issueAmount + (singleIssue ? " issue" : " issues");
             case 3:
-                return "Realized " + issueAmount + " issues";
+                return "Realized " + issueAmount + (singleIssue ? " issue" : " issues");
             default:
                 Debug.Log("Tried to get competence score bar with propertyIndex out of bounds", gameObject);
                 return "ERROR";
