@@ -13,7 +13,6 @@ public class UserScoreDisplay : DataDisplay<UserScore>
     private const int numberOfScoredProperties = 4;
 
     private UserDataDisplay userDisplay;
-    private Vector3 initialUserDisplaySize;
     private CompetenceBarController[] scoreBars = new CompetenceBarController[numberOfScoredProperties];
 
     public float BarLength { get; set; } = 1f;
@@ -28,10 +27,6 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         if (userDisplay == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(UserDataDisplay), gameObject);
-        }
-        else
-        {
-             initialUserDisplaySize = userDisplay.GetComponent<Renderer>().bounds.size;
         }
         if (scoreBarPrefab == null)
         {
@@ -82,7 +77,7 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         nameLabel.transform.localPosition = new Vector3(0f, nameLabel.transform.localPosition.y, nameLabel.Width / 2f + 0.02f);
 
         // adapt the size of the user display to the score
-        float userDisplaySize = Content.Score / MaxScore * MaxSize / initialUserDisplaySize.x;
+        float userDisplaySize = Content.Score / MaxScore * MaxSize;
         transform.localScale = userDisplaySize * Vector3.one;
 
         if (scoreBars.Length != numberOfScoredProperties)

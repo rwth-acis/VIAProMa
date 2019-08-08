@@ -57,8 +57,8 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         }
         else
         {
-            gridObjectCollection.CellWidth = maxSize;
-            gridObjectCollection.CellHeight = maxSize;
+            //gridObjectCollection.CellWidth = maxSize;
+            //gridObjectCollection.CellHeight = maxSize;
         }
         if (boundingBox == null)
         {
@@ -88,7 +88,7 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             GameObject userBadgeInstance = Instantiate(userBadgePrefab, gridObjectCollection.transform);
             UserScoreDisplay disp = userBadgeInstance.GetComponent<UserScoreDisplay>();
             disp.MaxScore = maxScore;
-            disp.MaxSize = 0.75f * maxSize;
+            disp.MaxSize = maxSize;
             disp.BarLength = 1f; // in local coordinates; will be scaled by the score scale
             disp.Setup(Scores[i]);
         }
@@ -103,7 +103,7 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         Vector2 cellSize = new Vector2(gridObjectCollection.CellWidth, gridObjectCollection.CellHeight); // size of the cells
         float targetCirumference = Scores.Count * cellSize.magnitude;
         float targetRadius = targetCirumference / (2f * Mathf.PI);
-        targetRadius = Mathf.Max(maxSize, targetRadius);
+        targetRadius = Mathf.Max(cellSize.x, targetRadius);
         gridObjectCollection.Radius = targetRadius;
         if (boundingBoxCollider != null)
         {
