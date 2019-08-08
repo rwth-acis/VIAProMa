@@ -81,7 +81,7 @@ public class UserScoreDisplay : DataDisplay<UserScore>
         nameLabel.Text = content.User.FirstName + " " + content.User.LastName;
         nameLabel.transform.localPosition = new Vector3(0f, nameLabel.transform.localPosition.y, nameLabel.Width / 2f + 0.02f);
 
-        // adapt the size of hte user display to the score
+        // adapt the size of the user display to the score
         float userDisplaySize = Content.Score / MaxScore * MaxSize / initialUserDisplaySize.x;
         transform.localScale = userDisplaySize * Vector3.one;
 

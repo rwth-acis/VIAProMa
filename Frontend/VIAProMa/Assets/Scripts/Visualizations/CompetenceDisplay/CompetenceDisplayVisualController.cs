@@ -1,4 +1,5 @@
-﻿using Microsoft.MixedReality.Toolkit.Utilities;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,11 +10,12 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
     [SerializeField] private TextLabel titleLabel;
     [SerializeField] private GameObject userBadgePrefab;
     [SerializeField] private GridObjectCollection gridObjectCollection;
+    [SerializeField] private BoundingBox boundingBox;
     [Header("Values")]
-    [SerializeField] private float maxSize = 2f;
+    [SerializeField] private float maxSize = 1f;
 
     private string title;
-    //private Vector3 userBadgeSize;
+    private BoxCollider boundingBoxCollider;
 
     public string Title
     {
@@ -58,6 +60,11 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             gridObjectCollection.CellWidth = maxSize;
             gridObjectCollection.CellHeight = maxSize;
         }
+        if (boundingBox == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+        }
+        boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>(); // must exist since BoundingBox requires a BoxCollider
     }
 
     public void DisplayCompetences()
@@ -81,7 +88,7 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
             GameObject userBadgeInstance = Instantiate(userBadgePrefab, gridObjectCollection.transform);
             UserScoreDisplay disp = userBadgeInstance.GetComponent<UserScoreDisplay>();
             disp.MaxScore = maxScore;
-            disp.MaxSize = maxSize;
+            disp.MaxSize = 0.75f * maxSize;
             disp.BarLength = 1f; // in local coordinates; will be scaled by the score scale
             disp.Setup(Scores[i]);
         }
@@ -98,6 +105,16 @@ public class CompetenceDisplayVisualController : MonoBehaviour, IVisualizationVi
         float targetRadius = targetCirumference / (2f * Mathf.PI);
         targetRadius = Mathf.Max(maxSize, targetRadius);
         gridObjectCollection.Radius = targetRadius;
+        if (boundingBoxCollider != null)
+        {
+            boundingBoxCollider.size = new Vector3(
+                2 * targetRadius + cellSize.x,
+                2 * targetRadius + cellSize.y + 0.02f, // add 0.02f to clear the username at the bottom
+                1f
+                );
+        }
+        boundingBox.transform.localPosition = new Vector3(0, 0, 0.5f);
+        boundingBox.Refresh();
 
         titleLabel.MaxWidth = targetRadius * 0.8f;
         titleLabel.MaxHeight = targetRadius * 0.8f;
