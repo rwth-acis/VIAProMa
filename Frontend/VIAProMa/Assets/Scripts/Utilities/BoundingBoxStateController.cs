@@ -53,7 +53,10 @@ public class BoundingBoxStateController : MonoBehaviour
     {
         boxCollider.enabled = boundingBoxActive;
         boundingBox.Active = boundingBoxActive;
-        boundingBox.Refresh();
+        if (boundingBoxActive)
+        {
+            boundingBox.Refresh();
+        }
         if (manipulationHandler != null)
         {
             manipulationHandler.enabled = boundingBoxActive;
