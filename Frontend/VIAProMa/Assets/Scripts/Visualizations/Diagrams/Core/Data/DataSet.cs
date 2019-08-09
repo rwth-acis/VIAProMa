@@ -11,6 +11,14 @@ public class DataSet
     public Axis XAxis { get; set; }
     public Axis YAxis { get; set; }
     public Axis ZAxis { get; set; }
+
+    public DataSet()
+    {
+        Points = new List<DataPoint>();
+        XAxis = new Axis();
+        YAxis = new Axis();
+        ZAxis = new Axis();
+    }
 }
 
 /// <summary>
