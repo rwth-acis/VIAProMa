@@ -12,6 +12,8 @@ public class SurfacePlot : Diagram
     private Vector3[] vertices;
     private int[] triangles;
 
+    private float[,] heightData;
+    private Vector2Int gridSize;
 
     /// <summary>
     /// The dataset which is supplied to the bar chart
@@ -37,11 +39,33 @@ public class SurfacePlot : Diagram
             xAxis.Axis = dataSet.XAxis;
             yAxis.Axis = dataSet.YAxis;
             zAxis.Axis = dataSet.ZAxis;
+
+            // Calculate height data from data set
+
+
             UpdateVisuals();
         }
     }
 
-    public Vector2Int GridSize { get; set; }
+    public float[,] HeightData
+    {
+        get => heightData;
+        set
+        {
+            heightData = value;
+            UpdateVisuals();
+        }
+    }
+
+    public Vector2Int GridSize
+    {
+        get => gridSize;
+        set
+        {
+            gridSize = value;
+            heightData = new float[gridSize.x + 1, gridSize.y + 1];
+        }
+    }
 
     protected override void Awake()
     {
@@ -100,7 +124,10 @@ public class SurfacePlot : Diagram
         {
             for (int x = 0; x < (GridSize.x + 1); x++)
             {
-                vertices[i] = new Vector3((float) x / GridSize.x, 0, (float)y / GridSize.y);
+                vertices[i] = new Vector3(
+                    (float) x / GridSize.x,
+                    heightData[x, y],
+                    (float)y / GridSize.y);
                 i++;
             }
         }
@@ -118,12 +145,15 @@ public class SurfacePlot : Diagram
             for (int x = 0; x < GridSize.x; x++)
             {
                 // create a quad
+                // first triangle
                 triangles[triangleIndex] = vertexIndex;
                 triangles[triangleIndex + 1] = vertexIndex + GridSize.x + 1;
                 triangles[triangleIndex + 2] = vertexIndex + 1;
+                // second triangle
                 triangles[triangleIndex + 3] = vertexIndex + 1;
                 triangles[triangleIndex + 4] = vertexIndex + GridSize.x + 1;
                 triangles[triangleIndex + 5] = vertexIndex + GridSize.x + 2;
+                // move triangle index forward for next quad
                 triangleIndex += 6;
                 vertexIndex++;
             }
