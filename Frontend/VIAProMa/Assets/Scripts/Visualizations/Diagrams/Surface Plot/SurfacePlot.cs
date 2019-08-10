@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class SurfacePlot : Diagram
 {
-    [SerializeField] private MeshRenderer surfaceRenderer;
+    [SerializeField] private MeshFilter surfaceMeshFilter;
 
     private DataSet dataSet;
 
     private Mesh constructedMesh;
     private Vector3[] vertices;
+    private int[] triangles;
 
 
     /// <summary>
@@ -45,9 +46,9 @@ public class SurfacePlot : Diagram
     protected override void Awake()
     {
         base.Awake();
-        if (surfaceRenderer == null)
+        if (surfaceMeshFilter == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(surfaceRenderer));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(surfaceMeshFilter));
         }
     }
 
@@ -81,7 +82,14 @@ public class SurfacePlot : Diagram
 
     private void ConstructMesh()
     {
+        Mesh mesh = new Mesh();
+        mesh.name = "Grid Surface Plot";
         CalculateVertexPositions();
+        mesh.vertices = vertices;
+        FormTriangles();
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        surfaceMeshFilter.mesh = mesh;
     }
 
     private void CalculateVertexPositions()
@@ -96,6 +104,38 @@ public class SurfacePlot : Diagram
                 i++;
             }
         }
+    }
+
+    private void FormTriangles()
+    {
+        triangles = new int[GridSize.x * GridSize.y * 6];
+
+        int triangleIndex = 0;
+        int vertexIndex = 0;
+
+        for (int y = 0; y < GridSize.y; y++)
+        {
+            for (int x = 0; x < GridSize.x; x++)
+            {
+                // create a quad
+                triangles[triangleIndex] = vertexIndex;
+                triangles[triangleIndex + 1] = vertexIndex + GridSize.x + 1;
+                triangles[triangleIndex + 2] = vertexIndex + 1;
+                triangles[triangleIndex + 3] = vertexIndex + 1;
+                triangles[triangleIndex + 4] = vertexIndex + GridSize.x + 1;
+                triangles[triangleIndex + 5] = vertexIndex + GridSize.x + 2;
+                triangleIndex += 6;
+                vertexIndex++;
+            }
+            vertexIndex++;
+        }
+
+        triangles[0] = 0;
+        triangles[1] = GridSize.x + 1;
+        triangles[2] = 1;
+        triangles[3] = 1;
+        triangles[4] = GridSize.x + 1;
+        triangles[5] = GridSize.x + 2;
     }
 
     private void OnDrawGizmos()
