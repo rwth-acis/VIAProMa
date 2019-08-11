@@ -18,6 +18,7 @@ public class BurndownChart3DTestRunner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
+            Debug.Log("F5");
             Vector2Int gridSize = new Vector2Int(20, 20);
             surfacePlot.GridSize = gridSize;
             float[,] heightData = new float[gridSize.x + 1, gridSize.y + 1];
@@ -25,7 +26,7 @@ public class BurndownChart3DTestRunner : MonoBehaviour
             {
                 for (int x = 0; x <= gridSize.x; x++)
                 {
-                    heightData[x, y] = Mathf.Sin((float)x / gridSize.x * Mathf.PI) * Mathf.Sin((float)y / gridSize.y * Mathf.PI);
+                    heightData[x, y] = Mathf.Sin((float)x / gridSize.x * Mathf.PI);
                 }
             }
             DataSet dataset = new DataSet();
@@ -33,8 +34,8 @@ public class BurndownChart3DTestRunner : MonoBehaviour
             dataset.XAxis = new Axis();
             dataset.YAxis = new Axis();
             dataset.ZAxis = new Axis();
-            surfacePlot.DataSet = dataset;
             surfacePlot.HeightData = heightData;
+            surfacePlot.DataSet = dataset;
         }
     }
 }
