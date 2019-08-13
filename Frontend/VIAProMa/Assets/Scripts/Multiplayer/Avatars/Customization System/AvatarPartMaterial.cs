@@ -13,5 +13,18 @@ public class AvatarPartMaterial : ScriptableObject
     {
         return colorVariants.GetColor(index);
     }
-    public int ColorVariationCount { get => colorVariants.ColorVariationCount; }
+    public int ColorVariationCount
+    {
+        get
+        {
+            if (colorVariants == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return colorVariants.ColorVariationCount;
+            }
+        }
+    }
 }

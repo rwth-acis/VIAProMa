@@ -14,20 +14,6 @@ public class AvatarTestRunner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
-            //avatarConfigController.ColorIndex++;
-            //if (avatarConfigController.ColorIndex >= avatarConfigController.CurrentPart.GetMaterialColorVariationCount(avatarConfigController.MaterialIndex))
-            //{
-            //    avatarConfigController.MaterialIndex++;
-            //    if (avatarConfigController.MaterialIndex >= avatarConfigController.CurrentPart.MaterialVariationCount)
-            //    {
-            //        avatarConfigController.ModelIndex++;
-            //        if (avatarConfigController.ModelIndex >= avatarConfigController.AvatarParts.Length)
-            //        {
-            //            avatarConfigController.ModelIndex = 0;
-            //        }
-            //    }
-            //}
-
             avatarConfigController.ModelIndex = modelIndex;
             avatarConfigController.MaterialIndex = materialIndex;
             avatarConfigController.ColorIndex = colorIndex;

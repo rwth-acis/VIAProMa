@@ -64,7 +64,13 @@ public class AvatarConfigurationController : MonoBehaviour
 
     public void ApplyConfiguration()
     {
-        if (ModelIndex < avatarParts.Length
+        // handle case that no material variation was given (e.g. for the case "do not show this part")
+        if (avatarParts[ModelIndex].Mesh == null && avatarParts[ModelIndex].MaterialVariationCount == 0)
+        {
+            SetConfiguration(null, null, Color.white);
+        }
+        // otherwise set the part's appearance according to the indices
+        else if (ModelIndex < avatarParts.Length
             && MaterialIndex < avatarParts[ModelIndex].MaterialVariationCount)
         {
             AvatarPartMaterial avatarMat = avatarParts[ModelIndex].GetAvatarPartMaterial(MaterialIndex);
