@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class AvatarConfigurationController : MonoBehaviour
 {
-    [SerializeField] private SkinnedMeshRenderer partRenderer;
     [SerializeField] private AvatarPart[] avatarParts;
+
+    private SkinnedMeshRenderer partRenderer;
+
     private int modelIndex;
     private int materialIndex;
     private int colorIndex;
@@ -33,12 +35,15 @@ public class AvatarConfigurationController : MonoBehaviour
 
     public AvatarPart[] AvatarParts { get => avatarParts; }
 
+    public AvatarPart CurrentPart { get => avatarParts[modelIndex]; }
+
     private void Awake()
     {
         // check setup
+        partRenderer = GetComponent<SkinnedMeshRenderer>();
         if (partRenderer == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(partRenderer));
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(partRenderer), gameObject);
         }
         if (avatarParts.Length == 0)
         {

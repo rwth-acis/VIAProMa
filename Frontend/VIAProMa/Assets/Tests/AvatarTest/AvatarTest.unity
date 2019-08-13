@@ -706,6 +706,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Avatar1_Hair
       objectReference: {fileID: 0}
+    - target: {fileID: 100040, guid: b95b211d5d4886f41a3b5b66df087176, type: 3}
+      propertyPath: m_Name
+      value: Avatar1_Shirt
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: b95b211d5d4886f41a3b5b66df087176, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -922,10 +926,6 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
-    - target: {fileID: 100040, guid: b95b211d5d4886f41a3b5b66df087176, type: 3}
-      propertyPath: m_Name
-      value: Avatar1_Shirt
-      objectReference: {fileID: 0}
     - target: {fileID: 400040, guid: b95b211d5d4886f41a3b5b66df087176, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -984,6 +984,26 @@ MonoBehaviour:
   maxHorizontalRotation: 25
   minVerticalRotation: -10
   maxVerticalRotation: 8
+--- !u!1 &1875274475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100038, guid: b95b211d5d4886f41a3b5b66df087176,
+    type: 3}
+  m_PrefabInstance: {fileID: 1875274469}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1875274476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875274475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 062af784d112f774a8c5b451b50a1c5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatarParts:
+  - {fileID: 11400000, guid: aaa11e54da6609b4ab9a6b7f3ee51536, type: 2}
 --- !u!1 &2049334655 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100036, guid: b95b211d5d4886f41a3b5b66df087176,
@@ -1003,3 +1023,47 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   partVariants: {fileID: 11400000, guid: 7ad50cb62809cb8419b6d6856ca61858, type: 2}
+--- !u!1 &2143989691
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2143989693}
+  - component: {fileID: 2143989692}
+  m_Layer: 0
+  m_Name: Test Runner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2143989692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143989691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f7134004ce83db4090a1c97955b1bdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatarConfigController: {fileID: 1875274476}
+--- !u!4 &2143989693
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143989691}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
