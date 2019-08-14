@@ -49,7 +49,7 @@ public class AvatarConfigurationController : MonoBehaviour
         {
             SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(avatarParts));
         }
-        for (int i=0;i<avatarParts.Length;i++)
+        for (int i = 0; i < avatarParts.Length; i++)
         {
             if (avatarParts[i] == null)
             {
@@ -78,7 +78,7 @@ public class AvatarConfigurationController : MonoBehaviour
 
             if (ColorIndex < avatarMat.ColorVariationCount)
             {
-                 avatarMatColor = avatarMat.GetColor(ColorIndex);
+                avatarMatColor = avatarMat.GetColor(ColorIndex);
             }
 
             SetConfiguration(avatarParts[ModelIndex].Mesh, avatarMat.Material, avatarMatColor);
