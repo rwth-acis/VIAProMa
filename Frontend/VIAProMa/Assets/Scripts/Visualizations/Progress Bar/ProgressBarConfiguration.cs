@@ -5,10 +5,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Configuration window for progress bars
+/// </summary>
 public class ProgressBarConfiguration : ConfigurationWindow
 {
+    [Tooltip("The UI which handles the issue selection")]
     [SerializeField] private ConfigurationIssueSelectionUI issueSelectionUI;
 
+    /// <summary>
+    /// Gets or sets whether the window is enabled
+    /// If the window is disabled, all controls will be disabled so that the user cannot interact with the window anymore
+    /// </summary>
     public override bool WindowEnabled
     {
         get => base.WindowEnabled;
@@ -19,6 +27,9 @@ public class ProgressBarConfiguration : ConfigurationWindow
         }
     }
 
+    /// <summary>
+    /// Checks the component's setup
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -32,6 +43,10 @@ public class ProgressBarConfiguration : ConfigurationWindow
         }
     }
 
+    /// <summary>
+    /// Opens the configuration window
+    /// Determines the position where the window should be shown
+    /// </summary>
     public override void Open()
     {
         base.Open();

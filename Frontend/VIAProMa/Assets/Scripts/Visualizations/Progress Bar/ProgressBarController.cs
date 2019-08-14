@@ -3,18 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Visual controller for the progress bar
+/// Handles the data visualization and the non-uniform scaling
+/// </summary>
 public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
 {
+    [Header("Visualization Elements")]
+    [Tooltip("End cap of the progress bar at the positive end")]
     [SerializeField] private Transform capPos;
+    [Tooltip("End cap of the progress bar at the negative end")]
     [SerializeField] private Transform capNeg;
+    [Tooltip("Parent transform containing all tube GameObjects")]
     [SerializeField] private Transform tubes;
+    [Tooltip("Bar which visualizes how many issues are done")]
     [SerializeField] private Transform innerBarDone;
+    [Tooltip("Bar which visualizes how many isses are in progress")]
     [SerializeField] private Transform innerBarInProgress;
+    [Tooltip("The collider of the progress bar")]
     [SerializeField] private CapsuleCollider tubeCollider;
+
+    [Header("References")]
+    [Tooltip("Reference to the bounding box of the progress bar")]
     [SerializeField] private BoundingBox boundingBox;
+    [Tooltip("Reference to the title label of the progress bar")]
     [SerializeField] private TextLabel textLabel;
 
+    /// <summary>
+    /// Minimum length of the progress bar
+    /// </summary>
     public float minLength = 0.05f;
+    /// <summary>
+    /// Maximum length of the progress bar
+    /// </summary>
     public float maxLength = 3f;
 
     private float percentageDone;
@@ -22,8 +43,14 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
 
     private BoxCollider boundingBoxCollider;
 
+    /// <summary>
+    /// Gets the length of the progress bar (at overall scale 1)
+    /// </summary>
     public float Length { get => tubes.localScale.x; }
 
+    /// <summary>
+    /// Gets or sets the title of the progress bar and applies it to the text label
+    /// </summary>
     public string Title
     {
         get => textLabel.Text;
