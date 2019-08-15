@@ -836,7 +836,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400024, guid: b95b211d5d4886f41a3b5b66df087176, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.11099642
+      value: 0.1109964
       objectReference: {fileID: 0}
     - target: {fileID: 400024, guid: b95b211d5d4886f41a3b5b66df087176, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1062,12 +1062,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1875274469}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1875274481 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400006, guid: b95b211d5d4886f41a3b5b66df087176,
-    type: 3}
-  m_PrefabInstance: {fileID: 1875274469}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1875274482 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100002, guid: b95b211d5d4886f41a3b5b66df087176,
@@ -1086,15 +1080,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9737eca3c64d2a40ad98bf7895274dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chestBone: {fileID: 1875274481}
+  chestBone: {fileID: 0}
   neckBone: {fileID: 1875274480}
   headBone: {fileID: 1875274479}
   eyeLeftBone: {fileID: 1875274478}
   eyeRightBone: {fileID: 1875274477}
-  handsMidpoint: {fileID: 0}
   position: {x: 0, y: 0, z: 0}
-  eulerAngles: {x: 0, y: 0, z: 0}
-  maximumHeadNeckAngles: {x: 45, y: 45, z: 45}
+  targetEulerAngles: {x: 0, y: 0, z: 0}
+  bodyFollowSpeed: 1
 --- !u!1 &2002061771 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100040, guid: b95b211d5d4886f41a3b5b66df087176,

@@ -8,7 +8,7 @@ using UnityEngine;
 /// Monitors the user's movement and synchronizes it with remote users
 /// Also handles incoming synchronization messages about the remote user movements
 /// </summary>
-public class AvatarMovementController : MonoBehaviourPun, IPunObservable
+public class AvatarMovementSynchronizer : MonoBehaviourPun, IPunObservable
 {
     [SerializeField] private Transform avatarLeftHand;
     [SerializeField] private Transform avatarRightHand;
