@@ -695,7 +695,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: 42d385a671a4cb7478aecb644b11e1e2, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: b4f9290445746c145bb92fb5f7e78616, type: 2}
+      objectReference: {fileID: 2100000, guid: b5beac3c2311faf49a4cf3282a3b7245, type: 2}
     - target: {fileID: 2300002, guid: 42d385a671a4cb7478aecb644b11e1e2, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -714,6 +714,68 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 938669388}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &938669391 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 42d385a671a4cb7478aecb644b11e1e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 938669388}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &938669392 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100004, guid: 42d385a671a4cb7478aecb644b11e1e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 938669388}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &938669393
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938669391}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.0375
+  m_Height: 0.031445503
+  m_Direction: 1
+  m_Center: {x: 0.0000000018626451, y: 0.015722752, z: 0}
+--- !u!114 &938669394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938669392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  States: {fileID: 11400000, guid: 5eac1712038236e4b8ffdb3893804fe1, type: 2}
+  InputAction:
+    id: 0
+    description: 
+    axisConstraint: 0
+  InputActionId: 0
+  IsGlobal: 0
+  Dimensions: 1
+  CanSelect: 1
+  CanDeselect: 1
+  VoiceCommand: 
+  RequiresFocus: 1
+  Profiles:
+  - Target: {fileID: 0}
+    Themes:
+    - {fileID: 11400000, guid: 34927bf1a1259e141a45f1dedff98d7f, type: 2}
+    HadDefaultTheme: 1
+  OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Events: []
 --- !u!1001 &1133185578
 PrefabInstance:
   m_ObjectHideFlags: 0
