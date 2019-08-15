@@ -12,7 +12,7 @@ public class AvatarSpineController : MonoBehaviour
 
     public Vector3 position;
     public Vector3 eulerAngles;
-    public Vector3 maximumHeadNeckAngles;
+    public float bodyFollowSpeed = 1f;
 
     private Quaternion initialChestRotation;
     private Quaternion initialNeckRotation;
@@ -52,34 +52,54 @@ public class AvatarSpineController : MonoBehaviour
 
     private void Update()
     {
-        Vector3 targetHeadNeckRotation = eulerAngles;
-        Vector3 targetBodyRotation = Vector3.zero;
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(eulerAngles), bodyFollowSpeed * Time.deltaTime);
+        Quaternion rotation = Quaternion.Euler(eulerAngles) * Quaternion.Inverse(transform.localRotation);
+        neckBone.localRotation = initialNeckRotation * rotation;
+        headBone.localRotation = initialHeadRotation * rotation;
 
-        if (Mathf.Abs(eulerAngles.x) > maximumHeadNeckAngles.x)
-        {
-            targetHeadNeckRotation.x = Mathf.Sign(eulerAngles.x) * maximumHeadNeckAngles.x;
-            targetBodyRotation.x = Mathf.Sign(eulerAngles.x) * (Mathf.Abs(eulerAngles.x) - maximumHeadNeckAngles.x);
-        }
-        if (Mathf.Abs(eulerAngles.y) > maximumHeadNeckAngles.y)
-        {
-            targetHeadNeckRotation.y = Mathf.Sign(eulerAngles.y) * maximumHeadNeckAngles.y;
-            targetBodyRotation.y = Mathf.Sign(eulerAngles.y) * (Mathf.Abs(eulerAngles.y) - maximumHeadNeckAngles.y);
-        }
-        if (Mathf.Abs(eulerAngles.z) > maximumHeadNeckAngles.z)
-        {
-            targetHeadNeckRotation.z = Mathf.Sign(eulerAngles.z) * maximumHeadNeckAngles.z;
-            targetBodyRotation.z = Mathf.Sign(eulerAngles.z) * (Mathf.Abs(eulerAngles.z) - maximumHeadNeckAngles.z);
-        }
+        // alternative using hand midpoints
 
-        transform.localEulerAngles = targetBodyRotation;
+        //Vector3 targetLookPos = handsMidpoint.position;
+        //targetLookPos.y = transform.position.y;
 
-        Quaternion rotation = Quaternion.Euler(targetHeadNeckRotation);
+        //transform.LookAt(targetLookPos);
+        //transform.Rotate(new Vector3(0, 180, 0));
 
-        neckBone.localRotation = Quaternion.Lerp(initialNeckRotation, initialNeckRotation * rotation, 0.5f);
-        headBone.localRotation = Quaternion.Lerp(initialHeadRotation, initialHeadRotation * rotation, 0.5f);
+        //Quaternion rotation = Quaternion.Euler(eulerAngles) * Quaternion.Inverse(transform.localRotation);
+        //neckBone.localRotation = Quaternion.Lerp(initialNeckRotation, initialNeckRotation * rotation, 0.5f);
+        //headBone.localRotation = Quaternion.Lerp(initialHeadRotation, initialHeadRotation * rotation, 0.5f);
 
 
+        // alternative using rotation limits:
 
-        lastPosition = position;
+        //Vector3 targetHeadNeckRotation = eulerAngles;
+        //Vector3 targetBodyRotation = Vector3.zero;
+
+        //if (Mathf.Abs(eulerAngles.x) > maximumHeadNeckAngles.x)
+        //{
+        //    targetHeadNeckRotation.x = Mathf.Sign(eulerAngles.x) * maximumHeadNeckAngles.x;
+        //    targetBodyRotation.x = Mathf.Sign(eulerAngles.x) * (Mathf.Abs(eulerAngles.x) - maximumHeadNeckAngles.x);
+        //}
+        //if (Mathf.Abs(eulerAngles.y) > maximumHeadNeckAngles.y)
+        //{
+        //    targetHeadNeckRotation.y = Mathf.Sign(eulerAngles.y) * maximumHeadNeckAngles.y;
+        //    targetBodyRotation.y = Mathf.Sign(eulerAngles.y) * (Mathf.Abs(eulerAngles.y) - maximumHeadNeckAngles.y);
+        //}
+        //if (Mathf.Abs(eulerAngles.z) > maximumHeadNeckAngles.z)
+        //{
+        //    targetHeadNeckRotation.z = Mathf.Sign(eulerAngles.z) * maximumHeadNeckAngles.z;
+        //    targetBodyRotation.z = Mathf.Sign(eulerAngles.z) * (Mathf.Abs(eulerAngles.z) - maximumHeadNeckAngles.z);
+        //}
+
+        //transform.localEulerAngles = targetBodyRotation;
+
+        //Quaternion rotation = Quaternion.Euler(targetHeadNeckRotation);
+
+        //neckBone.localRotation = Quaternion.Lerp(initialNeckRotation, initialNeckRotation * rotation, 0.5f);
+        //headBone.localRotation = Quaternion.Lerp(initialHeadRotation, initialHeadRotation * rotation, 0.5f);
+
+
+
+        //lastPosition = position;
     }
 }
