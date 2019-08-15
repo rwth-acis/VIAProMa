@@ -52,10 +52,12 @@ public class AvatarSpineController : MonoBehaviour
 
     private void Update()
     {
+        Quaternion headNeckTargetRotation = Quaternion.Euler(eulerAngles) * Quaternion.Inverse(transform.localRotation);
+        // apply rotation half and half to neck and head
+        neckBone.localRotation = Quaternion.Slerp(Quaternion.identity, headNeckTargetRotation, 0.5f) * initialNeckRotation;
+        headBone.localRotation = Quaternion.Slerp(Quaternion.identity, headNeckTargetRotation, 0.5f) * initialHeadRotation;
+
         transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(eulerAngles), bodyFollowSpeed * Time.deltaTime);
-        Quaternion rotation = Quaternion.Euler(eulerAngles) * Quaternion.Inverse(transform.localRotation);
-        neckBone.localRotation = initialNeckRotation * rotation;
-        headBone.localRotation = initialHeadRotation * rotation;
 
         // alternative using hand midpoints
 
