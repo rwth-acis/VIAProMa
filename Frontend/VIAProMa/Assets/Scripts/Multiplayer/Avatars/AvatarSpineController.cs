@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class AvatarSpineController : MonoBehaviour
 {
-    [SerializeField] private Transform chestBone;
     [SerializeField] private Transform neckBone;
     [SerializeField] private Transform headBone;
     [SerializeField] private Transform eyeLeftBone;
     [SerializeField] private Transform eyeRightBone;
 
     public Vector3 position;
-    public Vector3 eulerAngles;
+    public Vector3 targetEulerAngles;
     public float bodyFollowSpeed = 1f;
 
-    private Quaternion initialChestRotation;
     private Quaternion initialNeckRotation;
     private Quaternion initialHeadRotation;
     private Vector3 eyeMiddle;
@@ -23,10 +21,6 @@ public class AvatarSpineController : MonoBehaviour
 
     private void Awake()
     {
-        if (chestBone == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(chestBone));
-        }
         if (neckBone == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(neckBone));
@@ -47,17 +41,17 @@ public class AvatarSpineController : MonoBehaviour
         eyeMiddle = Vector3.Lerp(eyeLeftBone.localPosition, eyeRightBone.localPosition, 0.5f);
         initialHeadRotation = headBone.localRotation;
         initialNeckRotation = neckBone.localRotation;
-        initialChestRotation = chestBone.localRotation;
     }
 
     private void Update()
     {
-        Quaternion headNeckTargetRotation = Quaternion.Euler(eulerAngles) * Quaternion.Inverse(transform.localRotation);
+        // difference between current base rotation and target rotation
+        Quaternion headNeckTargetRotation = Quaternion.Inverse(transform.localRotation) * Quaternion.Euler(targetEulerAngles);
         // apply rotation half and half to neck and head
         neckBone.localRotation = Quaternion.Slerp(Quaternion.identity, headNeckTargetRotation, 0.5f) * initialNeckRotation;
         headBone.localRotation = Quaternion.Slerp(Quaternion.identity, headNeckTargetRotation, 0.5f) * initialHeadRotation;
 
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(eulerAngles), bodyFollowSpeed * Time.deltaTime);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(targetEulerAngles), bodyFollowSpeed * Time.deltaTime);
 
         // alternative using hand midpoints
 
@@ -99,9 +93,5 @@ public class AvatarSpineController : MonoBehaviour
 
         //neckBone.localRotation = Quaternion.Lerp(initialNeckRotation, initialNeckRotation * rotation, 0.5f);
         //headBone.localRotation = Quaternion.Lerp(initialHeadRotation, initialHeadRotation * rotation, 0.5f);
-
-
-
-        //lastPosition = position;
     }
 }
