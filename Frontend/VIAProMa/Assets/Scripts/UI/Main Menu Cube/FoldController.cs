@@ -123,6 +123,10 @@ public class FoldController : MonoBehaviour
         OnFinished?.Invoke();
     }
 
+    /// <summary>
+    /// Activates or deactivates the supplementary controls for the cube
+    /// </summary>
+    /// <param name="active">If true, controls will be activated</param>
     private void SetControlsActive(bool active)
     {
         onOffButton.gameObject.SetActive(active);
