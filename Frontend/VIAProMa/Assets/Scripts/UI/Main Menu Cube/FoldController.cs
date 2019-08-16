@@ -10,6 +10,7 @@ public class FoldController : MonoBehaviour
     [SerializeField] private Transform cubePivot;
     [SerializeField] private Interactable onOffButton;
     [SerializeField] private MainMenuAnimationEventHandler animationHandler;
+    [SerializeField] private AppBarSpanwer appBarSpawner;
 
     private const string menuOpenAnimParam = "MenuOpen";
     private Vector3 originalScale;
@@ -34,6 +35,10 @@ public class FoldController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(animationHandler));
         }
+        if (appBarSpawner == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(appBarSpawner));
+        }
         originalScale = transform.localScale;
     }
 
@@ -49,6 +54,8 @@ public class FoldController : MonoBehaviour
     {
         animationHandler.CubeFolded -= OnCubeFolded;
         onOffButton.gameObject.SetActive(true);
+        appBarSpawner.gameObject.SetActive(true); // activate bounding box-related components, e.g. collider
+        appBarSpawner.SpawnedInstance.SetActive(true);
         StartCoroutine(FadeSize(0.25f * Vector3.one, 0.5f));
     }
 
@@ -58,6 +65,8 @@ public class FoldController : MonoBehaviour
         StartCoroutine(FadeSize(0.5f * Vector3.one, 0.5f, () =>
         {
             onOffButton.gameObject.SetActive(false);
+            appBarSpawner.gameObject.SetActive(false); // de-activate bounding box-related components, e.g. collider
+            appBarSpawner.SpawnedInstance.SetActive(false);
             cubeAnimator.SetBool(menuOpenAnimParam, true);
         }));
         MenuOpen = true;
