@@ -9,6 +9,10 @@ public class FoldController : MonoBehaviour
     [SerializeField] private Animator cubeAnimator;
     [SerializeField] private Transform cubePivot;
     [SerializeField] private Interactable onOffButton;
+    [SerializeField] private MainMenuAnimationEventHandler animationHandler;
+
+    private const string menuOpenAnimParam = "MenuOpen";
+    private Vector3 originalScale;
 
     public bool MenuOpen { get; private set; }
 
@@ -26,19 +30,35 @@ public class FoldController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(onOffButton));
         }
+        if (animationHandler == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(animationHandler));
+        }
+        originalScale = transform.localScale;
     }
 
     public void FoldCube()
     {
+        StopAllCoroutines();
+        MenuOpen = false;
+        animationHandler.CubeFolded += OnCubeFolded;
+        cubeAnimator.SetBool(menuOpenAnimParam, false);
+    }
+
+    private void OnCubeFolded(object sender, EventArgs e)
+    {
+        animationHandler.CubeFolded -= OnCubeFolded;
+        onOffButton.gameObject.SetActive(true);
+        StartCoroutine(FadeSize(0.25f * Vector3.one, 0.5f));
     }
 
     public void UnFoldCube()
     {
-        Debug.Log("Unfolding cube");
+        StopAllCoroutines();
         StartCoroutine(FadeSize(0.5f * Vector3.one, 0.5f, () =>
         {
             onOffButton.gameObject.SetActive(false);
-            cubeAnimator.SetBool("MenuOpen", true);
+            cubeAnimator.SetBool(menuOpenAnimParam, true);
         }));
         MenuOpen = true;
     }

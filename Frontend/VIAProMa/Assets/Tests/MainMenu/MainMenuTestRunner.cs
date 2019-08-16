@@ -10,7 +10,14 @@ public class MainMenuTestRunner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
-            cubeFoldController.UnFoldCube();
+            if (cubeFoldController.MenuOpen)
+            {
+                cubeFoldController.FoldCube();
+            }
+            else
+            {
+                cubeFoldController.UnFoldCube();
+            }
         }
     }
 }
