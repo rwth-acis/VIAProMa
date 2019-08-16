@@ -1,0 +1,16 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MainMenuTestRunner : MonoBehaviour
+{
+    public FoldController cubeFoldController;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            cubeFoldController.UnFoldCube();
+        }
+    }
+}
