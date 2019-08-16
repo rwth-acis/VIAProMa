@@ -4,19 +4,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the unfolding and folding procedure of the main menu cube
+/// Also takes care of the states of supplementary components so that they fit to the folded or unfolded menu
+/// </summary>
 public class FoldController : MonoBehaviour
 {
+    [Tooltip("The animator which controls the folding animation")]
     [SerializeField] private Animator cubeAnimator;
+    [Tooltip("Transform which poses the scaling pivot for the cube")]
     [SerializeField] private Transform cubePivot;
+    [Tooltip("Reference to the button which folds and unfolds the menu")]
     [SerializeField] private Interactable onOffButton;
+    [Tooltip("Parent of the labels which are shown in the compact cube form")]
+    [SerializeField] private GameObject labelsParent;
+    [Tooltip("The animation event handler which registers the events from the folding animation")]
     [SerializeField] private MainMenuAnimationEventHandler animationHandler;
+    [Tooltip("Reference to the app bar spawner for the menu cube (should be placed on the same child which holds the bounding box")]
     [SerializeField] private AppBarSpanwer appBarSpawner;
 
     private const string menuOpenAnimParam = "MenuOpen";
     private Vector3 originalScale;
 
+    /// <summary>
+    /// True if the menu is currently open/ unfolded
+    /// </summary>
     public bool MenuOpen { get; private set; }
 
+    /// <summary>
+    /// Checks the setup of the component
+    /// </summary>
     private void Awake()
     {
         if(cubeAnimator == null)
@@ -31,6 +48,10 @@ public class FoldController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(onOffButton));
         }
+        if (labelsParent == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(labelsParent));
+        }
         if (animationHandler == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(animationHandler));
@@ -42,6 +63,9 @@ public class FoldController : MonoBehaviour
         originalScale = transform.localScale;
     }
 
+    /// <summary>
+    /// Folds the menu back into the compact cube display
+    /// </summary>
     public void FoldCube()
     {
         StopAllCoroutines();
@@ -50,28 +74,41 @@ public class FoldController : MonoBehaviour
         cubeAnimator.SetBool(menuOpenAnimParam, false);
     }
 
+    /// <summary>
+    /// Called if the cube has been fully folded and the animation has finished
+    /// Activates the necessary controls for the cube view and returns the cube to its small size
+    /// </summary>
+    /// <param name="sender">Sender of the event</param>
+    /// <param name="e">Event arguments</param>
     private void OnCubeFolded(object sender, EventArgs e)
     {
         animationHandler.CubeFolded -= OnCubeFolded;
-        onOffButton.gameObject.SetActive(true);
-        appBarSpawner.gameObject.SetActive(true); // activate bounding box-related components, e.g. collider
-        appBarSpawner.SpawnedInstance.SetActive(true);
+        SetControlsActive(true);
         StartCoroutine(FadeSize(0.25f * Vector3.one, 0.5f));
     }
 
+    /// <summary>
+    /// Unfolds the main menu from its compact cube form into its menu structure
+    /// First increases the size of the cube, then deactivates controls visible in the cube form and then it starts the unfold animation
+    /// </summary>
     public void UnFoldCube()
     {
         StopAllCoroutines();
         StartCoroutine(FadeSize(0.5f * Vector3.one, 0.5f, () =>
         {
-            onOffButton.gameObject.SetActive(false);
-            appBarSpawner.gameObject.SetActive(false); // de-activate bounding box-related components, e.g. collider
-            appBarSpawner.SpawnedInstance.SetActive(false);
+            SetControlsActive(false);
             cubeAnimator.SetBool(menuOpenAnimParam, true);
         }));
         MenuOpen = true;
     }
 
+    /// <summary>
+    /// Fades the cube pivot between different sizes in a given time span
+    /// </summary>
+    /// <param name="endSize">The target size after the fade has happened</param>
+    /// <param name="fadeTime">The time that fading between the current size and the endSize should take</param>
+    /// <param name="OnFinished">Action which is executed once the fading has finished</param>
+    /// <returns></returns>
     private IEnumerator FadeSize(Vector3 endSize, float fadeTime, Action OnFinished = null)
     {
         Vector3 startSize = cubePivot.localScale;
@@ -84,5 +121,13 @@ public class FoldController : MonoBehaviour
         }
         cubePivot.localScale = endSize;
         OnFinished?.Invoke();
+    }
+
+    private void SetControlsActive(bool active)
+    {
+        onOffButton.gameObject.SetActive(active);
+        appBarSpawner.gameObject.SetActive(active); // activate/deactivate bounding box-related components, e.g. collider
+        appBarSpawner.SpawnedInstance.SetActive(active);
+        labelsParent.SetActive(active);
     }
 }
