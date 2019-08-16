@@ -47,6 +47,10 @@ public class Keyboard : Singleton<Keyboard>
 
     private int currentKeySetPageIndex;
 
+    private List<string> autoCompleteOptions;
+    private List<string> prioritisedMatches;
+    private List<string> remainingMatches;
+
     /// <summary>
     /// The text on the keyboard
     /// </summary>
@@ -151,6 +155,10 @@ public class Keyboard : Singleton<Keyboard>
             }
         }
 
+        autoCompleteOptions = new List<string>();
+        prioritisedMatches = new List<string>();
+        remainingMatches = new List<string>();
+
         // update the view to set the input field's text
         UpdateView();
     }
@@ -191,6 +199,16 @@ public class Keyboard : Singleton<Keyboard>
     /// <param name="text">The text which will initially be shown on the keyboard</param>
     public void Open(Vector3 position, Vector3 eulerRotation, string text)
     {
+        Open(position, eulerRotation, text, new List<string>());
+    }
+
+    public void Open(Vector3 position, Vector3 eulerRotation, List<string> autoCompleteOptions)
+    {
+        Open(position, eulerRotation, "", autoCompleteOptions);
+    }
+
+    public void Open(Vector3 position, Vector3 eulerRotation, string text, List<string> autoCompleteOptions)
+    {
         // show keyboard
         gameObject.SetActive(true);
         // go back to the standard letters
@@ -202,6 +220,8 @@ public class Keyboard : Singleton<Keyboard>
         transform.eulerAngles = eulerRotation;
 
         CursorPos = text.Length;
+
+        this.autoCompleteOptions = autoCompleteOptions;
     }
 
     /// <summary>
@@ -276,6 +296,11 @@ public class Keyboard : Singleton<Keyboard>
         // force a mesh update so that the text is already applied when the text cursor tries to find the correct position
         inputField.ContentField.ForceMeshUpdate(true);
         PositionCursor();
+
+        if (autoCompleteOptions.Count > 0)
+        {
+            FindAutoCompleteMatches();
+        }
     }
 
     private void UpdateShiftKeys()
@@ -330,6 +355,25 @@ public class Keyboard : Singleton<Keyboard>
             else
             {
                 keySetPages[i].SetActive(false);
+            }
+        }
+    }
+
+    private void FindAutoCompleteMatches()
+    {
+        prioritisedMatches.Clear();
+        remainingMatches.Clear();
+        foreach(string option in autoCompleteOptions)
+        {
+            string optionLower = option.ToLowerInvariant();
+            string textLower = text;
+            if (optionLower.StartsWith(textLower))
+            {
+                prioritisedMatches.Add(option);
+            }
+            if (optionLower.Contains(textLower))
+            {
+                remainingMatches.Add(option);
             }
         }
     }
