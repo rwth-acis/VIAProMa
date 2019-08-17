@@ -42,6 +42,11 @@ namespace i5.ViaProMa.UI
             set => fieldButton.Enabled = value;
         }
 
+        public List<string> AutocompleteOptions
+        {
+            get;set;
+        }
+
         private void Awake()
         {
             if (contentField == null)
@@ -63,7 +68,7 @@ namespace i5.ViaProMa.UI
             }
             else
             {
-                Keyboard.Instance.Open(transform.position - transform.forward * 0.05f, transform.eulerAngles, Text);
+                Keyboard.Instance.Open(transform.position - transform.forward * 0.05f, transform.eulerAngles, Text, AutocompleteOptions);
                 Keyboard.Instance.InputFinished += OnKeyboardInputFinished;
             }
         }

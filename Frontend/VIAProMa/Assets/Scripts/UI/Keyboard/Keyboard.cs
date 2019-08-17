@@ -245,7 +245,14 @@ public class Keyboard : Singleton<Keyboard>
         CursorPos = text.Length;
 
         this.autoCompleteOptions = autoCompleteOptions;
-        this.autoCompleteOptions.Sort();
+        if (this.autoCompleteOptions == null)
+        {
+            this.autoCompleteOptions = new List<string>();
+        }
+        else
+        {
+            this.autoCompleteOptions.Sort();
+        }
     }
 
     /// <summary>

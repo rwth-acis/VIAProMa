@@ -223,6 +223,14 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         if (res.Successful)
         {
             projects = res.Value;
+
+            // create the list of project strings for the autocomplete function
+            List<string> projectStrings = new List<string>();
+            for (int i=0;i<projects.Length;i++)
+            {
+                projectStrings.Add(projects[i].name);
+            }
+            reqBazProjectInput.AutocompleteOptions = projectStrings;
         }
         else
         {
