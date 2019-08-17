@@ -458,7 +458,7 @@ public class Keyboard : Singleton<Keyboard>
         autocompleteGrid.UpdateCollection();
         // position the grid
         Vector3 gridPos = new Vector3(0, 0.32f, 0);
-        gridPos.y += (itemIndex * autocompleteGrid.CellHeight) / 2f;
+        gridPos.y += (itemIndex * autocompleteGrid.CellHeight) / 2f + 0.01f;
         autocompleteGrid.transform.localPosition = gridPos;
     }
 }

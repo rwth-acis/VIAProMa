@@ -41,8 +41,10 @@ public class AutocompleteItem : MonoBehaviour
     {
         if (keyboard != null)
         {
-            keyboard.Text = Text;
-            keyboard.CursorPos = Text.Length;
+            // store the text in a temporary variable: when changing the text of the keyboard, the text of this item will already be changed
+            string tmpText = string.Copy(text);
+            keyboard.Text = tmpText;
+            keyboard.CursorPos = tmpText.Length;
         }
         else
         {

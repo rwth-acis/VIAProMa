@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class KeyboardTestRunner : MonoBehaviour
 {
+    public List<string> autocompleteOptions;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
-            Keyboard.Instance.Open(new Vector3(0, 0, 2), Vector3.zero, new List<string>() { "hello", "infixHello", "Hat", "Hugo", "asdf", "world"});
-            string text = "Hello World";
+            Keyboard.Instance.Open(new Vector3(0, 0, 2), Vector3.zero, autocompleteOptions);
         }
     }
 }
