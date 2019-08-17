@@ -8,7 +8,8 @@ public class KeyboardTestRunner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
-            Keyboard.Instance.Open(new Vector3(0, 0, 2), Vector3.zero);
+            Keyboard.Instance.Open(new Vector3(0, 0, 2), Vector3.zero, new List<string>() { "hello", "infixHello", "Hat", "Hugo", "asdf", "world"});
+            string text = "Hello World";
         }
     }
 }

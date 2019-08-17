@@ -73,7 +73,7 @@ public class DiagnosticsSender : MonoBehaviour
 
         if (sendMode != DiagnosticSendMode.INTERVAL && maxMessageBufferSize > 0)
         {
-            while(maxMessageBufferSize > logs.Count)
+            while(logs.Count > 0 && maxMessageBufferSize > logs.Count)
             {
                 logs.RemoveAt(0);
             }

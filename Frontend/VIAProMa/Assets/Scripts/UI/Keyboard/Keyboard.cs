@@ -1,5 +1,6 @@
 ﻿using HoloToolkit.Unity;
 using i5.ViaProMa.UI;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,6 +27,15 @@ public class Keyboard : Singleton<Keyboard>
     [Tooltip("References to key set pages between the user can switch in order to type standard letters and special characters")]
     [SerializeField] private GameObject[] keySetPages;
 
+    [Tooltip("Grid for the autocomplete items")]
+    [SerializeField] private GridObjectCollection autocompleteGrid;
+
+    [Tooltip("Autocomplete item prefab")]
+    [SerializeField] private GameObject autocompleteItemPrefab;
+
+    [Tooltip("Maximum number of autocomplete items which should be shown")]
+    public int maxNumberOfAutocompleteItems = 4;
+
     /// <summary>
     /// Event which is raised once the user has finished typing and dismisses the keyboard
     /// Contains information about the typed text and whether the input was aborted or accepted by the user
@@ -50,6 +60,7 @@ public class Keyboard : Singleton<Keyboard>
     private List<string> autoCompleteOptions;
     private List<string> prioritisedMatches;
     private List<string> remainingMatches;
+    private List<AutocompleteItem> autocompleteItems;
 
     /// <summary>
     /// The text on the keyboard
@@ -154,6 +165,18 @@ public class Keyboard : Singleton<Keyboard>
                 }
             }
         }
+        if (autocompleteGrid == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(autocompleteGrid));
+        }
+        if (autocompleteItemPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(autocompleteItemPrefab));
+        }
+        else
+        {
+            CreateAutocompleteItems();
+        }
 
         autoCompleteOptions = new List<string>();
         prioritisedMatches = new List<string>();
@@ -222,6 +245,7 @@ public class Keyboard : Singleton<Keyboard>
         CursorPos = text.Length;
 
         this.autoCompleteOptions = autoCompleteOptions;
+        this.autoCompleteOptions.Sort();
     }
 
     /// <summary>
@@ -297,9 +321,17 @@ public class Keyboard : Singleton<Keyboard>
         inputField.ContentField.ForceMeshUpdate(true);
         PositionCursor();
 
-        if (autoCompleteOptions.Count > 0)
+        if (autoCompleteOptions.Count > 0 && text.Length > 0)
         {
             FindAutoCompleteMatches();
+            DisplayAutoCompleteMatches();
+        }
+        else
+        {
+            foreach(AutocompleteItem item in autocompleteItems)
+            {
+                item.Text = "";
+            }
         }
     }
 
@@ -359,6 +391,22 @@ public class Keyboard : Singleton<Keyboard>
         }
     }
 
+    private void CreateAutocompleteItems()
+    {
+        autocompleteItems = new List<AutocompleteItem>();
+        for (int i=0;i<maxNumberOfAutocompleteItems;i++)
+        {
+            GameObject autocompleteItemInstance = Instantiate(autocompleteItemPrefab, autocompleteGrid.transform);
+            AutocompleteItem item = autocompleteItemInstance.GetComponent<AutocompleteItem>();
+            if (item == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AutocompleteItem), autocompleteItemInstance);
+            }
+            item.Setup(this);
+            autocompleteItems.Add(item);
+        }
+    }
+
     private void FindAutoCompleteMatches()
     {
         prioritisedMatches.Clear();
@@ -366,15 +414,51 @@ public class Keyboard : Singleton<Keyboard>
         foreach(string option in autoCompleteOptions)
         {
             string optionLower = option.ToLowerInvariant();
-            string textLower = text;
+            string textLower = text.ToLowerInvariant();
             if (optionLower.StartsWith(textLower))
             {
                 prioritisedMatches.Add(option);
             }
-            if (optionLower.Contains(textLower))
+            else if (optionLower.Contains(textLower))
             {
                 remainingMatches.Add(option);
             }
         }
+    }
+
+    private void DisplayAutoCompleteMatches()
+    {
+        int itemIndex = 0;
+        // insert prioritised matches first
+        for (int i=0;i<prioritisedMatches.Count;i++)
+        {
+            if (itemIndex >= maxNumberOfAutocompleteItems)
+            {
+                break;
+            }
+            autocompleteItems[itemIndex].Text = prioritisedMatches[i];
+            itemIndex++;
+        }
+        // insert remaining matches
+        for (int i = 0; i < remainingMatches.Count; i++)
+        {
+            if (itemIndex >= maxNumberOfAutocompleteItems)
+            {
+                break;
+            }
+            autocompleteItems[itemIndex].Text = remainingMatches[i];
+            itemIndex++;
+        }
+        // empty remaining items
+        for (int i=itemIndex; i < maxNumberOfAutocompleteItems;i++)
+        {
+            autocompleteItems[i].Text = "";
+        }
+        // update the grid to show the items in the correct position
+        autocompleteGrid.UpdateCollection();
+        // position the grid
+        Vector3 gridPos = new Vector3(0, 0.32f, 0);
+        gridPos.y += (itemIndex * autocompleteGrid.CellHeight) / 2f;
+        autocompleteGrid.transform.localPosition = gridPos;
     }
 }
