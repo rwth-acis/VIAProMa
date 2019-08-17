@@ -29,13 +29,12 @@ public class SurfacePlot : Diagram
         set
         {
             dataSet = value;
-            pointBounds = GetBoundsOfData(dataSet.Points);
-            dataSet.XAxis.DataMin = pointBounds.min.x;
-            dataSet.YAxis.DataMin = pointBounds.min.y;
-            dataSet.ZAxis.DataMin = pointBounds.min.z;
-            dataSet.XAxis.DataMax = pointBounds.max.x;
-            dataSet.YAxis.DataMax = pointBounds.max.y;
-            dataSet.ZAxis.DataMax = pointBounds.max.z;
+            dataSet.XAxis.DataMin = 0;
+            dataSet.YAxis.DataMin = 0;
+            dataSet.ZAxis.DataMin = 0;
+            dataSet.XAxis.DataMax = gridSize.x;
+            dataSet.YAxis.DataMax = 1;
+            dataSet.ZAxis.DataMax = gridSize.y;
             xAxis.Axis = dataSet.XAxis;
             yAxis.Axis = dataSet.YAxis;
             zAxis.Axis = dataSet.ZAxis;
