@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ItemFrame : MonoBehaviour
 {
-    private IVariantSelector selector;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
-    private IVariantDisplay display;
+    private VariantSelector selector;
 
 
     public int ItemIndex
@@ -16,17 +16,20 @@ public class ItemFrame : MonoBehaviour
 
     private void Awake()
     {
-        display = GetComponent<IVariantDisplay>();
+        if (spriteRenderer == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(spriteRenderer));
+        }
     }
 
-    public void Setup(IVariantSelector selector)
+    public void Setup(VariantSelector selector)
     {
         this.selector = selector;
     }
 
     public void UpdateDisplay()
     {
-        display.UpdateDisplay();
+        spriteRenderer.sprite = selector.Items[ItemIndex].Sprite;
     }
 
     public void Select()

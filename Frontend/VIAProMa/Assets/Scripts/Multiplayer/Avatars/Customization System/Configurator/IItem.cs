@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IVariantSelector
+public interface IItem
 {
-    void Select(int index);
+    Sprite Sprite { get; }
 }

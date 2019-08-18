@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AvatarPart", menuName = "Scriptable Objects/Avatar/Avatar Part", order = 1)]
-public class AvatarPart : ScriptableObject
+public class AvatarPart : ScriptableObject, IItem
 {
+    [SerializeField] private Sprite sprite;
     [SerializeField] private Mesh mesh;
     [SerializeField] private AvatarPartMaterial[] avatarPartMaterials;
 
@@ -16,6 +17,11 @@ public class AvatarPart : ScriptableObject
     }
 
     public int MaterialVariationCount { get => avatarPartMaterials.Length; }
+
+    public Sprite Sprite
+    {
+        get => sprite;
+    }
 
     public Color GetMaterialColorVariation(int materialIndex, int colorIndex)
     {
