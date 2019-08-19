@@ -34,6 +34,11 @@ public class AvatarConfigurator : MonoBehaviour
         modelSelector.ItemSelected += ModelItemSelected;
     }
 
+    private void Start()
+    {
+        OnCategorySelection();
+    }
+
     private void EnsureAvatarConfigController()
     {
         if (avatarConfigurationController == null)
