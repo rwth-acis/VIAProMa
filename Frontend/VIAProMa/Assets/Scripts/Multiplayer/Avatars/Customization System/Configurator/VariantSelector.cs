@@ -6,16 +6,24 @@ using UnityEngine;
 
 public class VariantSelector : MonoBehaviour
 {
-    [SerializeField] private InteractableToggleCollection selectionFrameCollection;
     [SerializeField] private ItemFrame[] itemFrames;
 
     private Interactable[] interactables;
     private int page = 0;
     private int selectedIndex;
 
+    private IItem[] items;
+
     public event EventHandler ItemSelected;
 
-    public IItem[] Items { get; set; }
+    public IItem[] Items {
+        get => items;
+        set
+        {
+            items = value;
+            UpdateDisplays();
+        }
+            }
 
     public int SelectedIndex
     {
@@ -23,6 +31,7 @@ public class VariantSelector : MonoBehaviour
         set
         {
             selectedIndex = value;
+            UpdateDisplays();
         }
     }
 
@@ -42,7 +51,6 @@ public class VariantSelector : MonoBehaviour
                 interactables[i] = interactable;
             }
         }
-        selectionFrameCollection.ToggleList = interactables;
 
         if (itemFrames.Length == 0)
         {

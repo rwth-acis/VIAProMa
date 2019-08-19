@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2740948732086913004}
   - component: {fileID: 6212352102753319287}
+  - component: {fileID: 7760487800057583647}
+  - component: {fileID: 3138826609102109138}
   m_Layer: 0
   m_Name: Avatar Model Option
   m_TagString: Untagged
@@ -47,6 +49,67 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 919624189867434521}
+--- !u!65 &7760487800057583647
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2740948732086913005}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.05, y: 0.05, z: 0.01}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3138826609102109138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2740948732086913005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  States: {fileID: 11400000, guid: 5eac1712038236e4b8ffdb3893804fe1, type: 2}
+  InputAction:
+    id: 0
+    description: 
+    axisConstraint: 0
+  InputActionId: 0
+  IsGlobal: 0
+  Dimensions: 2
+  CanSelect: 1
+  CanDeselect: 0
+  VoiceCommand: 
+  RequiresFocus: 1
+  Profiles:
+  - Target: {fileID: 2740948733931813414}
+    Themes:
+    - {fileID: 11400000, guid: 080dc136f48df464e9ca8283cf31bff9, type: 2}
+    - {fileID: 11400000, guid: 6469cee20ada61f48b655fcc96143fa1, type: 2}
+    HadDefaultTheme: 1
+  OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6212352102753319287}
+        m_MethodName: Select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Events: []
 --- !u!1 &2740948732938785544
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,6 +342,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 67d37ae31972f9345bfeebad88f5d656, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57fe302b7cd9a8b44b4cc69a30bcf32f, type: 3}
+--- !u!1 &2740948733931813414 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: 57fe302b7cd9a8b44b4cc69a30bcf32f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2740948733931715718}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2740948733931316742 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 57fe302b7cd9a8b44b4cc69a30bcf32f,

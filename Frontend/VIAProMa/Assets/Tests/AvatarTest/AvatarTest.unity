@@ -121,6 +121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 10582822}
+  - component: {fileID: 10582823}
   m_Layer: 0
   m_Name: AvatarConfigurator
   m_TagString: Untagged
@@ -145,6 +146,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &10582823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10582821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470ba1b67ef46df4293519640d2ee509, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  avatarParent: {fileID: 1930190010}
+  categoryCollection: {fileID: 703058571}
+  modelSelector: {fileID: 1918294811}
+  materialSelector: {fileID: 1041535157}
+  colorSelector: {fileID: 689825985}
 --- !u!1 &89140268
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,6 +658,36 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 10582823}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectGlassesCategory
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0824c296a5ddb0f4988805cf268dfca3, type: 3}
 --- !u!4 &441939774 stripped
@@ -1342,6 +1390,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 689825984}
+  - component: {fileID: 689825985}
   m_Layer: 0
   m_Name: Color Selection
   m_TagString: Untagged
@@ -1364,6 +1413,19 @@ Transform:
   m_Father: {fileID: 1282407102}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &689825985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689825983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 906908932875ce74e87e271a07485f39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemFrames: []
 --- !u!1 &689931347
 GameObject:
   m_ObjectHideFlags: 0
@@ -1468,11 +1530,21 @@ MonoBehaviour:
   - {fileID: 593340926610146831}
   - {fileID: 441939775}
   - {fileID: 2010266376}
-  - {fileID: 0}
   CurrentIndex: 0
   OnSelectionEvents:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 10582823}
+        m_MethodName: OnCategorySelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!4 &739893681 stripped
@@ -1633,6 +1705,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1041535156}
+  - component: {fileID: 1041535157}
   m_Layer: 0
   m_Name: Material Selection
   m_TagString: Untagged
@@ -1655,6 +1728,19 @@ Transform:
   m_Father: {fileID: 1282407102}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1041535157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041535155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 906908932875ce74e87e271a07485f39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemFrames: []
 --- !u!1 &1104679380
 GameObject:
   m_ObjectHideFlags: 0
@@ -2140,7 +2226,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1543933630}
   - component: {fileID: 1543933631}
-  - component: {fileID: 1543933632}
   m_Layer: 0
   m_Name: Selection Options
   m_TagString: Untagged
@@ -2193,25 +2278,6 @@ MonoBehaviour:
   rows: 3
   cellWidth: 0.06
   cellHeight: 0.06
---- !u!114 &1543933632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1543933629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8adeb8b21c6d120408d0aea984f6b26d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ToggleList: []
-  CurrentIndex: 0
-  OnSelectionEvents:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!1 &1555029128
 GameObject:
   m_ObjectHideFlags: 0
@@ -3622,7 +3688,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 906908932875ce74e87e271a07485f39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionFrameCollection: {fileID: 1543933632}
   itemFrames:
   - {fileID: 2740948732823529054}
   - {fileID: 1908430141}
@@ -3756,6 +3821,36 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 10582823}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectClothesCategory
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0824c296a5ddb0f4988805cf268dfca3, type: 3}
 --- !u!4 &2010266375 stripped
@@ -3793,7 +3888,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2012178954
 Transform:
   m_ObjectHideFlags: 0
@@ -4312,6 +4407,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 10582823}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectHairCategory
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100469389115609893, guid: 0824c296a5ddb0f4988805cf268dfca3,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0824c296a5ddb0f4988805cf268dfca3, type: 3}
