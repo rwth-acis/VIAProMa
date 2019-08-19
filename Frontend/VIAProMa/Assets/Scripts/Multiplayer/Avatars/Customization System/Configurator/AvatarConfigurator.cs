@@ -1,4 +1,5 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,16 +23,18 @@ public class AvatarConfigurator : MonoBehaviour
         }
         else
         {
-            FetchAvatarConfigController();
+            EnsureAvatarConfigController();
         }
 
         if (categoryCollection == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(categoryCollection));
         }
+
+        modelSelector.ItemSelected += ModelItemSelected;
     }
 
-    private void FetchAvatarConfigController()
+    private void EnsureAvatarConfigController()
     {
         if (avatarConfigurationController == null)
         {
@@ -60,7 +63,7 @@ public class AvatarConfigurator : MonoBehaviour
 
     public void SelectHairCategory()
     {
-        FetchAvatarConfigController();
+        EnsureAvatarConfigController();
         modelSelector.Items = avatarConfigurationController.HairController.AvatarParts;
         modelSelector.SelectedIndex = avatarConfigurationController.HairController.ModelIndex;
 
@@ -70,7 +73,7 @@ public class AvatarConfigurator : MonoBehaviour
 
     public void SelectGlassesCategory()
     {
-        FetchAvatarConfigController();
+        EnsureAvatarConfigController();
         modelSelector.Items = avatarConfigurationController.GlassesController.AvatarParts;
         modelSelector.SelectedIndex = avatarConfigurationController.GlassesController.ModelIndex;
 
@@ -80,11 +83,34 @@ public class AvatarConfigurator : MonoBehaviour
 
     public void SelectClothesCategory()
     {
-        FetchAvatarConfigController();
+        EnsureAvatarConfigController();
         modelSelector.Items = avatarConfigurationController.ClothesController.AvatarParts;
         modelSelector.SelectedIndex = avatarConfigurationController.ClothesController.ModelIndex;
 
         //materialSelector.Items = avatarConfigurationController.ClothesController.AvatarPartMaterials;
         //materialSelector.SelectedIndex = avatarConfigurationController.ClothesController.MaterialIndex;
+    }
+
+    private void ModelItemSelected(object sender, EventArgs e)
+    {
+        EnsureAvatarConfigController();
+        switch(categoryCollection.CurrentIndex)
+        {
+            case 0:
+                avatarConfigurationController.HairController.ModelIndex = modelSelector.SelectedIndex;
+                avatarConfigurationController.HairController.ApplyConfiguration();
+                break;
+            case 1:
+                avatarConfigurationController.GlassesController.ModelIndex = modelSelector.SelectedIndex;
+                avatarConfigurationController.GlassesController.ApplyConfiguration();
+                break;
+            case 2:
+                avatarConfigurationController.ClothesController.ModelIndex = modelSelector.SelectedIndex;
+                avatarConfigurationController.ClothesController.ApplyConfiguration();
+                break;
+            default:
+                Debug.LogError("Avatar Config UI accessed category which is out of bounds.", gameObject);
+                break;
+        }
     }
 }
