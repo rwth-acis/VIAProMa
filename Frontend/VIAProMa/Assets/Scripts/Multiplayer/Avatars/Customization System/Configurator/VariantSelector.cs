@@ -1,34 +1,48 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class VariantSelector : MonoBehaviour
 {
-    [SerializeField] protected InteractableToggleCollection selectionFrameCollection;
-    [SerializeField] protected ItemFrame[] itemFrames;
+    [SerializeField] private InteractableToggleCollection selectionFrameCollection;
+    [SerializeField] private ItemFrame[] itemFrames;
 
-    protected int page = 0;
+    private Interactable[] interactables;
+    private int page = 0;
+    private int selectedIndex;
 
-    public List<IItem> Items { get; set; }
+    public event EventHandler ItemSelected;
+
+    public IItem[] Items { get; set; }
+
+    public int SelectedIndex
+    {
+        get => selectedIndex;
+        set
+        {
+            selectedIndex = value;
+        }
+    }
 
     protected virtual void Awake()
     {
         // initialize the toggle collection
-        List<Interactable> interactables = new List<Interactable>();
-        foreach (Transform child in selectionFrameCollection.transform)
+        interactables = new Interactable[itemFrames.Length];
+        for (int i = 0; i < itemFrames.Length; i++)
         {
-            Interactable interactable = child.gameObject.GetComponent<Interactable>();
+            Interactable interactable = itemFrames[i].gameObject.GetComponent<Interactable>();
             if (interactable == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Interactable), child.gameObject);
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Interactable), itemFrames[i].gameObject);
             }
             else
             {
-                interactables.Add(interactable);
+                interactables[i] = interactable;
             }
         }
-        selectionFrameCollection.ToggleList = interactables.ToArray();
+        selectionFrameCollection.ToggleList = interactables;
 
         if (itemFrames.Length == 0)
         {
@@ -51,11 +65,20 @@ public class VariantSelector : MonoBehaviour
         for (int i = 0; i < itemFrames.Length; i++)
         {
             int index = (page * itemFrames.Length) + i;
-            if (index < Items.Count)
+            if (index < Items.Length)
             {
                 itemFrames[i].gameObject.SetActive(true);
-                itemFrames[i].ItemIndex = (page * itemFrames.Length) + i;
+                itemFrames[i].ItemIndex = index;
                 itemFrames[i].UpdateDisplay();
+
+                if (index == selectedIndex)
+                {
+                    interactables[i].SetDimensionIndex(1); // select
+                }
+                else
+                {
+                    interactables[i].SetDimensionIndex(0); // deselect
+                }
             }
             else
             {
@@ -67,5 +90,21 @@ public class VariantSelector : MonoBehaviour
 
     public virtual void Select(int index)
     {
+        SelectedIndex = index;
+        ItemSelected?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void PageUp()
+    {
+        page++;
+        page = Mathf.Min(page, Items.Length / itemFrames.Length);
+        UpdateDisplays();
+    }
+
+    public void PageDown()
+    {
+        page--;
+        page = Mathf.Max(page, 0);
+        UpdateDisplays();
     }
 }

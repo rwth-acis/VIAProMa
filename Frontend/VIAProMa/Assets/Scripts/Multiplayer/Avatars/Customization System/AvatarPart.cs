@@ -11,6 +11,11 @@ public class AvatarPart : ScriptableObject, IItem
 
     public Mesh Mesh { get => mesh; }
 
+    public AvatarPartMaterial[] PartMaterials
+    {
+        get => avatarPartMaterials;
+    }
+
     public AvatarPartMaterial GetAvatarPartMaterial(int index)
     {
         return avatarPartMaterials[index];

@@ -8,7 +8,7 @@ using UnityEngine;
 public class AvatarTestRunner : MonoBehaviour
 {
     [Tooltip("Configuration Controller for which to which the settings should be applied")]
-    public AvatarConfigurationController avatarConfigController;
+    public AvatarPartConfigurationController avatarConfigController;
 
     [Tooltip("The index of the model variant")]
     public int modelIndex;
