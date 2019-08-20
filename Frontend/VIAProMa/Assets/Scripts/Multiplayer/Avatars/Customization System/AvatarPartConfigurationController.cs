@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the configuration of one single avatar part
+/// </summary>
 public class AvatarPartConfigurationController : MonoBehaviour
 {
+    [Tooltip("The available options for this part")]
     [SerializeField] private AvatarPart[] avatarParts;
 
     private SkinnedMeshRenderer partRenderer;
@@ -12,6 +16,9 @@ public class AvatarPartConfigurationController : MonoBehaviour
     private int materialIndex;
     private int colorIndex;
 
+    /// <summary>
+    /// The index of the 3D model which is displayed on this part
+    /// </summary>
     public int ModelIndex
     {
         get => modelIndex;
@@ -22,6 +29,10 @@ public class AvatarPartConfigurationController : MonoBehaviour
             colorIndex = 0;
         }
     }
+
+    /// <summary>
+    /// The index of the material which is displayed on this part
+    /// </summary>
     public int MaterialIndex
     {
         get => materialIndex;
@@ -31,20 +42,45 @@ public class AvatarPartConfigurationController : MonoBehaviour
             colorIndex = 0;
         }
     }
+
+    /// <summary>
+    /// The index of the color variation which is displayed on this part
+    /// </summary>
     public int ColorIndex { get => colorIndex; set => colorIndex = value; }
 
+    /// <summary>
+    /// The available avatar part options for this part
+    /// </summary>
     public AvatarPart[] AvatarParts { get => avatarParts; }
 
+    /// <summary>
+    /// The availalbe avatar part materials for the currently displayed model
+    /// </summary>
     public AvatarPartMaterial[] AvatarPartMaterials { get => avatarParts[modelIndex].PartMaterials; }
 
+    /// <summary>
+    /// The available color variations for the currently displayed model and material
+    /// </summary>
     public Color[] AvatarPartColors { get => avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex).Colors; }
 
+    /// <summary>
+    /// The currently displayed part 3D model
+    /// </summary>
     public AvatarPart CurrentPart { get => avatarParts[modelIndex]; }
 
+    /// <summary>
+    /// The curerntly displayed part material
+    /// </summary>
     public AvatarPartMaterial CurrentMaterial { get => avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex); }
 
+    /// <summary>
+    /// The currently displayed color variation
+    /// </summary>
     public Color CurrentColor { get => avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex).GetColor(colorIndex); }
 
+    /// <summary>
+    /// Initializes the component, checks the setup
+    /// </summary>
     private void Awake()
     {
         // check setup
@@ -70,6 +106,9 @@ public class AvatarPartConfigurationController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies the selected configuration indices to the renderer on the avatar
+    /// </summary>
     public void ApplyConfiguration()
     {
         // handle case that no material variation was given (e.g. for the case "do not show this part")
@@ -93,6 +132,12 @@ public class AvatarPartConfigurationController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies a specific (already processed and extracted) configuration to the avatar
+    /// </summary>
+    /// <param name="mesh">The mesh to show</param>
+    /// <param name="material">The material which is applied to the mesh's renderer</param>
+    /// <param name="color">The color which is set on the material's _color parameter</param>
     private void SetConfiguration(Mesh mesh, Material material, Color color)
     {
         partRenderer.sharedMesh = mesh;
