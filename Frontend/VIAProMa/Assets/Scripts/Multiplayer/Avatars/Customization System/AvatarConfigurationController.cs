@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class AvatarConfigurationController : MonoBehaviour
 {
-    [SerializeField] private AvatarPartConfigurationController hairController;
-    [SerializeField] private AvatarPartConfigurationController glassesController;
-    [SerializeField] private AvatarPartConfigurationController clothesController;
+    [SerializeField] private AvatarPartControllerCategory[] avatarPartControllers;
 
-    public AvatarPartConfigurationController HairController { get => hairController; }
-    public AvatarPartConfigurationController GlassesController { get => glassesController; }
-    public AvatarPartConfigurationController ClothesController { get => clothesController; }
+    public AvatarPartControllerCategory[] AvatarPartControllers { get => avatarPartControllers; }
 }

@@ -32,6 +32,7 @@ public class AvatarConfigurator : MonoBehaviour
         }
 
         modelSelector.ItemSelected += ModelItemSelected;
+        materialSelector.ItemSelected += MaterialItemSelected;
     }
 
     private void Start()
@@ -49,73 +50,29 @@ public class AvatarConfigurator : MonoBehaviour
 
     public void OnCategorySelection()
     {
-        switch(categoryCollection.CurrentIndex)
-        {
-            case 0:
-                SelectHairCategory();
-                break;
-            case 1:
-                SelectGlassesCategory();
-                break;
-            case 2:
-                SelectClothesCategory();
-                break;
-            default:
-                Debug.LogError("Avatar Config UI accessed category which is out of bounds.", gameObject);
-                break;
-        }
-    }
-
-    public void SelectHairCategory()
-    {
         EnsureAvatarConfigController();
-        modelSelector.Items = avatarConfigurationController.HairController.AvatarParts;
-        modelSelector.SelectedIndex = avatarConfigurationController.HairController.ModelIndex;
+        AvatarPartConfigurationController selectedPartController = avatarConfigurationController.AvatarPartControllers[categoryCollection.CurrentIndex].ConfigurationController;
+        modelSelector.Items = selectedPartController.AvatarParts;
+        modelSelector.SelectedIndex = selectedPartController.ModelIndex;
 
-        //materialSelector.Items = avatarConfigurationController.HairController.AvatarPartMaterials;
-        //materialSelector.SelectedIndex = avatarConfigurationController.HairController.MaterialIndex;
-    }
-
-    public void SelectGlassesCategory()
-    {
-        EnsureAvatarConfigController();
-        modelSelector.Items = avatarConfigurationController.GlassesController.AvatarParts;
-        modelSelector.SelectedIndex = avatarConfigurationController.GlassesController.ModelIndex;
-
-        //materialSelector.Items = avatarConfigurationController.GlassesController.AvatarPartMaterials;
-        //materialSelector.SelectedIndex = avatarConfigurationController.GlassesController.MaterialIndex;
-    }
-
-    public void SelectClothesCategory()
-    {
-        EnsureAvatarConfigController();
-        modelSelector.Items = avatarConfigurationController.ClothesController.AvatarParts;
-        modelSelector.SelectedIndex = avatarConfigurationController.ClothesController.ModelIndex;
-
-        //materialSelector.Items = avatarConfigurationController.ClothesController.AvatarPartMaterials;
-        //materialSelector.SelectedIndex = avatarConfigurationController.ClothesController.MaterialIndex;
+        materialSelector.Items = selectedPartController.AvatarPartMaterials;
+        materialSelector.SelectedIndex = selectedPartController.MaterialIndex;
     }
 
     private void ModelItemSelected(object sender, EventArgs e)
     {
         EnsureAvatarConfigController();
-        switch(categoryCollection.CurrentIndex)
-        {
-            case 0:
-                avatarConfigurationController.HairController.ModelIndex = modelSelector.SelectedIndex;
-                avatarConfigurationController.HairController.ApplyConfiguration();
-                break;
-            case 1:
-                avatarConfigurationController.GlassesController.ModelIndex = modelSelector.SelectedIndex;
-                avatarConfigurationController.GlassesController.ApplyConfiguration();
-                break;
-            case 2:
-                avatarConfigurationController.ClothesController.ModelIndex = modelSelector.SelectedIndex;
-                avatarConfigurationController.ClothesController.ApplyConfiguration();
-                break;
-            default:
-                Debug.LogError("Avatar Config UI accessed category which is out of bounds.", gameObject);
-                break;
-        }
+        AvatarPartConfigurationController selectedPartController = avatarConfigurationController.AvatarPartControllers[categoryCollection.CurrentIndex].ConfigurationController;
+        selectedPartController.ModelIndex = modelSelector.SelectedIndex;
+        selectedPartController.ApplyConfiguration();
+        materialSelector.Items = selectedPartController.AvatarPartMaterials;
+    }
+
+    private void MaterialItemSelected(object sender, EventArgs e)
+    {
+        EnsureAvatarConfigController();
+        AvatarPartConfigurationController selectedPartController = avatarConfigurationController.AvatarPartControllers[categoryCollection.CurrentIndex].ConfigurationController;
+        selectedPartController.MaterialIndex = materialSelector.SelectedIndex;
+        selectedPartController.ApplyConfiguration();
     }
 }
