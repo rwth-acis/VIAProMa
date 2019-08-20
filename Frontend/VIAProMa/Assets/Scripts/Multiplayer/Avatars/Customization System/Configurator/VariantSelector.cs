@@ -11,8 +11,11 @@ using UnityEngine;
 /// </summary>
 public class VariantSelector : MonoBehaviour
 {
-    [Tooltip("The item frames in the UI")
+    [Tooltip("The item frames which show the items")]
     [SerializeField] private ItemFrame[] itemFrames;
+
+    [SerializeField] private Interactable pageUpButton;
+    [SerializeField] private Interactable pageDownButton;
 
     private Interactable[] interactables;
     private int page = 0;
@@ -70,6 +73,15 @@ public class VariantSelector : MonoBehaviour
             {
                 interactables[i] = interactable;
             }
+
+            if (pageUpButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageUpButton));
+            }
+            if (pageDownButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
+            }
         }
 
         if (itemFrames.Length == 0)
@@ -92,6 +104,9 @@ public class VariantSelector : MonoBehaviour
         {
             return;
         }
+
+        pageDownButton.Enabled = (page > 0);
+        pageUpButton.Enabled = (page < (Items.Length / itemFrames.Length));
 
         // always go over all itemFrames
         for (int i = 0; i < itemFrames.Length; i++)
