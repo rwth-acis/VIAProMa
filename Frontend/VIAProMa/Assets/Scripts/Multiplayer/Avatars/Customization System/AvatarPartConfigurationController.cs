@@ -61,7 +61,34 @@ public class AvatarPartConfigurationController : MonoBehaviour
     /// <summary>
     /// The available color variations for the currently displayed model and material
     /// </summary>
-    public Color[] AvatarPartColors { get => avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex).Colors; }
+    public Color[] AvatarPartColors
+    {
+        get
+        {
+            if (avatarParts[modelIndex].MaterialVariationCount == 0)
+            {
+                return new Color[0];
+            }
+            else
+            {
+                return avatarParts[modelIndex]?.GetAvatarPartMaterial(materialIndex)?.Colors;
+            }
+        }
+    }
+
+    public ColorItem[] AvatarPartColorsAsItems
+    {
+        get
+        {
+            Color[] colors = AvatarPartColors;
+            ColorItem[] res = new ColorItem[colors.Length];
+            for (int i=0;i<res.Length;i++)
+            {
+                res[i] = new ColorItem(colors[i]);
+            }
+            return res;
+        }
+    }
 
     /// <summary>
     /// The currently displayed part 3D model

@@ -27,6 +27,9 @@ public class AvatarConfigurator : MonoBehaviour
         else
         {
             EnsureAvatarConfigController();
+            // deactivate the spine controller
+            spineController = avatarParent.GetComponentInChildren<AvatarSpineController>();
+            spineController.enabled = false;
         }
 
         if (categoryToggles == null)
@@ -62,6 +65,7 @@ public class AvatarConfigurator : MonoBehaviour
 
         modelSelector.ItemSelected += ModelItemSelected;
         materialSelector.ItemSelected += MaterialItemSelected;
+        colorSelector.ItemSelected += ColorItemSelected;
     }
 
     private void InitializeCategories()
@@ -97,27 +101,61 @@ public class AvatarConfigurator : MonoBehaviour
     {
         EnsureAvatarConfigController();
         AvatarPartConfigurationController selectedPartController = avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].ConfigurationController;
-        modelSelector.Items = selectedPartController.AvatarParts;
-        modelSelector.SelectedIndex = selectedPartController.ModelIndex;
-
-        materialSelector.Items = selectedPartController.AvatarPartMaterials;
-        materialSelector.SelectedIndex = selectedPartController.MaterialIndex;
+        UpdateModelChooser(selectedPartController);
     }
 
     private void ModelItemSelected(object sender, EventArgs e)
     {
         EnsureAvatarConfigController();
-        AvatarPartConfigurationController selectedPartController = avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].ConfigurationController;
+        AvatarPartConfigurationController selectedPartController = GetSelectedController();
         selectedPartController.ModelIndex = modelSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
-        materialSelector.Items = selectedPartController.AvatarPartMaterials;
+
+        UpdateMaterialChooser(selectedPartController);
     }
 
     private void MaterialItemSelected(object sender, EventArgs e)
     {
         EnsureAvatarConfigController();
-        AvatarPartConfigurationController selectedPartController = avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].ConfigurationController;
+        AvatarPartConfigurationController selectedPartController = GetSelectedController();
         selectedPartController.MaterialIndex = materialSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
+
+        UpdateColorChooser(selectedPartController);
+    }
+
+    private void ColorItemSelected(object sender, EventArgs e)
+    {
+        EnsureAvatarConfigController();
+        AvatarPartConfigurationController selectedPartController = GetSelectedController();
+        selectedPartController.ColorIndex = colorSelector.SelectedIndex;
+        selectedPartController.ApplyConfiguration();
+    }
+
+    private void UpdateModelChooser(AvatarPartConfigurationController selectedPartController)
+    {
+        modelSelector.Items = selectedPartController.AvatarParts;
+        modelSelector.SelectedIndex = selectedPartController.ModelIndex;
+
+        UpdateMaterialChooser(selectedPartController);
+    }
+
+    private void UpdateMaterialChooser(AvatarPartConfigurationController selectedPartController)
+    {
+        materialSelector.Items = selectedPartController.AvatarPartMaterials;
+        materialSelector.SelectedIndex = selectedPartController.MaterialIndex;
+
+        UpdateColorChooser(selectedPartController);
+    }
+
+    private void UpdateColorChooser(AvatarPartConfigurationController selectedPartController)
+    {
+        colorSelector.Items = selectedPartController.AvatarPartColorsAsItems;
+        colorSelector.SelectedIndex = selectedPartController.ColorIndex;
+    }
+
+    private AvatarPartConfigurationController GetSelectedController()
+    {
+        return avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].ConfigurationController;
     }
 }

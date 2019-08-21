@@ -78,9 +78,17 @@ public class VariantSelector : MonoBehaviour
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageUpButton));
             }
+            else
+            {
+                pageUpButton.OnClick.AddListener(PageUp);
+            }
             if (pageDownButton == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
+            }
+            else
+            {
+                pageDownButton.OnClick.AddListener(PageDown);
             }
         }
 

@@ -10,6 +10,8 @@ public class ItemFrame : MonoBehaviour
 {
     [Tooltip("The sprite renderer which shows the icon")]
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [Tooltip("Renderer of the background plate")]
+    [SerializeField] private MeshRenderer backgroundRenderer;
 
     private VariantSelector selector;
 
@@ -32,6 +34,10 @@ public class ItemFrame : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(spriteRenderer));
         }
+        if (backgroundRenderer== null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(backgroundRenderer));
+        }
     }
 
     /// <summary>
@@ -51,6 +57,8 @@ public class ItemFrame : MonoBehaviour
     public void UpdateDisplay()
     {
         spriteRenderer.sprite = selector.Items[ItemIndex].Sprite;
+        backgroundRenderer.material.color = selector.Items[ItemIndex].DisplayColor;
+
     }
 
     /// <summary>

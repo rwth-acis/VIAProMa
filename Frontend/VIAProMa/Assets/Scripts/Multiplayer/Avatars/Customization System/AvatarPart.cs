@@ -6,6 +6,7 @@ using UnityEngine;
 public class AvatarPart : ScriptableObject, IItem
 {
     [SerializeField] private Sprite sprite;
+    [SerializeField] private Color displayColor = new Color(0.6132f, 0.6132f, 0.6132f);
     [SerializeField] private Mesh mesh;
     [SerializeField] private AvatarPartMaterial[] avatarPartMaterials;
 
@@ -18,7 +19,14 @@ public class AvatarPart : ScriptableObject, IItem
 
     public AvatarPartMaterial GetAvatarPartMaterial(int index)
     {
-        return avatarPartMaterials[index];
+        if (index >= avatarPartMaterials.Length)
+        {
+            return null;
+        }
+        else
+        {
+            return avatarPartMaterials[index];
+        }
     }
 
     public int MaterialVariationCount { get => avatarPartMaterials.Length; }
@@ -26,6 +34,11 @@ public class AvatarPart : ScriptableObject, IItem
     public Sprite Sprite
     {
         get => sprite;
+    }
+
+    public Color DisplayColor
+    {
+        get => displayColor;
     }
 
     public Color GetMaterialColorVariation(int materialIndex, int colorIndex)
