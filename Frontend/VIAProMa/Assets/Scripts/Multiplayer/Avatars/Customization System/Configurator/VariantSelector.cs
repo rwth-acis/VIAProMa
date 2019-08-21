@@ -60,10 +60,19 @@ public class VariantSelector : MonoBehaviour
     /// </summary>
     protected virtual void Awake()
     {
+        if (itemFrames.Length == 0)
+        {
+            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(itemFrames));
+        }
+
         // initialize the toggle collection
         interactables = new Interactable[itemFrames.Length];
         for (int i = 0; i < itemFrames.Length; i++)
         {
+            // setup item frames
+            itemFrames[i].Setup(this);
+
+            // register corresponding interactables
             Interactable interactable = itemFrames[i].gameObject.GetComponent<Interactable>();
             if (interactable == null)
             {
@@ -73,33 +82,23 @@ public class VariantSelector : MonoBehaviour
             {
                 interactables[i] = interactable;
             }
-
-            if (pageUpButton == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageUpButton));
-            }
-            else
-            {
-                pageUpButton.OnClick.AddListener(PageUp);
-            }
-            if (pageDownButton == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
-            }
-            else
-            {
-                pageDownButton.OnClick.AddListener(PageDown);
-            }
         }
 
-        if (itemFrames.Length == 0)
+        if (pageUpButton == null)
         {
-            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(itemFrames));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageUpButton));
         }
-
-        for (int i = 0; i < itemFrames.Length; i++)
+        else
         {
-            itemFrames[i].Setup(this);
+            pageUpButton.OnClick.AddListener(PageUp);
+        }
+        if (pageDownButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
+        }
+        else
+        {
+            pageDownButton.OnClick.AddListener(PageDown);
         }
     }
 
