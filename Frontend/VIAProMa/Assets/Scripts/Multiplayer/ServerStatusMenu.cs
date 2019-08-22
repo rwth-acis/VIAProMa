@@ -209,6 +209,13 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         gameObject.SetActive(true);
     }
 
+    public void Open(Vector3 position, Vector3 eulerAngles)
+    {
+        Open();
+        transform.localPosition = position;
+        transform.localEulerAngles = eulerAngles;
+    }
+
     /// <summary>
     /// Closes the window and raises the WindowClosed event
     /// Deactivates the GameObject (so the window still exists but is invisible)

@@ -137,6 +137,13 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         gameObject.SetActive(true);
     }
 
+    public void Open(Vector3 position, Vector3 eulerAngles)
+    {
+        Open();
+        transform.localPosition = position;
+        transform.localEulerAngles = eulerAngles;
+    }
+
     /// <summary>
     /// Hides the window
     /// Invokes the WindowClosed event

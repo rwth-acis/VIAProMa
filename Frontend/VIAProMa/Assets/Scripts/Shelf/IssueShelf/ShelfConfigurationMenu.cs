@@ -281,6 +281,12 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         gameObject.SetActive(true);
     }
 
+    public void Open(Vector3 position, Vector3 eulerAngles)
+    {
+        Open();
+        // do not set position and eulerAngles since the configuration window should be fixed
+    }
+
     public void Close()
     {
         gameObject.SetActive(false);

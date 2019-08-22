@@ -23,6 +23,8 @@ public interface IWindow
     /// </summary>
     void Open();
 
+    void Open(Vector3 position, Vector3 eulerAngles);
+
     /// <summary>
     /// Closes the window
     /// </summary>

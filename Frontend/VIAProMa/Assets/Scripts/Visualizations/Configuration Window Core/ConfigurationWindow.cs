@@ -66,6 +66,12 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
         gameObject.SetActive(true);
     }
 
+    public void Open(Vector3 position, Vector3 eulerAngles)
+    {
+        Open();
+        // do not set the position and eulerAngles since the configuration window should have a fixed position
+    }
+
     protected virtual void TitleChanged(object sender, EventArgs e)
     {
         visualization.Title = progressBarTitleField.Text;

@@ -5,16 +5,32 @@ using UnityEngine;
 
 public class WindowManager : Singleton<WindowManager>
 {
-    [SerializeField] private RoomMenu roomMenu;
-    [SerializeField] private ServerStatusMenu serverStatusMenu;
+    [SerializeField] private GameObject roomMenuPrefab;
+    [SerializeField] private GameObject serverStatusMenuPrefab;
+
+    private RoomMenu roomMenuInstance;
+    private ServerStatusMenu serverStatusMenuInstance;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        roomMenuInstance = (RoomMenu)InstantiateWindow(roomMenuPrefab);
+        serverStatusMenuInstance = (ServerStatusMenu)InstantiateWindow(serverStatusMenuPrefab);
+    }
+
+    private IWindow InstantiateWindow(GameObject prefab)
+    {
+        GameObject windowInstance = Instantiate(prefab, transform);
+        return windowInstance.GetComponentInChildren<IWindow>();
+    }
 
     public RoomMenu RoomMenu
     {
-        get => roomMenu;
+        get => roomMenuInstance;
     }
 
     public ServerStatusMenu ServerStatusMenu
     {
-        get => serverStatusMenu;
+        get => serverStatusMenuInstance;
     }
 }
