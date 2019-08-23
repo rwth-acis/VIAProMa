@@ -14,6 +14,7 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private RoomMenu roomMenu;
 
+    [SerializeField] private Interactable closeButton;
     [SerializeField] private InputField roomNameField;
     [SerializeField] private GameObject errorMessage;
     [SerializeField] private Checkbox memberNumberCheckbox;
@@ -37,7 +38,8 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         set
         {
             windowEnabled = value;
-            createRoomButton.Enabled = false;
+            createRoomButton.Enabled = value;
+            closeButton.Enabled = value;
         }
     }
 
@@ -54,6 +56,10 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     /// </summary>
     private void Awake()
     {
+        if (closeButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(closeButton));
+        }
         if (roomMenu == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(roomMenu));
