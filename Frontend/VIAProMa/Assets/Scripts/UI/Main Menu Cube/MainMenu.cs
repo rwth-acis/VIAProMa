@@ -76,7 +76,7 @@ public class MainMenu : MonoBehaviour
         // otherwise: leave the current room
         if (PhotonNetwork.InLobby)
         {
-            WindowManager.Instance.RoomMenu.Open(transform.localPosition + 0.1f * transform.forward, transform.localEulerAngles);
+            WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.1f * transform.forward, transform.localEulerAngles);
         }
         else
         {
