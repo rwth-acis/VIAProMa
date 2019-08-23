@@ -83,6 +83,12 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         SetSharingServerStatus(false);
     }
 
+    public override void OnEnable()
+    {
+        base.OnEnable();
+        SetSharingServerStatus(PhotonNetwork.IsConnected);
+    }
+
     private void BackendAddressChanged(object sender, EventArgs e)
     {
         ConnectionManager.Instance.BackendAddress = backendAddressField.Text;
