@@ -27,7 +27,7 @@ public class WindowManager : Singleton<WindowManager>
             Debug.LogError("Window Manager tried to create a prefab without a window component.\nAdd the window component to the prefab " + prefab.name);
             return null;
         }
-        windowInstance.SetActive(false);
+        window.Close();
         return window;
     }
 

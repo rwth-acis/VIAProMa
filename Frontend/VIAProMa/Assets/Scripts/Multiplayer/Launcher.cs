@@ -1,5 +1,6 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     string gameVersion = "1"; // this will be updated if breaking changes are made to the network behavior of the client
 
     public static Launcher Instance { get; private set; } // this is a singleton, but we cannot use the singleton class since it also inherits from PunCallbacks
+
+    public event EventHandler ConnectionStatusChanged;
 
     /// <summary>
     /// Handles the initialization
@@ -50,7 +53,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             PhotonNetwork.GameVersion = gameVersion;
             PhotonNetwork.ConnectUsingSettings();
             Debug.Log("now the offline mode is " + PhotonNetwork.OfflineMode);
-            PhotonNetwork.NickName = "Guest" + Random.Range(0, 1000);
+            PhotonNetwork.NickName = "Guest" + UnityEngine.Random.Range(0, 1000);
         }
     }
 
@@ -61,6 +64,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster()");
+        ConnectionStatusChanged?.Invoke(this, EventArgs.Empty);
         if (!PhotonNetwork.OfflineMode)
         {
             PhotonNetwork.JoinLobby();
@@ -78,6 +82,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.Log("OnDisconnected()" + cause.ToString());
+        ConnectionStatusChanged?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>
