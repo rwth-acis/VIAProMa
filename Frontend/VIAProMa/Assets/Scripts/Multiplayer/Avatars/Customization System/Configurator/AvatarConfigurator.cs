@@ -82,6 +82,7 @@ public class AvatarConfigurator : MonoBehaviour
         }
         categoryObjectCollection.UpdateCollection();
         categoryToggles.ToggleList = categoryInteractables.ToArray();
+        categoryToggles.enabled = true; // enable the category toggles now to avoid initialization errors
     }
 
     private void Start()
@@ -136,6 +137,7 @@ public class AvatarConfigurator : MonoBehaviour
     {
         modelSelector.Items = selectedPartController.AvatarParts;
         modelSelector.SelectedIndex = selectedPartController.ModelIndex;
+        modelSelector.Page = modelSelector.SelectedIndex / modelSelector.ItemFrameCount;
 
         UpdateMaterialChooser(selectedPartController);
     }
@@ -144,6 +146,7 @@ public class AvatarConfigurator : MonoBehaviour
     {
         materialSelector.Items = selectedPartController.AvatarPartMaterials;
         materialSelector.SelectedIndex = selectedPartController.MaterialIndex;
+        materialSelector.Page = materialSelector.SelectedIndex / materialSelector.ItemFrameCount;
 
         UpdateColorChooser(selectedPartController);
     }
@@ -152,6 +155,7 @@ public class AvatarConfigurator : MonoBehaviour
     {
         colorSelector.Items = selectedPartController.AvatarPartColorsAsItems;
         colorSelector.SelectedIndex = selectedPartController.ColorIndex;
+        colorSelector.Page = colorSelector.SelectedIndex / colorSelector.ItemFrameCount;
     }
 
     private AvatarPartConfigurationController GetSelectedController()

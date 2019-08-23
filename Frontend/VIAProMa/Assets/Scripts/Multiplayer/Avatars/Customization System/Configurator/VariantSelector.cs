@@ -55,6 +55,21 @@ public class VariantSelector : MonoBehaviour
         }
     }
 
+    public int Page
+    {
+        get => page;
+        set
+        {
+            page = Mathf.Clamp(value, 0, Items.Length / itemFrames.Length);
+            UpdateDisplays();
+        }
+    }
+
+    public int ItemFrameCount
+    {
+        get => itemFrames.Length;
+    }
+
     /// <summary>
     /// Initializes the component and setup up the item frames
     /// </summary>
