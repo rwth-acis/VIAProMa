@@ -18,6 +18,8 @@ public interface IWindow
     /// </summary>
     bool WindowEnabled { get; set; }
 
+    bool WindowOpen { get; }
+
     /// <summary>
     /// Opens the window
     /// </summary>

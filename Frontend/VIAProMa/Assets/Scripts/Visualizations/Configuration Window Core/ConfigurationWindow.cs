@@ -28,6 +28,8 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
         }
     }
 
+    public bool WindowOpen { get; private set; }
+
     public event EventHandler WindowClosed;
 
     protected virtual void Awake()
@@ -57,6 +59,7 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
 
     public virtual void Close()
     {
+        WindowOpen = false;
         gameObject.SetActive(false);
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
@@ -64,6 +67,7 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
     public virtual void Open()
     {
         gameObject.SetActive(true);
+        WindowOpen = true;
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)

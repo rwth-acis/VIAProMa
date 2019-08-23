@@ -41,6 +41,8 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    public bool WindowOpen { get; private set; }
+
     /// <summary>
     /// Event which is invoked if the window is closed
     /// </summary>
@@ -135,6 +137,7 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     public void Open()
     {
         gameObject.SetActive(true);
+        WindowOpen = false;
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -150,6 +153,7 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     /// </summary>
     public void Close()
     {
+        WindowOpen = false;
         WindowClosed?.Invoke(this, EventArgs.Empty);
         gameObject.SetActive(false);
     }

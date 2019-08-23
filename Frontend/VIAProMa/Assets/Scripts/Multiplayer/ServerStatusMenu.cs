@@ -29,6 +29,8 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
 
     public bool WindowEnabled { get; set; } // not used here
 
+    public bool WindowOpen { get; private set; }
+
     public event EventHandler WindowClosed;
 
     /// <summary>
@@ -207,6 +209,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
     public void Open()
     {
         gameObject.SetActive(true);
+        WindowOpen = true;
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -222,6 +225,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
     /// </summary>
     public void Close()
     {
+        WindowOpen = false;
         WindowClosed?.Invoke(this, EventArgs.Empty);
         gameObject.SetActive(false);
     }

@@ -32,6 +32,8 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         get; set;
     }
 
+    public bool WindowOpen { get; private set; }
+
     private void Awake()
     {
         if (shelf == null)
@@ -279,6 +281,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     public void Open()
     {
         gameObject.SetActive(true);
+        WindowOpen = true;
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -289,6 +292,8 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     public void Close()
     {
+        WindowOpen = false;
         gameObject.SetActive(false);
+        WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 }

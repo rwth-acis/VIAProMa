@@ -11,9 +11,8 @@ public class WindowManager : Singleton<WindowManager>
     private RoomMenu roomMenuInstance;
     private ServerStatusMenu serverStatusMenuInstance;
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
         roomMenuInstance = (RoomMenu)InstantiateWindow(roomMenuPrefab);
         serverStatusMenuInstance = (ServerStatusMenu)InstantiateWindow(serverStatusMenuPrefab);
     }
@@ -21,7 +20,15 @@ public class WindowManager : Singleton<WindowManager>
     private IWindow InstantiateWindow(GameObject prefab)
     {
         GameObject windowInstance = Instantiate(prefab, transform);
-        return windowInstance.GetComponentInChildren<IWindow>();
+        IWindow window = windowInstance.GetComponentInChildren<IWindow>();
+        if (window == null)
+        {
+            Destroy(windowInstance);
+            Debug.LogError("Window Manager tried to create a prefab without a window component.\nAdd the window component to the prefab " + prefab.name);
+            return null;
+        }
+        windowInstance.SetActive(false);
+        return window;
     }
 
     public RoomMenu RoomMenu

@@ -49,6 +49,11 @@ public class RoomMenu : MonoBehaviour, IWindow
         }
     }
 
+    public bool WindowOpen
+    {
+        get; private set;
+    }
+
     /// <summary>
     /// Event which is invoked if the window is closed
     /// </summary>
@@ -94,11 +99,8 @@ public class RoomMenu : MonoBehaviour, IWindow
     /// <param name="e">Generic event arguments</param>
     private void OnLobbyStatusChanged(object sender, EventArgs e)
     {
-        if (PhotonNetwork.InLobby)
-        {
-            Open();
-        }
-        else
+        // close the window if we are not in a lobby anymore
+        if (WindowOpen && !PhotonNetwork.InLobby)
         {
             Close();
         }
@@ -247,6 +249,7 @@ public class RoomMenu : MonoBehaviour, IWindow
     public void Open()
     {
         gameObject.SetActive(true);
+        WindowOpen = true;
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -261,6 +264,7 @@ public class RoomMenu : MonoBehaviour, IWindow
     /// </summary>
     public void Close()
     {
+        WindowOpen = false;
         WindowClosed?.Invoke(this, EventArgs.Empty);
         gameObject.SetActive(false);
     }
