@@ -9,13 +9,22 @@ using UnityEngine;
 [RequireComponent(typeof(FoldController))]
 public class MainMenu : MonoBehaviour
 {
+    [Header("UI Elements")]
+    [SerializeField] private Interactable avatarConfigurationButton;
     [SerializeField] private Interactable roomButton;
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
     [SerializeField] private Interactable microphoneButton;
 
+    [Header("References")]
+    [SerializeField] private GameObject avatarConfiguratorPrefab;
+
     private void Awake()
     {
+        if (avatarConfigurationButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfigurationButton));
+        }
         if (roomButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(roomButton));
@@ -31,6 +40,11 @@ public class MainMenu : MonoBehaviour
         if (microphoneButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
+        }
+
+        if (avatarConfiguratorPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfiguratorPrefab));
         }
     }
 
@@ -65,9 +79,16 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void ShowAvatarConfiguration()
+    {
+        GameObject avatarConfigurator = Instantiate(avatarConfiguratorPrefab);
+        avatarConfigurator.transform.localPosition = avatarConfigurationButton.transform.position - 0.15f * transform.forward;
+        avatarConfigurator.transform.localRotation = transform.localRotation;
+    }
+
     public void ShowServerStatusMenu()
     {
-        WindowManager.Instance.ServerStatusMenu.Open(transform.localPosition + 0.1f * transform.forward, transform.localEulerAngles);
+        WindowManager.Instance.ServerStatusMenu.Open(transform.position - 0.1f * transform.forward, transform.localEulerAngles);
     }
 
     public void RoomButtonClicked()

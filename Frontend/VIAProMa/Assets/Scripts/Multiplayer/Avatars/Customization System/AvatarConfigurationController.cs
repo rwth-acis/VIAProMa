@@ -11,7 +11,7 @@ public class AvatarConfigurationController : MonoBehaviour
     /// <summary>
     /// Initializes the avatar by apply the initial configuration
     /// </summary>
-    private void Awake()
+    private void Start()
     {
         foreach(AvatarPartControllerCategory category in avatarPartControllers)
         {
