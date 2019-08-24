@@ -20,6 +20,12 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject issueShelfPrefab;
     [SerializeField] private GameObject avatarConfiguratorPrefab;
 
+    private FoldController foldController;
+
+    // instances:
+    private GameObject issueShelfInstance;
+    private GameObject avatarConfiguratorInstance;
+
     private void Awake()
     {
         if (avatarConfigurationButton == null)
@@ -51,6 +57,8 @@ public class MainMenu : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfiguratorPrefab));
         }
+
+        foldController = gameObject.GetComponent<FoldController>();
     }
 
     private void OnEnable()
@@ -86,22 +94,25 @@ public class MainMenu : MonoBehaviour
 
     public void ShowIssueShelf()
     {
-        Vector3 position = transform.position - 0.15f * transform.forward;
-        position.y = 0f;
-        Quaternion rotation = transform.rotation;
-        GameObject issueShelf = ResourceManager.Instance.NetworkInstantiate(issueShelfPrefab, position, rotation);
+        Vector3 targetPosition = transform.position - 1f * transform.right;
+        targetPosition.y = 0f;
+        NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition);
+        foldController.FoldCube();
     }
 
     public void ShowAvatarConfiguration()
     {
-        GameObject avatarConfigurator = Instantiate(avatarConfiguratorPrefab);
-        avatarConfigurator.transform.localPosition = avatarConfigurationButton.transform.position - 0.15f * transform.forward;
-        avatarConfigurator.transform.localRotation = transform.localRotation;
+        InstantiateControl(
+            avatarConfiguratorPrefab, 
+            ref avatarConfiguratorInstance,
+            transform.position - 1f * transform.right);
+        foldController.FoldCube();
     }
 
     public void ShowServerStatusMenu()
     {
-        WindowManager.Instance.ServerStatusMenu.Open(transform.position - 0.1f * transform.forward, transform.localEulerAngles);
+        WindowManager.Instance.ServerStatusMenu.Open(transform.position - 0.4f * transform.right, transform.localEulerAngles);
+        foldController.FoldCube();
     }
 
     public void RoomButtonClicked()
@@ -110,11 +121,42 @@ public class MainMenu : MonoBehaviour
         // otherwise: leave the current room
         if (PhotonNetwork.InLobby)
         {
-            WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.1f * transform.forward, transform.localEulerAngles);
+            WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
         }
         else
         {
             PhotonNetwork.LeaveRoom();
+        }
+        foldController.FoldCube();
+    }
+
+    private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
+    {
+        Quaternion targetRotation = transform.rotation;
+
+        if (instance != null)
+        {
+            instance.transform.position = targetPosition;
+            instance.transform.rotation = targetRotation;
+        }
+        else
+        {
+            instance = GameObject.Instantiate(prefab, targetPosition, targetRotation);
+        }
+    }
+
+    private void NetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
+    {
+        Quaternion targetRotation = transform.rotation;
+
+        if (instance != null)
+        {
+            instance.transform.position = targetPosition;
+            instance.transform.rotation = targetRotation;
+        }
+        else
+        {
+            instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
         }
     }
 }
