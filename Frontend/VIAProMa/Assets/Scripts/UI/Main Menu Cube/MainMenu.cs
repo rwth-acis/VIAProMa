@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private Interactable avatarConfigurationButton;
+    [SerializeField] private Interactable serverConnectionButton;
     [SerializeField] private Interactable roomButton;
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
@@ -18,12 +19,14 @@ public class MainMenu : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject issueShelfPrefab;
+    [SerializeField] private GameObject visualizationShelfPrefab;
     [SerializeField] private GameObject avatarConfiguratorPrefab;
 
     private FoldController foldController;
 
     // instances:
     private GameObject issueShelfInstance;
+    private GameObject visualizationShelfInstance;
     private GameObject avatarConfiguratorInstance;
 
     private void Awake()
@@ -31,6 +34,10 @@ public class MainMenu : MonoBehaviour
         if (avatarConfigurationButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfigurationButton));
+        }
+        if (serverConnectionButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(serverConnectionButton));
         }
         if (roomButton == null)
         {
@@ -100,6 +107,14 @@ public class MainMenu : MonoBehaviour
         foldController.FoldCube();
     }
 
+    public void ShowVisualizationShelf()
+    {
+        Vector3 targetPosition = transform.position - 1f * transform.right;
+        targetPosition.y = 0f;
+        NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition);
+        foldController.FoldCube();
+    }
+
     public void ShowAvatarConfiguration()
     {
         InstantiateControl(
@@ -111,7 +126,7 @@ public class MainMenu : MonoBehaviour
 
     public void ShowServerStatusMenu()
     {
-        WindowManager.Instance.ServerStatusMenu.Open(transform.position - 0.4f * transform.right, transform.localEulerAngles);
+        WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
         foldController.FoldCube();
     }
 
