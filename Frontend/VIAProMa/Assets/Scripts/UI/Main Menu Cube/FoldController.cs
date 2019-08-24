@@ -24,7 +24,9 @@ public class FoldController : MonoBehaviour
     [SerializeField] private AppBarSpanwer appBarSpawner;
 
     private const string menuOpenAnimParam = "MenuOpen";
-    private Vector3 originalScale;
+    private const float animationLength = 1.625f;
+    private const float collapsedScale = 0.25f;
+    private const float expandedScale = 0.5f;
 
     /// <summary>
     /// True if the menu is currently open/ unfolded
@@ -60,7 +62,6 @@ public class FoldController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(appBarSpawner));
         }
-        originalScale = transform.localScale;
     }
 
     /// <summary>
@@ -72,6 +73,7 @@ public class FoldController : MonoBehaviour
         MenuOpen = false;
         animationHandler.CubeFolded += OnCubeFolded;
         cubeAnimator.SetBool(menuOpenAnimParam, false);
+        StartCoroutine(Move(new Vector3(0, 3.25f * expandedScale, 0), Vector3.zero, animationLength));
     }
 
     /// <summary>
@@ -84,7 +86,7 @@ public class FoldController : MonoBehaviour
     {
         animationHandler.CubeFolded -= OnCubeFolded;
         SetControlsActive(true);
-        StartCoroutine(FadeSize(0.25f * Vector3.one, 0.5f));
+        StartCoroutine(FadeSize(collapsedScale * Vector3.one, 0.5f));
     }
 
     /// <summary>
@@ -94,10 +96,11 @@ public class FoldController : MonoBehaviour
     public void UnFoldCube()
     {
         StopAllCoroutines();
-        StartCoroutine(FadeSize(0.5f * Vector3.one, 0.5f, () =>
+        StartCoroutine(FadeSize(expandedScale * Vector3.one, 0.5f, () =>
         {
             SetControlsActive(false);
             cubeAnimator.SetBool(menuOpenAnimParam, true);
+            StartCoroutine(Move(Vector3.zero, new Vector3(0, 3.25f * expandedScale, 0), animationLength));
         }));
         MenuOpen = true;
     }
@@ -120,6 +123,19 @@ public class FoldController : MonoBehaviour
             yield return null;
         }
         cubePivot.localScale = endSize;
+        OnFinished?.Invoke();
+    }
+
+    private IEnumerator Move(Vector3 startPos, Vector3 endPos, float fadeTime, Action OnFinished = null)
+    {
+        float time = 0f;
+        while (time < fadeTime)
+        {
+            cubePivot.localPosition = Vector3.Lerp(startPos, endPos, time / fadeTime);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        cubePivot.localPosition = endPos;
         OnFinished?.Invoke();
     }
 

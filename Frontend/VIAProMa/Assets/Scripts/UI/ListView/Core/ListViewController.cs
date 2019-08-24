@@ -65,7 +65,6 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
 
     protected virtual void CreateInstances()
     {
-        Debug.Log("Created " + Items.Count + " instances");
         for (int i = 0; i < Items.Count; i++)
         {
             ItemType instanceAdapter = Instantiate(itemPrefab, transform).GetComponent<ItemType>();
