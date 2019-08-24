@@ -11,6 +11,8 @@ public class AppBarActions : MonoBehaviour
     private Vector3 startPosition;
     private Quaternion startRotation;
 
+    public bool TargetNetworked { get; set; }
+
     private void Awake()
     {
         appBarPlacer = GetComponent<AppBarPlacer>();
@@ -22,7 +24,15 @@ public class AppBarActions : MonoBehaviour
 
     public void RemoveObject()
     {
-        PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
+        if (TargetNetworked)
+        {
+            PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
+        }
+        else
+        {
+            Destroy(appBarPlacer.TargetBoundingBox.Target);
+        }
+
         // check if the bounding box still exists (in this case it was not a child of the target gameobject)
         if (appBarPlacer.TargetBoundingBox == null)
         {
