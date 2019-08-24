@@ -57,11 +57,15 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ItemType), itemPrefab);
             }
         }
-        CreateInstances();
+        if (Items == null)
+        {
+            Items = new List<DataType>();
+        }
     }
 
     protected virtual void CreateInstances()
     {
+        Debug.Log("Created " + Items.Count + " instances");
         for (int i = 0; i < Items.Count; i++)
         {
             ItemType instanceAdapter = Instantiate(itemPrefab, transform).GetComponent<ItemType>();

@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Interactable microphoneButton;
 
     [Header("References")]
+    [SerializeField] private GameObject issueShelfPrefab;
     [SerializeField] private GameObject avatarConfiguratorPrefab;
 
     private void Awake()
@@ -42,6 +43,10 @@ public class MainMenu : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
         }
 
+        if (issueShelfPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueShelfPrefab));
+        }
         if (avatarConfiguratorPrefab == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfiguratorPrefab));
@@ -77,6 +82,14 @@ public class MainMenu : MonoBehaviour
         {
             roomButtonText.text = "Leave Room";
         }
+    }
+
+    public void ShowIssueShelf()
+    {
+        Vector3 position = transform.position - 0.15f * transform.forward;
+        position.y = 0f;
+        Quaternion rotation = transform.rotation;
+        GameObject issueShelf = ResourceManager.Instance.NetworkInstantiate(issueShelfPrefab, position, rotation);
     }
 
     public void ShowAvatarConfiguration()
