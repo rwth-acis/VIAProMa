@@ -10,8 +10,11 @@ public class AvatarSpineController : MonoBehaviour
     [SerializeField] private Transform eyeLeftBone;
     [SerializeField] private Transform eyeRightBone;
 
+    [SerializeField] private bool useDebugRotation;
+    [SerializeField] private Vector3 targetEulerAngles;
+
     public Vector3 position;
-    public Vector3 targetEulerAngles;
+    [HideInInspector] public Quaternion targetRotation;
     public float bodyFollowSpeed = 1f;
 
     private Quaternion initialNeckRotation;
@@ -50,14 +53,19 @@ public class AvatarSpineController : MonoBehaviour
 
     private void Update()
     {
+        if (useDebugRotation)
+        {
+            targetRotation = Quaternion.Euler(targetEulerAngles);
+        }
+
         // determine the rotations of neck, head and body:
         // difference between current base rotation and target rotation
-        Quaternion headNeckTargetRotation = Quaternion.Inverse(transform.localRotation) * Quaternion.Euler(targetEulerAngles);
+        Quaternion headNeckTargetRotation = Quaternion.Inverse(transform.localRotation) * targetRotation;
         // apply rotation half and half to neck and head
         neckBone.localRotation = Quaternion.Slerp(Quaternion.identity, headNeckTargetRotation, 0.5f) * initialNeckRotation;
         headBone.localRotation = Quaternion.Slerp(Quaternion.identity, headNeckTargetRotation, 0.5f) * initialHeadRotation;
         // apply lerping rotation to the body => the body will slowly follow the head back into the relaxed position
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(targetEulerAngles), bodyFollowSpeed * Time.deltaTime);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, bodyFollowSpeed * Time.deltaTime);
 
         // determine the position:
         Vector3 offset = transform.position - headBone.TransformPoint(eyeMiddleLocalPosition);
