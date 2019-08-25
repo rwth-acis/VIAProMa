@@ -1,5 +1,6 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -112,6 +113,14 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ModelIndex = modelSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
+        if (PhotonNetwork.IsConnected)
+        {
+            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
+            customProperties.Add(avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Model", (byte)modelSelector.SelectedIndex);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
+            Debug.Log("Set model property");
+        }
+
         UpdateMaterialChooser(selectedPartController);
     }
 
@@ -122,6 +131,14 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.MaterialIndex = materialSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
+        if (PhotonNetwork.IsConnected)
+        {
+            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
+            customProperties.Add(avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Material", (byte)materialSelector.SelectedIndex);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
+            Debug.Log("Set material property");
+        }
+
         UpdateColorChooser(selectedPartController);
     }
 
@@ -131,6 +148,14 @@ public class AvatarConfigurator : MonoBehaviour
         AvatarPartConfigurationController selectedPartController = GetSelectedController();
         selectedPartController.ColorIndex = colorSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
+
+        if (PhotonNetwork.IsConnected)
+        {
+            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
+            customProperties.Add(avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Color", (byte)colorSelector.SelectedIndex);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
+            Debug.Log("Set color property");
+        }
     }
 
     private void UpdateModelChooser(AvatarPartConfigurationController selectedPartController)
