@@ -28,10 +28,12 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
     private void ApplyCustomProperties()
     {
         // only do this if the client is connected; do not work on the own avatar which is not visible
-        if (!PhotonNetwork.IsConnected || photonView.IsMine)
+        if (!PhotonNetwork.IsConnected)
         {
             return;
         }
+
+        Debug.Log("Applying custom properties", gameObject);
 
         ApplyCustomProperty(configurationController.HairCategory.ConfigurationController, configurationController.HairCategory.Name);
         ApplyCustomProperty(configurationController.GlassesCategory.ConfigurationController, configurationController.GlassesCategory.Name);
@@ -51,10 +53,12 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
     {
         if (hastable.ContainsKey(key))
         {
+            Debug.Log("Queried for " + key + " and returned " + ((T)hastable[key]).ToString());
             return (T)hastable[key];
         }
         else
         {
+            Debug.Log("Queried for " + key + " and returned DEFAULT " + defaultValue);
             return defaultValue;
         }
     }
