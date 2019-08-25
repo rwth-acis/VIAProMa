@@ -11,6 +11,7 @@ public class AvatarMovementSynchronizer : BasicAvatarMovementSynchronizer
     {
         base.Awake();
         spineController = GetComponent<AvatarSpineController>();
+        spineController.targetRotation = Quaternion.identity;
     }
 
     protected override void Update()
@@ -25,7 +26,7 @@ public class AvatarMovementSynchronizer : BasicAvatarMovementSynchronizer
         else
         {
             spineController.position = Vector3.Lerp(spineController.position, targetPosition, lerpSpeed * Time.deltaTime);
-            spineController.targetRotation = targetRotation;
+            spineController.targetRotation = Quaternion.Slerp(spineController.targetRotation, targetRotation, lerpSpeed * Time.deltaTime);
             MoveAvatarHand(avatarLeftHand, leftHandTargetPosition);
             MoveAvatarHand(avatarRightHand, rightHandTargetPosition);
         }
