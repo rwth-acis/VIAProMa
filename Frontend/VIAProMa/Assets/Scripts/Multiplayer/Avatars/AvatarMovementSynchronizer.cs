@@ -27,8 +27,8 @@ public class AvatarMovementSynchronizer : BasicAvatarMovementSynchronizer
         {
             spineController.position = Vector3.Lerp(spineController.position, targetPosition, lerpSpeed * Time.deltaTime);
             spineController.targetRotation = Quaternion.Slerp(spineController.targetRotation, targetRotation, lerpSpeed * Time.deltaTime);
-            MoveAvatarHand(avatarLeftHand, leftHandTargetPosition);
-            MoveAvatarHand(avatarRightHand, rightHandTargetPosition);
+            MoveAvatarHand(avatarLeftHand, leftHandTargetPosition, leftHandTargetRotation);
+            MoveAvatarHand(avatarRightHand, rightHandTargetPosition, rightHandTargetRotation);
         }
     }
 }
