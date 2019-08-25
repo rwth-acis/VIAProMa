@@ -19,6 +19,8 @@ public class BasicAvatarMovementSynchronizer : MonoBehaviourPun, IPunObservable
     protected Vector3 targetPosition;
     protected Quaternion targetRotation;
     protected Vector3 leftHandTargetPosition, rightHandTargetPosition;
+    protected Quaternion leftHandTargetRotation, rightHandTargetRotation;
+
     protected Transform mainCamera;
 
     /// <summary>
@@ -51,18 +53,22 @@ public class BasicAvatarMovementSynchronizer : MonoBehaviourPun, IPunObservable
             Debug.Log("Sending camera data");
             if (timeSinceLastSearch > handSearchInterval)
             {
-                CheckHandPositions();
+                SearchHands();
             }
 
             // send the position and euler rotation of the camera
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
-            // send the position of the left hand
+            // send the position and rotation of the left hand
             Vector3 leftHandPosition = EncodeHandPosition(playerLeftHand);
             stream.SendNext(leftHandPosition);
-            // send the position of the right hand
+            Quaternion leftHandRotation = EncodeHandRotation(playerLeftHand);
+            stream.SendNext(leftHandRotation);
+            // send the position and rotation of the right hand
             Vector3 rightHandPosition = EncodeHandPosition(playerRightHand);
             stream.SendNext(rightHandPosition);
+            Quaternion rightHandRotation = EncodeHandRotation(playerRightHand);
+            stream.SendNext(rightHandRotation);
         }
         else // we are reading the network stream, i.e. we receive a remote player position and rotation
         {
@@ -71,8 +77,10 @@ public class BasicAvatarMovementSynchronizer : MonoBehaviourPun, IPunObservable
             targetRotation = (Quaternion)stream.ReceiveNext();
             // get the position of the left hand
             leftHandTargetPosition = (Vector3)stream.ReceiveNext();
+            leftHandTargetRotation = (Quaternion)stream.ReceiveNext();
             // get the position of the right hand
             rightHandTargetPosition = (Vector3)stream.ReceiveNext();
+            rightHandTargetRotation = (Quaternion)stream.ReceiveNext();
         }
     }
 
@@ -94,15 +102,15 @@ public class BasicAvatarMovementSynchronizer : MonoBehaviourPun, IPunObservable
         {
             transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, lerpSpeed * Time.deltaTime);
-            MoveAvatarHand(avatarLeftHand, leftHandTargetPosition);
-            MoveAvatarHand(avatarRightHand, rightHandTargetPosition);
+            MoveAvatarHand(avatarLeftHand, leftHandTargetPosition, leftHandTargetRotation);
+            MoveAvatarHand(avatarRightHand, rightHandTargetPosition, rightHandTargetRotation);
         }
     }
 
     /// <summary>
     /// Tries to find the hands
     /// </summary>
-    protected void CheckHandPositions()
+    protected void SearchHands()
     {
         if (playerLeftHand == null)
         {
@@ -133,22 +141,35 @@ public class BasicAvatarMovementSynchronizer : MonoBehaviourPun, IPunObservable
         }
     }
 
+    protected Quaternion EncodeHandRotation(Transform hand)
+    {
+        if (hand == null)
+        {
+            return Quaternion.identity;
+        }
+        else
+        {
+            return hand.rotation;
+        }
+    }
+
     /// <summary>
     /// Decodes the handTargetPosition which was received over the network:
     /// If handTargetPosition is the 0-vector, it means that the hand is not tracked
     /// </summary>
     /// <param name="handAvatar">The avatar part which represents the hand</param>
     /// <param name="handTargetPosition">The received position of the hand</param>
-    protected void MoveAvatarHand(Transform handAvatar, Vector3 handTargetPosition)
+    protected void MoveAvatarHand(Transform handAvatar, Vector3 handTargetPosition, Quaternion handTargetRotation)
     {
-        if (handTargetPosition == Vector3.zero)
+        if (handTargetPosition == Vector3.zero && handTargetRotation == Quaternion.identity)
         {
             handAvatar.gameObject.SetActive(false);
         }
         else
         {
             handAvatar.gameObject.SetActive(true);
-            transform.position = Vector3.Lerp(handAvatar.position, handTargetPosition, lerpSpeed * Time.deltaTime);
+            handAvatar.transform.position = Vector3.Lerp(handAvatar.position, handTargetPosition, lerpSpeed * Time.deltaTime);
+            handAvatar.transform.rotation = Quaternion.Slerp(handAvatar.rotation, handTargetRotation, lerpSpeed * Time.deltaTime);
         }
     }
 }

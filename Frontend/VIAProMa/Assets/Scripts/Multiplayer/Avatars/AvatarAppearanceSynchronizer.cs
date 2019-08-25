@@ -21,8 +21,6 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player target, ExitGames.Client.Photon.Hashtable changedProps)
     {
-        Debug.Log("Properties changed for " + target.NickName);
-        Debug.Log("OnPlayerProtertiesUpdate for " + target.NickName + " on " + photonView.Owner.NickName);
         if (target.UserId == photonView.Owner.UserId)
         {
             ApplyCustomProperties();
@@ -36,8 +34,6 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
         {
             return;
         }
-
-        Debug.Log("Applying custom properties", gameObject);
 
         ApplyCustomProperty(configurationController.HairCategory.ConfigurationController, configurationController.HairCategory.Name);
         ApplyCustomProperty(configurationController.GlassesCategory.ConfigurationController, configurationController.GlassesCategory.Name);
@@ -57,12 +53,10 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
     {
         if (hastable.ContainsKey(key))
         {
-            Debug.Log("Queried for " + key + " and returned " + ((T)hastable[key]).ToString());
             return (T)hastable[key];
         }
         else
         {
-            Debug.Log("Queried for " + key + " and returned DEFAULT " + defaultValue);
             return defaultValue;
         }
     }
@@ -77,6 +71,5 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
         ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
         customProperties.Add(name, value);
         PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
-        Debug.Log("Set property " + name + " to " + value);
     }
 }
