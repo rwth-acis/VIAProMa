@@ -18,7 +18,6 @@ public class AvatarConfigurator : MonoBehaviour
     private GridObjectCollection categoryObjectCollection;
     private AvatarConfigurationController avatarConfigurationController;
     private AvatarSpineController spineController;
-    private AvatarAppearanceSynchronizer appearanceSynchronizer; // only available on the networked variant
 
     private void Awake()
     {
@@ -63,9 +62,6 @@ public class AvatarConfigurator : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorSelector));
         }
 
-        // get the appearanceSynchronizer but do not check if it worked: it is not available on every variant
-        appearanceSynchronizer = GetComponent<AvatarAppearanceSynchronizer>();
-
         InitializeCategories();
 
         modelSelector.ItemSelected += ModelItemSelected;
@@ -76,7 +72,7 @@ public class AvatarConfigurator : MonoBehaviour
     private void InitializeCategories()
     {
         List<Interactable> categoryInteractables = new List<Interactable>();
-        for (int i=0;i<avatarConfigurationController.AvatarPartControllers.Length;i++)
+        for (int i = 0; i < avatarConfigurationController.AvatarPartControllers.Length; i++)
         {
             GameObject categoryBtnInstance = Instantiate(categoryButtonPrefab, categoryToggles.transform);
             Interactable categoryBtn = categoryBtnInstance.GetComponent<Interactable>();
@@ -117,12 +113,9 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ModelIndex = modelSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        if (appearanceSynchronizer != null)
-        {
-            appearanceSynchronizer.SetProperty(
-                avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Model",
-                (byte)modelSelector.SelectedIndex);
-        }
+        AvatarAppearanceSynchronizer.SetProperty(
+            avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Model",
+            (byte)modelSelector.SelectedIndex);
 
         UpdateMaterialChooser(selectedPartController);
     }
@@ -134,12 +127,9 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.MaterialIndex = materialSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        if (appearanceSynchronizer != null)
-        {
-            appearanceSynchronizer.SetProperty(
-                avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Material",
-                (byte)materialSelector.SelectedIndex);
-        }
+        AvatarAppearanceSynchronizer.SetProperty(
+            avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Material",
+            (byte)materialSelector.SelectedIndex);
 
         UpdateColorChooser(selectedPartController);
     }
@@ -151,12 +141,9 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ColorIndex = colorSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        if (appearanceSynchronizer != null)
-        {
-            appearanceSynchronizer.SetProperty(
-                avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Color",
-                (byte)colorSelector.SelectedIndex);
-        }
+        AvatarAppearanceSynchronizer.SetProperty(
+            avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Color",
+            (byte)colorSelector.SelectedIndex);
     }
 
     private void UpdateModelChooser(AvatarPartConfigurationController selectedPartController)
