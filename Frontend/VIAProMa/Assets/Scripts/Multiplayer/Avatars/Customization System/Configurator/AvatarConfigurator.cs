@@ -114,8 +114,15 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ApplyConfiguration();
 
         AvatarAppearanceSynchronizer.SetProperty(
-            avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Model",
-            (byte)modelSelector.SelectedIndex);
+            avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + AvatarAppearanceSynchronizer.modelKeySuffix,
+            (byte)selectedPartController.ModelIndex);
+        AvatarAppearanceSynchronizer.SetProperty(
+            avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + AvatarAppearanceSynchronizer.materialKeySuffix,
+            (byte)selectedPartController.MaterialIndex);
+        AvatarAppearanceSynchronizer.SetProperty(
+            avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + AvatarAppearanceSynchronizer.colorKeySuffix,
+            (byte)selectedPartController.ColorIndex);
+
 
         UpdateMaterialChooser(selectedPartController);
     }

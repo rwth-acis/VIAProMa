@@ -8,7 +8,11 @@ using UnityEngine;
 [RequireComponent(typeof(AvatarConfigurationController))]
 public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
 {
-    AvatarConfigurationController configurationController;
+    public const string modelKeySuffix = "Model";
+    public const string materialKeySuffix = "Material";
+    public const string colorKeySuffix = "Color";
+
+    private AvatarConfigurationController configurationController;
 
     private void Awake()
     {
@@ -42,9 +46,9 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
 
     private void ApplyCustomProperty(AvatarPartConfigurationController partController, string partName)
     {
-        partController.ModelIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + "Material", 0);
-        partController.MaterialIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + "Material", 0);
-        partController.ColorIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + "Color", 0);
+        partController.ModelIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + modelKeySuffix, 0);
+        partController.MaterialIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + materialKeySuffix, 0);
+        partController.ColorIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + colorKeySuffix, 0);
 
         partController.ApplyConfiguration();
     }
