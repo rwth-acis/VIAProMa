@@ -18,6 +18,7 @@ public class AvatarConfigurator : MonoBehaviour
     private GridObjectCollection categoryObjectCollection;
     private AvatarConfigurationController avatarConfigurationController;
     private AvatarSpineController spineController;
+    private AvatarAppearanceSynchronizer appearanceSynchronizer; // only available on the networked variant
 
     private void Awake()
     {
@@ -61,6 +62,9 @@ public class AvatarConfigurator : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorSelector));
         }
+
+        // get the appearanceSynchronizer but do not check if it worked: it is not available on every variant
+        appearanceSynchronizer = GetComponent<AvatarAppearanceSynchronizer>();
 
         InitializeCategories();
 
@@ -113,12 +117,11 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ModelIndex = modelSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        if (PhotonNetwork.IsConnected)
+        if (appearanceSynchronizer != null)
         {
-            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
-            customProperties.Add(avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Model", (byte)modelSelector.SelectedIndex);
-            PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
-            Debug.Log("Set model property");
+            appearanceSynchronizer.SetProperty(
+                avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Model",
+                (byte)modelSelector.SelectedIndex);
         }
 
         UpdateMaterialChooser(selectedPartController);
@@ -131,12 +134,11 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.MaterialIndex = materialSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        if (PhotonNetwork.IsConnected)
+        if (appearanceSynchronizer != null)
         {
-            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
-            customProperties.Add(avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Material", (byte)materialSelector.SelectedIndex);
-            PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
-            Debug.Log("Set material property");
+            appearanceSynchronizer.SetProperty(
+                avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Material",
+                (byte)materialSelector.SelectedIndex);
         }
 
         UpdateColorChooser(selectedPartController);
@@ -149,12 +151,11 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ColorIndex = colorSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        if (PhotonNetwork.IsConnected)
+        if (appearanceSynchronizer != null)
         {
-            ExitGames.Client.Photon.Hashtable customProperties = new ExitGames.Client.Photon.Hashtable();
-            customProperties.Add(avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Color", (byte)colorSelector.SelectedIndex);
-            PhotonNetwork.LocalPlayer.SetCustomProperties(customProperties);
-            Debug.Log("Set color property");
+            appearanceSynchronizer.SetProperty(
+                avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Color",
+                (byte)colorSelector.SelectedIndex);
         }
     }
 
