@@ -24,13 +24,10 @@ public class AvatarMovementSynchronizer : BasicAvatarMovementSynchronizer
         }
         else
         {
-            spineController.position = targetPosition;
+            spineController.position = Vector3.Lerp(spineController.position, targetPosition, lerpSpeed * Time.deltaTime);
             spineController.targetRotation = targetRotation;
-
-            //spineController.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
-            //spineController.targetRotation = Quaternion.Lerp(transform.rotation, targetRotation, lerpSpeed * Time.deltaTime);
-            //MoveAvatarHand(avatarLeftHand, leftHandTargetPosition);
-            //MoveAvatarHand(avatarRightHand, rightHandTargetPosition);
+            MoveAvatarHand(avatarLeftHand, leftHandTargetPosition);
+            MoveAvatarHand(avatarRightHand, rightHandTargetPosition);
         }
     }
 }
