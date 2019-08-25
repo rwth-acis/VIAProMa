@@ -26,12 +26,16 @@ public class NetworkRoomDataDisplay : DataDisplay<NetworkRoomData>
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(lockIcon));
         }
+    }
 
+    public override void Setup(NetworkRoomData content)
+    {
         button = GetComponent<Interactable>();
         if (button == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Interactable), gameObject);
         }
+        base.Setup(content);
     }
 
     public override void UpdateView()
