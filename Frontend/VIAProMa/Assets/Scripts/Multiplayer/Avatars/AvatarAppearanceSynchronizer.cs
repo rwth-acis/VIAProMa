@@ -15,11 +15,6 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
         configurationController = GetComponent<AvatarConfigurationController>();
     }
 
-    public override void OnJoinedRoom()
-    {
-        
-    }
-
     public override void OnPlayerPropertiesUpdate(Player target, ExitGames.Client.Photon.Hashtable changedProps)
     {
         Debug.Log("Properties changed for " + target.NickName);
@@ -44,11 +39,23 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
 
     private void ApplyCustomProperty(AvatarPartConfigurationController partController, string partName)
     {
-        partController.ModelIndex = (byte)photonView.Owner.CustomProperties[partName + "Model"];
-        partController.MaterialIndex = (byte)photonView.Owner.CustomProperties[partName + "Material"];
-        partController.ColorIndex = (byte)photonView.Owner.CustomProperties[partName + "Color"];
+        partController.ModelIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + "Material", 0);
+        partController.MaterialIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + "Material", 0);
+        partController.ColorIndex = GetValueOrDefault<byte>(photonView.Owner.CustomProperties, partName + "Color", 0);
 
         partController.ApplyConfiguration();
+    }
+
+    private static T GetValueOrDefault<T>(ExitGames.Client.Photon.Hashtable hastable, string key, T defaultValue)
+    {
+        if (hastable.ContainsKey(key))
+        {
+            return (T)hastable[key];
+        }
+        else
+        {
+            return defaultValue;
+        }
     }
 
     public static void SetProperty(string name, byte value)
