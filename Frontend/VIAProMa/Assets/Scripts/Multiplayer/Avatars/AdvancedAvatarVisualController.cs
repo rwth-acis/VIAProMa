@@ -14,7 +14,7 @@ public class AdvancedAvatarVisualController : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            SetVisibility(false);
+            //SetVisibility(false);
         }
         else
         {

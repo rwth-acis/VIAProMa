@@ -19,15 +19,18 @@ public class AvatarMovementSynchronizer : BasicAvatarMovementSynchronizer
         {
             // set the position based on the camera
             transform.position = mainCamera.transform.position;
-            transform.rotation = mainCamera.transform.rotation;
+            transform.rotation = Quaternion.LookRotation(- mainCamera.transform.forward, mainCamera.transform.up);
             timeSinceLastSearch += Time.deltaTime;
         }
         else
         {
-            spineController.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
-            spineController.targetRotation = Quaternion.Lerp(transform.rotation, targetRotation, lerpSpeed * Time.deltaTime);
-            MoveAvatarHand(avatarLeftHand, leftHandTargetPosition);
-            MoveAvatarHand(avatarRightHand, rightHandTargetPosition);
+            spineController.position = targetPosition;
+            spineController.targetRotation = targetRotation;
+
+            //spineController.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
+            //spineController.targetRotation = Quaternion.Lerp(transform.rotation, targetRotation, lerpSpeed * Time.deltaTime);
+            //MoveAvatarHand(avatarLeftHand, leftHandTargetPosition);
+            //MoveAvatarHand(avatarRightHand, rightHandTargetPosition);
         }
     }
 }
