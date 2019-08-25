@@ -18,7 +18,8 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
     public override void OnPlayerPropertiesUpdate(Player target, ExitGames.Client.Photon.Hashtable changedProps)
     {
         Debug.Log("Properties changed for " + target.NickName);
-        if (target == photonView.Owner)
+        Debug.Log("OnPlayerProtertiesUpdate for " + target.NickName + " on " + photonView.Owner.NickName);
+        if (target.UserId == photonView.Owner.UserId)
         {
             ApplyCustomProperties();
         }
