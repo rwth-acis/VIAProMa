@@ -226,13 +226,13 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnGitHubOwnerChanged(object sender, EventArgs e)
     {
-        NetworkedStringManager.SetString(gitHubOwnerStringId, ((GitHubShelfConfiguration)configurationMenu.ShelfConfiguration).Owner);
+        NetworkedStringManager.SetString(gitHubOwnerStringId, configurationMenu.GitHubOwner);
         photonView.RPC("SetGitHubOwner", RpcTarget.Others);
     }
 
     private void OnGitHubProjectChanged(object sender, EventArgs e)
     {
-        NetworkedStringManager.SetString(gitHubProjectStringId, ((GitHubShelfConfiguration)configurationMenu.ShelfConfiguration).RepositoryName);
+        NetworkedStringManager.SetString(gitHubProjectStringId, configurationMenu.GitHubRepository);
         photonView.RPC("SetGitHubProject", RpcTarget.Others);
     }
 }

@@ -81,7 +81,7 @@ public class NetworkedStringResource {
 
     @PUT
     @Path("/{id}")
-    @Consumes( MediaType.TEXT_PLAIN )
+    @Consumes( MediaType.APPLICATION_JSON )
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(
             value = "Sets a string with the given id",
@@ -115,6 +115,8 @@ public class NetworkedStringResource {
     public Response setString(@PathParam("id") short id) {
         if (stringDictionary.containsKey(id)) {
             stringDictionary.remove(id);
+            System.out.println("Removed entry " + id);
+            System.out.println("Dictionary now has " + stringDictionary.size() + " entries");
             return Response.ok().build();
         } else {
             return Response.serverError().entity("The id for this string does not exist.").build();

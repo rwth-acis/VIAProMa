@@ -37,6 +37,9 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         get; set;
     }
 
+    public string GitHubOwner { get => gitHubOwnerInput.Text; }
+    public string GitHubRepository { get => gitHubRepositoryInput.Text; }
+
     public bool WindowOpen { get; private set; }
 
     private void Awake()
