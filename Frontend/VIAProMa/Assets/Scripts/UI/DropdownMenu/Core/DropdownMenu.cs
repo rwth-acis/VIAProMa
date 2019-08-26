@@ -27,7 +27,18 @@ public class DropdownMenu<DataType, ItemType> : MonoBehaviour
         }
     }
 
-    public int SelectedItemIndex { get { return itemController.SelectedItemIndex; } }
+    public int SelectedItemIndex
+    {
+        get { return itemController.SelectedItemIndex; }
+        set
+        {
+            if (Items != null && Items.Count > value)
+            {
+                itemController.SelectedItemIndex = value;
+                selectedItemDisplay.Setup(Items[value]);
+            }
+        }
+    }
 
     public DataType SelectedItem
     {

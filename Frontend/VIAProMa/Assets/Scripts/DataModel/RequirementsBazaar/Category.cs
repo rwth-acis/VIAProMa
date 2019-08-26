@@ -18,4 +18,14 @@ public class Category : IListViewItemData
     public string lastUpdatedDate;
     public int numberOfRequirements;
     public int numberOfFollowers;
+
+    public Category()
+    {
+    }
+
+    public Category(int id, string name)
+    {
+        this.id = id;
+        this.name = name;
+    }
 }

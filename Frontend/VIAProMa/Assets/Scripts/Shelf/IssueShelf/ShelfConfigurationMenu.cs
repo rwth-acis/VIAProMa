@@ -21,6 +21,9 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     private Project[] projects;
     private Category[] categories;
 
+    public event EventHandler SourceChanged;
+    public event EventHandler ReqBazProjectChanged;
+    public event EventHandler ReqBazCategoryChanged;
     public event EventHandler WindowClosed;
 
     private bool isConfiguring = true;
@@ -100,9 +103,10 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     {
         DataSource selectedSource = (DataSource)sourceSelection.SelectedItemIndex;
         SetDataSource(selectedSource);
+        SourceChanged?.Invoke(this, EventArgs.Empty); // important: invoke it only if the user changes the source
     }
 
-    private void SetDataSource(DataSource selectedSource)
+    public void SetDataSource(DataSource selectedSource)
     {
         switch (selectedSource)
         {
@@ -114,6 +118,14 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
                     if (categories != null && categories.Length > 0)
                     {
                         ShelfConfiguration = new ReqBazShelfConfiguration(GetReqBazProject(reqBazProjectInput.Text), categories[reqBazCategoryDropdownMenu.SelectedItemIndex]);
+                        if (reqBazCategoryDropdownMenu.SelectedItem.id == -1)
+                        {
+                            ShelfConfiguration = new ReqBazShelfConfiguration(GetReqBazProject(reqBazProjectInput.Text));
+                        }
+                        else
+                        {
+                            ShelfConfiguration = new ReqBazShelfConfiguration(GetReqBazProject(reqBazProjectInput.Text), reqBazCategoryDropdownMenu.SelectedItem);
+                        }
                     }
                     else
                     {
@@ -131,6 +143,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
                 ShelfConfiguration = new GitHubShelfConfiguration(gitHubOwnerInput.Text, gitHubRepositoryInput.Text);
                 break;
         }
+        sourceSelection.SelectedItemIndex = (int)selectedSource;
         ShowControlsForSource();
         shelf.LoadContent();
     }
@@ -143,16 +156,23 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void ReqBazProjectInputFinished(object sender, EventArgs e)
     {
+        Debug.Log("Project input finished");
+        bool successful = SetReqBazProject();
+        if (successful)
+        {
+            ReqBazProjectChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private bool SetReqBazProject()
+    {
         if (isConfiguring)
         {
-            return;
+            return false;
         }
-        Debug.Log("Project input finished");
-        Debug.Log(ShelfConfiguration.SelectedSource);
-        Debug.Log(reqBazProjectInput.Text);
         if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR || string.IsNullOrEmpty(reqBazProjectInput.Text))
         {
-            return;
+            return false;
         }
         // if the projects list is not loaded at this point, try again
         if (projects == null)
@@ -163,36 +183,60 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         if (projects == null)
         {
             shelf.MessageBadge.ShowMessage(0);
-            return;
+            return false;
         }
         Project selectedProject = GetReqBazProject(reqBazProjectInput.Text);
         ShelfConfiguration = new ReqBazShelfConfiguration(selectedProject);
         if (selectedProject == null) // project was not found
         {
             Debug.LogWarning("Project not found");
+            return false;
         }
         else // fetch categories
         {
             LoadReqBazCategoryList();
             shelf.ResetPage();
             shelf.LoadContent();
+            return true;
         }
     }
 
     private void ReqBazCategorySelected(object sender, EventArgs e)
     {
-        if (isConfiguring)
+        SetReqBazCategory();
+        ReqBazCategoryChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private bool SetReqBazCategory()
+    {
+        if (isConfiguring || ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR)
         {
-            return;
+            return false;
         }
+
+        if (categories == null)
+        {
+            LoadReqBazCategoryList();
+        }
+        // if still no categories found => show error message
+        if (categories == null)
+        {
+            shelf.MessageBadge.ShowMessage(0);
+            return false;
+        }
+
         Category selectedCategory = categories[reqBazCategoryDropdownMenu.SelectedItemIndex];
-        if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR)
+        if (selectedCategory.id == -1) // pseudo category for "no category" selection
         {
-            return;
+            ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedCategory = null;
         }
-        ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedCategory = selectedCategory;
+        else
+        {
+            ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedCategory = selectedCategory;
+        }
         shelf.ResetPage();
         shelf.LoadContent();
+        return true;
     }
 
     private void GitHubOwnerInputFinished(object sender, EventArgs e)
@@ -230,7 +274,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
             // create the list of project strings for the autocomplete function
             List<string> projectStrings = new List<string>();
-            for (int i=0;i<projects.Length;i++)
+            for (int i = 0; i < projects.Length; i++)
             {
                 projectStrings.Add(projects[i].name);
             }
@@ -257,8 +301,10 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         shelf.MessageBadge.DoneProcessing();
         if (res.Successful)
         {
-            categories = res.Value;
-            reqBazCategoryDropdownMenu.Items = new List<Category>(categories);
+            List<Category> resCategories = new List<Category>(res.Value);
+            resCategories.Insert(0, new Category(-1, "No Category"));
+            categories = resCategories.ToArray();
+            reqBazCategoryDropdownMenu.Items = resCategories;
         }
         else
         {
@@ -278,6 +324,33 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
             }
         }
         return null;
+    }
+
+    public void SetReqBazProject(int projectId)
+    {
+        for (int i = 0; i < projects.Length; i++)
+        {
+            if (projects[i].id == projectId)
+            {
+                reqBazProjectInput.Text = projects[i].name;
+                SetReqBazProject();
+                break;
+            }
+        }
+    }
+
+    public void SetReqBazCategory(int categoryId)
+    {
+        for (int i = 0; i < reqBazCategoryDropdownMenu.Items.Count; i++)
+        {
+            if (reqBazCategoryDropdownMenu.Items[i].id == categoryId)
+            {
+                reqBazCategoryDropdownMenu.SelectedItemIndex = i;
+                SetReqBazCategory();
+                break;
+            }
+        }
+        Debug.LogError("Req Baz Category could not be bound", gameObject);
     }
 
     public void Open()

@@ -39,7 +39,7 @@ public class ListViewController<DataType, ItemType> : MonoBehaviour, IListViewCo
         get => itemPrefab;
     }
 
-    public int SelectedItemIndex { get; private set; }
+    public int SelectedItemIndex { get; set; }
 
     public DataType SeletedItem { get { return items[SelectedItemIndex]; } }
 
