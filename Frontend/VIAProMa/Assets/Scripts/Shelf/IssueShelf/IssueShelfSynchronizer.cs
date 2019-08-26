@@ -8,6 +8,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     [PunRPC]
     private void SetActive(bool active)
     {
+        Debug.Log("Received SetActive RPC");
         gameObject.SetActive(active);
     }
 

@@ -10,6 +10,8 @@ public class TransformSynchronizer : MonoBehaviourPun, IPunObservable
 
     public float lerpSpeed = 15;
 
+    private bool initialized = false;
+
     public static void PutPositionRotation(Transform targetTransform, ref PhotonStream stream)
     {
         stream.SendNext(targetTransform.position);
@@ -41,12 +43,16 @@ public class TransformSynchronizer : MonoBehaviourPun, IPunObservable
         else
         {
             GetPositionRotation(ref stream, out targetPosition, out targetRotation);
+            initialized = true;
         }
     }
 
     protected virtual void Update()
     {
-        SmoothPosition(transform, targetPosition, lerpSpeed);
-        SmoothRotation(transform, targetRotation, lerpSpeed);
+        if (initialized)
+        {
+            SmoothPosition(transform, targetPosition, lerpSpeed);
+            SmoothRotation(transform, targetRotation, lerpSpeed);
+        }
     }
 }
