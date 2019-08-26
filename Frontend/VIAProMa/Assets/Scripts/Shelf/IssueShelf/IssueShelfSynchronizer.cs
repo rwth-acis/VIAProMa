@@ -38,12 +38,18 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.SourceChanged += OnSourceChanged;
         configurationMenu.ReqBazProjectChanged += OnReqBazProjectChanged;
         configurationMenu.ReqBazCategoryChanged += OnReqBazCategoryChanged;
+        configurationMenu.GitHubOwnerChanged += OnGitHubOwnerChanged;
+        configurationMenu.GitHubProjectChanged += OnGitHubProjectChanged;
     }
 
     public override void OnDisable()
     {
         photonView.RPC("SetActive", RpcTarget.Others, false);
         configurationMenu.SourceChanged -= OnSourceChanged;
+        configurationMenu.ReqBazProjectChanged -= OnReqBazProjectChanged;
+        configurationMenu.ReqBazCategoryChanged -= OnReqBazCategoryChanged;
+        configurationMenu.GitHubOwnerChanged -= OnGitHubOwnerChanged;
+        configurationMenu.GitHubProjectChanged -= OnGitHubProjectChanged;
         base.OnDisable();
     }
 
