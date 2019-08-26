@@ -122,6 +122,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     [PunRPC]
     private void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
     {
+        Debug.Log("RPC: set string ids to " + gitHubOwnerStringId + " and " + gitHubProjectStringId, gameObject);
         this.gitHubOwnerStringId = gitHubOwnerStringId;
         this.gitHubProjectStringId = gitHubProjectStringId;
     }
@@ -170,6 +171,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     private async void SetGitHubOwner()
     {
         string gitHubOwner = await NetworkedStringManager.GetString(gitHubOwnerStringId);
+        Debug.Log("RPC: set GitHubOwner to " + gitHubOwner, gameObject);
         configurationMenu.SetGitHubOwner(gitHubOwner);
     }
 
@@ -177,6 +179,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     private async void SetGitHubProject()
     {
         string gitHubProject = await NetworkedStringManager.GetString(gitHubProjectStringId);
+        Debug.Log("RPC: set GitHubProject to " + gitHubProject, gameObject);
         configurationMenu.SetGitHubProject(gitHubProject);
     }
 
