@@ -59,12 +59,31 @@ public class IssueShelfSynchronizer : TransformSynchronizer
             if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
             {
                 ReqBazShelfConfiguration config = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
+                short selectedProjectId;
+                if (config.SelectedProject == null)
+                {
+                    selectedProjectId = -1;
+                }
+                else
+                {
+                    selectedProjectId = (short)config.SelectedProject.id;
+                }
+                short selectedCategoryId;
+                if (config.SelectedCategory == null)
+                {
+                    selectedCategoryId = -1;
+                }
+                else
+                {
+                    selectedCategoryId = (short)config.SelectedCategory.id;
+                }
+
                 photonView.RPC("Initialize", RpcTarget.Others,
                 gameObject.activeSelf,
                 configurationMenu.WindowOpen,
                 (byte)config.SelectedSource,
-                (short)config.SelectedProject.id,
-                (short)config.SelectedCategory.id,
+                (short)selectedProjectId,
+                (short)selectedCategoryId,
                 gitHubOwnerStringId,
                 gitHubProjectStringId,
                 (short)issueLoader.Page
