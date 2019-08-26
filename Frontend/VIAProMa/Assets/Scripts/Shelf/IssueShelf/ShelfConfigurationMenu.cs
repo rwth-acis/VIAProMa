@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShelfConfigurationMenu : MonoBehaviour, IWindow
+public class ShelfConfigurationMenu : MonoBehaviour, IWindow, ISynchronizable
 {
     [Header("References")]
     [SerializeField] private IssuesLoader shelf;
@@ -43,7 +43,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     public bool WindowOpen { get; private set; }
 
-    public bool ExternalSetInProgress { get; set; }
+    public bool SynchronizationInProgress { get; set; }
 
     private void Awake()
     {
@@ -249,7 +249,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubOwnerInputFinished(object sender, EventArgs e)
     {
-        if (!ExternalSetInProgress)
+        if (!SynchronizationInProgress)
         {
             SetGitHubOwner();
             GitHubOwnerChanged?.Invoke(this, EventArgs.Empty);
@@ -271,7 +271,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubRepositoryInputFinished(object sender, EventArgs e)
     {
-        if (!ExternalSetInProgress)
+        if (!SynchronizationInProgress)
         {
             SetGitHubProject();
             GitHubProjectChanged?.Invoke(this, EventArgs.Empty);
@@ -381,25 +381,25 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     public void SetGitHubOwner(string owner)
     {
-        ExternalSetInProgress = true;
+        SynchronizationInProgress = true;
         gitHubOwnerInput.Text = owner;
         SetGitHubOwner();
-        ExternalSetInProgress = false;
+        SynchronizationInProgress = false;
     }
 
     public void SetGitHubProject(string project)
     {
-        ExternalSetInProgress = true;
+        SynchronizationInProgress = true;
         gitHubRepositoryInput.Text = project;
         SetGitHubProject();
-        ExternalSetInProgress = false;
+        SynchronizationInProgress = false;
     }
 
     public void Open()
     {
         gameObject.SetActive(true);
         WindowOpen = true;
-        if (!ExternalSetInProgress)
+        if (!SynchronizationInProgress)
         {
             WindowOpened?.Invoke(this, EventArgs.Empty);
         }
@@ -415,7 +415,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     {
         WindowOpen = false;
         gameObject.SetActive(false);
-        if (!ExternalSetInProgress)
+        if (!SynchronizationInProgress)
         {
             WindowClosed?.Invoke(this, EventArgs.Empty);
         }

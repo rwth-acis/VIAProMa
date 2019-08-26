@@ -9,12 +9,15 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 {
     [SerializeField] private ShelfConfigurationMenu configurationMenu;
 
+    private IssuesLoader issueLoader;
+
     private void Awake()
     {
         if (configurationMenu == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(configurationMenu));
         }
+        issueLoader = GetComponent<IssuesLoader>();
     }
 
     public override void OnEnable()
@@ -28,6 +31,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.GitHubProjectChanged += OnGitHubProjectChanged;
         configurationMenu.WindowOpened += OnConfigWindowOpened;
         configurationMenu.WindowClosed += OnConfigWindowClosed;
+        issueLoader.PageChanged += OnPageChanged;
     }
 
     public override void OnDisable()
@@ -40,6 +44,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.GitHubProjectChanged -= OnGitHubProjectChanged;
         configurationMenu.WindowOpened -= OnConfigWindowOpened;
         configurationMenu.WindowClosed -= OnConfigWindowClosed;
+        issueLoader.PageChanged -= OnPageChanged;
         base.OnDisable();
     }
 
@@ -56,22 +61,26 @@ public class IssueShelfSynchronizer : TransformSynchronizer
                 ReqBazShelfConfiguration config = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
                 photonView.RPC("Initialize", RpcTarget.Others,
                 gameObject.activeSelf,
+                configurationMenu.WindowOpen,
                 (byte)config.SelectedSource,
                 (short)config.SelectedProject.id,
                 (short)config.SelectedCategory.id,
                 gitHubOwnerStringId,
-                gitHubProjectStringId
+                gitHubProjectStringId,
+                (short)issueLoader.Page
                 );
             }
             else
             {
                 photonView.RPC("Initialize", RpcTarget.Others,
                 gameObject.activeSelf,
+                configurationMenu.WindowOpen,
                 (byte)configurationMenu.ShelfConfiguration.SelectedSource,
                 (short)-1,
                 (short)-1,
                 gitHubOwnerStringId,
-                gitHubProjectStringId
+                gitHubProjectStringId,
+                (short)issueLoader.Page
                 );
             }
         }
@@ -80,15 +89,18 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     [PunRPC]
     private void Initialize(
         bool activeState,
+        bool configWindowOpen,
         byte sourceId,
         short reqBazProjectId,
         short reqBazCategoryId,
         short gitHubOwnerStringId,
-        short gitHubProjectStringId
+        short gitHubProjectStringId,
+        short page
         )
     {
         // initializes the configuration
         SetActive(activeState);
+        SetConfigWindow(configWindowOpen);
         SetSource(sourceId);
         if (reqBazProjectId != -1)
         {
@@ -100,6 +112,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         }
         SetGitHubOwner(gitHubOwnerStringId);
         SetGitHubProject(gitHubProjectStringId);
+        SetPage(page);
     }
 
     [PunRPC]
@@ -170,7 +183,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     private void SetConfigWindow(bool open)
     {
         Debug.Log("RPC: set Configuration Window open to " + open);
-        configurationMenu.ExternalSetInProgress = true;
+        configurationMenu.SynchronizationInProgress = true;
         if (open)
         {
             configurationMenu.Open();
@@ -179,7 +192,16 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         {
             configurationMenu.Close();
         }
-        configurationMenu.ExternalSetInProgress = false;
+        configurationMenu.SynchronizationInProgress = false;
+    }
+
+    [PunRPC]
+    private void SetPage(short page)
+    {
+        Debug.Log("RPC: set page to " + page);
+        issueLoader.SynchronizationInProgress = true;
+        issueLoader.Page = page;
+        issueLoader.SynchronizationInProgress = false;
     }
 
     private void OnSourceChanged(object sender, EventArgs e)
@@ -242,5 +264,10 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     private void OnConfigWindowClosed(object sender, EventArgs e)
     {
         photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
+    }
+
+    private void OnPageChanged(object sender, EventArgs e)
+    {
+        photonView.RPC("SetPage", RpcTarget.Others, (short)issueLoader.Page);
     }
 }

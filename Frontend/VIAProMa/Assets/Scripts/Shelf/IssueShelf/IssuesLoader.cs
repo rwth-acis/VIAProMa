@@ -16,6 +16,16 @@ public class IssuesLoader : Shelf, ILoadShelf
     private Issue[] issues;
     private Issue[] nextIssues;
 
+    public override int Page
+    {
+        get => base.Page;
+        set
+        {
+            base.Page = value;
+            LoadContent();
+        }
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -107,17 +117,5 @@ public class IssuesLoader : Shelf, ILoadShelf
             List<Issue> items = new List<Issue>(apiResult.Value);
             issuesMultiListView.Items = items;
         }
-    }
-
-    public override void ScrollUp()
-    {
-        base.ScrollUp();
-        LoadContent();
-    }
-
-    public override void ScrollDown()
-    {
-        base.ScrollDown();
-        LoadContent();
     }
 }

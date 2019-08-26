@@ -1,9 +1,10 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shelf : MonoBehaviour
+public class Shelf : MonoBehaviour, ISynchronizable
 {
     [Header("UI Elements")]
     [SerializeField] protected MessageBadge messageBadge;
@@ -11,6 +12,23 @@ public class Shelf : MonoBehaviour
     [SerializeField] protected Interactable downButton;
 
     protected int page;
+
+    public event EventHandler PageChanged;
+
+    public virtual int Page
+    {
+        get => page;
+        set
+        {
+            page = Mathf.Max(0, value);
+            if (!SynchronizationInProgress)
+            {
+                PageChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public bool SynchronizationInProgress { get; set; }
 
     protected virtual void Awake()
     {
@@ -42,17 +60,16 @@ public class Shelf : MonoBehaviour
 
     public void ResetPage()
     {
-        page = 0;
+        Page = 0;
     }
 
     public virtual void ScrollUp()
     {
-        page--;
-        page = Mathf.Max(0, page);
+        Page--;
     }
 
     public virtual void ScrollDown()
     {
-        page++;
+        Page++;
     }
 }
