@@ -6,6 +6,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.HttpURLConnection;
+import java.time.LocalDate;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +32,16 @@ import java.util.Map;
 @Path("/networkedStrings")
 public class NetworkedStringResource {
 
-    private static Map<Short, String> stringDictionary = new HashMap<>();
+    private static Map<Short, String> idToStringDictionary = new HashMap<>();
+    private static Map<String, Short> stringToIdDictionary = new HashMap<>();
+    private static Map<Short, LocalDate> timeStamps = new HashMap<>();
     private static short idPointer = 0;
-    private final short maxId = 100;
 
     public NetworkedStringResource() {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(
             value = "Registers a string entry with the given id",
@@ -47,15 +50,22 @@ public class NetworkedStringResource {
             value = {@ApiResponse(
                     code = HttpURLConnection.HTTP_OK,
                     message = "REPLACE THIS WITH YOUR OK MESSAGE")})
-    public Response registerString() {
+    public Response registerString(String text) {
 
-        stringDictionary.put(idPointer, "");
+        if (stringToIdDictionary.containsKey(text))
+        {
+            short id = stringToIdDictionary.get(text);
+            return Response.ok().entity(id).build();
+        }
+
         short id = idPointer;
-        idPointer++;
-        idPointer %= maxId;
+        idToStringDictionary.put(idPointer, text);
+        stringToIdDictionary.put(text, idPointer);
 
-        System.out.println("Registered entry " + id);
-        System.out.println("Dictionary now has " + stringDictionary.size() + " entries");
+        idPointer++;
+
+        System.out.println("Registered entry " + id + " with value " + text);
+        System.out.println("Dictionary now has " + idToStringDictionary.size() + " entries");
 
         return Response.ok().entity(id).build();
     }
@@ -72,58 +82,10 @@ public class NetworkedStringResource {
                     message = "REPLACE THIS WITH YOUR OK MESSAGE")})
     public Response getString(@PathParam("id") short id) {
         System.out.println("Received get request for id " + id);
-        if (stringDictionary.containsKey(id)) {
-            return Response.ok().entity(stringDictionary.get(id)).build();
+        if (idToStringDictionary.containsKey(id)) {
+            return Response.ok().entity(idToStringDictionary.get(id)).build();
         } else {
             return Response.ok().entity("").build();
-        }
-    }
-
-    @PUT
-    @Path("/{id}")
-    @Consumes( MediaType.APPLICATION_JSON )
-    @Produces(MediaType.TEXT_PLAIN)
-    @ApiOperation(
-            value = "Sets a string with the given id",
-            notes = "Returns the string with the id")
-    @ApiResponses(
-            value = {@ApiResponse(
-                    code = HttpURLConnection.HTTP_OK,
-                    message = "REPLACE THIS WITH YOUR OK MESSAGE")})
-    public Response setString(@PathParam("id") short id, String text) {
-        System.out.println("Received put request for " + id + " and text " + text);
-        System.out.println("Dictionary has " + stringDictionary.size() + " entries");
-        if (text.equals("<<empty>>"))
-        {
-            text = "";
-        }
-        if (stringDictionary.containsKey(id)) {
-            stringDictionary.put(id, text);
-            return Response.ok().entity(stringDictionary.get(id)).build();
-        } else {
-            return Response.serverError().entity("The id for this string does not exist. It needs to be registered first.").build();
-        }
-    }
-
-    @DELETE
-    @Path("/{id}")
-    @Consumes( MediaType.TEXT_PLAIN )
-    @Produces(MediaType.TEXT_PLAIN)
-    @ApiOperation(
-            value = "Deletes the entry with the given id",
-            notes = "Returns the string with the id")
-    @ApiResponses(
-            value = {@ApiResponse(
-                    code = HttpURLConnection.HTTP_OK,
-                    message = "REPLACE THIS WITH YOUR OK MESSAGE")})
-    public Response setString(@PathParam("id") short id) {
-        if (stringDictionary.containsKey(id)) {
-            stringDictionary.remove(id);
-            System.out.println("Removed entry " + id);
-            System.out.println("Dictionary now has " + stringDictionary.size() + " entries");
-            return Response.ok().build();
-        } else {
-            return Response.serverError().entity("The id for this string does not exist.").build();
         }
     }
 }

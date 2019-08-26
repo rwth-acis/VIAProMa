@@ -9,9 +9,6 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 {
     [SerializeField] private ShelfConfigurationMenu configurationMenu;
 
-    private short gitHubOwnerStringId;
-    private short gitHubProjectStringId;
-
     private void Awake()
     {
         if (configurationMenu == null)
@@ -24,8 +21,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            gitHubOwnerStringId = await NetworkedStringManager.RegisterStringResource();
-            gitHubProjectStringId = await NetworkedStringManager.RegisterStringResource();
+            short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
+            short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
 
             photonView.RPC("SetStringIds", RpcTarget.Others, gitHubOwnerStringId, gitHubProjectStringId);
         }
@@ -53,19 +50,13 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         base.OnDisable();
     }
 
-    private void OnDestroy()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            NetworkedStringManager.DeregisterStringResource(gitHubOwnerStringId);
-            NetworkedStringManager.DeregisterStringResource(gitHubProjectStringId);
-        }
-    }
-
-    public override void OnPlayerEnteredRoom(Player newPlayer)
+    public override async void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
         {
+            short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
+            short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
+
             // the master client informs the new player about the current status
             if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
             {
@@ -114,18 +105,16 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         {
             SetReqBazCategory(reqBazCategoryId);
         }
-        this.gitHubOwnerStringId = gitHubOwnerStringId;
-        this.gitHubProjectStringId = gitHubProjectStringId;
-        SetGitHubOwner();
-        SetGitHubProject();
+        SetGitHubOwner(gitHubOwnerStringId);
+        SetGitHubProject(gitHubProjectStringId);
     }
 
     [PunRPC]
     private void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
     {
         Debug.Log("RPC: set string ids to " + gitHubOwnerStringId + " and " + gitHubProjectStringId, gameObject);
-        this.gitHubOwnerStringId = gitHubOwnerStringId;
-        this.gitHubProjectStringId = gitHubProjectStringId;
+        SetGitHubOwner(gitHubOwnerStringId);
+        SetGitHubProject(gitHubProjectStringId);
     }
 
     [PunRPC]
@@ -169,7 +158,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     }
 
     [PunRPC]
-    private async void SetGitHubOwner()
+    private async void SetGitHubOwner(short gitHubOwnerStringId)
     {
         string gitHubOwner = await NetworkedStringManager.GetString(gitHubOwnerStringId);
         Debug.Log("RPC: set GitHubOwner to " + gitHubOwner, gameObject);
@@ -177,7 +166,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     }
 
     [PunRPC]
-    private async void SetGitHubProject()
+    private async void SetGitHubProject(short gitHubProjectStringId)
     {
         string gitHubProject = await NetworkedStringManager.GetString(gitHubProjectStringId);
         Debug.Log("RPC: set GitHubProject to " + gitHubProject, gameObject);
@@ -224,15 +213,15 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         }
     }
 
-    private void OnGitHubOwnerChanged(object sender, EventArgs e)
+    private async void OnGitHubOwnerChanged(object sender, EventArgs e)
     {
-        NetworkedStringManager.SetString(gitHubOwnerStringId, configurationMenu.GitHubOwner);
-        photonView.RPC("SetGitHubOwner", RpcTarget.Others);
+        short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
+        photonView.RPC("SetGitHubOwner", RpcTarget.Others, gitHubOwnerStringId);
     }
 
-    private void OnGitHubProjectChanged(object sender, EventArgs e)
+    private async void OnGitHubProjectChanged(object sender, EventArgs e)
     {
-        NetworkedStringManager.SetString(gitHubProjectStringId, configurationMenu.GitHubRepository);
-        photonView.RPC("SetGitHubProject", RpcTarget.Others);
+        short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
+        photonView.RPC("SetGitHubProject", RpcTarget.Others, gitHubProjectStringId);
     }
 }

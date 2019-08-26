@@ -9,9 +9,9 @@ public static class NetworkedStringManager
 {
     private const string serviceEndpoint = "networkedStrings";
 
-    public static async Task<short> RegisterStringResource()
+    public static async Task<short> StringToId(string text)
     {
-        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint);
+        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint, text);
         if (resp.Successful)
         {
             return short.Parse(resp.ResponseBody);
@@ -20,15 +20,6 @@ public static class NetworkedStringManager
         {
             Debug.LogError(resp.ResponseBody);
             return -1;
-        }
-    }
-
-    public static async void DeregisterStringResource(short id)
-    {
-        Response resp = await Rest.DeleteAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id);
-        if (!resp.Successful)
-        {
-            Debug.LogError(resp.ResponseBody);
         }
     }
 
@@ -43,20 +34,6 @@ public static class NetworkedStringManager
         {
             Debug.LogError(resp.ResponseBody);
             return "";
-        }
-    }
-
-    public static async void SetString(short id, string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            text = "<<empty>>";
-        }
-        Response resp = await Rest.PutAsync(
-            ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id, text);
-        if (!resp.Successful)
-        {
-            Debug.LogError(resp.ResponseBody);
         }
     }
 }
