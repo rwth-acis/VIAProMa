@@ -98,6 +98,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         short page
         )
     {
+        Debug.Log("RPC: initialize the issue shelf");
         // initializes the configuration
         SetActive(activeState);
         SetConfigWindow(configWindowOpen);
