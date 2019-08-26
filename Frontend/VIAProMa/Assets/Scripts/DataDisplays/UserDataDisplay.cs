@@ -47,9 +47,12 @@ public class UserDataDisplay : DataDisplay<User>
 
     private void SetProfileImage(Texture2D profileImage)
     {
-        float pixelsPerUnit = Mathf.Min(profileImage.width, profileImage.height) * pixelDensity;
-        Sprite sprite = Sprite.Create(profileImage, new Rect(0, 0, profileImage.width, profileImage.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
-        profileImageSprite.sprite = sprite;
+        if (profileImageSprite != null)
+        {
+            float pixelsPerUnit = Mathf.Min(profileImage.width, profileImage.height) * pixelDensity;
+            Sprite sprite = Sprite.Create(profileImage, new Rect(0, 0, profileImage.width, profileImage.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
+            profileImageSprite.sprite = sprite;
+        }
     }
 
     private static async Task<Texture2D> GetProfileImage(User user)

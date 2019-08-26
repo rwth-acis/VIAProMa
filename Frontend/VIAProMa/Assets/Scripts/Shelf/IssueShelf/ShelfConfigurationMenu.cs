@@ -376,7 +376,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow, ISynchronizable
                 break;
             }
         }
-        Debug.LogError("Req Baz Category could not be bound", gameObject);
+        Debug.LogError("Req Baz Category could not be found (categoryId is " + categoryId + ")", gameObject);
     }
 
     public void SetGitHubOwner(string owner)
