@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TransformSynchronizer : MonoBehaviourPun, IPunObservable
+public class TransformSynchronizer : MonoBehaviourPunCallbacks, IPunObservable
 {
     protected Vector3 targetPosition;
     protected Quaternion targetRotation;

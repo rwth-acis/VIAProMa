@@ -24,6 +24,8 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     public event EventHandler SourceChanged;
     public event EventHandler ReqBazProjectChanged;
     public event EventHandler ReqBazCategoryChanged;
+    public event EventHandler GitHubOwnerChanged;
+    public event EventHandler GitHubProjectChanged;
     public event EventHandler WindowClosed;
 
     private bool isConfiguring = true;
@@ -241,6 +243,12 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubOwnerInputFinished(object sender, EventArgs e)
     {
+        SetGitHubOwner();
+        GitHubOwnerChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void SetGitHubOwner()
+    {
         if (isConfiguring)
         {
             return;
@@ -253,6 +261,12 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     }
 
     private void GitHubRepositoryInputFinished(object sender, EventArgs e)
+    {
+        SetGitHubProject();
+        GitHubProjectChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void SetGitHubProject()
     {
         if (isConfiguring)
         {
@@ -351,6 +365,18 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
             }
         }
         Debug.LogError("Req Baz Category could not be bound", gameObject);
+    }
+
+    public void SetGitHubOwner(string owner)
+    {
+        gitHubOwnerInput.Text = owner;
+        SetGitHubOwner();
+    }
+
+    public void SetGitHubProject(string project)
+    {
+        gitHubRepositoryInput.Text = project;
+        SetGitHubProject();
     }
 
     public void Open()
