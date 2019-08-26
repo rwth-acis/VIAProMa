@@ -26,6 +26,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         {
             gitHubOwnerStringId = await NetworkedStringManager.RegisterStringResource();
             gitHubProjectStringId = await NetworkedStringManager.RegisterStringResource();
+
+            photonView.RPC("SetStringIds", RpcTarget.Others, gitHubOwnerStringId, gitHubProjectStringId);
         }
     }
 
@@ -47,8 +49,11 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnDestroy()
     {
-        NetworkedStringManager.DeregisterStringResource(gitHubOwnerStringId);
-        NetworkedStringManager.DeregisterStringResource(gitHubProjectStringId);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            NetworkedStringManager.DeregisterStringResource(gitHubOwnerStringId);
+            NetworkedStringManager.DeregisterStringResource(gitHubProjectStringId);
+        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -106,6 +111,13 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         this.gitHubOwnerStringId = gitHubOwnerStringId;
         this.gitHubProjectStringId = gitHubProjectStringId;
 
+    }
+
+    [PunRPC]
+    private void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
+    {
+        this.gitHubOwnerStringId = gitHubOwnerStringId;
+        this.gitHubProjectStringId = gitHubProjectStringId;
     }
 
     [PunRPC]
