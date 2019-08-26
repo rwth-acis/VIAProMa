@@ -41,7 +41,7 @@ public class NetworkedStringResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(
             value = "Registers a string entry with the given id",
@@ -63,6 +63,10 @@ public class NetworkedStringResource {
         stringToIdDictionary.put(text, idPointer);
 
         idPointer++;
+        if (idPointer == -1)
+        {
+            idPointer++; // skip -1 because it is reserved for the empty string
+        }
 
         System.out.println("Registered entry " + id + " with value " + text);
         System.out.println("Dictionary now has " + idToStringDictionary.size() + " entries");
@@ -85,7 +89,7 @@ public class NetworkedStringResource {
         if (idToStringDictionary.containsKey(id)) {
             return Response.ok().entity(idToStringDictionary.get(id)).build();
         } else {
-            return Response.ok().entity("").build();
+            return Response.ok().entity("").build(); // includes -1 case
         }
     }
 }

@@ -11,7 +11,15 @@ public static class NetworkedStringManager
 
     public static async Task<short> StringToId(string text)
     {
-        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint, text);
+        if (string.IsNullOrEmpty(text))
+        {
+            return -1;
+        }
+
+        Dictionary<string, string> headers = new Dictionary<string, string>();
+        headers.Add("Content-Type", "text/plain"); // overwrite the content type
+        headers.Add("Accept", "text/plain"); // overwrite the accept type
+        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint, text, headers);
         if (resp.Successful)
         {
             return short.Parse(resp.ResponseBody);
