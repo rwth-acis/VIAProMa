@@ -354,6 +354,10 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow, ISynchronizable
 
     public void SetReqBazProject(int projectId)
     {
+        if (projects == null)
+        {
+            LoadReqBazProjectList();
+        }
         for (int i = 0; i < projects.Length; i++)
         {
             if (projects[i].id == projectId)

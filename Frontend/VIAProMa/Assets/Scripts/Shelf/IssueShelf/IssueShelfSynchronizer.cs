@@ -82,8 +82,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
                 gameObject.activeSelf,
                 configurationMenu.WindowOpen,
                 (byte)config.SelectedSource,
-                (short)selectedProjectId,
-                (short)selectedCategoryId,
+                selectedProjectId,
+                selectedCategoryId,
                 gitHubOwnerStringId,
                 gitHubProjectStringId,
                 (short)issueLoader.Page
@@ -118,6 +118,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         )
     {
         Debug.Log("RPC: initialize the issue shelf");
+
         // initializes the configuration
         SetActive(activeState);
         SetConfigWindow(configWindowOpen);
