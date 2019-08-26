@@ -29,6 +29,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     public event EventHandler WindowClosed;
 
     private bool isConfiguring = true;
+    private bool externalSetInProgress = false;
 
     public IShelfConfiguration ShelfConfiguration { get; private set; }
 
@@ -246,8 +247,11 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubOwnerInputFinished(object sender, EventArgs e)
     {
-        SetGitHubOwner();
-        GitHubOwnerChanged?.Invoke(this, EventArgs.Empty);
+        if (!externalSetInProgress)
+        {
+            SetGitHubOwner();
+            GitHubOwnerChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void SetGitHubOwner()
@@ -265,8 +269,11 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubRepositoryInputFinished(object sender, EventArgs e)
     {
-        SetGitHubProject();
-        GitHubProjectChanged?.Invoke(this, EventArgs.Empty);
+        if (!externalSetInProgress)
+        {
+            SetGitHubProject();
+            GitHubProjectChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void SetGitHubProject()
@@ -372,14 +379,18 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     public void SetGitHubOwner(string owner)
     {
+        externalSetInProgress = true;
         gitHubOwnerInput.Text = owner;
         SetGitHubOwner();
+        externalSetInProgress = false;
     }
 
     public void SetGitHubProject(string project)
     {
+        externalSetInProgress = true;
         gitHubRepositoryInput.Text = project;
         SetGitHubProject();
+        externalSetInProgress = false;
     }
 
     public void Open()

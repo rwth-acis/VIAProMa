@@ -93,7 +93,7 @@ public class NetworkedStringResource {
     public Response setString(@PathParam("id") short id, String text) {
         System.out.println("Received put request for " + id + " and text " + text);
         System.out.println("Dictionary has " + stringDictionary.size() + " entries");
-        if (text == "<<empty>>")
+        if (text.equals("<<empty>>"))
         {
             text = "";
         }
