@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public static class NetworkedStringManager
 {
@@ -47,7 +48,12 @@ public static class NetworkedStringManager
 
     public static async void SetString(short id, string text)
     {
-        Response resp = await Rest.PutAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id, text);
+        if (string.IsNullOrEmpty(text))
+        {
+            text = "<<empty>>";
+        }
+        Response resp = await Rest.PutAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id, text);
         if (!resp.Successful)
         {
             Debug.LogError(resp.ResponseBody);

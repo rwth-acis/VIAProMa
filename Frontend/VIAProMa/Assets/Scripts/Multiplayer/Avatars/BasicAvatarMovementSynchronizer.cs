@@ -50,7 +50,6 @@ public class BasicAvatarMovementSynchronizer : MonoBehaviourPun, IPunObservable
         // if we are writing to the stream => we are the local player and want to transmit our position and rotations
         if (stream.IsWriting)
         {
-            Debug.Log("Sending camera data");
             if (timeSinceLastSearch > handSearchInterval)
             {
                 SearchHands();
