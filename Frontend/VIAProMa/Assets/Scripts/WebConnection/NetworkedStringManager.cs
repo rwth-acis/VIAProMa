@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class NetworkedStringManager
 {
-    private const string serviceEndpoint = "networkedString";
+    private const string serviceEndpoint = "networkedStrings";
 
     public static async Task<short> RegisterStringResource()
     {
