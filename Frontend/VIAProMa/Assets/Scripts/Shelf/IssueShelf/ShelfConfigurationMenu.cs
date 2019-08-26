@@ -26,10 +26,10 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     public event EventHandler ReqBazCategoryChanged;
     public event EventHandler GitHubOwnerChanged;
     public event EventHandler GitHubProjectChanged;
+    public event EventHandler WindowOpened;
     public event EventHandler WindowClosed;
 
     private bool isConfiguring = true;
-    private bool externalSetInProgress = false;
 
     public IShelfConfiguration ShelfConfiguration { get; private set; }
 
@@ -42,6 +42,8 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     public string GitHubRepository { get => gitHubRepositoryInput.Text; }
 
     public bool WindowOpen { get; private set; }
+
+    public bool ExternalSetInProgress { get; set; }
 
     private void Awake()
     {
@@ -247,7 +249,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubOwnerInputFinished(object sender, EventArgs e)
     {
-        if (!externalSetInProgress)
+        if (!ExternalSetInProgress)
         {
             SetGitHubOwner();
             GitHubOwnerChanged?.Invoke(this, EventArgs.Empty);
@@ -269,7 +271,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubRepositoryInputFinished(object sender, EventArgs e)
     {
-        if (!externalSetInProgress)
+        if (!ExternalSetInProgress)
         {
             SetGitHubProject();
             GitHubProjectChanged?.Invoke(this, EventArgs.Empty);
@@ -379,24 +381,28 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     public void SetGitHubOwner(string owner)
     {
-        externalSetInProgress = true;
+        ExternalSetInProgress = true;
         gitHubOwnerInput.Text = owner;
         SetGitHubOwner();
-        externalSetInProgress = false;
+        ExternalSetInProgress = false;
     }
 
     public void SetGitHubProject(string project)
     {
-        externalSetInProgress = true;
+        ExternalSetInProgress = true;
         gitHubRepositoryInput.Text = project;
         SetGitHubProject();
-        externalSetInProgress = false;
+        ExternalSetInProgress = false;
     }
 
     public void Open()
     {
         gameObject.SetActive(true);
         WindowOpen = true;
+        if (!ExternalSetInProgress)
+        {
+            WindowOpened?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -409,6 +415,9 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     {
         WindowOpen = false;
         gameObject.SetActive(false);
-        WindowClosed?.Invoke(this, EventArgs.Empty);
+        if (!ExternalSetInProgress)
+        {
+            WindowClosed?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

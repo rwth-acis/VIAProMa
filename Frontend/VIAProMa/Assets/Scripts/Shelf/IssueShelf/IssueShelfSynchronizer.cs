@@ -17,17 +17,6 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         }
     }
 
-    private async void Start()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
-            short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
-
-            photonView.RPC("SetStringIds", RpcTarget.Others, gitHubOwnerStringId, gitHubProjectStringId);
-        }
-    }
-
     public override void OnEnable()
     {
         base.OnEnable();
@@ -37,6 +26,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.ReqBazCategoryChanged += OnReqBazCategoryChanged;
         configurationMenu.GitHubOwnerChanged += OnGitHubOwnerChanged;
         configurationMenu.GitHubProjectChanged += OnGitHubProjectChanged;
+        configurationMenu.WindowOpened += OnConfigWindowOpened;
+        configurationMenu.WindowClosed += OnConfigWindowClosed;
     }
 
     public override void OnDisable()
@@ -47,6 +38,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.ReqBazCategoryChanged -= OnReqBazCategoryChanged;
         configurationMenu.GitHubOwnerChanged -= OnGitHubOwnerChanged;
         configurationMenu.GitHubProjectChanged -= OnGitHubProjectChanged;
+        configurationMenu.WindowOpened -= OnConfigWindowOpened;
+        configurationMenu.WindowClosed -= OnConfigWindowClosed;
         base.OnDisable();
     }
 
@@ -173,6 +166,22 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.SetGitHubProject(gitHubProject);
     }
 
+    [PunRPC]
+    private void SetConfigWindow(bool open)
+    {
+        Debug.Log("RPC: set Configuration Window open to " + open);
+        configurationMenu.ExternalSetInProgress = true;
+        if (open)
+        {
+            configurationMenu.Open();
+        }
+        else
+        {
+            configurationMenu.Close();
+        }
+        configurationMenu.ExternalSetInProgress = false;
+    }
+
     private void OnSourceChanged(object sender, EventArgs e)
     {
         photonView.RPC("SetSource", RpcTarget.Others, (byte)configurationMenu.ShelfConfiguration.SelectedSource);
@@ -223,5 +232,15 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     {
         short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
         photonView.RPC("SetGitHubProject", RpcTarget.Others, gitHubProjectStringId);
+    }
+
+    private void OnConfigWindowOpened(object sender, EventArgs e)
+    {
+        photonView.RPC("SetConfigWindow", RpcTarget.Others, true);
+    }
+
+    private void OnConfigWindowClosed(object sender, EventArgs e)
+    {
+        photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
     }
 }
