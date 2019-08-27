@@ -33,8 +33,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private bool isConfiguring = true;
 
-    public IShelfConfiguration ShelfConfiguration { get => cc; private set { cc = value; Debug.Log("Changed config. " + cc.SelectedSource); } }
-    private IShelfConfiguration cc;
+    public IShelfConfiguration ShelfConfiguration { get; private set; }
 
     public bool WindowEnabled
     { // not needed for configuration window => does not have an effect
@@ -151,7 +150,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
                     else
                     {
                         ShelfConfiguration = new ReqBazShelfConfiguration(GetReqBazProject(reqBazProjectInput.Text));
-                        LoadReqBazCategoryList();
+                        await LoadReqBazCategoryList();
                     }
                 }
                 else // nothing previously set
@@ -211,20 +210,23 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         }
         else // fetch categories
         {
-            LoadReqBazCategoryList();
+            await LoadReqBazCategoryList();
             shelf.ResetPage();
             shelf.LoadContent();
             return true;
         }
     }
 
-    private void ReqBazCategorySelected(object sender, EventArgs e)
+    private async void ReqBazCategorySelected(object sender, EventArgs e)
     {
-        SetReqBazCategory();
-        ReqBazCategoryChanged?.Invoke(this, EventArgs.Empty);
+        bool successful = await SetReqBazCategory();
+        if (successful)
+        {
+            ReqBazCategoryChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 
-    private bool SetReqBazCategory()
+    private async Task<bool> SetReqBazCategory()
     {
         if (isConfiguring || ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR)
         {
@@ -233,7 +235,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
         if (categories == null)
         {
-            LoadReqBazCategoryList();
+            await LoadReqBazCategoryList();
         }
         // if still no categories found => show error message
         if (categories == null)
@@ -323,7 +325,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         categories = null;
     }
 
-    private async void LoadReqBazCategoryList()
+    private async Task LoadReqBazCategoryList()
     {
         if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR || ((ReqBazShelfConfiguration)ShelfConfiguration).SelectedProject == null)
         {
