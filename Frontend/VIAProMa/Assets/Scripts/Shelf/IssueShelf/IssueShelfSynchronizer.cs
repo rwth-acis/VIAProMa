@@ -256,7 +256,6 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     {
         remoteSynchronizations++;
         Debug.Log("RPC: set Configuration Window open to " + open);
-        configurationMenu.SynchronizationInProgress = true;
         if (open)
         {
             configurationMenu.Open();
@@ -265,7 +264,6 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         {
             configurationMenu.Close();
         }
-        configurationMenu.SynchronizationInProgress = false;
         remoteSynchronizations--;
     }
 
