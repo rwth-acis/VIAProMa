@@ -3,6 +3,7 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class IssueShelfSynchronizer : TransformSynchronizer
@@ -36,7 +37,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     public override void OnEnable()
     {
         base.OnEnable();
-        if (!RemoteSynchronizationInProgress)
+        if (!RemoteSynchronizationInProgress && initialized)
         {
             photonView.RPC("SetActive", RpcTarget.Others, true);
         }
@@ -130,7 +131,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     }
 
     [PunRPC]
-    private void Initialize(
+    private async void Initialize(
         bool activeState,
         bool configWindowOpen,
         byte sourceId,
@@ -146,34 +147,38 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
         remoteSynchronizations++;
 
+        await configurationMenu.Initialize();
+
         // initializes the configuration
         SetActive(activeState);
         SetConfigWindow(configWindowOpen);
-        SetSource(sourceId);
         if (reqBazProjectId != -1)
         {
-            SetReqBazProject(reqBazProjectId);
+            await SetReqBazProject(reqBazProjectId);
         }
         if (reqBazCategoryId != -1)
         {
             SetReqBazCategory(reqBazCategoryId);
         }
-        SetGitHubOwner(gitHubOwnerStringId);
-        SetGitHubProject(gitHubProjectStringId);
+        await SetGitHubOwner(gitHubOwnerStringId);
+        await SetGitHubProject(gitHubProjectStringId);
         SetPage(page);
         SetSearchField(searchStringId);
 
+        await SetSource(sourceId); // source must be set last because the individual settings for ReqBaz and GitHub also change the source
+
         remoteSynchronizations--;
         initialized = true;
+        Debug.Log("Client is now initialized.");
     }
 
     [PunRPC]
-    private void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
+    private async void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
     {
         remoteSynchronizations++;
         Debug.Log("RPC: set string ids to " + gitHubOwnerStringId + " and " + gitHubProjectStringId, gameObject);
-        SetGitHubOwner(gitHubOwnerStringId);
-        SetGitHubProject(gitHubProjectStringId);
+        await SetGitHubOwner(gitHubOwnerStringId);
+        await SetGitHubProject(gitHubProjectStringId);
         remoteSynchronizations--;
     }
 
@@ -187,21 +192,21 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     }
 
     [PunRPC]
-    private void SetSource(byte sourceId)
+    private async Task SetSource(byte sourceId)
     {
         remoteSynchronizations++;
         Debug.Log("RPC: set data source to " + sourceId, gameObject);
-        configurationMenu.SetDataSource((DataSource)sourceId);
+        await configurationMenu.SetDataSource((DataSource)sourceId);
         remoteSynchronizations--;
     }
 
     [PunRPC]
-    private void SetReqBazProject(short projectId)
+    private async Task SetReqBazProject(short projectId)
     {
         remoteSynchronizations++;
         if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
         {
-            configurationMenu.SetReqBazProject(projectId);
+            await configurationMenu.SetReqBazProject(projectId);
         }
         else
         {
@@ -226,7 +231,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     }
 
     [PunRPC]
-    private async void SetGitHubOwner(short gitHubOwnerStringId)
+    private async Task SetGitHubOwner(short gitHubOwnerStringId)
     {
         remoteSynchronizations++;
         string gitHubOwner = await NetworkedStringManager.GetString(gitHubOwnerStringId);
@@ -236,7 +241,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     }
 
     [PunRPC]
-    private async void SetGitHubProject(short gitHubProjectStringId)
+    private async Task SetGitHubProject(short gitHubProjectStringId)
     {
         remoteSynchronizations++;
         string gitHubProject = await NetworkedStringManager.GetString(gitHubProjectStringId);
@@ -293,6 +298,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnReqBazProjectChanged(object sender, EventArgs e)
     {
+        Debug.Log("REQ Baz Project changed; remotesync in progress: " + remoteSynchronizations);
         if (RemoteSynchronizationInProgress || !initialized)
         {
             return;

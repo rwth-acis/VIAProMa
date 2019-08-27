@@ -1,7 +1,9 @@
 ﻿using i5.ViaProMa.UI;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ShelfConfigurationMenu : MonoBehaviour, IWindow
@@ -31,7 +33,8 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private bool isConfiguring = true;
 
-    public IShelfConfiguration ShelfConfiguration { get; private set; }
+    public IShelfConfiguration ShelfConfiguration { get => cc; private set { cc = value; Debug.Log("Changed config. " + cc.SelectedSource); } }
+    private IShelfConfiguration cc;
 
     public bool WindowEnabled
     { // not needed for configuration window => does not have an effect
@@ -81,7 +84,17 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         }
     }
 
-    private void Start()
+    private async void Start()
+    {
+        // the master client initialized on its own
+        // all other clients will initialize when the master tells them
+        if (PhotonNetwork.IsMasterClient)
+        {
+            await Initialize();
+        }
+    }
+
+    public async Task Initialize()
     {
         // populate the source dropdown menu with the available data sources
         List<StringData> sources = new List<StringData>();
@@ -97,7 +110,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         gitHubOwnerInput.TextChanged += GitHubOwnerInputFinished;
         gitHubRepositoryInput.TextChanged += GitHubRepositoryInputFinished;
 
-        SetDataSource(DataSource.REQUIREMENTS_BAZAAR); // first entry of dropdown box is Requirements Bazaar, so set this as the default source
+        await SetDataSource(DataSource.REQUIREMENTS_BAZAAR); // first entry of dropdown box is Requirements Bazaar, so set this as the default source
 
         // initialize the text fields
         reqBazProjectInput.Text = "";
@@ -107,14 +120,14 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         isConfiguring = false;
     }
 
-    private void SourceSelected(object sender, EventArgs e)
+    private async void SourceSelected(object sender, EventArgs e)
     {
         DataSource selectedSource = (DataSource)sourceSelection.SelectedItemIndex;
-        SetDataSource(selectedSource);
+        await SetDataSource(selectedSource);
         SourceChanged?.Invoke(this, EventArgs.Empty); // important: invoke it only if the user changes the source
     }
 
-    public void SetDataSource(DataSource selectedSource)
+    public async Task SetDataSource(DataSource selectedSource)
     {
         switch (selectedSource)
         {
@@ -144,7 +157,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
                 else // nothing previously set
                 {
                     ShelfConfiguration = new ReqBazShelfConfiguration();
-                    LoadReqBazProjectList();
+                    await LoadReqBazProjectList();
                 }
                 break;
             case DataSource.GITHUB:
@@ -162,30 +175,26 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         gitHubDisplays.SetActive(ShelfConfiguration.SelectedSource == DataSource.GITHUB);
     }
 
-    private void ReqBazProjectInputFinished(object sender, EventArgs e)
+    private async void ReqBazProjectInputFinished(object sender, EventArgs e)
     {
         Debug.Log("Project input finished");
-        bool successful = SetReqBazProject();
+        bool successful = await SetReqBazProject();
         if (successful)
         {
             ReqBazProjectChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    private bool SetReqBazProject()
+    private async Task<bool> SetReqBazProject()
     {
-        if (isConfiguring)
-        {
-            return false;
-        }
-        if (ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR || string.IsNullOrEmpty(reqBazProjectInput.Text))
+        if (isConfiguring || ShelfConfiguration.SelectedSource != DataSource.REQUIREMENTS_BAZAAR || string.IsNullOrEmpty(reqBazProjectInput.Text))
         {
             return false;
         }
         // if the projects list is not loaded at this point, try again
         if (projects == null)
         {
-            LoadReqBazProjectList();
+            await LoadReqBazProjectList();
         }
         // if the project list could still not be loaded => abort
         if (projects == null)
@@ -289,7 +298,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         shelf.LoadContent();
     }
 
-    private async void LoadReqBazProjectList()
+    private async Task LoadReqBazProjectList()
     {
         shelf.MessageBadge.ShowProcessing();
         ApiResult<Project[]> res = await RequirementsBazaar.GetProjects();
@@ -352,18 +361,18 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         return null;
     }
 
-    public void SetReqBazProject(int projectId)
+    public async Task SetReqBazProject(int projectId)
     {
         if (projects == null)
         {
-            LoadReqBazProjectList();
+            await LoadReqBazProjectList();
         }
         for (int i = 0; i < projects.Length; i++)
         {
             if (projects[i].id == projectId)
             {
                 reqBazProjectInput.Text = projects[i].name;
-                SetReqBazProject();
+                await SetReqBazProject();
                 break;
             }
         }
