@@ -80,12 +80,6 @@ public class MainMenu : MonoBehaviour
         Launcher.Instance.ConnectionStatusChanged -= OnConnectionStatusChanged;
     }
 
-    private void Start()
-    {
-        issueShelf.SetActive(false);
-        visualizationShelf.SetActive(false);
-    }
-
     private void OnConnectionStatusChanged(object sender, EventArgs e)
     {
         roomButton.Enabled = PhotonNetwork.IsConnected;
