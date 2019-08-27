@@ -24,13 +24,13 @@ public class PrefabResourceCollection : ScriptableObject
     /// <param name="position">The position where the GameObject should be instantiated</param>
     /// <param name="rotation">The rotation with which the GameObject should be instantiated</param>
     /// <returns>The created GameObject in the scene</returns>
-    public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation)
+    public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] data = null)
     {
         foreach (NetworkPrefab networkPrefab in networkPrefabs)
         {
             if (networkPrefab.Prefab == obj)
             {
-                return PhotonNetwork.Instantiate(networkPrefab.Path, position, rotation);
+                return PhotonNetwork.Instantiate(networkPrefab.Path, position, rotation, 0, data);
             }
         }
 
@@ -45,17 +45,31 @@ public class PrefabResourceCollection : ScriptableObject
     /// <param name="position">The position where the GameObject should be instantiated</param>
     /// <param name="rotation">The rotation with which the GameObject should be instantiated</param>
     /// <returns>The created GameObject in the scene</returns>
-    public GameObject NetworkInstantiate(string name, Vector3 position, Quaternion rotation)
+    public GameObject NetworkInstantiate(string name, Vector3 position, Quaternion rotation, object[] data = null)
     {
         foreach (NetworkPrefab networkPrefab in networkPrefabs)
         {
             if (networkPrefab.Name == name)
             {
-                return PhotonNetwork.Instantiate(networkPrefab.Path, position, rotation);
+                return PhotonNetwork.Instantiate(networkPrefab.Path, position, rotation, 0, data);
             }
         }
 
         Debug.LogWarning("Prefab not found. Maybe it is not in a resources folder or it does not have a PhotonView?");
+        return null;
+    }
+
+    public GameObject SceneNetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] data = null)
+    {
+        foreach (NetworkPrefab networkPrefab in networkPrefabs)
+        {
+            if (networkPrefab.Prefab == obj)
+            {
+                return PhotonNetwork.InstantiateSceneObject(networkPrefab.Path, position, rotation, 0, data);
+            }
+        }
+
+        Debug.LogWarning("Prefab was not found. Maybe it is not in a resources folder or it does not have a PhotonView?");
         return null;
     }
 

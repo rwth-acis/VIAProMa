@@ -40,11 +40,12 @@ public class ResourceManager : Singleton<ResourceManager>
     /// <param name="obj">The GameObject to instantiate</param>
     /// <param name="position">The position where the object should be instantiated</param>
     /// <param name="rotation">The rotatoin with which the object should be instantiated</param>
+    /// <param name="data">Instantiation data which can be added to the object</param>
     /// <returns>The created instance in the scene</returns>
-    public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation)
+    public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] data = null)
     {
         // can only be done with prefabs which are in a Resource folder
-        return resourcePrefabCollection.NetworkInstantiate(obj, position, rotation);
+        return resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, data);
     }
 
     /// <summary>
@@ -54,10 +55,26 @@ public class ResourceManager : Singleton<ResourceManager>
     /// <param name="name">The name of the GameObjects</param>
     /// <param name="position">The position where the object should be instantiated</param>
     /// <param name="rotation">The rotatoin with which the object should be instantiated</param>
+    /// <param name="data">Instantiation data which can be added to the object</param>
     /// <returns>The created instance in the scene</returns>
-    public GameObject NetworkInstantiate(string name, Vector3 position, Quaternion rotation)
+    public GameObject NetworkInstantiate(string name, Vector3 position, Quaternion rotation, object[] data = null)
     {
-        return resourcePrefabCollection.NetworkInstantiate(name, position, rotation);
+        return resourcePrefabCollection.NetworkInstantiate(name, position, rotation, data);
+    }
+
+    /// <summary>
+    /// Instantiates the given GameObject as a scene object whose lifetime is coupled with the room and scene
+    /// This way, the GameObject will still exist if the creator left the room
+    /// The GameObject must exist in the resources and have a photon view
+    /// </summary>
+    /// <param name="obj">The GameObject to instantiate</param>
+    /// <param name="position">The position where the object should be instantiated</param>
+    /// <param name="rotation">The rotatoin with which the object should be instantiated</param>
+    /// <param name="data">Instantiation data which can be added to the object</param>
+    /// <returns></returns>
+    public GameObject SceneNetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] data = null)
+    {
+        return resourcePrefabCollection.SceneNetworkInstantiate(obj, position, rotation, data);
     }
 
     /// <summary>

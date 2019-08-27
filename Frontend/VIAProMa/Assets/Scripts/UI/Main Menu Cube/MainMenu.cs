@@ -103,7 +103,7 @@ public class MainMenu : MonoBehaviour
     {
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
-        NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition);
+        NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, true);
         foldController.FoldCube();
     }
 
@@ -160,7 +160,7 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    private void NetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
+    private void NetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition, bool isSceneObject = false)
     {
         Quaternion targetRotation = transform.rotation;
 
@@ -171,7 +171,14 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
+            if (isSceneObject)
+            {
+                instance = ResourceManager.Instance.SceneNetworkInstantiate(prefab, targetPosition, targetRotation);
+            }
+            else
+            {
+                instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
+            }
         }
     }
 }
