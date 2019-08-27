@@ -85,6 +85,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private async void Start()
     {
+        Debug.Log("external init: " + ExternallyInitialized);
         if (!ExternallyInitialized)
         {
             await Initialize();

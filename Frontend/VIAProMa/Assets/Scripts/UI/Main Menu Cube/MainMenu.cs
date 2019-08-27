@@ -18,8 +18,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Interactable microphoneButton;
 
     [Header("References")]
-    [SerializeField] private GameObject issueShelfPrefab;
-    [SerializeField] private GameObject visualizationShelfPrefab;
+    [SerializeField] private GameObject issueShelf;
+    [SerializeField] private GameObject visualizationShelf;
     [SerializeField] private GameObject avatarConfiguratorPrefab;
 
     private FoldController foldController;
@@ -56,9 +56,9 @@ public class MainMenu : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
         }
 
-        if (issueShelfPrefab == null)
+        if (issueShelf == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueShelfPrefab));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueShelf));
         }
         if (avatarConfiguratorPrefab == null)
         {
@@ -103,7 +103,8 @@ public class MainMenu : MonoBehaviour
     {
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
-        NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, true);
+        ShowControl(issueShelf, targetPosition);
+        //NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, true);
         foldController.FoldCube();
     }
 
@@ -111,7 +112,8 @@ public class MainMenu : MonoBehaviour
     {
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
-        NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition);
+        ShowControl(visualizationShelf, targetPosition);
+        //NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition);
         foldController.FoldCube();
     }
 
@@ -157,6 +159,16 @@ public class MainMenu : MonoBehaviour
         else
         {
             instance = GameObject.Instantiate(prefab, targetPosition, targetRotation);
+        }
+    }
+
+    private void ShowControl(GameObject instance, Vector3 targetPosition)
+    {
+        if (instance != null)
+        {
+            instance.SetActive(true);
+            instance.transform.position = targetPosition;
+            instance.transform.rotation = transform.rotation;
         }
     }
 
