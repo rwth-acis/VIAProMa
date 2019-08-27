@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shelf : MonoBehaviour, ISynchronizable
+public class Shelf : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] protected MessageBadge messageBadge;
@@ -21,14 +21,9 @@ public class Shelf : MonoBehaviour, ISynchronizable
         set
         {
             page = Mathf.Max(0, value);
-            if (!SynchronizationInProgress)
-            {
-                PageChanged?.Invoke(this, EventArgs.Empty);
-            }
+            PageChanged?.Invoke(this, EventArgs.Empty);
         }
     }
-
-    public bool SynchronizationInProgress { get; set; }
 
     protected virtual void Awake()
     {

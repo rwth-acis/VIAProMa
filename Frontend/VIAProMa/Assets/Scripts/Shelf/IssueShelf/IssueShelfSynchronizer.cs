@@ -11,6 +11,10 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private IssuesLoader issueLoader;
 
+    private int remoteSynchronizations = 0;
+
+    private bool RemoteSynchronizationInProgress { get => remoteSynchronizations > 0; }
+
     private void Awake()
     {
         if (configurationMenu == null)
@@ -23,7 +27,10 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     public override void OnEnable()
     {
         base.OnEnable();
-        photonView.RPC("SetActive", RpcTarget.Others, true);
+        if (!RemoteSynchronizationInProgress)
+        {
+            photonView.RPC("SetActive", RpcTarget.Others, true);
+        }
         configurationMenu.SourceChanged += OnSourceChanged;
         configurationMenu.ReqBazProjectChanged += OnReqBazProjectChanged;
         configurationMenu.ReqBazCategoryChanged += OnReqBazCategoryChanged;
@@ -36,7 +43,10 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     public override void OnDisable()
     {
-        photonView.RPC("SetActive", RpcTarget.Others, false);
+        if (!RemoteSynchronizationInProgress)
+        {
+            photonView.RPC("SetActive", RpcTarget.Others, false);
+        }
         configurationMenu.SourceChanged -= OnSourceChanged;
         configurationMenu.ReqBazProjectChanged -= OnReqBazProjectChanged;
         configurationMenu.ReqBazCategoryChanged -= OnReqBazCategoryChanged;
@@ -119,6 +129,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     {
         Debug.Log("RPC: initialize the issue shelf");
 
+        remoteSynchronizations++;
+
         // initializes the configuration
         SetActive(activeState);
         SetConfigWindow(configWindowOpen);
@@ -134,33 +146,42 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         SetGitHubOwner(gitHubOwnerStringId);
         SetGitHubProject(gitHubProjectStringId);
         SetPage(page);
+
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
     {
+        remoteSynchronizations++;
         Debug.Log("RPC: set string ids to " + gitHubOwnerStringId + " and " + gitHubProjectStringId, gameObject);
         SetGitHubOwner(gitHubOwnerStringId);
         SetGitHubProject(gitHubProjectStringId);
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private void SetActive(bool active)
     {
+        remoteSynchronizations++;
         Debug.Log("RPC: set issue shelf active to " + active, gameObject);
         gameObject.SetActive(active);
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private void SetSource(byte sourceId)
     {
+        remoteSynchronizations++;
         Debug.Log("RPC: set data source to " + sourceId, gameObject);
         configurationMenu.SetDataSource((DataSource)sourceId);
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private void SetReqBazProject(short projectId)
     {
+        remoteSynchronizations++;
         if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
         {
             configurationMenu.SetReqBazProject(projectId);
@@ -169,11 +190,13 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         {
             Debug.LogError("RPC tried to change Requirements Bazaar project but Requirements Bazaar is not selected as source.", gameObject);
         }
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private void SetReqBazCategory(short categoryId)
     {
+        remoteSynchronizations++;
         if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
         {
             configurationMenu.SetReqBazCategory(categoryId);
@@ -182,27 +205,33 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         {
             Debug.LogError("RPC tried to change Requirements Bazaar project but Requirements Bazaar is not selected as source.", gameObject);
         }
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private async void SetGitHubOwner(short gitHubOwnerStringId)
     {
+        remoteSynchronizations++;
         string gitHubOwner = await NetworkedStringManager.GetString(gitHubOwnerStringId);
         Debug.Log("RPC: set GitHubOwner to " + gitHubOwner, gameObject);
         configurationMenu.SetGitHubOwner(gitHubOwner);
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private async void SetGitHubProject(short gitHubProjectStringId)
     {
+        remoteSynchronizations++;
         string gitHubProject = await NetworkedStringManager.GetString(gitHubProjectStringId);
         Debug.Log("RPC: set GitHubProject to " + gitHubProject, gameObject);
         configurationMenu.SetGitHubProject(gitHubProject);
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private void SetConfigWindow(bool open)
     {
+        remoteSynchronizations++;
         Debug.Log("RPC: set Configuration Window open to " + open);
         configurationMenu.SynchronizationInProgress = true;
         if (open)
@@ -214,24 +243,33 @@ public class IssueShelfSynchronizer : TransformSynchronizer
             configurationMenu.Close();
         }
         configurationMenu.SynchronizationInProgress = false;
+        remoteSynchronizations--;
     }
 
     [PunRPC]
     private void SetPage(short page)
     {
+        remoteSynchronizations++;
         Debug.Log("RPC: set page to " + page);
-        issueLoader.SynchronizationInProgress = true;
         issueLoader.Page = page;
-        issueLoader.SynchronizationInProgress = false;
+        remoteSynchronizations--;
     }
 
     private void OnSourceChanged(object sender, EventArgs e)
     {
-        photonView.RPC("SetSource", RpcTarget.Others, (byte)configurationMenu.ShelfConfiguration.SelectedSource);
+        if (!RemoteSynchronizationInProgress)
+        {
+            photonView.RPC("SetSource", RpcTarget.Others, (byte)configurationMenu.ShelfConfiguration.SelectedSource);
+        }
     }
 
     private void OnReqBazProjectChanged(object sender, EventArgs e)
     {
+        if (RemoteSynchronizationInProgress)
+        {
+            return;
+        }
+
         if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
         {
             short projectId = (short)((ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration).SelectedProject.id;
@@ -245,6 +283,11 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnReqBazCategoryChanged(object sender, EventArgs e)
     {
+        if (RemoteSynchronizationInProgress)
+        {
+            return;
+        }
+
         if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
         {
             short categoryId;
@@ -267,28 +310,46 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private async void OnGitHubOwnerChanged(object sender, EventArgs e)
     {
+        if (RemoteSynchronizationInProgress)
+        {
+            return;
+        }
         short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
         photonView.RPC("SetGitHubOwner", RpcTarget.Others, gitHubOwnerStringId);
     }
 
     private async void OnGitHubProjectChanged(object sender, EventArgs e)
     {
+        if (RemoteSynchronizationInProgress)
+        {
+            return;
+        }
+
         short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
         photonView.RPC("SetGitHubProject", RpcTarget.Others, gitHubProjectStringId);
     }
 
     private void OnConfigWindowOpened(object sender, EventArgs e)
     {
-        photonView.RPC("SetConfigWindow", RpcTarget.Others, true);
+        if (!RemoteSynchronizationInProgress)
+        {
+            photonView.RPC("SetConfigWindow", RpcTarget.Others, true);
+        }
     }
 
     private void OnConfigWindowClosed(object sender, EventArgs e)
     {
-        photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
+        if (!RemoteSynchronizationInProgress)
+        {
+            photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
+        }
     }
 
     private void OnPageChanged(object sender, EventArgs e)
     {
-        photonView.RPC("SetPage", RpcTarget.Others, (short)issueLoader.Page);
+        if (!RemoteSynchronizationInProgress)
+        {
+            photonView.RPC("SetPage", RpcTarget.Others, (short)issueLoader.Page);
+        }
     }
 }

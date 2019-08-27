@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShelfConfigurationMenu : MonoBehaviour, IWindow, ISynchronizable
+public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 {
     [Header("References")]
     [SerializeField] private IssuesLoader shelf;
@@ -41,7 +41,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow, ISynchronizable
     public string GitHubOwner { get => gitHubOwnerInput.Text; }
     public string GitHubRepository { get => gitHubRepositoryInput.Text; }
 
-    public bool WindowOpen { get; private set; }
+    public bool WindowOpen { get; private set; } = true;
 
     public bool SynchronizationInProgress { get; set; }
 
