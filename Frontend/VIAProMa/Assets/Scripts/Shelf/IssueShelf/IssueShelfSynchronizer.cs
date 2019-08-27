@@ -12,6 +12,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     private IssuesLoader issueLoader;
 
     private int remoteSynchronizations = 0;
+    private bool initialized = false;
 
     private bool RemoteSynchronizationInProgress { get => remoteSynchronizations > 0; }
 
@@ -22,6 +23,14 @@ public class IssueShelfSynchronizer : TransformSynchronizer
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(configurationMenu));
         }
         issueLoader = GetComponent<IssuesLoader>();
+    }
+
+    private void Start()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            initialized = true;
+        }
     }
 
     public override void OnEnable()
@@ -39,6 +48,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.WindowOpened += OnConfigWindowOpened;
         configurationMenu.WindowClosed += OnConfigWindowClosed;
         issueLoader.PageChanged += OnPageChanged;
+        issueLoader.SearchFieldChanged += OnSearchFieldChanged;
     }
 
     public override void OnDisable()
@@ -55,6 +65,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         configurationMenu.WindowOpened -= OnConfigWindowOpened;
         configurationMenu.WindowClosed -= OnConfigWindowClosed;
         issueLoader.PageChanged -= OnPageChanged;
+        issueLoader.SearchFieldChanged -= OnSearchFieldChanged;
         base.OnDisable();
     }
 
@@ -64,6 +75,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         {
             short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
             short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
+            short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
 
             // the master client informs the new player about the current status
             if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
@@ -96,7 +108,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
                 selectedCategoryId,
                 gitHubOwnerStringId,
                 gitHubProjectStringId,
-                (short)issueLoader.Page
+                (short)issueLoader.Page,
+                searchStringId
                 );
             }
             else
@@ -109,7 +122,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
                 (short)-1,
                 gitHubOwnerStringId,
                 gitHubProjectStringId,
-                (short)issueLoader.Page
+                (short)issueLoader.Page,
+                searchStringId
                 );
             }
         }
@@ -124,7 +138,8 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         short reqBazCategoryId,
         short gitHubOwnerStringId,
         short gitHubProjectStringId,
-        short page
+        short page,
+        short searchStringId
         )
     {
         Debug.Log("RPC: initialize the issue shelf");
@@ -146,8 +161,10 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         SetGitHubOwner(gitHubOwnerStringId);
         SetGitHubProject(gitHubProjectStringId);
         SetPage(page);
+        SetSearchField(searchStringId);
 
         remoteSynchronizations--;
+        initialized = true;
     }
 
     [PunRPC]
@@ -255,17 +272,28 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         remoteSynchronizations--;
     }
 
+    [PunRPC]
+    private async void SetSearchField(short searchStringId)
+    {
+        remoteSynchronizations++;
+        string searchString = await NetworkedStringManager.GetString(searchStringId);
+        Debug.Log("RPC: set search field to " + searchString);
+        issueLoader.SearchFilter = searchString;
+        remoteSynchronizations--;
+    }
+
     private void OnSourceChanged(object sender, EventArgs e)
     {
-        if (!RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
-            photonView.RPC("SetSource", RpcTarget.Others, (byte)configurationMenu.ShelfConfiguration.SelectedSource);
+            return;
         }
+        photonView.RPC("SetSource", RpcTarget.Others, (byte)configurationMenu.ShelfConfiguration.SelectedSource);
     }
 
     private void OnReqBazProjectChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
             return;
         }
@@ -283,7 +311,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnReqBazCategoryChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
             return;
         }
@@ -310,7 +338,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private async void OnGitHubOwnerChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
             return;
         }
@@ -320,7 +348,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private async void OnGitHubProjectChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
             return;
         }
@@ -331,25 +359,38 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnConfigWindowOpened(object sender, EventArgs e)
     {
-        if (!RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
-            photonView.RPC("SetConfigWindow", RpcTarget.Others, true);
+            return;
         }
+        photonView.RPC("SetConfigWindow", RpcTarget.Others, true);
     }
 
     private void OnConfigWindowClosed(object sender, EventArgs e)
     {
-        if (!RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
-            photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
+            return;
         }
+        photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
     }
 
     private void OnPageChanged(object sender, EventArgs e)
     {
-        if (!RemoteSynchronizationInProgress)
+        if (RemoteSynchronizationInProgress || !initialized)
         {
-            photonView.RPC("SetPage", RpcTarget.Others, (short)issueLoader.Page);
+            return;
         }
+        photonView.RPC("SetPage", RpcTarget.Others, (short)issueLoader.Page);
+    }
+
+    private async void OnSearchFieldChanged(object sender, EventArgs e)
+    {
+        if (RemoteSynchronizationInProgress || !initialized)
+        {
+            return;
+        }
+        short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
+        photonView.RPC("SetSearchField", RpcTarget.Others, searchStringId);
     }
 }

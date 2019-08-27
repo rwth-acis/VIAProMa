@@ -13,6 +13,17 @@ public class IssuesLoader : Shelf, ILoadShelf
 
     public MessageBadge MessageBadge { get => messageBadge; }
 
+    public event EventHandler SearchFieldChanged;
+
+    public string SearchFilter
+    {
+        get => searchField.Text;
+        set
+        {
+            searchField.Text = value;
+        }
+    }
+
     private Issue[] issues;
     private Issue[] nextIssues;
 
@@ -42,6 +53,27 @@ public class IssuesLoader : Shelf, ILoadShelf
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchField));
         }
         upButton.Enabled = false;
+    }
+
+    private void OnEnable()
+    {
+        searchField.TextChanged += OnSearchFieldChanged;
+    }
+
+    private void OnDisable()
+    {
+        searchField.TextChanged -= OnSearchFieldChanged;
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void OnSearchFieldChanged(object sender, EventArgs e)
+    {
+        LoadContent();
+        SearchFieldChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void LoadContent()
