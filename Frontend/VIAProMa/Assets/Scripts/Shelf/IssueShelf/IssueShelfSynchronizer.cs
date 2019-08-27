@@ -54,6 +54,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     public override void OnDisable()
     {
+        Debug.Log("remote " + remoteSynchronizations);
         if (!RemoteSynchronizationInProgress)
         {
             photonView.RPC("SetActive", RpcTarget.Others, false);
