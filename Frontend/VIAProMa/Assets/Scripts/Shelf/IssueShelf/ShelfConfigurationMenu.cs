@@ -45,7 +45,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     public bool WindowOpen { get; private set; } = true;
 
-    public bool SynchronizationInProgress { get; set; }
+    public bool ExternallyInitialized { get; set; } = false;
 
     private void Awake()
     {
@@ -85,9 +85,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private async void Start()
     {
-        // the master client initialized on its own
-        // all other clients will initialize when the master tells them
-        if (PhotonNetwork.IsMasterClient)
+        if (!ExternallyInitialized)
         {
             await Initialize();
         }
@@ -260,11 +258,8 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubOwnerInputFinished(object sender, EventArgs e)
     {
-        if (!SynchronizationInProgress)
-        {
-            SetGitHubOwner();
-            GitHubOwnerChanged?.Invoke(this, EventArgs.Empty);
-        }
+        SetGitHubOwner();
+        GitHubOwnerChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void SetGitHubOwner()
@@ -282,11 +277,8 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     private void GitHubRepositoryInputFinished(object sender, EventArgs e)
     {
-        if (!SynchronizationInProgress)
-        {
-            SetGitHubProject();
-            GitHubProjectChanged?.Invoke(this, EventArgs.Empty);
-        }
+        SetGitHubProject();
+        GitHubProjectChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void SetGitHubProject()
@@ -380,14 +372,14 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         }
     }
 
-    public void SetReqBazCategory(int categoryId)
+    public async void SetReqBazCategory(int categoryId)
     {
         for (int i = 0; i < reqBazCategoryDropdownMenu.Items.Count; i++)
         {
             if (reqBazCategoryDropdownMenu.Items[i].id == categoryId)
             {
                 reqBazCategoryDropdownMenu.SelectedItemIndex = i;
-                SetReqBazCategory();
+                await SetReqBazCategory();
                 break;
             }
         }
@@ -396,28 +388,19 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
 
     public void SetGitHubOwner(string owner)
     {
-        SynchronizationInProgress = true;
         gitHubOwnerInput.Text = owner;
-        SetGitHubOwner();
-        SynchronizationInProgress = false;
     }
 
     public void SetGitHubProject(string project)
     {
-        SynchronizationInProgress = true;
         gitHubRepositoryInput.Text = project;
-        SetGitHubProject();
-        SynchronizationInProgress = false;
     }
 
     public void Open()
     {
         gameObject.SetActive(true);
         WindowOpen = true;
-        if (!SynchronizationInProgress)
-        {
-            WindowOpened?.Invoke(this, EventArgs.Empty);
-        }
+        WindowOpened?.Invoke(this, EventArgs.Empty);
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -430,9 +413,6 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
     {
         WindowOpen = false;
         gameObject.SetActive(false);
-        if (!SynchronizationInProgress)
-        {
-            WindowClosed?.Invoke(this, EventArgs.Empty);
-        }
+        WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -147,6 +147,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
         remoteSynchronizations++;
 
+        configurationMenu.ExternallyInitialized = true;
         await configurationMenu.Initialize();
 
         // initializes the configuration
