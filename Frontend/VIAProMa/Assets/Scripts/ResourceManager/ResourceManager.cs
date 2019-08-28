@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PhotonView))]
 /// <summary>
 /// Manager which administers references to resources and prefabs
 /// This way, the reference can be set on one central object and all other components in the scene can access it from here
@@ -12,13 +13,13 @@ using UnityEngine;
 /// <typeparam name="ResourceManager"></typeparam>
 public class ResourceManager : Singleton<ResourceManager>
 {
-    [SerializeField] private PhotonView photonView;
-
     [SerializeField] private PrefabResourceCollection resourcePrefabCollection;
     [SerializeField] private Texture2D defaultProfileImage;
 
     private short instantiationJobId = 0;
     private Dictionary<short, Action<GameObject>> instanatiationJobCallbacks;
+
+    private PhotonView photonView;
 
     /// <summary>
     /// Checks the setup and collects the network prefab resources
@@ -26,10 +27,6 @@ public class ResourceManager : Singleton<ResourceManager>
     protected override void Awake()
     {
         base.Awake();
-        if (photonView == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(photonView));
-        }
         if (resourcePrefabCollection == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(resourcePrefabCollection));
@@ -38,6 +35,8 @@ public class ResourceManager : Singleton<ResourceManager>
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(defaultProfileImage));
         }
+
+        photonView = GetComponent<PhotonView>();
 
         resourcePrefabCollection.FindNetworkPrefabsInResources();
 
