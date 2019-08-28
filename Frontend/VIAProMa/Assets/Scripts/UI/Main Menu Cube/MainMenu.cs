@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(FoldController))]
-public class MainMenu : MonoBehaviour
+public class MainMenu : MonoBehaviourPun
 {
     [Header("UI Elements")]
     [SerializeField] private Interactable avatarConfigurationButton;
@@ -103,7 +103,7 @@ public class MainMenu : MonoBehaviour
     {
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
-        NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, true);
+        NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, "SetIssueShelfInstance", true);
         foldController.FoldCube();
     }
 
@@ -111,7 +111,7 @@ public class MainMenu : MonoBehaviour
     {
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
-        NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition);
+        NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
         foldController.FoldCube();
     }
 
@@ -160,7 +160,7 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    private void NetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition, bool isSceneObject = false)
+    private void NetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition, string instantiationRPC, bool isSceneObject = false)
     {
         Quaternion targetRotation = transform.rotation;
 
@@ -179,6 +179,24 @@ public class MainMenu : MonoBehaviour
             {
                 instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
             }
+            PhotonView view = instance.GetComponent<PhotonView>();
+            photonView.RPC(instantiationRPC, RpcTarget.Others, view.ViewID);
         }
+    }
+
+    [PunRPC]
+    private void SetIssueShelfInstance(int photonId)
+    {
+        PhotonView view = PhotonView.Find(photonId);
+        issueShelfInstance = view.gameObject;
+        Debug.Log("RPC: setting issue shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+    }
+
+    [PunRPC]
+    private void SetVisualizationShelfInstance(int photonId)
+    {
+        PhotonView view = PhotonView.Find(photonId);
+        visualizationShelfInstance = view.gameObject;
+        Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
     }
 }
