@@ -26,17 +26,19 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         issueLoader = GetComponent<IssuesLoader>();
     }
 
-    private void Start()
+    private async void Start()
     {
         if (PhotonNetwork.IsMasterClient)
         {
             initialized = true;
+            await SendInitializationData();
         }
     }
 
     public override void OnEnable()
     {
         base.OnEnable();
+        Debug.Log("OnEnable: remotesynchronizations " + remoteSynchronizations + "; initialized: " + initialized);
         if (!RemoteSynchronizationInProgress && initialized)
         {
             photonView.RPC("SetActive", RpcTarget.Others, true);
@@ -74,59 +76,64 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     {
         if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
         {
-            short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
-            short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
-            short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
+            await SendInitializationData();
+        }
+    }
 
-            // the master client informs the new player about the current status
-            if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+    private async Task SendInitializationData()
+    {
+        short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
+        short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
+        short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
+
+        // the master client informs the new player about the current status
+        if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+        {
+            ReqBazShelfConfiguration config = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
+            short selectedProjectId;
+            if (config.SelectedProject == null)
             {
-                ReqBazShelfConfiguration config = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
-                short selectedProjectId;
-                if (config.SelectedProject == null)
-                {
-                    selectedProjectId = -1;
-                }
-                else
-                {
-                    selectedProjectId = (short)config.SelectedProject.id;
-                }
-                short selectedCategoryId;
-                if (config.SelectedCategory == null)
-                {
-                    selectedCategoryId = -1;
-                }
-                else
-                {
-                    selectedCategoryId = (short)config.SelectedCategory.id;
-                }
-
-                photonView.RPC("Initialize", RpcTarget.Others,
-                gameObject.activeSelf,
-                configurationMenu.WindowOpen,
-                (byte)config.SelectedSource,
-                selectedProjectId,
-                selectedCategoryId,
-                gitHubOwnerStringId,
-                gitHubProjectStringId,
-                (short)issueLoader.Page,
-                searchStringId
-                );
+                selectedProjectId = -1;
             }
             else
             {
-                photonView.RPC("Initialize", RpcTarget.Others,
-                gameObject.activeSelf,
-                configurationMenu.WindowOpen,
-                (byte)configurationMenu.ShelfConfiguration.SelectedSource,
-                (short)-1,
-                (short)-1,
-                gitHubOwnerStringId,
-                gitHubProjectStringId,
-                (short)issueLoader.Page,
-                searchStringId
-                );
+                selectedProjectId = (short)config.SelectedProject.id;
             }
+            short selectedCategoryId;
+            if (config.SelectedCategory == null)
+            {
+                selectedCategoryId = -1;
+            }
+            else
+            {
+                selectedCategoryId = (short)config.SelectedCategory.id;
+            }
+
+            photonView.RPC("Initialize", RpcTarget.Others,
+            gameObject.activeSelf,
+            configurationMenu.WindowOpen,
+            (byte)config.SelectedSource,
+            selectedProjectId,
+            selectedCategoryId,
+            gitHubOwnerStringId,
+            gitHubProjectStringId,
+            (short)issueLoader.Page,
+            searchStringId
+            );
+        }
+        else
+        {
+            photonView.RPC("Initialize", RpcTarget.Others,
+            gameObject.activeSelf,
+            configurationMenu.WindowOpen,
+            (byte)configurationMenu.ShelfConfiguration.SelectedSource,
+            (short)-1,
+            (short)-1,
+            gitHubOwnerStringId,
+            gitHubProjectStringId,
+            (short)issueLoader.Page,
+            searchStringId
+            );
         }
     }
 
