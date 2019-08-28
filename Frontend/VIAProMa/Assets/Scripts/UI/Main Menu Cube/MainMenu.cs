@@ -1,5 +1,6 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(FoldController))]
-public class MainMenu : MonoBehaviourPun
+public class MainMenu : MonoBehaviourPunCallbacks
 {
     [Header("UI Elements")]
     [SerializeField] private Interactable avatarConfigurationButton;
@@ -68,16 +69,18 @@ public class MainMenu : MonoBehaviourPun
         foldController = gameObject.GetComponent<FoldController>();
     }
 
-    private void OnEnable()
+    public override void OnEnable()
     {
+        base.OnEnable();
         LobbyManager.Instance.LobbyJoinStatusChanged += OnLobbyStatusChanged;
         Launcher.Instance.ConnectionStatusChanged += OnConnectionStatusChanged;
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         LobbyManager.Instance.LobbyJoinStatusChanged -= OnLobbyStatusChanged;
         Launcher.Instance.ConnectionStatusChanged -= OnConnectionStatusChanged;
+        base.OnDisable();
     }
 
     private void OnConnectionStatusChanged(object sender, EventArgs e)
@@ -85,6 +88,26 @@ public class MainMenu : MonoBehaviourPun
         roomButton.Enabled = PhotonNetwork.IsConnected;
         chatButton.Enabled = PhotonNetwork.IsConnected;
         microphoneButton.Enabled = PhotonNetwork.IsConnected;
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
+        {
+            int issueShelfId = 0;
+            int visualizationShelfId = 0;
+            if (issueShelfInstance != null)
+            {
+                issueShelfId = issueShelfInstance.GetComponent<PhotonView>().ViewID;
+            }
+            if (visualizationShelfInstance != null)
+            {
+                visualizationShelfId = visualizationShelfInstance.GetComponent<PhotonView>().ViewID;
+            }
+
+            Debug.Log("Sending main menu initialization data.\nIssueShelfId: " + issueShelfId + "; visualizationShelfId" + visualizationShelfId);
+            photonView.RPC("Initialize", RpcTarget.Others, issueShelfId, visualizationShelfId);
+        }
     }
 
     private void OnLobbyStatusChanged(object sender, EventArgs e)
@@ -182,6 +205,20 @@ public class MainMenu : MonoBehaviourPun
             }
             PhotonView view = instance.GetComponent<PhotonView>();
             photonView.RPC(instantiationRPC, RpcTarget.Others, view.ViewID);
+        }
+    }
+
+    [PunRPC]
+    private void Initialize(int issueShelfId, int visualizationShelfId)
+    {
+        Debug.Log("RPC: Initialize with issueShelfId " + issueShelfId + " and visualizationShelfId " + visualizationShelfId);
+        if (issueShelfId != 0)
+        {
+            SetIssueShelfInstance(issueShelfId);
+        }
+        if (visualizationShelfId != 0)
+        {
+            SetVisualizationShelfInstance(visualizationShelfId);
         }
     }
 
