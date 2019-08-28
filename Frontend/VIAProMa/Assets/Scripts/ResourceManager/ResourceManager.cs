@@ -1,4 +1,6 @@
 ﻿using HoloToolkit.Unity;
+using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +12,13 @@ using UnityEngine;
 /// <typeparam name="ResourceManager"></typeparam>
 public class ResourceManager : Singleton<ResourceManager>
 {
+    [SerializeField] private PhotonView photonView;
+
     [SerializeField] private PrefabResourceCollection resourcePrefabCollection;
     [SerializeField] private Texture2D defaultProfileImage;
+
+    private short instantiationJobId = 0;
+    private Dictionary<short, Action<GameObject>> instanatiationJobCallbacks;
 
     /// <summary>
     /// Checks the setup and collects the network prefab resources
@@ -19,7 +26,10 @@ public class ResourceManager : Singleton<ResourceManager>
     protected override void Awake()
     {
         base.Awake();
-        resourcePrefabCollection.FindNetworkPrefabsInResources();
+        if (photonView == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(photonView));
+        }
         if (resourcePrefabCollection == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(resourcePrefabCollection));
@@ -28,6 +38,8 @@ public class ResourceManager : Singleton<ResourceManager>
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(defaultProfileImage));
         }
+
+        resourcePrefabCollection.FindNetworkPrefabsInResources();
 
         Debug.Log("Networked Prefabs: " + resourcePrefabCollection.NetworkPrefabs.Count);
     }
@@ -45,7 +57,7 @@ public class ResourceManager : Singleton<ResourceManager>
     public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] data = null)
     {
         // can only be done with prefabs which are in a Resource folder
-        return resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, data);
+        return resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, false, data);
     }
 
     /// <summary>
@@ -59,7 +71,7 @@ public class ResourceManager : Singleton<ResourceManager>
     /// <returns>The created instance in the scene</returns>
     public GameObject NetworkInstantiate(string name, Vector3 position, Quaternion rotation, object[] data = null)
     {
-        return resourcePrefabCollection.NetworkInstantiate(name, position, rotation, data);
+        return resourcePrefabCollection.NetworkInstantiate(name, position, rotation, false, data);
     }
 
     /// <summary>
@@ -72,9 +84,110 @@ public class ResourceManager : Singleton<ResourceManager>
     /// <param name="rotation">The rotatoin with which the object should be instantiated</param>
     /// <param name="data">Instantiation data which can be added to the object</param>
     /// <returns></returns>
-    public GameObject SceneNetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] data = null)
+    public void SceneNetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, Action<GameObject> resultCallback, object[] data = null)
     {
-        return resourcePrefabCollection.SceneNetworkInstantiate(obj, position, rotation, data);
+        // only the master client can instantiate new scene objects
+        if (PhotonNetwork.IsMasterClient)
+        {
+            GameObject result = resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, true, data);
+            resultCallback?.Invoke(result);
+        }
+        else
+        {
+            CallMasterForInstantiation(obj, position, rotation, resultCallback, data);
+        }
+    }
+
+    private GameObject MasterSceneNetworkInstantiate(string name, Vector3 position, Quaternion rotation, object[] data = null)
+    {
+        // only the master client can instantiate new scene objects
+        if (PhotonNetwork.IsMasterClient)
+        {
+            return resourcePrefabCollection.NetworkInstantiate(name, position, rotation, true, data);
+        }
+        else
+        {
+            Debug.LogError("SceneNetworkInstantiate with name as argument should only be called on Master client");
+            return null;
+        }
+    }
+
+    private async void CallMasterForInstantiation(GameObject obj, Vector3 position, Quaternion rotation, Action<GameObject> resultCallback, object[] data = null)
+    {
+        // create a remote instantiation job
+        short jobId = instantiationJobId;
+        instanatiationJobCallbacks.Add(jobId, resultCallback);
+        instantiationJobId++;
+
+        short objNameStringId = await NetworkedStringManager.StringToId(obj.name);
+
+        photonView.RPC("RemoteInstantiate", RpcTarget.MasterClient, // consider sending to all clients in order to account for master client switches
+            jobId,
+            objNameStringId,
+            position,
+            rotation,
+            data
+            );
+    }
+
+    [PunRPC]
+    private async void RemoteInstantiate(
+        short jobId,
+        short objNameStringId,
+        Vector3 position,
+        Quaternion rotation,
+        object[] data,
+        PhotonMessageInfo info)
+    {
+        // this logic must be executed on the master client
+        if (PhotonNetwork.IsMasterClient)
+        {
+            string objName = await NetworkedStringManager.GetString(objNameStringId);
+            GameObject result = MasterSceneNetworkInstantiate(objName, position, rotation, data);
+            PhotonView photonViewOnResult = result?.GetComponent<PhotonView>();
+            int resultPhotonViewId = 0;
+            if (photonViewOnResult != null)
+            {
+                resultPhotonViewId = photonViewOnResult.ViewID;
+            }
+            photonView.RPC("RemoteInstantiationFinished", RpcTarget.Others,
+                info.Sender.ActorNumber,
+                jobId,
+                resultPhotonViewId
+                );
+        }
+    }
+
+    [PunRPC]
+    private void RemoteInstantiationFinished(
+        int querySenderId,
+        short jobId,
+        int resultPhotonViewId
+        )
+    {
+        // check if the instantiation had been posted by this client
+        if (PhotonNetwork.LocalPlayer.ActorNumber == querySenderId)
+        {
+            // there should be an entry for this job in the dictionary
+            if (instanatiationJobCallbacks.ContainsKey(jobId))
+            {
+                // try to find the given id
+                PhotonView res = PhotonView.Find(resultPhotonViewId);
+                if (res != null)
+                {
+                    // call the callback method with the resulting GameObject
+                    instanatiationJobCallbacks[jobId].Invoke(res.gameObject);
+                }
+                else
+                {
+                    Debug.LogError("RemoteInstantiation could not find the given photon id", gameObject);
+                }
+            }
+            else
+            {
+                Debug.LogError("RemoteInstantiation received answer for job which was not issued", gameObject);
+            }
+        }
     }
 
     /// <summary>

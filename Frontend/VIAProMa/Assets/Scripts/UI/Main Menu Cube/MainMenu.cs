@@ -126,8 +126,15 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
-        NetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, "SetIssueShelfInstance", true);
+        SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
         foldController.FoldCube();
+    }
+
+    private void IssueShelfCreated(GameObject obj)
+    {
+        issueShelfInstance = obj;
+        PhotonView view = obj.GetComponent<PhotonView>();
+        photonView.RPC("SetIssueShelfInstance", RpcTarget.Others, view.ViewID);
     }
 
     public void ShowVisualizationShelf()
@@ -141,7 +148,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public void ShowAvatarConfiguration()
     {
         InstantiateControl(
-            avatarConfiguratorPrefab, 
+            avatarConfiguratorPrefab,
             ref avatarConfiguratorInstance,
             transform.position - 1f * transform.right);
         foldController.FoldCube();
@@ -183,7 +190,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         }
     }
 
-    private void NetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition, string instantiationRPC, bool isSceneObject = false)
+    private void NetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition, string instantiationRPC)
     {
         Quaternion targetRotation = transform.rotation;
 
@@ -195,16 +202,25 @@ public class MainMenu : MonoBehaviourPunCallbacks
         }
         else
         {
-            if (isSceneObject)
-            {
-                instance = ResourceManager.Instance.SceneNetworkInstantiate(prefab, targetPosition, targetRotation);
-            }
-            else
-            {
-                instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
-            }
+            instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
             PhotonView view = instance.GetComponent<PhotonView>();
             photonView.RPC(instantiationRPC, RpcTarget.Others, view.ViewID);
+        }
+    }
+
+    private void SceneNetworkInstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition, Action<GameObject> OnCreated)
+    {
+        Quaternion targetRotation = transform.rotation;
+
+        if (instance != null)
+        {
+            instance.SetActive(true);
+            instance.transform.position = targetPosition;
+            instance.transform.rotation = targetRotation;
+        }
+        else
+        {
+            ResourceManager.Instance.SceneNetworkInstantiate(prefab, targetPosition, targetRotation, OnCreated);
         }
     }
 

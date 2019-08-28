@@ -5,6 +5,7 @@ using Microsoft.MixedReality.Toolkit.Input;
 using Photon.Pun;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.UI;
+using System;
 
 /// <summary>
 /// If pressing down on an existing card with this component, a copy of the card will be created and the copy will be moved through this component
@@ -68,26 +69,30 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
             instantiationData[0] = localDataDisplay.Content.Id; // same for ReqBaz and GitHub
 
             // create the copy, get the relevant components and set them up
-            copyInstance = ResourceManager.Instance.SceneNetworkInstantiate(copyObject, transform.position, transform.rotation, instantiationData);
-            handlerOnCopy = copyInstance?.GetComponent<ManipulationHandler>();
-            IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
-            if (handlerOnCopy == null || remoteDataDisplay == null)
-            {
-                if (handlerOnCopy == null)
+            ResourceManager.Instance.SceneNetworkInstantiate(copyObject, transform.position, transform.rotation, 
+                (obj) =>
                 {
-                    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IMixedRealityPointerHandler), copyInstance);
-                }
-                if (remoteDataDisplay == null)
-                {
-                    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), copyInstance);
-                }
-                PhotonNetwork.Destroy(copyInstance);
-            }
-            else
-            {
-                remoteDataDisplay.Setup(localDataDisplay.Content);
-                handlerOnCopy.OnPointerDown(eventData);
-            }
+                    handlerOnCopy = copyInstance?.GetComponent<ManipulationHandler>();
+                    IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
+                    if (handlerOnCopy == null || remoteDataDisplay == null)
+                    {
+                        if (handlerOnCopy == null)
+                        {
+                            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IMixedRealityPointerHandler), copyInstance);
+                        }
+                        if (remoteDataDisplay == null)
+                        {
+                            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), copyInstance);
+                        }
+                        PhotonNetwork.Destroy(copyInstance);
+                    }
+                    else
+                    {
+                        remoteDataDisplay.Setup(localDataDisplay.Content);
+                        handlerOnCopy.OnPointerDown(eventData);
+                    }
+                },
+                instantiationData);
         }
     }
 
