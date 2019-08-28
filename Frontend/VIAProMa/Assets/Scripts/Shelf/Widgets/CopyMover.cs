@@ -6,9 +6,15 @@ using Photon.Pun;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.UI;
 
+/// <summary>
+/// If pressing down on an existing card with this component, a copy of the card will be created and the copy will be moved through this component
+/// Used on cards in the issue shelf
+/// Does not consume any of the input data since they are redirected to the created copy
+/// </summary>
 [RequireComponent(typeof(IssueDataDisplay))]
 public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
 {
+    [Tooltip("The prefab which should be instantiated as a copy")]
     public GameObject copyObject;
 
     private GameObject copyInstance;
@@ -16,20 +22,53 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
 
     private IssueDataDisplay localDataDisplay;
 
+    /// <summary>
+    /// Sets the component oup
+    /// </summary>
     private void Awake()
     {
         localDataDisplay = GetComponent<IssueDataDisplay>();
     }
 
+    /// <summary>
+    /// Not used; required by the IMixedRealityPointerHandler interface
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
     }
 
+    /// <summary>
+    /// Called if the user starts a gesture on the object
+    /// Creates a copy based on the given prefab and initializes the copy
+    /// </summary>
+    /// <param name="eventData">The event data of the gesture</param>
     public void OnPointerDown(MixedRealityPointerEventData eventData)
     {
+        // only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture
         if (!IssueSelectionManager.Instance.SelectionModeActive)
         {
-            copyInstance = ResourceManager.Instance.NetworkInstantiate(copyObject, transform.position, transform.rotation);
+            // pass instantiation data to the copy so that other clients also know which issue is contained in the created copy
+            object[] instantiationData;
+            if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
+            {
+                instantiationData = new object[1];
+            }
+            else if (localDataDisplay.Content.Source == DataSource.GITHUB)
+            {
+                instantiationData = new object[2];
+                instantiationData[1] = localDataDisplay.Content.ProjectId;
+            }
+            else
+            {
+                Debug.LogError("Unexpected source: " + localDataDisplay.Content.Source, gameObject);
+                return;
+            }
+
+            instantiationData[0] = localDataDisplay.Content.Id; // same for ReqBaz and GitHub
+
+            // create the copy, get the relevant components and set them up
+            copyInstance = ResourceManager.Instance.SceneNetworkInstantiate(copyObject, transform.position, transform.rotation, instantiationData);
             handlerOnCopy = copyInstance?.GetComponent<ManipulationHandler>();
             IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
             if (handlerOnCopy == null || remoteDataDisplay == null)
@@ -52,8 +91,15 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
         }
     }
 
+    /// <summary>
+    /// Called every frame during a drag gesture
+    /// Shows the copy which was created in OnPointerDown and moves it
+    /// </summary>
+    /// <param name="eventData">The event data of the drag gesture</param>
     public void OnPointerDragged(MixedRealityPointerEventData eventData)
     {
+        // check if the copy was created and the handler was fetched
+        // if yes, the instantiation went to plan
         if (handlerOnCopy != null)
         {
             handlerOnCopy.gameObject.SetActive(true);
@@ -61,8 +107,15 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
         }
     }
 
+    /// <summary>
+    /// Called if the user ends a gesture on the object
+    /// Redirects the event to the copy
+    /// </summary>
+    /// <param name="eventData">The event data of the gesture</param>
     public void OnPointerUp(MixedRealityPointerEventData eventData)
     {
+        // check if the copy was created and the handler was fetched
+        // if yes, the instantiation went to plan
         if (handlerOnCopy != null)
         {
             handlerOnCopy.OnPointerUp(eventData);
