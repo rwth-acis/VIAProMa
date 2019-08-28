@@ -99,6 +99,10 @@ public class IssuesLoader : Shelf, ILoadShelf
             return;
         }
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
+        if (reqBazShelfConfiguration.SelectedProject == null)
+        {
+            return;
+        }
         messageBadge.ShowProcessing();
         ApiResult<Issue[]> apiResult = null;
         // load requirements from the correct project or category
@@ -137,6 +141,12 @@ public class IssuesLoader : Shelf, ILoadShelf
             return;
         }
         GitHubShelfConfiguration gitHubShelfConfiguration = (GitHubShelfConfiguration)configurationMenu.ShelfConfiguration;
+
+        if (string.IsNullOrEmpty(gitHubShelfConfiguration.RepositoryName) || string.IsNullOrEmpty(gitHubShelfConfiguration.Owner))
+        {
+            return;
+        }
+
         messageBadge.ShowProcessing();
         ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository(gitHubShelfConfiguration.Owner, gitHubShelfConfiguration.RepositoryName, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
         messageBadge.DoneProcessing();
