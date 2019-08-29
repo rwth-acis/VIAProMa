@@ -27,6 +27,7 @@ public class ResourceManager : Singleton<ResourceManager>
     protected override void Awake()
     {
         base.Awake();
+        instanatiationJobCallbacks = new Dictionary<short, Action<GameObject>>();
         if (resourcePrefabCollection == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(resourcePrefabCollection));
