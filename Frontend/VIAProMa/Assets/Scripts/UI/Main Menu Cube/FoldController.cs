@@ -26,7 +26,7 @@ public class FoldController : MonoBehaviour
     private const string menuOpenAnimParam = "MenuOpen";
     private const float animationLength = 1.625f;
     private const float collapsedScale = 0.25f;
-    private const float expandedScale = 0.5f;
+    private const float expandedScale = 0.25f;
 
     /// <summary>
     /// True if the menu is currently open/ unfolded
