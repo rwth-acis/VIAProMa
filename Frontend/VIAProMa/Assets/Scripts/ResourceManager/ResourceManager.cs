@@ -149,6 +149,7 @@ public class ResourceManager : Singleton<ResourceManager>
             if (photonViewOnResult != null)
             {
                 resultPhotonViewId = photonViewOnResult.ViewID;
+                photonViewOnResult.TransferOwnership(info.Sender);
             }
             photonView.RPC("RemoteInstantiationFinished", RpcTarget.Others,
                 info.Sender.ActorNumber,
