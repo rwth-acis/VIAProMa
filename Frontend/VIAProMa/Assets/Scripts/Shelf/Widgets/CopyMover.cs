@@ -72,6 +72,7 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
             ResourceManager.Instance.SceneNetworkInstantiate(copyObject, transform.position, transform.rotation, 
                 (obj) =>
                 {
+                    copyInstance = obj;
                     handlerOnCopy = copyInstance?.GetComponent<ManipulationHandler>();
                     IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
                     if (handlerOnCopy == null || remoteDataDisplay == null)
