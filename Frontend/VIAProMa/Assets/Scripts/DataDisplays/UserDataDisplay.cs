@@ -6,6 +6,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 
+/// <summary>
+/// Displays user data on a GameObject
+/// </summary>
 public class UserDataDisplay : DataDisplay<User>
 {
     [SerializeField] private SpriteRenderer profileImageSprite;
@@ -15,6 +18,9 @@ public class UserDataDisplay : DataDisplay<User>
 
     private static Dictionary<string, Texture2D> profileImages = new Dictionary<string, Texture2D>();
 
+    /// <summary>
+    /// Checks the setup of the component
+    /// </summary>
     private void Awake()
     {
         if (profileImageSprite == null)
@@ -27,6 +33,9 @@ public class UserDataDisplay : DataDisplay<User>
         }
     }
 
+    /// <summary>
+    /// Updates the visual display of the content
+    /// </summary>
     public override async void UpdateView()
     {
         base.UpdateView();
@@ -45,6 +54,10 @@ public class UserDataDisplay : DataDisplay<User>
         }
     }
 
+    /// <summary>
+    /// Sets the profile image to the given texture
+    /// </summary>
+    /// <param name="profileImage">The texture which should be applied to the profile image view</param>
     private void SetProfileImage(Texture2D profileImage)
     {
         if (profileImageSprite != null)
@@ -55,6 +68,12 @@ public class UserDataDisplay : DataDisplay<User>
         }
     }
 
+    /// <summary>
+    /// Gets the profile image of the specified user
+    /// The method either fetches the image from cache or from the web address which is specified in the user object
+    /// </summary>
+    /// <param name="user">The user whose profile image should be fetched</param>
+    /// <returns>The profile image of the given user</returns>
     private static async Task<Texture2D> GetProfileImage(User user)
     {
         if (string.IsNullOrEmpty(user.ProfileImageUrl))
@@ -82,6 +101,11 @@ public class UserDataDisplay : DataDisplay<User>
         }
     }
 
+    /// <summary>
+    /// Fetches the profile image of the user from the web
+    /// </summary>
+    /// <param name="user">The user whose profile image should be fetched</param>
+    /// <returns>The profile image of the given user</returns>
     private static async Task<ApiResult<Texture2D>> FetchProfileImage(User user)
     {
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(user.ProfileImageUrl);
