@@ -3,19 +3,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A generalized issue
+/// This data object contains data of both GitHubIssues and Requirements Bazaar requirements
+/// </summary>
 [Serializable]
 public class Issue : IListViewItemData
 {
+    /// <summary>
+    /// The data source where the issue is stored
+    /// </summary>
     [SerializeField] private DataSource source;
+    /// <summary>
+    /// The id of the issue as it is stored on the data source
+    /// </summary>
     [SerializeField] private int id;
+    /// <summary>
+    /// The name or title of the issue
+    /// </summary>
     [SerializeField] private string name;
+    /// <summary>
+    /// A description of the issue
+    /// </summary>
     [SerializeField] private string description;
+    /// <summary>
+    /// The id of the project which contains the issue
+    /// </summary>
     [SerializeField] private int projectId;
+    /// <summary>
+    /// The user which created the issue
+    /// </summary>
     [SerializeField] private User creator;
+    /// <summary>
+    /// The current status of the issue
+    /// </summary>
     [SerializeField] private IssueStatus status;
+    /// <summary>
+    /// Timestamp string when the issue was created
+    /// </summary>
     [SerializeField] private string creationDate;
+    /// <summary>
+    /// Timestamp string when the issue was closed
+    /// </summary>
     [SerializeField] private string closedDate;
+    /// <summary>
+    /// The array containing all users who are currently developing the issue
+    /// </summary>
     [SerializeField] private User[] developers;
+    /// <summary>
+    /// The array containing all users who have commented on the issue
+    /// </summary>
     [SerializeField] private User[] commenters;
 
     /// <summary>
@@ -39,7 +76,7 @@ public class Issue : IListViewItemData
     /// </summary>
     public int ProjectId { get => projectId; }
     /// <summary>
-    /// The user which created the issue
+    /// The user that created the issue
     /// </summary>
     public User Creator { get => creator; }
     /// <summary>
@@ -55,16 +92,35 @@ public class Issue : IListViewItemData
     /// </summary>
     public string ClosedDateString { get => closedDate; }
     /// <summary>
-    /// The list of developers who are assigned to the issue and are working on it
+    /// The array of developers who are assigned to the issue and are working on it
     /// </summary>
     public User[] Developers { get => developers; }
-
+    /// <summary>
+    /// The array of users who have commented on the issue
+    /// </summary>
     public User[] Commenters { get => commenters; }
 
+    /// <summary>
+    /// Creates an issue
+    /// </summary>
     public Issue()
     {
     }
 
+    /// <summary>
+    /// Creats an issue with the given parameters
+    /// </summary>
+    /// <param name="source">The data source of the issue</param>
+    /// <param name="id">The id of the issue</param>
+    /// <param name="name">The name/ title of the issue</param>
+    /// <param name="description">A longer description of the issue's content</param>
+    /// <param name="projectId">The id of the project to which this issue belongs</param>
+    /// <param name="creator">The user that created the issue</param>
+    /// <param name="status">The status of the issue (open, in progress or closed)</param>
+    /// <param name="creationDate">The string representation of the point in time when the issue was created</param>
+    /// <param name="closedDate">The string representation of the point in time when the issue was closed</param>
+    /// <param name="developers">The array of developers who are assigned to the issue and are working on it</param>
+    /// <param name="commenters">The array of users who have commented on the issue</param>
     public Issue(DataSource source, int id, string name, string description, int projectId, User creator, IssueStatus status, string creationDate, string closedDate, User[] developers, User[] commenters)
     {
         this.source = source;
