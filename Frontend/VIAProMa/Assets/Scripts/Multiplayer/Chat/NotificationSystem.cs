@@ -27,7 +27,7 @@ public class NotificationSystem : Singleton<NotificationSystem>
     private void Start()
     {
         ChatManager.Instance.MessageReceived += OnMessageReceived;
-        MessageRead();
+        HideMessage();
     }
 
     protected override void OnDestroy()
@@ -39,7 +39,13 @@ public class NotificationSystem : Singleton<NotificationSystem>
         base.OnDestroy();
     }
 
-    public void MessageRead()
+    public void ShowMessage(string text)
+    {
+        gameObject.SetActive(true);
+        notificationPreviewLabel.text = text;
+    }
+
+    public void HideMessage()
     {
         Debug.Log("Message Read");
         notificationPreviewLabel.text = "";
@@ -49,7 +55,6 @@ public class NotificationSystem : Singleton<NotificationSystem>
     private void OnMessageReceived(object sender, ChatMessageEventArgs e)
     {
         Debug.Log("Message Received: " + e.MessageSender.NickName + ": " + e.Message);
-        gameObject.SetActive(true);
-        notificationPreviewLabel.text = e.MessageSender.NickName + ": " + e.Message;
+        ShowMessage(e.MessageSender.NickName + ": " + e.Message);
     }
 }
