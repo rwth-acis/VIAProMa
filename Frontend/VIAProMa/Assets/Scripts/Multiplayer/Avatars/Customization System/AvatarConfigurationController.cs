@@ -37,7 +37,7 @@ public class AvatarConfigurationController : MonoBehaviour
         Debug.Log("Face variant changed");
         foreach(AvatarPartControllerCategory category in avatarPartControllers)
         {
-            category.ConfigurationController.AvatarIndex = FaceCategory.ConfigurationController.ModelIndex;
+            category.ConfigurationController.AvatarIndex = SelectedFace;
             category.ConfigurationController.ApplyConfiguration();
         }
     }

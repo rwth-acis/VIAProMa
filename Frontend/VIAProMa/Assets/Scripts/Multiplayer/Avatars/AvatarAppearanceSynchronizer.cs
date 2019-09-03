@@ -35,9 +35,10 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
             return;
         }
 
-        ApplyCustomProperty(configurationController.HairCategory.ConfigurationController, configurationController.HairCategory.Name);
-        ApplyCustomProperty(configurationController.GlassesCategory.ConfigurationController, configurationController.GlassesCategory.Name);
-        ApplyCustomProperty(configurationController.ClothesCategory.ConfigurationController, configurationController.ClothesCategory.Name);
+        foreach(AvatarPartControllerCategory controllerCategory in configurationController.AvatarPartControllers)
+        {
+            ApplyCustomProperty(controllerCategory.ConfigurationController, controllerCategory.Name);
+        }
     }
 
     private void ApplyCustomProperty(AvatarPartConfigurationController partController, string partName)
