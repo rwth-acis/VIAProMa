@@ -32,9 +32,14 @@ public class AvatarConfigurationController : MonoBehaviour
         FaceCategory.ConfigurationController.ModelChanged += FaceModelChanged;
     }
 
+    /// <summary>
+    /// Called if the face part controller changes the model
+    /// </summary>
+    /// <param name="sender">The sender of the event</param>
+    /// <param name="e">The event arguments</param>
     private void FaceModelChanged(object sender, EventArgs e)
     {
-        Debug.Log("Face variant changed");
+        // go over all part controllers and update their avatar index and apply the new configuration
         foreach(AvatarPartControllerCategory category in avatarPartControllers)
         {
             category.ConfigurationController.AvatarIndex = SelectedFace;
