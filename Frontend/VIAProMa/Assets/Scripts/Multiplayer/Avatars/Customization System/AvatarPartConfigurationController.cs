@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,13 +9,34 @@ using UnityEngine;
 public class AvatarPartConfigurationController : MonoBehaviour
 {
     [Tooltip("The available options for this part")]
-    [SerializeField] private AvatarPart[] avatarParts;
+    [SerializeField] private AvatarPartCollection[] avatarPartCollections;
+
+    public event EventHandler ModelChanged;
 
     private SkinnedMeshRenderer partRenderer;
+
+    private int avatarIndex;
 
     private int modelIndex;
     private int materialIndex;
     private int colorIndex;
+
+    public int AvatarIndex
+    {
+        get => avatarIndex;
+        set
+        {
+            // if an avatar was selected for which no variants exist => take the standard options of the first avatar
+            if (value >= avatarPartCollections.Length)
+            {
+                avatarIndex = 0;
+            }
+            else
+            {
+                avatarIndex = value;
+            }
+        }
+    }
 
     /// <summary>
     /// The index of the 3D model which is displayed on this part
@@ -27,6 +49,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
             modelIndex = value;
             materialIndex = 0;
             colorIndex = 0;
+            ModelChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -51,12 +74,12 @@ public class AvatarPartConfigurationController : MonoBehaviour
     /// <summary>
     /// The available avatar part options for this part
     /// </summary>
-    public AvatarPart[] AvatarParts { get => avatarParts; }
+    public AvatarPart[] AvatarParts { get => avatarPartCollections[avatarIndex].avatarParts; }
 
     /// <summary>
     /// The availalbe avatar part materials for the currently displayed model
     /// </summary>
-    public AvatarPartMaterial[] AvatarPartMaterials { get => avatarParts[modelIndex].PartMaterials; }
+    public AvatarPartMaterial[] AvatarPartMaterials { get => avatarPartCollections[avatarIndex].avatarParts[modelIndex].PartMaterials; }
 
     /// <summary>
     /// The available color variations for the currently displayed model and material
@@ -65,13 +88,13 @@ public class AvatarPartConfigurationController : MonoBehaviour
     {
         get
         {
-            if (avatarParts[modelIndex].MaterialVariationCount == 0)
+            if (avatarPartCollections[avatarIndex].avatarParts[modelIndex].MaterialVariationCount == 0)
             {
                 return new Color[0];
             }
             else
             {
-                return avatarParts[modelIndex]?.GetAvatarPartMaterial(materialIndex)?.Colors;
+                return avatarPartCollections[avatarIndex].avatarParts[modelIndex]?.GetAvatarPartMaterial(materialIndex)?.Colors;
             }
         }
     }
@@ -93,17 +116,17 @@ public class AvatarPartConfigurationController : MonoBehaviour
     /// <summary>
     /// The currently displayed part 3D model
     /// </summary>
-    public AvatarPart CurrentPart { get => avatarParts[modelIndex]; }
+    public AvatarPart CurrentPart { get => avatarPartCollections[avatarIndex].avatarParts[modelIndex]; }
 
     /// <summary>
     /// The curerntly displayed part material
     /// </summary>
-    public AvatarPartMaterial CurrentMaterial { get => avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex); }
+    public AvatarPartMaterial CurrentMaterial { get => avatarPartCollections[avatarIndex].avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex); }
 
     /// <summary>
     /// The currently displayed color variation
     /// </summary>
-    public Color CurrentColor { get => avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex).GetColor(colorIndex); }
+    public Color CurrentColor { get => avatarPartCollections[avatarIndex].avatarParts[modelIndex].GetAvatarPartMaterial(materialIndex).GetColor(colorIndex); }
 
     /// <summary>
     /// Initializes the component, checks the setup
@@ -116,19 +139,22 @@ public class AvatarPartConfigurationController : MonoBehaviour
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(partRenderer), gameObject);
         }
-        if (avatarParts.Length == 0)
+        if (avatarPartCollections.Length == 0)
         {
-            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(avatarParts));
+            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(avatarPartCollections));
         }
-        for (int i = 0; i < avatarParts.Length; i++)
+        for (int i = 0; i < avatarPartCollections.Length; i++)
         {
-            if (avatarParts[i] == null)
+            for (int j=0;j<avatarPartCollections[i].avatarParts.Length;j++)
             {
-                SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(avatarParts), i);
-            }
-            else if (avatarParts[i].MaterialVariationCount == 0)
-            {
-                SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, "MaterialVariationCount");
+                if (avatarPartCollections[i].avatarParts[j] == null)
+                {
+                    SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(avatarPartCollections) + i, j);
+                }
+                else if (avatarPartCollections[i].avatarParts[j].MaterialVariationCount == 0)
+                {
+                    SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, "MaterialVariationCount");
+                }
             }
         }
     }
@@ -139,15 +165,16 @@ public class AvatarPartConfigurationController : MonoBehaviour
     public void ApplyConfiguration()
     {
         // handle case that no material variation was given (e.g. for the case "do not show this part")
-        if (avatarParts[ModelIndex].Mesh == null && avatarParts[ModelIndex].MaterialVariationCount == 0)
+        if (avatarPartCollections[avatarIndex].avatarParts[ModelIndex].Mesh == null
+            && avatarPartCollections[avatarIndex].avatarParts[ModelIndex].MaterialVariationCount == 0)
         {
             SetConfiguration(null, null, Color.white);
         }
         // otherwise set the part's appearance according to the indices
-        else if (ModelIndex < avatarParts.Length
-            && MaterialIndex < avatarParts[ModelIndex].MaterialVariationCount)
+        else if (ModelIndex < avatarPartCollections[avatarIndex].avatarParts.Length
+            && MaterialIndex < avatarPartCollections[avatarIndex].avatarParts[ModelIndex].MaterialVariationCount)
         {
-            AvatarPartMaterial avatarMat = avatarParts[ModelIndex].GetAvatarPartMaterial(MaterialIndex);
+            AvatarPartMaterial avatarMat = avatarPartCollections[avatarIndex].avatarParts[ModelIndex].GetAvatarPartMaterial(MaterialIndex);
             Color avatarMatColor = Color.white; // avatar part does not necessarily have color variations => use white in this case
 
             if (ColorIndex < avatarMat.ColorVariationCount)
@@ -155,7 +182,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
                 avatarMatColor = avatarMat.GetColor(ColorIndex);
             }
 
-            SetConfiguration(avatarParts[ModelIndex].Mesh, avatarMat.Material, avatarMatColor);
+            SetConfiguration(avatarPartCollections[avatarIndex].avatarParts[ModelIndex].Mesh, avatarMat.Material, avatarMatColor);
         }
     }
 

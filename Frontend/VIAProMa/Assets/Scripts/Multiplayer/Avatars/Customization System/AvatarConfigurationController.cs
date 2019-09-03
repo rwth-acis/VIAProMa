@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,18 @@ public class AvatarConfigurationController : MonoBehaviour
     {
         foreach(AvatarPartControllerCategory category in avatarPartControllers)
         {
+            category.ConfigurationController.ApplyConfiguration();
+        }
+        // the face model is important: if it changes, all variants must be changed on all parts
+        FaceCategory.ConfigurationController.ModelChanged += FaceModelChanged;
+    }
+
+    private void FaceModelChanged(object sender, EventArgs e)
+    {
+        Debug.Log("Face variant changed");
+        foreach(AvatarPartControllerCategory category in avatarPartControllers)
+        {
+            category.ConfigurationController.AvatarIndex = FaceCategory.ConfigurationController.ModelIndex;
             category.ConfigurationController.ApplyConfiguration();
         }
     }
