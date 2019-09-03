@@ -128,7 +128,7 @@ public class VariantSelector : MonoBehaviour
         }
 
         pageDownButton.Enabled = (page > 0);
-        pageUpButton.Enabled = (page < (Items.Length / itemFrames.Length));
+        pageUpButton.Enabled = (page < ((Items.Length - 1) / itemFrames.Length));
 
         // always go over all itemFrames
         for (int i = 0; i < itemFrames.Length; i++)
