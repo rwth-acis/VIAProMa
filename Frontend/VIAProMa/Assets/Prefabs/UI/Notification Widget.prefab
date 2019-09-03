@@ -298,6 +298,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   height: 0.02
   frequency: 0.2
+--- !u!135 &3660481989843999032
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8965303779806863386}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8965303779892335040
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,6 +323,7 @@ GameObject:
   - component: {fileID: 8965303779892335044}
   - component: {fileID: 8965303779892335045}
   - component: {fileID: 8965303779892335046}
+  - component: {fileID: 5648890986170027899}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -390,6 +404,53 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &5648890986170027899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8965303779892335040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  States: {fileID: 11400000, guid: 5eac1712038236e4b8ffdb3893804fe1, type: 2}
+  InputAction:
+    id: 0
+    description: 
+    axisConstraint: 0
+  InputActionId: 0
+  IsGlobal: 0
+  Dimensions: 1
+  CanSelect: 1
+  CanDeselect: 1
+  VoiceCommand: 
+  RequiresFocus: 1
+  Profiles:
+  - Target: {fileID: 0}
+    Themes:
+    - {fileID: 0}
+    HadDefaultTheme: 1
+  OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8965303781062769477}
+        m_MethodName: OpenChatMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Events: []
 --- !u!1 &8965303780949919903
 GameObject:
   m_ObjectHideFlags: 0

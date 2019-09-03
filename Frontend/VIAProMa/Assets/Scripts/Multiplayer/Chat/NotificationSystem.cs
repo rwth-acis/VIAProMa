@@ -59,7 +59,7 @@ public class NotificationSystem : Singleton<NotificationSystem>
     public void OpenChatMenu()
     {
         WindowManager.Instance.ChatMenu.Open(
-            transform.position + notificationPreviewLabel.transform.right,
+            transform.position - 0.6f * notificationPreviewLabel.transform.right,
             notificationPreviewLabel.transform.eulerAngles
             );
     }
