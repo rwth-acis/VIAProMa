@@ -14,6 +14,7 @@ public class ChatManager : Singleton<ChatManager>
 
     protected override void Awake()
     {
+        base.Awake();
         photonView = GetComponent<PhotonView>();
     }
 
