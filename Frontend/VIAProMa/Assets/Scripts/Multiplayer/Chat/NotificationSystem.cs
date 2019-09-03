@@ -11,6 +11,8 @@ public class NotificationSystem : Singleton<NotificationSystem>
     [SerializeField] private GameObject notificationWidget;
     [SerializeField] private TextMeshPro notificationPreviewLabel;
 
+    public bool CanShowMessages { get; set; } = true;
+
     protected override void Awake()
     {
         base.Awake();
@@ -41,15 +43,25 @@ public class NotificationSystem : Singleton<NotificationSystem>
 
     public void ShowMessage(string text)
     {
-        gameObject.SetActive(true);
-        notificationPreviewLabel.text = text;
+        if (CanShowMessages)
+        {
+            gameObject.SetActive(true);
+            notificationPreviewLabel.text = text;
+        }
     }
 
     public void HideMessage()
     {
-        Debug.Log("Message Read");
         notificationPreviewLabel.text = "";
         gameObject.SetActive(false);
+    }
+
+    public void OpenChatMenu()
+    {
+        WindowManager.Instance.ChatMenu.Open(
+            transform.position + notificationPreviewLabel.transform.right,
+            notificationPreviewLabel.transform.eulerAngles
+            );
     }
 
     private void OnMessageReceived(object sender, ChatMessageEventArgs e)
@@ -60,7 +72,6 @@ public class NotificationSystem : Singleton<NotificationSystem>
         }
         else
         {
-            Debug.Log("Message Received: " + e.MessageSender.NickName + ": " + e.Message);
             ShowMessage(e.MessageSender.NickName + ": " + e.Message);
         }
     }

@@ -88,6 +88,8 @@ public class ChatMenu : MonoBehaviour, IWindow
     public void Open()
     {
         gameObject.SetActive(true);
+        NotificationSystem.Instance.CanShowMessages = false;
+        NotificationSystem.Instance.HideMessage();
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -100,6 +102,7 @@ public class ChatMenu : MonoBehaviour, IWindow
     public void Close()
     {
         gameObject.SetActive(false);
+        NotificationSystem.Instance.CanShowMessages = true;
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 

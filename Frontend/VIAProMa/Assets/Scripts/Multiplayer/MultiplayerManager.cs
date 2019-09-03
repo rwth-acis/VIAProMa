@@ -50,6 +50,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log(newPlayer.NickName + " joined");
+        ChatManager.Instance.AddLocalMessage(newPlayer.NickName + " joined the room.");
     }
 
     /// <summary>
@@ -59,5 +60,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log(otherPlayer.NickName + " left");
+        ChatManager.Instance.AddLocalMessage(otherPlayer.NickName + " left the room.");
     }
 }
