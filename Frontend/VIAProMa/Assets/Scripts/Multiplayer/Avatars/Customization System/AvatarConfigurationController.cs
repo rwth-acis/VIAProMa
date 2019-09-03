@@ -6,6 +6,8 @@ public class AvatarConfigurationController : MonoBehaviour
 {
     [SerializeField] private AvatarPartControllerCategory[] avatarPartControllers;
 
+    public int SelectedFace { get => FaceCategory.ConfigurationController.ModelIndex; }
+
     public AvatarPartControllerCategory[] AvatarPartControllers { get => avatarPartControllers; }
 
     public AvatarPartControllerCategory FaceCategory { get => avatarPartControllers[0]; }
