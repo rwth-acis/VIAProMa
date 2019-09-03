@@ -9,7 +9,12 @@ public class ConstantRotation : MonoBehaviour
     public Vector3 RotationVector { get => rotationVector; set => rotationVector = value; }
 
     private void Update()
-    {
-        transform.localEulerAngles += rotationVector * Time.deltaTime;
+    { 
+        Vector3 eulerAngles = transform.localEulerAngles + rotationVector * Time.deltaTime;
+        transform.localEulerAngles = new Vector3(
+            eulerAngles.x % 360,
+            eulerAngles.y % 360,
+            eulerAngles.z % 360
+            );
     }
 }
