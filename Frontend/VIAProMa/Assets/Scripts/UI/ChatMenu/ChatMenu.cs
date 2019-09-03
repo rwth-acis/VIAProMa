@@ -1,4 +1,5 @@
 ﻿using i5.ViaProMa.UI;
+using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +10,9 @@ public class ChatMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private TextMeshPro chatHistory;
     [SerializeField] private InputField chatInputField;
+    [SerializeField] private Interactable sendButton;
 
-    public bool WindowEnabled
+    public bool WindowEnabled // not used
     {
         get;set;
     }
@@ -25,29 +27,56 @@ public class ChatMenu : MonoBehaviour, IWindow
 
     public event EventHandler WindowClosed;
 
+    private void Awake()
+    {
+        if (chatHistory == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatHistory));
+        }
+        if (chatInputField == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatInputField));
+        }
+        if (sendButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(sendButton));
+        }
+    }
+
     private void Start()
     {
+        chatHistory.text = "";
         ChatManager.Instance.MessageReceived += OnMessageReceived;
+        // catch up with messages which have already been collected
+        foreach(ChatMessageEventArgs msg in ChatManager.Instance.ChatMessages)
+        {
+            chatHistory.text += CreateMessageString(msg);
+        }
+        ChatManager.Instance.ChatMessages.Clear();
+        ChatManager.Instance.RecordMessages = false; // no need to record messages anymore
+        chatInputField.TextChanged += OnMessageTextChanged;
+        sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
+    }
+
+    private void OnMessageTextChanged(object sender, EventArgs e)
+    {
+        sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
     }
 
     private void OnDestroy()
     {
-        ChatManager.Instance.MessageReceived -= OnMessageReceived;
+        if (ChatManager.Instance != null)
+        {
+            ChatManager.Instance.MessageReceived -= OnMessageReceived;
+        }
     }
 
     private void OnMessageReceived(object sender, ChatMessageEventArgs e)
     {
-        if (e.MessageSender == null) // local message
-        {
-            chatHistory.text += "\n" + e.Message;
-        }
-        else
-        {
-            chatHistory.text += "\n" + e.MessageSender + ": " + e.Message;
-        }
+        chatHistory.text += CreateMessageString(e);
     }
 
-    public void SendMessage()
+    public void Send()
     {
         if (!string.IsNullOrEmpty(chatInputField.Text))
         {
@@ -64,12 +93,32 @@ public class ChatMenu : MonoBehaviour, IWindow
     public void Open(Vector3 position, Vector3 eulerAngles)
     {
         Open();
-        transform.position = position,
-        transform.eulerAngles = eulerAngles,
+        transform.position = position;
+        transform.eulerAngles = eulerAngles;
     }
 
     public void Close()
     {
         gameObject.SetActive(false);
+        WindowClosed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private string CreateMessageString(ChatMessageEventArgs msg)
+    {
+        string res = "";
+        // go to a new line if there is already content in the chat
+        if (!string.IsNullOrEmpty(chatHistory.text))
+        {
+            res += "\n";
+        }
+        if (msg.MessageSender == null) // local message
+        {
+            res +=  "<i>" + msg.Message + "</i>"; // local messages are in italics
+        }
+        else
+        {
+            res += "<b>" + msg.MessageSender.NickName + "</b>: " + msg.Message;
+        }
+        return res;
     }
 }

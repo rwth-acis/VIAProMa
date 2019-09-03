@@ -7,14 +7,13 @@ public class WindowManager : Singleton<WindowManager>
 {
     [SerializeField] private GameObject roomMenuPrefab;
     [SerializeField] private GameObject serverStatusMenuPrefab;
-
-    private RoomMenu roomMenuInstance;
-    private ServerStatusMenu serverStatusMenuInstance;
+    [SerializeField] private GameObject chatMenuPrefab;
 
     private void Start()
     {
-        roomMenuInstance = (RoomMenu)InstantiateWindow(roomMenuPrefab);
-        serverStatusMenuInstance = (ServerStatusMenu)InstantiateWindow(serverStatusMenuPrefab);
+        RoomMenu = (RoomMenu)InstantiateWindow(roomMenuPrefab);
+        ServerStatusMenu = (ServerStatusMenu)InstantiateWindow(serverStatusMenuPrefab);
+        ChatMenu = (ChatMenu)InstantiateWindow(chatMenuPrefab);
     }
 
     private IWindow InstantiateWindow(GameObject prefab)
@@ -31,13 +30,9 @@ public class WindowManager : Singleton<WindowManager>
         return window;
     }
 
-    public RoomMenu RoomMenu
-    {
-        get => roomMenuInstance;
-    }
+    public RoomMenu RoomMenu { get; private set; }
 
-    public ServerStatusMenu ServerStatusMenu
-    {
-        get => serverStatusMenuInstance;
-    }
+    public ServerStatusMenu ServerStatusMenu { get; private set; }
+
+    public ChatMenu ChatMenu { get; private set; }
 }

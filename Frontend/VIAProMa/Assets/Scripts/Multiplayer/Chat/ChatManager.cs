@@ -12,10 +12,15 @@ public class ChatManager : Singleton<ChatManager>
 
     public event EventHandler<ChatMessageEventArgs> MessageReceived;
 
+    public bool RecordMessages { get; set; } = true;
+
+    public List<ChatMessageEventArgs> ChatMessages { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
         photonView = GetComponent<PhotonView>();
+        ChatMessages = new List<ChatMessageEventArgs>();
     }
 
     public async void SendChatMessage(string text)
@@ -28,11 +33,21 @@ public class ChatManager : Singleton<ChatManager>
     private async void ChatMessageReceived(short textId, PhotonMessageInfo messageInfo)
     {
         string text = await NetworkedStringManager.GetString(textId);
-        MessageReceived?.Invoke(this, new ChatMessageEventArgs(text, messageInfo.Sender));
+        ChatMessageEventArgs args = new ChatMessageEventArgs(text, messageInfo.Sender);
+        if (RecordMessages)
+        {
+            ChatMessages.Add(args);
+        }
+        MessageReceived?.Invoke(this, args);
     }
 
     public void AddLocalMessage(string text)
     {
-        MessageReceived?.Invoke(this, new ChatMessageEventArgs(text, null));
+        ChatMessageEventArgs args = new ChatMessageEventArgs(text, null);
+        if (RecordMessages)
+        {
+            ChatMessages.Add(args);
+        }
+        MessageReceived?.Invoke(this, args);
     }
 }
