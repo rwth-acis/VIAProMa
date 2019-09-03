@@ -30,4 +30,9 @@ public class ChatManager : Singleton<ChatManager>
         string text = await NetworkedStringManager.GetString(textId);
         MessageReceived?.Invoke(this, new ChatMessageEventArgs(text, messageInfo.Sender));
     }
+
+    public void AddLocalMessage(string text)
+    {
+        MessageReceived?.Invoke(this, new ChatMessageEventArgs(text, null));
+    }
 }

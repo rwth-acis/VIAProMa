@@ -86,6 +86,7 @@ public class FoldController : MonoBehaviour
     {
         animationHandler.CubeFolded -= OnCubeFolded;
         SetControlsActive(true);
+        NotificationSystem.Instance.HideMessage();
         StartCoroutine(FadeSize(collapsedScale * Vector3.one, 0.5f));
     }
 

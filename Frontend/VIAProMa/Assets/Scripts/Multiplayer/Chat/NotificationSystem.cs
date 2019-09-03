@@ -54,7 +54,14 @@ public class NotificationSystem : Singleton<NotificationSystem>
 
     private void OnMessageReceived(object sender, ChatMessageEventArgs e)
     {
-        Debug.Log("Message Received: " + e.MessageSender.NickName + ": " + e.Message);
-        ShowMessage(e.MessageSender.NickName + ": " + e.Message);
+        if (e.MessageSender == null) // local message
+        {
+            ShowMessage(e.Message);
+        }
+        else
+        {
+            Debug.Log("Message Received: " + e.MessageSender.NickName + ": " + e.Message);
+            ShowMessage(e.MessageSender.NickName + ": " + e.Message);
+        }
     }
 }
