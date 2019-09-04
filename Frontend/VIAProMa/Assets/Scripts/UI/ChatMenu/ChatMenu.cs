@@ -11,10 +11,12 @@ public class ChatMenu : MonoBehaviour, IWindow
     [SerializeField] private TextMeshPro chatHistory;
     [SerializeField] private InputField chatInputField;
     [SerializeField] private Interactable sendButton;
+    [SerializeField] private Interactable pageUpButton;
+    [SerializeField] private Interactable pageDownButton;
 
     public bool WindowEnabled // not used
     {
-        get;set;
+        get; set;
     }
 
     public bool WindowOpen
@@ -41,6 +43,14 @@ public class ChatMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(sendButton));
         }
+        if (pageUpButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageUpButton));
+        }
+        if (pageDownButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
+        }
     }
 
     private void Start()
@@ -48,7 +58,7 @@ public class ChatMenu : MonoBehaviour, IWindow
         chatHistory.text = "";
         ChatManager.Instance.MessageReceived += OnMessageReceived;
         // catch up with messages which have already been collected
-        foreach(ChatMessageEventArgs msg in ChatManager.Instance.ChatMessages)
+        foreach (ChatMessageEventArgs msg in ChatManager.Instance.ChatMessages)
         {
             chatHistory.text += CreateMessageString(msg);
         }
@@ -56,6 +66,7 @@ public class ChatMenu : MonoBehaviour, IWindow
         ChatManager.Instance.RecordMessages = false; // no need to record messages anymore
         chatInputField.TextChanged += OnMessageTextChanged;
         sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
+        CheckPageButtons();
     }
 
     private void OnMessageTextChanged(object sender, EventArgs e)
@@ -74,6 +85,9 @@ public class ChatMenu : MonoBehaviour, IWindow
     private void OnMessageReceived(object sender, ChatMessageEventArgs e)
     {
         chatHistory.text += CreateMessageString(e);
+        chatHistory.ForceMeshUpdate();
+        chatHistory.pageToDisplay = chatHistory.textInfo.pageCount;
+        CheckPageButtons();
     }
 
     public void Send()
@@ -83,6 +97,26 @@ public class ChatMenu : MonoBehaviour, IWindow
             ChatManager.Instance.SendChatMessage(chatInputField.Text);
             chatInputField.Text = "";
         }
+    }
+
+    public void PageUp()
+    {
+        chatHistory.pageToDisplay = Mathf.Max(chatHistory.pageToDisplay - 1, 0);
+        CheckPageButtons();
+    }
+
+    public void PageDown()
+    {
+        chatHistory.pageToDisplay = Mathf.Min(chatHistory.pageToDisplay + 1, chatHistory.textInfo.pageCount);
+        CheckPageButtons();
+    }
+
+    private void CheckPageButtons()
+    {
+        Debug.Log("Page to display: " + chatHistory.pageToDisplay);
+        Debug.Log("Page count: " + chatHistory.textInfo.pageCount);
+        pageUpButton.Enabled = chatHistory.pageToDisplay > 1;
+        pageDownButton.Enabled = chatHistory.pageToDisplay < chatHistory.textInfo.pageCount;
     }
 
     public void Open()
@@ -116,7 +150,7 @@ public class ChatMenu : MonoBehaviour, IWindow
         }
         if (msg.MessageSender == null) // local message
         {
-            res +=  "<i>" + msg.Message + "</i>"; // local messages are in italics
+            res += "<i>" + msg.Message + "</i>"; // local messages are in italics
         }
         else
         {
