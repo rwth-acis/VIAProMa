@@ -86,7 +86,7 @@ public class ChatMenu : MonoBehaviour, IWindow
     {
         chatHistory.text += CreateMessageString(e);
         chatHistory.ForceMeshUpdate();
-        chatHistory.pageToDisplay = chatHistory.textInfo.pageCount;
+        chatHistory.pageToDisplay = chatHistory.textInfo.pageCount; // go to the last page to show the new text
         CheckPageButtons();
     }
 
