@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 506113313742460797}
   - component: {fileID: 439484614112030367}
   - component: {fileID: 566388816382483558}
+  - component: {fileID: 1826346972}
+  - component: {fileID: 4191421764473793288}
   m_Layer: 0
   m_Name: Multiplayer
   m_TagString: Untagged
@@ -106,7 +108,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 0}
   viewIdField: 0
-  InstantiationId: 0
+  InstantiationId: 3
   isRuntimeInstantiated: 0
 --- !u!114 &566388816382483558
 MonoBehaviour:
@@ -120,6 +122,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbdac2800f0d4a4498d5dcb0a94ca9c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1826346972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200921403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81d9debcbaf99472bb70ffc2f99cb23f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KeepAliveInBackground: 60000
+  ApplyDontDestroyOnLoad: 1
+  logLevel: 1
+  enableSupportLogger: 0
+  updateInterval: 50
+  runInBackground: 1
+  statsResetInterval: 1000
+  speakerPrefab: {fileID: 0}
+  Settings:
+    AppIdRealtime: 
+    AppIdChat: 
+    AppIdVoice: 
+    AppVersion: 
+    UseNameServer: 1
+    FixedRegion: 
+    Server: 
+    Port: 0
+    Protocol: 0
+    EnableLobbyStatistics: 0
+    NetworkLogging: 1
+  ShowSettings: 0
+  PrimaryRecorder: {fileID: 4191421764473793288}
+  AutoConnectAndJoin: 1
+  AutoLeaveAndDisconnect: 1
+  AutoCreateSpeakerIfNotFound: 1
+  usePunAppSettings: 1
+--- !u!114 &4191421764473793288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 200921403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91175dcc15224463780e01a8a98b1b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logLevel: 1
+  voiceDetection: 0
+  voiceDetectionThreshold: 0.01
+  voiceDetectionDelayMs: 500
+  unityMicrophoneDevice: 
+  photonMicrophoneDeviceId: -1
+  interestGroup: 0
+  debugEchoMode: 0
+  reliableMode: 0
+  encrypt: 0
+  transmitEnabled: 0
+  samplingRate: 24000
+  frameDuration: 20000
+  bitrate: 30000
+  sourceType: 0
+  microphoneType: 0
+  audioClip: {fileID: 0}
+  loopAudioClip: 1
+  reactOnSystemChanges: 0
+  autoStart: 1
 --- !u!1 &1584635095594973785
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,5 +566,5 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 0}
   viewIdField: 0
-  InstantiationId: 0
+  InstantiationId: 2
   isRuntimeInstantiated: 0

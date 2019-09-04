@@ -136,7 +136,10 @@ public class ChatMenu : MonoBehaviour, IWindow
     public void Close()
     {
         gameObject.SetActive(false);
-        NotificationSystem.Instance.CanShowMessages = true;
+        if (NotificationSystem.Instance != null)
+        {
+            NotificationSystem.Instance.CanShowMessages = true;
+        }
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 
