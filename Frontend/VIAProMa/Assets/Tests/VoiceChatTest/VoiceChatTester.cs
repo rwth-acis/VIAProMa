@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
 using Photon.Voice.PUN;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ public class VoiceChatTester : MonoBehaviour
             if (PhotonNetwork.IsConnected)
             {
                 Debug.Log("Connecting to room", gameObject);
-                PhotonNetwork.CreateRoom("VoiceTest");
+                PhotonNetwork.JoinOrCreateRoom("VoiceTest", null, null);
             }
         }
         else if (Input.GetKeyDown(KeyCode.F5))
