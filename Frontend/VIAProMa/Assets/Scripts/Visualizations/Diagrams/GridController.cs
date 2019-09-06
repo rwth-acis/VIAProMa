@@ -66,7 +66,7 @@ public class GridController : MonoBehaviour
         }
     }
 
-    private void UpdateGrid()
+    public void UpdateGrid()
     {
         EnsureRenderer();
         if (gridRenderer != null && transform.localScale.x != 0 && transform.localScale.y != 0)
