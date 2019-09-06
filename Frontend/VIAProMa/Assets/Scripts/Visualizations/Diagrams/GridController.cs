@@ -18,7 +18,6 @@ public class GridController : MonoBehaviour
         set
         {
             cellSize = value;
-            UpdateGrid();
         }
     }
 
@@ -28,7 +27,6 @@ public class GridController : MonoBehaviour
         set
         {
             offset = value;
-            UpdateGrid();
         }
     }
 
@@ -38,7 +36,6 @@ public class GridController : MonoBehaviour
         set
         {
             wireThickness = value;
-            UpdateGrid();
         }
     }
 
@@ -87,7 +84,8 @@ public class GridController : MonoBehaviour
 
     public void Setup(Vector2Int cellCount, Vector2 overallSize)
     {
-
+        CellSize = new Vector2(overallSize.x / cellCount.x, overallSize.y / cellCount.y);
+        UpdateGrid();
     }
 
     private void OnValidate()

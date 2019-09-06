@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class ScatterPlotTestRunner : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GridController gridController;
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            gridController.Setup(new Vector2Int(5, 3), Vector2.one);
+        }
     }
 }
