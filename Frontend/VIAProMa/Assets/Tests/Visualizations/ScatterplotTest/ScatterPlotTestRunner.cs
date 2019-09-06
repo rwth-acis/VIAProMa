@@ -6,12 +6,12 @@ public class ScatterPlotTestRunner : MonoBehaviour
 {
     public VisualizationGridsController gridController;
 
+    public Vector3 size = Vector3.one;
+    public Vector3Int count = Vector3Int.one;
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            gridController.Setup(new Vector3Int(3, 6, 2), new Vector3(1, 1,1));
-        }
+        gridController.Setup(count, size);
     }
 }

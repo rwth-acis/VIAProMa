@@ -53,7 +53,7 @@ public class VisualizationGridsController : MonoBehaviour
     public void UpdateGridPlanes()
     {
         PositionGridPlanes();
-        ScaleGridsPlanes();
+        ScaleGrid();
     }
 
     private void PositionGridPlanes()
@@ -72,7 +72,7 @@ public class VisualizationGridsController : MonoBehaviour
         target.localPosition = targetPos;
     }
 
-    private void ScaleGridsPlanes()
+    private void ScaleGrid()
     {
         ScaleGridPlane(xPos.transform);
         ScaleGridPlane(xNeg.transform);
