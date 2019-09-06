@@ -446,6 +446,7 @@ GameObject:
   - component: {fileID: 1632917066}
   - component: {fileID: 1632917065}
   - component: {fileID: 1632917064}
+  - component: {fileID: 1632917068}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -520,12 +521,27 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1632917063}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalPosition: {x: 0.5, y: 0, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1632917068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632917063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92e01b2dcf1d8e945a63f778bed24b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellSize: {x: 1, y: 1}
+  offset: {x: 0, y: 0}
+  wireThickness: 0.01
 --- !u!1 &1826300615
 GameObject:
   m_ObjectHideFlags: 0
