@@ -49,6 +49,10 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         return JsonArrayUtility.ToJson<SerializedObject>(serializedObjects.ToArray());
     }
 
+    /// <summary>
+    /// Takes a json string and applies its save content to the scene
+    /// </summary>
+    /// <param name="json">The json string with the save data</param>
     public void DeserializeSaveGame(string json)
     {
         UpdateTrackedIds();
@@ -83,6 +87,9 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         }
     }
 
+    /// <summary>
+    /// Updates the list of tracked ids based on the registered serializers
+    /// </summary>
     private void UpdateTrackedIds()
     {
         trackedIds.Clear();
@@ -92,6 +99,11 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         }
     }
 
+    /// <summary>
+    /// Gets the serializer with the given id
+    /// </summary>
+    /// <param name="id">The id of the serializer</param>
+    /// <returns>The serializer with the id or null if it does not exist</returns>
     private Serializer GetSerializer(string id)
     {
         for (int i=0;i<Serializers.Count;i++)
@@ -105,11 +117,19 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         return null;
     }
 
+    /// <summary>
+    /// Registers a serializer on the manager so that it is considered in the save-load procedure
+    /// </summary>
+    /// <param name="serializer">The serializer which should be registered</param>
     public void RegisterSerializer(Serializer serializer)
     {
         Serializers.Add(serializer);
     }
 
+    /// <summary>
+    /// Unregisters the given serializer so that it is not considered anymore by the save-load procedure
+    /// </summary>
+    /// <param name="serializer">The serializer to unregister</param>
     public void UnRegisterSerializer(Serializer serializer)
     {
         Serializers.Remove(serializer);

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Serializes and deserializes issue card data
+/// </summary>
 [RequireComponent(typeof(IssueDataDisplay))]
 public class CardSerializer : MonoBehaviour, ISerializable
 {
@@ -11,11 +14,19 @@ public class CardSerializer : MonoBehaviour, ISerializable
 
     private IssueDataDisplay dataDisplay;
 
+    /// <summary>
+    /// Sets the component up
+    /// </summary>
     private void Awake()
     {
         dataDisplay = GetComponent<IssueDataDisplay>();
     }
 
+    /// <summary>
+    /// Deserializes the given SerializedObject and applies its values
+    /// Expects the keys "source", "issueId", "projectId" in order to load the issue
+    /// </summary>
+    /// <param name="serializedObject">The SerializedObject with the save data</param>
     public async void Deserialize(SerializedObject serializedObject)
     {
         DataSource source = (DataSource)serializedObject.Integers[sourceKey];
@@ -39,6 +50,11 @@ public class CardSerializer : MonoBehaviour, ISerializable
         dataDisplay.Setup(issue);
     }
 
+    /// <summary>
+    /// Serializes the data of the given issue card into a SerializedObject
+    /// Inserts values for "source", "issueId" and "projectId"
+    /// </summary>
+    /// <returns>The SerializedObject with the values for the card</returns>
     public SerializedObject Serialize()
     {
         SerializedObject serializedObject = new SerializedObject();

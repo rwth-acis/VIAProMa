@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Data structure for serialized save data
+/// </summary>
 [Serializable]
 public class SerializedObject
 {
@@ -16,16 +19,46 @@ public class SerializedObject
     [SerializeField] private SerializableDictionaryVector3 vector3s;
     [SerializeField] private SerializableDictionaryQuaternion quaternions;
 
+    /// <summary>
+    /// The id of the stored object
+    /// This is used in order to address the object again in the load procedure
+    /// </summary>
     public string Id { get => id; set { id = value; } }
+
+    /// <summary>
+    /// The prefab name of the object
+    /// This is used to instantiate the object again
+    /// </summary>
     public string PrefabName { get => prefabName; set { prefabName = value; } }
 
+    /// <summary>
+    /// Collection of stored integer values
+    /// </summary>
     public Dictionary<string, int> Integers { get; private set; }
+    /// <summary>
+    /// Collection of stored string values
+    /// </summary>
     public Dictionary<string, string> Strings { get; private set; }
+    /// <summary>
+    /// Collection of stored float values
+    /// </summary>
     public Dictionary<string, float> Floats { get; private set; }
+    /// <summary>
+    /// Collection of stored Boolean values
+    /// </summary>
     public Dictionary<string, bool> Bools { get; private set; }
+    /// <summary>
+    /// Collection of stored vectors
+    /// </summary>
     public Dictionary<string, Vector3> Vector3s { get; private set; }
+    /// <summary>
+    /// Collection of stored rotations
+    /// </summary>
     public Dictionary<string, Quaternion> Quaternions { get; private set; }
 
+    /// <summary>
+    /// Creates the serialized object and intializes its collections
+    /// </summary>
     public SerializedObject()
     {
         Integers = new Dictionary<string, int>();
@@ -36,6 +69,10 @@ public class SerializedObject
         Quaternions = new Dictionary<string, Quaternion>();
     }
 
+    /// <summary>
+    /// Writes the data into the serialized fields
+    /// Use this method before serializing this object to a string or binary format
+    /// </summary>
     public void PackData()
     {
         integers = new SerializableDictionaryInt(Integers);
@@ -46,6 +83,10 @@ public class SerializedObject
         quaternions = new SerializableDictionaryQuaternion(Quaternions);
     }
 
+    /// <summary>
+    /// Writes the data from the serialized fields into the properties
+    /// Use this method after deserializing a string or binary format in the SerializedObject
+    /// </summary>
     public void UnPackData()
     {
         Integers = integers.ToDictionary();
@@ -56,6 +97,13 @@ public class SerializedObject
         Quaternions = quaternions.ToDictionary();
     }
 
+    /// <summary>
+    /// Merges two SerializedObjects into one
+    /// The SerializedObjects should not have the same key in the same collection
+    /// </summary>
+    /// <param name="data1">The first SerializedObject</param>
+    /// <param name="data2">The second SerializedObject</param>
+    /// <returns>The merged SerializedObject which contains all keys from both data objects</returns>
     public static SerializedObject Merge(SerializedObject data1, SerializedObject data2)
     {
         data1.Integers = MergeDictionary(data1.Integers, data2.Integers);
@@ -67,6 +115,15 @@ public class SerializedObject
         return data1;
     }
 
+    /// <summary>
+    /// Merges two dictionary collections of the Serialized Objects
+    /// The two dictionaries should have distinct keys
+    /// If the same key is contained in both dictionaries, the value of dictionary1 will be chosen
+    /// </summary>
+    /// <typeparam name="T">The type of the dictionary</typeparam>
+    /// <param name="dictionary1">The first dictionary collection</param>
+    /// <param name="dictionary2">The second dictionary collection</param>
+    /// <returns>The merged dictionary with the key-value pairs of both dictionaries.</returns>
     private static Dictionary<string, T> MergeDictionary<T>(Dictionary<string, T> dictionary1, Dictionary<string, T> dictionary2)
     {
         foreach(KeyValuePair<string, T> entryDictionary2 in dictionary2)
