@@ -5,14 +5,33 @@ using UnityEngine;
 
 public class ScatterPlotTestRunner : MonoBehaviour
 {
-    public VisualizationGridsController gridController;
+    //public VisualizationGridsController gridController;
 
-    public Vector3 size = Vector3.one;
-    public Vector3Int count = Vector3Int.one;
+    //public Vector3 size = Vector3.one;
+    //public Vector3Int count = Vector3Int.one;
 
-    // Update is called once per frame
-    void Update()
+    //// Update is called once per frame
+    //void Update()
+    //{
+    //    gridController.Setup(count, size);
+    //}
+
+    public i5.ViaProMa.Visualizations.Common.AxisController axisController;
+
+    public float length = 1f;
+
+    private void Start()
     {
-        gridController.Setup(count, size);
+        FloatAxis axis = new FloatAxis("Test", 0, 10);
+        axisController.Setup(axis, length);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            FloatAxis axis = new FloatAxis("Test", 0, 10);
+            axisController.Setup(axis, length);
+        }
     }
 }

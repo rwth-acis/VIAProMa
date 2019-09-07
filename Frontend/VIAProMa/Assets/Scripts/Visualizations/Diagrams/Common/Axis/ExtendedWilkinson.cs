@@ -166,6 +166,13 @@ namespace i5.ViaProMa.Visualizations.Common
             float bestScore = -2;
             axisMin = axis.NumericDataMin;
             axisMax = axis.NumericDataMax;
+
+            if (axisMin == axisMax)
+            {
+                Debug.LogError("Cannot work on same min and max data");
+                return null;
+            }
+
             IDisplayAxis bestOption = null;
 
             for (int j = 1; j < int.MaxValue; j++) // there are break statements which terminate this loop

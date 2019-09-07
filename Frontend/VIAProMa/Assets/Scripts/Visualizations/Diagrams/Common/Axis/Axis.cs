@@ -21,12 +21,16 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public T DataMax { get; private set; }
 
-        public Axis()
+        public Axis(T dataMin, T dataMax)
         {
             Title = "";
+            DataMin = dataMin;
+            DataMax = dataMax;
+            NumericDataMin = ValueToFloat(dataMin);
+            NumericDataMax = ValueToFloat(dataMax);
         }
 
-        public Axis(string title)
+        public Axis(string title, T dataMin, T dataMax) : this(dataMin, dataMax)
         {
             Title = title;
         }
@@ -50,7 +54,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
             // now create all possible DisplayAxes from this
             List<IDisplayAxis> possibilities = new List<IDisplayAxis>();
-            for (int fontSize = 20; fontSize <= 100; fontSize += 5)
+            for (float fontSize = 0.1f; fontSize <= 2f; fontSize += 0.1f)
             {
                 for (int i = 0; i < 2; i++)
                 {
