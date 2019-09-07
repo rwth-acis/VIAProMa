@@ -16,7 +16,7 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
 - Visual Studio (tested with VS 2017)
 - For HoloLens Development:
   - Windows 10 development machine
-  - Windows 10 SDK (10.0.18362.0)
+  - Windows 10 SDK ([10.0.18362.0](https://developer.microsoft.com/de-de/windows/downloads/windows-10-sdk))
 
 ### Project Setup
 
@@ -53,3 +53,10 @@ This way, the functionality can be tested and new developers can experiment with
 The scenes are situated in the folder "Tests".
 
 ## Deployment
+
+## Troubleshooting
+
+**Problem:** When building the application, errors are shown that the namespace name 'HandJointKind', 'HandMeshObserver' and 'JointPose' are not found.
+
+**Solution:** Download the Windows 10 SDK [10.0.18362.0](https://developer.microsoft.com/de-de/windows/downloads/windows-10-sdk).
+After that, open the Build Settings Window and change the Target SDK Version and Minimum Platform Version to 10.0.18362.0.
