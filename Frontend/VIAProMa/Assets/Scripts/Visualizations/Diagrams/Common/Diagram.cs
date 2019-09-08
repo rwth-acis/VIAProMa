@@ -35,7 +35,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public void UpdateGridAxes()
         {
-            FloatAxis axis = new FloatAxis("Test", 0, 10);
+            Axis<float> axis = new Axis<float>("Test", new FloatDataConverter(), 0, 10);
             xAxis.Setup(axis, Size.x);
             yAxis.Setup(axis, Size.y);
             zAxis.Setup(axis, Size.z);

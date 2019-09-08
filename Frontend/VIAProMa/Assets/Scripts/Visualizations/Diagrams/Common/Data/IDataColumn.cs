@@ -4,12 +4,8 @@ using UnityEngine;
 
 namespace i5.ViaProMa.Visualizations.Common
 {
-    public class DataColumn<T>
+    public interface IDataColumn
     {
-        public List<T> Values { get; private set; }
-
-        public DataColumn()
-        {
-        }
+        IAxis GenerateAxis();
     }
 }

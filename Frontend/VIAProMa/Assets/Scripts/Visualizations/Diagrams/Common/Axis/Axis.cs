@@ -5,7 +5,7 @@ using UnityEngine;
 namespace i5.ViaProMa.Visualizations.Common
 {
 
-    public abstract class Axis<T> : IAxis
+    public class Axis<T> : IAxis
     {
         public string Title
         {
@@ -17,29 +17,28 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public float NumericDataMax { get; private set; }
 
-        public T DataMin { get; private set; }
+        public IDataConverter<T> DataConverter { get; private set; }
 
-        public T DataMax { get; private set; }
-
-        public Axis(T dataMin, T dataMax)
+        public Axis(IDataConverter<T> dataConverter, T dataMin, T dataMax)
         {
             Title = "";
-            DataMin = dataMin;
-            DataMax = dataMax;
-            NumericDataMin = ValueToFloat(dataMin);
-            NumericDataMax = ValueToFloat(dataMax);
+            DataConverter = dataConverter;
+            NumericDataMin = DataConverter.ValueToFloat(dataMin);
+            NumericDataMax = DataConverter.ValueToFloat(dataMax);
         }
 
-        public Axis(string title, T dataMin, T dataMax) : this(dataMin, dataMax)
+        public Axis(IDataConverter<T> dataConverter, float numericDataMin, float numericDataMax)
+        {
+            Title = "";
+            DataConverter = dataConverter;
+            NumericDataMin = numericDataMin;
+            NumericDataMax = numericDataMax;
+        }
+
+        public Axis(string title, IDataConverter<T> dataConverter, T dataMin, T dataMax) : this(dataConverter, dataMin, dataMax)
         {
             Title = title;
         }
-
-        protected abstract float ValueToFloat(T value);
-
-        protected abstract T FloatToValue(float f);
-
-        protected abstract string ValueToString(T value);
 
         public List<IDisplayAxis> GeneratePossibleConfigurations(List<float> stepSequence)
         {
@@ -47,8 +46,8 @@ namespace i5.ViaProMa.Visualizations.Common
             List<string> labels = new List<string>();
             for (int i=0;i<stepSequence.Count;i++)
             {
-                T value = FloatToValue(stepSequence[i]);
-                string formatedValue = ValueToString(value);
+                T value = DataConverter.FloatToValue(stepSequence[i]);
+                string formatedValue = DataConverter.ValueToString(value);
                 labels.Add(formatedValue);
             }
 
