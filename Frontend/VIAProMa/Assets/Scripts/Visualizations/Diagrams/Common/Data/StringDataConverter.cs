@@ -1,0 +1,32 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace i5.ViaProMa.Visualizations.Common
+{
+    public class StringDataConverter : IDataConverter<string>
+    {
+        private List<string> values;
+
+        public StringDataConverter(List<string> values)
+        {
+            this.values = values;
+        }
+
+        public string FloatToValue(float f)
+        {
+            f = Mathf.Clamp(f, 0, values.Count);
+            return values[Mathf.RoundToInt(f)];
+        }
+
+        public float ValueToFloat(string value)
+        {
+            return values.IndexOf(value);
+        }
+
+        public string ValueToString(string value)
+        {
+            return value;
+        }
+    }
+}

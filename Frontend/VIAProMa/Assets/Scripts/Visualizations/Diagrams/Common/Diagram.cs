@@ -6,26 +6,32 @@ namespace i5.ViaProMa.Visualizations.Common
 {
     public class Diagram : MonoBehaviour
     {
-        [SerializeField] private AxisController xAxis;
-        [SerializeField] private AxisController yAxis;
-        [SerializeField] private AxisController zAxis;
+        [SerializeField] private AxisController xAxisController;
+        [SerializeField] private AxisController yAxisController;
+        [SerializeField] private AxisController zAxisController;
         [SerializeField] private VisualizationGridsController gridsController;
 
         public Vector3 Size { get; set; }
 
+        public IAxis XAxis { get; private set; }
+
+        public IAxis YAxis { get; private set; }
+
+        public IAxis ZAxis { get; private set; }
+
         private void Awake()
         {
-            if (xAxis == null)
+            if (xAxisController == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(xAxis));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(xAxisController));
             }
-            if (yAxis == null)
+            if (yAxisController == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(yAxis));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(yAxisController));
             }
-            if (zAxis == null)
+            if (zAxisController == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(zAxis));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(zAxisController));
             }
             if (gridsController == null)
             {
@@ -35,14 +41,13 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public void UpdateGridAxes()
         {
-            Axis<float> axis = new Axis<float>("Test", new FloatDataConverter(), 0, 10);
-            xAxis.Setup(axis, Size.x);
-            yAxis.Setup(axis, Size.y);
-            zAxis.Setup(axis, Size.z);
-            xAxis.transform.localPosition = -Size / 2f;
-            yAxis.transform.localPosition = -Size / 2f;
-            zAxis.transform.localPosition = new Vector3(Size.x, -Size.y, -Size.z) / 2f;
-            gridsController.Setup(new Vector3Int(xAxis.LabelCount-1, yAxis.LabelCount-1, zAxis.LabelCount-1), Size);
+            xAxisController.Setup(XAxis, Size.x);
+            yAxisController.Setup(YAxis, Size.y);
+            zAxisController.Setup(ZAxis, Size.z);
+            xAxisController.transform.localPosition = -Size / 2f;
+            yAxisController.transform.localPosition = -Size / 2f;
+            zAxisController.transform.localPosition = new Vector3(Size.x, -Size.y, -Size.z) / 2f;
+            gridsController.Setup(new Vector3Int(xAxisController.LabelCount-1, yAxisController.LabelCount-1, zAxisController.LabelCount-1), Size);
         }
     }
 }

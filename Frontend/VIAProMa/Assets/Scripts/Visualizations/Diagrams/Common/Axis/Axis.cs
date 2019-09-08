@@ -19,14 +19,6 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public IDataConverter<T> DataConverter { get; private set; }
 
-        public Axis(IDataConverter<T> dataConverter, T dataMin, T dataMax)
-        {
-            Title = "";
-            DataConverter = dataConverter;
-            NumericDataMin = DataConverter.ValueToFloat(dataMin);
-            NumericDataMax = DataConverter.ValueToFloat(dataMax);
-        }
-
         public Axis(IDataConverter<T> dataConverter, float numericDataMin, float numericDataMax)
         {
             Title = "";
@@ -35,7 +27,7 @@ namespace i5.ViaProMa.Visualizations.Common
             NumericDataMax = numericDataMax;
         }
 
-        public Axis(string title, IDataConverter<T> dataConverter, T dataMin, T dataMax) : this(dataConverter, dataMin, dataMax)
+        public Axis(string title, IDataConverter<T> dataConverter, float dataMin, float dataMax) : this(dataConverter, dataMin, dataMax)
         {
             Title = title;
         }
