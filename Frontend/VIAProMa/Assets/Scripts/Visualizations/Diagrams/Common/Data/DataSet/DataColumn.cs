@@ -15,7 +15,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public string Title { get; set; }
 
-        public List<T> Values { get; private set; }
+        public List<T> Values { get; set; }
 
         public int ValueCount { get => Values.Count; }
 

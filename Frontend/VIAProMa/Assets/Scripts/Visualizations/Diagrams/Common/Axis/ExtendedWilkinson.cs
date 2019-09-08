@@ -225,11 +225,12 @@ namespace i5.ViaProMa.Visualizations.Common
                                 // optimize legibility
                                 List<IDisplayAxis> possibilities = axis.GeneratePossibleConfigurations(minTextSize, maxTextSize, stepSequence);
                                 float legibility;
-                                bestOption = DisplayAxis.FindBestLegibility(possibilities, out legibility, minTextSize, targetTextSize, 0.02f, availableSpace);
+                                IDisplayAxis localBest = DisplayAxis.FindBestLegibility(possibilities, out legibility, minTextSize, targetTextSize, 0.02f, availableSpace);
 
                                 float score = Vector4.Dot(new Vector4(s, c, d, legibility), weights);
                                 if (score > bestScore)
                                 {
+                                    bestOption = localBest;
                                     bestScore = score;
                                     axisMax = lmax;
                                     axisMin = lmin;

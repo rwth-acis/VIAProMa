@@ -14,7 +14,7 @@ namespace i5.ViaProMa.Visualizations.Common
             if (values.Count > 0)
             {
                 minDate = values[0];
-                for (int i=1; i < values.Count; i++)
+                for (int i = 1; i < values.Count; i++)
                 {
                     if (values[i] < minDate)
                     {
@@ -24,7 +24,7 @@ namespace i5.ViaProMa.Visualizations.Common
             }
             else
             {
-                Debug.LogError("Trying to inititialize a date data column with no values");
+                Debug.LogError("The date data column has no values");
             }
         }
 
