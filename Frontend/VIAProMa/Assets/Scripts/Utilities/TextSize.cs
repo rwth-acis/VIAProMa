@@ -51,6 +51,7 @@ public class TextSize : Singleton<TextSize>
         textMesh.fontSize = fontSize;
         textMesh.text = text;
         textMesh.ForceMeshUpdate();
-        return textMesh.textBounds.size;
+        Vector2 textSize = textMesh.GetPreferredValues(Mathf.Infinity, Mathf.Infinity);
+        return textSize;
     }
 }
