@@ -11,10 +11,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         protected abstract IDataConverter<T> DataConverter { get; }
 
-        public DataType DataType
-        {
-            get; protected set;
-        }
+        public abstract DataType DataType { get; }
 
         public string Title { get; set; }
 

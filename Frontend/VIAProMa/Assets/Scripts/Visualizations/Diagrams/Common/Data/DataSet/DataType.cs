@@ -7,6 +7,6 @@ namespace i5.ViaProMa.Visualizations.Common
 
     public enum DataType
     {
-        NUMERIC, TEXT, DATETIME
+        NUMERIC, TEXT, DATE
     }
 }

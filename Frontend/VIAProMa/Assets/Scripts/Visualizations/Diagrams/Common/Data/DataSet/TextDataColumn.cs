@@ -17,5 +17,13 @@ namespace i5.ViaProMa.Visualizations.Common
                 return new StringDataConverter(Values);
             }
         }
+
+        public override DataType DataType
+        {
+            get
+            {
+                return DataType.TEXT;
+            }
+        }
     }
 }
