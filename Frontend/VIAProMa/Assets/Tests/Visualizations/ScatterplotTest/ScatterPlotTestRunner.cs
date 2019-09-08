@@ -16,14 +16,18 @@ public class ScatterPlotTestRunner : MonoBehaviour
     //    gridController.Setup(count, size);
     //}
 
-    public i5.ViaProMa.Visualizations.Common.AxisController axisController;
+    public i5.ViaProMa.Visualizations.Common.AxisController xAxisController;
+    public i5.ViaProMa.Visualizations.Common.AxisController yAxisController;
+    public i5.ViaProMa.Visualizations.Common.AxisController zAxisController;
 
     public float length = 1f;
 
     private void Start()
     {
         FloatAxis axis = new FloatAxis("Test", 0, 10);
-        axisController.Setup(axis, length);
+        xAxisController.Setup(axis, length);
+        yAxisController.Setup(axis, length);
+        zAxisController.Setup(axis, length);
     }
 
     private void Update()
@@ -31,7 +35,9 @@ public class ScatterPlotTestRunner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F5))
         {
             FloatAxis axis = new FloatAxis("Test", 0, 10);
-            axisController.Setup(axis, length);
+            xAxisController.Setup(axis, length);
+            yAxisController.Setup(axis, length);
+            zAxisController.Setup(axis, length);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace i5.ViaProMa.Visualizations.Common
         [SerializeField] private Transform axisTransform;
 
         public float labelDensity = 5f;
-        public bool horizontalAxis;
+        public AxisType axisType;
 
         private List<TextMeshPro> labelMeshes;
 
@@ -61,10 +61,7 @@ namespace i5.ViaProMa.Visualizations.Common
             titleLabel.rectTransform.sizeDelta = titleLabel.GetPreferredValues(Mathf.Infinity, Mathf.Infinity);
             TextMeshPro lastLabel = labelMeshes[labelMeshes.Count - 1];
             Vector3 titlePosition = lastLabel.transform.localPosition;
-            if (horizontalAxis)
-            {
-                titlePosition.x += lastLabel.rectTransform.sizeDelta.x /2f + titleLabel.rectTransform.sizeDelta.x / 2f + 0.01f;
-            }
+            titlePosition.x += lastLabel.rectTransform.sizeDelta.x / 2f + titleLabel.rectTransform.sizeDelta.x / 2f + 0.01f;
             titleLabel.transform.localPosition = titlePosition;
             titleLabel.transform.up = Vector3.up;
             titleLabel.transform.forward = transform.forward;
@@ -99,8 +96,28 @@ namespace i5.ViaProMa.Visualizations.Common
             textMesh.text = text;
             textMesh.fontSize = fontSize;
             textMesh.rectTransform.sizeDelta = textMesh.GetPreferredValues(Mathf.Infinity, Mathf.Infinity);
+            if (axisType == AxisType.X_AXIS)
+            {
+                textMesh.transform.localScale = Vector3.one;
+            }
+            else
+            {
+                textMesh.transform.localScale = new Vector3(-1, 1, 1);
+            }
             Vector3 labelPosition = new Vector3(posFraction * length, 0, 0);
-            labelPosition.y -= textMesh.rectTransform.sizeDelta.y / 2f;
+            float positioningDirection = -1f;
+            if (axisType == AxisType.Y_AXIS)
+            {
+                positioningDirection = 1f;
+            }
+            if (horizontalAlignment)
+            {
+                labelPosition.y += positioningDirection * textMesh.rectTransform.sizeDelta.y / 2f;
+            }
+            else
+            {
+                labelPosition.y += positioningDirection * textMesh.rectTransform.sizeDelta.x / 2f;
+            }
             textMesh.transform.localPosition = labelPosition;
             // keep the text horizontally
             textMesh.transform.up = Vector3.up;
