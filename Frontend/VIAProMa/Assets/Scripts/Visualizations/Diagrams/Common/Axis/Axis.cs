@@ -42,7 +42,10 @@ namespace i5.ViaProMa.Visualizations.Common
             {
                 T value = DataConverter.FloatToValue(stepSequence[i]);
                 string formattedValue = DataConverter.ValueToString(value);
-                labels.Add(formattedValue);
+                if (!labels.Contains(formattedValue)) // avoid duplicates
+                {
+                    labels.Add(formattedValue);
+                }
             }
 
             // now create all possible DisplayAxes from this
