@@ -17,6 +17,8 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public List<T> Values { get; private set; }
 
+        public int ValueCount { get => Values.Count; }
+
         public DataColumn(List<T> values)
         {
             Values = values;
@@ -39,6 +41,11 @@ namespace i5.ViaProMa.Visualizations.Common
             }
             Axis<T> axis = new Axis<T>(Title, DataConverter, minValue, maxValue);
             return axis;
+        }
+
+        public float GetFloatValue(int index)
+        {
+            return DataConverter.ValueToFloat(Values[index]);
         }
     }
 }

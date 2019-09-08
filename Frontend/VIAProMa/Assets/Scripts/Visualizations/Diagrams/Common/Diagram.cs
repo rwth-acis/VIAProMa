@@ -6,10 +6,12 @@ namespace i5.ViaProMa.Visualizations.Common
 {
     public class Diagram : MonoBehaviour
     {
-        [SerializeField] private AxisController xAxisController;
-        [SerializeField] private AxisController yAxisController;
-        [SerializeField] private AxisController zAxisController;
+        [SerializeField] protected AxisController xAxisController;
+        [SerializeField] protected AxisController yAxisController;
+        [SerializeField] protected AxisController zAxisController;
         [SerializeField] private VisualizationGridsController gridsController;
+
+        [SerializeField] protected Transform contentParent;
 
         public Vector3 Size { get; set; }
 
@@ -21,7 +23,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public DataSet DataSet { get; set; }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             if (xAxisController == null)
             {
@@ -39,9 +41,26 @@ namespace i5.ViaProMa.Visualizations.Common
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(gridsController));
             }
+            if (contentParent == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(contentParent));
+            }
         }
 
-        public void UpdateGridAxes()
+        public virtual void UpdateDiagram()
+        {
+            UpdateGridAxes();
+        }
+
+        protected virtual void ClearContent()
+        {
+            foreach(Transform child in contentParent)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        protected void UpdateGridAxes()
         {
             XAxis = DataSet.DataColumns[0].GenerateAxis();
             YAxis = DataSet.DataColumns[1].GenerateAxis();
@@ -53,6 +72,17 @@ namespace i5.ViaProMa.Visualizations.Common
             yAxisController.transform.localPosition = -Size / 2f;
             zAxisController.transform.localPosition = new Vector3(Size.x, -Size.y, -Size.z) / 2f;
             gridsController.Setup(new Vector3Int(xAxisController.LabelCount-1, yAxisController.LabelCount-1, zAxisController.LabelCount-1), Size);
+            contentParent.localPosition = -Size / 2f;
+        }
+
+        protected static float FractionInUnitSpace(float numericValue, i5.ViaProMa.Visualizations.Common.AxisController axisController)
+        {
+            if (axisController.NumericAxisMin == axisController.NumericAxisMax)
+            {
+                Debug.LogError("Axis Min and Max may not be the same");
+                return 0;
+            }
+            return (numericValue - axisController.NumericAxisMin) / (axisController.NumericAxisMax - axisController.NumericAxisMin);
         }
     }
 }

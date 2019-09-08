@@ -7,5 +7,9 @@ namespace i5.ViaProMa.Visualizations.Common
     public interface IDataColumn
     {
         IAxis GenerateAxis();
+
+        float GetFloatValue(int index);
+
+        int ValueCount { get; }
     }
 }

@@ -20,6 +20,10 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public IAxis Axis { get; private set; }
 
+        public float NumericAxisMin { get; private set; }
+
+        public float NumericAxisMax { get; private set; }
+
         public float Length
         {
             get => length;
@@ -58,6 +62,8 @@ namespace i5.ViaProMa.Visualizations.Common
                 );
 
             IDisplayAxis displayAxis = ExtendedWilkinson.PerformExtendedWilkinson(Axis, Length, labelDensity, out float axisMin, out float axisMax);
+            NumericAxisMin = axisMin;
+            NumericAxisMax = axisMax;
 
             UpdateLabels(displayAxis);
 
