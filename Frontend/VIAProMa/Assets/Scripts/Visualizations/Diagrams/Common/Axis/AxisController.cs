@@ -66,6 +66,8 @@ namespace i5.ViaProMa.Visualizations.Common
                 titlePosition.x += lastLabel.rectTransform.sizeDelta.x /2f + titleLabel.rectTransform.sizeDelta.x / 2f + 0.01f;
             }
             titleLabel.transform.localPosition = titlePosition;
+            titleLabel.transform.up = Vector3.up;
+            titleLabel.transform.forward = transform.forward;
         }
 
         private void UpdateLabels(IDisplayAxis displayAxis)
@@ -100,6 +102,10 @@ namespace i5.ViaProMa.Visualizations.Common
             Vector3 labelPosition = new Vector3(posFraction * length, 0, 0);
             labelPosition.y -= textMesh.rectTransform.sizeDelta.y / 2f;
             textMesh.transform.localPosition = labelPosition;
+            // keep the text horizontally
+            textMesh.transform.up = Vector3.up;
+            // keep the text looking into the forward direction
+            textMesh.transform.forward = transform.forward;
         }
     }
 }
