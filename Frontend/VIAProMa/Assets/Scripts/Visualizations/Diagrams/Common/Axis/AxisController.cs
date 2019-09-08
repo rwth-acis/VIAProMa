@@ -29,6 +29,11 @@ namespace i5.ViaProMa.Visualizations.Common
             }
         }
 
+        public int LabelCount
+        {
+            get => labelMeshes.Count;
+        }
+
         private void Awake()
         {
             labelMeshes = new List<TextMeshPro>();

@@ -291,10 +291,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2e894969c6cb8144baee7277d0e2aed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xAxisController: {fileID: 8622749268517611415}
-  yAxisController: {fileID: 857142200}
-  zAxisController: {fileID: 472380485}
-  length: 1
+  diagram: {fileID: 1388969958}
+  size: {x: 1, y: 1, z: 1}
 --- !u!4 &331321892
 Transform:
   m_ObjectHideFlags: 0
@@ -321,6 +319,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f307f2085455dd4d8538245c066df1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &472380486 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 544364703}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &475094304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -427,17 +431,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e01b2dcf1d8e945a63f778bed24b88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &532166249 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 817960016087005824}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &544364703
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1388969957}
     m_Modifications:
     - target: {fileID: 817960016154320099, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_Name
-      value: Axis (2)
+      value: ZAxis
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -452,12 +462,12 @@ PrefabInstance:
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -467,7 +477,7 @@ PrefabInstance:
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -477,7 +487,7 @@ PrefabInstance:
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -526,12 +536,12 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1388969957}
     m_Modifications:
     - target: {fileID: 817960016154320099, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_Name
-      value: Axis (1)
+      value: YAxis
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -546,17 +556,17 @@ PrefabInstance:
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -571,7 +581,7 @@ PrefabInstance:
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -782,6 +792,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f307f2085455dd4d8538245c066df1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &857142201 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 583929208}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1038670359
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1109,6 +1125,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1388969957}
+  - component: {fileID: 1388969958}
   m_Layer: 0
   m_Name: Scatterplot
   m_TagString: Untagged
@@ -1128,9 +1145,28 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 595449010}
+  - {fileID: 532166249}
+  - {fileID: 857142201}
+  - {fileID: 472380486}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1388969958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388969956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f95c2aa68a61c4db989949d9f47553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xAxis: {fileID: 8622749268517611415}
+  yAxis: {fileID: 857142200}
+  zAxis: {fileID: 472380485}
+  gridsController: {fileID: 595449011}
 --- !u!114 &1446904589 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2048396444529152948, guid: 9a1ae57470f47d242895c3f1c419d090,
@@ -1395,12 +1431,12 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1388969957}
     m_Modifications:
     - target: {fileID: 817960016154320099, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_Name
-      value: Axis
+      value: XAxis
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -1415,22 +1451,22 @@ PrefabInstance:
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
@@ -1440,7 +1476,7 @@ PrefabInstance:
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 817960016154320100, guid: a71da9a1992adea468dbdf040a05f7d6,
         type: 3}
