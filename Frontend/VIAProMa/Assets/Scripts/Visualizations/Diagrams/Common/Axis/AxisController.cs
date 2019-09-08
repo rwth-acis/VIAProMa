@@ -14,6 +14,7 @@ namespace i5.ViaProMa.Visualizations.Common
         [SerializeField] private Transform axisTransform;
 
         public float labelDensity = 5f;
+        public bool horizontalAxis;
 
         private List<TextMeshPro> labelMeshes;
 
@@ -43,20 +44,28 @@ namespace i5.ViaProMa.Visualizations.Common
 
         private void UpdateAxis()
         {
+            // scale axis: length
             axisTransform.localScale = new Vector3(
                 length,
                 axisTransform.localScale.y,
                 axisTransform.localScale.z
                 );
 
-
             IDisplayAxis displayAxis = ExtendedWilkinson.PerformExtendedWilkinson(Axis, Length, labelDensity, out float axisMin, out float axisMax);
 
             UpdateLabels(displayAxis);
 
             // position title
+            titleLabel.fontSize = displayAxis.FontSize;
             titleLabel.text = displayAxis.Title;
-            titleLabel.transform.localPosition = new Vector3(1.1f * length, 0, 0);
+            titleLabel.rectTransform.sizeDelta = titleLabel.GetPreferredValues(Mathf.Infinity, Mathf.Infinity);
+            TextMeshPro lastLabel = labelMeshes[labelMeshes.Count - 1];
+            Vector3 titlePosition = lastLabel.transform.localPosition;
+            if (horizontalAxis)
+            {
+                titlePosition.x += lastLabel.rectTransform.sizeDelta.x /2f + titleLabel.rectTransform.sizeDelta.x / 2f + 0.01f;
+            }
+            titleLabel.transform.localPosition = titlePosition;
         }
 
         private void UpdateLabels(IDisplayAxis displayAxis)
@@ -70,7 +79,7 @@ namespace i5.ViaProMa.Visualizations.Common
                     labelMeshes.Add(labelMesh);
                 }
 
-                float posFraction = (float)i / (displayAxis.Labels.Count -1);
+                float posFraction = (float)i / (displayAxis.Labels.Count - 1);
                 SetupTextMesh(labelMeshes[i], displayAxis.Labels[i], displayAxis.FontSize, displayAxis.HorizontalAlignment, posFraction);
             }
             // destroy unused textmeshes
@@ -83,11 +92,14 @@ namespace i5.ViaProMa.Visualizations.Common
             labelMeshes.RemoveRange(displayAxis.Labels.Count, diff);
         }
 
-        private void SetupTextMesh(TextMeshPro textMesh, string text, float fontSize, bool horizontal, float posFraction)
+        private void SetupTextMesh(TextMeshPro textMesh, string text, float fontSize, bool horizontalAlignment, float posFraction)
         {
             textMesh.text = text;
             textMesh.fontSize = fontSize;
-            textMesh.transform.localPosition = new Vector3(posFraction * length, 0, 0);
+            textMesh.rectTransform.sizeDelta = textMesh.GetPreferredValues(Mathf.Infinity, Mathf.Infinity);
+            Vector3 labelPosition = new Vector3(posFraction * length, 0, 0);
+            labelPosition.y -= textMesh.rectTransform.sizeDelta.y / 2f;
+            textMesh.transform.localPosition = labelPosition;
         }
     }
 }
