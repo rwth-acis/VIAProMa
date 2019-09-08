@@ -19,6 +19,8 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public IAxis ZAxis { get; private set; }
 
+        public DataSet DataSet { get; set; }
+
         private void Awake()
         {
             if (xAxisController == null)
@@ -41,6 +43,9 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public void UpdateGridAxes()
         {
+            XAxis = DataSet.DataColumns[0].GenerateAxis();
+            YAxis = DataSet.DataColumns[1].GenerateAxis();
+            ZAxis = DataSet.DataColumns[2].GenerateAxis();
             xAxisController.Setup(XAxis, Size.x);
             yAxisController.Setup(YAxis, Size.y);
             zAxisController.Setup(ZAxis, Size.z);

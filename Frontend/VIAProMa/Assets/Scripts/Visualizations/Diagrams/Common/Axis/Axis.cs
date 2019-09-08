@@ -13,6 +13,8 @@ namespace i5.ViaProMa.Visualizations.Common
             protected set;
         }
 
+        public bool Horizontal { get; set; }
+
         public float NumericDataMin { get; private set; }
 
         public float NumericDataMax { get; private set; }
@@ -32,25 +34,25 @@ namespace i5.ViaProMa.Visualizations.Common
             Title = title;
         }
 
-        public List<IDisplayAxis> GeneratePossibleConfigurations(List<float> stepSequence)
+        public List<IDisplayAxis> GeneratePossibleConfigurations(float minTextSize, float maxTextSize, List<float> stepSequence)
         {
             // first convert the step sequence to a label sequence
             List<string> labels = new List<string>();
             for (int i=0;i<stepSequence.Count;i++)
             {
                 T value = DataConverter.FloatToValue(stepSequence[i]);
-                string formatedValue = DataConverter.ValueToString(value);
-                labels.Add(formatedValue);
+                string formattedValue = DataConverter.ValueToString(value);
+                labels.Add(formattedValue);
             }
 
             // now create all possible DisplayAxes from this
             List<IDisplayAxis> possibilities = new List<IDisplayAxis>();
-            for (float fontSize = 0.1f; fontSize <= 2f; fontSize += 0.1f)
+            for (float fontSize = minTextSize; fontSize <= maxTextSize; fontSize += 0.1f)
             {
                 for (int i = 0; i < 2; i++)
                 {
                     bool horizontalAlignment = (i == 0);
-                    DisplayAxis displayAxis = new DisplayAxis(this, labels, fontSize, horizontalAlignment);
+                    DisplayAxis displayAxis = new DisplayAxis(this, labels, fontSize, horizontalAlignment, Horizontal);
                     possibilities.Add(displayAxis);
                 }
             }

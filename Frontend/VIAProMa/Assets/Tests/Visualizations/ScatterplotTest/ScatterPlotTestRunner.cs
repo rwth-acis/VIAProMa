@@ -22,6 +22,13 @@ public class ScatterPlotTestRunner : MonoBehaviour
     private void Start()
     {
         diagram.Size = size;
+
+        i5.ViaProMa.Visualizations.Common.DataSet dataset = new i5.ViaProMa.Visualizations.Common.DataSet();
+        dataset.DataColumns.Add(new TextDataColumn(new List<string>() { "hello", "world", "very very very long word", "are", "you" }));
+        dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 1, 2, 10, 4, 5 }));
+        dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 0, 1, 2, 3, 4 }));
+        diagram.DataSet = dataset;
+
         diagram.UpdateGridAxes();
     }
 

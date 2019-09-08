@@ -42,6 +42,7 @@ namespace i5.ViaProMa.Visualizations.Common
         public void Setup(IAxis axis, float length)
         {
             Axis = axis;
+            Axis.Horizontal = (axisType != AxisType.Y_AXIS);
             Length = length;
 
             UpdateAxis();

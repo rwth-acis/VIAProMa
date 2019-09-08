@@ -14,19 +14,13 @@ namespace i5.ViaProMa.Visualizations.Common
         public bool HorizontalAxis { get; private set; }
         public IAxis Axis { get; }
 
-        public DisplayAxis(IAxis axis)
-        {
-            Labels = new List<string>();
-            HorizontalAlignment = true;
-            Axis = axis;
-        }
-
-        public DisplayAxis(IAxis axis, List<string> labels, float fontSize, bool horizontalAlignment)
+        public DisplayAxis(IAxis axis, List<string> labels, float fontSize, bool horizontalAlignment, bool horizontalAxis)
         {
             Axis = axis;
             Labels = labels;
             FontSize = fontSize;
             HorizontalAlignment = horizontalAlignment;
+            HorizontalAxis = horizontalAxis;
         }
 
         public static IDisplayAxis FindBestLegibility(List<IDisplayAxis> possibilities, out float bestScore, float minFontSize, float targetFontSize, float distanceThreshold, float axisLength)

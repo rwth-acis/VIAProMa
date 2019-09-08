@@ -38,7 +38,7 @@ namespace i5.ViaProMa.Visualizations.Common
             {
                 float fValue = DataConverter.ValueToFloat(Values[i]);
                 minValue = Mathf.Min(minValue, fValue);
-                maxValue = Mathf.Max(minValue, fValue);
+                maxValue = Mathf.Max(maxValue, fValue);
             }
             Axis<T> axis = new Axis<T>(Title, DataConverter, minValue, maxValue);
             return axis;

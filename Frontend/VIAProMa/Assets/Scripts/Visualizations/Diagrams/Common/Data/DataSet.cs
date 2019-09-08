@@ -7,5 +7,10 @@ namespace i5.ViaProMa.Visualizations.Common
     public class DataSet : MonoBehaviour
     {
         public List<IDataColumn> DataColumns { get; set; }
+
+        public DataSet()
+        {
+            DataColumns = new List<IDataColumn>();
+        }
     }
 }

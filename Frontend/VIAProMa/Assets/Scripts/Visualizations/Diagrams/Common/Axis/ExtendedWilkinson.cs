@@ -22,6 +22,10 @@ namespace i5.ViaProMa.Visualizations.Common
         /// </summary>
         static Vector4 weights = new Vector4(0.2f, 0.25f, 0.5f, 0.05f);
 
+        static float minTextSize = 0.3f;
+        static float maxTextSize = 2f;
+        static float targetTextSize = 1f;
+
         /// <summary>
         /// Simplicity score which rates how simple the step range is
         /// Best score is 1
@@ -219,9 +223,9 @@ namespace i5.ViaProMa.Visualizations.Common
                                 //List<string> labels = stepSequence.Select(value => value.ToString("0.##")).ToList();
 
                                 // optimize legibility
-                                List<IDisplayAxis> possibilities = axis.GeneratePossibleConfigurations(stepSequence);
+                                List<IDisplayAxis> possibilities = axis.GeneratePossibleConfigurations(minTextSize, maxTextSize, stepSequence);
                                 float legibility;
-                                bestOption = DisplayAxis.FindBestLegibility(possibilities, out legibility, 0.1f, 1f, 0.02f, availableSpace);
+                                bestOption = DisplayAxis.FindBestLegibility(possibilities, out legibility, minTextSize, targetTextSize, 0.02f, availableSpace);
 
                                 float score = Vector4.Dot(new Vector4(s, c, d, legibility), weights);
                                 if (score > bestScore)

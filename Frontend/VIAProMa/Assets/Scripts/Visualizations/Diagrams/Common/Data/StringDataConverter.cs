@@ -15,7 +15,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public string FloatToValue(float f)
         {
-            f = Mathf.Clamp(f, 0, values.Count);
+            f = Mathf.Clamp(f, 0, values.Count-1);
             return values[Mathf.RoundToInt(f)];
         }
 
