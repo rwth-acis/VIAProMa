@@ -42,6 +42,10 @@ namespace i5.ViaProMa.Visualizations.Diagrams
                 GameObject sphereObj = Instantiate(pointPrefab, contentParent);
                 sphereObj.transform.localPosition = pointPosition;
                 sphereObj.transform.localScale = 0.04f * Vector3.one;
+                if (i < DataSet.DataPointColors.Count)
+                {
+                    sphereObj.GetComponent<Renderer>().material.color = DataSet.DataPointColors[i];
+                }
             }
         }
     }
