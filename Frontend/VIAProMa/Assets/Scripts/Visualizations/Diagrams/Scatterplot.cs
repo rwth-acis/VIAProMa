@@ -8,6 +8,7 @@ namespace i5.ViaProMa.Visualizations.Diagrams
     public class Scatterplot : i5.ViaProMa.Visualizations.Common.Diagram
     {
         [SerializeField] private GameObject pointPrefab;
+        [SerializeField] private float sphereSize = 0.04f;
 
         protected override void Awake()
         {
@@ -18,6 +19,11 @@ namespace i5.ViaProMa.Visualizations.Diagrams
             }
         }
 
+        /// <summary>
+        /// Updates the diagram
+        /// Expected format for the data columns: data columns 0 - 2 are used to populate the axes and position the points
+        /// data column 3 is optional; it is a scale factor which is multiplied with the usual size of the sphere
+        /// </summary>
         public override void UpdateDiagram()
         {
             base.UpdateDiagram();
@@ -41,7 +47,15 @@ namespace i5.ViaProMa.Visualizations.Diagrams
                 Vector3 pointPosition = Vector3.Scale(Size, new Vector3(xInUnitSpace, yInUnitSpace, zInUnitSpace));
                 GameObject sphereObj = Instantiate(pointPrefab, contentParent);
                 sphereObj.transform.localPosition = pointPosition;
-                sphereObj.transform.localScale = 0.04f * Vector3.one;
+
+                float scaleFactor = 1f;
+                if (DataSet.DataColumns.Count > 3 && i < DataSet.DataColumns[3].ValueCount) // size data are given for this point
+                {
+                    scaleFactor = DataSet.DataColumns[3].GetFloatValue(i);
+                }
+
+                sphereObj.transform.localScale = scaleFactor * sphereSize * Vector3.one;
+
                 if (i < DataSet.DataPointColors.Count)
                 {
                     sphereObj.GetComponent<Renderer>().material.color = DataSet.DataPointColors[i];

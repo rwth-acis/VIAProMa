@@ -27,6 +27,7 @@ public class ScatterPlotTestRunner : MonoBehaviour
         dataset.DataColumns.Add(new TextDataColumn(new List<string>() { "a", "b", "c", "d", "e" }));
         dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 1, 2, 10, 4, 5 }));
         dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 0, 1, 2, 3, 4 }));
+        dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 1, 2, 3, 2, 0.5f}));
         dataset.DataPointColors = new List<Color>() { Color.red, Color.white, Color.yellow, Color.blue, Color.green };
         diagram.DataSet = dataset;
 
