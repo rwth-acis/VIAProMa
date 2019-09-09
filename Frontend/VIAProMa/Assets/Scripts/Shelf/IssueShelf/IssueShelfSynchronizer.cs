@@ -39,7 +39,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     {
         base.OnEnable();
         Debug.Log("OnEnable: remotesynchronizations " + remoteSynchronizations + "; initialized: " + initialized);
-        if (!RemoteSynchronizationInProgress && initialized)
+        if (!RemoteSynchronizationInProgress && initialized && PhotonNetwork.IsConnected)
         {
             photonView.RPC("SetActive", RpcTarget.Others, true);
         }
@@ -56,7 +56,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     public override void OnDisable()
     {
-        if (!RemoteSynchronizationInProgress)
+        if (!RemoteSynchronizationInProgress && PhotonNetwork.IsConnected)
         {
             photonView.RPC("SetActive", RpcTarget.Others, false);
         }
@@ -82,6 +82,10 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private async Task SendInitializationData()
     {
+        if (!PhotonNetwork.IsConnected)
+        {
+            return;
+        }
         short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
         short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
         short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
@@ -295,7 +299,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnSourceChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -305,7 +309,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     private void OnReqBazProjectChanged(object sender, EventArgs e)
     {
         Debug.Log("REQ Baz Project changed; remotesync in progress: " + remoteSynchronizations);
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -323,7 +327,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnReqBazCategoryChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -350,7 +354,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private async void OnGitHubOwnerChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -360,7 +364,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private async void OnGitHubProjectChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -371,7 +375,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnConfigWindowOpened(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -380,7 +384,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnConfigWindowClosed(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -389,7 +393,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private void OnPageChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
@@ -398,7 +402,7 @@ public class IssueShelfSynchronizer : TransformSynchronizer
 
     private async void OnSearchFieldChanged(object sender, EventArgs e)
     {
-        if (RemoteSynchronizationInProgress || !initialized)
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
         {
             return;
         }
