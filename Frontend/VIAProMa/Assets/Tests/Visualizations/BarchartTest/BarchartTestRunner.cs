@@ -25,34 +25,39 @@ public class BarchartTestRunner : MonoBehaviour
     {
         barchart.Size = size;
 
-        List<string> days = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
-        List<string> months = new List<string>() { "January", "February", "March", "April" };
+        //List<string> days = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+        //List<string> months = new List<string>() { "January", "February", "March", "April" };
+
+        //i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
+        //List<string> xValues = new List<string>();
+        //List<float> yValues = new List<float>();
+        //List<string> zValues = new List<string>();
+        //List<Color> colors = new List<Color>();
+
+        //for (int i=0;i<days.Count;i++)
+        //{
+        //    for (int j=0;j<months.Count;j++)
+        //    {
+        //        xValues.Add(days[i]);
+        //        zValues.Add(months[j]);
+        //        yValues.Add(Random.Range(0, 10));
+        //        colors.Add(Random.ColorHSV());
+        //    }
+        //}
+
+        //TextDataColumn xColumn = new TextDataColumn(xValues);
+        //NumericDataColumn yColumn = new NumericDataColumn(yValues);
+        //TextDataColumn zColumn = new TextDataColumn(zValues);
+
+        //dataSet.DataColumns.Add(xColumn);
+        //dataSet.DataColumns.Add(yColumn);
+        //dataSet.DataColumns.Add(zColumn);
+        //dataSet.DataPointColors = colors;
 
         i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
-        List<string> xValues = new List<string>();
-        List<float> yValues = new List<float>();
-        List<string> zValues = new List<string>();
-        List<Color> colors = new List<Color>();
-
-        for (int i=0;i<days.Count;i++)
-        {
-            for (int j=0;j<months.Count;j++)
-            {
-                xValues.Add(days[i]);
-                zValues.Add(months[j]);
-                yValues.Add(Random.Range(0, 10));
-                colors.Add(Random.ColorHSV());
-            }
-        }
-
-        TextDataColumn xColumn = new TextDataColumn(xValues);
-        NumericDataColumn yColumn = new NumericDataColumn(yValues);
-        TextDataColumn zColumn = new TextDataColumn(zValues);
-
-        dataSet.DataColumns.Add(xColumn);
-        dataSet.DataColumns.Add(yColumn);
-        dataSet.DataColumns.Add(zColumn);
-        dataSet.DataPointColors = colors;
+        dataSet.DataColumns.Add(new NumericDataColumn(new List<float>() { 0, 1 }));
+        dataSet.DataColumns.Add(new NumericDataColumn(new List<float>() { 1, 2 }));
+        dataSet.DataColumns.Add(new NumericDataColumn(new List<float>() { 0, 1 }));
 
         barchart.DataSet = dataSet;
         barchart.UpdateDiagram();

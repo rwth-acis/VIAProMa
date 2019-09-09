@@ -37,6 +37,10 @@ namespace i5.ViaProMa.Visualizations.Diagrams
                 float yInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[1].GetFloatValue(i), yAxisController);
                 float zInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[2].GetFloatValue(i), zAxisController);
 
+                xInUnitSpace = CorrectForTicksInCells(xInUnitSpace, xAxisController);
+                yInUnitSpace = CorrectForTicksInCells(yInUnitSpace, yAxisController);
+                zInUnitSpace = CorrectForTicksInCells(zInUnitSpace, zAxisController);
+
                 Vector3 barPosition = Vector3.Scale(Size, new Vector3(xInUnitSpace, 0, zInUnitSpace));
                 GameObject barObj = Instantiate(barPrefab, contentParent);
                 barObj.transform.localPosition = barPosition;
@@ -44,12 +48,25 @@ namespace i5.ViaProMa.Visualizations.Diagrams
                 float barThicknessX = 0.9f / xAxisController.LabelCount;
                 float barThicknessZ = 0.9f / zAxisController.LabelCount;
 
-                barObj.transform.localScale = Vector3.Scale(Size, new Vector3(barThicknessX, yInUnitSpace, barThicknessZ));
+                barObj.transform.localScale = Vector3.Scale(Size, new Vector3(barThicknessX, Mathf.Max(yInUnitSpace, 0.001f), barThicknessZ));
 
                 if (i < DataSet.DataPointColors.Count)
                 {
                     barObj.GetComponentInChildren<Renderer>().material.color = DataSet.DataPointColors[i];
                 }
+            }
+        }
+
+        private float CorrectForTicksInCells(float inUnitSpace, Common.AxisController axisController)
+        {
+            if (axisController.ticksInCells)
+            {
+                float sideOfMidpoint = Mathf.Sign(0.5f - inUnitSpace);
+                return inUnitSpace + sideOfMidpoint * 0.5f/ axisController.LabelCount;
+            }
+            else
+            {
+                return inUnitSpace;
             }
         }
     }

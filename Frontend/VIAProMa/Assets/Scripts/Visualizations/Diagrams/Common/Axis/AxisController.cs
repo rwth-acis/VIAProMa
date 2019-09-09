@@ -15,6 +15,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         public float labelDensity = 5f;
         public AxisType axisType;
+        public bool ticksInCells;
 
         private List<TextMeshPro> labelMeshes;
 
@@ -90,7 +91,17 @@ namespace i5.ViaProMa.Visualizations.Common
                     labelMeshes.Add(labelMesh);
                 }
 
-                float posFraction = (float)i / (displayAxis.Labels.Count - 1);
+                float posFraction;
+                if (ticksInCells)
+                {
+                    float prevPoint = (float)i / displayAxis.Labels.Count;
+                    float nextPoint = (float)(i + 1) / displayAxis.Labels.Count;
+                    posFraction = (prevPoint + nextPoint) / 2f;
+                }
+                else
+                {
+                    posFraction = (float)i / (displayAxis.Labels.Count - 1);
+                }
                 SetupTextMesh(labelMeshes[i], displayAxis.Labels[i], displayAxis.FontSize, displayAxis.HorizontalAlignment, posFraction);
             }
             // destroy unused textmeshes

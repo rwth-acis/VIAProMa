@@ -54,7 +54,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         protected virtual void ClearContent()
         {
-            foreach(Transform child in contentParent)
+            foreach (Transform child in contentParent)
             {
                 Destroy(child.gameObject);
             }
@@ -71,7 +71,13 @@ namespace i5.ViaProMa.Visualizations.Common
             xAxisController.transform.localPosition = -Size / 2f;
             yAxisController.transform.localPosition = -Size / 2f;
             zAxisController.transform.localPosition = new Vector3(Size.x, -Size.y, -Size.z) / 2f;
-            gridsController.Setup(new Vector3Int(xAxisController.LabelCount-1, yAxisController.LabelCount-1, zAxisController.LabelCount-1), Size);
+
+            gridsController.Setup(new Vector3Int(
+                AxisToGridAmount(xAxisController),
+                AxisToGridAmount(yAxisController),
+                AxisToGridAmount(zAxisController))
+                , Size);
+
             contentParent.localPosition = -Size / 2f;
         }
 
@@ -83,6 +89,18 @@ namespace i5.ViaProMa.Visualizations.Common
                 return 0;
             }
             return (numericValue - axisController.NumericAxisMin) / (axisController.NumericAxisMax - axisController.NumericAxisMin);
+        }
+
+        private static int AxisToGridAmount(AxisController axisController)
+        {
+            if (axisController.ticksInCells)
+            {
+                return axisController.LabelCount;
+            }
+            else
+            {
+                return axisController.LabelCount - 1;
+            }
         }
     }
 }
