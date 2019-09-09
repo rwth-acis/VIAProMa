@@ -12,6 +12,8 @@ namespace i5.ViaProMa.Visualizations.Common
         [SerializeField] private Vector2 offset = Vector2.zero;
         [SerializeField] private float wireThickness = 0.01f;
 
+        public bool zForward = true;
+
         private Vector3 previousScale;
         private Renderer gridRenderer;
 
@@ -72,12 +74,27 @@ namespace i5.ViaProMa.Visualizations.Common
         public void UpdateGrid()
         {
             EnsureRenderer();
-            if (gridRenderer != null && transform.localScale.x != 0 && transform.localScale.y != 0)
+
+            float xScale;
+            float yScale;
+
+            xScale = transform.localScale.x;
+
+            if (zForward)
             {
-                gridRenderer.material.SetFloat("_CellWidth", CellSize.x / transform.localScale.x);
-                gridRenderer.material.SetFloat("_CellHeight", CellSize.y / transform.localScale.y);
-                float wireThicknessX = wireThickness / transform.localScale.x;
-                float wireThicknessY = wireThickness / transform.localScale.y;
+                yScale = transform.localScale.y;
+            }
+            else
+            {
+                yScale = transform.localScale.z;
+            }
+
+            if (gridRenderer != null && xScale != 0 && yScale != 0)
+            {
+                gridRenderer.material.SetFloat("_CellWidth", CellSize.x / xScale);
+                gridRenderer.material.SetFloat("_CellHeight", CellSize.y / yScale);
+                float wireThicknessX = wireThickness / xScale;
+                float wireThicknessY = wireThickness / yScale;
                 gridRenderer.material.SetFloat("_WireThicknessX", wireThicknessX);
                 gridRenderer.material.SetFloat("_WireThicknessY", wireThicknessY);
                 gridRenderer.material.SetFloat("_OffsetX", offset.x);

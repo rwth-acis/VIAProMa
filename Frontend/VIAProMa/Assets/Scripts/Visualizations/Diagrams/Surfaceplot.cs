@@ -82,12 +82,13 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
             Mathf.CeilToInt(xAxisController.NumericAxisMax - xAxisController.NumericAxisMin),
             Mathf.CeilToInt(zAxisController.NumericAxisMax - zAxisController.NumericAxisMin));
         CalculateVertexPositions();
-        mesh.vertices = vertices;
+        mesh.vertices = verticesInUnitSpace;
         FormTriangles();
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         mesh.uv = ExtractUVs();
         surfaceMeshFilter.mesh = mesh;
+        contentParent.localScale = new Vector3(Size.x, 1, Size.z);
         gridController.CellSize = new Vector2(xAxisController.Length / gridSize.x, zAxisController.Length / gridSize.y);
         gridController.UpdateGrid();
     }
