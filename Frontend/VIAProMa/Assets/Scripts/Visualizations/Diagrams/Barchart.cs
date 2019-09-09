@@ -45,8 +45,8 @@ namespace i5.ViaProMa.Visualizations.Diagrams
                 GameObject barObj = Instantiate(barPrefab, contentParent);
                 barObj.transform.localPosition = barPosition;
 
-                float barThicknessX = 0.9f / xAxisController.LabelCount;
-                float barThicknessZ = 0.9f / zAxisController.LabelCount;
+                float barThicknessX = 0.8f / (xAxisController.NumericAxisMax - xAxisController.NumericAxisMin +1);
+                float barThicknessZ = 0.8f / (zAxisController.NumericAxisMax - zAxisController.NumericAxisMin +1);
 
                 barObj.transform.localScale = Vector3.Scale(Size, new Vector3(barThicknessX, Mathf.Max(yInUnitSpace, 0.001f), barThicknessZ));
 
@@ -61,8 +61,9 @@ namespace i5.ViaProMa.Visualizations.Diagrams
         {
             if (axisController.ticksInCells)
             {
-                float sideOfMidpoint = Mathf.Sign(0.5f - inUnitSpace);
-                return inUnitSpace + sideOfMidpoint * 0.5f/ axisController.LabelCount;
+                float rangeSize = axisController.NumericAxisMax - axisController.NumericAxisMin;
+                float scaleFactor = (rangeSize - 1) / rangeSize;
+                return inUnitSpace * scaleFactor + 1f / (2f * rangeSize);
             }
             else
             {
