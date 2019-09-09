@@ -4,17 +4,33 @@ using UnityEngine;
 
 public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
 {
+    [SerializeField] private Material surfaceMaterial;
+
     private MeshFilter surfaceMeshFilter;
+    private MeshRenderer surfaceMeshRenderer;
+    private Vector3[] verticesInUnitSpace;
     private Vector3[] vertices;
     private int[] triangles;
+    private Vector2Int gridSize;
 
     protected override void Awake()
     {
         base.Awake();
+
+        if (surfaceMaterial == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(surfaceMaterial));
+        }
+
         surfaceMeshFilter = contentParent.GetComponent<MeshFilter>();
         if (surfaceMeshFilter == null)
         {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MeshFilter), surfaceMeshFilter.gameObject);
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MeshFilter), contentParent.gameObject);
+        }
+        surfaceMeshRenderer = contentParent.GetComponent<MeshRenderer>();
+        if (surfaceMeshRenderer == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MeshRenderer), contentParent.gameObject);
         }
     }
 
@@ -30,16 +46,18 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
             Debug.LogError("Cannot visualize empty data set");
             return;
         }
-        int minColumnLength = Mathf.Min(DataSet.DataColumns[0].ValueCount, DataSet.DataColumns[1].ValueCount, DataSet.DataColumns[2].ValueCount);
+        //int minColumnLength = Mathf.Min(DataSet.DataColumns[0].ValueCount, DataSet.DataColumns[1].ValueCount, DataSet.DataColumns[2].ValueCount);
 
-        for (int i = 0; i < minColumnLength; i++)
-        {
-            float xInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[0].GetFloatValue(i), xAxisController);
-            float yInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[1].GetFloatValue(i), yAxisController);
-            float zInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[2].GetFloatValue(i), zAxisController);
+        //for (int i = 0; i < minColumnLength; i++)
+        //{
+        //    float xInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[0].GetFloatValue(i), xAxisController);
+        //    float yInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[1].GetFloatValue(i), yAxisController);
+        //    float zInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[2].GetFloatValue(i), zAxisController);
 
-            Vector3 vertexPosition = Vector3.Scale(Size, new Vector3(xInUnitSpace, yInUnitSpace, zInUnitSpace));
-        }
+        //    Vector3 vertexPosition = Vector3.Scale(Size, new Vector3(xInUnitSpace, yInUnitSpace, zInUnitSpace));
+        //}
+
+        ConstructMesh();
     }
 
     protected override void ClearContent()
@@ -47,67 +65,67 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
         surfaceMeshFilter.mesh = null;
     }
 
-    //private void ConstructMesh()
-    //{
-    //    Mesh mesh = new Mesh();
-    //    mesh.name = "Grid Surface Plot";
-    //    CalculateVertexPositions();
-    //    mesh.vertices = vertices;
-    //    FormTriangles();
-    //    mesh.triangles = triangles;
-    //    mesh.RecalculateNormals();
-    //    surfaceMeshFilter.mesh = mesh;
-    //}
+    private void ConstructMesh()
+    {
+        Mesh mesh = new Mesh();
+        mesh.name = "Grid Surface Plot";
+        gridSize = new Vector2Int(
+            Mathf.CeilToInt(xAxisController.NumericAxisMax - xAxisController.NumericAxisMin),
+            Mathf.CeilToInt(zAxisController.NumericAxisMax - zAxisController.NumericAxisMin));
+        CalculateVertexPositions();
+        mesh.vertices = vertices;
+        FormTriangles();
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        surfaceMeshFilter.mesh = mesh;
+        surfaceMeshRenderer.material = Instantiate(surfaceMaterial);
+    }
 
-    //private void CalculateVertexPositions()
-    //{
-    //    vertices = new Vector3[xAxisController.LabelCount + zAxisController.LabelCount];
-    //    int i = 0;
-    //    for (int y = 0; y < (zAxisController.LabelCount); y++)
-    //    {
-    //        for (int x = 0; x < (xAxisController.LabelCount); x++)
-    //        {
-    //            vertices[i] = new Vector3(
-    //                (float)x / GridSize.x,
-    //                heightData[x, y],
-    //                (float)y / GridSize.y);
-    //            i++;
-    //        }
-    //    }
-    //}
+    private void CalculateVertexPositions()
+    {
+        vertices = new Vector3[(gridSize.x+1) * (gridSize.y+1)];
+        verticesInUnitSpace = new Vector3[(gridSize.x+1) * (gridSize.y+1)];
+        int i = 0;
+        for (int y = 0; y < (gridSize.y+1); y++)
+        {
+            for (int x = 0; x < (gridSize.x+1); x++)
+            {
+                verticesInUnitSpace[i] = new Vector3(
+                    (float)x / gridSize.x,
+                    0,
+                    (float)y / gridSize.y);
 
-    //private void FormTriangles()
-    //{
-    //    triangles = new int[GridSize.x * GridSize.y * 6];
+                vertices[i] = Vector3.Scale(Size, verticesInUnitSpace[i]);
+                i++;
+            }
+        }
+    }
 
-    //    int triangleIndex = 0;
-    //    int vertexIndex = 0;
+    private void FormTriangles()
+    {
+        triangles = new int[gridSize.x * gridSize.y * 6];
 
-    //    for (int y = 0; y < GridSize.y; y++)
-    //    {
-    //        for (int x = 0; x < GridSize.x; x++)
-    //        {
-    //            // create a quad
-    //            // first triangle
-    //            triangles[triangleIndex] = vertexIndex;
-    //            triangles[triangleIndex + 1] = vertexIndex + GridSize.x + 1;
-    //            triangles[triangleIndex + 2] = vertexIndex + 1;
-    //            // second triangle
-    //            triangles[triangleIndex + 3] = vertexIndex + 1;
-    //            triangles[triangleIndex + 4] = vertexIndex + GridSize.x + 1;
-    //            triangles[triangleIndex + 5] = vertexIndex + GridSize.x + 2;
-    //            // move triangle index forward for next quad
-    //            triangleIndex += 6;
-    //            vertexIndex++;
-    //        }
-    //        vertexIndex++;
-    //    }
+        int triangleIndex = 0;
+        int vertexIndex = 0;
 
-    //    triangles[0] = 0;
-    //    triangles[1] = GridSize.x + 1;
-    //    triangles[2] = 1;
-    //    triangles[3] = 1;
-    //    triangles[4] = GridSize.x + 1;
-    //    triangles[5] = GridSize.x + 2;
-    //}
+        for (int y = 0; y < gridSize.y; y++)
+        {
+            for (int x = 0; x < gridSize.x; x++)
+            {
+                // create a quad
+                // first triangle
+                triangles[triangleIndex] = vertexIndex;
+                triangles[triangleIndex + 1] = vertexIndex + gridSize.x + 1;
+                triangles[triangleIndex + 2] = vertexIndex + 1;
+                // second triangle
+                triangles[triangleIndex + 3] = vertexIndex + 1;
+                triangles[triangleIndex + 4] = vertexIndex + gridSize.x + 1;
+                triangles[triangleIndex + 5] = vertexIndex + gridSize.x + 2;
+                // move triangle index forward for next quad
+                triangleIndex += 6;
+                vertexIndex++;
+            }
+            vertexIndex++;
+        }
+    }
 }
