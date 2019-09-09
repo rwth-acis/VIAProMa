@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using i5.ViaProMa.Visualizations.Common;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
     private Vector3[] vertices;
     private int[] triangles;
     private Vector2Int gridSize;
+    private GridController gridController;
 
     protected override void Awake()
     {
@@ -32,6 +34,13 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MeshRenderer), contentParent.gameObject);
         }
+        gridController = contentParent.GetComponent<GridController>();
+        if (gridController == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(GridController), contentParent.gameObject);
+        }
+
+        surfaceMeshRenderer.material = Instantiate(surfaceMaterial);
     }
 
     public override void UpdateDiagram()
@@ -77,8 +86,10 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
         FormTriangles();
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+        mesh.uv = ExtractUVs();
         surfaceMeshFilter.mesh = mesh;
-        surfaceMeshRenderer.material = Instantiate(surfaceMaterial);
+        gridController.CellSize = new Vector2(xAxisController.Length / gridSize.x, zAxisController.Length / gridSize.y);
+        gridController.UpdateGrid();
     }
 
     private void CalculateVertexPositions()
@@ -92,7 +103,7 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
             {
                 verticesInUnitSpace[i] = new Vector3(
                     (float)x / gridSize.x,
-                    0,
+                    0.01f,
                     (float)y / gridSize.y);
 
                 vertices[i] = Vector3.Scale(Size, verticesInUnitSpace[i]);
@@ -127,5 +138,15 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
             }
             vertexIndex++;
         }
+    }
+
+    private Vector2[] ExtractUVs()
+    {
+        Vector2[] res = new Vector2[verticesInUnitSpace.Length];
+        for (int i=0;i<verticesInUnitSpace.Length;i++)
+        {
+            res[i] = new Vector2(verticesInUnitSpace[i].x, verticesInUnitSpace[i].z);
+        }
+        return res;
     }
 }
