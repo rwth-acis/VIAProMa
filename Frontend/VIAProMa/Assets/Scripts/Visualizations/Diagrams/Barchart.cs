@@ -61,7 +61,7 @@ namespace i5.ViaProMa.Visualizations.Diagrams
         {
             if (axisController.ticksInCells)
             {
-                float rangeSize = axisController.NumericAxisMax - axisController.NumericAxisMin;
+                float rangeSize = axisController.NumericAxisMax - axisController.NumericAxisMin+1;
                 float scaleFactor = (rangeSize - 1) / rangeSize;
                 return inUnitSpace * scaleFactor + 1f / (2f * rangeSize);
             }

@@ -40,7 +40,7 @@ public class BarchartTestRunner : MonoBehaviour
             {
                 xValues.Add(days[i]);
                 zValues.Add(months[j]);
-                yValues.Add(Random.Range(0, 10));
+                yValues.Add(Random.Range(0, 11));
                 colors.Add(Random.ColorHSV());
             }
         }
