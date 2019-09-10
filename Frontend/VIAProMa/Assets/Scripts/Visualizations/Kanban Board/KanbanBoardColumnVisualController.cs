@@ -13,6 +13,8 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     [SerializeField] private Transform header;
     [SerializeField] private Transform headerBackground;
     [SerializeField] private TextMeshPro headerTitle;
+    [SerializeField] private Interactable upButton;
+    [SerializeField] private Interactable downButton;
     [SerializeField] private ObjectGrid grid;
     [SerializeField] private BoundingBox boundingBox;
     [SerializeField] private Transform handleLeft;
@@ -22,7 +24,6 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
     [SerializeField] private GameObject issueCardPrefab;
 
-
     private List<Issue> issues;
     private Vector2 issueCardSize;
 
@@ -31,6 +32,8 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
     private Renderer backgroundRenderer;
     private Renderer headerBackgroundRenderer;
+    private BoxCollider upButtonCollider;
+    private BoxCollider downButtonCollider;
 
     private BoxCollider boundingboxCollider;
     private BoundingBoxStateController boundingBoxStateController;
@@ -105,6 +108,25 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(header));
         }
+
+        if (upButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(upButton));
+        }
+        else
+        {
+            upButtonCollider = upButton.gameObject.GetComponent<BoxCollider>();
+        }
+
+        if (downButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(downButton));
+        }
+        else
+        {
+            downButtonCollider = downButton.gameObject.GetComponent<BoxCollider>();
+        }
+
         if (grid == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(grid));
@@ -201,6 +223,18 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
             size.y / 2f - headerBackground.localScale.y / 2f, // position at top
             0);
         headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
+
+        // position up button underneath header
+        upButton.transform.localPosition = new Vector3(
+            0,
+            size.y / 2f - headerBackground.localScale.y - upButtonCollider.size.y / 2f,
+            upButton.transform.localPosition.z);
+
+        // position down button above end of column
+        downButton.transform.localPosition = new Vector3(
+            0,
+            -size.y / 2f + downButtonCollider.size.y / 2f,
+            downButton.transform.localPosition.z);
 
         grid.transform.localPosition = new Vector3(
             0,
