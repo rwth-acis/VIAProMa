@@ -22,7 +22,12 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     [SerializeField] private Transform handleTop;
     [SerializeField] private Transform handleBottom;
 
+    [Header("References")]
     [SerializeField] private GameObject issueCardPrefab;
+
+
+    [Header("Values")]
+    [SerializeField] private float gap = 0.01f;
 
     private List<Issue> issues;
     private Vector2 issueCardSize;
@@ -179,7 +184,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
 
         BoxCollider issueCardColl = issueCardPrefab.GetComponentInChildren<BoxCollider>();
-        issueCardSize = Vector2.Scale(issueCardColl.transform.localScale, issueCardColl.size);
+        issueCardSize = Vector2.Scale(issueCardColl.transform.localScale, issueCardColl.size) + (gap / 2f * Vector2.one);
 
         issueCards = new List<IssueDataDisplay>();
         issues = new List<Issue>();
