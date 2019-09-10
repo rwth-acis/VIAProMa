@@ -40,6 +40,9 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
     private List<IssueDataDisplay> issueCards;
 
+    private int page = 0;
+    private int firstItemOnPage = 0;
+
     public float Width
     {
         get => background.localScale.x;
@@ -69,6 +72,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         set
         {
             issues = value;
+            SetPage(0);
             UpdateVisuals();
         }
     }
@@ -284,7 +288,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         }
         // first create missing issue cards
         int issuesToInstantiate = Mathf.Min(ItemsPerPage, issues.Count) - issueCards.Count;
-        for (int i=0;i<issuesToInstantiate;i++)
+        for (int i = 0; i < issuesToInstantiate; i++)
         {
             GameObject issueCardObj = Instantiate(issueCardPrefab, grid.transform);
             IssueDataDisplay dataDisplay = issueCardObj.GetComponent<IssueDataDisplay>();
@@ -299,14 +303,15 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         }
 
         // go over all issue card object and fill them with issue data or deactivate them
-        for (int i=0;i<issueCards.Count;i++)
+        for (int i = 0; i < issueCards.Count; i++)
         {
-            if (i < issues.Count && i < ItemsPerPage)
+            int issueItemIndex = firstItemOnPage + i;
+            if (issueItemIndex < issues.Count && i < ItemsPerPage)
             {
                 issueCards[i].gameObject.SetActive(true);
-                if (issueCards[i].Content != issues[i])
+                if (issueCards[i].Content != issues[issueItemIndex])
                 {
-                    issueCards[i].Setup(issues[i]);
+                    issueCards[i].Setup(issues[issueItemIndex]);
                 }
             }
             else
@@ -318,5 +323,30 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         // update grid
         grid.Columns = gridSize.x;
         grid.UpdateGrid();
+    }
+
+    public void PageUp()
+    {
+        SetPage(page - 1);
+        UpdateVisuals();
+    }
+
+    public void PageDown()
+    {
+        SetPage(page + 1);
+        UpdateVisuals();
+    }
+
+    private void SetPage(int pageNumber)
+    {
+        page = Mathf.Clamp(pageNumber, 0, issues.Count / ItemsPerPage);
+        firstItemOnPage = page * ItemsPerPage;
+        CheckButtonStates();
+    }
+
+    private void CheckButtonStates()
+    {
+        upButton.Enabled = (page > 0);
+        downButton.Enabled = (page < issues.Count / ItemsPerPage);
     }
 }
