@@ -55,7 +55,8 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         get => background.localScale.y;
         set
         {
-            size.y = Mathf.Max(headerBackground.localScale.y, value); // do not allow negative values or 0
+            // do not allow heights which are lower than the size of the header background and the two page buttons
+            size.y = Mathf.Max(headerBackground.localScale.y + upButtonCollider.size.y + downButtonCollider.size.y, value);
             UpdateSize();
         }
     }
@@ -272,7 +273,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     private void DetermineGridSize()
     {
         gridSize.x = (int)(size.x / issueCardSize.x);
-        gridSize.y = (int)((size.y - headerBackground.localScale.y) / issueCardSize.y);
+        gridSize.y = (int)((size.y - headerBackground.localScale.y - upButtonCollider.size.y - downButtonCollider.size.y) / issueCardSize.y);
     }
 
     private void UpdateVisuals()
