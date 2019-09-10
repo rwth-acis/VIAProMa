@@ -10,7 +10,10 @@ public class KanbanBoardColumn : Visualization
         base.Awake();
 
         visualController = GetComponent<KanbanBoardColumnVisualController>();
+    }
 
+    private void Start()
+    {
         ContentProvider = new SingleIssuesProvider();
     }
 

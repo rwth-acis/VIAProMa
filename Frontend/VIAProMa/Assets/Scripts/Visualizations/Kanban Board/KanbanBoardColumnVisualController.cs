@@ -13,13 +13,14 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     [SerializeField] private Transform header;
     [SerializeField] private Transform headerBackground;
     [SerializeField] private TextMeshPro headerTitle;
-    [SerializeField] private IssueListView issueListView;
     [SerializeField] private ObjectGrid grid;
     [SerializeField] private BoundingBox boundingBox;
     [SerializeField] private Transform handleLeft;
     [SerializeField] private Transform handleRight;
     [SerializeField] private Transform handleTop;
     [SerializeField] private Transform handleBottom;
+
+    [SerializeField] private GameObject issueCardPrefab;
 
 
     private List<Issue> issues;
@@ -33,6 +34,8 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
 
     private BoxCollider boundingboxCollider;
     private BoundingBoxStateController boundingBoxStateController;
+
+    private List<IssueDataDisplay> issueCards;
 
     public float Width
     {
@@ -102,18 +105,6 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(header));
         }
-        if (issueListView == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueListView));
-        }
-        else
-        {
-            BoxCollider sizeCollider = issueListView.ItemPrefab.GetComponentInChildren<BoxCollider>();
-            if (sizeCollider == null)
-            {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), issueListView.ItemPrefab);
-            }
-        }
         if (grid == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(grid));
@@ -152,11 +143,19 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(handleBottom));
         }
 
+        if (issueCardPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueCardPrefab));
+        }
+
         backgroundRenderer = background.gameObject.GetComponent<Renderer>();
         headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
 
-        BoxCollider issueCardColl = issueListView.ItemPrefab.GetComponentInChildren<BoxCollider>();
+        BoxCollider issueCardColl = issueCardPrefab.GetComponentInChildren<BoxCollider>();
         issueCardSize = Vector2.Scale(issueCardColl.transform.localScale, issueCardColl.size);
+
+        issueCards = new List<IssueDataDisplay>();
+        issues = new List<Issue>();
 
         size = new Vector2(background.localScale.x, background.localScale.y);
         grid.CellSize = issueCardSize;
@@ -232,8 +231,8 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         boundingboxCollider.size = 1.01f * background.localScale;
         boundingBox.Refresh();
 
-
-        UpdateGrid();
+        DetermineGridSize();
+        UpdateVisuals();
     }
 
     private void DetermineGridSize()
@@ -242,16 +241,47 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
         gridSize.y = (int)(size.y / issueCardSize.y);
     }
 
-    private void UpdateGrid()
-    {
-        DetermineGridSize();
-        grid.Columns = gridSize.x;
-        grid.UpdateGrid();
-    }
-
     private void UpdateVisuals()
     {
-        issueListView.Items = issues.GetRange(0, Mathf.Min(issues.Count, ItemsPerPage));
-        UpdateGrid();
+        if (issues == null)
+        {
+            return;
+        }
+        // first create missing issue cards
+        int issuesToInstantiate = Mathf.Min(ItemsPerPage, issues.Count) - issueCards.Count;
+        for (int i=0;i<issuesToInstantiate;i++)
+        {
+            GameObject issueCardObj = Instantiate(issueCardPrefab, grid.transform);
+            IssueDataDisplay dataDisplay = issueCardObj.GetComponent<IssueDataDisplay>();
+            if (dataDisplay == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), issueCardObj);
+            }
+            else
+            {
+                issueCards.Add(dataDisplay);
+            }
+        }
+
+        // go over all issue card object and fill them with issue data or deactivate them
+        for (int i=0;i<issueCards.Count;i++)
+        {
+            if (i < issues.Count && i < ItemsPerPage)
+            {
+                issueCards[i].gameObject.SetActive(true);
+                if (issueCards[i].Content != issues[i])
+                {
+                    issueCards[i].Setup(issues[i]);
+                }
+            }
+            else
+            {
+                issueCards[i].gameObject.SetActive(false);
+            }
+        }
+
+        // update grid
+        grid.Columns = gridSize.x;
+        grid.UpdateGrid();
     }
 }

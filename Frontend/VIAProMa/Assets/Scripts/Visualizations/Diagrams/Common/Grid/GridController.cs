@@ -12,6 +12,7 @@ namespace i5.ViaProMa.Visualizations.Common
         [SerializeField] private Vector2 offset = Vector2.zero;
         [SerializeField] private float wireThickness = 0.01f;
 
+        [Tooltip("True for Unity's quads which face towards the z-axis in neutral rotation; False for flat planes which face towards the y-axis in neutral rotation")]
         public bool zForward = true;
 
         private Vector3 previousScale;

@@ -71,7 +71,7 @@ public class Visualization : MonoBehaviour, IViewContainer
     public IVisualizationContentProvider ContentProvider
     {
         get => visualizationContentProvider;
-        protected set
+        set
         {
             if (visualizationContentProvider != null)
             {
