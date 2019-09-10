@@ -15,6 +15,8 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
     private Vector2Int gridSize;
     private GridController gridController;
 
+    private float[,] gridHeight;
+
     protected override void Awake()
     {
         base.Awake();
@@ -50,21 +52,11 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
 
         ClearContent();
 
-        if (DataSet.DataColumns.Count == 0)
+        if (DataSet.DataColumns.Count < 3)
         {
-            Debug.LogError("Cannot visualize empty data set");
+            Debug.LogError("Cannot visualize data set with less than 3 columns");
             return;
         }
-        //int minColumnLength = Mathf.Min(DataSet.DataColumns[0].ValueCount, DataSet.DataColumns[1].ValueCount, DataSet.DataColumns[2].ValueCount);
-
-        //for (int i = 0; i < minColumnLength; i++)
-        //{
-        //    float xInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[0].GetFloatValue(i), xAxisController);
-        //    float yInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[1].GetFloatValue(i), yAxisController);
-        //    float zInUnitSpace = FractionInUnitSpace(DataSet.DataColumns[2].GetFloatValue(i), zAxisController);
-
-        //    Vector3 vertexPosition = Vector3.Scale(Size, new Vector3(xInUnitSpace, yInUnitSpace, zInUnitSpace));
-        //}
 
         ConstructMesh();
     }
@@ -81,6 +73,7 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
         gridSize = new Vector2Int(
             Mathf.CeilToInt(xAxisController.NumericAxisMax - xAxisController.NumericAxisMin),
             Mathf.CeilToInt(zAxisController.NumericAxisMax - zAxisController.NumericAxisMin));
+        CalculateHeightField();
         CalculateVertexPositions();
         mesh.vertices = verticesInUnitSpace;
         FormTriangles();
@@ -91,6 +84,51 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
         contentParent.localScale = new Vector3(Size.x, 1, Size.z);
         gridController.CellSize = new Vector2(xAxisController.Length / gridSize.x, zAxisController.Length / gridSize.y);
         gridController.UpdateGrid();
+    }
+
+    private void CalculateHeightField()
+    {
+        gridHeight = new float[gridSize.x+1, gridSize.y+1];
+        // go over all data points and accumulate them in the height field
+        for (int i=0;i<Mathf.Min(DataSet.DataColumns[0].ValueCount, DataSet.DataColumns[1].ValueCount, DataSet.DataColumns[2].ValueCount);i++)
+        {
+            float xValue = DataSet.DataColumns[0].GetFloatValue(i);
+            int xFloor = Mathf.FloorToInt(xValue);
+            int xCeil = Mathf.CeilToInt(xValue);
+            float zValue = DataSet.DataColumns[2].GetFloatValue(i);
+            int zFloor = Mathf.FloorToInt(zValue);
+            int zCeil = Mathf.CeilToInt(zValue);
+
+            float xFraction = xValue % 1;
+            float zFraction = zValue % 1;
+            float invXFraction = 1 - xFraction;
+            float invZFraction = 1 - zFraction;
+
+            float yValue = DataSet.DataColumns[1].GetFloatValue(i);
+
+            if (xFloor >= 0)
+            {
+                if (zFloor >= 0)
+                {
+                    gridHeight[xFloor, zFloor] += invXFraction * invZFraction * yValue;
+                }
+                if (zCeil <= gridSize.y)
+                {
+                    gridHeight[xFloor, zCeil] += invXFraction * zFraction * yValue;
+                }
+            }
+            if (xCeil <= gridSize.x)
+            {
+                if (zFloor >= 0)
+                {
+                    gridHeight[xCeil, zFloor] += xFraction * invZFraction * yValue;
+                }
+                if (zCeil <= gridSize.y)
+                {
+                    gridHeight[xCeil, zCeil] += xFraction * zFraction * yValue;
+                }
+            }
+        }
     }
 
     private void CalculateVertexPositions()
@@ -104,7 +142,7 @@ public class Surfaceplot : i5.ViaProMa.Visualizations.Common.Diagram
             {
                 verticesInUnitSpace[i] = new Vector3(
                     (float)x / gridSize.x,
-                    0.01f,
+                    gridHeight[x,y] / yAxisController.NumericAxisMax,
                     (float)y / gridSize.y);
 
                 vertices[i] = Vector3.Scale(Size, verticesInUnitSpace[i]);
