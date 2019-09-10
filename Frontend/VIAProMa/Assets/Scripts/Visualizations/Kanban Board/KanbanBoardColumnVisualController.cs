@@ -238,7 +238,7 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     private void DetermineGridSize()
     {
         gridSize.x = (int)(size.x / issueCardSize.x);
-        gridSize.y = (int)(size.y / issueCardSize.y);
+        gridSize.y = (int)((size.y - headerBackground.localScale.y) / issueCardSize.y);
     }
 
     private void UpdateVisuals()

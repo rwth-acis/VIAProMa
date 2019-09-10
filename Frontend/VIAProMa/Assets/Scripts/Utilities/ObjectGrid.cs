@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class ObjectGrid : MonoBehaviour
 {
+    [SerializeField] private bool centered;
+
     public int Columns { get; set; }
 
     public Vector2 CellSize { get; set; }
 
-    public bool Centered { get; set; }
-
-    private void Awake()
-    {
-    }
+    public bool Centered { get => centered; set => centered = value; }
 
     public void UpdateGrid()
     {
@@ -29,7 +27,7 @@ public class ObjectGrid : MonoBehaviour
         if (Centered)
         {
             offset.x = (Columns - 1) * CellSize.x / 2f;
-            int rows = Mathf.CeilToInt(activeChildCount / Columns);
+            int rows = Mathf.CeilToInt((float)activeChildCount / Columns);
             offset.y = -(rows-1) * CellSize.y / 2f;
         }
 
