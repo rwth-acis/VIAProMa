@@ -1,4 +1,9 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Refer to lines 22, 131, 168 and the Update() Method.
+// Many thanks to @newske who posted a partial solution on stackoverflow:
+// https://stackoverflow.com/questions/56846672/how-can-i-configure-mrtk-to-work-with-touch-input-in-editor-and-on-mobile-device?noredirect=1#comment100693647_56846672
+
+
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -16,7 +21,8 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
         {
         }
 
-        private const float K_CONTACT_EPSILON = 30.0f;
+        // @JS: Changed because the original 30f will mean pointerclicked never gets triggered.
+        private const float K_CONTACT_EPSILON = 0.003f;
 
         /// <summary>
         /// Time in seconds to determine if the contact registers as a tap or a hold
@@ -92,12 +98,22 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
             isHolding = true;
         }
 
+        // @JS: Not yet sure why we need startPending, was added by newske
+        private int startPending = 0;
+
         /// <summary>
         /// Update the touch data.
         /// </summary>
         public void Update()
         {
             if (!isTouched) { return; }
+
+            if (startPending == 2)
+            {
+                StartTouch();
+            }
+
+            startPending++;
 
             Lifetime += Time.deltaTime;
 
@@ -113,6 +129,9 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
                 lastPose.Position = InputSource.Pointers[0].BaseCursor.Position;
                 lastPose.Rotation = InputSource.Pointers[0].BaseCursor.Rotation;
                 InputSystem?.RaiseSourcePoseChanged(InputSource, this, lastPose);
+
+                // @JS - To use with manipulationhandlers we must call RaisePointerDragged.
+                InputSystem?.RaisePointerDragged(InputSource.Pointers[0], Interactions[1].MixedRealityInputAction);
 
                 Interactions[1].PoseData = lastPose;
 
@@ -145,6 +164,7 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
         /// </summary>
         public void EndTouch()
         {
+            startPending = 0;
             if (TouchData.phase == TouchPhase.Ended)
             {
                 if (Lifetime < K_CONTACT_EPSILON)
@@ -160,8 +180,7 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
                         InputSystem?.RaiseGestureCanceled(this, manipulationAction);
                         isManipulating = false;
                     }
-                }
-                else if (Lifetime < MaxTapContactTime)
+                } else if (Lifetime < MaxTapContactTime)
                 {
                     if (isHolding)
                     {

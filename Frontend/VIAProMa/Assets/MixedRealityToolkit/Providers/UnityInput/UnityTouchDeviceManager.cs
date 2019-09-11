@@ -1,4 +1,7 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Many thanks to @newske who posted a partial solution on stackoverflow:
+// https://stackoverflow.com/questions/56846672/how-can-i-configure-mrtk-to-work-with-touch-input-in-editor-and-on-mobile-device?noredirect=1#comment100693647_56846672
+
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -34,9 +37,21 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
 
         private static readonly Dictionary<int, UnityTouchController> ActiveTouches = new Dictionary<int, UnityTouchController>();
 
+        List<UnityTouchController> toRemove = new List<UnityTouchController>();
+
         /// <inheritdoc />
         public override void Update()
         {
+
+            // @JS: Ensure that the touchUp and source lost frames are at least one frame apart
+            // by raising source lost on the frame after we raise touch up
+            foreach (var controller in toRemove)
+            {
+                IMixedRealityInputSystem inputSystem = Service as IMixedRealityInputSystem;
+                inputSystem?.RaiseSourceLost(controller.InputSource, controller);
+            }
+            toRemove.Clear();
+
             int touchCount = UInput.touchCount;
             for (var i = 0; i < touchCount; i++)
             {
@@ -65,13 +80,14 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
             {
                 controller.Value?.Update();
             }
+
         }
 
         /// <inheritdoc />
         public override void Disable()
         {
             IMixedRealityInputSystem inputSystem = Service as IMixedRealityInputSystem;
-            
+
             foreach (var controller in ActiveTouches)
             {
                 if (controller.Value == null || inputSystem == null) { continue; }
@@ -121,6 +137,9 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
             }
 
             inputSystem?.RaiseSourceDetected(controller.InputSource, controller);
+
+            // @JS - We need to update the touch otherwise the phase will be wrong when we call EndTouch
+            controller.TouchData = touch;
             controller.StartTouch();
             UpdateTouchData(touch, ray);
         }
@@ -149,9 +168,12 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
                 return;
             }
 
+            // @JS - We need to update the touch otherwise the phase will be wrong when we call EndTouch
+            controller.TouchData = touch;
+
             controller.EndTouch();
-            IMixedRealityInputSystem inputSystem = Service as IMixedRealityInputSystem;
-            inputSystem?.RaiseSourceLost(controller.InputSource, controller);
+
+            toRemove.Add(controller);
         }
     }
 }
