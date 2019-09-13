@@ -15,9 +15,11 @@ public class AvatarConfigurationController : MonoBehaviour
 
     public AvatarPartControllerCategory HairCategory { get => avatarPartControllers[1]; }
 
-    public AvatarPartControllerCategory GlassesCategory { get => avatarPartControllers[2]; }
+    public AvatarPartControllerCategory EyesCategory { get => avatarPartControllers[2]; }
 
-    public AvatarPartControllerCategory ClothesCategory { get => avatarPartControllers[3]; }
+    public AvatarPartControllerCategory GlassesCategory { get => avatarPartControllers[3]; }
+
+    public AvatarPartControllerCategory ClothesCategory { get => avatarPartControllers[4]; }
 
     /// <summary>
     /// Initializes the avatar by apply the initial configuration

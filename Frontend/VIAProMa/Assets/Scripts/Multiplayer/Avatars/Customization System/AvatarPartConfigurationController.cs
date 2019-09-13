@@ -12,6 +12,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
     [SerializeField] private AvatarPartCollection[] avatarPartCollections;
 
     public event EventHandler ModelChanged;
+    public event EventHandler ConfigurationChanged;
 
     private SkinnedMeshRenderer partRenderer;
 
@@ -34,6 +35,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
             else
             {
                 avatarIndex = value;
+                ConfigurationChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -50,6 +52,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
             materialIndex = 0;
             colorIndex = 0;
             ModelChanged?.Invoke(this, EventArgs.Empty);
+            ConfigurationChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -63,13 +66,22 @@ public class AvatarPartConfigurationController : MonoBehaviour
         {
             materialIndex = value;
             colorIndex = 0;
+            ConfigurationChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
     /// <summary>
     /// The index of the color variation which is displayed on this part
     /// </summary>
-    public int ColorIndex { get => colorIndex; set => colorIndex = value; }
+    public int ColorIndex
+    {
+        get => colorIndex;
+        set
+        {
+            colorIndex = value;
+            ConfigurationChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
     /// <summary>
     /// The available avatar part options for this part
@@ -105,7 +117,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
         {
             Color[] colors = AvatarPartColors;
             ColorItem[] res = new ColorItem[colors.Length];
-            for (int i=0;i<res.Length;i++)
+            for (int i = 0; i < res.Length; i++)
             {
                 res[i] = new ColorItem(colors[i]);
             }
@@ -145,7 +157,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
         }
         for (int i = 0; i < avatarPartCollections.Length; i++)
         {
-            for (int j=0;j<avatarPartCollections[i].avatarParts.Length;j++)
+            for (int j = 0; j < avatarPartCollections[i].avatarParts.Length; j++)
             {
                 if (avatarPartCollections[i].avatarParts[j] == null)
                 {
@@ -175,7 +187,7 @@ public class AvatarPartConfigurationController : MonoBehaviour
             && MaterialIndex < avatarPartCollections[avatarIndex].avatarParts[ModelIndex].MaterialVariationCount)
         {
             AvatarPartMaterial avatarMat = avatarPartCollections[avatarIndex].avatarParts[ModelIndex].GetAvatarPartMaterial(MaterialIndex);
-            Color avatarMatColor = Color.white; // avatar part does not necessarily have color variations => use white in this case
+            Color avatarMatColor = avatarMat.Material.color; // avatar part does not necessarily have color variations => use default color
 
             if (ColorIndex < avatarMat.ColorVariationCount)
             {
