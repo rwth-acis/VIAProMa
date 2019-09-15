@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AvatarPartConfigurationController))]
 public class AvatarPartConfigurationCopier : MonoBehaviour
 {
     [SerializeField] private GameObject observedPart;
