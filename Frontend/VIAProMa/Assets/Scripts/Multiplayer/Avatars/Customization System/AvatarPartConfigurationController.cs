@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Controls the configuration of one single avatar part
 /// </summary>
-public class AvatarPartConfigurationController : MonoBehaviour
+public class AvatarPartConfigurationController : MonoBehaviour, IConfigurationController
 {
     [Tooltip("The available options for this part")]
     [SerializeField] private AvatarPartCollection[] avatarPartCollections;

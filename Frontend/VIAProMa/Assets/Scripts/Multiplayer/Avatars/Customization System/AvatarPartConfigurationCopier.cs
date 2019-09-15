@@ -6,15 +6,33 @@ using UnityEngine;
 [RequireComponent(typeof(AvatarPartConfigurationController))]
 public class AvatarPartConfigurationCopier : MonoBehaviour
 {
-    [SerializeField] private AvatarPartConfigurationController observedPartController;
+    [SerializeField] private GameObject observedPart;
 
-    private AvatarPartConfigurationController localPartController;
+    private IConfigurationController observedPartController;
+
+    private IConfigurationController localPartController;
 
 
     private void Awake()
     {
-        localPartController = GetComponent<AvatarPartConfigurationController>();
-        observedPartController.ConfigurationChanged += OnConfigurationChanged;
+        localPartController = GetComponent<IConfigurationController>();
+
+        if (observedPart == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(observedPart));
+        }
+        else
+        {
+            observedPartController = observedPart.GetComponent<IConfigurationController>();
+            if (observedPartController == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IConfigurationController), observedPart);
+            }
+            else
+            {
+                observedPartController.ConfigurationChanged += OnConfigurationChanged;
+            }
+        }
     }
 
     private void OnDestroy()
