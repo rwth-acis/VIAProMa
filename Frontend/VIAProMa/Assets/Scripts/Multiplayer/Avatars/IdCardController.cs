@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class IdCardController : MonoBehaviourPun
+public class IdCardController : MonoBehaviour
 {
     [SerializeField] private TextMeshPro nameLabel;
     [SerializeField] private TextMeshPro roleLabel;
     [SerializeField] private Renderer profileImageRenderer;
+
+    private PhotonView photonView;
 
     private void Awake()
     {
@@ -24,13 +26,22 @@ public class IdCardController : MonoBehaviourPun
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(profileImageRenderer));
         }
+
+        photonView = GetComponent<PhotonView>();
     }
 
     private void Start()
     {
         if (PhotonNetwork.IsConnected)
         {
-            nameLabel.text = photonView.Owner.NickName;
+            if (photonView != null)
+            {
+                nameLabel.text = photonView.Owner.NickName;
+            }
+            else
+            {
+                nameLabel.text = PhotonNetwork.LocalPlayer.NickName;
+            }
             roleLabel.text = "";
         }
     }
@@ -38,7 +49,14 @@ public class IdCardController : MonoBehaviourPun
     [PunRPC]
     private void OnIDCardPropertyUpdated()
     {
-        nameLabel.text = photonView.Owner.NickName;
+        if (photonView != null)
+        {
+            nameLabel.text = photonView.Owner.NickName;
+        }
+        else
+        {
+            nameLabel.text = PhotonNetwork.LocalPlayer.NickName;
+        }
         roleLabel.text = "";
     }
 }
