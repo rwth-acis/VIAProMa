@@ -14,7 +14,7 @@
 
 		SubShader
 	{
-		Tags {"Queue" = "Opaque"}
+		Tags {"Queue" = "Geometry"}
 
 		Pass
 		{
