@@ -7,7 +7,21 @@ public class ConfigurationPositionController : MonoBehaviour, IConfigurationCont
 {
     [SerializeField] private Vector3[] positionsForAvatars;
 
-    public int AvatarIndex { get; set; }
+    private int avatarIndex;
+
+    public int AvatarIndex
+    {
+        get => avatarIndex;
+        set
+        {
+            bool configChanged = avatarIndex != value;
+            avatarIndex = value;
+            if (configChanged)
+            {
+                ConfigurationChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
     public int ModelIndex { get; set; }
     public int MaterialIndex { get; set; }
     public int ColorIndex { get; set; }
