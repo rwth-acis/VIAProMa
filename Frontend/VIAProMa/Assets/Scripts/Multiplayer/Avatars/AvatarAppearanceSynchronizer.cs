@@ -19,6 +19,12 @@ public class AvatarAppearanceSynchronizer : MonoBehaviourPunCallbacks
         configurationController = GetComponent<AvatarConfigurationController>();
     }
 
+    private void Start()
+    {
+        // apply avatar configuration when the avatar is created
+        ApplyCustomProperties();
+    }
+
     public override void OnPlayerPropertiesUpdate(Player target, ExitGames.Client.Photon.Hashtable changedProps)
     {
         if (target.UserId == photonView.Owner.UserId)
