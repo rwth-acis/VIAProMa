@@ -4,14 +4,23 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Controls the ID card on the avatar and fills its displays with data
+/// </summary>
 public class IdCardController : MonoBehaviour
 {
+    [Tooltip("The label which displays the user name")]
     [SerializeField] private TextMeshPro nameLabel;
+    [Tooltip("The label which displays the role of the user")]
     [SerializeField] private TextMeshPro roleLabel;
+    [Tooltip("The renderer for the profile image")]
     [SerializeField] private Renderer profileImageRenderer;
 
     private PhotonView photonView;
 
+    /// <summary>
+    /// Checks the component's setup and initializes it
+    /// </summary>
     private void Awake()
     {
         if (nameLabel == null)
@@ -30,6 +39,9 @@ public class IdCardController : MonoBehaviour
         photonView = GetComponent<PhotonView>();
     }
 
+    /// <summary>
+    /// Initializes the text of the labels
+    /// </summary>
     private void Start()
     {
         if (PhotonNetwork.IsConnected)
