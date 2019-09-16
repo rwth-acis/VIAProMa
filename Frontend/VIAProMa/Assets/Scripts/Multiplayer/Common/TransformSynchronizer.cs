@@ -49,7 +49,7 @@ public class TransformSynchronizer : MonoBehaviourPunCallbacks, IPunObservable
 
     protected virtual void Update()
     {
-        if (positionalUpdatesInitialized)
+        if (positionalUpdatesInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
         {
             SmoothPosition(transform, targetPosition, lerpSpeed);
             SmoothRotation(transform, targetRotation, lerpSpeed);
