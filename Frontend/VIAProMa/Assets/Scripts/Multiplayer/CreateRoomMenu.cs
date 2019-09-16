@@ -17,7 +17,7 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     [SerializeField] private Interactable closeButton;
     [SerializeField] private InputField roomNameField;
     [SerializeField] private GameObject errorMessage;
-    [SerializeField] private Checkbox memberNumberCheckbox;
+    [SerializeField] private Interactable advancedSettingsCheckbox;
     [SerializeField] private SliderExtension memberNumberSlider;
     [SerializeField] private Interactable createRoomButton;
 
@@ -72,9 +72,9 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(errorMessage));
         }
-        if (memberNumberCheckbox == null)
+        if (advancedSettingsCheckbox == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(memberNumberCheckbox));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(advancedSettingsCheckbox));
         }
         if (memberNumberSlider == null)
         {
@@ -86,9 +86,9 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         }
 
         roomNameField.TextChanged += OnInputFieldRoomNameChanged;
-        memberNumberCheckbox.OnValueChanged += OnCheckboxMaxNumberOfMembersClicked;
 
         createRoomButton.Enabled = false;
+        memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.GetDimensionIndex() == 1);
     }
 
     /// <summary>
@@ -108,11 +108,9 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     /// Called if the checkbox is clicked which enables the limiation of members
     /// If it is checked, it displays the slider to specify the maximum number of members
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void OnCheckboxMaxNumberOfMembersClicked(object sender, EventArgs e)
+    public void OnCheckboxAdvancedSettingsClicked()
     {
-        memberNumberSlider.gameObject.SetActive(memberNumberCheckbox.IsChecked);
+        memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.GetDimensionIndex() == 1);
     }
 
     /// <summary>
@@ -130,7 +128,7 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         RoomOptions roomOptions = null; // if null is passed to CreateRoom, the options are ignored
         // use the maximum member settings if the checkbox for this is checked
         // otherwise, roomOptions will remain null and so Photon will use default options
-        if (memberNumberCheckbox.IsChecked)
+        if (advancedSettingsCheckbox.GetDimensionIndex() == 1)
         {
             roomOptions = new RoomOptions { MaxPlayers = (byte)memberNumberSlider.ValueInt };
         }
