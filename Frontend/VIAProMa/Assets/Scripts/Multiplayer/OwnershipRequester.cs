@@ -32,6 +32,7 @@ public class OwnershipRequester : MonoBehaviourPun
     {
         if (photonView.Owner == PhotonNetwork.LocalPlayer)
         {
+            Debug.Log("Unlocking object", gameObject);
             OwnershipManager.Instance.EnableOwnerShipTransfer(photonView);
         }
     }

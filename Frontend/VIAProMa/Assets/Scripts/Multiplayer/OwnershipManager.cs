@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OwnershipManager : Singleton<OwnershipManager>
+public class OwnershipManager : Singleton<OwnershipManager>, IPunOwnershipCallbacks
 {
     private List<PhotonView> lockedViews;
 
@@ -13,6 +13,16 @@ public class OwnershipManager : Singleton<OwnershipManager>
     {
         base.Awake();
         lockedViews = new List<PhotonView>();
+    }
+
+    private void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    private void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     public void DisableOwnerShipTransfer(PhotonView view)
@@ -33,16 +43,22 @@ public class OwnershipManager : Singleton<OwnershipManager>
         }
     }
 
-    public void OnOwnershipRequest(object[] viewAndPlayer)
+    public void OnOwnershipRequest(PhotonView targetView, Player requestingPlayer)
     {
-        PhotonView view = (PhotonView)viewAndPlayer[0];
-        Player requestingPlayer = (Player)viewAndPlayer[1];
+        Debug.Log("OnOwnershipRequest(): Player " + requestingPlayer + " requests ownership of: " + targetView + ".");
 
-        Debug.Log("OnOwnershipRequest(): Player " + requestingPlayer + " requests ownership of: " + view + ".");
-
-        if (!lockedViews.Contains(view))
+        if (!lockedViews.Contains(targetView))
         {
-            view.TransferOwnership(requestingPlayer);
+            Debug.Log("Ownership transfer granted for object " + targetView.gameObject.name);
+            targetView.TransferOwnership(requestingPlayer);
         }
+        else
+        {
+            Debug.Log("Ownership transfer denied for object " + targetView.gameObject.name);
+        }
+    }
+
+    public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
+    {
     }
 }
