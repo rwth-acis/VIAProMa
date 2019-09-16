@@ -2,14 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the crane on top of the building progress bar
+/// </summary>
 public class CraneController : MonoBehaviour
 {
+    [Tooltip("The top part of the crane which contains the arm; This part will be rotated")]
     [SerializeField] private Transform craneTop;
+    [Tooltip("The slider on the crane which moves along the arm")]
     [SerializeField] private Transform slider;
+    [Tooltip("The cable object which lifts object")]
     [SerializeField] private Transform cable;
 
+    /// <summary>
+    /// The probability that the crane will start turning 
+    /// </summary>
+    [Tooltip("The probability that the crane will start turning ")]
     public float turnProbability = 0.05f;
 
+    /// <summary>
+    /// The speed at which the crane is turning
+    /// </summary>
+    [Tooltip("The speed at which the crane is turning")]
     public float turnSpeed = 1f;
 
     private CraneStatus status;
@@ -19,6 +33,9 @@ public class CraneController : MonoBehaviour
     private float targetCableLength;
     private Vector3 targetRotation;
 
+    /// <summary>
+    /// Checks if the component was set up correctly
+    /// </summary>
     private void Awake()
     {
         if (craneTop == null)
@@ -35,6 +52,11 @@ public class CraneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the behaviour of the crane
+    /// If the crane is idle: every second, it is determined if the crane should start turning
+    /// If the crane is turning: the turning movement is executed
+    /// </summary>
     private void Update()
     {
         // determine the behaviour every second
@@ -57,6 +79,9 @@ public class CraneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Updates the behaviour status
+    /// </summary>
     private void BehaviourUpdate()
     {
         if (status == CraneStatus.IDLE)
@@ -65,6 +90,9 @@ public class CraneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Determines the next action based on a random number and the turnProbability
+    /// </summary>
     private void DetermineNextAction()
     {
         float rand = Random.value;
@@ -75,6 +103,9 @@ public class CraneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Turns the top part towards the target rotation
+    /// </summary>
     private void TurnTop()
     {
         craneTop.localRotation = Quaternion.RotateTowards(
@@ -91,6 +122,9 @@ public class CraneController : MonoBehaviour
     }
 }
 
+/// <summary>
+/// The behaviour states of the crane
+/// </summary>
 public enum CraneStatus
 {
     IDLE, TURNING

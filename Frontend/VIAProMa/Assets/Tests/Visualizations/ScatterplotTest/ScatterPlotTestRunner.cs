@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Test script which controls the scatter plot and fills it with test data
+/// </summary>
 public class ScatterPlotTestRunner : MonoBehaviour
 {
     //public VisualizationGridsController gridController;
@@ -19,6 +22,9 @@ public class ScatterPlotTestRunner : MonoBehaviour
     public i5.ViaProMa.Visualizations.Common.Diagram diagram;
     public Vector3 size;
 
+    /// <summary>
+    /// Fills the diagram with test data
+    /// </summary>
     private void Start()
     {
         diagram.Size = size;
@@ -34,6 +40,9 @@ public class ScatterPlotTestRunner : MonoBehaviour
         diagram.UpdateDiagram();
     }
 
+    /// <summary>
+    /// Updates the diagram if F5 was pressed
+    /// </summary>
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F5))
