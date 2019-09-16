@@ -12,13 +12,22 @@ using UnityEngine;
 /// </summary>
 public class CreateRoomMenu : MonoBehaviour, IWindow
 {
+    [Header("References")]
+    [Tooltip("Reference to the room menu script")]
     [SerializeField] private RoomMenu roomMenu;
 
+    [Header("UI Elements")]
+    [Tooltip("The button for closing the menu")]
     [SerializeField] private Interactable closeButton;
+    [Tooltip("The text field for entering the room name")]
     [SerializeField] private InputField roomNameField;
+    [Tooltip("An error message which can be displayed")]
     [SerializeField] private GameObject errorMessage;
+    [Tooltip("Checkbox for advanced settings")]
     [SerializeField] private Interactable advancedSettingsCheckbox;
+    [Tooltip("The slider for determining the number of members")]
     [SerializeField] private SliderExtension memberNumberSlider;
+    [Tooltip("The button which confirms the settings and creates the room")]
     [SerializeField] private Interactable createRoomButton;
 
     private bool windowEnabled = true;
