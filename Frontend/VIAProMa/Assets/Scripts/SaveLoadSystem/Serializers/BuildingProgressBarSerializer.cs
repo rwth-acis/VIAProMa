@@ -26,7 +26,11 @@ public class BuildingProgressBarSerializer : MonoBehaviour, ISerializable
     /// <param name="serializedObject">The serialized object with the save data</param>
     public void Deserialize(SerializedObject serializedObject)
     {
-        buildingProgressBarVisuals.BuildingModelIndex = serializedObject.Integers[buildingNumberKey];
+        int buildingModelIndex = SerializedObject.TryGet(buildingNumberKey, serializedObject.Integers, gameObject, out bool found);
+        if (found)
+        {
+            buildingProgressBarVisuals.BuildingModelIndex = buildingModelIndex;
+        }
     }
 
     /// <summary>
