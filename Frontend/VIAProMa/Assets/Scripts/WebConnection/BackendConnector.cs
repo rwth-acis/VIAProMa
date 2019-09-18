@@ -8,6 +8,7 @@ using UnityEngine;
 public static class BackendConnector
 {
 
+
     /// <summary>
     /// Method which checks whether the backend server is reachable
     /// </summary>
