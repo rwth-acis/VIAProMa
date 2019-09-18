@@ -46,7 +46,17 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
     /// <summary>
     /// Gets the length of the progress bar (at overall scale 1)
     /// </summary>
-    public float Length { get => tubes.localScale.x; }
+    public float Length
+    {
+        get => tubes.localScale.x;
+        set
+        {
+            tubes.localScale = new Vector3(
+                value,
+                tubes.localScale.y,
+                tubes.localScale.z);
+        }
+    }
 
     /// <summary>
     /// Gets or sets the title of the progress bar and applies it to the text label

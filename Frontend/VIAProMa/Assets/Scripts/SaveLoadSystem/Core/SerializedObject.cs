@@ -97,6 +97,21 @@ public class SerializedObject
         Quaternions = quaternions.ToDictionary();
     }
 
+    public static T TryGet<T>(string key, Dictionary<string, T> dictionary, GameObject sender, out bool found)
+    {
+        if (dictionary.ContainsKey(key))
+        {
+            found = true;
+            return dictionary[key];
+        }
+        else
+        {
+            Debug.LogError("Could not find value of key " + key, sender);
+            found = false;
+            return default(T);
+        }
+    }
+
     /// <summary>
     /// Adds a list with the key to a given dictionary
     /// </summary>
