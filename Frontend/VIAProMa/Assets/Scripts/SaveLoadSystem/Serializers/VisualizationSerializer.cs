@@ -2,13 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IssueProviderSerializer : MonoBehaviour, ISerializable
+/// <summary>
+/// Serializes and deserialized a visualization and its content
+/// </summary>
+[RequireComponent(typeof(Visualization))]
+public class VisualizationSerializer : MonoBehaviour, ISerializable
 {
+    /// <summary>
+    /// Key to store and retrieve the title of the visualization
+    /// </summary>
+    private const string titleKey = "visualizationTitle";
+    /// <summary>
+    /// Key for storing the project IDs of the visualization content
+    /// </summary>
     private const string projectIdKey = "vis_pIds";
+    /// <summary>
+    /// Key for storing the IDs of the visualization content
+    /// </summary>
     private const string idsKey = "vis_IDs";
 
+    /// <summary>
+    /// The visualization to serialize/deserialize
+    /// </summary>
     private Visualization visualization;
 
+    /// <summary>
+    /// Initializes the component by getting the reference to the visualization
+    /// </summary>
     private void Awake()
     {
         visualization = GetComponent<Visualization>();
@@ -18,8 +38,14 @@ public class IssueProviderSerializer : MonoBehaviour, ISerializable
         }
     }
 
+    /// <summary>
+    /// Deserializes the given serializedObject and applies the found relevant properties to the visualization
+    /// </summary>
+    /// <param name="serializedObject">A serialized object which contains the properties for the visualization</param>
     public async void Deserialize(SerializedObject serializedObject)
     {
+        visualization.Title = serializedObject.Strings[titleKey];
+
         if (visualization == null)
         {
             Debug.LogWarning("No visualization found. Cannot deserialize sava data", gameObject);
@@ -37,7 +63,7 @@ public class IssueProviderSerializer : MonoBehaviour, ISerializable
 
         List<Issue> issues = new List<Issue>();
 
-        for (int i=0;i<projectIds.Count;i++)
+        for (int i = 0; i < projectIds.Count; i++)
         {
             if (projectIds[i] < 0)
             {
@@ -61,9 +87,14 @@ public class IssueProviderSerializer : MonoBehaviour, ISerializable
         visualization.ContentProvider.Issues = issues;
     }
 
+    /// <summary>
+    /// Serializes the visualization into a SerializedObject
+    /// </summary>
+    /// <returns>A SerializedObject which contains the relevant properties of the visualization</returns>
     public SerializedObject Serialize()
     {
-        SerializedObject obj = new SerializedObject();
+        SerializedObject serializedObject = new SerializedObject();
+        serializedObject.Strings.Add(titleKey, visualization.Title);
 
         if (visualization != null)
         {
@@ -86,14 +117,15 @@ public class IssueProviderSerializer : MonoBehaviour, ISerializable
                 ids.Add(issue.Id);
             }
 
-            SerializedObject.AddList(projectIdKey, projectIds, obj.Integers);
-            SerializedObject.AddList(idsKey, ids, obj.Integers);
+            SerializedObject.AddList(projectIdKey, projectIds, serializedObject.Integers);
+            SerializedObject.AddList(idsKey, ids, serializedObject.Integers);
 
         }
         else
         {
-            Debug.LogWarning("No visualization found. Returning empty save data.", gameObject);
+            Debug.LogWarning("No visualization found. Returning empty visualization content data.", gameObject);
         }
-        return obj;
+
+        return serializedObject;
     }
 }
