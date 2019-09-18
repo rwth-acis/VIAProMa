@@ -11,7 +11,7 @@ public interface IVisualizationContentProvider
     /// <summary>
     /// The list of issues which define the content of the visualization
     /// </summary>
-    List<Issue> Issues { get; }
+    List<Issue> Issues { get; set; }
 
     /// <summary>
     /// Event which is called if the issue list is changed

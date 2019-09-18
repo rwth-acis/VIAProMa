@@ -9,7 +9,7 @@ public class SaveLoadTester : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.F5))
         {
             Debug.Log(SaveLoadManager.Instance.SerializeSaveGame());
         }

@@ -98,6 +98,52 @@ public class SerializedObject
     }
 
     /// <summary>
+    /// Adds a list with the key to a given dictionary
+    /// </summary>
+    /// <typeparam name="T">The type which is stored in the list</typeparam>
+    /// <param name="key">The key which should be used to store the list</param>
+    /// <param name="list">The list which should be stored</param>
+    /// <param name="target">The target dictionary to which the list should be written</param>
+    public static void AddList<T>(string key, List<T> list, Dictionary<string, T> target)
+    {
+        for (int i=0;i<list.Count;i++)
+        {
+            target.Add(ConstructKey(key, i), list[i]);
+        }
+    }
+
+    /// <summary>
+    /// Gets a list from the given dictionary
+    /// </summary>
+    /// <typeparam name="T">The type which is stored in the list</typeparam>
+    /// <param name="key">The key under which the list is stored</param>
+    /// <param name="target">The dictionary which contains the list</param>
+    public static List<T> GetList<T>(string key, Dictionary<string, T> target)
+    {
+        List<T> res = new List<T>();
+
+        for (int i=0;i<int.MaxValue;i++) // breaks if no more elements were found
+        {
+            string indexedKey = ConstructKey(key, i);
+            if (target.ContainsKey(indexedKey))
+            {
+                res.Add(target[indexedKey]);
+            }
+            else
+            {
+                // list finished (gaps are not allowed)
+                break;
+            }
+        }
+        return res;
+    }
+
+    private static string ConstructKey(string key, int index)
+    {
+        return key + "#" + index;
+    }
+
+    /// <summary>
     /// Merges two SerializedObjects into one
     /// The SerializedObjects should not have the same key in the same collection
     /// </summary>

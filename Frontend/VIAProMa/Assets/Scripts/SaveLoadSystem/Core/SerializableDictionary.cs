@@ -22,7 +22,7 @@ public class SerializableDictionary<T>
     {
         keys = new List<string>();
         values = new List<T>();
-        foreach(KeyValuePair<string, T> pair in originalDictionary)
+        foreach (KeyValuePair<string, T> pair in originalDictionary)
         {
             keys.Add(pair.Key);
             values.Add(pair.Value);
@@ -43,7 +43,7 @@ public class SerializableDictionary<T>
         }
 
         // add its values to a native dictionary
-        for (int i=0;i<Math.Min(keys.Count, values.Count); i++)
+        for (int i = 0; i < Math.Min(keys.Count, values.Count); i++)
         {
             res.Add(keys[i], values[i]);
         }
