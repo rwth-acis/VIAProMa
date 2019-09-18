@@ -7,7 +7,36 @@ using UnityEngine;
 
 public static class BackendConnector
 {
+    /// <summary>
+    /// Sends the save data to the backend
+    /// </summary>
+    /// <param name="saveName">The name of the save file</param>
+    /// <param name="saveJson">The content to save</param>
+    /// <returns>Asynchronous operation</returns>
+    public static async Task Save(string saveName, string saveJson)
+    {
+        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName, saveJson);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+    }
 
+    /// <summary>
+    /// Requests the save data from the backend
+    /// </summary>
+    /// <param name="saveName">The name of the save file</param>
+    /// <returns>The save data</returns>
+    public static async Task<string> Load(string saveName)
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (resp.Successful)
+        {
+            return resp.ResponseBody;
+        }
+        else
+        {
+            return "";
+        }
+    }
 
     /// <summary>
     /// Method which checks whether the backend server is reachable
