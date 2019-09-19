@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [Header("UI Elements")]
     [SerializeField] private Interactable avatarConfigurationButton;
     [SerializeField] private Interactable serverConnectionButton;
+    [SerializeField] private Interactable saveButton;
     [SerializeField] private Interactable roomButton;
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
@@ -39,6 +40,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (serverConnectionButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(serverConnectionButton));
+        }
+        if (saveButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(saveButton));
         }
         if (roomButton == null)
         {
@@ -120,6 +125,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
         {
             roomButtonText.text = "Leave Room";
         }
+    }
+
+    public void ShowSaveMenu()
+    {
+        WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right, transform.localEulerAngles);
+        foldController.FoldCube();
     }
 
     public void ShowIssueShelf()
