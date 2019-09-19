@@ -1,5 +1,6 @@
 ﻿using HoloToolkit.Unity;
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,11 +11,19 @@ using UnityEngine;
 /// </summary>
 public class SaveLoadManager : Singleton<SaveLoadManager>
 {
+    [Tooltip("The interval in minutes for the auto save")]
+    [SerializeField] private float autoSaveInterval = 5f;
+
+    [Header("Version")]
+    [SerializeField] private int saveDataVersion = 1;
+
+    private static bool savedOnQuit = false;
+
     /// <summary>
     /// The list of instance Ids which are tracked
     /// This list is used in order to determine if a new instance of the GameObject must be created or if the settings can be applied to an existing instance
     /// </summary>
-    private List<string> trackedIds;
+    private List<string> trackedIds;  
 
     /// <summary>
     /// The serializers are placed on GameObjects which should be saved
@@ -36,12 +45,36 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         trackedIds = new List<string>();
     }
 
+    private void OnEnable()
+    {
+        InvokeRepeating("SaveScene", 1f, 60f * autoSaveInterval);
+    }
+
+    private async void OnDisable()
+    {
+        CancelInvoke("SaveScene");
+        await SaveScene(); // save one last time before the component is disabled
+    }
+
     public async Task<bool> SaveScene()
     {
+        if (!AutoSaveActive)
+        {
+            return false;
+        }
+
         if (PhotonNetwork.IsMasterClient)
         {
             string json = SerializeSaveGame();
             bool successful = await BackendConnector.Save(SaveName, json);
+            if (successful)
+            {
+                Debug.Log("Saved scene", gameObject);
+            }
+            else
+            {
+                Debug.Log("Failed to save scene", gameObject);
+            }
             return successful;
         }
         else
@@ -84,7 +117,10 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
             serializedObjects.Add(data);
         }
 
-        return JsonArrayUtility.ToJson<SerializedObject>(serializedObjects.ToArray());
+        SaveData saveData = new SaveData(saveDataVersion);
+        saveData.Data = serializedObjects;
+
+        return JsonUtility.ToJson(saveData);
     }
 
     /// <summary>
@@ -94,8 +130,15 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     public void DeserializeSaveGame(string json)
     {
         UpdateTrackedIds();
-        SerializedObject[] serializedObjects = JsonArrayUtility.FromJson<SerializedObject>(json);
-        for (int i = 0; i < serializedObjects.Length; i++)
+        SaveData data = JsonUtility.FromJson<SaveData>(json);
+        if (data.AppVersion != saveDataVersion)
+        {
+            Debug.LogError("Cannot open this save data version (compatible version " 
+                + saveDataVersion + " but save data has version " + data.AppVersion + ")");
+            return;
+        }
+        List<SerializedObject> serializedObjects = data.Data;
+        for (int i = 0; i < serializedObjects.Count; i++)
         {
             serializedObjects[i].UnPackData();
 
@@ -171,5 +214,47 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     public void UnRegisterSerializer(Serializer serializer)
     {
         Serializers.Remove(serializer);
+    }
+
+    private async void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+        {
+            await SaveScene();
+        }
+    }
+
+    private async void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            await SaveScene();
+        }
+    }
+
+    private async void OnApplicationQuit()
+    {
+        if (!savedOnQuit)
+        {
+            await SaveScene();
+            savedOnQuit = true;
+            Debug.Log("Saved, now quitting");
+            Application.Quit();
+        }
+    }
+
+    [RuntimeInitializeOnLoadMethod]
+    private static void RunOnStart()
+    {
+        Application.wantsToQuit += WantsToQuit;
+    }
+
+    private static bool WantsToQuit()
+    {
+        if (!savedOnQuit)
+        {
+            Debug.Log("Prevented quitting to save");
+        }
+        return savedOnQuit;
     }
 }

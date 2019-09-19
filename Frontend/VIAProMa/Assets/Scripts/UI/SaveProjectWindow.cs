@@ -38,15 +38,12 @@ public class SaveProjectWindow : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(confirmMessage));
         }
-        else
-        {
-            confirmMessage.SetActive(false);
-        }
     }
 
     private void Start()
     {
         saveNameInputField.Text = SaveLoadManager.Instance.SaveName;
+        confirmMessage.SetActive(SaveLoadManager.Instance.AutoSaveActive);
     }
 
     private void OnSaveNameChanged(object sender, EventArgs e)
@@ -55,10 +52,12 @@ public class SaveProjectWindow : MonoBehaviour, IWindow
         doneButton.Enabled = validInput;
     }
 
-    public void SetSaveName()
+    public async void SetSaveName()
     {
         SaveLoadManager.Instance.SaveName = saveNameInputField.Text;
-        confirmMessage.SetActive(true);
+        confirmMessage.SetActive(SaveLoadManager.Instance.AutoSaveActive);
+
+        await SaveLoadManager.Instance.SaveScene();
     }
 
     public void Close()
