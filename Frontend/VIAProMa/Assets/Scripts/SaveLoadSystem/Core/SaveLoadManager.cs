@@ -10,16 +10,20 @@ using UnityEngine;
 public class SaveLoadManager : Singleton<SaveLoadManager>
 {
     /// <summary>
+    /// The list of instance Ids which are tracked
+    /// This list is used in order to determine if a new instance of the GameObject must be created or if the settings can be applied to an existing instance
+    /// </summary>
+    private List<string> trackedIds;
+
+    /// <summary>
     /// The serializers are placed on GameObjects which should be saved
     /// When they are initialized, they register in this list
     /// </summary>
     public List<Serializer> Serializers { get; private set; }
 
-    /// <summary>
-    /// The list of instance Ids which are tracked
-    /// This list is used in order to determine if a new instance of the GameObject must be created or if the settings can be applied to an existing instance
-    /// </summary>
-    private List<string> trackedIds;
+    public string SaveName { get; set; }
+
+    public bool AutoSaveActive { get => !string.IsNullOrEmpty(SaveName); }
 
     /// <summary>
     /// Initializes the component's lists
