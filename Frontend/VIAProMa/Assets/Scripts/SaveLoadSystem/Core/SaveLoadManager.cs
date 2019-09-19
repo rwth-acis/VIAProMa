@@ -21,9 +21,9 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     /// </summary>
     public List<Serializer> Serializers { get; private set; }
 
-    public string SaveName { get; set; }
+    public string SaveName { get; set; } = "";
 
-    public bool AutoSaveActive { get => !string.IsNullOrEmpty(SaveName); }
+    public bool AutoSaveActive { get => !string.IsNullOrWhiteSpace(SaveName); }
 
     /// <summary>
     /// Initializes the component's lists
