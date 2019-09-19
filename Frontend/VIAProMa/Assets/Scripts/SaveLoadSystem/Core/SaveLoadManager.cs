@@ -2,6 +2,7 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -33,6 +34,39 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         base.Awake();
         Serializers = new List<Serializer>();
         trackedIds = new List<string>();
+    }
+
+    public async Task<bool> SaveScene()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            string json = SerializeSaveGame();
+            bool successful = await BackendConnector.Save(SaveName, json);
+            return successful;
+        }
+        else
+        {
+            Debug.LogWarning("Only the master client can save a scene.", gameObject);
+            return false;
+        }
+    }
+
+    public async Task<bool> LoadScene()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            ApiResult<string> res = await BackendConnector.Load(SaveName);
+            if (res.Successful)
+            {
+                DeserializeSaveGame(res.Value);
+                return true;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("At the moment only the master client can load a scene", gameObject);
+        }
+        return false;
     }
 
     /// <summary>

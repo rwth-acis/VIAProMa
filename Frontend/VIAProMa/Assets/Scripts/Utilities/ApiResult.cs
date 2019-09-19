@@ -21,7 +21,7 @@ public class ApiResult<T>
     /// </summary>
     /// <param name="value">The result of the API call</param>
     /// <param name="responseCode">The response code of the API call</param>
-    public ApiResult(T value, int responseCode)
+    public ApiResult(T value, long responseCode)
     {
         this.ResponseCode = responseCode;
         this.Value = value;

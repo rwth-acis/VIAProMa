@@ -13,10 +13,18 @@ public static class BackendConnector
     /// <param name="saveName">The name of the save file</param>
     /// <param name="saveJson">The content to save</param>
     /// <returns>Asynchronous operation</returns>
-    public static async Task Save(string saveName, string saveJson)
+    public static async Task<bool> Save(string saveName, string saveJson)
     {
         Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName, saveJson);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (resp.Successful)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -24,17 +32,17 @@ public static class BackendConnector
     /// </summary>
     /// <param name="saveName">The name of the save file</param>
     /// <returns>The save data</returns>
-    public static async Task<string> Load(string saveName)
+    public static async Task<ApiResult<string>> Load(string saveName)
     {
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (resp.Successful)
         {
-            return resp.ResponseBody;
+            return new ApiResult<string>(resp.ResponseBody);
         }
         else
         {
-            return "";
+            return new ApiResult<string>(resp.ResponseCode, resp.ResponseBody);
         }
     }
 
