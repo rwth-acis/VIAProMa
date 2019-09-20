@@ -130,6 +130,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     public void DeserializeSaveGame(string json)
     {
         UpdateTrackedIds();
+        bool[] usedIds = new bool[trackedIds.Count];
         SaveData data = JsonUtility.FromJson<SaveData>(json);
         if (data.AppVersion != saveDataVersion)
         {
@@ -142,8 +143,11 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         {
             serializedObjects[i].UnPackData();
 
-            if (trackedIds.Contains(serializedObjects[i].Id)) // the object already exists in the scene
+            int indexInTrackedIds = trackedIds.IndexOf(serializedObjects[i].Id);
+
+            if (indexInTrackedIds >= 0) // the object already exists in the scene
             {
+                usedIds[indexInTrackedIds] = true; // set the index as true
                 Serializer serializer = GetSerializer(serializedObjects[i].Id);
                 if (serializer != null)
                 {
@@ -164,6 +168,16 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
                 {
                     serializer.Deserialize(serializedObjects[i]);
                 }
+            }
+        }
+
+        // destroy other tracked serializers which were not part of the save data
+        for (int i = 0; i < usedIds.Length; i++)
+        {
+            if (!usedIds[i])
+            {
+                Serializer serializer = GetSerializer(trackedIds[i]);
+                PhotonNetwork.Destroy(serializer.gameObject);
             }
         }
     }
