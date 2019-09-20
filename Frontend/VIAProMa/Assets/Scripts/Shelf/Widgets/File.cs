@@ -35,4 +35,14 @@ public class File : MonoBehaviour
             titleOnTop.text = projectTitle;
         }
     }
+
+    public ProjectLoader ProjectLoader
+    {
+        get;set;
+    }
+
+    public void SelectFile()
+    {
+        ProjectLoader.LoadProject(ProjectTitle);
+    }
 }

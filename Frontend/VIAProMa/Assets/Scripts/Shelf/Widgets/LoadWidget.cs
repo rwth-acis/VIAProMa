@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +18,9 @@ public class LoadWidget : MonoBehaviour
     private Animator[] pageAnimators;
     private bool fileOpen = false;
     private Particles3D particles3D;
+    private HorizontalObjectArray objectArray;
+    private RotateOnFocus rotateOnFocus;
+    private File file;
 
     /// <summary>
     /// Gets the references to necessary components and checks the setup
@@ -25,6 +30,8 @@ public class LoadWidget : MonoBehaviour
         fileAnimator = GetComponent<Animator>();
         pageAnimators = new Animator[pages.Length];
         particles3D = GetComponent<Particles3D>();
+        rotateOnFocus = GetComponent<RotateOnFocus>();
+        file = GetComponent<File>();
 
         if (pages.Length == 0)
         {
@@ -41,6 +48,11 @@ public class LoadWidget : MonoBehaviour
                 pageAnimators[i] = pages[i].GetComponent<Animator>();
             }
         }
+    }
+
+    private void Start()
+    {
+        objectArray = transform.parent.gameObject.GetComponent<HorizontalObjectArray>();
     }
 
     /// <summary>
@@ -71,6 +83,7 @@ public class LoadWidget : MonoBehaviour
         if (fileOpen)
         {
             StartCoroutine(ActivatePages());
+            Invoke("MoveBack", 4f);
         }
     }
 
@@ -92,29 +105,53 @@ public class LoadWidget : MonoBehaviour
         int pageIndex = 0;
         while (fileOpen)
         {
-            yield return new WaitForSeconds(2f);
-            if (fileOpen) // situation could have changed while waiting
+            int secondPrevious = pageIndex - 2;
+            if (secondPrevious < 0)
             {
-                int secondPrevious = pageIndex - 2;
-                if (secondPrevious < 0)
-                {
-                    secondPrevious = pages.Length + secondPrevious;
-                }
-                pages[secondPrevious].SetActive(false);
-                pageAnimators[secondPrevious].Play("Idle");
-                pages[pageIndex].SetActive(true);
-                pageAnimators[pageIndex].Play("Turn Page");
-                pageIndex = (pageIndex + 1) % pages.Length;
+                secondPrevious = pages.Length + secondPrevious;
             }
+            pages[secondPrevious].SetActive(false);
+            pageAnimators[secondPrevious].Play("Idle");
+            pages[pageIndex].SetActive(true);
+            pageAnimators[pageIndex].Play("Turn Page");
+            pageIndex = (pageIndex + 1) % pages.Length;
+            yield return new WaitForSeconds(2f);
         }
     }
 
-    private void Update()
+    public void SelectFolder()
     {
-        // TODO: remove debug code
-        if (Input.GetKeyDown(KeyCode.Space))
+        objectArray.enabled = false;
+        rotateOnFocus.enabled = false;
+        FileOpen = true;
+        file.ProjectLoader.LockInteractables();
+        StartCoroutine(Move(transform.localPosition, transform.localPosition + 0.5f * transform.up, 0.8f));
+    }
+
+    private IEnumerator Move(Vector3 startPosition, Vector3 endPosition, float targetTime, Action OnFinished = null)
+    {
+        float time = 0;
+        while (time < targetTime)
         {
-            FileOpen = !FileOpen;
+            transform.localPosition = Vector3.Lerp(startPosition, endPosition, time / targetTime);
+            time += Time.deltaTime;
+            yield return null;
         }
+        transform.localPosition = endPosition;
+
+        OnFinished?.Invoke();
+    }
+
+    private void MoveBack()
+    {
+        FileOpen = false;
+        file.SelectFile();
+        StartCoroutine(Move(transform.localPosition, transform.localPosition - 0.5f * transform.up, 0.8f, () =>
+        {
+            objectArray.enabled = true;
+            rotateOnFocus.enabled = true;
+            rotateOnFocus.ToStandardRotation();
+            file.ProjectLoader.UnlockInteractables();
+        }));
     }
 }
