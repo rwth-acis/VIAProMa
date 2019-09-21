@@ -32,6 +32,7 @@ public class Visualization : MonoBehaviour, IViewContainer
         set
         {
             visualController.Title = value;
+            TitleChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -64,6 +65,11 @@ public class Visualization : MonoBehaviour, IViewContainer
     /// Invoked if the visualization was updated
     /// </summary>
     public event EventHandler VisualizationUpdated;
+
+    /// <summary>
+    /// Invoked if the visualization title was changed
+    /// </summary>
+    public event EventHandler TitleChanged;
 
     /// <summary>
     /// Sets or gets the VisualizationContentProvider
