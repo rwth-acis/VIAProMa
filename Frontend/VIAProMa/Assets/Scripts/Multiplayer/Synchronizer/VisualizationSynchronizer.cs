@@ -88,6 +88,7 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
         }
 
         photonView.RPC("Initialize", RpcTarget.Others, titleId, titleId, projectIds, ids, ConversionUtilities.ColorToVector3(visualization.Color));
+        Debug.Log("Sent visualization initialization data", gameObject);
     }
 
     private async void OnTitleChanged(object sender, EventArgs e)
@@ -140,6 +141,7 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
     [PunRPC]
     private void Initialize(short titleId, short[] projectIds, short[] ids, Vector3 color)
     {
+        Debug.Log("RPC: Initializing visualization", gameObject);
         remoteSynchronizations++;
         SetVisualizationTitle(titleId);
         SetVisualizationContent(projectIds, ids);
@@ -150,6 +152,7 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
     [PunRPC]
     private async void SetVisualizationTitle(short titleId)
     {
+        Debug.Log("RPC: Setting visualization title", gameObject);
         remoteSynchronizations++;
         string title = await NetworkedStringManager.GetString(titleId);
         visualization.Title = title;
@@ -165,6 +168,7 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
             return;
         }
 
+        Debug.Log("RPC: Setting visualization content", gameObject);
         remoteSynchronizations++;
         List<Issue> issues = new List<Issue>();
         for (int i=0;i<projectIds.Length;i++)
@@ -197,6 +201,7 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
     [PunRPC]
     private void SetVisualizationColor(Vector3 color)
     {
+        Debug.Log("RPC: Setting visualization color", gameObject);
         remoteSynchronizations++;
         Color convertedColor = ConversionUtilities.Vector3ToColor(color);
         visualization.Color = convertedColor;
