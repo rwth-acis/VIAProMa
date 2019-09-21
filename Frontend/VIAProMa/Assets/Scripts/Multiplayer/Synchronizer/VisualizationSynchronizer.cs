@@ -146,6 +146,7 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
         SetVisualizationTitle(titleId);
         SetVisualizationContent(projectIds, ids);
         SetVisualizationColor(color);
+        initialized = true;
         remoteSynchronizations--;
     }
 
