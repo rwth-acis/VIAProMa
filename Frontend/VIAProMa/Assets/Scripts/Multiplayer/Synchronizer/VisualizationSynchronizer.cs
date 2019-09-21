@@ -10,6 +10,8 @@ using UnityEngine;
 /// </summary>
 public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private bool synchronizeColor;
+
     private Visualization visualization;
 
     private int remoteSynchronizations = 0;
@@ -43,14 +45,20 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
         base.OnEnable();
         visualization.TitleChanged += OnTitleChanged;
         visualization.VisualizationUpdated += OnVisualizationUpdated;
-        visualization.ColorChanged += OnColorChanged;
+        if (synchronizeColor)
+        {
+            visualization.ColorChanged += OnColorChanged;
+        }
     }
 
     public override void OnDisable()
     {
         visualization.TitleChanged -= OnTitleChanged;
         visualization.VisualizationUpdated -= OnVisualizationUpdated;
-        visualization.ColorChanged -= OnColorChanged;
+        if (synchronizeColor)
+        {
+            visualization.ColorChanged -= OnColorChanged;
+        }
         base.OnDisable();
     }
 

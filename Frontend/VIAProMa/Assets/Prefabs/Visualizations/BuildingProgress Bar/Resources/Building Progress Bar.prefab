@@ -178,6 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 4698399378176166983, guid: 8fd2995fc2a2fc64199f2e748b74956e, type: 3}
+  destroyWithSpawner: 1
   targetBoundingBox: {fileID: 1798276415}
   configurationWindow: {fileID: 4744330326913161900}
 --- !u!1 &4212286529192697922
@@ -296,6 +297,8 @@ GameObject:
   - component: {fileID: 1226541684311843843}
   - component: {fileID: 7639842664847578639}
   - component: {fileID: 688672973052510570}
+  - component: {fileID: 251792626093063301}
+  - component: {fileID: 6007069650333747261}
   m_Layer: 0
   m_Name: Building Progress Bar
   m_TagString: Untagged
@@ -368,10 +371,10 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 0
+  Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 0}
+  - {fileID: 6007069650333747261}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -423,6 +426,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bda5b42c273ca3498ed2813d6182376, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &251792626093063301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195115283832244517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b892db2811b14b438397dedf7569633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synchronizeColor: 0
+--- !u!114 &6007069650333747261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195115283832244517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99f94f734fbefdb469c2d50a394ce4b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lerpSpeed: 15
 --- !u!1001 &1071087019820251133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -805,12 +834,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c8aa50a2b06a494999c1bd85d537e82, type: 3}
---- !u!4 &4212286529254144317 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 702864727490690430, guid: 7c8aa50a2b06a494999c1bd85d537e82,
-    type: 3}
-  m_PrefabInstance: {fileID: 3725637947045758019}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &495131666123723247 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3849188284164658604, guid: 7c8aa50a2b06a494999c1bd85d537e82,
@@ -826,6 +849,12 @@ MonoBehaviour:
 --- !u!4 &4212286528350769873 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 702864726260061842, guid: 7c8aa50a2b06a494999c1bd85d537e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 3725637947045758019}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4212286529254144317 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 702864727490690430, guid: 7c8aa50a2b06a494999c1bd85d537e82,
     type: 3}
   m_PrefabInstance: {fileID: 3725637947045758019}
   m_PrefabAsset: {fileID: 0}
