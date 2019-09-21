@@ -142,7 +142,7 @@ public static class IssueCache
     private static void GarbageCollect()
     {
         AssertCacheValid();
-        for (int i = cachedIssues.Count - 1; i >= 0; i++)
+        for (int i = cachedIssues.Count - 1; i >= 0; i--)
         {
             if (removeIndices.Contains(i))
             {
