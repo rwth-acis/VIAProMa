@@ -22,6 +22,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [Header("References")]
     [SerializeField] private GameObject issueShelfPrefab;
     [SerializeField] private GameObject visualizationShelfPrefab;
+    [SerializeField] private GameObject loadShelfPrefab;
     [SerializeField] private GameObject avatarConfiguratorPrefab;
 
     private FoldController foldController;
@@ -29,6 +30,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     // instances:
     private GameObject issueShelfInstance;
     private GameObject visualizationShelfInstance;
+    private GameObject loadShelfInstance;
     private GameObject avatarConfiguratorInstance;
 
     private void Awake()
@@ -65,6 +67,14 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (issueShelfPrefab == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueShelfPrefab));
+        }
+        if (visualizationShelfPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationShelfPrefab));
+        }
+        if (loadShelfPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(loadShelfPrefab));
         }
         if (avatarConfiguratorPrefab == null)
         {
@@ -153,6 +163,14 @@ public class MainMenu : MonoBehaviourPunCallbacks
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
         NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
+        foldController.FoldCube();
+    }
+
+    public void ShowLoadShelf()
+    {
+        Vector3 targetPosition = transform.position + 1f * transform.right;
+        targetPosition.y = 0f;
+        InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
         foldController.FoldCube();
     }
 

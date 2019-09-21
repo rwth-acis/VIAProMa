@@ -29,6 +29,10 @@ public class ProjectLoader : Shelf, ILoadShelf
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelfBoards));
         }
+    }
+
+    private void Start()
+    {
         LoadContent();
     }
 
