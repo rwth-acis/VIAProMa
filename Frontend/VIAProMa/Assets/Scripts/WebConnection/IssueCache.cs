@@ -142,10 +142,13 @@ public static class IssueCache
     private static void GarbageCollect()
     {
         AssertCacheValid();
-        for (int i=0;i<removeIndices.Count;i++)
+        for (int i = cachedIssues.Count - 1; i >= 0; i++)
         {
-            cachedIssues.RemoveAt(removeIndices[i]);
-            issueTimeDates.RemoveAt(removeIndices[i]);
+            if (removeIndices.Contains(i))
+            {
+                cachedIssues.RemoveAt(i);
+                cachedIssues.RemoveAt(i);
+            }
         }
         removeIndices.Clear();
         AssertCacheValid();
