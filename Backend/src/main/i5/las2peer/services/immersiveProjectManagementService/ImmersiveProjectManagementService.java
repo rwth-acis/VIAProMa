@@ -133,33 +133,6 @@ public class ImmersiveProjectManagementService extends RESTService {
 			}
 		}
 
-		@GET
-		@Path("/projects")
-		@Produces(MediaType.APPLICATION_JSON)
-		@ApiOperation(
-				value = "Get Projects",
-				notes = "Returns the list of projects which are saved on the server")
-		@ApiResponses(
-				value = { @ApiResponse(
-						code = HttpURLConnection.HTTP_OK,
-						message = "REPLACE THIS WITH YOUR OK MESSAGE") })
-		public Response getProjects() {
-			String[] projects = new String[64];
-			for (int i=0;i<64;i++)
-			{
-				projects[i] = "ReqBazProject " + (i+1);
-			}
-			try {
-				String result = Utilities.toUnityCompatibleArray(projects);
-				return  Response.ok().entity(result).build();
-			}
-			catch (IOException e)
-			{
-				return Response.serverError().entity(e.getMessage()).build();
-			}
-		}
-
-
 		@POST
 		@Path("/consoleLog")
 		@Produces(MediaType.TEXT_PLAIN)

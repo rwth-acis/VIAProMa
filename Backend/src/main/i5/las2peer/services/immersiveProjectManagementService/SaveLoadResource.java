@@ -5,6 +5,7 @@ import io.swagger.annotations.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,6 +31,35 @@ import java.nio.file.Paths;
 @Path("/saveData")
 public class SaveLoadResource
 {
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Get Projects",
+            notes = "Returns the list of projects which are saved on the server")
+    @ApiResponses(
+            value = { @ApiResponse(
+                    code = HttpURLConnection.HTTP_OK,
+                    message = "REPLACE THIS WITH YOUR OK MESSAGE") })
+    public Response getProjects() {
+            File saveDir = new File("saveData");
+            File[] saveFiles = saveDir.listFiles((d, name) -> name.endsWith(".json"));
+            String[] names = new String[saveFiles.length];
+            for (int i=0;i<saveFiles.length;i++)
+            {
+                String fullName = saveFiles[i].getName();
+                names[i] = fullName.substring(0, fullName.length() - 5); // remove .json ending
+            }
+            try {
+                String result = Utilities.toUnityCompatibleArray(names);
+                return Response.ok().entity(result).build();
+            }
+            catch (IOException e)
+            {
+                return Response.serverError().entity(e).build();
+            }
+    }
+
+
     @POST
     @Path("/{saveName}")
     @Consumes(MediaType.APPLICATION_JSON)

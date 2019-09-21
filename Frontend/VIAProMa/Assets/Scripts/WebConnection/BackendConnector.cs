@@ -92,7 +92,7 @@ public static class BackendConnector
     /// <returns></returns>
     public static async Task<ApiResult<string[]>> GetProjects()
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/");
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData");
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
