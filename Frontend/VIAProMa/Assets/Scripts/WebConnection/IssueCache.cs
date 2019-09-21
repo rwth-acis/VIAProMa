@@ -71,14 +71,18 @@ public static class IssueCache
             if (cachedIssues[i].Source == DataSource.REQUIREMENTS_BAZAAR && cachedIssues[i].Id == requirementId)
             {
                 // have found the issue
-                // garbage collect now since we will return directly afterwards
-                GarbageCollect();
                 if (valid)
                 {
-                    return cachedIssues[i];
+                    // first get the issue because the index can change after garbage collection
+                    Issue foundIssue = cachedIssues[i];
+                    // garbage collect now since we will return directly afterwards
+                    GarbageCollect();
+                    return foundIssue;
                 }
                 else
                 {
+                    // garbage collect now since we will return directly afterwards
+                    GarbageCollect();
                     return null;
                 }
             }
