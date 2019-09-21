@@ -85,7 +85,7 @@ public class VisualizationSynchronizer : MonoBehaviourPun
             ids[i] = (short)issue.Id;
         }
 
-        photonView.RPC("Initialize", RpcTarget.Others, titleId, titleId, projectIds, ids, visualization.Color);
+        photonView.RPC("Initialize", RpcTarget.Others, titleId, titleId, projectIds, ids, ConversionUtilities.ColorToVector3(visualization.Color));
     }
 
     private async void OnTitleChanged(object sender, EventArgs e)
@@ -132,11 +132,11 @@ public class VisualizationSynchronizer : MonoBehaviourPun
             return;
         }
 
-        photonView.RPC("SetVisualizationColor", RpcTarget.Others, visualization.Color);
+        photonView.RPC("SetVisualizationColor", RpcTarget.Others, ConversionUtilities.ColorToVector3(visualization.Color));
     }
 
     [PunRPC]
-    private void Initialize(short titleId, short[] projectIds, short[] ids, Color color)
+    private void Initialize(short titleId, short[] projectIds, short[] ids, Vector3 color)
     {
         remoteSynchronizations++;
         SetVisualizationTitle(titleId);
@@ -193,10 +193,11 @@ public class VisualizationSynchronizer : MonoBehaviourPun
     }
 
     [PunRPC]
-    private void SetVisualizationColor(Color color)
+    private void SetVisualizationColor(Vector3 color)
     {
         remoteSynchronizations++;
-        visualization.Color = color;
+        Color convertedColor = ConversionUtilities.Vector3ToColor(color);
+        visualization.Color = convertedColor;
         remoteSynchronizations--;
     }
 }
