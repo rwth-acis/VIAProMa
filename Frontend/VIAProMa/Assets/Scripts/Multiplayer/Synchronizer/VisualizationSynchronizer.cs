@@ -42,12 +42,14 @@ public class VisualizationSynchronizer : MonoBehaviourPun
     {
         visualization.TitleChanged += OnTitleChanged;
         visualization.VisualizationUpdated += OnVisualizationUpdated;
+        visualization.ColorChanged += OnColorChanged;
     }
 
     private void OnDisable()
     {
-        visualization.TitleChanged += OnTitleChanged;
-        visualization.VisualizationUpdated += OnVisualizationUpdated;
+        visualization.TitleChanged -= OnTitleChanged;
+        visualization.VisualizationUpdated -= OnVisualizationUpdated;
+        visualization.ColorChanged -= OnColorChanged;
     }
 
     private async void OnTitleChanged(object sender, EventArgs e)
@@ -85,6 +87,16 @@ public class VisualizationSynchronizer : MonoBehaviourPun
             ids[i] = (short)issue.Id;
         }
         photonView.RPC("SetVisualizationContent", RpcTarget.Others, projectIds, ids);
+    }
+
+    private void OnColorChanged(object sender, EventArgs e)
+    {
+        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+        {
+            return;
+        }
+
+        photonView.RPC("SetVisualizationColor", RpcTarget.Others, visualization.Color);
     }
 
     [PunRPC]
@@ -131,6 +143,14 @@ public class VisualizationSynchronizer : MonoBehaviourPun
         provider.Issues = issues;
         visualization.ContentProvider = provider;
 
+        remoteSynchronizations--;
+    }
+
+    [PunRPC]
+    private void SetVisualizationColor(Color color)
+    {
+        remoteSynchronizations++;
+        visualization.Color = color;
         remoteSynchronizations--;
     }
 }

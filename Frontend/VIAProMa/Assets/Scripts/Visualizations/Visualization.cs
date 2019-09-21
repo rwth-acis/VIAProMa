@@ -57,6 +57,7 @@ public class Visualization : MonoBehaviour, IViewContainer
             if (colorChanger != null)
             {
                 colorChanger.Color = value;
+                ColorChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -70,6 +71,11 @@ public class Visualization : MonoBehaviour, IViewContainer
     /// Invoked if the visualization title was changed
     /// </summary>
     public event EventHandler TitleChanged;
+
+    /// <summary>
+    /// Invoked if the color of this visualization was changed
+    /// </summary>
+    public event EventHandler ColorChanged;
 
     /// <summary>
     /// Sets or gets the VisualizationContentProvider
