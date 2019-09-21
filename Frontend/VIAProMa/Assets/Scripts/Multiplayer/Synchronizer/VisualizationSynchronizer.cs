@@ -87,7 +87,7 @@ public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
             ids[i] = (short)issue.Id;
         }
 
-        photonView.RPC("Initialize", RpcTarget.Others, titleId, titleId, projectIds, ids, ConversionUtilities.ColorToVector3(visualization.Color));
+        photonView.RPC("Initialize", RpcTarget.Others, titleId, projectIds, ids, ConversionUtilities.ColorToVector3(visualization.Color));
         Debug.Log("Sent visualization initialization data", gameObject);
     }
 
