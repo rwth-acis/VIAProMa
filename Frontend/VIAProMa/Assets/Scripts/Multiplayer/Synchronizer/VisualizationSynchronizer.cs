@@ -30,11 +30,11 @@ public class VisualizationSynchronizer : MonoBehaviourPun
 
     private void Start()
     {
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    initialized = true;
-        //    await SendInitializationData();
-        //}
+        if (PhotonNetwork.IsMasterClient)
+        {
+            initialized = true;
+            await SendInitializationData();
+        }
         initialized = true;
     }
 
@@ -50,6 +50,29 @@ public class VisualizationSynchronizer : MonoBehaviourPun
         visualization.TitleChanged -= OnTitleChanged;
         visualization.VisualizationUpdated -= OnVisualizationUpdated;
         visualization.ColorChanged -= OnColorChanged;
+    }
+
+    private async void SendInitializationData()
+    {
+        short titleId = await NetworkedStringManager.StringToId(visualization.Title);
+        short[] projectIds = new short[visualization.ContentProvider.Issues.Count];
+        short[] ids = new short[projectIds.Length];
+
+        for (int i = 0; i < projectIds.Length; i++)
+        {
+            Issue issue = visualization.ContentProvider.Issues[i];
+            if (issue.Source == DataSource.REQUIREMENTS_BAZAAR)
+            {
+                projectIds[i] = -1;
+            }
+            else
+            {
+                projectIds[i] = (short)issue.ProjectId;
+            }
+            ids[i] = (short)issue.Id;
+        }
+
+        photonView.RPC("Initialize", RpcTarget.Others, titleId, titleId, projectIds, ids, visualization.Color);
     }
 
     private async void OnTitleChanged(object sender, EventArgs e)
@@ -97,6 +120,16 @@ public class VisualizationSynchronizer : MonoBehaviourPun
         }
 
         photonView.RPC("SetVisualizationColor", RpcTarget.Others, visualization.Color);
+    }
+
+    [PunRPC]
+    private void Initialize(short titleId, short[] projectIds, short[] ids, Color color)
+    {
+        remoteSynchronizations++;
+        SetVisualizationTitle(titleId);
+        SetVisualizationContent(projectIds, ids);
+        SetVisualizationColor(color);
+        remoteSynchronizations--;
     }
 
     [PunRPC]
