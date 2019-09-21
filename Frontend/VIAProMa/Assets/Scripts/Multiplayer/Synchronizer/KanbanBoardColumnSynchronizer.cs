@@ -20,11 +20,13 @@ public class KanbanBoardColumnSynchronizer : TransformSynchronizer
         {
             stream.SendNext(visualController.Width);
             stream.SendNext(visualController.Height);
+            stream.SendNext((short)visualController.Page);
         }
         else
         {
             visualController.Width = (float)stream.ReceiveNext();
             visualController.Height = (float)stream.ReceiveNext();
+            visualController.Page = (short)stream.ReceiveNext();
         }
     }
 }
