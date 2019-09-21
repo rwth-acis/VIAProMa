@@ -14,8 +14,6 @@ public class ProjectLoader : Shelf, ILoadShelf
     private List<File> files;
     private List<Interactable> interactables;
 
-    private int pageOffset = 0;
-
     public MessageBadge MessageBadge { get => messageBadge; }
 
     protected override void Awake()
