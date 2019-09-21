@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,9 +34,8 @@ public class VisualizationSynchronizer : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             initialized = true;
-            await SendInitializationData();
+            SendInitializationData();
         }
-        initialized = true;
     }
 
     private void OnEnable()
@@ -52,8 +52,21 @@ public class VisualizationSynchronizer : MonoBehaviourPun
         visualization.ColorChanged -= OnColorChanged;
     }
 
+    public void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
+        {
+            SendInitializationData();
+        }
+    }
+
     private async void SendInitializationData()
     {
+        if (!PhotonNetwork.IsConnected)
+        {
+            return;
+        }
+
         short titleId = await NetworkedStringManager.StringToId(visualization.Title);
         short[] projectIds = new short[visualization.ContentProvider.Issues.Count];
         short[] ids = new short[projectIds.Length];
