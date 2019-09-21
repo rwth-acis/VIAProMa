@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// Synchronizes the title, content and color of a visualization
 /// </summary>
-public class VisualizationSynchronizer : MonoBehaviourPun
+public class VisualizationSynchronizer : MonoBehaviourPunCallbacks
 {
     private Visualization visualization;
 
@@ -38,21 +38,23 @@ public class VisualizationSynchronizer : MonoBehaviourPun
         }
     }
 
-    private void OnEnable()
+    public override void OnEnable()
     {
+        base.OnEnable();
         visualization.TitleChanged += OnTitleChanged;
         visualization.VisualizationUpdated += OnVisualizationUpdated;
         visualization.ColorChanged += OnColorChanged;
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
         visualization.TitleChanged -= OnTitleChanged;
         visualization.VisualizationUpdated -= OnVisualizationUpdated;
         visualization.ColorChanged -= OnColorChanged;
+        base.OnDisable();
     }
 
-    public void OnPlayerEnteredRoom(Player newPlayer)
+    public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
         {
