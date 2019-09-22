@@ -7,7 +7,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 
 public class VisualizationInstantiator : MonoBehaviour, IMixedRealityPointerHandler
 {
-    [SerializeField] GameObject visualizationPrefab;
+    [SerializeField] private GameObject visualizationPrefab;
 
     private BoundingBoxStateController boxStateController;
     private ManipulationHandler handler;
@@ -26,15 +26,17 @@ public class VisualizationInstantiator : MonoBehaviour, IMixedRealityPointerHand
 
     public void OnPointerDown(MixedRealityPointerEventData eventData)
     {
-        GameObject instance = ResourceManager.Instance.NetworkInstantiate(visualizationPrefab, transform.position, transform.rotation);
-        boxStateController = instance.GetComponentInChildren<BoundingBoxStateController>();
-        if (boxStateController == null)
+        ResourceManager.Instance.SceneNetworkInstantiate(visualizationPrefab, transform.position, transform.rotation, (instance) =>
         {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
-        }
-        boxStateController.BoundingBoxActive = true;
-        handler = instance.GetComponentInChildren<ManipulationHandler>();
-        handler.OnPointerDown(eventData);
+            boxStateController = instance.GetComponentInChildren<BoundingBoxStateController>();
+            if (boxStateController == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
+            }
+            boxStateController.BoundingBoxActive = true;
+            handler = instance.GetComponentInChildren<ManipulationHandler>();
+            handler.OnPointerDown(eventData);
+        });
     }
 
     public void OnPointerDragged(MixedRealityPointerEventData eventData)
