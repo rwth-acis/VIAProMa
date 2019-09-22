@@ -249,7 +249,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
 
     private async void OnApplicationQuit()
     {
-        if (!savedOnQuit)
+        if (AutoSaveActive && !savedOnQuit)
         {
             await SaveScene();
             savedOnQuit = true;
