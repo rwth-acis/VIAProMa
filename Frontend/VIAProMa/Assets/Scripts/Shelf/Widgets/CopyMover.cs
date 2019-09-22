@@ -73,13 +73,13 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
                 (obj) =>
                 {
                     copyInstance = obj;
-                    handlerOnCopy = copyInstance?.GetComponent<ManipulationHandler>();
+                    handlerOnCopy = copyInstance?.GetComponentInChildren<ManipulationHandler>();
                     IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
                     if (handlerOnCopy == null || remoteDataDisplay == null)
                     {
                         if (handlerOnCopy == null)
                         {
-                            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IMixedRealityPointerHandler), copyInstance);
+                            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ManipulationHandler), copyInstance);
                         }
                         if (remoteDataDisplay == null)
                         {
