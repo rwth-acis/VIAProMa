@@ -88,6 +88,11 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
     private string CombinedFilterText()
     {
         string[] filterWords = ((CompetenceDisplay)visualization).FilterWords;
+        if (filterWords == null)
+        {
+            return "";
+        }
+
         string combinedFilter = "";
         for (int i = 0; i < filterWords.Length; i++)
         {

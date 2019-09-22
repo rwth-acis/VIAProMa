@@ -79,6 +79,11 @@ public class CompetenceDisplaySynchronizer : MonoBehaviourPunCallbacks
 
     private string CombineFilter(string[] filterWorlds)
     {
+        if (filterWorlds == null)
+        {
+            return "";
+        }
+
         string combinedFilter = "";
         for (int i = 0; i < filterWorlds.Length; i++)
         {
