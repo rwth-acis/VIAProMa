@@ -84,11 +84,12 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
         }
     }
 
-    public async Task<bool> LoadScene()
+    public async Task<bool> LoadScene(string saveName)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            ApiResult<string> res = await BackendConnector.Load(SaveName);
+            SaveName = saveName;
+            ApiResult<string> res = await BackendConnector.Load(saveName);
             if (res.Successful)
             {
                 DeserializeSaveGame(res.Value);

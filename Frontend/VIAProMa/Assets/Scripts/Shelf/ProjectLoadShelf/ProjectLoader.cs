@@ -77,7 +77,7 @@ public class ProjectLoader : Shelf, ILoadShelf
 
     public async void LoadProject(string name)
     {
-        await BackendConnector.Load(name);
+        await SaveLoadManager.Instance.LoadScene(name);
     }
 
     public void LockInteractables()
