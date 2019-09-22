@@ -91,7 +91,12 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
         {
             if (photonView != null)
             {
+                string previousName = nameLabel.text;
                 nameLabel.text = photonView.Owner.NickName;
+                if (previousName != photonView.Owner.NickName)
+                {
+                    ChatManager.Instance.AddLocalMessage(previousName + " changed the name to " + photonView.Owner.NickName);
+                }
             }
             else
             {

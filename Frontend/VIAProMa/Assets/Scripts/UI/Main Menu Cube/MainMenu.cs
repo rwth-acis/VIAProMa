@@ -246,14 +246,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void ChatButtonClicked()
     {
-        if (PhotonNetwork.InRoom)
-        {
-            WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-        }
-        else
-        {
-            Debug.LogError("Chat button clicked while outside of room.");
-        }
+        WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
         foldController.FoldCube();
     }
 

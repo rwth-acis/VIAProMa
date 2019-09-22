@@ -85,7 +85,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         ConnectionStatusChanged?.Invoke(this, EventArgs.Empty);
         if (cause != DisconnectCause.DisconnectByClientLogic)
         {
-            NotificationSystem.Instance.ShowMessage("Lost connection (" + cause.ToString() + ")");
+            ChatManager.Instance.AddLocalMessage("Lost connection (" + cause.ToString() + ")");
         }
     }
 
