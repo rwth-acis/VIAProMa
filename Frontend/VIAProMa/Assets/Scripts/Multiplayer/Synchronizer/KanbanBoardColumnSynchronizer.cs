@@ -8,6 +8,9 @@ public class KanbanBoardColumnSynchronizer : TransformSynchronizer
 {
     private KanbanBoardColumnVisualController visualController;
 
+    private float targetWidth;
+    private float targetHeight;
+
     private void Awake()
     {
         visualController = GetComponent<KanbanBoardColumnVisualController>();
@@ -24,9 +27,19 @@ public class KanbanBoardColumnSynchronizer : TransformSynchronizer
         }
         else
         {
-            visualController.Width = (float)stream.ReceiveNext();
-            visualController.Height = (float)stream.ReceiveNext();
+            targetWidth = (float)stream.ReceiveNext();
+            targetHeight = (float)stream.ReceiveNext();
             visualController.Page = (short)stream.ReceiveNext();
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if (Initialized && photonView.Owner != PhotonNetwork.LocalPlayer)
+        {
+            visualController.Width = SmoothFloat(visualController.Width, targetWidth, lerpSpeed);
+            visualController.Height = SmoothFloat(visualController.Height, targetHeight, lerpSpeed);
         }
     }
 }

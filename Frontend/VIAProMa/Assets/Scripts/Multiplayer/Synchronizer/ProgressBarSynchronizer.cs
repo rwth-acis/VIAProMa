@@ -10,6 +10,8 @@ public class ProgressBarSynchronizer : TransformSynchronizer
 {
     private ProgressBarController progressBarController;
 
+    private float targetLength;
+
     private void Awake()
     {
         progressBarController = GetComponent<ProgressBarController>();
@@ -24,7 +26,16 @@ public class ProgressBarSynchronizer : TransformSynchronizer
         }
         else
         {
-            progressBarController.Length = (float)stream.ReceiveNext();
+            targetLength = (float)stream.ReceiveNext();
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if (Initialized && photonView.Owner != PhotonNetwork.LocalPlayer)
+        {
+            progressBarController.Length = SmoothFloat(progressBarController.Length, targetLength, lerpSpeed);
         }
     }
 }
