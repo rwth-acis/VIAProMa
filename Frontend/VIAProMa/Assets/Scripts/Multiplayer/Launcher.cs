@@ -83,6 +83,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         Debug.Log("OnDisconnected()" + cause.ToString());
         ConnectionStatusChanged?.Invoke(this, EventArgs.Empty);
+        if (cause != DisconnectCause.DisconnectByClientLogic)
+        {
+            NotificationSystem.Instance.ShowMessage("Lost connection (" + cause.ToString() + ")");
+        }
     }
 
     /// <summary>
