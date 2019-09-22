@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [SerializeField] private Interactable loadButton;
     [SerializeField] private Interactable issueShelfButton;
     [SerializeField] private Interactable visualizationShelfButton;
+    [SerializeField] private Interactable loginButton;
     [SerializeField] private Interactable roomButton;
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
@@ -61,6 +62,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (visualizationShelfButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationShelfButton));
+        }
+        if (loginButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(loginButton));
         }
         if (roomButton == null)
         {
@@ -202,6 +207,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
         targetPosition.y = 0f;
         InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
         foldController.FoldCube();
+    }
+
+    public void ShowLoginMenu()
+    {
+        WindowManager.Instance.LoginMenu.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
     }
 
     public void ShowAvatarConfiguration()

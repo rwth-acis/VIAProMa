@@ -1,4 +1,6 @@
-﻿using Photon.Pun;
+﻿using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// Controls the ID card on the avatar and fills its displays with data
 /// </summary>
-public class IdCardController : MonoBehaviour
+public class IdCardController : MonoBehaviour, IOnEventCallback
 {
     [Tooltip("The label which displays the user name")]
     [SerializeField] private TextMeshPro nameLabel;
@@ -58,6 +60,16 @@ public class IdCardController : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    private void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
+    }
+
     [PunRPC]
     private void OnIDCardPropertyUpdated()
     {
@@ -70,5 +82,14 @@ public class IdCardController : MonoBehaviour
             nameLabel.text = PhotonNetwork.LocalPlayer.NickName;
         }
         roleLabel.text = "";
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        byte eventCode = photonEvent.Code;
+        if (eventCode == 1)
+        {
+            nameLabel.text = photonView.Owner.NickName;
+        }
     }
 }
