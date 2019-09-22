@@ -30,16 +30,15 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(filterInputField));
         }
+        else
+        {
+            filterInputField.Text = CombinedFilterText();
+            filterInputField.TextChanged += FilterChanged;
+        }
 
         issueSelection = GetComponent<ConfigurationIssueSelectionUI>();
         issueSelection.Setup(visualization);
         ((CompetenceDisplay)visualization).FilterWords = new string[0];
-    }
-
-    private void Start()
-    {
-        filterInputField.Text = CombinedFilterText();
-        filterInputField.TextChanged += FilterChanged;
     }
 
     protected override void OnEnable()
