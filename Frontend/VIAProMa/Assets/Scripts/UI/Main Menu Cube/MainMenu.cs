@@ -212,6 +212,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public void ShowLoginMenu()
     {
         WindowManager.Instance.LoginMenu.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
+        foldController.FoldCube();
     }
 
     public void ShowAvatarConfiguration()

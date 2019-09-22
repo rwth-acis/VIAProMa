@@ -89,7 +89,14 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
         byte eventCode = photonEvent.Code;
         if (eventCode == 1)
         {
-            nameLabel.text = photonView.Owner.NickName;
+            if (photonView != null)
+            {
+                nameLabel.text = photonView.Owner.NickName;
+            }
+            else
+            {
+                nameLabel.text = PhotonNetwork.LocalPlayer.NickName;
+            }
         }
     }
 }
