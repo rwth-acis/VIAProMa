@@ -92,12 +92,34 @@ MonoBehaviour:
   hideElementsInInspector: 1
   RotateStarted:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2516406491857940383}
+        m_MethodName: EnsureOwnership
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   RotateStopped:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2516406491857940383}
+        m_MethodName: ReleaseOwnershipLock
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   ScaleStarted:
@@ -135,12 +157,34 @@ MonoBehaviour:
   smoothingAmountOneHandManip: 0.001
   OnManipulationStarted:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2516406491857940383}
+        m_MethodName: EnsureOwnership
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnManipulationEnded:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2516406491857940383}
+        m_MethodName: ReleaseOwnershipLock
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnHoverEntered:
@@ -299,6 +343,7 @@ GameObject:
   - component: {fileID: 688672973052510570}
   - component: {fileID: 251792626093063301}
   - component: {fileID: 6007069650333747261}
+  - component: {fileID: 2516406491857940383}
   m_Layer: 0
   m_Name: Building Progress Bar
   m_TagString: Untagged
@@ -372,7 +417,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 0
+  OwnershipTransfer: 2
   ObservedComponents:
   - {fileID: 6007069650333747261}
   viewIdField: 0
@@ -452,6 +497,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lerpSpeed: 15
+--- !u!114 &2516406491857940383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8195115283832244517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 889cf250a9686284fa48bde7f9f5fac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1071087019820251133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -834,6 +891,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7c8aa50a2b06a494999c1bd85d537e82, type: 3}
+--- !u!4 &4212286529254144317 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 702864727490690430, guid: 7c8aa50a2b06a494999c1bd85d537e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 3725637947045758019}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4212286528350769873 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 702864726260061842, guid: 7c8aa50a2b06a494999c1bd85d537e82,
+    type: 3}
+  m_PrefabInstance: {fileID: 3725637947045758019}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &495131666123723247 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3849188284164658604, guid: 7c8aa50a2b06a494999c1bd85d537e82,
@@ -846,18 +915,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 347d2bfd9d7081d448996c96587ab9d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &4212286528350769873 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 702864726260061842, guid: 7c8aa50a2b06a494999c1bd85d537e82,
-    type: 3}
-  m_PrefabInstance: {fileID: 3725637947045758019}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &4212286529254144317 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 702864727490690430, guid: 7c8aa50a2b06a494999c1bd85d537e82,
-    type: 3}
-  m_PrefabInstance: {fileID: 3725637947045758019}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4112093070289667467
 PrefabInstance:
   m_ObjectHideFlags: 0
