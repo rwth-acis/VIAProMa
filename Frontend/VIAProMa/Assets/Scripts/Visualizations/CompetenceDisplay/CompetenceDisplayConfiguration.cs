@@ -7,12 +7,9 @@ using UnityEngine;
 [RequireComponent(typeof(ConfigurationIssueSelectionUI))]
 public class CompetenceDisplayConfiguration : ConfigurationWindow
 {
-    [Header("UI Elements")]
     [SerializeField] private InputField filterInputField;
 
     private ConfigurationIssueSelectionUI issueSelection;
-
-    private bool externalConfiguration = false;
 
     public override bool WindowEnabled
     {
@@ -35,7 +32,7 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
         }
         else
         {
-            filterInputField.Text = "";
+            filterInputField.Text = CombinedFilterText();
             filterInputField.TextChanged += FilterChanged;
         }
 
@@ -44,19 +41,21 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
         ((CompetenceDisplay)visualization).FilterWords = new string[0];
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         ((CompetenceDisplay)visualization).FilterChanged += FilterExternallyChanged;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         ((CompetenceDisplay)visualization).FilterChanged -= FilterExternallyChanged;
     }
 
     private void FilterChanged(object sender, EventArgs e)
     {
-        if (externalConfiguration)
+        if (externalConfiguration > 0)
         {
             return;
         }
@@ -78,20 +77,25 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
 
     private void FilterExternallyChanged(object sender, EventArgs e)
     {
-        externalConfiguration = true;
+        externalConfiguration++;
 
+        filterInputField.Text = CombinedFilterText();
+
+        externalConfiguration--;
+    }
+
+    private string CombinedFilterText()
+    {
         string[] filterWords = ((CompetenceDisplay)visualization).FilterWords;
         string combinedFilter = "";
-        for (int i=0;i<filterWords.Length;i++)
+        for (int i = 0; i < filterWords.Length; i++)
         {
             combinedFilter += filterWords[i];
-            if (i < filterWords.Length -1)
+            if (i < filterWords.Length - 1)
             {
                 combinedFilter += "; ";
             }
         }
-        filterInputField.Text = combinedFilter;
-
-        externalConfiguration = false;
+        return combinedFilter;
     }
 }
