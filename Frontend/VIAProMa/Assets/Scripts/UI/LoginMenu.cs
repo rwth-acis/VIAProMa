@@ -11,6 +11,7 @@ using UnityEngine;
 public class LoginMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private InputField nameInputField;
+    [SerializeField] private Interactable doneButton;
 
     public bool WindowEnabled { get; set; }
 
@@ -24,6 +25,19 @@ public class LoginMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(nameInputField));
         }
+        else
+        {
+            nameInputField.TextChanged += NameInputChanged;
+        }
+        if (doneButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(doneButton));
+        }
+    }
+
+    private void NameInputChanged(object sender, EventArgs e)
+    {
+        doneButton.Enabled = !string.IsNullOrWhiteSpace(nameInputField.Text);
     }
 
     private void OnEnable()
@@ -56,6 +70,7 @@ public class LoginMenu : MonoBehaviour, IWindow
             PhotonNetwork.NickName = nameInputField.Text;
             RaiseNameChangedEvent();
         }
+        Close();
     }
 
     private void RaiseNameChangedEvent()
