@@ -48,6 +48,11 @@ public static class NetworkedStringManager
     /// <returns>The text segment of the id</returns>
     public static async Task<string> GetString(short id)
     {
+        if (id == -1)
+        {
+            return "";
+        }
+
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id);
         if (resp.Successful)
         {

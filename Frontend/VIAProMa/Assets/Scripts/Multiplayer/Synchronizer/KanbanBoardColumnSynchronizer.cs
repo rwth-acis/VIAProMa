@@ -36,7 +36,7 @@ public class KanbanBoardColumnSynchronizer : TransformSynchronizer
     protected override void Update()
     {
         base.Update();
-        if (Initialized && photonView.Owner != PhotonNetwork.LocalPlayer)
+        if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
         {
             visualController.Width = SmoothFloat(visualController.Width, targetWidth, lerpSpeed);
             visualController.Height = SmoothFloat(visualController.Height, targetHeight, lerpSpeed);

@@ -15,7 +15,7 @@ public class TransformSynchronizer : MonoBehaviourPunCallbacks, IPunObservable
 
     public float lerpSpeed = 15;
 
-    public bool Initialized { get; private set; } = false;
+    public bool TransformSynchronizationInitialized { get; private set; } = false;
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -48,13 +48,13 @@ public class TransformSynchronizer : MonoBehaviourPunCallbacks, IPunObservable
             {
                 targetScale = (Vector3)(stream.ReceiveNext());
             }
-            Initialized = true;
+            TransformSynchronizationInitialized = true;
         }
     }
 
     protected virtual void Update()
     {
-        if (Initialized && photonView.Owner != PhotonNetwork.LocalPlayer)
+        if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
         {
             // smoothly interpolate synchronized values
             if (synchronizePosition)

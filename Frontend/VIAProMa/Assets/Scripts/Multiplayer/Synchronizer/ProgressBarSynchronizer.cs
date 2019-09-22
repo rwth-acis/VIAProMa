@@ -33,7 +33,7 @@ public class ProgressBarSynchronizer : TransformSynchronizer
     protected override void Update()
     {
         base.Update();
-        if (Initialized && photonView.Owner != PhotonNetwork.LocalPlayer)
+        if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
         {
             progressBarController.Length = SmoothFloat(progressBarController.Length, targetLength, lerpSpeed);
         }
