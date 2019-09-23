@@ -256,6 +256,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
         if (instance != null)
         {
+            instance.SetActive(true);
             instance.transform.position = targetPosition;
             instance.transform.rotation = targetRotation;
         }

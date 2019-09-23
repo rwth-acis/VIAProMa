@@ -95,4 +95,9 @@ public class ProjectLoader : Shelf, ILoadShelf
             interactable.Enabled = true;
         }
     }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
 }

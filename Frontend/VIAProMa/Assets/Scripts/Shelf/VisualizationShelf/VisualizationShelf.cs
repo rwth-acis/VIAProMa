@@ -65,4 +65,9 @@ public class VisualizationShelf : Shelf
         base.ScrollUp();
         DisplayWidgets();
     }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
 }
