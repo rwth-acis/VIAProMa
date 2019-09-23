@@ -91,6 +91,11 @@ public class AvatarConfigurator : MonoBehaviour
         OnCategorySelection();
     }
 
+    public void Close()
+    {
+        Destroy(gameObject);
+    }
+
     private void EnsureAvatarConfigController()
     {
         if (avatarConfigurationController == null)
