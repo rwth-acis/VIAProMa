@@ -11,7 +11,7 @@ using UnityEngine.Networking;
 /// </summary>
 public class UserDataDisplay : DataDisplay<User>
 {
-    [SerializeField] private SpriteRenderer profileImageSprite;
+    [SerializeField] private Renderer profileImageRenderer;
     [SerializeField] TextMeshPro userNameLabel;
 
     private const float pixelDensity = 2000f / 512f;
@@ -23,9 +23,9 @@ public class UserDataDisplay : DataDisplay<User>
     /// </summary>
     private void Awake()
     {
-        if (profileImageSprite == null)
+        if (profileImageRenderer == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(profileImageSprite));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(profileImageRenderer));
         }
         if (userNameLabel == null)
         {
@@ -60,11 +60,18 @@ public class UserDataDisplay : DataDisplay<User>
     /// <param name="profileImage">The texture which should be applied to the profile image view</param>
     private void SetProfileImage(Texture2D profileImage)
     {
-        if (profileImageSprite != null)
+        if (profileImageRenderer != null)
         {
-            float pixelsPerUnit = Mathf.Min(profileImage.width, profileImage.height) * pixelDensity;
-            Sprite sprite = Sprite.Create(profileImage, new Rect(0, 0, profileImage.width, profileImage.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
-            profileImageSprite.sprite = sprite;
+            profileImageRenderer.material.mainTexture = profileImage;
+            if (profileImage.width == 0 || profileImage.height == 0)
+            {
+                return;
+            }
+            // adjust the scaling to avoid stretching
+            float minSize = Mathf.Min(profileImage.width, profileImage.height);
+            Vector2 scale = new Vector2(minSize / profileImage.width, minSize / profileImage.height);
+            profileImageRenderer.material.mainTextureScale = scale;
+            profileImageRenderer.material.mainTextureOffset = 0.5f * (Vector2.one - scale);
         }
     }
 

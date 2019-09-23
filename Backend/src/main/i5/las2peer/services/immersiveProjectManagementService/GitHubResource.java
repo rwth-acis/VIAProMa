@@ -40,7 +40,7 @@ import java.net.HttpURLConnection;
 @Path("/gitHub")
 public class GitHubResource
 {
-    public GitHubResource() throws  Exception
+    public GitHubResource()
     {
     }
 

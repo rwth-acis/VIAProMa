@@ -3,12 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Spawner for an app bar with a configuration button
+/// </summary>
 public class AppBarConfigurableSpawner : AppBarSpanwer
 {
     [SerializeField] private GameObject configurationWindow;
 
     private IWindow configurationWindowInterface;
 
+    /// <summary>
+    /// Checks the component's setup and initializes it
+    /// </summary>
     protected override void Awake()
     {
         if (configurationWindow == null)
@@ -24,6 +30,10 @@ public class AppBarConfigurableSpawner : AppBarSpanwer
         base.Awake();
     }
 
+    /// <summary>
+    /// Sets up the spawned instance
+    /// Adds the configuration window to the configuration actions
+    /// </summary>
     protected override void Setup()
     {
         base.Setup();
@@ -31,6 +41,10 @@ public class AppBarConfigurableSpawner : AppBarSpanwer
         configurationActions.ConfigurationWindow = configurationWindowInterface;
     }
 
+    /// <summary>
+    /// Called in the editor if the component's setup in the inspector is changed
+    /// Checks if the configuration window has an IWindow component and otherwise it rejects the configurationWindow object
+    /// </summary>
     private void OnValidate()
     {
         if (configurationWindow != null)

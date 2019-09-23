@@ -4,8 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Spawns an app bar
+/// </summary>
 public class AppBarSpanwer : Spawner
 {
+    [Tooltip("The target bounding box to which the app bar should be attached")]
     [SerializeField] protected BoundingBox targetBoundingBox;
 
     protected override void Awake()

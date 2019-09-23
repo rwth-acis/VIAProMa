@@ -71,14 +71,18 @@ public static class IssueCache
             if (cachedIssues[i].Source == DataSource.REQUIREMENTS_BAZAAR && cachedIssues[i].Id == requirementId)
             {
                 // have found the issue
-                // garbage collect now since we will return directly afterwards
-                GarbageCollect();
                 if (valid)
                 {
-                    return cachedIssues[i];
+                    // first get the issue because the index can change after garbage collection
+                    Issue foundIssue = cachedIssues[i];
+                    // garbage collect now since we will return directly afterwards
+                    GarbageCollect();
+                    return foundIssue;
                 }
                 else
                 {
+                    // garbage collect now since we will return directly afterwards
+                    GarbageCollect();
                     return null;
                 }
             }
@@ -138,10 +142,13 @@ public static class IssueCache
     private static void GarbageCollect()
     {
         AssertCacheValid();
-        for (int i=0;i<removeIndices.Count;i++)
+        for (int i = cachedIssues.Count - 1; i >= 0; i--)
         {
-            cachedIssues.RemoveAt(removeIndices[i]);
-            issueTimeDates.RemoveAt(removeIndices[i]);
+            if (removeIndices.Contains(i))
+            {
+                cachedIssues.RemoveAt(i);
+                cachedIssues.RemoveAt(i);
+            }
         }
         removeIndices.Clear();
         AssertCacheValid();

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the visiblilty of the avatar
+/// </summary>
 public class AdvancedAvatarVisualController : MonoBehaviourPun
 {
     /// <summary>
@@ -22,6 +25,12 @@ public class AdvancedAvatarVisualController : MonoBehaviourPun
         }
     }
 
+    /// <summary>
+    /// Makes sure that all child objects of the avatar are turned on/off
+    /// It is not possible to use gameobject.SetActive because the logic on the gameobject should still be executed
+    /// Therefore, only the children are deactivated if visibility is set to false
+    /// </summary>
+    /// <param name="visibility">States if the avatar should be visible</param>
     private void SetVisibility(bool visibility)
     {
         foreach(Transform child in transform)

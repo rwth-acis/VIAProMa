@@ -48,6 +48,15 @@ public class KanbanBoardColumnVisualController : MonoBehaviour, IVisualizationVi
     private int page = 0;
     private int firstItemOnPage = 0;
 
+    public int Page
+    {
+        get => page;
+        set
+        {
+            SetPage(value);
+        }
+    }
+
     public float Width
     {
         get => background.localScale.x;

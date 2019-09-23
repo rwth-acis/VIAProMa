@@ -12,9 +12,22 @@ public class CompetenceDisplay : Visualization
     public float developerScore = 3f;
     public float closedDeveloperScore = 5f;
 
-    private Dictionary<string, UserScore> scores = new Dictionary<string, UserScore>();
+    public event EventHandler FilterChanged;
 
-    public string[] FilterWords { get; set; }
+    private Dictionary<string, UserScore> scores = new Dictionary<string, UserScore>();
+    private string[] filterWords;
+
+
+
+    public string[] FilterWords
+    {
+        get => filterWords;
+        set
+        {
+            filterWords = value;
+            FilterChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
     protected override void Awake()
     {
@@ -56,7 +69,7 @@ public class CompetenceDisplay : Visualization
                         scores[dev.UserName].AddDevelopedIssue(issue);
                     }
                 }
-                foreach(User commenter in issue.Commenters)
+                foreach (User commenter in issue.Commenters)
                 {
                     EnsureUserExistsInScores(commenter);
                     scores[commenter.UserName].AddCommentedIssue(issue);

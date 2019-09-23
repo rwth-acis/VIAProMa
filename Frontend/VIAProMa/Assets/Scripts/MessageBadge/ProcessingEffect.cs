@@ -74,11 +74,5 @@ public class ProcessingEffect : MonoBehaviour
         {
             rend.material.mainTextureOffset = new Vector2(0, (rend.material.mainTextureOffset.y - rotationSpeed * Time.deltaTime) % 1);
         }
-
-        // TODO: remove debugging code
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            IsProcessing = !IsProcessing;
-        }
     }
 }

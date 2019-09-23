@@ -33,9 +33,9 @@ public class BoundingBoxStateController : MonoBehaviour
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBox), gameObject);
         }
         boxCollider = GetComponent<BoxCollider>();
-        if (boxCollider == null)
+        if(boxCollider == null)
         {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(boxCollider), gameObject);
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), gameObject);
         }
         manipulationHandler = GetComponent<ManipulationHandler>();
         // manipulation handler is optional, so no check here
@@ -51,7 +51,10 @@ public class BoundingBoxStateController : MonoBehaviour
 
     private void SetBoundingBoxState()
     {
-        boxCollider.enabled = boundingBoxActive;
+        if (boxCollider != null)
+        {
+            boxCollider.enabled = boundingBoxActive;
+        }
         boundingBox.Active = boundingBoxActive;
         if (boundingBoxActive)
         {

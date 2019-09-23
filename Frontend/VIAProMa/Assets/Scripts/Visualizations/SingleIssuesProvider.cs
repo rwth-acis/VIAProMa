@@ -13,10 +13,20 @@ public class SingleIssuesProvider : IVisualizationContentProvider
     /// </summary>
     public event EventHandler ContentChanged;
 
+    private List<Issue> issues;
+
     /// <summary>
     /// The list of issues which should be included in the visualization
     /// </summary>
-    public List<Issue> Issues { get; private set; }
+    public List<Issue> Issues
+    {
+        get => issues;
+        set
+        {
+            issues = value;
+            ContentChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
     /// <summary>
     /// Initializies the issue list

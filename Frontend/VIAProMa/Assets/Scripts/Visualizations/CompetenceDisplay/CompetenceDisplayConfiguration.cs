@@ -32,7 +32,7 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
         }
         else
         {
-            filterInputField.Text = "";
+            filterInputField.Text = CombinedFilterText();
             filterInputField.TextChanged += FilterChanged;
         }
 
@@ -41,13 +41,30 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
         ((CompetenceDisplay)visualization).FilterWords = new string[0];
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        ((CompetenceDisplay)visualization).FilterChanged += FilterExternallyChanged;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        ((CompetenceDisplay)visualization).FilterChanged -= FilterExternallyChanged;
+    }
+
     private void FilterChanged(object sender, EventArgs e)
     {
+        if (externalConfiguration > 0)
+        {
+            return;
+        }
+
         string filterText = filterInputField.Text;
         // separate by ";"
         string[] filter = filterText.Split(';');
         // clean up whitespace characters and make everything lower case
-        for (int i=0;i<filter.Length;i++)
+        for (int i = 0; i < filter.Length; i++)
         {
             filter[i] = filter[i].Trim();
             filter[i] = filter[i].ToLowerInvariant();
@@ -56,5 +73,34 @@ public class CompetenceDisplayConfiguration : ConfigurationWindow
         // apply filter
         ((CompetenceDisplay)visualization).FilterWords = filter;
         visualization.UpdateView();
+    }
+
+    private void FilterExternallyChanged(object sender, EventArgs e)
+    {
+        externalConfiguration++;
+
+        filterInputField.Text = CombinedFilterText();
+
+        externalConfiguration--;
+    }
+
+    private string CombinedFilterText()
+    {
+        string[] filterWords = ((CompetenceDisplay)visualization).FilterWords;
+        if (filterWords == null)
+        {
+            return "";
+        }
+
+        string combinedFilter = "";
+        for (int i = 0; i < filterWords.Length; i++)
+        {
+            combinedFilter += filterWords[i];
+            if (i < filterWords.Length - 1)
+            {
+                combinedFilter += "; ";
+            }
+        }
+        return combinedFilter;
     }
 }

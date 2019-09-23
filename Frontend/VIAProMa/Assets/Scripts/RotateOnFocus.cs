@@ -5,24 +5,12 @@ using UnityEngine;
 
 public class RotateOnFocus : BaseFocusHandler
 {
-    [SerializeField] Vector3 standardEulerRotation;
-    [SerializeField] Vector3 focusedEulerRotation;
+    [SerializeField] private Vector3 standardEulerRotation;
+    [SerializeField] private Vector3 focusedEulerRotation;
 
     public float damping = 10;
 
-    Vector3 targetRotation;
-
-    public override void OnFocusEnter(FocusEventData eventData)
-    {
-        base.OnFocusEnter(eventData);
-        targetRotation = focusedEulerRotation;
-    }
-
-    public override void OnFocusExit(FocusEventData eventData)
-    {
-        base.OnFocusExit(eventData);
-        targetRotation = standardEulerRotation;
-    }
+    private Vector3 targetRotation;
 
     private void Awake()
     {
@@ -33,5 +21,27 @@ public class RotateOnFocus : BaseFocusHandler
     private void Update()
     {
         transform.localRotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(targetRotation), Time.deltaTime * damping);
+    }
+
+    public override void OnFocusEnter(FocusEventData eventData)
+    {
+        base.OnFocusEnter(eventData);
+        ToFocusedRotation();
+    }
+
+    public override void OnFocusExit(FocusEventData eventData)
+    {
+        base.OnFocusExit(eventData);
+        ToStandardRotation();
+    }
+
+    public void ToStandardRotation()
+    {
+        targetRotation = standardEulerRotation;
+    }
+
+    public void ToFocusedRotation()
+    {
+        targetRotation = focusedEulerRotation;
     }
 }

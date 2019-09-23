@@ -5,54 +5,85 @@ using UnityEngine;
 
 public class TransformSynchronizer : MonoBehaviourPunCallbacks, IPunObservable
 {
+    [SerializeField] private bool synchronizePosition = true;
+    [SerializeField] private bool synchronizeRotation = true;
+    [SerializeField] private bool synchronizeScale = false;
+
     protected Vector3 targetPosition;
     protected Quaternion targetRotation;
+    protected Vector3 targetScale;
 
     public float lerpSpeed = 15;
 
-    private bool positionalUpdatesInitialized = false;
-
-    public static void PutPositionRotation(Transform targetTransform, ref PhotonStream stream)
-    {
-        stream.SendNext(targetTransform.position);
-        stream.SendNext(targetTransform.rotation);
-    }
-
-    public static void GetPositionRotation(ref PhotonStream stream, out Vector3 position, out Quaternion rotation)
-    {
-        position = (Vector3)(stream.ReceiveNext());
-        rotation = (Quaternion)(stream.ReceiveNext());
-    }
-
-    public static void SmoothPosition(Transform targetTransform, Vector3 targetPosition, float lerpSpeed)
-    {
-        targetTransform.position = Vector3.Lerp(targetTransform.position, targetPosition, lerpSpeed * Time.deltaTime);
-    }
-
-    public static void SmoothRotation(Transform targetTransform, Quaternion targetRotation, float lerpSpeed)
-    {
-        targetTransform.rotation = Quaternion.Lerp(targetTransform.rotation, targetRotation, lerpSpeed * Time.deltaTime);
-    }
+    public bool TransformSynchronizationInitialized { get; private set; } = false;
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
-            PutPositionRotation(transform, ref stream);
+            if (synchronizePosition)
+            {
+                stream.SendNext(transform.position);
+            }
+            if (synchronizeRotation)
+            {
+                stream.SendNext(transform.rotation);
+            }
+            if (synchronizeScale)
+            {
+                stream.SendNext(transform.localScale);
+            }
         }
         else
         {
-            GetPositionRotation(ref stream, out targetPosition, out targetRotation);
-            positionalUpdatesInitialized = true;
+            if (synchronizePosition)
+            {
+                targetPosition = (Vector3)(stream.ReceiveNext());
+            }
+            if (synchronizeRotation)
+            {
+                targetRotation = (Quaternion)(stream.ReceiveNext());
+            }
+            if (synchronizeScale)
+            {
+                targetScale = (Vector3)(stream.ReceiveNext());
+            }
+            TransformSynchronizationInitialized = true;
         }
     }
 
     protected virtual void Update()
     {
-        if (positionalUpdatesInitialized)
+        if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
         {
-            SmoothPosition(transform, targetPosition, lerpSpeed);
-            SmoothRotation(transform, targetRotation, lerpSpeed);
+            // smoothly interpolate synchronized values
+            if (synchronizePosition)
+            {
+                transform.position = SmoothVector3(transform.position, targetPosition, lerpSpeed);
+            }
+            if (synchronizeRotation)
+            {
+                transform.rotation = SmoothQuaternion(transform.rotation, targetRotation, lerpSpeed);
+            }
+            if (synchronizeScale)
+            {
+                transform.localScale = SmoothVector3(transform.localScale, targetScale, lerpSpeed);
+            }
         }
+    }
+
+    public static Vector3 SmoothVector3(Vector3 current, Vector3 target, float lerpSpeed)
+    {
+        return Vector3.Lerp(current, target, lerpSpeed * Time.deltaTime);
+    }
+
+    public static Quaternion SmoothQuaternion(Quaternion current, Quaternion target, float lerpSpeed)
+    {
+        return Quaternion.Lerp(current, target, lerpSpeed * Time.deltaTime);
+    }
+
+    public static float SmoothFloat(float current, float target, float lerpSpeed)
+    {
+        return Mathf.Lerp(current, target, lerpSpeed * Time.deltaTime);
     }
 }

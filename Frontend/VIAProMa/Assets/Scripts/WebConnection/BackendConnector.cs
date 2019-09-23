@@ -7,6 +7,44 @@ using UnityEngine;
 
 public static class BackendConnector
 {
+    /// <summary>
+    /// Sends the save data to the backend
+    /// </summary>
+    /// <param name="saveName">The name of the save file</param>
+    /// <param name="saveJson">The content to save</param>
+    /// <returns>Asynchronous operation</returns>
+    public static async Task<bool> Save(string saveName, string saveJson)
+    {
+        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName, saveJson);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (resp.Successful)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Requests the save data from the backend
+    /// </summary>
+    /// <param name="saveName">The name of the save file</param>
+    /// <returns>The save data</returns>
+    public static async Task<ApiResult<string>> Load(string saveName)
+    {
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+        if (resp.Successful)
+        {
+            return new ApiResult<string>(resp.ResponseBody);
+        }
+        else
+        {
+            return new ApiResult<string>(resp.ResponseCode, resp.ResponseBody);
+        }
+    }
 
     /// <summary>
     /// Method which checks whether the backend server is reachable
@@ -54,7 +92,7 @@ public static class BackendConnector
     /// <returns></returns>
     public static async Task<ApiResult<string[]>> GetProjects()
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "projects/");
+        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData");
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {

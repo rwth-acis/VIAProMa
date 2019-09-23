@@ -17,15 +17,19 @@ public class AppBarPlacer : MonoBehaviour
 
     [Header("Scale & Position Options")]
 
-    [SerializeField]
     [Tooltip("Pushes the app bar away from the object.")]
+    [SerializeField]
     private float hoverOffsetZ = 0.05f;
 
+    [Tooltip("The 2D offset of the app bar (x and y direction)")]
     [SerializeField] private Vector2 positionOffset2D;
 
     private BoundingBoxHelper helper = new BoundingBoxHelper();
     private List<Vector3> boundsPoints = new List<Vector3>();
 
+    /// <summary>
+    /// The target bounding box to which the app bar is attached
+    /// </summary>
     public BoundingBox TargetBoundingBox
     {
         get => boundingBox;
@@ -41,11 +45,18 @@ public class AppBarPlacer : MonoBehaviour
         set { hoverOffsetZ = value; }
     }
 
+    /// <summary>
+    /// Smoothly updates the position of the app bar
+    /// </summary>
     private void Update()
     {
         FollowBoundingBox(true);
     }
 
+    /// <summary>
+    /// Sets the position of the app bar in relation to the target bounding box
+    /// </summary>
+    /// <param name="smooth">If true, the app bar is interpolated smoothly from its current position to the target position; otherwise it will immediately jump to the target position</param>
     private void FollowBoundingBox(bool smooth)
     {
         if (boundingBox == null)

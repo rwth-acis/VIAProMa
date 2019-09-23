@@ -1,4 +1,5 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,7 +47,30 @@ public class ProgressBarController : MonoBehaviour, IProgressBarVisuals
     /// <summary>
     /// Gets the length of the progress bar (at overall scale 1)
     /// </summary>
-    public float Length { get => tubes.localScale.x; }
+    public float Length
+    {
+        get => tubes.localScale.x;
+        set
+        {
+            tubes.localScale = new Vector3(
+                value,
+                tubes.localScale.y,
+                tubes.localScale.z);
+
+            capPos.localPosition = new Vector3(value / 2f, 0f, 0f);
+            capNeg.localPosition = new Vector3(-value / 2f, 0f, 0f);
+
+            // also update box colliders and bounding box
+            tubeCollider.height = value + 0.1f; // add 0.1 so that the cylindrical part covers the full length (otherwise it is too short because of the rounded caps)
+            boundingBoxCollider.size = new Vector3(
+                value + 0.05f, // add 0.05f to encapsulate the end caps
+                boundingBoxCollider.size.y,
+                boundingBoxCollider.size.z);
+            boundingBox.Refresh();
+
+            UpdateTextLabelPositioning(value);
+        }
+    }
 
     /// <summary>
     /// Gets or sets the title of the progress bar and applies it to the text label

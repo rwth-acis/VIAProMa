@@ -12,13 +12,22 @@ using UnityEngine;
 /// </summary>
 public class CreateRoomMenu : MonoBehaviour, IWindow
 {
+    [Header("References")]
+    [Tooltip("Reference to the room menu script")]
     [SerializeField] private RoomMenu roomMenu;
 
+    [Header("UI Elements")]
+    [Tooltip("The button for closing the menu")]
     [SerializeField] private Interactable closeButton;
+    [Tooltip("The text field for entering the room name")]
     [SerializeField] private InputField roomNameField;
+    [Tooltip("An error message which can be displayed")]
     [SerializeField] private GameObject errorMessage;
-    [SerializeField] private Checkbox memberNumberCheckbox;
+    [Tooltip("Checkbox for advanced settings")]
+    [SerializeField] private Interactable advancedSettingsCheckbox;
+    [Tooltip("The slider for determining the number of members")]
     [SerializeField] private SliderExtension memberNumberSlider;
+    [Tooltip("The button which confirms the settings and creates the room")]
     [SerializeField] private Interactable createRoomButton;
 
     private bool windowEnabled = true;
@@ -72,9 +81,9 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(errorMessage));
         }
-        if (memberNumberCheckbox == null)
+        if (advancedSettingsCheckbox == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(memberNumberCheckbox));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(advancedSettingsCheckbox));
         }
         if (memberNumberSlider == null)
         {
@@ -86,9 +95,9 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         }
 
         roomNameField.TextChanged += OnInputFieldRoomNameChanged;
-        memberNumberCheckbox.OnValueChanged += OnCheckboxMaxNumberOfMembersClicked;
 
         createRoomButton.Enabled = false;
+        memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.GetDimensionIndex() == 1);
     }
 
     /// <summary>
@@ -108,11 +117,9 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     /// Called if the checkbox is clicked which enables the limiation of members
     /// If it is checked, it displays the slider to specify the maximum number of members
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void OnCheckboxMaxNumberOfMembersClicked(object sender, EventArgs e)
+    public void OnCheckboxAdvancedSettingsClicked()
     {
-        memberNumberSlider.gameObject.SetActive(memberNumberCheckbox.IsChecked);
+        memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.GetDimensionIndex() == 1);
     }
 
     /// <summary>
@@ -130,7 +137,7 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
         RoomOptions roomOptions = null; // if null is passed to CreateRoom, the options are ignored
         // use the maximum member settings if the checkbox for this is checked
         // otherwise, roomOptions will remain null and so Photon will use default options
-        if (memberNumberCheckbox.IsChecked)
+        if (advancedSettingsCheckbox.GetDimensionIndex() == 1)
         {
             roomOptions = new RoomOptions { MaxPlayers = (byte)memberNumberSlider.ValueInt };
         }

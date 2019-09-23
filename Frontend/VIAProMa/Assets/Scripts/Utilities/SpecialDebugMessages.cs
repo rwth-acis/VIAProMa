@@ -16,7 +16,7 @@ public static class SpecialDebugMessages
 
     public static void LogArrayInitializedWithSize0Warning(MonoBehaviour thisComponent, string arrayName)
     {
-        Debug.LogWarning("Warning: Array Initialized with Size 0\n" + thisComponent.GetType().Name + " is initialized with an array of size 0. Did you forget to set it up in the inspector?");
+        Debug.LogWarning("Warning: Array Initialized with Size 0\n" + thisComponent.GetType().Name + " is initialized with an array of size 0. Did you forget to set it up in the inspector?", thisComponent);
     }
 
     public static void LogArrayMissingReferenceError(MonoBehaviour thisComponent, string arrayName, int index)

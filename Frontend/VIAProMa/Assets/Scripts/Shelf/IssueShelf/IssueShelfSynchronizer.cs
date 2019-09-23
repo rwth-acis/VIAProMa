@@ -6,8 +6,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// Class for synchronizing the issue shelf
+/// </summary>
 public class IssueShelfSynchronizer : TransformSynchronizer
 {
+    [Tooltip("Reference to the configuration menu")]
     [SerializeField] private ShelfConfigurationMenu configurationMenu;
 
     private IssuesLoader issueLoader;
@@ -15,8 +19,14 @@ public class IssueShelfSynchronizer : TransformSynchronizer
     private int remoteSynchronizations = 0;
     private bool initialized = false;
 
+    /// <summary>
+    /// If true, a remote synchronization is currently taking place
+    /// </summary>
     private bool RemoteSynchronizationInProgress { get => remoteSynchronizations > 0; }
 
+    /// <summary>
+    /// Initializes the component
+    /// </summary>
     private void Awake()
     {
         if (configurationMenu == null)
@@ -26,6 +36,9 @@ public class IssueShelfSynchronizer : TransformSynchronizer
         issueLoader = GetComponent<IssuesLoader>();
     }
 
+    /// <summary>
+    /// Checks if the component it the master client
+    /// </summary>
     private async void Start()
     {
         if (PhotonNetwork.IsMasterClient)

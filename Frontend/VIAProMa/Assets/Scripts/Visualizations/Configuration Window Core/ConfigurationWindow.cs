@@ -17,6 +17,8 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
 
     private bool windowEnabled;
 
+    protected int externalConfiguration = 0;
+
     public virtual bool WindowEnabled
     {
         get => windowEnabled;
@@ -57,6 +59,16 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
         }
     }
 
+    protected virtual void OnEnable()
+    {
+        visualization.TitleChanged += TitleExternallyChanged;
+    }
+
+    protected virtual void OnDisable()
+    {
+        visualization.TitleChanged -= TitleExternallyChanged;
+    }
+
     public virtual void Close()
     {
         WindowOpen = false;
@@ -78,6 +90,18 @@ public class ConfigurationWindow : MonoBehaviour, IWindow
 
     protected virtual void TitleChanged(object sender, EventArgs e)
     {
+        if (externalConfiguration > 0)
+        {
+            return;
+        }
+
         visualization.Title = progressBarTitleField.Text;
+    }
+
+    protected virtual void TitleExternallyChanged(object sender, EventArgs e)
+    {
+        externalConfiguration++;
+        progressBarTitleField.Text = visualization.Title;
+        externalConfiguration--;
     }
 }

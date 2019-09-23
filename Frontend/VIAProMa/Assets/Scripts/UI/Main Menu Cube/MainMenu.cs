@@ -13,6 +13,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [Header("UI Elements")]
     [SerializeField] private Interactable avatarConfigurationButton;
     [SerializeField] private Interactable serverConnectionButton;
+    [SerializeField] private Interactable saveButton;
+    [SerializeField] private Interactable loadButton;
+    [SerializeField] private Interactable issueShelfButton;
+    [SerializeField] private Interactable visualizationShelfButton;
+    [SerializeField] private Interactable loginButton;
     [SerializeField] private Interactable roomButton;
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
@@ -21,6 +26,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [Header("References")]
     [SerializeField] private GameObject issueShelfPrefab;
     [SerializeField] private GameObject visualizationShelfPrefab;
+    [SerializeField] private GameObject loadShelfPrefab;
     [SerializeField] private GameObject avatarConfiguratorPrefab;
 
     private FoldController foldController;
@@ -28,6 +34,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     // instances:
     private GameObject issueShelfInstance;
     private GameObject visualizationShelfInstance;
+    private GameObject loadShelfInstance;
     private GameObject avatarConfiguratorInstance;
 
     private void Awake()
@@ -39,6 +46,26 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (serverConnectionButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(serverConnectionButton));
+        }
+        if (saveButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(saveButton));
+        }
+        if (loadButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(loadButton));
+        }
+        if (issueShelfButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueShelfButton));
+        }
+        if (visualizationShelfButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationShelfButton));
+        }
+        if (loginButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(loginButton));
         }
         if (roomButton == null)
         {
@@ -60,6 +87,14 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (issueShelfPrefab == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueShelfPrefab));
+        }
+        if (visualizationShelfPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationShelfPrefab));
+        }
+        if (loadShelfPrefab == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(loadShelfPrefab));
         }
         if (avatarConfiguratorPrefab == null)
         {
@@ -83,11 +118,25 @@ public class MainMenu : MonoBehaviourPunCallbacks
         base.OnDisable();
     }
 
+    private void Start()
+    {
+        CheckButtonStates();
+    }
+
     private void OnConnectionStatusChanged(object sender, EventArgs e)
     {
+        CheckButtonStates();
+    }
+
+    private void CheckButtonStates()
+    {
         roomButton.Enabled = PhotonNetwork.IsConnected;
-        chatButton.Enabled = PhotonNetwork.IsConnected;
-        microphoneButton.Enabled = PhotonNetwork.IsConnected;
+        chatButton.Enabled = PhotonNetwork.InRoom;
+        microphoneButton.Enabled = PhotonNetwork.InRoom;
+        saveButton.Enabled = PhotonNetwork.InRoom;
+        loadButton.Enabled = PhotonNetwork.InRoom;
+        issueShelfButton.Enabled = PhotonNetwork.InRoom;
+        visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -120,6 +169,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
         {
             roomButtonText.text = "Leave Room";
         }
+        CheckButtonStates();
+    }
+
+    public void ShowSaveMenu()
+    {
+        WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right, transform.localEulerAngles);
+        foldController.FoldCube();
     }
 
     public void ShowIssueShelf()
@@ -143,6 +199,19 @@ public class MainMenu : MonoBehaviourPunCallbacks
         targetPosition.y = 0f;
         NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
         foldController.FoldCube();
+    }
+
+    public void ShowLoadShelf()
+    {
+        Vector3 targetPosition = transform.position + 1f * transform.right;
+        targetPosition.y = 0f;
+        InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
+        foldController.FoldCube();
+    }
+
+    public void ShowLoginMenu()
+    {
+        WindowManager.Instance.LoginMenu.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
     }
 
     public void ShowAvatarConfiguration()
@@ -177,14 +246,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void ChatButtonClicked()
     {
-        if (PhotonNetwork.InRoom)
-        {
-            WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-        }
-        else
-        {
-            Debug.LogError("Chat button clicked while outside of room.");
-        }
+        WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
         foldController.FoldCube();
     }
 
@@ -194,6 +256,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
         if (instance != null)
         {
+            instance.SetActive(true);
             instance.transform.position = targetPosition;
             instance.transform.rotation = targetRotation;
         }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class OwnershipRequester : MonoBehaviourPun
 {
-    public void OnManipulationStarted()
+    public void EnsureOwnership()
     {
         // since we are dealing with scene objects, there is no owner in the beginning
         if (photonView.Owner != null)
@@ -28,10 +28,11 @@ public class OwnershipRequester : MonoBehaviourPun
         }
     }
 
-    public void OnManipulationEnded()
+    public void ReleaseOwnershipLock()
     {
         if (photonView.Owner == PhotonNetwork.LocalPlayer)
         {
+            Debug.Log("Unlocking object", gameObject);
             OwnershipManager.Instance.EnableOwnerShipTransfer(photonView);
         }
     }
