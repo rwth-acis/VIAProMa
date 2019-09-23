@@ -50,6 +50,7 @@ public class ProjectLoader : Shelf, ILoadShelf
         else
         {
             messageBadge.ShowMessage(projectRes.ResponseCode);
+            messageBadge.TryAgainAction = LoadContent;
         }
     }
 

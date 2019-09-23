@@ -1,4 +1,5 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -18,6 +19,8 @@ public class MessageBadge : MonoBehaviour
 
     private MessageContent content;
     private int processing = 0;
+
+    public Action TryAgainAction { get; set; }
 
     /// <summary>
     /// Initialization
@@ -95,5 +98,10 @@ public class MessageBadge : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    public void OnTryAgainClicked()
+    {
+        TryAgainAction?.Invoke();
     }
 }

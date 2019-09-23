@@ -172,9 +172,14 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         gitHubDisplays.SetActive(ShelfConfiguration.SelectedSource == DataSource.GITHUB);
     }
 
-    private async void ReqBazProjectInputFinished(object sender, EventArgs e)
+    private void ReqBazProjectInputFinished(object sender, EventArgs e)
     {
-        Debug.Log("Project input finished");
+        TrySetReqBazProject();
+    }
+
+    private async void TrySetReqBazProject()
+    {
+        Debug.Log("Trying to set req baz project");
         bool successful = await SetReqBazProject();
         if (successful)
         {
@@ -197,6 +202,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         if (projects == null)
         {
             shelf.MessageBadge.ShowMessage(0);
+            shelf.MessageBadge.TryAgainAction = TrySetReqBazProject;
             return false;
         }
         Project selectedProject = GetReqBazProject(reqBazProjectInput.Text);
@@ -215,8 +221,14 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         }
     }
 
-    private async void ReqBazCategorySelected(object sender, EventArgs e)
+    private void ReqBazCategorySelected(object sender, EventArgs e)
     {
+        TrySetReqBazCategory();
+    }
+
+    private async void TrySetReqBazCategory()
+    {
+        Debug.Log("Trying to set req baz category");
         bool successful = await SetReqBazCategory();
         if (successful)
         {
@@ -239,6 +251,7 @@ public class ShelfConfigurationMenu : MonoBehaviour, IWindow
         if (categories == null)
         {
             shelf.MessageBadge.ShowMessage(0);
+            shelf.MessageBadge.TryAgainAction = TrySetReqBazCategory;
             return false;
         }
 

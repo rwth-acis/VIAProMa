@@ -124,6 +124,7 @@ public class IssuesLoader : Shelf, ILoadShelf
             if (apiResult.HasError)
             {
                 messageBadge.ShowMessage(apiResult.ResponseCode);
+                messageBadge.TryAgainAction = LoadRequirements;
             }
             else
             {
@@ -153,6 +154,7 @@ public class IssuesLoader : Shelf, ILoadShelf
         if (apiResult.HasError)
         {
             messageBadge.ShowMessage(apiResult.ResponseCode);
+            messageBadge.TryAgainAction = LoadGitHubIssues;
         }
         else
         {
