@@ -35,6 +35,9 @@ public class AvatarPartConfigurationController : MonoBehaviour, IConfigurationCo
             else
             {
                 avatarIndex = value;
+                modelIndex = Mathf.Clamp(modelIndex, 0, avatarPartCollections[avatarIndex].avatarParts.Length -1);
+                materialIndex = 0;
+                colorIndex = 0;
                 ConfigurationChanged?.Invoke(this, EventArgs.Empty);
             }
         }
