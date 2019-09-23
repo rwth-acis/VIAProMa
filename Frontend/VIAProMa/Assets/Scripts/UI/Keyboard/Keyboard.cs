@@ -157,7 +157,7 @@ public class Keyboard : Singleton<Keyboard>
         }
         else
         {
-            for (int i=0;i<keySetPages.Length;i++)
+            for (int i = 0; i < keySetPages.Length; i++)
             {
                 if (keySetPages[i] == null)
                 {
@@ -199,7 +199,7 @@ public class Keyboard : Singleton<Keyboard>
 
     private void OnDisable()
     {
-        
+
     }
 
     /// <summary>
@@ -335,7 +335,7 @@ public class Keyboard : Singleton<Keyboard>
         }
         else
         {
-            foreach(AutocompleteItem item in autocompleteItems)
+            foreach (AutocompleteItem item in autocompleteItems)
             {
                 item.Text = "";
             }
@@ -367,8 +367,8 @@ public class Keyboard : Singleton<Keyboard>
         {
             // position the cursor at the middle between the top and bottom of the current character
             cursorObject.transform.position = inputField.transform.TransformPoint(
-                    Vector3.Lerp(inputField.ContentField.textInfo.characterInfo[cursorPos-1].topRight,
-                    inputField.ContentField.textInfo.characterInfo[cursorPos-1].bottomRight, 0.5f)
+                    Vector3.Lerp(inputField.ContentField.textInfo.characterInfo[cursorPos - 1].topRight,
+                    inputField.ContentField.textInfo.characterInfo[cursorPos - 1].bottomRight, 0.5f)
                     )
                     + new Vector3(0, 0, -0.0051f); // also move it to the front so that it is not inside of the input field
         }
@@ -385,9 +385,9 @@ public class Keyboard : Singleton<Keyboard>
 
     private void UpdateKeySetPageVisibility()
     {
-        for (int i=0;i<keySetPages.Length;i++)
+        for (int i = 0; i < keySetPages.Length; i++)
         {
-            if (i== currentKeySetPageIndex)
+            if (i == currentKeySetPageIndex)
             {
                 keySetPages[i].SetActive(true);
             }
@@ -401,7 +401,7 @@ public class Keyboard : Singleton<Keyboard>
     private void CreateAutocompleteItems()
     {
         autocompleteItems = new List<AutocompleteItem>();
-        for (int i=0;i<maxNumberOfAutocompleteItems;i++)
+        for (int i = 0; i < maxNumberOfAutocompleteItems; i++)
         {
             GameObject autocompleteItemInstance = Instantiate(autocompleteItemPrefab, autocompleteGrid.transform);
             AutocompleteItem item = autocompleteItemInstance.GetComponent<AutocompleteItem>();
@@ -418,7 +418,7 @@ public class Keyboard : Singleton<Keyboard>
     {
         prioritisedMatches.Clear();
         remainingMatches.Clear();
-        foreach(string option in autoCompleteOptions)
+        foreach (string option in autoCompleteOptions)
         {
             string optionLower = option.ToLowerInvariant();
             string textLower = text.ToLowerInvariant();
@@ -437,7 +437,7 @@ public class Keyboard : Singleton<Keyboard>
     {
         int itemIndex = 0;
         // insert prioritised matches first
-        for (int i=0;i<prioritisedMatches.Count;i++)
+        for (int i = 0; i < prioritisedMatches.Count; i++)
         {
             if (itemIndex >= maxNumberOfAutocompleteItems)
             {
@@ -457,7 +457,7 @@ public class Keyboard : Singleton<Keyboard>
             itemIndex++;
         }
         // empty remaining items
-        for (int i=itemIndex; i < maxNumberOfAutocompleteItems;i++)
+        for (int i = itemIndex; i < maxNumberOfAutocompleteItems; i++)
         {
             autocompleteItems[i].Text = "";
         }

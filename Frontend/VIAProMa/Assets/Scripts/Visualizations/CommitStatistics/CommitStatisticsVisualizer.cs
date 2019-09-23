@@ -8,9 +8,9 @@ public class CommitStatisticsVisualizer : MonoBehaviour
 {
     private i5.ViaProMa.Visualizations.Common.Diagram diagram;
 
-    public string Owner { get; set; }
+    public string Owner { get; set; } = "";
 
-    public string Repository { get; set; }
+    public string Repository { get; set; } = "";
 
     private void Awake()
     {
