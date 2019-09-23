@@ -44,19 +44,4 @@ public class ScalingController : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(zNegSlider));
         }
     }
-
-    private void Start()
-    {
-        xPosSlider.OnInteractionUpdated.AddListener(UpdateSize);
-        xNegSlider.OnInteractionUpdated.AddListener(UpdateSize);
-        yPosSlider.OnInteractionUpdated.AddListener(UpdateSize);
-        yNegSlider.OnInteractionUpdated.AddListener(UpdateSize);
-        zPosSlider.OnInteractionUpdated.AddListener(UpdateSize);
-        zNegSlider.OnInteractionUpdated.AddListener(UpdateSize);
-    }
-
-    public void UpdateSize()
-    {
-        xPosSlider.transform.localPosition 
-    }
 }

@@ -1,4 +1,5 @@
 ﻿using i5.ViaProMa.Visualizations.Common;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ public class CommitStatisticsVisualizer : MonoBehaviour
     public string Owner { get; set; } = "";
 
     public string Repository { get; set; } = "";
+
+    public event EventHandler ConfigurationChanged;
 
     private void Awake()
     {
@@ -40,7 +43,7 @@ public class CommitStatisticsVisualizer : MonoBehaviour
             weekDayAxis.Add(res.Value[i].DayOfWeek.ToString());
             hourAxis.Add(res.Value[i].hour);
             amountAxis.Add(res.Value[i].numberOfCommits);
-            colors.Add(Random.ColorHSV());
+            colors.Add(UnityEngine.Random.ColorHSV());
         }
 
 
@@ -60,6 +63,11 @@ public class CommitStatisticsVisualizer : MonoBehaviour
 
     public async void UpdateView()
     {
+        if (string.IsNullOrWhiteSpace(Owner) || string.IsNullOrWhiteSpace(Repository))
+        {
+            return;
+        }
+
         i5.ViaProMa.Visualizations.Common.DataSet dataset = await GitHubPunchCardToDataSet();
         if (dataset != null)
         {
