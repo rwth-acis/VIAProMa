@@ -15,7 +15,7 @@ public static class DataAdapter
     public static async Task<DataSet> GitHubPunchCardToDataSet()
     {
         
-        ApiResult<PunchCardEntry[]> res = await BackendConnector.GetGitHubPunchCard("rwth-acis", "GaMR");
+        ApiResult<PunchCardEntry[]> res = await GitHub.GetGitHubPunchCard("rwth-acis", "GaMR");
         if (res.HasError)
         {
             return null;
