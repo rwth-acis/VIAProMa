@@ -13,7 +13,7 @@ namespace i5.ViaProMa.Visualizations.Common
 
         [SerializeField] protected Transform contentParent;
 
-        public Vector3 Size { get; set; }
+        public Vector3 Size { get; set; } = Vector3.one;
 
         public IAxis XAxis { get; private set; }
 

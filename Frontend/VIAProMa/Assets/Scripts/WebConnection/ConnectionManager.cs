@@ -32,6 +32,7 @@ public class ConnectionManager : Singleton<ConnectionManager>
         set
         {
             backendAddress = value;
+            PlayerPrefs.SetString(backendAddressPrefKey, backendAddress);
             TestConnection();
         }
     }
@@ -62,16 +63,9 @@ public class ConnectionManager : Singleton<ConnectionManager>
         get;private set;
     }
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
         BackendAddress = PlayerPrefs.GetString(backendAddressPrefKey, "http://localhost");
-    }
-
-    protected override void OnDestroy()
-    {
-        PlayerPrefs.SetString(backendAddressPrefKey, BackendAddress);
-        base.OnDestroy();
     }
 
     /// <summary>
