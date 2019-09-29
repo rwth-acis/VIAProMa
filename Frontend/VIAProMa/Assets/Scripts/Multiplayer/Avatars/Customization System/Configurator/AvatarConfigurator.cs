@@ -118,13 +118,13 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ModelIndex = modelSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        AvatarAppearanceSynchronizer.SetProperty(
+        PlayerPropertyUtilities.SetProperty(
             avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + AvatarAppearanceSynchronizer.modelKeySuffix,
             (byte)selectedPartController.ModelIndex);
-        AvatarAppearanceSynchronizer.SetProperty(
+        PlayerPropertyUtilities.SetProperty(
             avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + AvatarAppearanceSynchronizer.materialKeySuffix,
             (byte)selectedPartController.MaterialIndex);
-        AvatarAppearanceSynchronizer.SetProperty(
+        PlayerPropertyUtilities.SetProperty(
             avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + AvatarAppearanceSynchronizer.colorKeySuffix,
             (byte)selectedPartController.ColorIndex);
 
@@ -139,7 +139,7 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.MaterialIndex = materialSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        AvatarAppearanceSynchronizer.SetProperty(
+        PlayerPropertyUtilities.SetProperty(
             avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Material",
             (byte)materialSelector.SelectedIndex);
 
@@ -153,7 +153,7 @@ public class AvatarConfigurator : MonoBehaviour
         selectedPartController.ColorIndex = colorSelector.SelectedIndex;
         selectedPartController.ApplyConfiguration();
 
-        AvatarAppearanceSynchronizer.SetProperty(
+        PlayerPropertyUtilities.SetProperty(
             avatarConfigurationController.AvatarPartControllers[categoryToggles.CurrentIndex].Name + "Color",
             (byte)colorSelector.SelectedIndex);
     }

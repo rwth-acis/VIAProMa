@@ -19,6 +19,22 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
     [SerializeField] private Renderer profileImageRenderer;
 
     private PhotonView photonView;
+    private UserRoles userRole;
+
+
+    public UserRoles UserRole
+    {
+        get => userRole;
+        set
+        {
+            userRole = value;
+            roleLabel.text = userRole.GetDescription();
+            switch(userRole)
+            {
+
+            }
+        }
+    }
 
     /// <summary>
     /// Checks the component's setup and initializes it
@@ -56,7 +72,6 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
             {
                 nameLabel.text = PhotonNetwork.LocalPlayer.NickName;
             }
-            roleLabel.text = "";
         }
     }
 
@@ -81,7 +96,6 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
         {
             nameLabel.text = PhotonNetwork.LocalPlayer.NickName;
         }
-        roleLabel.text = "";
     }
 
     public void OnEvent(EventData photonEvent)
