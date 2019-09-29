@@ -17,6 +17,14 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
     [SerializeField] private TextMeshPro roleLabel;
     [Tooltip("The renderer for the profile image")]
     [SerializeField] private Renderer profileImageRenderer;
+    [Tooltip("The renderer for the role background")]
+    [SerializeField] private Renderer roleBackground;
+
+    [Header("Role Colors")]
+    [SerializeField] private Color productOwnerColor;
+    [SerializeField] private Color scrumMasterColor;
+    [SerializeField] private Color developerColor;
+    [SerializeField] private Color StakeHolderColor;
 
     private PhotonView photonView;
     private UserRoles userRole;
@@ -31,7 +39,18 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
             roleLabel.text = userRole.GetDescription();
             switch(userRole)
             {
-
+                case UserRoles.PRODUCT_OWNER:
+                    roleBackground.material.color = productOwnerColor;
+                    break;
+                case UserRoles.SCRUM_MASTER:
+                    roleBackground.material.color = scrumMasterColor;
+                    break;
+                case UserRoles.DEVELOPER:
+                    roleBackground.material.color = developerColor;
+                    break;
+                case UserRoles.STAKEHOLDER:
+                    roleBackground.material.color = StakeHolderColor;
+                    break;
             }
         }
     }
@@ -52,6 +71,10 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
         if (profileImageRenderer == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(profileImageRenderer));
+        }
+        if (roleBackground == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(roleBackground));
         }
 
         photonView = GetComponent<PhotonView>();
