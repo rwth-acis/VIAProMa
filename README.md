@@ -52,8 +52,6 @@ In addition to the working logic, each of the project's features has been isolat
 This way, the functionality can be tested and new developers can experiment with these features in order to learn how they work.
 The scenes are situated in the folder "Tests".
 
-## Deployment
-
 ## Troubleshooting
 
 **Problem:** When building the application, errors are shown that the namespace name 'HandJointKind', 'HandMeshObserver' and 'JointPose' are not found.
