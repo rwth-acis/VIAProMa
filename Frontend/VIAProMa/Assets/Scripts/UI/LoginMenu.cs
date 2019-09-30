@@ -12,6 +12,7 @@ public class LoginMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private InputField nameInputField;
     [SerializeField] private Interactable doneButton;
+    [SerializeField] private InteractableToggleCollection roleToggles;
 
     public bool WindowEnabled { get; set; }
 
@@ -33,16 +34,15 @@ public class LoginMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(doneButton));
         }
+        if (roleToggles == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(roleToggles));
+        }
     }
 
     private void NameInputChanged(object sender, EventArgs e)
     {
         doneButton.Enabled = !string.IsNullOrWhiteSpace(nameInputField.Text);
-    }
-
-    private void OnEnable()
-    {
-        nameInputField.Text = PhotonNetwork.NickName;
     }
 
     public void Close()
@@ -54,6 +54,7 @@ public class LoginMenu : MonoBehaviour, IWindow
     public void Open()
     {
         gameObject.SetActive(true);
+        Initialize();
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
@@ -61,6 +62,21 @@ public class LoginMenu : MonoBehaviour, IWindow
         Open();
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
+    }
+
+    private void Initialize()
+    {
+        nameInputField.Text = PhotonNetwork.NickName;
+        roleToggles.CurrentIndex = (int)UserManager.Instance.UserRole;
+        for (int i=0;i<roleToggles.ToggleList.Length;i++)
+        {
+            int dimension = 0;
+            if (i == roleToggles.CurrentIndex)
+            {
+                dimension = 1;
+            }
+            roleToggles.ToggleList[i].SetDimensionIndex(dimension);
+        }
     }
 
     public void SetName()
@@ -75,7 +91,7 @@ public class LoginMenu : MonoBehaviour, IWindow
 
     private void RaiseNameChangedEvent()
     {
-        if (PhotonNetwork.InRoom)
+        if (PhotonNetwork.IsConnected)
         {
             byte eventCode = 1;
             byte content = 0;
@@ -83,5 +99,10 @@ public class LoginMenu : MonoBehaviour, IWindow
             SendOptions sendOptions = new SendOptions { Reliability = true };
             PhotonNetwork.RaiseEvent(eventCode, content, raiseEventOptions, sendOptions);
         }
+    }
+
+    public void OnRoleChanged()
+    {
+        UserManager.Instance.UserRole = (UserRoles)roleToggles.CurrentIndex;
     }
 }
