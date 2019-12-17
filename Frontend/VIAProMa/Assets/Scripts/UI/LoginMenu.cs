@@ -8,6 +8,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// UI controller and actions for the login menu
+/// </summary>
 public class LoginMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private InputField nameInputField;
