@@ -17,6 +17,9 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
 - For HoloLens Development:
   - Windows 10 development machine
   - Windows 10 SDK ([10.0.18362.0](https://developer.microsoft.com/de-de/windows/downloads/windows-10-sdk))
+  For Android Development:
+  - [ARCore SDK](https://github.com/google-ar/arcore-unity-sdk/releases) (tested with ARCore SDK for Unity v1.12.0)
+  - Android SDK 7.0 (API Level 24) or later
 
 ### Project Setup
 
@@ -46,6 +49,8 @@ This can be done under "Gizmos" in the top right of the 3D view.
 Pull the top most slider next to "3D Icons" down until the icons in the scene have the right size
 16. Run the application once in the editor in order to initialize the collection which keeps track of networked objects.
 
+For Android development, additional steps can be found in ARCore's [quickstart guide](https://developers.google.com/ar/develop/unity/quickstart-android).
+
 ### Tests
 
 In addition to the working logic, each of the project's features has been isolated into its own scene which contains a minimal working example for the feature.
@@ -58,3 +63,9 @@ The scenes are situated in the folder "Tests".
 
 **Solution:** Download the Windows 10 SDK [10.0.18362.0](https://developer.microsoft.com/de-de/windows/downloads/windows-10-sdk).
 After that, open the Build Settings Window and change the Target SDK Version and Minimum Platform Version to 10.0.18362.0.
+
+**Problem:** The shared room which was created in one app instance does not appear on the other app instance.
+**Solution:** Make sure that both app instances use the same gameVersion which is specified in the launcher script. (Assets/Scripts/Multiplayer/Launcher.cs)
+Also ensure that both app instances use the same Photon PUN version.
+The PUN version can be seen in the Photon server settings.
+Additionally, both instances must have the same Photon app-IDs in the server settings.
