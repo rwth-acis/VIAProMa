@@ -19,6 +19,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
 
     public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
 
+    private LineDrawLogic linedrawscript;
+
     /// <summary>
     /// True if the issue is currently selected
     /// </summary>
@@ -54,6 +56,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         {
             originalRendererColor = backgroundRenderer.material.color;
         }
+
+        linedrawscript = GameObject.FindGameObjectWithTag("LineDraw").GetComponent<LineDrawLogic>();
     }
 
     /// <summary>
@@ -178,6 +182,7 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
 
     /// <summary>
     /// Called by the Mixed Reality Toolkit if the object was clicked
+    /// If the LineDraw mode is active, the transform component of the object is saved as either start or destination.
     /// </summary>
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
@@ -186,6 +191,19 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         {
             ToggleSelection();
             eventData.Use();
+        }
+        if(linedrawscript.isLineModeActivated)
+        {
+            if (!linedrawscript.oneSelected)
+            {
+                linedrawscript.start = transform;
+                linedrawscript.oneSelected = true;
+            }
+            else
+            {
+                linedrawscript.destination = transform;
+                linedrawscript.oneSelected = false;
+            }
         }
     }
 }
