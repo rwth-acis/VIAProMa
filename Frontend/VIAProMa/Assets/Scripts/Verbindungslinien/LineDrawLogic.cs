@@ -31,14 +31,14 @@ public class LineDrawLogic : MonoBehaviour
     [HideInInspector] public bool oneSelected;
 
     /// <summary>
-    /// The transform component of the start object
+    /// The start object of the line
     /// </summary>
-    [HideInInspector] public Transform start;
+    [HideInInspector] public GameObject start;
 
     /// <summary>
-    /// The transform component of the destination object
+    /// The destination object of the line
     /// </summary>
-    [HideInInspector] public Transform destination;
+    [HideInInspector] public GameObject destination;
 
     /// <summary>
     /// Start with the button invisible and the LineDraw Mode is deactivated.
@@ -74,8 +74,10 @@ public class LineDrawLogic : MonoBehaviour
             if(start != null && destination != null)
             {
                 GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-                lineRenderer.GetComponent<LineRenderer>().SetPosition(0, start.position);
-                lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.position);
+                lineRenderer.GetComponent<LineRenderer>().SetPosition(0, start.transform.position);
+                lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.transform.position);
+                lineRenderer.GetComponent<UpdatePosition>().startObject = start;
+                lineRenderer.GetComponent<UpdatePosition>().destinationObject = destination;
             }
             start = null;
             destination = null;

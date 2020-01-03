@@ -182,7 +182,7 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
 
     /// <summary>
     /// Called by the Mixed Reality Toolkit if the object was clicked
-    /// If the LineDraw mode is active, the transform component of the object is saved as either start or destination.
+    /// If the LineDraw mode is active, the object is saved as either start or destination.
     /// </summary>
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
@@ -196,12 +196,12 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         {
             if (!linedrawscript.oneSelected)
             {
-                linedrawscript.start = transform;
+                linedrawscript.start = gameObject;
                 linedrawscript.oneSelected = true;
             }
             else
             {
-                linedrawscript.destination = transform;
+                linedrawscript.destination = gameObject;
                 linedrawscript.oneSelected = false;
             }
         }
