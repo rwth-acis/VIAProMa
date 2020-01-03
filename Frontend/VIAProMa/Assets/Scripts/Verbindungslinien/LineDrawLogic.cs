@@ -16,6 +16,11 @@ public class LineDrawLogic : MonoBehaviour
     public GameObject lineDrawButton;
 
     /// <summary>
+    /// Referencing the DeleteAllLines Button
+    /// </summary>
+    public GameObject deleteAllLinesButton;
+
+    /// <summary>
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
     public GameObject lineRendererPrefab;
@@ -41,20 +46,23 @@ public class LineDrawLogic : MonoBehaviour
     [HideInInspector] public GameObject destination;
 
     /// <summary>
-    /// Start with the button invisible and the LineDraw Mode is deactivated.
+    /// Start with the buttons invisible and the LineDraw Mode is deactivated.
     /// </summary>
     void Start()
     {
         lineDrawButton.SetActive(false);
+        deleteAllLinesButton.SetActive(false);
         isLineModeActivated = false;
     }
 
     /// <summary>
-    /// The LineDraw Button appears when the Menu is open and is deactivated when it is closed.
+    /// The LineDraw Button and the DeleteAllLines Button appear when the Menu is open and are deactivated when it is closed.
     /// </summary>
     void Update()
     {
         lineDrawButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
+        deleteAllLinesButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
+
     }
 
     /// <summary>
@@ -83,5 +91,17 @@ public class LineDrawLogic : MonoBehaviour
             destination = null;
         }
         isLineModeActivated = !isLineModeActivated;
+    }
+
+    /// <summary>
+    /// Deletes all drawn lines in the scene. Is called when the "Delete All Lines" button is clicked.
+    /// </summary>
+    public void DeleteAllLines()
+    {
+        GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
+        foreach(GameObject line in lines)
+        {
+            GameObject.Destroy(line);
+        }
     }
 }
