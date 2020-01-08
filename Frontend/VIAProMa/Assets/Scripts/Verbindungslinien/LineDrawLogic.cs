@@ -75,9 +75,10 @@ public class LineDrawLogic : MonoBehaviour
         if(isLineModeActivated)
         {
             caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
+            start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+            destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
             if (start != null && destination != null)
             {
-                Debug.Log("ABootu to spawn");
                 GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(0, start.transform.position);
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.transform.position);

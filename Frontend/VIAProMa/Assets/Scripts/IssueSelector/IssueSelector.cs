@@ -11,11 +11,11 @@ using Microsoft.MixedReality.Toolkit.Input;
 public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointerHandler
 {
     [SerializeField] private GameObject selectionIndicator;
-    [SerializeField] private Renderer backgroundRenderer;
+    [SerializeField] [HideInInspector] public Renderer backgroundRenderer;
 
     private IssueDataDisplay issueDataDisplay;
     private bool selected;
-    private Color originalRendererColor;
+    [HideInInspector] public Color originalRendererColor;
 
     public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
 
@@ -195,15 +195,15 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         }
         if (linedrawscript.isLineModeActivated)
         {
+            backgroundRenderer.material.color = selectedColor;
+
             if (!linedrawscript.oneSelected)
             {
-                Debug.Log("First Object selected");
                 linedrawscript.start = gameObject;
                 linedrawscript.oneSelected = true;
             }
             else
             {
-                Debug.Log("Second Object selected");
                 linedrawscript.destination = gameObject;
                 linedrawscript.oneSelected = false;
             }
