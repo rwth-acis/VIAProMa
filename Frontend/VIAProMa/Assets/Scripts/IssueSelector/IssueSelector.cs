@@ -19,7 +19,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
 
     public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
 
-    private LineDrawLogic linedrawscript;
+    public LineDrawLogic linedrawscript;
+
 
     /// <summary>
     /// True if the issue is currently selected
@@ -56,8 +57,6 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         {
             originalRendererColor = backgroundRenderer.material.color;
         }
-
-        linedrawscript = GameObject.FindGameObjectWithTag("LineDraw").GetComponent<LineDrawLogic>();
     }
 
     /// <summary>
@@ -78,6 +77,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
             UpdateView();
         }
+        linedrawscript = GameObject.FindGameObjectWithTag("LineDraw").GetComponent<LineDrawLogic>();
+        
     }
 
     /// <summary>
@@ -192,15 +193,17 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             ToggleSelection();
             eventData.Use();
         }
-        if(linedrawscript.isLineModeActivated)
+        if (linedrawscript.isLineModeActivated)
         {
             if (!linedrawscript.oneSelected)
             {
+                Debug.Log("First Object selected");
                 linedrawscript.start = gameObject;
                 linedrawscript.oneSelected = true;
             }
             else
             {
+                Debug.Log("Second Object selected");
                 linedrawscript.destination = gameObject;
                 linedrawscript.oneSelected = false;
             }
