@@ -6,9 +6,14 @@ using TMPro;
 public class LineDrawLogic : MonoBehaviour
 {
     /// <summary>
-    /// Referencing the caption of the button
+    /// Referencing the caption of the line draw button
     /// </summary>
     public GameObject caption;
+
+    /// <summary>
+    /// Referencing the caption of the delete button
+    /// </summary>
+    public GameObject deleteCaption;
 
     /// <summary>
     /// Referencing the LineDraw Button
@@ -57,6 +62,7 @@ public class LineDrawLogic : MonoBehaviour
     {
         lineDrawButton.SetActive(false);
         deleteAllLinesButton.SetActive(false);
+        deleteSpecificLinesButton.SetActive(false);
         isLineModeActivated = false;
     }
 
@@ -67,6 +73,7 @@ public class LineDrawLogic : MonoBehaviour
     {
         lineDrawButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
         deleteAllLinesButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
+        deleteSpecificLinesButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
     }
 
     /// <summary>
@@ -79,6 +86,11 @@ public class LineDrawLogic : MonoBehaviour
         if (isLineModeActivated)
         {
             caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
+            if (start == null || destination == null)
+            {
+                isLineModeActivated = !isLineModeActivated;
+                return;
+            }
             if (start.GetComponent<IssueSelector>() != null)
             {
                 start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
@@ -125,8 +137,20 @@ public class LineDrawLogic : MonoBehaviour
     {
         if (isLineModeActivated)
         {
-            start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
-            destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            deleteCaption.GetComponent<TextMeshPro>().SetText("Enter Single Delete");
+            if (start == null || destination == null)
+            {
+                isLineModeActivated = !isLineModeActivated;
+                return;
+            }
+            if (start.GetComponent<IssueSelector>() != null)
+            {
+                start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (destination.GetComponent<IssueSelector>() != null)
+            {
+                destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            }
             if (start != null && destination != null)
             {
                 GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
@@ -142,6 +166,10 @@ public class LineDrawLogic : MonoBehaviour
                     }
                 }
             }
+        }
+        else
+        {
+            deleteCaption.GetComponent<TextMeshPro>().SetText("Delete Line");
         }
         isLineModeActivated = !isLineModeActivated;
 
