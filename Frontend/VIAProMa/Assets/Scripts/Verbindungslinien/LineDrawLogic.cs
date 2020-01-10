@@ -20,6 +20,11 @@ public class LineDrawLogic : MonoBehaviour
     /// </summary>
     public GameObject deleteAllLinesButton;
 
+    ///<summary>
+    ///Referencing the DeleteSpecifixLines Button
+    /// </summary>
+    public GameObject deleteSpecificLinesButton;
+     
     /// <summary>
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
@@ -114,5 +119,33 @@ public class LineDrawLogic : MonoBehaviour
             Debug.Log("At least one line deleted");
         }
         Debug.Log("All Lines deleted");
+    }
+
+    public void DeleteSpecificLine()
+    {
+        if (isLineModeActivated)
+        {
+            start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+            destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            if (start != null && destination != null)
+            {
+                GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
+                foreach
+                (GameObject line in lines)
+                {
+                    if ((line.GetComponent<LineRenderer>().GetPosition(0) == start.transform.position 
+                        && line.GetComponent<LineRenderer>().GetPosition(1) == destination.transform.position) ||
+                        (line.GetComponent<LineRenderer>().GetPosition(0) == start.transform.position 
+                        && line.GetComponent<LineRenderer>().GetPosition(1) == destination.transform.position))
+                    {
+                        Destroy(line);
+                    }
+                }
+            }
+        }
+        isLineModeActivated = !isLineModeActivated;
+
+
+        
     }
 }
