@@ -62,7 +62,6 @@ public class LineDrawLogic : MonoBehaviour
     {
         lineDrawButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
         deleteAllLinesButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
-
     }
 
     /// <summary>
@@ -72,11 +71,17 @@ public class LineDrawLogic : MonoBehaviour
     /// </summary>
     public void SwitchLineDrawMode()
     {
-        if(isLineModeActivated)
+        if (isLineModeActivated)
         {
             caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
-            start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
-            destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            if (start.GetComponent<IssueSelector>() != null)
+            {
+                start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (destination.GetComponent<IssueSelector>() != null)
+            {
+                destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            }
             if (start != null && destination != null)
             {
                 GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);

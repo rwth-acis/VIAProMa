@@ -19,13 +19,11 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
         {
             if (!linedrawscript.oneSelected)
             {
-                Debug.Log("First Object selected");
                 linedrawscript.start = gameObject;
                 linedrawscript.oneSelected = true;
             }
             else
             {
-                Debug.Log("Second Object selected");
                 linedrawscript.destination = gameObject;
                 linedrawscript.oneSelected = false;
             }
