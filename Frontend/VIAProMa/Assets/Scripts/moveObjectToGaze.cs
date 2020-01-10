@@ -21,7 +21,7 @@ public class moveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
 
     void Update()
     {
-        //Debug.Log("Current GameObjectReference : " + giveGaze().GameObjectReference.name);
+        //Debug.Log("Current Pointer something : " + MixedRealityPointerProfile);
         if (giveGaze().GazeTarget)
         {
             Vector3 currentHitPosition = giveGaze().HitPosition;
@@ -30,7 +30,7 @@ public class moveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
             gameObject.transform.eulerAngles = angle;
             txt.text = giveGaze().GazeTarget.name;
             
-        } else {gameObject.transform.position = far;}
+        } else {/*gameObject.transform.position = far;*/}
     }
 
     public IMixedRealityGazeProvider giveGaze()
@@ -40,31 +40,32 @@ public class moveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
         
     }
 
-    /*public IMixedRealityGazeProvider giveGGV()
-    {
-        IMixedRealityGazeProvider currentGaze = MixedRealityToolkit.InputSystem.GazeProvider;
-        return currentGaze;
-
-    }
-    */
-
     public void OnPointerDown(MixedRealityPointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
+        Debug.Log("Testing 1");
     }
 
     public void OnPointerDragged(MixedRealityPointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
+        Debug.Log("Testing 2");
     }
 
     public void OnPointerUp(MixedRealityPointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        /*var result = eventData.Pointer.Result;
+        if (result != null)
+        {
+            gameObject.transform.position = result.Details.Point;
+        }*/
+        Debug.Log("Testing 3");
+        //throw new System.NotImplementedException();
     }
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Testing 4");
+        //throw new System.NotImplementedException();
     }
 }
