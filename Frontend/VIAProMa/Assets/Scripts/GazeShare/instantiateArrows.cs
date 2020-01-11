@@ -17,7 +17,8 @@ public class instantiateArrows : MonoBehaviourPun, IPunObservable
         }
         else
         {
-            targetPosition = (Vector3)(stream.ReceiveNext());
+            targetPosition = Vector3.zero;
+            stream.Serialize(ref targetPosition);
         }
     }
 
@@ -26,13 +27,17 @@ public class instantiateArrows : MonoBehaviourPun, IPunObservable
     // Start is called before the first frame update
     void Start()
     {
-        PhotonNetwork.Instantiate("arrow2", new Vector3(0, 0.5f, 1.45f), Quaternion.identity, 0);
+        // PhotonNetwork.Instantiate("arrow2", new Vector3(0, 0.5f, 1.45f), Quaternion.identity, 0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!(photonView.IsMine))
+        if (photonView.IsMine)
+        {
+            
+        }
+        else
         {
             transform.position = targetPosition;
         }
