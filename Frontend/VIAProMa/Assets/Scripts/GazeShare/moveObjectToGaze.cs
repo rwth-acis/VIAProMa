@@ -7,11 +7,12 @@ using Microsoft.MixedReality.Toolkit.Input;
 
 public class MoveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
 {
+    //[SerializeField] private text txt;
     private Vector3 up = new Vector3(0f,0.1f,0f);
     private Vector3 far = new Vector3(0f,-10f,0f);
     private bool isSharing = true;
     Material mat;
-    public Text txt;
+
 
     void Start()
     {
@@ -28,7 +29,7 @@ public class MoveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
             gameObject.transform.position = currentHitPosition + up;
             Vector3 angle = new Vector3(gameObject.transform.eulerAngles.x, giveGaze().GazeDirection.x * 90, gameObject.transform.eulerAngles.z);
             gameObject.transform.eulerAngles = angle;
-            txt.text = giveGaze().GazeTarget.name;
+            //txt.text = giveGaze().GazeTarget.name;
             isSharing = true;
 
         } else

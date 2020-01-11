@@ -11,6 +11,7 @@ using UnityEngine;
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject playerAvatarPrefab;
+    [SerializeField] private GameObject arrow;
 
     /// <summary>
     /// Checks if the component is set up correctly
@@ -21,6 +22,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(playerAvatarPrefab));
         }
+
+        if (arrow == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(arrow));
+        }
     }
 
     /// <summary>
@@ -30,6 +36,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
+        ResourceManager.Instance.NetworkInstantiate(arrow, Vector3.zero, Quaternion.identity);
     }
 
     /// <summary>
