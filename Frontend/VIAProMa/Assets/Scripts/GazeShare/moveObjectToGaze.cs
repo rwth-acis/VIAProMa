@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 
-public class moveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
+public class MoveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
 {
     private Vector3 up = new Vector3(0f,0.1f,0f);
     private Vector3 far = new Vector3(0f,-10f,0f);

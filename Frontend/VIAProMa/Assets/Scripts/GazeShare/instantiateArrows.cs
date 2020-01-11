@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class instantiateArrows : MonoBehaviourPun, IPunObservable
+public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
 
     protected Vector3 targetPosition;
