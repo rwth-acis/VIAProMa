@@ -9,6 +9,7 @@ public class moveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
 {
     private Vector3 up = new Vector3(0f,0.1f,0f);
     private Vector3 far = new Vector3(0f,-10f,0f);
+    private bool isSharing = true;
     Material mat;
     public Text txt;
 
@@ -16,21 +17,37 @@ public class moveObjectToGaze : MonoBehaviour, IMixedRealityPointerHandler
     {
         mat = GetComponent<Renderer>().material;
         gameObject.transform.position = far;
-        mat.color = Color.black;
     }
 
     void Update()
     {
         //Debug.Log("Current Pointer something : " + MixedRealityPointerProfile);
-        if (giveGaze().GazeTarget)
+        if (giveGaze().GazeTarget && isSharing == true)
         {
             Vector3 currentHitPosition = giveGaze().HitPosition;
             gameObject.transform.position = currentHitPosition + up;
             Vector3 angle = new Vector3(gameObject.transform.eulerAngles.x, giveGaze().GazeDirection.x * 90, gameObject.transform.eulerAngles.z);
             gameObject.transform.eulerAngles = angle;
             txt.text = giveGaze().GazeTarget.name;
-            
-        } else {/*gameObject.transform.position = far;*/}
+            isSharing = true;
+
+        } else
+        {
+            gameObject.transform.position = far;
+        }
+    }
+
+    public void toggleSharing()
+    {
+        if(isSharing == true)
+        {
+            isSharing = false;
+        } else { isSharing = true; }
+    }
+
+    public void toggleColor()
+    {
+        mat.color = Random.ColorHSV();
     }
 
     public IMixedRealityGazeProvider giveGaze()
