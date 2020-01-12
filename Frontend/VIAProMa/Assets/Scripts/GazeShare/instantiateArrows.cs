@@ -66,8 +66,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     protected void moveOtherArrows()
     {
-        transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, lerpSpeed * Time.deltaTime);
+        transform.position = targetPosition;
+        transform.rotation = rot;
         //GetComponent<Renderer>().material.color = targetMaterial.color;
     }
 
