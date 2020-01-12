@@ -12,14 +12,11 @@ public class ArrowMultiplayerInstantiator : InstantiateArrows
     {
         if (photonView.IsMine)
         {
-            Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
-            transform.position = currentHitPosition + up;
-            transform.rotation = rot;
+            moveMyArrow();
         }
         else
         {
-            transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rot, lerpSpeed * Time.deltaTime);
+            moveOtherArrows();
         }
     }
 }
