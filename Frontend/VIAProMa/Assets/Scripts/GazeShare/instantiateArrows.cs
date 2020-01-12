@@ -7,9 +7,9 @@ using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine.UI;
 
 
-public class InstantiateArrows : MonoBehaviourPun, IPunObservable
+public class InstantiateArrows : MonoBehaviourPun, IPunObservable, IMixedRealityPointerHandler
 {
-
+    
     protected Vector3 targetPosition;
     protected Material targetMaterial;
     protected Vector3 up = new Vector3(0f, 0.1f, 0f);
@@ -40,7 +40,15 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             moveMyArrow();
-        } else
+            foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
+            {
+                Debug.Log("Controller : " + controller.InputSource.SourceType);
+                if(controller.InputSource.SourceType == InputSourceType.Hand)
+                {
+                    Debug.Log("YES");
+                }
+            }
+            } else
         {
             moveOtherArrows();
         }
@@ -86,5 +94,25 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
             default: return Color.white;
         }
+    }
+
+    public void OnPointerDown(MixedRealityPointerEventData eventData)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnPointerDragged(MixedRealityPointerEventData eventData)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnPointerUp(MixedRealityPointerEventData eventData)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnPointerClicked(MixedRealityPointerEventData eventData)
+    {
+        throw new System.NotImplementedException();
     }
 }
