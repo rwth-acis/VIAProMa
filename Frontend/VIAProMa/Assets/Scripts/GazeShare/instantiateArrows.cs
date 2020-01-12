@@ -26,12 +26,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
-            stream.SendNext(GetComponent<Renderer>().material);
+            //stream.SendNext(GetComponent<Renderer>().material);
         }
         else // we are reading the network stream, i.e. we receive a remote player position and rotation
         {
             targetPosition = (Vector3)stream.ReceiveNext();
-            targetMaterial = (Material)stream.ReceiveNext();
+            //targetMaterial = (Material)stream.ReceiveNext();
         }
     }
 
@@ -59,7 +59,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
             transform.position = currentHitPosition + up;
             transform.rotation = rot;
-            GetComponent<Renderer>().material.color = getColorForUser(photonView.OwnerActorNr);
+            //GetComponent<Renderer>().material.color = getColorForUser(photonView.OwnerActorNr);
         }
         else { transform.position = far; }
     }
@@ -68,7 +68,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, rot, lerpSpeed * Time.deltaTime);
-        GetComponent<Renderer>().material.color = targetMaterial.color;
+        //GetComponent<Renderer>().material.color = targetMaterial.color;
     }
 
     protected Color getColorForUser(int userID)
