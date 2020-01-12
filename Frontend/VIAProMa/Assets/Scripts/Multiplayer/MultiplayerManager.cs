@@ -22,11 +22,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(playerAvatarPrefab));
         }
-
-        if (arrow == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(arrow));
-        }
     }
 
     /// <summary>
