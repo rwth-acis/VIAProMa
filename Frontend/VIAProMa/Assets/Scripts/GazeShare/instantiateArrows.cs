@@ -11,7 +11,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
 
     protected Vector3 targetPosition;
-    protected Material targetMaterial;
     protected Vector3 up = new Vector3(0f, 0.1f, 0f);
     protected Vector3 far = new Vector3(0f, -10f, 0f);
     public float lerpSpeed = 1f;
@@ -40,9 +39,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             moveMyArrow();
-        } else
+            setColorOfArrow();
+        }
+        else
         {
             moveOtherArrows();
+            setColorOfArrow();
         }
     }
 
@@ -75,16 +77,24 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         switch (userID)
         {
-            case 1: return Color.red;
+            case 1:
+                return Color.red;
                 break;
 
-            case 2: return Color.green;
+            case 2:
+                return Color.green;
                 break;
 
-           case 3: return Color.black;
+            case 3:
+                return Color.black;
                 break;
 
             default: return Color.white;
         }
+    }
+
+    protected void setColorOfArrow()
+    {
+        GetComponent<Renderer>().material.color = getColorForUser(photonView.OwnerActorNr);
     }
 }
