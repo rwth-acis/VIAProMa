@@ -15,7 +15,7 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        if (linedrawscript.isLineModeActivated)
+        if (linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated)
         {
             if (!linedrawscript.oneSelected)
             {

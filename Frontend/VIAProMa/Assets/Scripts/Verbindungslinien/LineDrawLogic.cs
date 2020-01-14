@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Microsoft.MixedReality.Toolkit.UI;
 
 public class LineDrawLogic : MonoBehaviour
 {
@@ -41,6 +42,11 @@ public class LineDrawLogic : MonoBehaviour
     [HideInInspector] public bool isLineModeActivated;
 
     /// <summary>
+    /// True, if the LineDelete Mode is active
+    /// </summary>
+    [HideInInspector] public bool isDeleteLineModeActivated;
+
+    /// <summary>
     /// True, if the one start object has been selected
     /// </summary>
     [HideInInspector] public bool oneSelected;
@@ -64,6 +70,7 @@ public class LineDrawLogic : MonoBehaviour
         deleteAllLinesButton.SetActive(false);
         deleteSpecificLinesButton.SetActive(false);
         isLineModeActivated = false;
+        isDeleteLineModeActivated = false;
     }
 
     /// <summary>
@@ -83,9 +90,14 @@ public class LineDrawLogic : MonoBehaviour
     /// </summary>
     public void SwitchLineDrawMode()
     {
+        if (isDeleteLineModeActivated)
+        {
+            return;
+        }
         if (isLineModeActivated)
         {
             caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
+            deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
             if (start == null || destination == null)
             {
                 isLineModeActivated = !isLineModeActivated;
@@ -113,6 +125,7 @@ public class LineDrawLogic : MonoBehaviour
         else
         {
             caption.GetComponent<TextMeshPro>().SetText("Draw Line");
+            deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
         }
         isLineModeActivated = !isLineModeActivated;
         Debug.Log("Mode switched!");
@@ -137,10 +150,15 @@ public class LineDrawLogic : MonoBehaviour
     {
         if (isLineModeActivated)
         {
+            return;
+        }
+        if (isDeleteLineModeActivated)
+        {
             deleteCaption.GetComponent<TextMeshPro>().SetText("Enter Single Delete");
+            lineDrawButton.GetComponent<Interactable>().Enabled = true;
             if (start == null || destination == null)
             {
-                isLineModeActivated = !isLineModeActivated;
+                isDeleteLineModeActivated = !isDeleteLineModeActivated;
                 return;
             }
             if (start.GetComponent<IssueSelector>() != null)
@@ -170,8 +188,9 @@ public class LineDrawLogic : MonoBehaviour
         else
         {
             deleteCaption.GetComponent<TextMeshPro>().SetText("Delete Line");
+            lineDrawButton.GetComponent<Interactable>().Enabled = false;
         }
-        isLineModeActivated = !isLineModeActivated;
+        isDeleteLineModeActivated = !isDeleteLineModeActivated;
 
 
         

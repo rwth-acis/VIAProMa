@@ -193,7 +193,7 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             ToggleSelection();
             eventData.Use();
         }
-        if (linedrawscript.isLineModeActivated)
+        if (linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated)
         {
             if (!linedrawscript.oneSelected)
             {

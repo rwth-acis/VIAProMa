@@ -4460,9 +4460,11 @@ MonoBehaviour:
   lineRendererPrefab: {fileID: 2260397108152606917, guid: 5d0cc5fc51ecabb40b40fb67b24586f9,
     type: 3}
   isLineModeActivated: 0
+  isDeleteLineModeActivated: 0
   oneSelected: 0
   start: {fileID: 0}
   destination: {fileID: 0}
+  buttonMaterial: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
 --- !u!224 &1712440632 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8466432240301364509, guid: 7bf39913b7d9e7b46816f871fff478f7,
@@ -6631,6 +6633,102 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestDescription
       objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 327
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 56
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_text
+      value: "To create a line, first press \"Enter Line Draw\" (F1) and then select
+        two issues or visualizations. By pressing \"Draw Line\" the connection line
+        is created.\r\nTo delete, you can either use \"Delete All Lines\" (F2) to
+        delete all lines or press \"Enter Single Delete\" (F3) to activate the delete
+        mode, which works like creating lines."
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.materialCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_subTextObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 498463413}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_firstOverflowCharacterIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_text
+      value: 'Create/Delete Lines
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textInfo.materialCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_subTextObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 990550154}
+    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 4163920973025327151, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6691,105 +6789,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 390
-      objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 55
-      objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 56
-      objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_text
-      value: "Zum Erstellen einer Linie dr\xFCckt man zun\xE4chst \"Enter Line Draw\"
-        (F1) und selektiert danach zwei Issues oder Visualizations. Durch Dr\xFCcken
-        von \"Draw Line\" wird die Verbindungslinie erstellt.\nZum L\xF6schen kann
-        entweder \"Delete All Lines\" (F2) zum L\xF6schen aller Linien benutzt werden
-        oder mit \"Enter Single Delete\" (F3) der L\xF6schmodus aktiviert werden,
-        der wie das Linienerstellen funktioniert."
-      objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.materialCount
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_subTextObjects.Array.data[1]
-      value: 
-      objectReference: {fileID: 498463413}
-    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_firstOverflowCharacterIndex
-      value: 331
-      objectReference: {fileID: 0}
     - target: {fileID: 4301431890908147799, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_text
-      value: "Linien erstellen/l\xF6schen\n"
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_textInfo.materialCount
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_subTextObjects.Array.data[1]
-      value: 
-      objectReference: {fileID: 990550154}
-    - target: {fileID: 8232997713520276123, guid: 7bf39913b7d9e7b46816f871fff478f7,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bf39913b7d9e7b46816f871fff478f7, type: 3}
