@@ -195,18 +195,25 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
         }
         if (linedrawscript.isLineModeActivated)
         {
-            backgroundRenderer.material.color = selectedColor;
-
             if (!linedrawscript.oneSelected)
             {
+                if(linedrawscript.start != null && linedrawscript.start.GetComponent<IssueSelector>() != null)
+                {
+                    linedrawscript.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.start.GetComponent<IssueSelector>().originalRendererColor;
+                }
                 linedrawscript.start = gameObject;
                 linedrawscript.oneSelected = true;
             }
             else
             {
+                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<IssueSelector>() != null)
+                {
+                    linedrawscript.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.destination.GetComponent<IssueSelector>().originalRendererColor;
+                }
                 linedrawscript.destination = gameObject;
                 linedrawscript.oneSelected = false;
             }
+            backgroundRenderer.material.color = selectedColor;
         }
     }
 }
