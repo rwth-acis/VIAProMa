@@ -66,21 +66,8 @@ public class LineDrawLogic : MonoBehaviour
     /// </summary>
     void Start()
     {
-        lineDrawButton.SetActive(false);
-        deleteAllLinesButton.SetActive(false);
-        deleteSpecificLinesButton.SetActive(false);
         isLineModeActivated = false;
         isDeleteLineModeActivated = false;
-    }
-
-    /// <summary>
-    /// The LineDraw Button and the DeleteAllLines Button appear when the Menu is open and are deactivated when it is closed.
-    /// </summary>
-    void Update()
-    {
-        lineDrawButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
-        deleteAllLinesButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
-        deleteSpecificLinesButton.SetActive(transform.GetComponent<FoldController>().MenuOpen);
     }
 
     /// <summary>
@@ -110,6 +97,14 @@ public class LineDrawLogic : MonoBehaviour
             if (destination.GetComponent<IssueSelector>() != null)
             {
                 destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (start.GetComponent<VisualizationSelector>() != null)
+            {
+                start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+            }
+            if (destination.GetComponent<VisualizationSelector>() != null)
+            {
+                destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
             }
             if (start != null && destination != null)
             {
@@ -168,6 +163,14 @@ public class LineDrawLogic : MonoBehaviour
             if (destination.GetComponent<IssueSelector>() != null)
             {
                 destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (start.GetComponent<VisualizationSelector>() != null)
+            {
+                start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+            }
+            if (destination.GetComponent<VisualizationSelector>() != null)
+            {
+                destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
             }
             if (start != null && destination != null)
             {

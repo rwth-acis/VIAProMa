@@ -16,6 +16,6 @@ public class DrawModeSelector : MonoBehaviour
     }
     void Update()
     {
-        boxColl.enabled = linedrawscript.isLineModeActivated;
+        boxColl.enabled = linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated;
     }
 }

@@ -201,6 +201,10 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
                 {
                     linedrawscript.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.start.GetComponent<IssueSelector>().originalRendererColor;
                 }
+                if (linedrawscript.start != null && linedrawscript.start.GetComponent<VisualizationSelector>() != null)
+                {
+                    linedrawscript.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                }
                 linedrawscript.start = gameObject;
                 linedrawscript.oneSelected = true;
             }
@@ -209,6 +213,10 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
                 if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<IssueSelector>() != null)
                 {
                     linedrawscript.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.destination.GetComponent<IssueSelector>().originalRendererColor;
+                }
+                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<VisualizationSelector>() != null)
+                {
+                    linedrawscript.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
                 linedrawscript.destination = gameObject;
                 linedrawscript.oneSelected = false;
