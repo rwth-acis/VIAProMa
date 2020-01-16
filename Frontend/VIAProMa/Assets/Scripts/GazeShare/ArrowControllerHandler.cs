@@ -9,16 +9,20 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
 { 
     protected bool isUsingVive;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Vector3 up = new Vector3(0f, 0.1f, 0f);
-    [HideInInspector] public Vector3 pointerHitPosition = new Vector3(0f, -10f, 0f);
+    protected Vector3 up = new Vector3(0f, 0.025f, 0f);
+    [HideInInspector] public Vector3 pointerHitPosition;
+
+    public void Start()
+    {
+        pointerHitPosition = new Vector3(0f, -10f, 0f);
+    }
 
     protected bool getIsUsingVive2()
     {
         isUsingVive = false;
         foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
         {
-            //Debug.Log("Controller is : " + controller.InputSource.SourceType);
-            if (controller.InputSource.SourceType == InputSourceType.Controller)
+            if (controller.InputSource.SourceType == InputSourceType.Hand)
             {
                 isUsingVive = true;
             }
@@ -28,20 +32,27 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        //Debug.Log("5");
-        //Debug.Log("isUsing :" + getIsUsingVive());
         if (getIsUsingVive2() == true)
         {
-            var result = eventData.Pointer.Result;
-            //Debug.Log("result :" + result.Details.Point);
-            //Debug.Log("name : " + gameObject.name);
-            if (result != null)
+            foreach (GameObject controller in getAllGameObjectsWithArrowScriptTesting2())
             {
-                //Debug.Log("Test");
-                pointerHitPosition = result.Details.Point + up;
+                //Debug.Log("Name " + controller.name + "Position" + controller.GetComponent<ArrowControllerHandler>().pointerHitPosition);
+                if (controller.name != gameObject.name)
+                {
+                    controller.GetComponent<ArrowControllerHandler>().pointerHitPosition = far;
+                }
+                else 
+                {
+                    pointerHitPosition = eventData.Pointer.Result.Details.Point;
+                }
             }
-            else { pointerHitPosition = far; }
         }
+    }
+
+    protected GameObject[] getAllGameObjectsWithArrowScriptTesting2()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
+        return arrayAll;
     }
 
     public void OnPointerDown(MixedRealityPointerEventData eventData)

@@ -124,11 +124,10 @@ GameObject:
   - component: {fileID: 88727976}
   - component: {fileID: 88727975}
   - component: {fileID: 88727974}
-  - component: {fileID: 88727978}
   - component: {fileID: 88727979}
   m_Layer: 0
   m_Name: rightTestCube
-  m_TagString: Untagged
+  m_TagString: showArrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -205,19 +204,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &88727978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 88727973}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92fc6904beac9f449b98973a35effc9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrow: {fileID: 0}
 --- !u!114 &88727979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89a562b80de35fb43b45ac9311f2f8d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrow: {fileID: 115542661924154907, guid: 8d5336c54d6bdb94e84e3990ae22bfe9, type: 3}
+  pointerHitPosition: {x: 0, y: -10, z: 0}
 --- !u!1 &214013176
 GameObject:
   m_ObjectHideFlags: 0
@@ -3477,11 +3463,10 @@ GameObject:
   - component: {fileID: 676222768}
   - component: {fileID: 676222767}
   - component: {fileID: 676222766}
-  - component: {fileID: 676222770}
   - component: {fileID: 676222771}
   m_Layer: 0
   m_Name: leftTestCube
-  m_TagString: Untagged
+  m_TagString: showArrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3558,19 +3543,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &676222770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 676222765}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92fc6904beac9f449b98973a35effc9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrow: {fileID: 0}
 --- !u!114 &676222771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3583,7 +3555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89a562b80de35fb43b45ac9311f2f8d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrow: {fileID: 115542661924154907, guid: 8d5336c54d6bdb94e84e3990ae22bfe9, type: 3}
+  pointerHitPosition: {x: 0, y: -10, z: 0}
 --- !u!1 &915319577
 GameObject:
   m_ObjectHideFlags: 0
@@ -4175,7 +4147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89a562b80de35fb43b45ac9311f2f8d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrow: {fileID: 115542661924154907, guid: 8d5336c54d6bdb94e84e3990ae22bfe9, type: 3}
+  pointerHitPosition: {x: 0, y: -10, z: 0}
 --- !u!1 &2038167400
 GameObject:
   m_ObjectHideFlags: 0
@@ -4363,6 +4335,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Main Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 6436379610115110548, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_TagString
+      value: showArrow
       objectReference: {fileID: 0}
     - target: {fileID: 6436379610115110547, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}

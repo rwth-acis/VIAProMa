@@ -359,9 +359,10 @@ GameObject:
   - component: {fileID: 9117445255858946818}
   - component: {fileID: 3390457831152519555}
   - component: {fileID: 1907927049844227124}
+  - component: {fileID: 114049169849689922}
   m_Layer: 0
   m_Name: Progress Bar
-  m_TagString: Untagged
+  m_TagString: showArrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -532,6 +533,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 889cf250a9686284fa48bde7f9f5fac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114049169849689922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3440714514617847667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89a562b80de35fb43b45ac9311f2f8d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointerHitPosition: {x: 0, y: -10, z: 0}
 --- !u!1 &4182497719721084561
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,14 +586,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3440714515877950411}
     m_Modifications:
-    - target: {fileID: 2300000, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
-    - target: {fileID: 2300002, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
     - target: {fileID: 100004, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
       propertyPath: m_Name
       value: Progress Bar Handle
@@ -628,6 +634,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - target: {fileID: 2300002, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
 --- !u!23 &976737975268866322 stripped
@@ -655,14 +669,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3440714514402120771}
     m_Modifications:
-    - target: {fileID: 2300000, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
-    - target: {fileID: 2300002, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
     - target: {fileID: 100004, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
       propertyPath: m_Name
       value: Progress Bar Handle (1)
@@ -711,6 +717,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - target: {fileID: 2300002, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3cf24c3021e0d54b8487f866e57bcaa, type: 3}
 --- !u!1 &1473611229998202360 stripped
@@ -738,6 +752,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3440714514617847666}
     m_Modifications:
+    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
+        type: 3}
+      propertyPath: m_Name
+      value: TextLabel
+      objectReference: {fileID: 0}
     - target: {fileID: 8362453174225159361, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -792,11 +811,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8362453174225159363, guid: 171f717c846f82349ae46e1af72a2966,
-        type: 3}
-      propertyPath: m_Name
-      value: TextLabel
       objectReference: {fileID: 0}
     - target: {fileID: 8362453174100900500, guid: 171f717c846f82349ae46e1af72a2966,
         type: 3}
@@ -865,6 +879,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3440714514617847666}
     m_Modifications:
+    - target: {fileID: 100000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
+      propertyPath: m_Name
+      value: Progress Bar Cap Pos
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5
@@ -913,10 +931,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: -1
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
-      propertyPath: m_Name
-      value: Progress Bar Cap Pos
-      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -936,6 +950,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2454696449132032064}
     m_Modifications:
+    - target: {fileID: 100000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
+      propertyPath: m_Name
+      value: Progress Bar Inner In Progress
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -984,10 +1002,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
-      propertyPath: m_Name
-      value: Progress Bar Inner In Progress
-      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1007,6 +1021,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2454696449132032064}
     m_Modifications:
+    - target: {fileID: 100000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
+      propertyPath: m_Name
+      value: Progress Bar Inner Done
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -1055,10 +1073,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
-      propertyPath: m_Name
-      value: Progress Bar Inner Done
-      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 67c876d4c8ff62d49b9de8daf7f36b45, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1078,6 +1092,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3440714514617847666}
     m_Modifications:
+    - target: {fileID: 100000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
+      propertyPath: m_Name
+      value: Progress Bar Cap Neg
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -1122,10 +1140,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
-      propertyPath: m_Name
-      value: Progress Bar Cap Neg
-      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 5750fd92e89121a41bd26c43eafe791f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1145,6 +1159,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2454696449132032064}
     m_Modifications:
+    - target: {fileID: 100000, guid: 9104646a236d3e14f88964c95096ed72, type: 3}
+      propertyPath: m_Name
+      value: Progress Bar Tube
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 9104646a236d3e14f88964c95096ed72, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1189,10 +1207,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: 9104646a236d3e14f88964c95096ed72, type: 3}
-      propertyPath: m_Name
-      value: Progress Bar Tube
-      objectReference: {fileID: 0}
     - target: {fileID: 2300000, guid: 9104646a236d3e14f88964c95096ed72, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -1212,6 +1226,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3440714514617847666}
     m_Modifications:
+    - target: {fileID: 6804370218211835808, guid: 3120b1dca5aceea44b9346256f956370,
+        type: 3}
+      propertyPath: m_Name
+      value: Progress Bar Configuration Window
+      objectReference: {fileID: 0}
     - target: {fileID: 7754013898551322284, guid: 3120b1dca5aceea44b9346256f956370,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1266,11 +1285,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6804370218211835808, guid: 3120b1dca5aceea44b9346256f956370,
-        type: 3}
-      propertyPath: m_Name
-      value: Progress Bar Configuration Window
       objectReference: {fileID: 0}
     - target: {fileID: 4145217981444261754, guid: 3120b1dca5aceea44b9346256f956370,
         type: 3}
