@@ -11,6 +11,7 @@ using Microsoft.MixedReality.Toolkit.Input;
 
 public class ArrowMultiplayerInstantiator : InstantiateArrows
 {
+
     protected override void Update()
     {
         if (photonView.IsMine)

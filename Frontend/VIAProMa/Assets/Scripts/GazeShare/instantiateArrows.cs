@@ -5,6 +5,7 @@ using Photon.Pun;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine.UI;
+using TMPro;
 
 public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
@@ -14,11 +15,14 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Quaternion rot = Quaternion.Euler(0, 0, -90);
     protected bool isUsingVive;
     protected int clickableObjectCount = 0;
+    [HideInInspector] public bool sharing;
+    protected TextMeshPro shareGazeText;
 
-    /*public void Start()
+    public void Start()
     {
-
-    }*/
+        sharing = true;
+        setTextOfShareLabel();
+    }
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -48,19 +52,21 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     protected void moveMyArrow()
     {
-        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false)
+        //Debug.Log(sharing);
+        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true)
         {
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
             transform.position = currentHitPosition + up;
             transform.rotation = rot;
         }
-        else if (getIsUsingVive() == true)
+        else if (getIsUsingVive() == true && sharing == true)
         {
             transform.rotation = rot;
             transform.position = getHitPositionOfPointedObjectFinal();
         }
         else
         {
+            transform.rotation = rot;
             transform.position = far;
         }
     }
@@ -115,6 +121,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         return arrayAll;
     }
 
+    protected GameObject getShareGazeLabelObject()
+    {
+        GameObject shazeLabelObject = GameObject.Find("ShareGazeLabel");
+        return shazeLabelObject;
+    }
+
     protected Vector3 getHitPositionOfPointedObjectFinal()
     {
         Vector3 hitPositionResult = far;
@@ -126,5 +138,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             }
         }
         return hitPositionResult;
+    }
+
+    public void setTextOfShareLabel()
+    {
+        if(sharing == true)
+        {
+            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Unshare Gaze";
+        }
+        else
+        {
+            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Share Gaze";
+        }
     }
 }

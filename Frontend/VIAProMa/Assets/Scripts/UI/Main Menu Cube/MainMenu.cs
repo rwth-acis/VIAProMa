@@ -329,4 +329,33 @@ public class MainMenu : MonoBehaviourPunCallbacks
         visualizationShelfInstance = view.gameObject;
         Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
     }
+
+    protected GameObject[] getAllGameObjectsArrow()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
+        return arrayAll;
+    }
+
+    protected GameObject[] getAllGameObjectsAvatar()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("avatar");
+        return arrayAll;
+    }
+
+    public void toggleSharing()
+    {
+        //Debug.Log(getAllGameObjectsArrow().Length);
+        //Debug.Log(getAllGameObjectsAvatar().Length);
+        foreach (GameObject arrow in getAllGameObjectsArrow())
+        {
+            foreach (GameObject avatar in getAllGameObjectsAvatar())
+            {
+                if (avatar.GetComponent<BasicAvatarMovementSynchronizer>().photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
+                {
+                    arrow.GetComponent<InstantiateArrows>().sharing = !arrow.GetComponent<InstantiateArrows>().sharing;
+                    arrow.GetComponent<InstantiateArrows>().setTextOfShareLabel();
+                }
+            }
+        }
+    }
 }
