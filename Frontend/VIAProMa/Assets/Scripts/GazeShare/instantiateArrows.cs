@@ -61,11 +61,13 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
             transform.position = currentHitPosition + up;
             transform.rotation = rot;
+            GetComponentInChildren<TextMeshPro>().text = "Hololens";
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
             transform.rotation = rot;
             transform.position = getHitPositionOfPointedObjectFinal() + up;
+            GetComponentInChildren<TextMeshPro>().text = "HTC Vive";
         }
         else
         {

@@ -342,19 +342,19 @@ public class MainMenu : MonoBehaviourPunCallbacks
         return arrayAll;
     }
 
+    // To Test
     public void toggleSharing()
     {
+        Debug.Log("Owner Menu :" + photonView.ControllerActorNr);
         //Debug.Log(getAllGameObjectsArrow().Length);
         //Debug.Log(getAllGameObjectsAvatar().Length);
+
         foreach (GameObject arrow in getAllGameObjectsArrow())
         {
-            foreach (GameObject avatar in getAllGameObjectsAvatar())
+            if (arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr == photonView.ControllerActorNr)
             {
-                if (avatar.GetComponent<BasicAvatarMovementSynchronizer>().photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
-                {
-                    arrow.GetComponent<InstantiateArrows>().sharing = !arrow.GetComponent<InstantiateArrows>().sharing;
-                    arrow.GetComponent<InstantiateArrows>().setTextOfShareLabel();
-                }
+                arrow.GetComponent<InstantiateArrows>().sharing = !arrow.GetComponent<InstantiateArrows>().sharing;
+                arrow.GetComponent<InstantiateArrows>().setTextOfShareLabel();
             }
         }
     }
