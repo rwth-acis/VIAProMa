@@ -358,4 +358,21 @@ public class MainMenu : MonoBehaviourPunCallbacks
             }
         }
     }
+
+    public void toggleGlobalSharing()
+    {
+        //Debug.Log(getAllGameObjectsArrow().Length);
+        //Debug.Log(getAllGameObjectsAvatar().Length);
+        foreach (GameObject arrow in getAllGameObjectsArrow())
+        {
+            foreach (GameObject avatar in getAllGameObjectsAvatar())
+            {
+                if (avatar.GetComponent<BasicAvatarMovementSynchronizer>().photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
+                {
+                    arrow.GetComponent<InstantiateArrows>().sharingGlobal = !arrow.GetComponent<InstantiateArrows>().sharingGlobal;
+                    arrow.GetComponent<InstantiateArrows>().setTextOfGlobalGazingLabel();
+                }
+            }
+        }
+    }
 }

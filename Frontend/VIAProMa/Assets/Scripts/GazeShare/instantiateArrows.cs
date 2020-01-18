@@ -16,12 +16,15 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected bool isUsingVive;
     protected int clickableObjectCount = 0;
     [HideInInspector] public bool sharing;
+    [HideInInspector] public bool sharingGlobal;
     protected TextMeshPro shareGazeText;
 
     public void Start()
     {
         sharing = true;
+        sharingGlobal = true;
         setTextOfShareLabel();
+        setTextOfGlobalGazingLabel();
     }
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -53,16 +56,16 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected void moveMyArrow()
     {
         //Debug.Log(sharing);
-        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true)
+        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
         {
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
             transform.position = currentHitPosition + up;
             transform.rotation = rot;
         }
-        else if (getIsUsingVive() == true && sharing == true)
+        else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
             transform.rotation = rot;
-            transform.position = getHitPositionOfPointedObjectFinal();
+            transform.position = getHitPositionOfPointedObjectFinal() + up;
         }
         else
         {
@@ -73,8 +76,16 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     protected void moveOtherArrows()
     {
-        transform.position = targetPosition;
-        transform.rotation = rot;
+        if(sharingGlobal == true)
+        {
+            transform.position = targetPosition;
+            transform.rotation = rot;
+        }
+        else
+        {
+            transform.position = far;
+        }
+
     }
 
     protected bool getIsUsingVive()
@@ -123,8 +134,14 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     protected GameObject getShareGazeLabelObject()
     {
-        GameObject shazeLabelObject = GameObject.Find("ShareGazeLabel");
-        return shazeLabelObject;
+        GameObject shareLabelObject = GameObject.Find("ShareGazeLabel");
+        return shareLabelObject;
+    }
+
+    protected GameObject getGlobalGazingLabelObject()
+    {
+        GameObject globalGazinglabelObject = GameObject.Find("GlobalGazingLabel");
+        return globalGazinglabelObject;
     }
 
     protected Vector3 getHitPositionOfPointedObjectFinal()
@@ -144,11 +161,23 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         if(sharing == true)
         {
-            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Unshare Gaze";
+            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Unshare my Gaze";
         }
         else
         {
-            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Share Gaze";
+            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Share my Gaze";
+        }
+    }
+
+    public void setTextOfGlobalGazingLabel()
+    {
+        if (sharingGlobal == true)
+        {
+            getGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Disable Gazing";
+        }
+        else
+        {
+            getGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Enable Gazing";
         }
     }
 }
