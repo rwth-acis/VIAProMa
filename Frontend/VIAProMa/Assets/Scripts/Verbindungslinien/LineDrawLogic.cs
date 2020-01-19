@@ -62,12 +62,44 @@ public class LineDrawLogic : MonoBehaviour
     [HideInInspector] public GameObject destination;
 
     /// <summary>
+    /// Reference to the customization menu
+    /// </summary>
+    public GameObject cMenu;
+
+    /// <summary>
+    /// Currently selected color
+    /// </summary>
+    [HideInInspector] public Color curColor;
+
+    /// <summary>
+    /// Currently selected line width
+    /// </summary>
+    [HideInInspector] public bool isThick;
+
+    /// <summary>
+    /// The button of the currently selected Color
+    /// </summary>
+    [HideInInspector] public GameObject highlightedColorButton;
+
+    /// <summary>
+    /// The button of the currently selected Width
+    /// </summary>
+    [HideInInspector] public GameObject highlightedWidthButton;
+
+    /// <summary>
     /// Start with the buttons invisible and the LineDraw Mode is deactivated.
     /// </summary>
     void Start()
     {
         isLineModeActivated = false;
         isDeleteLineModeActivated = false;
+        cMenu.SetActive(false);
+        curColor = Color.red;
+        isThick = false;
+        highlightedColorButton = cMenu.transform.Find("RedButton").gameObject;
+        highlightedColorButton.GetComponent<Interactable>().Enabled = false;
+        highlightedWidthButton = cMenu.transform.Find("ThinButton").gameObject;
+        highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
     }
 
     /// <summary>
@@ -77,13 +109,16 @@ public class LineDrawLogic : MonoBehaviour
     /// </summary>
     public void SwitchLineDrawMode()
     {
-        Debug.Log(isLineModeActivated);
+
         if (isDeleteLineModeActivated)
         {
             return;
         }
         if (isLineModeActivated)
         {
+            //Close the customization menu
+            cMenu.SetActive(false);
+
             caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
             deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
             if (start == null || destination == null)
@@ -114,12 +149,26 @@ public class LineDrawLogic : MonoBehaviour
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.transform.position);
                 lineRenderer.GetComponent<UpdatePosition>().startObject = start;
                 lineRenderer.GetComponent<UpdatePosition>().destinationObject = destination;
+                lineRenderer.GetComponent<Renderer>().material.SetColor("_Color",curColor);
+                if (isThick)
+                {
+                    lineRenderer.GetComponent<LineRenderer>().startWidth = 0.04f;
+                    lineRenderer.GetComponent<LineRenderer>().endWidth = 0.04f;
+                }
+                else
+                {
+                    lineRenderer.GetComponent<LineRenderer>().startWidth = 0.01f;
+                    lineRenderer.GetComponent<LineRenderer>().endWidth = 0.01f;
+                }
             }
             start = null;
             destination = null;
         }
         else
         {
+            //Open the customization menu
+            cMenu.SetActive(true);
+
             caption.GetComponent<TextMeshPro>().SetText("Draw Line");
             deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
         }
@@ -198,5 +247,70 @@ public class LineDrawLogic : MonoBehaviour
 
 
         
+    }
+
+    /// <summary>
+    /// Called by the Line Width buttons OnClick
+    /// </summary>
+    public void SwitchWidth(bool newIsThick)
+    {
+        //Reset highlighted button
+        highlightedWidthButton.GetComponent<Interactable>().Enabled = true;
+        isThick = newIsThick;
+
+        //Highlight the button that was now selected
+        if(newIsThick)
+        {
+            highlightedWidthButton = cMenu.transform.Find("ThickButton").gameObject;
+            highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
+        }
+        else
+        {
+            highlightedWidthButton = cMenu.transform.Find("ThinButton").gameObject;
+            highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// Called by the Color Switch buttons OnClick
+    /// </summary>
+    public void SwitchColor(int newColor)
+    {
+        //Reset highlighted button
+        highlightedColorButton.GetComponent<Interactable>().Enabled = true;
+
+        switch(newColor)
+        {
+            case 1:
+                curColor = Color.red;
+                highlightedColorButton = cMenu.transform.Find("RedButton").gameObject;
+                highlightedColorButton.GetComponent<Interactable>().Enabled = false;
+                break;
+            case 2:
+                curColor = Color.yellow;
+                highlightedColorButton = cMenu.transform.Find("YellowButton").gameObject;
+                highlightedColorButton.GetComponent<Interactable>().Enabled = false;
+                break;
+            case 3:
+                curColor = Color.white;
+                highlightedColorButton = cMenu.transform.Find("WhiteButton").gameObject;
+                highlightedColorButton.GetComponent<Interactable>().Enabled = false;
+                break;
+            case 4:
+                curColor = Color.green;
+                highlightedColorButton = cMenu.transform.Find("GreenButton").gameObject;
+                highlightedColorButton.GetComponent<Interactable>().Enabled = false;
+                break;
+            case 5:
+                curColor = Color.blue;
+                highlightedColorButton = cMenu.transform.Find("BlueButton").gameObject;
+                highlightedColorButton.GetComponent<Interactable>().Enabled = false;
+                break;
+            case 6:
+                curColor = Color.black;
+                highlightedColorButton = cMenu.transform.Find("BlackButton").gameObject;
+                highlightedColorButton.GetComponent<Interactable>().Enabled = false;
+                break;
+        }
     }
 }
