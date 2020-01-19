@@ -6,8 +6,8 @@ using Microsoft.MixedReality.Toolkit.UI;
 
 public class DrawModeSelector : MonoBehaviour
 {
-    public BoxCollider boxColl;
-    public LineDrawLogic linedrawscript;
+    [HideInInspector] public BoxCollider boxColl;
+    [HideInInspector] public LineDrawLogic linedrawscript;
 
     private void Start()
     {

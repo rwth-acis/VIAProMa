@@ -77,6 +77,7 @@ public class LineDrawLogic : MonoBehaviour
     /// </summary>
     public void SwitchLineDrawMode()
     {
+        Debug.Log(isLineModeActivated);
         if (isDeleteLineModeActivated)
         {
             return;
