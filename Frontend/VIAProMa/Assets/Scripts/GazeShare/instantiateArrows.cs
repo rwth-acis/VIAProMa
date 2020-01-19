@@ -55,7 +55,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     protected void moveMyArrow()
     {
-        //Debug.Log(sharing);
         if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
         {
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
@@ -82,12 +81,27 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             transform.position = targetPosition;
             transform.rotation = rot;
+            foreach (GameObject arrow in getAllGameObjectsArrow())
+            {
+                if (photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
+                {
+                    setArrowTextLabel(getIsUsingVive());
+                }
+            }
         }
         else
         {
             transform.position = far;
         }
 
+    }
+
+    protected void setArrowTextLabel(bool viveTrue)
+    {
+        if(viveTrue == false)
+        {
+            GetComponentInChildren<TextMeshPro>().text = "Hololens";
+        } else { GetComponentInChildren<TextMeshPro>().text = "HTV Vive"; }
     }
 
     protected bool getIsUsingVive()
@@ -181,5 +195,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             getGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Enable Gazing";
         }
+    }
+
+    protected GameObject[] getAllGameObjectsArrow()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
+        return arrayAll;
     }
 }
