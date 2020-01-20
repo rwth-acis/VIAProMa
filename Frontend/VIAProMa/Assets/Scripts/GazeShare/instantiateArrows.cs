@@ -10,9 +10,9 @@ using TMPro;
 public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 targetPosition;
-    protected Vector3 up = new Vector3(0f, 0.025f, 0f);
+    protected Vector3 up = new Vector3(0, 0, 0);
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Quaternion rot = Quaternion.Euler(0, 0, -90);
+    protected Quaternion rot = Quaternion.Euler(0, 0, 0);
     protected bool isUsingVive;
     protected int clickableObjectCount = 0;
     [HideInInspector] public bool sharing;
