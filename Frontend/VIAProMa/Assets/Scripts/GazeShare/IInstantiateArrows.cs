@@ -10,9 +10,9 @@ using TMPro;
 public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 targetPosition;
-    protected Vector3 up = new Vector3(0, 0, 0);
+    protected Vector3 up = new Vector3(0f, 0f, 0f);
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Quaternion rot = Quaternion.Euler(0, 0, 0);
+    protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     protected bool isUsingVive;
     protected int clickableObjectCount = 0;
     [HideInInspector] public bool sharing;
@@ -64,14 +64,20 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
-            transform.rotation = rot;
+            // Copy rotation of DefaultCursor
+            var target = GameObject.FindGameObjectWithTag("cursor");
+            Quaternion newRotation = target.transform.rotation;
+            // Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
+            // transform.eulerAngles = newRotation;
+
             transform.position = getHitPositionOfPointedObjectFinal() + up;
+            transform.rotation = newRotation;
             GetComponentInChildren<TextMeshPro>().text = "HTC Vive";
         }
         else
         {
-            transform.rotation = rot;
             transform.position = far;
+            transform.rotation = rot;
         }
     }
 
