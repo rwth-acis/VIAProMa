@@ -17,6 +17,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected string viewingObject;
     protected string deviceUsed;
 
+
     public void Start()
     {
         deviceUsed = "No Device";

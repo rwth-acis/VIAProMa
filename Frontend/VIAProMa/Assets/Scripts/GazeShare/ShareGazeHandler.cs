@@ -10,7 +10,8 @@ using TMPro;
 public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Vector3 aLittleLeft = new Vector3(-0.05555f, 0f, 0f);
+    protected Vector3 aLittleLeftOpen = new Vector3(-0.05555f, 0f, 0f);
+    protected Vector3 aLittleLeftClosed = new Vector3(0f, 0f, -0.05555f);
     protected Vector3 scaleFactor = new Vector3(0.5f, 0.5f, 0.5f);
     protected bool isSharing;
     protected bool targetIsSharing;
@@ -39,13 +40,18 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         }
     }
 
-
     protected virtual void Update()
     {
         if (photonView.IsMine)
         {
-            // TODO : Fix position/rotation of share gaze button
-            transform.position = aLittleLeft + GameObject.Find("No Gaze Button").transform.position;
+            if(GameObject.Find("Left").transform.rotation.y < -0.51)
+            {
+                transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftOpen;
+            }
+            else
+            {
+                transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftClosed;
+            }
             transform.rotation = GameObject.Find("No Gaze Button").transform.rotation;
             transform.localScale = Vector3.Scale(GameObject.Find("No Gaze Button").transform.localScale , scaleFactor);
             setTextOfShareLabel();
@@ -55,7 +61,6 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
             transform.position = far;
         }
     }
-
 
     public void toggleSharing()
     {

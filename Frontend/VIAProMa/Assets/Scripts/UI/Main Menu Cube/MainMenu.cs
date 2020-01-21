@@ -36,6 +36,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
     private GameObject visualizationShelfInstance;
     private GameObject loadShelfInstance;
     private GameObject avatarConfiguratorInstance;
+    public GameObject noGazeButton;
+    public GameObject extraButton;
 
     private void Awake()
     {
@@ -102,6 +104,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
         }
 
         foldController = gameObject.GetComponent<FoldController>();
+        noGazeButton.SetActive(false);
+        extraButton.SetActive(false);
     }
 
     public override void OnEnable()
