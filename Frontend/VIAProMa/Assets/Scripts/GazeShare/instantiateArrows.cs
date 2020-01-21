@@ -10,21 +10,22 @@ using TMPro;
 public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 targetPosition;
-    protected Vector3 up = new Vector3(0, 0, 0);
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Quaternion rot = Quaternion.Euler(0, 0, 0);
     protected bool isUsingVive;
-    protected int clickableObjectCount = 0;
     [HideInInspector] public bool sharing;
     [HideInInspector] public bool sharingGlobal;
-    protected TextMeshPro shareGazeText;
+    protected string viewingObject;
+    protected string deviceUsed;
 
     public void Start()
     {
+        deviceUsed = "No Device";
         sharing = true;
         sharingGlobal = true;
-        setTextOfShareLabel();
+        //setTextOfShareLabel();
         setTextOfGlobalGazingLabel();
+        getOverlayTextLabelGameObject().GetComponent<Text>().text = "";
+        viewingObject = "Not looking";
     }
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -51,6 +52,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             moveOtherArrows();
             setColorOfArrow();
         }
+        setOverlayTextLabel();
     }
 
     protected void moveMyArrow()
@@ -58,36 +60,25 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
         {
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
-            transform.position = currentHitPosition + up;
-            transform.rotation = rot;
-            GetComponentInChildren<TextMeshPro>().text = "Hololens";
+            viewingObject = MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget.name;
+            transform.position = currentHitPosition;
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
-            transform.rotation = rot;
-            transform.position = getHitPositionOfPointedObjectFinal() + up;
-            GetComponentInChildren<TextMeshPro>().text = "HTC Vive";
+            transform.position = getHitPositionOfPointedObjectFinal();
         }
         else
         {
-            transform.rotation = rot;
             transform.position = far;
+            viewingObject = "Not looking";
         }
     }
 
     protected void moveOtherArrows()
     {
-        if(sharingGlobal == true)
+        if (sharingGlobal == true)
         {
             transform.position = targetPosition;
-            transform.rotation = rot;
-            foreach (GameObject arrow in getAllGameObjectsArrow())
-            {
-                if (photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
-                {
-                    setArrowTextLabel(getIsUsingVive());
-                }
-            }
         }
         else
         {
@@ -96,12 +87,19 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     }
 
-    protected void setArrowTextLabel(bool viveTrue)
+    protected void setOverlayTextLabel()
     {
-        if(viveTrue == false)
+        string textToShow = "";
+        foreach (GameObject arrow in getAllGameObjectsArrow())
         {
-            GetComponentInChildren<TextMeshPro>().text = "Hololens";
-        } else { GetComponentInChildren<TextMeshPro>().text = "HTV Vive"; }
+            textToShow = textToShow + getNameOfOwner(arrow) + " " + arrow.GetComponent<InstantiateArrows>().deviceUsed + " " + arrow.GetComponent<InstantiateArrows>().viewingObject + "\n";
+        }
+        getOverlayTextLabelGameObject().GetComponent<Text>().text = textToShow; ;
+    }
+
+    protected GameObject getOverlayTextLabelGameObject()
+    {
+        return GameObject.Find("OverlayTextLabel");
     }
 
     protected bool getIsUsingVive()
@@ -112,6 +110,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             if (controller.InputSource.SourceType == InputSourceType.Hand)
             {
                 isUsingVive = true;
+                deviceUsed = "HTC Vive";
+            }
+            else
+            {
+                deviceUsed = "Hololens";
             }
         }
         return isUsingVive;
@@ -148,12 +151,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         return arrayAll;
     }
 
-    protected GameObject getShareGazeLabelObject()
-    {
-        GameObject shareLabelObject = GameObject.Find("ShareGazeLabel");
-        return shareLabelObject;
-    }
-
     protected GameObject getGlobalGazingLabelObject()
     {
         GameObject globalGazinglabelObject = GameObject.Find("GlobalGazingLabel");
@@ -168,21 +165,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
                 hitPositionResult = controller.GetComponent<ArrowControllerHandler>().pointerHitPosition;
+                viewingObject = controller.GetComponent<ArrowControllerHandler>().objectBeingHit.name;
             }
         }
         return hitPositionResult;
-    }
-
-    public void setTextOfShareLabel()
-    {
-        if(sharing == true)
-        {
-            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Unshare my Gaze";
-        }
-        else
-        {
-            getShareGazeLabelObject().GetComponent<TextMeshPro>().text = "Share my Gaze";
-        }
     }
 
     public void setTextOfGlobalGazingLabel()
@@ -202,4 +188,28 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
         return arrayAll;
     }
+
+    protected string getNameOfOwner(GameObject arrow)
+    {
+        return arrow.GetComponent<InstantiateArrows>().photonView.Owner.NickName;
+    }
+
+    /*protected string getDeviceUsed(GameObject arrow)
+    {
+        string device = "No Device";
+        if (arrow.GetComponent<InstantiateArrows>().getIsUsingVive() == true)
+        {
+            device = "HTC Vive";
+        }
+        else
+        {
+            device = "Hololens";
+        }
+        return device;
+    }*/
+
+    /*protected string getCurrentObjectGazedName(GameObject arrow)
+    {
+        return arrow.GetComponent<InstantiateArrows>().viewingObject.name;
+    }*/
 }

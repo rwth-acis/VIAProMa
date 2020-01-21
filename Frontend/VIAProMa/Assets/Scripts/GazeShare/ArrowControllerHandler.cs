@@ -6,11 +6,11 @@ using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 
 public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
-{ 
+{
     protected bool isUsingVive;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Vector3 up = new Vector3(0f, 0.025f, 0f);
     [HideInInspector] public Vector3 pointerHitPosition;
+    [HideInInspector] public GameObject objectBeingHit;
 
     public void Start()
     {
@@ -41,9 +41,10 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
                 {
                     controller.GetComponent<ArrowControllerHandler>().pointerHitPosition = far;
                 }
-                else 
+                else
                 {
                     pointerHitPosition = eventData.Pointer.Result.Details.Point;
+                    objectBeingHit = eventData.Pointer.Result.Details.Object;
                 }
             }
         }

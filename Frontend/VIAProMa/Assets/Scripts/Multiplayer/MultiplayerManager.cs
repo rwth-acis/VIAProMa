@@ -12,6 +12,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject playerAvatarPrefab;
     [SerializeField] private GameObject arrow;
+    [SerializeField] private GameObject shazeGazeButton;
 
     /// <summary>
     /// Checks if the component is set up correctly
@@ -32,6 +33,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
         ResourceManager.Instance.NetworkInstantiate(arrow, Vector3.zero, Quaternion.identity);
+        ResourceManager.Instance.NetworkInstantiate(shazeGazeButton, shazeGazeButton.transform.position, shazeGazeButton.transform.rotation);
     }
 
     /// <summary>
