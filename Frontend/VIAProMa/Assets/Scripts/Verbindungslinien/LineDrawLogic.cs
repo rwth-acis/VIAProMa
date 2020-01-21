@@ -149,6 +149,8 @@ public class LineDrawLogic : MonoBehaviour
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.transform.position);
                 lineRenderer.GetComponent<UpdatePosition>().startObject = start;
                 lineRenderer.GetComponent<UpdatePosition>().destinationObject = destination;
+                lineRenderer.GetComponent<LinesSerializer>().start = start;
+                lineRenderer.GetComponent<LinesSerializer>().destination = destination;
                 lineRenderer.GetComponent<Renderer>().material.SetColor("_Color",curColor);
                 if (isThick)
                 {
