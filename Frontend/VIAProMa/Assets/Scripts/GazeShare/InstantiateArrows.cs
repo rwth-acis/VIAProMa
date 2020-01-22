@@ -81,8 +81,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
 
             transform.position = getHitPositionOfPointedObjectFinal() + up;
-            transform.eulerAngles = newRotation;
-            //transform.rotation = getHitRotationOfPointedObjectFinal();
+            //transform.eulerAngles = newRotation;
+            transform.rotation = getHitRotationOfPointedObjectFinal();
             //GetComponentInChildren<TextMeshPro>().text = "HTC Vive";
         }
         else

@@ -45,8 +45,12 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
                 else
                 {
                     pointerHitPosition = eventData.Pointer.Result.Details.Point;
-                    pointerHitRotation = eventData.Pointer.Rotation;
                     objectBeingHit = eventData.Pointer.Result.Details.Object;
+
+                    //pointerHitRotation = eventData.Pointer.Rotation;
+
+                    var result = eventData.Pointer.Result;
+                    pointerHitRotation = Quaternion.LookRotation(result.Details.Normal);
                 }
             }
         }
