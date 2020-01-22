@@ -77,8 +77,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
+            GameObject target = GameObject.FindGameObjectWithTag("cursor");
+            Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
+
             transform.position = getHitPositionOfPointedObjectFinal() + up;
-            transform.rotation = rot;
+            transform.eulerAngles = newRotation;
+            //transform.rotation = getHitRotationOfPointedObjectFinal();
             //GetComponentInChildren<TextMeshPro>().text = "HTC Vive";
         }
         else
@@ -182,6 +186,20 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             }
         }
         return hitPositionResult;
+    }
+
+    protected Quaternion getHitRotationOfPointedObjectFinal()
+    {
+        Quaternion hitRotationResult = rot;
+        foreach (GameObject controller in getAllGameObjectsWithArrowScriptTesting())
+        {
+            if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
+            {
+                hitRotationResult = controller.GetComponent<ArrowControllerHandler>().pointerHitRotation;
+                viewingObject = controller.GetComponent<ArrowControllerHandler>().objectBeingHit.name;
+            }
+        }
+        return hitRotationResult;
     }
 
     public void setTextOfGlobalGazingLabel()
