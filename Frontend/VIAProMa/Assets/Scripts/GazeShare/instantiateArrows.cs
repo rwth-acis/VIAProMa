@@ -23,9 +23,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         deviceUsed = "No Device";
         sharing = true;
         sharingGlobal = true;
-        //setTextOfShareLabel();
         setTextOfGlobalGazingLabel();
-        getOverlayTextLabelGameObject().GetComponent<Text>().text = "";
+        //getOverlayTextLabelGameObject().GetComponent<Text>().text = "";
         viewingObject = "Not looking";
     }
 
@@ -91,16 +90,14 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected void setOverlayTextLabel()
     {
         string textToShow = "";
-        foreach (GameObject arrow in getAllGameObjectsArrow())
+        if (GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.activeSelf == true)
         {
-            textToShow = textToShow + getNameOfOwner(arrow) + " " + arrow.GetComponent<InstantiateArrows>().deviceUsed + " " + arrow.GetComponent<InstantiateArrows>().viewingObject + "\n";
+            foreach (GameObject arrow in getAllGameObjectsArrow())
+            {
+                textToShow = textToShow + getNameOfOwner(arrow) /*+ arrow.GetComponent<InstantiateArrows>().deviceUsed + " " + arrow.GetComponent<InstantiateArrows>().viewingObject */+ "\n";
+            }
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
         }
-        getOverlayTextLabelGameObject().GetComponent<Text>().text = textToShow; ;
-    }
-
-    protected GameObject getOverlayTextLabelGameObject()
-    {
-        return GameObject.Find("OverlayTextLabel");
     }
 
     protected bool getIsUsingVive()
