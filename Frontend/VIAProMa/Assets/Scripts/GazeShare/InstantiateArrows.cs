@@ -10,7 +10,9 @@ using TMPro;
 public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 targetPosition;
+    protected Vector3 up = new Vector3(0f, 0f, 0f);
     protected Vector3 far = new Vector3(0f, -10f, 0f);
+    protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     protected bool isUsingVive;
     [HideInInspector] public bool sharing;
     [HideInInspector] public bool sharingGlobal;
@@ -59,18 +61,31 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
         {
+            // Copy rotation of DefaultCursor
+            GameObject target = GameObject.FindGameObjectWithTag("cursor");
+            //Quaternion newRotation = target.transform.rotation;
+            //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x - 90f, target.transform.eulerAngles.y - 180f, target.transform.eulerAngles.z); // works for horizontal
+            //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x - 90f, target.transform.eulerAngles.y - 180f, target.transform.eulerAngles.z -180); // works for vertical
+            Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
+
             viewingObject = MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget.name;
-            transform.position = currentHitPosition;
+            transform.position = currentHitPosition + up;
+            //transform.rotation = Quaternion.Inverse(newRotation);
+            transform.eulerAngles = newRotation;
+            //GetComponentInChildren<TextMeshPro>().text = "Hololens";
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
-            transform.position = getHitPositionOfPointedObjectFinal();
+            transform.position = getHitPositionOfPointedObjectFinal() + up;
+            transform.rotation = rot;
+            //GetComponentInChildren<TextMeshPro>().text = "HTC Vive";
         }
         else
         {
             transform.position = far;
             viewingObject = "Not looking";
+            transform.rotation = rot;
         }
     }
 
