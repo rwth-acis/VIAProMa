@@ -7,10 +7,13 @@ using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Monitors the user's arrow and synchronizes it with remote users
+/// Handles incoming synchronization messages about the remote users arrows
+/// </summary>
 public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 targetPosition;
-    protected Vector3 up = new Vector3(0f, 0f, 0f);
     protected Vector3 far = new Vector3(0f, -10f, 0f);
     protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     protected bool isUsingVive;
@@ -55,11 +58,15 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             moveOtherArrows();
             setColorOfArrow();
         }
-        //setOverlayTextLabel();
         GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
         textToShow = "";
     }
 
+    /// <summary>
+    /// Checks if user is using Hololens or HTC Vive
+    /// and also checks if sharing and global sharing are enabled to
+    /// set the correct position and rotation of arrow
+    /// </summary>
     protected void moveMyArrow()
     {
         if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
@@ -71,7 +78,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x - 90f, target.transform.eulerAngles.y - 180f, target.transform.eulerAngles.z -180); // works for vertical
             Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
-            transform.position = currentHitPosition + up;
+            transform.position = currentHitPosition;
             //transform.rotation = Quaternion.Inverse(newRotation);
             transform.eulerAngles = newRotation;
             //GetComponentInChildren<TextMeshPro>().text = "Hololens";
@@ -83,7 +90,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
             Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
-            transform.position = getHitPositionOfPointedObjectFinal() + up;
+            transform.position = getHitPositionOfPointedObjectFinal();
             transform.rotation = getHitRotationOfPointedObjectFinal();
             deviceUsed = "HTC Vive";
             //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
@@ -96,6 +103,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
     }
 
+    /// <summary>
+    /// Checks if global sharing is enabled to set the 
+    /// correct position and rotation of the remoted player
+    /// that is controlling this component
+    /// </summary>
     protected void moveOtherArrows()
     {
         if (sharingGlobal == true)
@@ -110,19 +122,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     }
 
-    /*protected void setOverlayTextLabel()
-    {
-        textToShow = "";
-        if (GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.activeSelf == true)
-        {
-            foreach (GameObject arrow in getAllGameObjectsArrow())
-            {
-                textToShow = textToShow + getNameOfOwner(arrow) + " " + getStringOfColor(arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr) + " " + arrow.GetComponent<InstantiateArrows>().deviceUsed + "\n";
-            }
-            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
-        }
-    }*/
-
+    /// <summary>
+    /// Checks for the input source type of the detected controllers
+    /// </summary>
+    /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
     protected bool getIsUsingVive()
     {
         isUsingVive = false;
@@ -136,6 +139,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         return isUsingVive;
     }
 
+    /// <summary>
+    /// Depending on the owner actor number this method gives the color of the arrow in text form
+    /// </summary>
+    /// <param name="userID">A owner actor number of a photon view</param>
+    /// <returns>The color of the arrow in text form</returns>
     protected string getStringOfColor(int userID)
     {
         switch (userID)
@@ -156,6 +164,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
     }
 
+    /// <summary>
+    /// Depending on the owner actor number this method gives the color of the arrow
+    /// </summary>
+    /// <param name="userID">A owner actor number of a photon view</param>
+    /// <returns>The color of the arrow</returns>
     protected Color getColorForUser(int userID)
     {
         switch (userID)
@@ -193,6 +206,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         return globalGazinglabelObject;
     }
 
+    /// <summary>
+    /// Checks all objects that can be hit by a controller(pointer)
+    /// by finding the objects having the correct tag(show arrow) in the scene
+    /// </summary>
+    /// <returns>The hit position of the controller(pointer) on the object</returns>
     protected Vector3 getHitPositionOfPointedObjectFinal()
     {
         Vector3 hitPositionResult = far;
@@ -206,6 +224,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         return hitPositionResult;
     }
 
+    /// <returns>The hit rotation of the controller(pointer) on the object</returns>
     protected Quaternion getHitRotationOfPointedObjectFinal()
     {
         Quaternion hitRotationResult = rot;
@@ -231,28 +250,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
     }
 
-    protected GameObject[] getAllGameObjectsArrow()
-    {
-        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
-        return arrayAll;
-    }
-
     protected string getNameOfOwner(GameObject arrow)
     {
         return arrow.GetComponent<InstantiateArrows>().photonView.Owner.NickName;
     }
-
-    /*protected string getDeviceUsed(GameObject arrow)
-    {
-        string device = "No Device";
-        if (arrow.GetComponent<InstantiateArrows>().getIsUsingVive() == true)
-        {
-            device = "HTC Vive";
-        }
-        else
-        {
-            device = "Hololens";
-        }
-        return device;
-    }*/
 }

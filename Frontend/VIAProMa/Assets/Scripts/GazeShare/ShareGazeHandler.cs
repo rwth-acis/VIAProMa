@@ -7,6 +7,9 @@ using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Monitors the user's share my gaze button
+/// </summary>
 public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 far = new Vector3(0f, -10f, 0f);
@@ -40,6 +43,12 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         }
     }
 
+    /// <summary>
+    /// Checks if left side of the main menu cube is opened or closed
+    /// by looking at its rotation and sets the share button position
+    /// correctly in either case, also sets the rotation, the right scale
+    /// and updates the text on the button
+    /// </summary>
     protected virtual void Update()
     {
         if (photonView.IsMine)

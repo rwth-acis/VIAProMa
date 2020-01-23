@@ -5,6 +5,9 @@ using Photon.Pun;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 
+/// <summary>
+/// Handles the controllers/pointers interaction when using the HTC Vive
+/// </summary>
 public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
 {
     protected bool isUsingVive;
@@ -18,6 +21,10 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
         pointerHitPosition = new Vector3(0f, -10f, 0f);
     }
 
+    /// <summary>
+    /// Checks for the input source type of the detected controllers
+    /// </summary>
+    /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
     protected bool getIsUsingVive2()
     {
         isUsingVive = false;
@@ -31,13 +38,18 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
         return isUsingVive;
     }
 
+    /// <summary>
+    /// Checks if HTC Vive is being used, if so goes trough all the possible
+    /// objects that can be clicked, finds the one that has been hit and sets
+    /// the public variables pointerHitPosition, pointerHitRotation and objectBeingHit
+    /// </summary>
+    /// <param name="eventData"> Data from a click Input Event</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         if (getIsUsingVive2() == true)
         {
             foreach (GameObject controller in getAllGameObjectsWithArrowScriptTesting2())
             {
-                //Debug.Log("Name " + controller.name + "Position" + controller.GetComponent<ArrowControllerHandler>().pointerHitPosition);
                 if (controller.name != gameObject.name)
                 {
                     controller.GetComponent<ArrowControllerHandler>().pointerHitPosition = far;
@@ -46,9 +58,6 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
                 {
                     pointerHitPosition = eventData.Pointer.Result.Details.Point;
                     objectBeingHit = eventData.Pointer.Result.Details.Object;
-
-                    //pointerHitRotation = eventData.Pointer.Rotation;
-
                     var result = eventData.Pointer.Result;
                     pointerHitRotation = Quaternion.LookRotation(result.Details.Normal);
                 }
