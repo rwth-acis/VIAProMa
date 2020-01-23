@@ -16,8 +16,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected bool isUsingVive;
     [HideInInspector] public bool sharing;
     [HideInInspector] public bool sharingGlobal;
-    protected string viewingObject;
     protected string deviceUsed;
+    protected string deviceUsedTarget;
+    protected string textToShow;
 
 
     public void Start()
@@ -26,8 +27,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         sharing = true;
         sharingGlobal = true;
         setTextOfGlobalGazingLabel();
-        //getOverlayTextLabelGameObject().GetComponent<Text>().text = "";
-        viewingObject = "Not looking";
     }
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -35,10 +34,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
+            stream.Serialize(ref deviceUsed);
         }
         else
         {
             targetPosition = (Vector3)stream.ReceiveNext();
+            stream.Serialize(ref deviceUsedTarget);
         }
     }
 
@@ -54,7 +55,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             moveOtherArrows();
             setColorOfArrow();
         }
-        setOverlayTextLabel();
+        //setOverlayTextLabel();
+        GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
+        textToShow = "";
     }
 
     protected void moveMyArrow()
@@ -68,27 +71,27 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x - 90f, target.transform.eulerAngles.y - 180f, target.transform.eulerAngles.z -180); // works for vertical
             Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
-
-            viewingObject = MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget.name;
             transform.position = currentHitPosition + up;
             //transform.rotation = Quaternion.Inverse(newRotation);
             transform.eulerAngles = newRotation;
             //GetComponentInChildren<TextMeshPro>().text = "Hololens";
+            deviceUsed = "Hololens";
+            //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
+            textToShow = "";
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
             Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
-
             transform.position = getHitPositionOfPointedObjectFinal() + up;
-            //transform.eulerAngles = newRotation;
             transform.rotation = getHitRotationOfPointedObjectFinal();
-            //GetComponentInChildren<TextMeshPro>().text = "HTC Vive";
+            deviceUsed = "HTC Vive";
+            //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
+            textToShow = "";
         }
         else
         {
             transform.position = far;
-            viewingObject = "Not looking";
             transform.rotation = rot;
         }
     }
@@ -98,6 +101,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (sharingGlobal == true)
         {
             transform.position = targetPosition;
+            textToShow = textToShow + photonView.Owner.NickName + ": On " + deviceUsedTarget + " with " + getStringOfColor(photonView.OwnerActorNr) + " arrow" + "\n";
         }
         else
         {
@@ -106,18 +110,18 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     }
 
-    protected void setOverlayTextLabel()
+    /*protected void setOverlayTextLabel()
     {
-        string textToShow = "";
+        textToShow = "";
         if (GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.activeSelf == true)
         {
             foreach (GameObject arrow in getAllGameObjectsArrow())
             {
-                textToShow = textToShow + getNameOfOwner(arrow) /*+ arrow.GetComponent<InstantiateArrows>().deviceUsed + " " + arrow.GetComponent<InstantiateArrows>().viewingObject */+ "\n";
+                textToShow = textToShow + getNameOfOwner(arrow) + " " + getStringOfColor(arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr) + " " + arrow.GetComponent<InstantiateArrows>().deviceUsed + "\n";
             }
             GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
         }
-    }
+    }*/
 
     protected bool getIsUsingVive()
     {
@@ -127,14 +131,29 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             if (controller.InputSource.SourceType == InputSourceType.Hand)
             {
                 isUsingVive = true;
-                deviceUsed = "HTC Vive";
-            }
-            else
-            {
-                deviceUsed = "Hololens";
             }
         }
         return isUsingVive;
+    }
+
+    protected string getStringOfColor(int userID)
+    {
+        switch (userID)
+        {
+            case 1:
+                return "red";
+                break;
+
+            case 2:
+                return "green";
+                break;
+
+            case 3:
+                return "black";
+                break;
+
+            default: return "white";
+        }
     }
 
     protected Color getColorForUser(int userID)
@@ -182,7 +201,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
                 hitPositionResult = controller.GetComponent<ArrowControllerHandler>().pointerHitPosition;
-                viewingObject = controller.GetComponent<ArrowControllerHandler>().objectBeingHit.name;
             }
         }
         return hitPositionResult;
@@ -196,7 +214,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
                 hitRotationResult = controller.GetComponent<ArrowControllerHandler>().pointerHitRotation;
-                viewingObject = controller.GetComponent<ArrowControllerHandler>().objectBeingHit.name;
             }
         }
         return hitRotationResult;
@@ -237,10 +254,5 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             device = "Hololens";
         }
         return device;
-    }*/
-
-    /*protected string getCurrentObjectGazedName(GameObject arrow)
-    {
-        return arrow.GetComponent<InstantiateArrows>().viewingObject.name;
     }*/
 }
