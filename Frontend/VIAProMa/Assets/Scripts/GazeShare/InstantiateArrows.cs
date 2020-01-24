@@ -22,7 +22,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected string deviceUsed;
     protected string deviceUsedTarget;
     protected string textToShow;
-
+    //public float lerpSpeed = 15f;
 
     public void Start()
     {
@@ -69,7 +69,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void moveMyArrow()
     {
-        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
+        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true && isHololensLookingAtMesh() == false)
         {
             // Copy rotation of DefaultCursor
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
@@ -112,6 +112,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         if (sharingGlobal == true)
         {
+            //transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
             transform.position = targetPosition;
             textToShow = textToShow + photonView.Owner.NickName + ": On " + deviceUsedTarget + " with " + getStringOfColor(photonView.OwnerActorNr) + " arrow" + "\n";
         }
@@ -119,7 +120,23 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             transform.position = far;
         }
+    }
 
+    protected bool isHololensLookingAtMesh()
+    {
+        bool isLooking = false;
+        if (MixedRealityToolkit.SpatialAwarenessSystem.SpatialAwarenessObjectParent == MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget)
+        {
+            isLooking = true;
+        }
+        foreach (Transform child in MixedRealityToolkit.SpatialAwarenessSystem.SpatialAwarenessObjectParent.transform)
+        {
+            if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget == child.gameObject)
+            {
+                isLooking = true;
+            }
+        }
+        return isLooking;
     }
 
     /// <summary>
