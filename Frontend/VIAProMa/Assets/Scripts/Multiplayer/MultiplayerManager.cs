@@ -13,6 +13,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject playerAvatarPrefab;
     [SerializeField] private GameObject arrow;
     [SerializeField] private GameObject shazeGazeButton;
+    [SerializeField] private GameObject changeMeshButton;
 
     /// <summary>
     /// Checks if the component is set up correctly
@@ -34,6 +35,7 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
         ResourceManager.Instance.NetworkInstantiate(arrow, Vector3.zero, Quaternion.identity);
         ResourceManager.Instance.NetworkInstantiate(shazeGazeButton, shazeGazeButton.transform.position, shazeGazeButton.transform.rotation);
+        ResourceManager.Instance.NetworkInstantiate(changeMeshButton, changeMeshButton.transform.position, changeMeshButton.transform.rotation);
         GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(true);
         GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(true);
         GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(true);
