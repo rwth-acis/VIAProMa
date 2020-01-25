@@ -86,13 +86,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             // Copy rotation of DefaultCursor
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
             //Quaternion newRotation = target.transform.rotation;
-            //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x - 90f, target.transform.eulerAngles.y - 180f, target.transform.eulerAngles.z); // works for horizontal
-            //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x - 90f, target.transform.eulerAngles.y - 180f, target.transform.eulerAngles.z -180); // works for vertical
-            Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
+            //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
             transform.position = currentHitPosition;
-            //transform.rotation = Quaternion.Inverse(newRotation);
-            transform.eulerAngles = newRotation;
+            transform.rotation = target.transform.rotation;
+            //transform.eulerAngles = newRotation;
+
             //GetComponentInChildren<TextMeshPro>().text = "Hololens";
             deviceUsed = 1;
             //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
@@ -100,7 +99,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
-            Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
             transform.position = getHitPositionOfPointedObjectFinal();
             transform.rotation = getHitRotationOfPointedObjectFinal();
             deviceUsed = 2;
