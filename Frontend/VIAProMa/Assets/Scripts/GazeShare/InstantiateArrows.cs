@@ -6,6 +6,7 @@ using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditor;
 
 /// <summary>
 /// Monitors the user's arrow and synchronizes it with remote users
@@ -19,17 +20,23 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected bool isUsingVive;
     [HideInInspector] public bool sharing;
     [HideInInspector] public bool sharingGlobal;
-    protected string deviceUsed;
-    protected string deviceUsedTarget;
+    protected int deviceUsed;
+    protected int deviceUsedTarget;
     protected string textToShow;
+    protected string targetTextToShow;
+    protected Sprite hololensIcon;
+    protected Sprite htcViveIcon;
+
     //public float lerpSpeed = 15f;
 
     public void Start()
     {
-        deviceUsed = "No Device";
+        //deviceUsed = "No Device";
         sharing = true;
         sharingGlobal = true;
         setTextOfGlobalGazingLabel();
+        hololensIcon = Resources.Load<Sprite>("hololens");
+        htcViveIcon = Resources.Load<Sprite>("htcVivePro");
     }
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -38,11 +45,13 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(transform.position);
             stream.Serialize(ref deviceUsed);
+            stream.Serialize(ref textToShow);
         }
         else
         {
             targetPosition = (Vector3)stream.ReceiveNext();
             stream.Serialize(ref deviceUsedTarget);
+            stream.Serialize(ref targetTextToShow);
         }
     }
 
@@ -52,14 +61,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             moveMyArrow();
             setColorOfArrow();
+            textToShow = photonView.Owner.NickName;
+            gameObject.GetComponentInChildren<TextMeshPro>().text = textToShow;
+            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = getIconForDevice(deviceUsed);
         }
         else
         {
             moveOtherArrows();
             setColorOfArrow();
+            gameObject.GetComponentInChildren<TextMeshPro>().text = targetTextToShow;
+            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = getIconForDevice(deviceUsedTarget);
         }
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
-        textToShow = "";
     }
 
     /// <summary>
@@ -82,9 +94,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             //transform.rotation = Quaternion.Inverse(newRotation);
             transform.eulerAngles = newRotation;
             //GetComponentInChildren<TextMeshPro>().text = "Hololens";
-            deviceUsed = "Hololens";
+            deviceUsed = 1;
             //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
-            textToShow = "";
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
@@ -92,9 +103,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
             transform.position = getHitPositionOfPointedObjectFinal();
             transform.rotation = getHitRotationOfPointedObjectFinal();
-            deviceUsed = "HTC Vive";
+            deviceUsed = 2;
             //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
-            textToShow = "";
         }
         else
         {
@@ -114,7 +124,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             //transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
             transform.position = targetPosition;
-            textToShow = textToShow + photonView.Owner.NickName + ": On " + deviceUsedTarget + " with " + getStringOfColor(photonView.OwnerActorNr) + " arrow" + "\n";
         }
         else
         {
@@ -270,5 +279,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected string getNameOfOwner(GameObject arrow)
     {
         return arrow.GetComponent<InstantiateArrows>().photonView.Owner.NickName;
+    }
+
+    protected Sprite getIconForDevice(int device)
+    {
+        if (device == 1)
+        {
+            return hololensIcon;
+        }
+        else
+        {
+            return htcViveIcon;
+        }
     }
 }

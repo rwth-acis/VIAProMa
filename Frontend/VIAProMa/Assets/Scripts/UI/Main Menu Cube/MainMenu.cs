@@ -38,7 +38,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
     private GameObject avatarConfiguratorInstance;
     public GameObject noGazeButton;
     public GameObject extraButton;
-    public GameObject canvas;
 
     private void Awake()
     {
@@ -107,7 +106,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
         foldController = gameObject.GetComponent<FoldController>();
         noGazeButton.SetActive(false);
         extraButton.SetActive(false);
-        canvas.SetActive(false);
     }
 
     public override void OnEnable()
@@ -360,20 +358,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
                     arrow.GetComponent<InstantiateArrows>().setTextOfGlobalGazingLabel();
                 }
             }
-        }
-    }
-
-    public void toggleCanvas()
-    {
-        if (canvas.activeSelf == true)
-        {
-            canvas.SetActive(false);
-            GameObject.Find("ExtraButtonLabel").GetComponent<TextMeshPro>().text = "Enable UI";
-        }
-        else
-        {
-            canvas.SetActive(true);
-            GameObject.Find("ExtraButtonLabel").GetComponent<TextMeshPro>().text = "Disable UI";
         }
     }
 }

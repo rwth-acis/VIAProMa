@@ -38,7 +38,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         ResourceManager.Instance.NetworkInstantiate(changeMeshButton, changeMeshButton.transform.position, changeMeshButton.transform.rotation);
         GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(true);
         GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(true);
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(true);
     }
 
     /// <summary>
@@ -77,6 +76,5 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(false);
         GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(false);
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(false);
     }
 }
