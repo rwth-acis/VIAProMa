@@ -14,7 +14,7 @@ public class GazeShareTester : MonoBehaviour
             if (PhotonNetwork.IsConnected)
             {
                 Debug.Log("Connecting to room", gameObject);
-                PhotonNetwork.JoinOrCreateRoom("VoiceTest", null, null);
+                PhotonNetwork.JoinOrCreateRoom("GazeTest", null, null);
             }
         }
         else if (Input.GetKeyDown(KeyCode.F5))
