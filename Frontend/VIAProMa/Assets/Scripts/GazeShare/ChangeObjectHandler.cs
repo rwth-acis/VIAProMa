@@ -16,6 +16,7 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
     protected Mesh circularArrow;
     protected Mesh[] meshArray = new Mesh[2];
     protected int counter;
+    protected int targetCounter;
 
     void Start()
     {
@@ -31,32 +32,51 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            if (GameObject.Find("Left").transform.rotation.y < -0.51)
-            {
-                transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftOpen;
-            }
-            else
-            {
-                transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftClosed;
-            }
-            transform.rotation = GameObject.Find("No Gaze Button").transform.rotation;
-            transform.localScale = Vector3.Scale(GameObject.Find("No Gaze Button").transform.localScale, scaleFactor);
+            setCorrectTransform();
         }
         else
         {
+            foreach (GameObject arrow in getAllGameObjectsArrow())
+            {
+                if (arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr == photonView.OwnerActorNr)
+                {
+                    arrow.GetComponent<MeshFilter>().mesh = meshArray[(targetCounter + 1) % 2] ;
+                }
+            }
             transform.position = far;
         }
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        throw new System.NotImplementedException();
+        if (stream.IsWriting)
+        {
+            stream.Serialize(ref counter);
+        }
+        else
+        {
+            stream.Serialize(ref targetCounter);
+        }
     }
 
     protected GameObject[] getAllGameObjectsArrow()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
         return arrayAll;
+    }
+
+    protected void setCorrectTransform()
+    {
+        if (GameObject.Find("Left").transform.rotation.y < -0.51)
+        {
+            transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftOpen;
+        }
+        else
+        {
+            transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftClosed;
+        }
+        transform.rotation = GameObject.Find("No Gaze Button").transform.rotation;
+        transform.localScale = Vector3.Scale(GameObject.Find("No Gaze Button").transform.localScale, scaleFactor);
     }
 
     public void changeGameObject()
