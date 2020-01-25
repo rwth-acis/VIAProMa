@@ -15,6 +15,7 @@ using UnityEditor;
 public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 targetPosition;
+    protected Quaternion targetRotation;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
     protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     protected bool isUsingVive;
@@ -44,12 +45,14 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
             stream.Serialize(ref deviceUsed);
             stream.Serialize(ref textToShow);
         }
         else
         {
             targetPosition = (Vector3)stream.ReceiveNext();
+            targetRotation = (Quaternion)stream.ReceiveNext();
             stream.Serialize(ref deviceUsedTarget);
             stream.Serialize(ref targetTextToShow);
         }
@@ -122,10 +125,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             //transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
             transform.position = targetPosition;
+            transform.rotation = targetRotation;
         }
         else
         {
             transform.position = far;
+            transform.rotation = rot;
         }
     }
 
