@@ -66,7 +66,7 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
                 transform.rotation = GameObject.Find("No Gaze Button").transform.rotation;
                 transform.localScale = Vector3.Scale(GameObject.Find("No Gaze Button").transform.localScale, scaleFactor);
                 setTextOfShareLabel();
-            }
+            } else { transform.position = far; }
         }
         else
         {
