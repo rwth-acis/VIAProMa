@@ -35,10 +35,10 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
         ResourceManager.Instance.NetworkInstantiate(arrow, Vector3.zero, Quaternion.identity);
         ResourceManager.Instance.NetworkInstantiate(shazeGazeButton, shazeGazeButton.transform.position, shazeGazeButton.transform.rotation);
+        ResourceManager.Instance.NetworkInstantiate(changeMeshButton, changeMeshButton.transform.position, changeMeshButton.transform.rotation);
         if (GameObject.Find("Main Menu") != null)
         {
             GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(true);
-            GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(true);
         }
     }
 
@@ -79,7 +79,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         if (GameObject.Find("Main Menu") != null)
         {
             GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(false);
-            GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(false);
         }
     }
 }

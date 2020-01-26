@@ -9,8 +9,8 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
 {
 
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Vector3 aLittleLeftOpen = new Vector3(0.05445f, 0.17583f, 0f);
-    protected Vector3 aLittleLeftClosed = new Vector3(0f, 0.17583f, 0.05445f);
+    protected Vector3 aLittleLeftOpen = new Vector3(0.05445f, 0f, 0f);
+    protected Vector3 aLittleLeftClosed = new Vector3(0f, 0f, 0.05445f);
     protected Vector3 scaleFactor = new Vector3(0.5f, 0.5f, 0.5f);
     protected Mesh otherArrow;
     protected Mesh circularArrow;
