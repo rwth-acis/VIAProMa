@@ -39,7 +39,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(true);
             GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(true);
-            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(true);
         }
     }
 
@@ -81,7 +80,6 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(false);
             GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(false);
-            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(false);
         }
     }
 }
