@@ -75,6 +75,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             gameObject.GetComponentInChildren<TextMeshPro>().text = targetTextToShow;
             gameObject.GetComponentInChildren<SpriteRenderer>().sprite = getIconForDevice(deviceUsedTarget);
         }
+        if(GameObject.Find("Main Menu") != null)
+        {
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
+        }
+        textToShow = "";
     }
 
     /// <summary>

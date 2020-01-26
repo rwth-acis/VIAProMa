@@ -53,17 +53,20 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            if(GameObject.Find("Left").transform.rotation.y < -0.51)
+            if (GameObject.Find("Left") != null)
             {
-                transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftOpen;
+                if (GameObject.Find("Left").transform.rotation.y < -0.51)
+                {
+                    transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftOpen;
+                }
+                else
+                {
+                    transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftClosed;
+                }
+                transform.rotation = GameObject.Find("No Gaze Button").transform.rotation;
+                transform.localScale = Vector3.Scale(GameObject.Find("No Gaze Button").transform.localScale, scaleFactor);
+                setTextOfShareLabel();
             }
-            else
-            {
-                transform.position = GameObject.Find("No Gaze Button").transform.position + aLittleLeftClosed;
-            }
-            transform.rotation = GameObject.Find("No Gaze Button").transform.rotation;
-            transform.localScale = Vector3.Scale(GameObject.Find("No Gaze Button").transform.localScale , scaleFactor);
-            setTextOfShareLabel();
         }
         else
         {
