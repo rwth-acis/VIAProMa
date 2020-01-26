@@ -32,6 +32,10 @@ public class UpdatePosition : MonoBehaviour
     /// </summary>
     void Update()
     {
+        if(startObject == null || destinationObject == null)
+        {
+            Destroy(gameObject);
+        }
         lineRendererComponent.SetPosition(0, startObject.transform.position);
         lineRendererComponent.SetPosition(1, destinationObject.transform.position);
     }
