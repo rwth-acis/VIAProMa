@@ -57,6 +57,18 @@ In addition to the working logic, each of the project's features has been isolat
 This way, the functionality can be tested and new developers can experiment with these features in order to learn how they work.
 The scenes are situated in the folder "Tests".
 
+### Feature guide : Line of sight sharing
+
+Line of sight sharing is a feature that allows users in a room to see where other users are looking by displaying an object and text with the name and device icon the user is using at the line of sight position (for Hololens) or at the pointing position of a controller (for HTC Vive). This feature is activated and ready to use upon entering in a room.
+
+There are three buttons located on the settings panel on the left side of the opened main menu cube. The left "share/unshare my gaze" button allows users to toggle between sharing or not sharing their own gaze/pointed object with the users in the room. The middle "enable/disable sharing" button allows users to toggle between turning off and on the feature, in the "off" state all the arrows dissapear for the user that has disabled the feature and his object is not shared anymore. The right "change object" button lets users toggle between four different objects to show as their gaze/pointed object, these include a circular arrow, a conic arrow, a monkey arrow and a spheric arrow.
+
+Use with Hololens : Use head movements to control gaze object position and hand to use the three settings buttons.
+
+Use with HTC Vive : Use controllers (left or right) to point at objects and click to set position of the gaze object. Use normal controller pointing and click to use three settings buttons.
+
+Currently not implemented for android devices.
+
 ## Troubleshooting
 
 **Problem:** When building the application, errors are shown that the namespace name 'HandJointKind', 'HandMeshObserver' and 'JointPose' are not found.
