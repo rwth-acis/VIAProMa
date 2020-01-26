@@ -28,18 +28,18 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Sprite hololensIcon;
     protected Sprite htcViveIcon;
 
-    //public float lerpSpeed = 15f;
-
     public void Start()
     {
-        //deviceUsed = "No Device";
         sharing = true;
         sharingGlobal = true;
-        //setTextOfGlobalGazingLabel();
         hololensIcon = Resources.Load<Sprite>("hololens");
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
     }
 
+    /// <summary>
+    /// Sends position, rotation, device and text to users in room
+    /// Recieves position, rotation, device and text from other users in room and stores them in the target variables
+    /// </summary>
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -84,20 +84,14 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void moveMyArrow()
     {
-        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true && isHololensLookingAtMesh() == false)
+        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
         {
             // Copy rotation of DefaultCursor
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
-            //Quaternion newRotation = target.transform.rotation;
-            //Vector3 newRotation = new Vector3(target.transform.eulerAngles.x, target.transform.eulerAngles.y, target.transform.eulerAngles.z);
             Vector3 currentHitPosition = MixedRealityToolkit.InputSystem.GazeProvider.HitPosition;
             transform.position = currentHitPosition;
             transform.rotation = target.transform.rotation;
-            //transform.eulerAngles = newRotation;
-
-            //GetComponentInChildren<TextMeshPro>().text = "Hololens";
             deviceUsed = 1;
-            //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
         }
         else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
@@ -105,7 +99,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = getHitPositionOfPointedObjectFinal();
             transform.rotation = getHitRotationOfPointedObjectFinal();
             deviceUsed = 2;
-            //textToShow = textToShow + photonView.Owner.NickName + " " + getStringOfColor(photonView.OwnerActorNr) + " " + deviceUsed + "\n";
         }
         else
         {
@@ -132,23 +125,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = far;
             transform.rotation = rot;
         }
-    }
-
-    protected bool isHololensLookingAtMesh()
-    {
-        bool isLooking = false;
-        if (MixedRealityToolkit.SpatialAwarenessSystem.SpatialAwarenessObjectParent == MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget)
-        {
-            isLooking = true;
-        }
-        foreach (Transform child in MixedRealityToolkit.SpatialAwarenessSystem.SpatialAwarenessObjectParent.transform)
-        {
-            if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget == child.gameObject)
-            {
-                isLooking = true;
-            }
-        }
-        return isLooking;
     }
 
     /// <summary>
@@ -218,11 +194,19 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
     }
 
+    /// <summary>
+    /// Gets the renderer of the gameobject to change color
+    /// </summary>
     protected void setColorOfArrow()
     {
         GetComponent<Renderer>().material.color = getColorForUser(photonView.OwnerActorNr);
     }
 
+    /// <summary>
+    /// Finds all the gamobjects with custom tag "showArrow"
+    /// These are the game objects where the arrow can be put on
+    /// </summary>
+    /// <returns> Array with all the game objects with the "showArrow" tag</returns>
     protected GameObject[] getAllGameObjectsWithArrowScriptTesting()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");

@@ -5,6 +5,9 @@ using Photon.Pun;
 using UnityEditor;
 using TMPro;
 
+/// <summary>
+/// Monitors the user's change object button
+/// </summary>
 public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
 {
 
@@ -20,6 +23,11 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
     protected int counter;
     protected int targetCounter;
 
+
+    /// <summary>
+    /// Saves the used meshes in refrences
+    /// Fills the mesh array
+    /// </summary>
     void Start()
     {
         circularArrow = Resources.Load<Mesh>("CircularArrow");
@@ -31,9 +39,13 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
         meshArray[2] = monkeyArrow;
         meshArray[3] = sphericArrow;
         counter = 0;
+        targetCounter = 0;
         GameObject.Find("ChangeMeshLabel").GetComponent<TextMeshPro>().text = "Change Object";
     }
 
+    /// <summary>
+    /// Sets correct transform of button and applies the correct mesh to the other users arrows
+    /// </summary>
     protected virtual void Update()
     {
         if (photonView.IsMine)
@@ -46,13 +58,17 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
             {
                 if (arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr == photonView.OwnerActorNr)
                 {
-                    arrow.GetComponent<MeshFilter>().mesh = meshArray[(targetCounter + 1) % 4] ;
+                    arrow.GetComponent<MeshFilter>().mesh = meshArray[targetCounter % 4] ;
                 }
             }
             transform.position = far;
         }
     }
 
+    /// <summary>
+    /// Sends counter to other users that allows the correct mesh to be set on the arrow
+    /// Recieves counter and saves it to target variable to set the other users correct mesh of the arrow
+    /// </summary>
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -71,6 +87,11 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
         return arrayAll;
     }
 
+    /// <summary>
+    /// Checks if left side of the main menu cube is opened or closed
+    /// by looking at its rotation and sets the change object button position
+    /// correctly in either case, also sets the rotation and the right scale
+    /// </summary>
     protected void setCorrectTransform()
     {
         if (GameObject.Find("Left") != null)
@@ -88,14 +109,17 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
         }
     }
 
+    /// <summary>
+    /// Sets the mesh of the arrow to the next mesh in the mesh array
+    /// </summary>
     public void changeGameObject()
     {
         foreach (GameObject arrow in getAllGameObjectsArrow())
         {
             if (arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr == photonView.OwnerActorNr)
             {
-                arrow.GetComponent<MeshFilter>().mesh = meshArray[counter % 4];
                 counter = counter + 1;
+                arrow.GetComponent<MeshFilter>().mesh = meshArray[counter % 4];
             }
         }
     }
