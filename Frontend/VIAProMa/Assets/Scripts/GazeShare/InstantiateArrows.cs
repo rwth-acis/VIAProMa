@@ -35,7 +35,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         //deviceUsed = "No Device";
         sharing = true;
         sharingGlobal = true;
-        setTextOfGlobalGazingLabel();
+        //setTextOfGlobalGazingLabel();
         hololensIcon = Resources.Load<Sprite>("hololens");
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
     }
