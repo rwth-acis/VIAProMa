@@ -178,11 +178,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         switch (userID)
         {
             case 1:
-                return "red";
+                return "orange";
                 break;
 
             case 2:
-                return "green";
+                return "pink";
                 break;
 
             case 3:
@@ -203,15 +203,15 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         switch (userID)
         {
             case 1:
-                return Color.red;
+                return new Color(1.0f, 0.5f, 0f, 0.5f);
                 break;
 
             case 2:
-                return Color.green;
+                return new Color(1.0f, 0f, 1.0f, 0.5f);
                 break;
 
             case 3:
-                return Color.black;
+                return new Color(0f, 0f, 0f, 0.5f);
                 break;
 
             default: return Color.white;
