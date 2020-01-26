@@ -29,7 +29,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         deviceUsed = "No Device";
         sharing = true;
         sharingGlobal = true;
-        setTextOfGlobalGazingLabel();
+        //setTextOfGlobalGazingLabel();
     }
 
     public virtual void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -58,7 +58,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             moveOtherArrows();
             setColorOfArrow();
         }
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
+        if(GameObject.Find("Main Menu") != null)
+        {
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.GetComponentInChildren<Text>().text = textToShow;
+        }
         textToShow = "";
     }
 

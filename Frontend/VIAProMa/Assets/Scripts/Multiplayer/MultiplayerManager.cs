@@ -34,9 +34,12 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
         ResourceManager.Instance.NetworkInstantiate(arrow, Vector3.zero, Quaternion.identity);
         ResourceManager.Instance.NetworkInstantiate(shazeGazeButton, shazeGazeButton.transform.position, shazeGazeButton.transform.rotation);
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(true);
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(true);
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(true);
+        if (GameObject.Find("Main Menu") != null)
+        {
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(true);
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(true);
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -73,8 +76,11 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(false);
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(false);
-        GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(false);
+        if (GameObject.Find("Main Menu") != null)
+        {
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(false);
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().extraButton.SetActive(false);
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().canvas.SetActive(false);
+        }
     }
 }
