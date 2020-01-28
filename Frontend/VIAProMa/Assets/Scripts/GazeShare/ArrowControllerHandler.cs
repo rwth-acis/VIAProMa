@@ -24,13 +24,17 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     /// <summary>
     /// Checks for the input source type of the detected controllers
     /// </summary>
+    /// <remarks>
+    /// Change InputSourceType.Controller to InputSourceType.Hand for testing in unity editor
+    /// In unity editor use gesture hand from input simulation service found in the mixed reality toolkit to test as controller of HTC Vive
+    /// </remarks>
     /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
     protected bool getIsUsingVive2()
     {
         isUsingVive = false;
         foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
         {
-            if (controller.InputSource.SourceType == InputSourceType.Hand)
+            if (controller.InputSource.SourceType == InputSourceType.Controller)
             {
                 isUsingVive = true;
             }
