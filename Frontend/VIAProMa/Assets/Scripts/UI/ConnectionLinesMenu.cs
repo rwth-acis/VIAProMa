@@ -1,11 +1,12 @@
 ﻿using i5.ViaProMa.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using System;
+using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConnectionLinesWindow : MonoBehaviour, IWindow
+public class ConnectionLinesMenu : MonoBehaviour, IWindow
 {
     /// <summary>
     /// Referencing the caption of the line draw button
