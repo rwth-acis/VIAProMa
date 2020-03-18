@@ -335,9 +335,4 @@ public class MainMenu : MonoBehaviourPunCallbacks
         visualizationShelfInstance = view.gameObject;
         Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
     }
-
-    public void ShowConnectionLinesMenu()
-    {
-        WindowManager.Instance.ConnectionLinesMenu.Open(connectionLinesButton.transform.position, connectionLinesButton.transform.eulerAngles);
-    }
 }
