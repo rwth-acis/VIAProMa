@@ -338,6 +338,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void ShowConnectionLinesMenu()
     {
-        WindowManager.Instance.ConnectionLinesMenu.Open(connectionLinesButton.transform.position, connectionLinesButton.transform.eulerAngles);
+        WindowManager.Instance.ConnectionLinesMenu.Open(connectionLinesButton.transform.position - 0.6f * transform.right, connectionLinesButton.transform.eulerAngles);
     }
 }
