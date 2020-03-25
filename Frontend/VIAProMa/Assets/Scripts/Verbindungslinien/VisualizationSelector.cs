@@ -6,7 +6,7 @@ using Microsoft.MixedReality.Toolkit.Input;
 
 public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
 {
-    public ConnectionLinesMenu linedrawscript;
+    ///public ConnectionLinesMenu linedrawscript;
     public WindowManager manager;
 
     /// <summary>
@@ -16,33 +16,33 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        if (linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated)
+        if (manager.ConnectionLinesMenu.isLineModeActivated || manager.ConnectionLinesMenu.isDeleteLineModeActivated)
         {
-            if (!linedrawscript.oneSelected)
+            if (!manager.ConnectionLinesMenu.oneSelected)
             {
-                if (linedrawscript.start != null && linedrawscript.start.GetComponent<IssueSelector>() != null)
+                if (manager.ConnectionLinesMenu.start != null && manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>() != null)
                 {
-                    linedrawscript.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.start.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                if (linedrawscript.start != null && linedrawscript.start.GetComponent<VisualizationSelector>() != null)
+                if (manager.ConnectionLinesMenu.start != null && manager.ConnectionLinesMenu.start.GetComponent<VisualizationSelector>() != null)
                 {
-                    linedrawscript.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                    manager.ConnectionLinesMenu.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                linedrawscript.start = gameObject;
-                linedrawscript.oneSelected = true;
+                manager.ConnectionLinesMenu.start = gameObject;
+                manager.ConnectionLinesMenu.oneSelected = true;
             }
             else
             {
-                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<IssueSelector>() != null)
+                if (manager.ConnectionLinesMenu.destination != null && manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>() != null)
                 {
-                    linedrawscript.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.destination.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<VisualizationSelector>() != null)
+                if (manager.ConnectionLinesMenu.destination != null && manager.ConnectionLinesMenu.destination.GetComponent<VisualizationSelector>() != null)
                 {
-                    linedrawscript.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                    manager.ConnectionLinesMenu.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                linedrawscript.destination = gameObject;
-                linedrawscript.oneSelected = false;
+                manager.ConnectionLinesMenu.destination = gameObject;
+                manager.ConnectionLinesMenu.oneSelected = false;
             }
             transform.Find("HighlightingCube").gameObject.SetActive(true);
         }
@@ -64,6 +64,5 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
     void Start()
     {
         manager = GameObject.FindWithTag("LineDraw").GetComponent<WindowManager>();
-        linedrawscript = manager.ConnectionLinesMenu;
     }
 }

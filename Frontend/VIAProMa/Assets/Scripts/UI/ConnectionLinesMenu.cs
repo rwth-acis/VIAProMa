@@ -100,4 +100,131 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         isLineModeActivated = false;
         isDeleteLineModeActivated = false;
     }
+
+    /// <summary>
+    /// Is called when the LineDraw Button is clicked. Enables/Disables the LineDrawingMode and switches the displayed text accordingly.
+    /// When the Draw Line button is clicked, an empty gameobject containing the LineRenderer component is instantiated and start and
+    /// destination position of the line set.
+    /// </summary>
+    public void SwitchLineDrawMode()
+    {
+
+        if (isDeleteLineModeActivated)
+        {
+            return;
+        }
+        if (isLineModeActivated)
+        {
+            caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
+            deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
+            if (start == null || destination == null)
+            {
+                isLineModeActivated = !isLineModeActivated;
+                return;
+            }
+            if (start.GetComponent<IssueSelector>() != null)
+            {
+                start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (destination.GetComponent<IssueSelector>() != null)
+            {
+                destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (start.GetComponent<VisualizationSelector>() != null)
+            {
+                start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+            }
+            if (destination.GetComponent<VisualizationSelector>() != null)
+            {
+                destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+            }
+            if (start != null && destination != null)
+            {
+                GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                lineRenderer.GetComponent<LineRenderer>().SetPosition(0, start.transform.position);
+                lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.transform.position);
+                lineRenderer.GetComponent<UpdatePosition>().startObject = start;
+                lineRenderer.GetComponent<UpdatePosition>().destinationObject = destination;    
+            }
+            start = null;
+            destination = null;
+        }
+        else
+        {
+            caption.GetComponent<TextMeshPro>().SetText("Draw Line");
+            deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
+        }
+        isLineModeActivated = !isLineModeActivated;
+        Debug.Log("Mode switched!");
+    }
+
+    /// <summary>
+    /// Deletes all drawn lines in the scene. Is called when the "Delete All Lines" button is clicked.
+    /// </summary>
+    public void DeleteAllLines()
+    {
+        GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
+        foreach
+        (GameObject line in lines)
+        {
+            GameObject.Destroy(line);
+            Debug.Log("At least one line deleted");
+        }
+        Debug.Log("All Lines deleted");
+    }
+
+    public void DeleteSpecificLine()
+    {
+        if (isLineModeActivated)
+        {
+            return;
+        }
+        if (isDeleteLineModeActivated)
+        {
+            deleteCaption.GetComponent<TextMeshPro>().SetText("Enter Single Delete");
+            lineDrawButton.GetComponent<Interactable>().Enabled = true;
+            if (start == null || destination == null)
+            {
+                isDeleteLineModeActivated = !isDeleteLineModeActivated;
+                return;
+            }
+            if (start.GetComponent<IssueSelector>() != null)
+            {
+                start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (destination.GetComponent<IssueSelector>() != null)
+            {
+                destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+            }
+            if (start.GetComponent<VisualizationSelector>() != null)
+            {
+                start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+            }
+            if (destination.GetComponent<VisualizationSelector>() != null)
+            {
+                destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+            }
+            if (start != null && destination != null)
+            {
+                GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
+                foreach
+                (GameObject line in lines)
+                {
+                    if ((line.GetComponent<LineRenderer>().GetPosition(0) == start.transform.position
+                        && line.GetComponent<LineRenderer>().GetPosition(1) == destination.transform.position) ||
+                        (line.GetComponent<LineRenderer>().GetPosition(0) == start.transform.position
+                        && line.GetComponent<LineRenderer>().GetPosition(1) == destination.transform.position))
+                    {
+                        Destroy(line);
+                    }
+                }
+            }
+        }
+        else
+        {
+            deleteCaption.GetComponent<TextMeshPro>().SetText("Delete Line");
+            lineDrawButton.GetComponent<Interactable>().Enabled = false;
+        }
+        isDeleteLineModeActivated = !isDeleteLineModeActivated;
+    }
 }
