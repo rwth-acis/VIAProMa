@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 namespace Microsoft.MixedReality.Toolkit.UI
 {
@@ -421,7 +422,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
             {
                 return;
             }
-
             // If we only allow one handed manipulations, check there is no hand interacting yet. 
             if (manipulationType != HandMovementType.OneHandedOnly || pointerIdToPointerMap.Count == 0)
             {
