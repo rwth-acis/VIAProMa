@@ -20,6 +20,7 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
     public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
 
     public ConnectionLinesMenu linedrawscript;
+    public WindowManager manager;
 
 
     /// <summary>
@@ -77,6 +78,9 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
             UpdateView();
         }
+        manager = GameObject.FindWithTag("LineDraw").GetComponent<WindowManager>();
+        linedrawscript = manager.ConnectionLinesMenu;
+        
     }
 
     /// <summary>
@@ -191,40 +195,35 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             ToggleSelection();
             eventData.Use();
         }
-
-        linedrawscript = GameObject.FindGameObjectWithTag("LineDraw").GetComponent<ConnectionLinesMenu>();
-        if(linedrawscript != null)
+        if (linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated)
         {
-            if (linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated)
+            if (!linedrawscript.oneSelected)
             {
-                if (!linedrawscript.oneSelected)
+                if(linedrawscript.start != null && linedrawscript.start.GetComponent<IssueSelector>() != null)
                 {
-                    if(linedrawscript.start != null && linedrawscript.start.GetComponent<IssueSelector>() != null)
-                    {
-                        linedrawscript.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.start.GetComponent<IssueSelector>().originalRendererColor;
-                    }
-                    if (linedrawscript.start != null && linedrawscript.start.GetComponent<VisualizationSelector>() != null)
-                    {
-                        linedrawscript.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
-                    }
-                    linedrawscript.start = gameObject;
-                    linedrawscript.oneSelected = true;
+                    linedrawscript.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.start.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                else
+                if (linedrawscript.start != null && linedrawscript.start.GetComponent<VisualizationSelector>() != null)
                 {
-                    if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<IssueSelector>() != null)
-                    {
-                        linedrawscript.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.destination.GetComponent<IssueSelector>().originalRendererColor;
-                    }
-                    if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<VisualizationSelector>() != null)
-                    {
-                        linedrawscript.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
-                    }
-                    linedrawscript.destination = gameObject;
-                    linedrawscript.oneSelected = false;
+                    linedrawscript.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                backgroundRenderer.material.color = selectedColor;
+                linedrawscript.start = gameObject;
+                linedrawscript.oneSelected = true;
             }
+            else
+            {
+                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<IssueSelector>() != null)
+                {
+                    linedrawscript.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.destination.GetComponent<IssueSelector>().originalRendererColor;
+                }
+                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<VisualizationSelector>() != null)
+                {
+                    linedrawscript.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                }
+                linedrawscript.destination = gameObject;
+                linedrawscript.oneSelected = false;
+            }
+            backgroundRenderer.material.color = selectedColor;
         }
     }
 }

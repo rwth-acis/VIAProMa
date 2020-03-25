@@ -7,6 +7,7 @@ using Microsoft.MixedReality.Toolkit.Input;
 public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
 {
     public ConnectionLinesMenu linedrawscript;
+    public WindowManager manager;
 
     /// <summary>
     /// Called by the Mixed Reality Toolkit if the object was clicked
@@ -15,39 +16,35 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        linedrawscript = GameObject.FindGameObjectWithTag("LineDraw").GetComponent<ConnectionLinesMenu>();
-        if (linedrawscript!= null)
+        if (linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated)
         {
-            if (linedrawscript.isLineModeActivated || linedrawscript.isDeleteLineModeActivated)
+            if (!linedrawscript.oneSelected)
             {
-                if (!linedrawscript.oneSelected)
+                if (linedrawscript.start != null && linedrawscript.start.GetComponent<IssueSelector>() != null)
                 {
-                    if (linedrawscript.start != null && linedrawscript.start.GetComponent<IssueSelector>() != null)
-                    {
-                        linedrawscript.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.start.GetComponent<IssueSelector>().originalRendererColor;
-                    }
-                    if (linedrawscript.start != null && linedrawscript.start.GetComponent<VisualizationSelector>() != null)
-                    {
-                        linedrawscript.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
-                    }
-                    linedrawscript.start = gameObject;
-                    linedrawscript.oneSelected = true;
+                    linedrawscript.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.start.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                else
+                if (linedrawscript.start != null && linedrawscript.start.GetComponent<VisualizationSelector>() != null)
                 {
-                    if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<IssueSelector>() != null)
-                    {
-                        linedrawscript.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.destination.GetComponent<IssueSelector>().originalRendererColor;
-                    }
-                    if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<VisualizationSelector>() != null)
-                    {
-                        linedrawscript.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
-                    }
-                    linedrawscript.destination = gameObject;
-                    linedrawscript.oneSelected = false;
+                    linedrawscript.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                transform.Find("HighlightingCube").gameObject.SetActive(true);
+                linedrawscript.start = gameObject;
+                linedrawscript.oneSelected = true;
             }
+            else
+            {
+                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<IssueSelector>() != null)
+                {
+                    linedrawscript.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = linedrawscript.destination.GetComponent<IssueSelector>().originalRendererColor;
+                }
+                if (linedrawscript.destination != null && linedrawscript.destination.GetComponent<VisualizationSelector>() != null)
+                {
+                    linedrawscript.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                }
+                linedrawscript.destination = gameObject;
+                linedrawscript.oneSelected = false;
+            }
+            transform.Find("HighlightingCube").gameObject.SetActive(true);
         }
     }
 
@@ -61,5 +58,12 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
 
     public void OnPointerUp(MixedRealityPointerEventData eventData)
     {
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        manager = GameObject.FindWithTag("LineDraw").GetComponent<WindowManager>();
+        linedrawscript = manager.ConnectionLinesMenu;
     }
 }

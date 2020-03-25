@@ -7,12 +7,14 @@ using Microsoft.MixedReality.Toolkit.UI;
 public class DrawModeSelector : MonoBehaviour
 {
     [HideInInspector] public BoxCollider boxColl;
-    [HideInInspector] public LineDrawLogic linedrawscript;
+    [HideInInspector] public ConnectionLinesMenu linedrawscript;
+    [HideInInspector] public WindowManager manager;
 
     private void Start()
     {
         boxColl = gameObject.GetComponent<BoxCollider>();
-        linedrawscript = GameObject.FindGameObjectWithTag("LineDraw").GetComponent<LineDrawLogic>();
+        manager = GameObject.FindWithTag("LineDraw").GetComponent<WindowManager>();
+        linedrawscript = manager.ConnectionLinesMenu;
     }
     void Update()
     {
