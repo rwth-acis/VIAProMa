@@ -8,7 +8,7 @@ public class TopBarHighlight : MonoBehaviour , IMixedRealityFocusHandler
     [SerializeField] Renderer backgroundRenderer;
 
     private Color defaultColor;
-    private Color highlightColor = Color.red;
+    private Color highlightColor = Color.blue;
 
     private void Awake()
     {
