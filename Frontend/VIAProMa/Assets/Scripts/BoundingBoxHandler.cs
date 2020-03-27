@@ -22,9 +22,9 @@ public class BoundingBoxHandler : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Adjust()
+    public void Adjust()
     {
-        collider.enabled = !collider.enabled;
-        boundingBox.Active = !boundingBox.Active;
+        collider.enabled = true;
+        boundingBox.Active = true;
     }
 }
