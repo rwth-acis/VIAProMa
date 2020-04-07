@@ -9,82 +9,82 @@ public class LineDrawLogic : MonoBehaviour
     /// <summary>
     /// Referencing the caption of the line draw button
     /// </summary>
-    public GameObject caption;
+    [SerializeField] private GameObject caption;
 
     /// <summary>
     /// Referencing the caption of the delete button
     /// </summary>
-    public GameObject deleteCaption;
+    [SerializeField] private GameObject deleteCaption;
 
     /// <summary>
     /// Referencing the LineDraw Button
     /// </summary>
-    public GameObject lineDrawButton;
+    [SerializeField] private GameObject lineDrawButton;
 
     /// <summary>
     /// Referencing the DeleteAllLines Button
     /// </summary>
-    public GameObject deleteAllLinesButton;
+    [SerializeField] private GameObject deleteAllLinesButton;
 
     ///<summary>
-    ///Referencing the DeleteSpecifixLines Button
+    ///Referencing the DeleteSpecificLines Button
     /// </summary>
-    public GameObject deleteSpecificLinesButton;
-     
+    [SerializeField] private GameObject deleteSpecificLinesButton;
+
     /// <summary>
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
-    public GameObject lineRendererPrefab;
+    [SerializeField] private GameObject lineRendererPrefab;
 
     /// <summary>
     /// True, if the LineDraw Mode is active
     /// </summary>
-    [HideInInspector] public bool isLineModeActivated;
+    private bool isLineModeActivated;
 
     /// <summary>
     /// True, if the LineDelete Mode is active
     /// </summary>
-    [HideInInspector] public bool isDeleteLineModeActivated;
+    private bool isDeleteLineModeActivated;
 
     /// <summary>
     /// True, if the one start object has been selected
     /// </summary>
-    [HideInInspector] public bool oneSelected;
+    private bool oneSelected;
 
     /// <summary>
     /// The start object of the line
     /// </summary>
-    [HideInInspector] public GameObject start;
+    private GameObject start;
 
     /// <summary>
     /// The destination object of the line
     /// </summary>
-    [HideInInspector] public GameObject destination;
+    private GameObject destination;
 
     /// <summary>
     /// Reference to the customization menu
     /// </summary>
-    public GameObject cMenu;
+    [SerializeField] private GameObject cMenu;
 
     /// <summary>
     /// Currently selected color
     /// </summary>
-    [HideInInspector] public Color curColor;
+    private Color curColor;
 
     /// <summary>
     /// Currently selected line width
     /// </summary>
-    [HideInInspector] public bool isThick;
+    private bool isThick;
 
     /// <summary>
     /// The button of the currently selected Color
     /// </summary>
-    [HideInInspector] public GameObject highlightedColorButton;
+    private GameObject highlightedColorButton;
 
     /// <summary>
     /// The button of the currently selected Width
     /// </summary>
-    [HideInInspector] public GameObject highlightedWidthButton;
+    private GameObject highlightedWidthButton;
 
     /// <summary>
     /// Start with the buttons invisible and the LineDraw Mode is deactivated.
@@ -147,8 +147,8 @@ public class LineDrawLogic : MonoBehaviour
                 GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(0, start.transform.position);
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.transform.position);
-                lineRenderer.GetComponent<UpdatePosition>().startObject = start;
-                lineRenderer.GetComponent<UpdatePosition>().destinationObject = destination;
+                lineRenderer.GetComponent<UpdatePosition>().StartObject = start;
+                lineRenderer.GetComponent<UpdatePosition>().DestinationObject = destination;
                 lineRenderer.GetComponent<Renderer>().material.SetColor("_Color",curColor);
                 if (isThick)
                 {

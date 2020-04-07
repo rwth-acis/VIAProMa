@@ -6,8 +6,7 @@ using Microsoft.MixedReality.Toolkit.Input;
 
 public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
 {
-    ///public ConnectionLinesMenu linedrawscript;
-    public WindowManager manager;
+    private WindowManager manager;
 
     /// <summary>
     /// Called by the Mixed Reality Toolkit if the object was clicked
@@ -16,33 +15,33 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        if (manager.ConnectionLinesMenu.isLineModeActivated || manager.ConnectionLinesMenu.isDeleteLineModeActivated)
+        if (manager.ConnectionLinesMenu.IsLineModeActivated || manager.ConnectionLinesMenu.IsDeleteLineModeActivated)
         {
-            if (!manager.ConnectionLinesMenu.oneSelected)
+            if (!manager.ConnectionLinesMenu.OneSelected)
             {
-                if (manager.ConnectionLinesMenu.start != null && manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>() != null)
+                if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                if (manager.ConnectionLinesMenu.start != null && manager.ConnectionLinesMenu.start.GetComponent<VisualizationSelector>() != null)
+                if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<VisualizationSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                    manager.ConnectionLinesMenu.StartObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                manager.ConnectionLinesMenu.start = gameObject;
-                manager.ConnectionLinesMenu.oneSelected = true;
+                manager.ConnectionLinesMenu.StartObject = gameObject;
+                manager.ConnectionLinesMenu.OneSelected = true;
             }
             else
             {
-                if (manager.ConnectionLinesMenu.destination != null && manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>() != null)
+                if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                if (manager.ConnectionLinesMenu.destination != null && manager.ConnectionLinesMenu.destination.GetComponent<VisualizationSelector>() != null)
+                if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<VisualizationSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                    manager.ConnectionLinesMenu.DestinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                manager.ConnectionLinesMenu.destination = gameObject;
-                manager.ConnectionLinesMenu.oneSelected = false;
+                manager.ConnectionLinesMenu.DestinationObject = gameObject;
+                manager.ConnectionLinesMenu.OneSelected = false;
             }
             transform.Find("HighlightingCube").gameObject.SetActive(true);
         }

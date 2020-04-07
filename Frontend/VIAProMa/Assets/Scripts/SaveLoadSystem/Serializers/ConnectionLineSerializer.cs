@@ -38,11 +38,11 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
             {
                 if(go.transform.position == startPos)
                 {
-                    updatePosition.startObject = go;
+                    updatePosition.StartObject = go;
                 }
                 else if (go.transform.position == destinationPos)
                 {
-                    updatePosition.destinationObject = go;
+                    updatePosition.DestinationObject = go;
                 }
             }
         }
@@ -56,8 +56,8 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
     public SerializedObject Serialize()
     {
         SerializedObject serializedObject = new SerializedObject();
-        serializedObject.Vector3s.Add(startObjectPositionKey, updatePosition.startObject.transform.position);
-        serializedObject.Vector3s.Add(destinationObjectPositionKey, updatePosition.destinationObject.transform.position);
+        serializedObject.Vector3s.Add(startObjectPositionKey, updatePosition.StartObject.transform.position);
+        serializedObject.Vector3s.Add(destinationObjectPositionKey, updatePosition.DestinationObject.transform.position);
         return serializedObject;
     }
 }

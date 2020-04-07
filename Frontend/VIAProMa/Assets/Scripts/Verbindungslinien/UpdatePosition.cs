@@ -7,12 +7,22 @@ public class UpdatePosition : MonoBehaviour
     /// <summary>
     /// Reference to the start object of the line
     /// </summary>
-    [HideInInspector] public GameObject startObject;
+    private GameObject _startObject;
+    public GameObject StartObject
+    {
+        get { return _startObject; }
+        set { _startObject = value; }
+    }
 
     /// <summary>
     /// Reference to the destination object of the line
     /// </summary>
-    [HideInInspector] public GameObject destinationObject;
+    private GameObject _destinationObject;
+    public GameObject DestinationObject
+    {
+        get { return _destinationObject; }
+        set { _destinationObject = value; }
+    }
 
     /// <summary>
     /// Reference to the LineRenderer component
@@ -32,11 +42,11 @@ public class UpdatePosition : MonoBehaviour
     /// </summary>
     void Update()
     {
-        if(startObject == null || destinationObject == null)
+        if(_startObject == null || _destinationObject == null)
         {
             Destroy(gameObject);
         }
-        lineRendererComponent.SetPosition(0, startObject.transform.position);
-        lineRendererComponent.SetPosition(1, destinationObject.transform.position);
+        lineRendererComponent.SetPosition(0, _startObject.transform.position);
+        lineRendererComponent.SetPosition(1, _destinationObject.transform.position);
     }
 }

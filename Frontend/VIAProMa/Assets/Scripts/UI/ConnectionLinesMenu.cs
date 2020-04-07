@@ -11,58 +11,80 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// <summary>
     /// Referencing the caption of the line draw button
     /// </summary>
-    public GameObject caption;
+    [SerializeField] private GameObject caption;
 
     /// <summary>
     /// Referencing the caption of the delete button
     /// </summary>
-    public GameObject deleteCaption;
+    [SerializeField] private GameObject deleteCaption;
 
     /// <summary>
     /// Referencing the LineDraw Button
     /// </summary>
-    public GameObject lineDrawButton;
+    [SerializeField] private GameObject lineDrawButton;
 
     /// <summary>
     /// Referencing the DeleteAllLines Button
     /// </summary>
-    public GameObject deleteAllLinesButton;
+    [SerializeField] private GameObject deleteAllLinesButton;
 
     ///<summary>
-    ///Referencing the DeleteSpecifixLines Button
+    ///Referencing the DeleteSpecificLines Button
     /// </summary>
-    public GameObject deleteSpecificLinesButton;
+    [SerializeField] private GameObject deleteSpecificLinesButton;
 
     /// <summary>
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
-    public GameObject lineRendererPrefab;
+    [SerializeField] private GameObject lineRendererPrefab;
 
     /// <summary>
     /// True, if the LineDraw Mode is active
     /// </summary>
-    [HideInInspector] public bool isLineModeActivated;
+    private bool _isLineModeActivated;
+    public bool IsLineModeActivated
+    {
+        get { return _isLineModeActivated; }
+    }
 
     /// <summary>
     /// True, if the LineDelete Mode is active
     /// </summary>
-    [HideInInspector] public bool isDeleteLineModeActivated;
+    private bool _isDeleteLineModeActivated;
+    public bool IsDeleteLineModeActivated
+    {
+        get { return _isDeleteLineModeActivated; }
+    }
 
     /// <summary>
     /// True, if the one start object has been selected
     /// </summary>
-    [HideInInspector] public bool oneSelected;
+    private bool _oneSelected;
+    public bool OneSelected
+    {
+        get { return _oneSelected; }
+        set { _oneSelected = value; }
+    }
 
     /// <summary>
     /// The start object of the line
     /// </summary>
-    [HideInInspector] public GameObject start;
+    private GameObject _startObject;
+    public GameObject StartObject
+    {
+        get { return _startObject; }
+        set { _startObject = value; }
+    }
 
     /// <summary>
     /// The destination object of the line
     /// </summary>
-    [HideInInspector] public GameObject destination;
-
+    private GameObject _destinationObject;
+    public GameObject DestinationObject
+    {
+        get { return _destinationObject; }
+        set { _destinationObject = value; }
+    }
 
     public bool WindowEnabled { get; set; }
 
@@ -97,8 +119,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     void Start()
     {
-        isLineModeActivated = false;
-        isDeleteLineModeActivated = false;
+        _isLineModeActivated = false;
+        _isDeleteLineModeActivated = false;
     }
 
     /// <summary>
@@ -109,52 +131,52 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     public void SwitchLineDrawMode()
     {
 
-        if (isDeleteLineModeActivated)
+        if (_isDeleteLineModeActivated)
         {
             return;
         }
-        if (isLineModeActivated)
+        if (_isLineModeActivated)
         {
             caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
             deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
-            if (start == null || destination == null)
+            if (_startObject == null || _destinationObject == null)
             {
-                isLineModeActivated = !isLineModeActivated;
+                _isLineModeActivated = !_isLineModeActivated;
                 return;
             }
-            if (start.GetComponent<IssueSelector>() != null)
+            if (_startObject.GetComponent<IssueSelector>() != null)
             {
-                start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+                _startObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _startObject.GetComponent<IssueSelector>().originalRendererColor;
             }
-            if (destination.GetComponent<IssueSelector>() != null)
+            if (_destinationObject.GetComponent<IssueSelector>() != null)
             {
-                destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+                _destinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _destinationObject.GetComponent<IssueSelector>().originalRendererColor;
             }
-            if (start.GetComponent<VisualizationSelector>() != null)
+            if (_startObject.GetComponent<VisualizationSelector>() != null)
             {
-                start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                _startObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
             }
-            if (destination.GetComponent<VisualizationSelector>() != null)
+            if (_destinationObject.GetComponent<VisualizationSelector>() != null)
             {
-                destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                _destinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
             }
-            if (start != null && destination != null)
+            if (_startObject != null && _destinationObject != null)
             {
                 GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-                lineRenderer.GetComponent<LineRenderer>().SetPosition(0, start.transform.position);
-                lineRenderer.GetComponent<LineRenderer>().SetPosition(1, destination.transform.position);
-                lineRenderer.GetComponent<UpdatePosition>().startObject = start;
-                lineRenderer.GetComponent<UpdatePosition>().destinationObject = destination;    
+                lineRenderer.GetComponent<LineRenderer>().SetPosition(0, _startObject.transform.position);
+                lineRenderer.GetComponent<LineRenderer>().SetPosition(1, _destinationObject.transform.position);
+                lineRenderer.GetComponent<UpdatePosition>().StartObject = _startObject;
+                lineRenderer.GetComponent<UpdatePosition>().DestinationObject = _destinationObject;    
             }
-            start = null;
-            destination = null;
+            _startObject = null;
+            _destinationObject = null;
         }
         else
         {
             caption.GetComponent<TextMeshPro>().SetText("Draw Line");
             deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
         }
-        isLineModeActivated = !isLineModeActivated;
+        _isLineModeActivated = !_isLineModeActivated;
         Debug.Log("Mode switched!");
     }
 
@@ -175,45 +197,45 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
 
     public void DeleteSpecificLine()
     {
-        if (isLineModeActivated)
+        if (_isLineModeActivated)
         {
             return;
         }
-        if (isDeleteLineModeActivated)
+        if (_isDeleteLineModeActivated)
         {
             deleteCaption.GetComponent<TextMeshPro>().SetText("Enter Single Delete");
             lineDrawButton.GetComponent<Interactable>().Enabled = true;
-            if (start == null || destination == null)
+            if (_startObject == null || _destinationObject == null)
             {
-                isDeleteLineModeActivated = !isDeleteLineModeActivated;
+                _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
                 return;
             }
-            if (start.GetComponent<IssueSelector>() != null)
+            if (_startObject.GetComponent<IssueSelector>() != null)
             {
-                start.GetComponent<IssueSelector>().backgroundRenderer.material.color = start.GetComponent<IssueSelector>().originalRendererColor;
+                _startObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _startObject.GetComponent<IssueSelector>().originalRendererColor;
             }
-            if (destination.GetComponent<IssueSelector>() != null)
+            if (_destinationObject.GetComponent<IssueSelector>() != null)
             {
-                destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = destination.GetComponent<IssueSelector>().originalRendererColor;
+                _destinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _destinationObject.GetComponent<IssueSelector>().originalRendererColor;
             }
-            if (start.GetComponent<VisualizationSelector>() != null)
+            if (_startObject.GetComponent<VisualizationSelector>() != null)
             {
-                start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                _startObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
             }
-            if (destination.GetComponent<VisualizationSelector>() != null)
+            if (_destinationObject.GetComponent<VisualizationSelector>() != null)
             {
-                destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                _destinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
             }
-            if (start != null && destination != null)
+            if (_startObject != null && _destinationObject != null)
             {
                 GameObject[] lines = GameObject.FindGameObjectsWithTag("Line");
                 foreach
                 (GameObject line in lines)
                 {
-                    if ((line.GetComponent<LineRenderer>().GetPosition(0) == start.transform.position
-                        && line.GetComponent<LineRenderer>().GetPosition(1) == destination.transform.position) ||
-                        (line.GetComponent<LineRenderer>().GetPosition(0) == start.transform.position
-                        && line.GetComponent<LineRenderer>().GetPosition(1) == destination.transform.position))
+                    if ((line.GetComponent<LineRenderer>().GetPosition(0) == _startObject.transform.position
+                        && line.GetComponent<LineRenderer>().GetPosition(1) == _destinationObject.transform.position) ||
+                        (line.GetComponent<LineRenderer>().GetPosition(0) == _startObject.transform.position
+                        && line.GetComponent<LineRenderer>().GetPosition(1) == _destinationObject.transform.position))
                     {
                         Destroy(line);
                     }
@@ -225,6 +247,6 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
             deleteCaption.GetComponent<TextMeshPro>().SetText("Delete Line");
             lineDrawButton.GetComponent<Interactable>().Enabled = false;
         }
-        isDeleteLineModeActivated = !isDeleteLineModeActivated;
+        _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
     }
 }

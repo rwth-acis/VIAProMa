@@ -19,7 +19,6 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
 
     public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
 
-    ///public ConnectionLinesMenu linedrawscript;
     public WindowManager manager;
 
 
@@ -194,33 +193,33 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             ToggleSelection();
             eventData.Use();
         }
-        if (manager.ConnectionLinesMenu.isLineModeActivated || manager.ConnectionLinesMenu.isDeleteLineModeActivated)
+        if (manager.ConnectionLinesMenu.IsLineModeActivated || manager.ConnectionLinesMenu.IsDeleteLineModeActivated)
         {
-            if (!manager.ConnectionLinesMenu.oneSelected)
+            if (!manager.ConnectionLinesMenu.OneSelected)
             {
-                if(manager.ConnectionLinesMenu.start != null && manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>() != null)
+                if(manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.start.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                if (manager.ConnectionLinesMenu.start != null && manager.ConnectionLinesMenu.start.GetComponent<VisualizationSelector>() != null)
+                if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<VisualizationSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.start.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                    manager.ConnectionLinesMenu.StartObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                manager.ConnectionLinesMenu.start = gameObject;
-                manager.ConnectionLinesMenu.oneSelected = true;
+                manager.ConnectionLinesMenu.StartObject = gameObject;
+                manager.ConnectionLinesMenu.OneSelected = true;
             }
             else
             {
-                if (manager.ConnectionLinesMenu.destination != null && manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>() != null)
+                if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.destination.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().originalRendererColor;
                 }
-                if (manager.ConnectionLinesMenu.destination != null && manager.ConnectionLinesMenu.destination.GetComponent<VisualizationSelector>() != null)
+                if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<VisualizationSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.destination.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                    manager.ConnectionLinesMenu.DestinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
-                manager.ConnectionLinesMenu.destination = gameObject;
-                manager.ConnectionLinesMenu.oneSelected = false;
+                manager.ConnectionLinesMenu.DestinationObject = gameObject;
+                manager.ConnectionLinesMenu.OneSelected = false;
             }
             backgroundRenderer.material.color = selectedColor;
         }

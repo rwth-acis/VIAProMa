@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LineDrawLogicTester : MonoBehaviour
 {
-    public LineDrawLogic linedrawlogicscript;
+    [SerializeField] private LineDrawLogic linedrawlogicscript;
     // Update is called once per frame
     void Update()
     {
