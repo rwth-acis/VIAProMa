@@ -10,8 +10,8 @@ using TMPro;
 public class BoundingBoxHandler : MonoBehaviour
 {
 
-    [SerializeField] private BoundingBox boundingBox;
-    [SerializeField] private Collider collider;
+     private BoundingBox boundingBox;
+     private Collider collider;
     [SerializeField] private GameObject adjustButtonCaption;
 
     // Start is called before the first frame update

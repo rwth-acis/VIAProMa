@@ -5,10 +5,10 @@ using Microsoft.MixedReality.Toolkit.Input;
 
 public class TopBarHighlight : MonoBehaviour , IMixedRealityFocusHandler
 {
-    [SerializeField] Renderer backgroundRenderer;
+    private Renderer backgroundRenderer;
 
     private Color defaultColor;
-    [SerializeField] public Color highlightColor;
+    [SerializeField] private Color highlightColor;
 
     private void Awake()
     {
