@@ -3,11 +3,15 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
+public class ConfigurationColorChooser : MonoBehaviour//, IUiFragment
 {
     [SerializeField] private GameObject colorPreviewSquare;
     [SerializeField] private GridObjectCollection colorSquareArray;
+
+    public delegate void ColorChosenEventHandler(object source, EventArgs args);
+    public event EventHandler ColorChosen;
 
     public ColorConfiguration colorConfiguration;
 
@@ -36,7 +40,15 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
         set
         {
             selectedColor = value;
-            visualization.Color = selectedColor;
+            if(visualization == null)
+            {
+                OnColorChosen();
+            }
+            else
+            {
+                visualization.Color = selectedColor;
+            }
+
         }
 
     }
@@ -75,5 +87,10 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
     public void Setup(Visualization visualization)
     {
         this.visualization = visualization;
+    }
+
+    protected virtual void OnColorChosen()
+    {
+        ColorChosen?.Invoke(this, EventArgs.Empty);
     }
 }

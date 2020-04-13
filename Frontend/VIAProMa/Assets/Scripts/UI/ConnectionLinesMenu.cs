@@ -33,6 +33,11 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     [SerializeField] private GameObject deleteSpecificLinesButton;
 
+    ///<summary>
+    ///Referencing the Color Chooser
+    /// </summary>
+    [SerializeField] private GameObject colorChooser;
+
     /// <summary>
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
@@ -86,6 +91,26 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         set { _destinationObject = value; }
     }
 
+    /// <summary>
+    /// Currently selected color
+    /// </summary>
+    private Color _chosenColor;
+    public Color ChosenColor
+    {
+        get { return _chosenColor; }
+        set { _chosenColor = value; }
+    }
+
+    /// <summary>
+    /// Currently selected line width
+    /// </summary>
+    private bool _isThick;
+    public bool IsThick
+    {
+        get { return _isThick; }
+        set { _isThick = value; }
+    }
+
     public bool WindowEnabled { get; set; }
 
     public bool WindowOpen
@@ -121,6 +146,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     {
         _isLineModeActivated = false;
         _isDeleteLineModeActivated = false;
+        colorChooser.SetActive(false);
     }
 
     /// <summary>
@@ -139,6 +165,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         {
             caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
             deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
+            colorChooser.SetActive(false);
+
             if (_startObject == null || _destinationObject == null)
             {
                 _isLineModeActivated = !_isLineModeActivated;
@@ -175,6 +203,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         {
             caption.GetComponent<TextMeshPro>().SetText("Draw Line");
             deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
+            colorChooser.SetActive(true);
         }
         _isLineModeActivated = !_isLineModeActivated;
         Debug.Log("Mode switched!");

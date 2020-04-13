@@ -12,10 +12,6 @@ public class ColorPreviewSquare : MonoBehaviour
 
     private Interactable interactable;
 
-    public delegate void ColorChosenEventHandler(object source, EventArgs args);
-
-    public event EventHandler ColorChosen;
-
     public Color Color
     {
         get
@@ -47,12 +43,6 @@ public class ColorPreviewSquare : MonoBehaviour
         if (ColorChooser != null)
         {
             ColorChooser.SelectedColor = Color;
-            OnColorChosen();
         }
-    }
-
-    protected virtual void OnColorChosen()
-    {
-        ColorChosen?.Invoke(this, EventArgs.Empty);
     }
 }
