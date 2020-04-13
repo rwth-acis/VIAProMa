@@ -10,8 +10,8 @@ public class ConfigurationColorChooser : MonoBehaviour//, IUiFragment
     [SerializeField] private GameObject colorPreviewSquare;
     [SerializeField] private GridObjectCollection colorSquareArray;
 
-    public delegate void ColorChosenEventHandler(object source, EventArgs args);
-    public event EventHandler ColorChosen;
+    public delegate void ColorChosenEventHandler(Color color);
+    public event ColorChosenEventHandler ColorChosen;
 
     public ColorConfiguration colorConfiguration;
 
@@ -91,6 +91,6 @@ public class ConfigurationColorChooser : MonoBehaviour//, IUiFragment
 
     protected virtual void OnColorChosen()
     {
-        ColorChosen?.Invoke(this, EventArgs.Empty);
+        ColorChosen?.Invoke(selectedColor);
     }
 }

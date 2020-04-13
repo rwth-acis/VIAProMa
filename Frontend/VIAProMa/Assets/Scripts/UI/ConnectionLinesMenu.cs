@@ -123,12 +123,14 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
 
     public void Close()
     {
+        colorChooser.GetComponent<ConfigurationColorChooser>().ColorChosen -= ColorChosenEventHandler;
         gameObject.SetActive(false);
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 
     public void Open()
     {
+        colorChooser.GetComponent<ConfigurationColorChooser>().ColorChosen += ColorChosenEventHandler;
         gameObject.SetActive(true);
     }
 
@@ -147,6 +149,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         _isLineModeActivated = false;
         _isDeleteLineModeActivated = false;
         colorChooser.SetActive(false);
+        _isThick = false;
+        _chosenColor = Color.red;
     }
 
     /// <summary>
@@ -194,7 +198,18 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(0, _startObject.transform.position);
                 lineRenderer.GetComponent<LineRenderer>().SetPosition(1, _destinationObject.transform.position);
                 lineRenderer.GetComponent<UpdatePosition>().StartObject = _startObject;
-                lineRenderer.GetComponent<UpdatePosition>().DestinationObject = _destinationObject;    
+                lineRenderer.GetComponent<UpdatePosition>().DestinationObject = _destinationObject;
+                lineRenderer.GetComponent<Renderer>().material.SetColor("_Color", _chosenColor);
+                if (_isThick)
+                {
+                    lineRenderer.GetComponent<LineRenderer>().startWidth = 0.04f;
+                    lineRenderer.GetComponent<LineRenderer>().endWidth = 0.04f;
+                }
+                else
+                {
+                    lineRenderer.GetComponent<LineRenderer>().startWidth = 0.01f;
+                    lineRenderer.GetComponent<LineRenderer>().endWidth = 0.01f;
+                }
             }
             _startObject = null;
             _destinationObject = null;
@@ -277,5 +292,10 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
             lineDrawButton.GetComponent<Interactable>().Enabled = false;
         }
         _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
+    }
+
+    void ColorChosenEventHandler(Color color)
+    {
+        ChosenColor = color;
     }
 }
