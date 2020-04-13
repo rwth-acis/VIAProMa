@@ -1,4 +1,6 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using i5.ViaProMa.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +11,10 @@ public class ColorPreviewSquare : MonoBehaviour
     [SerializeField] private Renderer previewQuad;
 
     private Interactable interactable;
+
+    public delegate void ColorChosenEventHandler(object source, EventArgs args);
+
+    public event EventHandler ColorChosen;
 
     public Color Color
     {
@@ -22,7 +28,7 @@ public class ColorPreviewSquare : MonoBehaviour
         }
     }
 
-    public ConfigurationColorChooser ColorChooser
+    public ConfigurationColorChooser ColorChooser 
     {
         get; set;
     }
@@ -41,6 +47,12 @@ public class ColorPreviewSquare : MonoBehaviour
         if (ColorChooser != null)
         {
             ColorChooser.SelectedColor = Color;
+            OnColorChosen();
         }
+    }
+
+    protected virtual void OnColorChosen()
+    {
+        ColorChosen?.Invoke(this, EventArgs.Empty);
     }
 }

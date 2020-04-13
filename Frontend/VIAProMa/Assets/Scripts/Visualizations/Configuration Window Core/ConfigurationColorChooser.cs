@@ -18,7 +18,7 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
     private Color selectedColor;
 
     public bool UIEnabled
-    {
+    { 
         get => uiEnabled;
         set
         {
