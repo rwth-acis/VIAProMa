@@ -14,6 +14,20 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     [SerializeField] private Color defaultColor;
 
+    ///<summary>
+    ///The Extending part of the background
+    /// </summary>
+    [SerializeField] private GameObject extension;
+
+    ///<summary>
+    ///Referencing the Color Chooser
+    /// </summary>
+    [SerializeField] private GameObject colorChooser;
+
+
+
+
+
     /// <summary>
     /// Referencing the caption of the line draw button
     /// </summary>
@@ -23,6 +37,10 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// Referencing the caption of the delete button
     /// </summary>
     [SerializeField] private GameObject deleteCaption;
+
+
+
+   
 
     /// <summary>
     /// Referencing the LineDraw Button
@@ -49,15 +67,18 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     [SerializeField] private GameObject thinLineButton;
 
-    ///<summary>
-    ///Referencing the Color Chooser
-    /// </summary>
-    [SerializeField] private GameObject colorChooser;
+
+
+
 
     /// <summary>
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
     [SerializeField] private GameObject lineRendererPrefab;
+
+
+
+
 
 
     /// <summary>
@@ -175,6 +196,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     void Start()
     {
         colorChooser.SetActive(false);
+        extension.SetActive(false);
         thickLineButton.SetActive(false);
         thinLineButton.SetActive(false);
         _highlightedWidthButton = thinLineButton.gameObject;
@@ -186,25 +208,38 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         _chosenColor = defaultColor;
     }
 
+
+    /// <summary>
+    /// The window is adjusted to the DrawMode. Buttons for choosing color and width are enabled and the button for deleting lines is disabled.
+    /// </summary>
     public void SetWindowToDrawMode()
     {
         caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
         deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
         colorChooser.SetActive(false);
+        extension.SetActive(false);
         thickLineButton.SetActive(false);
         thinLineButton.SetActive(false);
     }
 
+    /// <summary>
+    /// The window is adjusted to the standard mode. Buttons for choosing color and width are disabled and the button for deleting lines is enabled.
+    /// </summary>
     public void SetWindowToSelectionMode()
     {
         caption.GetComponent<TextMeshPro>().SetText("Draw Line");
         deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
         colorChooser.SetActive(true);
+        extension.SetActive(true);
         thickLineButton.SetActive(true);
         thinLineButton.SetActive(true);
     }
 
-   public void SetLine()
+
+    /// <summary>
+    /// A line is initiated with the correct values.
+    /// </summary>
+    public void SetLine()
     {
         GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         lineRenderer.GetComponent<LineRenderer>().SetPosition(0, _startObject.transform.position);
