@@ -177,6 +177,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         colorChooser.SetActive(false);
         thickLineButton.SetActive(false);
         thinLineButton.SetActive(false);
+        _highlightedWidthButton = thinLineButton.gameObject;
+        _highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
 
         _isLineModeActivated = false;
         _isDeleteLineModeActivated = false;
@@ -189,8 +191,10 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
         deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
         colorChooser.SetActive(false);
-        thickLineButton.setActive(false);
-        thinLineButton.setActive(false);
+        thickLineButton.SetActive(false);
+        thinLineButton.SetActive(false);
+        gameObject.GetComponentInChildren<Transform>().Find("background").localScale = new Vector3((float)0.6, (float)0.87, (float)0.01);
+        gameObject.GetComponentInChildren<Transform>().Find("background").position = new Vector3(0, (float)-0.0375, 0);
     }
 
     public void SetWindowToSelectionMode()
@@ -198,8 +202,10 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         caption.GetComponent<TextMeshPro>().SetText("Draw Line");
         deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
         colorChooser.SetActive(true);
-        thickLineButton.setActive(true);
-        thinLineButton.setActive(true);
+        thickLineButton.SetActive(true);
+        thinLineButton.SetActive(true);
+        gameObject.GetComponentInChildren<Transform>().Find("background").localScale = new Vector3((float)0.6, (float)0.6, (float)0.01);
+        gameObject.GetComponentInChildren<Transform>().Find("background").position = new Vector3(0, (float)0.1, 0);
     }
 
    public void SetLine()
