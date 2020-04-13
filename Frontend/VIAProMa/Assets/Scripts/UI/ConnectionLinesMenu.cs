@@ -8,6 +8,12 @@ using UnityEngine;
 
 public class ConnectionLinesMenu : MonoBehaviour, IWindow
 {
+
+    /// <summary>
+    /// Referencing the initial color of Lines
+    /// </summary>
+    [SerializeField] private Color defaultColor;
+
     /// <summary>
     /// Referencing the caption of the line draw button
     /// </summary>
@@ -33,6 +39,16 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     [SerializeField] private GameObject deleteSpecificLinesButton;
 
+    /// <summary>
+    /// Referencing the ThickLine Button
+    /// </summary>
+    [SerializeField] private GameObject thickLineButton;
+
+    ///<summary>
+    ///Referencing the ThinLine Button
+    /// </summary>
+    [SerializeField] private GameObject thinLineButton;
+
     ///<summary>
     ///Referencing the Color Chooser
     /// </summary>
@@ -42,6 +58,18 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
     [SerializeField] private GameObject lineRendererPrefab;
+
+
+    /// <summary>
+    /// Reference to the currently selected Width Button
+    /// </summary>
+    private GameObject _highlightedWidthButton;
+    public GameObject HighightedWidthButton
+    {
+        get { return _highlightedWidthButton; }
+        set { _highlightedWidthButton = value; }
+    }
+
 
     /// <summary>
     /// True, if the LineDraw Mode is active
@@ -146,12 +174,54 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     void Start()
     {
+        colorChooser.SetActive(false);
+        thickLineButton.SetActive(false);
+        thinLineButton.SetActive(false);
+
         _isLineModeActivated = false;
         _isDeleteLineModeActivated = false;
-        colorChooser.SetActive(false);
         _isThick = false;
-        _chosenColor = Color.red;
+        _chosenColor = defaultColor;
     }
+
+    public void SetWindowToDrawMode()
+    {
+        caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
+        deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
+        colorChooser.SetActive(false);
+        thickLineButton.setActive(false);
+        thinLineButton.setActive(false);
+    }
+
+    public void SetWindowToSelectionMode()
+    {
+        caption.GetComponent<TextMeshPro>().SetText("Draw Line");
+        deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
+        colorChooser.SetActive(true);
+        thickLineButton.setActive(true);
+        thinLineButton.setActive(true);
+    }
+
+   public void SetLine()
+    {
+        GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        lineRenderer.GetComponent<LineRenderer>().SetPosition(0, _startObject.transform.position);
+        lineRenderer.GetComponent<LineRenderer>().SetPosition(1, _destinationObject.transform.position);
+        lineRenderer.GetComponent<UpdatePosition>().StartObject = _startObject;
+        lineRenderer.GetComponent<UpdatePosition>().DestinationObject = _destinationObject;
+        lineRenderer.GetComponent<Renderer>().material.SetColor("_Color", _chosenColor);
+        if (_isThick)
+        {
+            lineRenderer.GetComponent<LineRenderer>().startWidth = 0.04f;
+            lineRenderer.GetComponent<LineRenderer>().endWidth = 0.04f;
+        }
+        else
+        {
+            lineRenderer.GetComponent<LineRenderer>().startWidth = 0.01f;
+            lineRenderer.GetComponent<LineRenderer>().endWidth = 0.01f;
+        }
+    }
+
 
     /// <summary>
     /// Is called when the LineDraw Button is clicked. Enables/Disables the LineDrawingMode and switches the displayed text accordingly.
@@ -167,9 +237,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         }
         if (_isLineModeActivated)
         {
-            caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
-            deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
-            colorChooser.SetActive(false);
+            SetWindowToDrawMode();
 
             if (_startObject == null || _destinationObject == null)
             {
@@ -194,31 +262,14 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
             }
             if (_startObject != null && _destinationObject != null)
             {
-                GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-                lineRenderer.GetComponent<LineRenderer>().SetPosition(0, _startObject.transform.position);
-                lineRenderer.GetComponent<LineRenderer>().SetPosition(1, _destinationObject.transform.position);
-                lineRenderer.GetComponent<UpdatePosition>().StartObject = _startObject;
-                lineRenderer.GetComponent<UpdatePosition>().DestinationObject = _destinationObject;
-                lineRenderer.GetComponent<Renderer>().material.SetColor("_Color", _chosenColor);
-                if (_isThick)
-                {
-                    lineRenderer.GetComponent<LineRenderer>().startWidth = 0.04f;
-                    lineRenderer.GetComponent<LineRenderer>().endWidth = 0.04f;
-                }
-                else
-                {
-                    lineRenderer.GetComponent<LineRenderer>().startWidth = 0.01f;
-                    lineRenderer.GetComponent<LineRenderer>().endWidth = 0.01f;
-                }
+                SetLine();
             }
             _startObject = null;
             _destinationObject = null;
         }
         else
         {
-            caption.GetComponent<TextMeshPro>().SetText("Draw Line");
-            deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
-            colorChooser.SetActive(true);
+            SetWindowToSelectionMode();
         }
         _isLineModeActivated = !_isLineModeActivated;
         Debug.Log("Mode switched!");
@@ -293,6 +344,29 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         }
         _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
     }
+
+    /// <summary>
+    /// Called by the Line Width buttons OnClick
+    /// </summary>
+    public void SwitchWidth(bool newIsThick)
+    {
+        //Reset highlighted button
+        _highlightedWidthButton.GetComponent<Interactable>().Enabled = true;
+        _isThick = newIsThick;
+
+        //Highlight the button that was now selected
+        if (newIsThick)
+        {
+            _highlightedWidthButton = thickLineButton.gameObject;
+            _highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
+        }
+        else
+        {
+            _highlightedWidthButton = thinLineButton.gameObject;
+            _highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
+        }
+    }
+
 
     void ColorChosenEventHandler(Color color)
     {
