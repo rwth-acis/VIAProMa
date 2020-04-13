@@ -193,8 +193,6 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         colorChooser.SetActive(false);
         thickLineButton.SetActive(false);
         thinLineButton.SetActive(false);
-        gameObject.GetComponentInChildren<Transform>().Find("background").localScale = new Vector3((float)0.6, (float)0.87, (float)0.01);
-        gameObject.GetComponentInChildren<Transform>().Find("background").position = new Vector3(0, (float)-0.0375, 0);
     }
 
     public void SetWindowToSelectionMode()
@@ -204,8 +202,6 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         colorChooser.SetActive(true);
         thickLineButton.SetActive(true);
         thinLineButton.SetActive(true);
-        gameObject.GetComponentInChildren<Transform>().Find("background").localScale = new Vector3((float)0.6, (float)0.6, (float)0.01);
-        gameObject.GetComponentInChildren<Transform>().Find("background").position = new Vector3(0, (float)0.1, 0);
     }
 
    public void SetLine()
