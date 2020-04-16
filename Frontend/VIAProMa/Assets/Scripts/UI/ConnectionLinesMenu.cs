@@ -22,42 +22,42 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     ///<summary>
     ///Referencing the Color Chooser
     /// </summary>
-    [SerializeField] private GameObject colorChooser;
+    [SerializeField] private ConfigurationColorChooser colorChooser;
 
     /// <summary>
     /// Referencing the caption of the line draw button
     /// </summary>
-    [SerializeField] private GameObject caption;
+    [SerializeField] private TextMeshPro caption;
 
     /// <summary>
     /// Referencing the caption of the delete button
     /// </summary>
-    [SerializeField] private GameObject deleteCaption;
+    [SerializeField] private TextMeshPro deleteCaption;
 
     /// <summary>
     /// Referencing the LineDraw Button
     /// </summary>
-    [SerializeField] private GameObject lineDrawButton;
+    [SerializeField] private Interactable lineDrawButton;
 
     /// <summary>
     /// Referencing the DeleteAllLines Button
     /// </summary>
-    [SerializeField] private GameObject deleteAllLinesButton;
+    [SerializeField] private Interactable deleteAllLinesButton;
 
     ///<summary>
     ///Referencing the DeleteSpecificLines Button
     /// </summary>
-    [SerializeField] private GameObject deleteSpecificLinesButton;
+    [SerializeField] private Interactable deleteSpecificLinesButton;
 
     /// <summary>
     /// Referencing the ThickLine Button
     /// </summary>
-    [SerializeField] private GameObject thickLineButton;
+    [SerializeField] private Interactable thickLineButton;
 
     ///<summary>
     ///Referencing the ThinLine Button
     /// </summary>
-    [SerializeField] private GameObject thinLineButton;
+    [SerializeField] private Interactable thinLineButton;
 
     /// <summary>
     /// The LineRenderer Prefab to be instantiated
@@ -67,8 +67,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// <summary>
     /// Reference to the currently selected Width Button
     /// </summary>
-    private GameObject _highlightedWidthButton;
-    public GameObject HighightedWidthButton
+    private Interactable _highlightedWidthButton;
+    public Interactable HighightedWidthButton
     {
         get { return _highlightedWidthButton; }
         set { _highlightedWidthButton = value; }
@@ -155,14 +155,14 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
 
     public void Close()
     {
-        colorChooser.GetComponent<ConfigurationColorChooser>().ColorChosen -= ColorChosenEventHandler;
+        colorChooser.ColorChosen -= ColorChosenEventHandler;
         gameObject.SetActive(false);
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 
     public void Open()
     {
-        colorChooser.GetComponent<ConfigurationColorChooser>().ColorChosen += ColorChosenEventHandler;
+        colorChooser.ColorChosen += ColorChosenEventHandler;
         gameObject.SetActive(true);
     }
 
@@ -178,12 +178,12 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     void Start()
     {
-        colorChooser.SetActive(false);
+        colorChooser.gameObject.SetActive(false);
         extension.SetActive(false);
-        thickLineButton.SetActive(false);
-        thinLineButton.SetActive(false);
-        _highlightedWidthButton = thinLineButton.gameObject;
-        _highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
+        thickLineButton.gameObject.SetActive(false);
+        thinLineButton.gameObject.SetActive(false);
+        _highlightedWidthButton = thinLineButton;
+        _highlightedWidthButton.Enabled = false;
 
         _isLineModeActivated = false;
         _isDeleteLineModeActivated = false;
@@ -197,12 +197,12 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     public void SetWindowToDrawMode()
     {
-        caption.GetComponent<TextMeshPro>().SetText("Enter Line Draw");
-        deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = true;
-        colorChooser.SetActive(false);
+        caption.SetText("Enter Line Draw");
+        deleteSpecificLinesButton.Enabled = true;
+        colorChooser.gameObject.SetActive(false);
         extension.SetActive(false);
-        thickLineButton.SetActive(false);
-        thinLineButton.SetActive(false);
+        thickLineButton.gameObject.SetActive(false);
+        thinLineButton.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -210,12 +210,12 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     public void SetWindowToSelectionMode()
     {
-        caption.GetComponent<TextMeshPro>().SetText("Draw Line");
-        deleteSpecificLinesButton.GetComponent<Interactable>().Enabled = false;
-        colorChooser.SetActive(true);
+        caption.SetText("Draw Line");
+        deleteSpecificLinesButton.Enabled = false;
+        colorChooser.gameObject.SetActive(true);
         extension.SetActive(true);
-        thickLineButton.SetActive(true);
-        thinLineButton.SetActive(true);
+        thickLineButton.gameObject.SetActive(true);
+        thinLineButton.gameObject.SetActive(true);
     }
 
 
@@ -225,20 +225,22 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     public void SetLine()
     {
         GameObject lineRenderer = Instantiate(lineRendererPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        lineRenderer.GetComponent<LineRenderer>().SetPosition(0, _startObject.transform.position);
-        lineRenderer.GetComponent<LineRenderer>().SetPosition(1, _destinationObject.transform.position);
-        lineRenderer.GetComponent<UpdatePosition>().StartObject = _startObject;
-        lineRenderer.GetComponent<UpdatePosition>().DestinationObject = _destinationObject;
+        LineRenderer lineRendererComponent = lineRenderer.GetComponent<LineRenderer>();
+        lineRendererComponent.SetPosition(0, _startObject.transform.position);
+        lineRendererComponent.SetPosition(1, _destinationObject.transform.position);
+        UpdatePosition positionScript = lineRenderer.GetComponent<UpdatePosition>();
+        positionScript.StartObject = _startObject;
+        positionScript.DestinationObject = _destinationObject;
         lineRenderer.GetComponent<Renderer>().material.SetColor("_Color", _chosenColor);
         if (_isThick)
         {
-            lineRenderer.GetComponent<LineRenderer>().startWidth = 0.04f;
-            lineRenderer.GetComponent<LineRenderer>().endWidth = 0.04f;
+            lineRendererComponent.startWidth = 0.04f;
+            lineRendererComponent.endWidth = 0.04f;
         }
         else
         {
-            lineRenderer.GetComponent<LineRenderer>().startWidth = 0.01f;
-            lineRenderer.GetComponent<LineRenderer>().endWidth = 0.01f;
+            lineRendererComponent.startWidth = 0.01f;
+            lineRendererComponent.endWidth = 0.01f;
         }
     }
 
@@ -264,13 +266,15 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
                 _isLineModeActivated = !_isLineModeActivated;
                 return;
             }
-            if (_startObject.GetComponent<IssueSelector>() != null)
+            IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
+            if (startIssueSelector != null)
             {
-                _startObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _startObject.GetComponent<IssueSelector>().originalRendererColor;
+                startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
             }
-            if (_destinationObject.GetComponent<IssueSelector>() != null)
+            IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
+            if (destinationIssueSelector != null)
             {
-                _destinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _destinationObject.GetComponent<IssueSelector>().originalRendererColor;
+                destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
             }
             if (_startObject.GetComponent<VisualizationSelector>() != null)
             {
@@ -318,20 +322,22 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         }
         if (_isDeleteLineModeActivated)
         {
-            deleteCaption.GetComponent<TextMeshPro>().SetText("Enter Single Delete");
-            lineDrawButton.GetComponent<Interactable>().Enabled = true;
+            deleteCaption.SetText("Enter Single Delete");
+            lineDrawButton.Enabled = true;
             if (_startObject == null || _destinationObject == null)
             {
                 _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
                 return;
             }
-            if (_startObject.GetComponent<IssueSelector>() != null)
+            IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
+            if (startIssueSelector != null)
             {
-                _startObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _startObject.GetComponent<IssueSelector>().originalRendererColor;
+                startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
             }
-            if (_destinationObject.GetComponent<IssueSelector>() != null)
+            IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
+            if (destinationIssueSelector != null)
             {
-                _destinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = _destinationObject.GetComponent<IssueSelector>().originalRendererColor;
+                destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
             }
             if (_startObject.GetComponent<VisualizationSelector>() != null)
             {
@@ -347,10 +353,11 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
                 foreach
                 (GameObject line in lines)
                 {
-                    if ((line.GetComponent<LineRenderer>().GetPosition(0) == _startObject.transform.position
-                        && line.GetComponent<LineRenderer>().GetPosition(1) == _destinationObject.transform.position) ||
-                        (line.GetComponent<LineRenderer>().GetPosition(0) == _startObject.transform.position
-                        && line.GetComponent<LineRenderer>().GetPosition(1) == _destinationObject.transform.position))
+                    LineRenderer lineRendererComponent = line.GetComponent<LineRenderer>();
+                    if ((lineRendererComponent.GetPosition(0) == _startObject.transform.position
+                        && lineRendererComponent.GetPosition(1) == _destinationObject.transform.position) ||
+                        (lineRendererComponent.GetPosition(0) == _startObject.transform.position
+                        && lineRendererComponent.GetPosition(1) == _destinationObject.transform.position))
                     {
                         Destroy(line);
                     }
@@ -359,8 +366,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         }
         else
         {
-            deleteCaption.GetComponent<TextMeshPro>().SetText("Delete Line");
-            lineDrawButton.GetComponent<Interactable>().Enabled = false;
+            deleteCaption.SetText("Delete Line");
+            lineDrawButton.Enabled = false;
         }
         _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
     }
@@ -371,19 +378,19 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     public void SwitchWidth(bool newIsThick)
     {
         //Reset highlighted button
-        _highlightedWidthButton.GetComponent<Interactable>().Enabled = true;
+        _highlightedWidthButton.Enabled = true;
         _isThick = newIsThick;
 
         //Highlight the button that was now selected
         if (newIsThick)
         {
-            _highlightedWidthButton = thickLineButton.gameObject;
-            _highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
+            _highlightedWidthButton = thickLineButton;
+            _highlightedWidthButton.Enabled = false;
         }
         else
         {
-            _highlightedWidthButton = thinLineButton.gameObject;
-            _highlightedWidthButton.GetComponent<Interactable>().Enabled = false;
+            _highlightedWidthButton = thinLineButton;
+            _highlightedWidthButton.Enabled = false;
         }
     }
 
