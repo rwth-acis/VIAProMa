@@ -25,6 +25,16 @@ public class UpdatePosition : MonoBehaviour
     }
 
     /// <summary>
+    /// Currently selected line width
+    /// </summary>
+    private bool _isCurrentlyThick;
+    public bool IsCurrentlyThick
+    {
+        get { return _isCurrentlyThick; }
+        set { _isCurrentlyThick = value; }
+    }
+
+    /// <summary>
     /// Reference to the LineRenderer component
     /// </summary>
     private LineRenderer lineRendererComponent;
@@ -35,6 +45,14 @@ public class UpdatePosition : MonoBehaviour
     void Start()
     {
         lineRendererComponent = transform.GetComponent<LineRenderer>();
+        if (lineRendererComponent.startWidth == 0.04f)
+        {
+            IsCurrentlyThick = true;
+        }
+        else
+        {
+            IsCurrentlyThick = false;
+        }
     }
 
     /// <summary>
@@ -42,7 +60,7 @@ public class UpdatePosition : MonoBehaviour
     /// </summary>
     void Update()
     {
-        if(_startObject == null || _destinationObject == null)
+        if (_startObject == null || _destinationObject == null)
         {
             Destroy(gameObject);
         }

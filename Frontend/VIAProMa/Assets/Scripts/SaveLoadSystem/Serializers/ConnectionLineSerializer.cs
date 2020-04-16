@@ -10,8 +10,11 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
 {
     private const string startObjectPositionKey = "start";
     private const string destinationObjectPositionKey = "destination";
+    private const string connectionLineColorKey = "color";
+    private const string connectionLineWidthKey = "width";
 
     private UpdatePosition updatePosition;
+    private LineRenderer lineRenderer;
 
     /// <summary>
     /// Sets the component up
@@ -19,6 +22,7 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
     private void Awake()
     {
         updatePosition = GetComponent<UpdatePosition>();
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
     /// <summary>
@@ -30,6 +34,8 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
     {
         Vector3 startPos = serializedObject.Vector3s[startObjectPositionKey];
         Vector3 destinationPos = serializedObject.Vector3s[destinationObjectPositionKey];
+        bool width = serializedObject.Bools[connectionLineWidthKey];
+        Vector3 lineColorData = serializedObject.Vector3s[connectionLineColorKey];
 
         GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
         foreach (GameObject go in allObjects)
@@ -46,6 +52,20 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
                 }
             }
         }
+        updatePosition.IsCurrentlyThick = width;
+        if (width)
+        {
+            lineRenderer.startWidth = 0.04f;
+            lineRenderer.endWidth = 0.04f;
+        }
+        else
+        {
+            lineRenderer.startWidth = 0.01f;
+            lineRenderer.endWidth = 0.01f;
+        }
+
+        Color lineColor = new Color(lineColorData.x, lineColorData.y, lineColorData.z, 255);
+        GetComponent<Renderer>().material.SetColor("_Color", lineColor);
     }
 
     /// <summary>
@@ -58,6 +78,11 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
         SerializedObject serializedObject = new SerializedObject();
         serializedObject.Vector3s.Add(startObjectPositionKey, updatePosition.StartObject.transform.position);
         serializedObject.Vector3s.Add(destinationObjectPositionKey, updatePosition.DestinationObject.transform.position);
+        serializedObject.Bools.Add(connectionLineWidthKey, updatePosition.IsCurrentlyThick);
+        serializedObject.Vector3s.Add(connectionLineColorKey, new Vector3(
+            GetComponent<Renderer>().material.color.r,
+            GetComponent<Renderer>().material.color.g,
+            GetComponent<Renderer>().material.color.b));
         return serializedObject;
     }
 }

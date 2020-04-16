@@ -24,10 +24,6 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     [SerializeField] private GameObject colorChooser;
 
-
-
-
-
     /// <summary>
     /// Referencing the caption of the line draw button
     /// </summary>
@@ -37,10 +33,6 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// Referencing the caption of the delete button
     /// </summary>
     [SerializeField] private GameObject deleteCaption;
-
-
-
-   
 
     /// <summary>
     /// Referencing the LineDraw Button
@@ -67,19 +59,10 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     [SerializeField] private GameObject thinLineButton;
 
-
-
-
-
     /// <summary>
     /// The LineRenderer Prefab to be instantiated
     /// </summary>
     [SerializeField] private GameObject lineRendererPrefab;
-
-
-
-
-
 
     /// <summary>
     /// Reference to the currently selected Width Button
