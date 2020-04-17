@@ -11,6 +11,7 @@ public class WindowManager : Singleton<WindowManager>
     [SerializeField] private GameObject saveProjectMenuPrefab;
     [SerializeField] private GameObject loginMenuPrefab;
     [SerializeField] private GameObject connectionLinesMenuPrefab;
+    [SerializeField] private GameObject testMenuPrefab;
 
     private void Start()
     {
@@ -20,6 +21,7 @@ public class WindowManager : Singleton<WindowManager>
         SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
         LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
         ConnectionLinesMenu = (ConnectionLinesMenu)InstantiateWindow(connectionLinesMenuPrefab);
+        TestMenu = (TestMenu)InstantiateWindow(testMenuPrefab);
     }
 
     private IWindow InstantiateWindow(GameObject prefab)
@@ -47,4 +49,6 @@ public class WindowManager : Singleton<WindowManager>
     public LoginMenu LoginMenu { get; private set; }
 
     public ConnectionLinesMenu ConnectionLinesMenu { get; private set; }
+
+    public TestMenu TestMenu { get; private set; }
 }

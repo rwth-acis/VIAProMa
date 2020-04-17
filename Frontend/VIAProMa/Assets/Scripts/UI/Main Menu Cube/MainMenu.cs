@@ -232,6 +232,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public void ShowServerStatusMenu()
     {
         WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
+        WindowManager.Instance.TestMenu.Open(serverConnectionButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
         foldController.FoldCube();
     }
 
