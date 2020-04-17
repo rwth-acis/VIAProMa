@@ -79,12 +79,24 @@ public class AppBarPlacer : MonoBehaviour
         transform.position = smooth ? Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * backgroundBarMoveSpeed) : finalPosition;
 
         // Rotate on the y axis
-        Vector3 direction = (boundingBox.TargetBounds.bounds.center - finalPosition).normalized;
+        //Vector3 direction = (boundingBox.TargetBounds.bounds.center - finalPosition).normalized;
+        Vector3 direction = (finalPosition-headPosition).normalized;
         if (direction != Vector3.zero)
         {
             Vector3 eulerAngles = Quaternion.LookRotation(direction, Vector3.up).eulerAngles;
             eulerAngles.x = 0f;
             eulerAngles.z = 0f;
+
+            /*Debug.Log(Vector3.Dot(eulerAngles, headPosition-finalPosition));
+            Debug.Log(eulerAngles);
+            Debug.Log(headPosition-finalPosition);
+            //If the AppBar is facing away from the user, invert it
+            if (Vector3.Dot(eulerAngles, headPosition-finalPosition) <0)
+            {
+                Debug.Log("Flipped");
+                eulerAngles.y = eulerAngles.y + 180f;
+            }*/
+
             transform.eulerAngles = eulerAngles;
         }
         else

@@ -398,6 +398,8 @@ namespace Microsoft.MixedReality.Toolkit.UI
             {
                 transform.eulerAngles = Vector3.zero;
             }
+
+            
         }
 
         private bool GetButtonVisible(ButtonTypeEnum buttonType)
