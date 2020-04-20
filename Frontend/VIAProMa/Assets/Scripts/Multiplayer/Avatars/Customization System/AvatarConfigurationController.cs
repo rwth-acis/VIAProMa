@@ -21,6 +21,8 @@ public class AvatarConfigurationController : MonoBehaviour
 
     public AvatarPartControllerCategory ClothesCategory { get => avatarPartControllers[4]; }
 
+    //public AvatarPartControllerCategory InformationCategory { get => avatarPartControllers[5]}
+
     /// <summary>
     /// Initializes the avatar by apply the initial configuration
     /// </summary>
