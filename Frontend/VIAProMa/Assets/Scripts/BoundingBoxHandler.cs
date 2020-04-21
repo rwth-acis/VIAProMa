@@ -9,32 +9,27 @@ using TMPro;
 
 public class BoundingBoxHandler : MonoBehaviour
 {
-
-     private BoundingBox boundingBox;
-     private Collider collider;
     [SerializeField] private GameObject adjustButtonCaption;
+    [SerializeField] private GameObject boundingBoxObject;
 
     // Start is called before the first frame update
     void Start()
     {
-        collider = GetComponent<Collider>();
-        collider.enabled = false;
-        boundingBox = GetComponent<BoundingBox>();
-        boundingBox.Active = false;
+        boundingBoxObject.SetActive(false);
     }
 
-    // Update is called once per frame
     public void Adjust()
     {
-        if (boundingBox.Active)
+
+        if (boundingBoxObject.activeSelf)
         {
             adjustButtonCaption.GetComponent<TextMeshPro>().SetText("Adjust");
+            boundingBoxObject.SetActive(false);
         }
         else
         {
             adjustButtonCaption.GetComponent<TextMeshPro>().SetText("Done");
+            boundingBoxObject.SetActive(true);
         }
-        collider.enabled = !collider.enabled;
-        boundingBox.Active = !boundingBox.Active;
     }
 }
