@@ -9,27 +9,27 @@ using TMPro;
 
 public class BoundingBoxHandler : MonoBehaviour
 {
-    [SerializeField] private GameObject adjustButtonCaption;
-    [SerializeField] private GameObject boundingBoxObject;
+    [SerializeField] private TextMeshPro adjustButtonCaption;
+    [SerializeField] private GameObject boundingBox;
 
     // Start is called before the first frame update
     void Start()
     {
-        boundingBoxObject.SetActive(false);
+        boundingBox.SetActive(false);
     }
 
     public void Adjust()
     {
 
-        if (boundingBoxObject.activeSelf)
+        if (boundingBox.activeSelf)
         {
-            adjustButtonCaption.GetComponent<TextMeshPro>().SetText("Adjust");
-            boundingBoxObject.SetActive(false);
+            adjustButtonCaption.SetText("Adjust");
+            boundingBox.SetActive(false);
         }
         else
         {
-            adjustButtonCaption.GetComponent<TextMeshPro>().SetText("Done");
-            boundingBoxObject.SetActive(true);
+            adjustButtonCaption.SetText("Done");
+            boundingBox.SetActive(true);
         }
     }
 }
