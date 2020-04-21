@@ -10,13 +10,17 @@ public class LineDrawLogicTester : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            linedrawlogicscript.SwitchLineDrawMode();
+            linedrawlogicscript.EnterLineDrawMode();
         }
         if (Input.GetKeyDown(KeyCode.F2))
         {
-            linedrawlogicscript.DeleteAllLines();
+            linedrawlogicscript.LeaveLineDrawMode();
         }
         if (Input.GetKeyDown(KeyCode.F3))
+        {
+            linedrawlogicscript.DeleteAllLines();
+        }
+        if (Input.GetKeyDown(KeyCode.F4))
         {
             linedrawlogicscript.DeleteSpecificLine();
         }

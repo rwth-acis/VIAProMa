@@ -15,11 +15,6 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     [SerializeField] private Color defaultColor;
 
     ///<summary>
-    ///The Extending part of the background
-    /// </summary>
-    [SerializeField] private GameObject extension;
-
-    ///<summary>
     ///Referencing the Color Chooser
     /// </summary>
     [SerializeField] private ConfigurationColorChooser colorChooser;
@@ -27,7 +22,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// <summary>
     /// Referencing the caption of the line draw button
     /// </summary>
-    [SerializeField] private TextMeshPro caption;
+    [SerializeField] private GameObject optionWindow;
 
     /// <summary>
     /// Referencing the caption of the delete button
@@ -178,10 +173,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     /// </summary>
     void Start()
     {
-        colorChooser.gameObject.SetActive(false);
-        extension.SetActive(false);
-        thickLineButton.gameObject.SetActive(false);
-        thinLineButton.gameObject.SetActive(false);
+        optionWindow.SetActive(false);
         _highlightedWidthButton = thinLineButton;
         _highlightedWidthButton.Enabled = false;
 
@@ -191,32 +183,6 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         _chosenColor = defaultColor;
     }
 
-
-    /// <summary>
-    /// The window is adjusted to the DrawMode. Buttons for choosing color and width are enabled and the button for deleting lines is disabled.
-    /// </summary>
-    public void SetWindowToDrawMode()
-    {
-        caption.SetText("Enter Line Draw");
-        deleteSpecificLinesButton.Enabled = true;
-        colorChooser.gameObject.SetActive(false);
-        extension.SetActive(false);
-        thickLineButton.gameObject.SetActive(false);
-        thinLineButton.gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// The window is adjusted to the standard mode. Buttons for choosing color and width are disabled and the button for deleting lines is enabled.
-    /// </summary>
-    public void SetWindowToSelectionMode()
-    {
-        caption.SetText("Draw Line");
-        deleteSpecificLinesButton.Enabled = false;
-        colorChooser.gameObject.SetActive(true);
-        extension.SetActive(true);
-        thickLineButton.gameObject.SetActive(true);
-        thinLineButton.gameObject.SetActive(true);
-    }
 
 
     /// <summary>
@@ -246,57 +212,59 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
 
 
     /// <summary>
-    /// Is called when the LineDraw Button is clicked. Enables/Disables the LineDrawingMode and switches the displayed text accordingly.
-    /// When the Draw Line button is clicked, an empty gameobject containing the LineRenderer component is instantiated and start and
-    /// destination position of the line set.
+    /// Is called when the LineDraw Button is clicked. The additional window containing color and width options is opened.
     /// </summary>
-    public void SwitchLineDrawMode()
+    public void EnterLineDrawMode()
     {
-
         if (_isDeleteLineModeActivated)
         {
             return;
         }
-        if (_isLineModeActivated)
-        {
-            SetWindowToDrawMode();
+        optionWindow.SetActive(true);
+        _isLineModeActivated = true;
+    }
 
-            if (_startObject == null || _destinationObject == null)
-            {
-                _isLineModeActivated = !_isLineModeActivated;
-                return;
-            }
-            IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
-            if (startIssueSelector != null)
-            {
-                startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
-            }
-            IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
-            if (destinationIssueSelector != null)
-            {
-                destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
-            }
-            if (_startObject.GetComponent<VisualizationSelector>() != null)
-            {
-                _startObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
-            }
-            if (_destinationObject.GetComponent<VisualizationSelector>() != null)
-            {
-                _destinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
-            }
-            if (_startObject != null && _destinationObject != null)
-            {
-                SetLine();
-            }
-            _startObject = null;
-            _destinationObject = null;
-        }
-        else
+
+    /// <summary>
+    /// Is called when the Draw Line Button is clicked. A Line in the chosen color and width is instantianted between the two selected objects.
+    /// </summary>
+    public void LeaveLineDrawMode()
+    {
+        if (_isDeleteLineModeActivated)
         {
-            SetWindowToSelectionMode();
+            return;
         }
-        _isLineModeActivated = !_isLineModeActivated;
-        Debug.Log("Mode switched!");
+        optionWindow.SetActive(false);
+        if (_startObject == null || _destinationObject == null)
+        {
+            _isLineModeActivated = !_isLineModeActivated;
+            return;
+        }
+        IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
+        if (startIssueSelector != null)
+        {
+            startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+        }
+        IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
+        if (destinationIssueSelector != null)
+        {
+            destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+        }
+        if (_startObject.GetComponent<VisualizationSelector>() != null)
+        {
+            _startObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
+        }
+        if (_destinationObject.GetComponent<VisualizationSelector>() != null)
+        {
+            _destinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
+        }
+        if (_startObject != null && _destinationObject != null)
+        {
+            SetLine();
+        }
+        _startObject = null;
+        _destinationObject = null;
+        _isLineModeActivated = false;
     }
 
     /// <summary>
