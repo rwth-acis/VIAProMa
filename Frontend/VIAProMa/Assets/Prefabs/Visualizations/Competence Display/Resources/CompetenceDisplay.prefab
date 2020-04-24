@@ -19,9 +19,10 @@ GameObject:
   - component: {fileID: 8712422221068582504}
   - component: {fileID: 3555104045746520956}
   - component: {fileID: 7796778517058704735}
+  - component: {fileID: 114534836433917374}
   m_Layer: 0
   m_Name: CompetenceDisplay
-  m_TagString: Untagged
+  m_TagString: showArrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -189,6 +190,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c150a2a896e1247bb560e20c2f3f8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114534836433917374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3050140181036494612}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89a562b80de35fb43b45ac9311f2f8d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointerHitPosition: {x: 0, y: -10, z: 0}
+  pointerHitRotation: {x: 0, y: 0, z: 0, w: 0}
+  objectBeingHit: {fileID: 0}
 --- !u!1 &3050140181562696015
 GameObject:
   m_ObjectHideFlags: 0

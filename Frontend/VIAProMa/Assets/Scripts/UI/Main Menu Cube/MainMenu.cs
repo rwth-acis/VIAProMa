@@ -36,6 +36,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     private GameObject visualizationShelfInstance;
     private GameObject loadShelfInstance;
     private GameObject avatarConfiguratorInstance;
+    public GameObject noGazeButton;
 
     private void Awake()
     {
@@ -102,6 +103,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         }
 
         foldController = gameObject.GetComponent<FoldController>();
+        noGazeButton.SetActive(false);
     }
 
     public override void OnEnable()
@@ -328,5 +330,32 @@ public class MainMenu : MonoBehaviourPunCallbacks
         PhotonView view = PhotonView.Find(photonId);
         visualizationShelfInstance = view.gameObject;
         Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+    }
+
+    protected GameObject[] getAllGameObjectsArrow()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
+        return arrayAll;
+    }
+
+    protected GameObject[] getAllGameObjectsAvatar()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("avatar");
+        return arrayAll;
+    }
+
+    public void toggleGlobalSharing()
+    {
+        foreach (GameObject arrow in getAllGameObjectsArrow())
+        {
+            foreach (GameObject avatar in getAllGameObjectsAvatar())
+            {
+                if (avatar.GetComponent<BasicAvatarMovementSynchronizer>().photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
+                {
+                    arrow.GetComponent<InstantiateArrows>().sharingGlobal = !arrow.GetComponent<InstantiateArrows>().sharingGlobal;
+                    arrow.GetComponent<InstantiateArrows>().setTextOfGlobalGazingLabel();
+                }
+            }
+        }
     }
 }

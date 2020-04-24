@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &988262219151547162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856870972359737783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89a562b80de35fb43b45ac9311f2f8d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointerHitPosition: {x: 0, y: 0, z: 0}
+  pointerHitRotation: {x: 0, y: 0, z: 0, w: 0}
+  objectBeingHit: {fileID: 0}
 --- !u!114 &3048067281419414495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,8 +192,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   RotateStopped:
     m_PersistentCalls:
       m_Calls:
@@ -193,18 +206,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   ScaleStarted:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   ScaleStopped:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!114 &810899288846121395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,8 +276,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnManipulationEnded:
     m_PersistentCalls:
       m_Calls:
@@ -285,18 +290,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnHoverEntered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   OnHoverExited:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!65 &4110438068700398302
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -321,6 +320,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Card In Scene
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113043743492744268, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: showArrow
       objectReference: {fileID: 0}
     - target: {fileID: 5113043743492744269, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
@@ -377,16 +381,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5113043743851458770, guid: 30372dd33b85aed46bbc94af8aadb1f0,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5113043743851458770, guid: 30372dd33b85aed46bbc94af8aadb1f0,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5113043742920443704, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
       propertyPath: m_havePropertiesChanged
@@ -397,12 +391,22 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5113043743201697250, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+    - target: {fileID: 5113043743851458770, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
       propertyPath: m_havePropertiesChanged
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5113043743201697250, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+    - target: {fileID: 5113043743851458770, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317053834042847390, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317053834042847390, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 0
@@ -417,22 +421,32 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7317053834042847390, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+    - target: {fileID: 5113043743201697250, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
       propertyPath: m_havePropertiesChanged
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7317053834042847390, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+    - target: {fileID: 5113043743201697250, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113043742920443702, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5113043743851458768, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 5113043742920443702, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+    - target: {fileID: 7756148229282583397, guid: 30372dd33b85aed46bbc94af8aadb1f0,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113043742475064751, guid: 30372dd33b85aed46bbc94af8aadb1f0,
         type: 3}
       propertyPath: m_Mesh
       value: 
@@ -456,16 +470,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5113043742475064751, guid: 30372dd33b85aed46bbc94af8aadb1f0,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7756148229282583397, guid: 30372dd33b85aed46bbc94af8aadb1f0,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30372dd33b85aed46bbc94af8aadb1f0, type: 3}

@@ -11,6 +11,9 @@ using UnityEngine;
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject playerAvatarPrefab;
+    [SerializeField] private GameObject arrow;
+    [SerializeField] private GameObject shazeGazeButton;
+    [SerializeField] private GameObject changeMeshButton;
 
     /// <summary>
     /// Checks if the component is set up correctly
@@ -30,6 +33,13 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
+        ResourceManager.Instance.NetworkInstantiate(arrow, Vector3.zero, Quaternion.identity);
+        ResourceManager.Instance.NetworkInstantiate(shazeGazeButton, shazeGazeButton.transform.position, shazeGazeButton.transform.rotation);
+        ResourceManager.Instance.NetworkInstantiate(changeMeshButton, changeMeshButton.transform.position, changeMeshButton.transform.rotation);
+        if (GameObject.Find("Main Menu") != null)
+        {
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -61,5 +71,14 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         Debug.Log(otherPlayer.NickName + " left");
         ChatManager.Instance.AddLocalMessage(otherPlayer.NickName + " left the room.");
+        //GameObject.Find("No Gaze Button").SetActive(false);
+    }
+
+    public override void OnLeftRoom()
+    {
+        if (GameObject.Find("Main Menu") != null)
+        {
+            GameObject.Find("Main Menu").GetComponent<MainMenu>().noGazeButton.SetActive(false);
+        }
     }
 }
