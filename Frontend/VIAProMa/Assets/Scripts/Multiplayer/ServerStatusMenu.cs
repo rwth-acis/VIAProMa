@@ -26,6 +26,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
 
     private Renderer backendLedRenderer;
     private Renderer sharingLedRenderer;
+    private BoundingBoxHandler boundingBoxHandler;
 
     public bool WindowEnabled { get; set; } // not used here
 
@@ -69,6 +70,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
 
         backendLedRenderer = backendLed?.GetComponent<Renderer>();
         sharingLedRenderer = sharingLed?.GetComponent<Renderer>();
+        boundingBoxHandler = GetComponent<BoundingBoxHandler>();
 
         if (backendLedRenderer == null)
         {
@@ -223,6 +225,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         Open();
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
+        boundingBoxHandler.Adjust();
     }
 
     /// <summary>
