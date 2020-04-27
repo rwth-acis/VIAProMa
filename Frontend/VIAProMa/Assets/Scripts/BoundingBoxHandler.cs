@@ -20,8 +20,8 @@ public class BoundingBoxHandler : MonoBehaviour
 
     public void Adjust()
     {
-
-        if (boundingBox.activeSelf)
+        bool isActive = boundingBox.activeSelf;
+        if (isActive)
         {
             adjustButtonCaption.SetText("Adjust");
             boundingBox.SetActive(false);

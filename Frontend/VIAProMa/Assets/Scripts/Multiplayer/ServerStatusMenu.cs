@@ -19,7 +19,6 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
     [SerializeField] private TextMeshPro sharingConnectButtonText;
     [SerializeField] private GameObject backendSettingsMenu;
     [SerializeField] private InputField backendAddressField;
-    [SerializeField] private GameObject boundingBox;
 
     [Header("Values")]
     [SerializeField] private Color serverOnlineColor = new Color(0f, 135f/255f, 3f/255f); // green
@@ -224,7 +223,6 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         Open();
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
-        boundingBox.SetActive(true);
     }
 
     /// <summary>
