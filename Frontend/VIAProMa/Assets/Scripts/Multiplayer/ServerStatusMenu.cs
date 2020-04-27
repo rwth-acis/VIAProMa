@@ -222,10 +222,10 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
 
     public void Open(Vector3 position, Vector3 eulerAngles)
     {
+        boundingBoxHandler.Adjust();
         Open();
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
-        boundingBoxHandler.Adjust();
     }
 
     /// <summary>
