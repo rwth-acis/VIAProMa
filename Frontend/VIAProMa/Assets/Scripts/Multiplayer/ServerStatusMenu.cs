@@ -224,7 +224,7 @@ public class ServerStatusMenu : MonoBehaviourPunCallbacks, IWindow
         Open();
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
-        boundingBox.SetActive(false);
+        boundingBox.SetActive(true);
     }
 
     /// <summary>

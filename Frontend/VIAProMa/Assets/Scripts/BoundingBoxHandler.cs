@@ -15,7 +15,7 @@ public class BoundingBoxHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        boundingBox.SetActive(true);
+        boundingBox.SetActive(false);
     }
 
     public void Adjust()
