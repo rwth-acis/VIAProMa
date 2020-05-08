@@ -62,18 +62,18 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         if (photonView.IsMine)
         {
-            moveMyArrow();
-            setColorOfArrow();
+            MoveMyArrow();
+            SetColorOfArrow();
             textToShow = photonView.Owner.NickName;
             gameObject.GetComponentInChildren<TextMeshPro>().text = textToShow;
-            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = getIconForDevice(deviceUsed);
+            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = GetIconForDevice(deviceUsed);
         }
         else
         {
-            moveOtherArrows();
-            setColorOfArrow();
+            MoveOtherArrows();
+            SetColorOfArrow();
             gameObject.GetComponentInChildren<TextMeshPro>().text = targetTextToShow;
-            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = getIconForDevice(deviceUsedTarget);
+            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = GetIconForDevice(deviceUsedTarget);
         }
     }
 
@@ -82,9 +82,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// and also checks if sharing and global sharing are enabled to
     /// set the correct position and rotation of arrow
     /// </summary>
-    protected void moveMyArrow()
+    protected void MoveMyArrow()
     {
-        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && getIsUsingVive() == false && sharing == true && sharingGlobal == true)
+        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && GetIsUsingVive() == false && sharing == true && sharingGlobal == true)
         {
             // Copy rotation of DefaultCursor
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
@@ -93,11 +93,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = target.transform.rotation;
             deviceUsed = 1;
         }
-        else if (getIsUsingVive() == true && sharing == true && sharingGlobal == true)
+        else if (GetIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
-            transform.position = getHitPositionOfPointedObjectFinal();
-            transform.rotation = getHitRotationOfPointedObjectFinal();
+            transform.position = GetHitPositionOfPointedObjectFinal();
+            transform.rotation = GetHitRotationOfPointedObjectFinal();
             deviceUsed = 2;
         }
         else
@@ -112,7 +112,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// correct position and rotation of the remoted player
     /// that is controlling this component
     /// </summary>
-    protected void moveOtherArrows()
+    protected void MoveOtherArrows()
     {
         if (sharingGlobal == true)
         {
@@ -135,7 +135,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// In unity editor use gesture hand from input simulation service found in the mixed reality toolkit to test as controller of HTC Vive
     /// </remarks>
     /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
-    protected bool getIsUsingVive()
+    protected bool GetIsUsingVive()
     {
         isUsingVive = false;
         foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
@@ -154,29 +154,27 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     /// <param name="userID">A owner actor number of a photon view</param>
     /// <returns>The color of the arrow</returns>
-    protected Color getColorForUser(int userID)
+    protected Color GetColorForUser(int userID)
     {
         switch (userID)
         {
             case 1:
                 return new Color(1.0f, 0.5f, 0f, 0.5f);
-
             case 2:
                 return new Color(1.0f, 0f, 1.0f, 0.5f);
-
             case 3:
                 return new Color(0f, 0f, 0f, 0.5f);
-
-            default: return Color.white;
+            default:
+                return Color.white;
         }
     }
 
     /// <summary>
     /// Gets the renderer of the gameobject to change color
     /// </summary>
-    protected void setColorOfArrow()
+    protected void SetColorOfArrow()
     {
-        GetComponent<Renderer>().material.color = getColorForUser(photonView.OwnerActorNr);
+        GetComponent<Renderer>().material.color = GetColorForUser(photonView.OwnerActorNr);
     }
 
     /// <summary>
@@ -184,13 +182,13 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// These are the game objects where the arrow can be put on
     /// </summary>
     /// <returns> Array with all the game objects with the "showArrow" tag</returns>
-    protected GameObject[] getAllGameObjectsWithArrowScriptTesting()
+    protected GameObject[] GetAllGameObjectsWithArrowScriptTesting()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
         return arrayAll;
     }
 
-    protected GameObject getGlobalGazingLabelObject()
+    protected GameObject GetGlobalGazingLabelObject()
     {
         GameObject globalGazinglabelObject = GameObject.Find("GlobalGazingLabel");
         return globalGazinglabelObject;
@@ -201,10 +199,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// by finding the objects having the correct tag(show arrow) in the scene
     /// </summary>
     /// <returns>The hit position of the controller(pointer) on the object</returns>
-    protected Vector3 getHitPositionOfPointedObjectFinal()
+    protected Vector3 GetHitPositionOfPointedObjectFinal()
     {
         Vector3 hitPositionResult = far;
-        foreach (GameObject controller in getAllGameObjectsWithArrowScriptTesting())
+        foreach (GameObject controller in GetAllGameObjectsWithArrowScriptTesting())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
@@ -215,10 +213,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     }
 
     /// <returns>The hit rotation of the controller(pointer) on the object</returns>
-    protected Quaternion getHitRotationOfPointedObjectFinal()
+    protected Quaternion GetHitRotationOfPointedObjectFinal()
     {
         Quaternion hitRotationResult = rot;
-        foreach (GameObject controller in getAllGameObjectsWithArrowScriptTesting())
+        foreach (GameObject controller in GetAllGameObjectsWithArrowScriptTesting())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
@@ -228,24 +226,24 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         return hitRotationResult;
     }
 
-    public void setTextOfGlobalGazingLabel()
+    public void SetTextOfGlobalGazingLabel()
     {
         if (sharingGlobal == true)
         {
-            getGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Disable Gazing";
+            GetGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Disable Gazing";
         }
         else
         {
-            getGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Enable Gazing";
+            GetGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Enable Gazing";
         }
     }
 
-    protected string getNameOfOwner(GameObject arrow)
+    protected string GetNameOfOwner(GameObject arrow)
     {
         return arrow.GetComponent<InstantiateArrows>().photonView.Owner.NickName;
     }
 
-    protected Sprite getIconForDevice(int device)
+    protected Sprite GetIconForDevice(int device)
     {
         if (device == 1)
         {

@@ -353,7 +353,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
                 if (avatar.GetComponent<BasicAvatarMovementSynchronizer>().photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
                 {
                     arrow.GetComponent<InstantiateArrows>().sharingGlobal = !arrow.GetComponent<InstantiateArrows>().sharingGlobal;
-                    arrow.GetComponent<InstantiateArrows>().setTextOfGlobalGazingLabel();
+                    arrow.GetComponent<InstantiateArrows>().SetTextOfGlobalGazingLabel();
                 }
             }
         }
