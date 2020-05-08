@@ -148,30 +148,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         return isUsingVive;
     }
 
-    /// <summary>
-    /// Depending on the owner actor number this method gives the color of the arrow in text form
-    /// </summary>
-    /// <param name="userID">A owner actor number of a photon view</param>
-    /// <returns>The color of the arrow in text form</returns>
-    protected string getStringOfColor(int userID)
-    {
-        switch (userID)
-        {
-            case 1:
-                return "orange";
-                break;
-
-            case 2:
-                return "pink";
-                break;
-
-            case 3:
-                return "black";
-                break;
-
-            default: return "white";
-        }
-    }
 
     /// <summary>
     /// Depending on the owner actor number this method gives the color of the arrow
@@ -184,15 +160,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             case 1:
                 return new Color(1.0f, 0.5f, 0f, 0.5f);
-                break;
 
             case 2:
                 return new Color(1.0f, 0f, 1.0f, 0.5f);
-                break;
 
             case 3:
                 return new Color(0f, 0f, 0f, 0.5f);
-                break;
 
             default: return Color.white;
         }
