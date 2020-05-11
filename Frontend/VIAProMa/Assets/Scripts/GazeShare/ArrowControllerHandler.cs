@@ -29,7 +29,7 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     /// In unity editor use gesture hand from input simulation service found in the mixed reality toolkit to test as controller of HTC Vive
     /// </remarks>
     /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
-    protected bool getIsUsingVive2()
+    protected bool GetIsUsingVive2()
     {
         isUsingVive = false;
         foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
@@ -50,9 +50,9 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData"> Data from a click Input Event</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        if (getIsUsingVive2() == true)
+        if (GetIsUsingVive2() == true)
         {
-            foreach (GameObject controller in getAllGameObjectsWithArrowScriptTesting2())
+            foreach (GameObject controller in GetAllGameObjectsWithArrowScriptTesting2())
             {
                 if (controller.name != gameObject.name)
                 {
@@ -69,7 +69,7 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
         }
     }
 
-    protected GameObject[] getAllGameObjectsWithArrowScriptTesting2()
+    protected GameObject[] GetAllGameObjectsWithArrowScriptTesting2()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
         return arrayAll;
