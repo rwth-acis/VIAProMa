@@ -19,8 +19,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Vector3 far = new Vector3(0f, -10f, 0f);
     protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     protected bool isUsingVive;
-    [HideInInspector] public bool sharing;
-    [HideInInspector] public bool sharingGlobal;
+    [HideInInspector] public bool sharing { get; private set; }
+    [HideInInspector] public bool sharingGlobal { get; private set; }
     protected int deviceUsed;
     protected int deviceUsedTarget;
     protected string textToShow;
@@ -34,6 +34,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         sharingGlobal = true;
         hololensIcon = Resources.Load<Sprite>("hololens");
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
+    }
+
+    public void ToggleSharing()
+    {
+        sharing = !sharing;
     }
 
     /// <summary>

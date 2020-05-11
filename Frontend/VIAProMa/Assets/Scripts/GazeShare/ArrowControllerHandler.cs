@@ -12,9 +12,9 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
 {
     protected bool isUsingVive;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
-    [HideInInspector] public Vector3 pointerHitPosition;
-    [HideInInspector] public Quaternion pointerHitRotation;
-    [HideInInspector] public GameObject objectBeingHit;
+    [HideInInspector] public Vector3 pointerHitPosition { get; private set; }
+    [HideInInspector] public Quaternion pointerHitRotation { get; private set; }
+    [HideInInspector] public GameObject objectBeingHit { get; private set; }
 
     public void Start()
     {

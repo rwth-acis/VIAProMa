@@ -80,7 +80,7 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         {
             if (arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr == photonView.OwnerActorNr)
             {
-                arrow.GetComponent<InstantiateArrows>().sharing = !arrow.GetComponent<InstantiateArrows>().sharing;
+                arrow.GetComponent<InstantiateArrows>().ToggleSharing();
                 isSharing = arrow.GetComponent<InstantiateArrows>().sharing;
             }
         }
