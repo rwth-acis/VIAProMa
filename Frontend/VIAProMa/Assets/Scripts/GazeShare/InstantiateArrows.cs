@@ -121,7 +121,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         if (sharingGlobal == true)
         {
-            //transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
             transform.position = targetPosition;
             transform.rotation = targetRotation;
         }
@@ -245,7 +244,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     protected string GetNameOfOwner(GameObject arrow)
     {
-        return arrow.GetComponent<InstantiateArrows>().photonView.Owner.NickName;
+        return arrow.GetPhotonView().Owner.NickName;
     }
 
     protected Sprite GetIconForDevice(int device)
