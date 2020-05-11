@@ -30,18 +30,7 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         return arrayAll;
     }
 
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            //stream.Serialize(ref isSharing);
-        }
-        else
-        {
-           //stream.Serialize(ref isSharing);
-        }
-    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {}
 
     /// <summary>
     /// Checks if left side of the main menu cube is opened or closed
