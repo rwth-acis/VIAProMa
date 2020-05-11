@@ -24,7 +24,7 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         isSharing = true;
     }
 
-    protected GameObject[] getAllGameObjectsArrow()
+    protected GameObject[] GetAllGameObjectsArrow()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
         return arrayAll;
@@ -65,7 +65,7 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
                 }
                 transform.rotation = GameObject.Find("No Gaze Button").transform.rotation;
                 transform.localScale = Vector3.Scale(GameObject.Find("No Gaze Button").transform.localScale, scaleFactor);
-                setTextOfShareLabel();
+                SetTextOfShareLabel();
             } else { transform.position = far; }
         }
         else
@@ -74,9 +74,9 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         }
     }
 
-    public void toggleSharing()
+    public void ToggleSharing()
     {
-        foreach (GameObject arrow in getAllGameObjectsArrow())
+        foreach (GameObject arrow in GetAllGameObjectsArrow())
         {
             if (arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr == photonView.OwnerActorNr)
             {
@@ -86,15 +86,15 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         }
     }
 
-    protected GameObject[] getShareGazeLabelObject()
+    protected GameObject[] GetShareGazeLabelObject()
     {
         GameObject[] shareLabelObject = GameObject.FindGameObjectsWithTag("shareLabel");
         return shareLabelObject;
     }
 
-    protected void setTextOfShareLabel()
+    protected void SetTextOfShareLabel()
     {
-        foreach (GameObject label in getShareGazeLabelObject())
+        foreach (GameObject label in GetShareGazeLabelObject())
         {
             if (isSharing == true)
             {
