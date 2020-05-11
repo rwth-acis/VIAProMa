@@ -75,18 +75,9 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
         return arrayAll;
     }
 
-    public void OnPointerDown(MixedRealityPointerEventData eventData)
-    {
-        //throw new System.NotImplementedException();
-    }
+    public void OnPointerDown(MixedRealityPointerEventData eventData) {}
 
-    public void OnPointerDragged(MixedRealityPointerEventData eventData)
-    {
-        //throw new System.NotImplementedException();
-    }
+    public void OnPointerDragged(MixedRealityPointerEventData eventData) {}
 
-    public void OnPointerUp(MixedRealityPointerEventData eventData)
-    {
-        //throw new System.NotImplementedException();
-    }
+    public void OnPointerUp(MixedRealityPointerEventData eventData) {}
 }
