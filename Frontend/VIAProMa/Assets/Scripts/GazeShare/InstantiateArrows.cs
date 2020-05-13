@@ -30,6 +30,39 @@ public static class StaticGaze
         }
         return isUsingVive;
     }
+
+    /// <summary>
+    /// Finds all the gamobjects with custom tag "arrow"
+    /// These are the pointer game objects
+    /// </summary>
+    /// <returns> Array with all the game objects with the "showArrow" tag</returns>
+    public static GameObject[] GetAllArrowGameObjects()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
+        return arrayAll;
+    }
+
+    /// <summary>
+    /// Finds all the gamobjects with custom tag "showArrow"
+    /// These are the game objects where the arrow can be put on
+    /// </summary>
+    /// <returns> Array with all the game objects with the "showArrow" tag</returns>
+    public static GameObject[] GetAllGameObjectsWithArrow()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
+        return arrayAll;
+    }
+
+    /// <summary>
+    /// Finds all the gamobjects with custom tag "avatar"
+    /// These are the avatar game objects
+    /// </summary>
+    /// <returns> Array with all the game objects with the "showArrow" tag</returns>
+    public static GameObject[] GetAllAvatarGameObjects()
+    {
+        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("avatar");
+        return arrayAll;
+    }
 }
 
 /// <summary>
@@ -60,9 +93,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
     }
 
-    public void ToggleSharing()
+    public void ToggleSharingGlobal()
     {
-        sharing = !sharing;
+        sharingGlobal = !sharingGlobal;
     }
 
     /// <summary>
@@ -184,17 +217,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         GetComponent<Renderer>().material.color = GetColorForUser(photonView.OwnerActorNr);
     }
 
-    /// <summary>
-    /// Finds all the gamobjects with custom tag "showArrow"
-    /// These are the game objects where the arrow can be put on
-    /// </summary>
-    /// <returns> Array with all the game objects with the "showArrow" tag</returns>
-    protected GameObject[] GetAllGameObjectsWithArrowScriptTesting()
-    {
-        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
-        return arrayAll;
-    }
-
     protected GameObject GetGlobalGazingLabelObject()
     {
         GameObject globalGazinglabelObject = GameObject.Find("GlobalGazingLabel");
@@ -209,7 +231,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Vector3 GetHitPositionOfPointedObjectFinal()
     {
         Vector3 hitPositionResult = far;
-        foreach (GameObject controller in GetAllGameObjectsWithArrowScriptTesting())
+        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
@@ -223,7 +245,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Quaternion GetHitRotationOfPointedObjectFinal()
     {
         Quaternion hitRotationResult = rot;
-        foreach (GameObject controller in GetAllGameObjectsWithArrowScriptTesting())
+        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {

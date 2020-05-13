@@ -24,12 +24,6 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         isSharing = true;
     }
 
-    protected GameObject[] GetAllGameObjectsArrow()
-    {
-        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
-        return arrayAll;
-    }
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {}
 
     /// <summary>

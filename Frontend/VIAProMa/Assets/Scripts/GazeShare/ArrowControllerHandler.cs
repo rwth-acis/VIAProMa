@@ -31,7 +31,7 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     {
         if (StaticGaze.GetIsUsingVive() == true)
         {
-            foreach (GameObject controller in GetAllGameObjectsWithArrowScriptTesting2())
+            foreach (GameObject controller in GetAllGameObjectsWithArrowScript())
             {
                 if (controller.name != gameObject.name)
                 {
@@ -48,7 +48,7 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
         }
     }
 
-    protected GameObject[] GetAllGameObjectsWithArrowScriptTesting2()
+    protected GameObject[] GetAllGameObjectsWithArrowScript()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
         return arrayAll;

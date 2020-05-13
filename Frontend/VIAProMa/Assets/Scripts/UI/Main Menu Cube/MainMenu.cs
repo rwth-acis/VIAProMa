@@ -332,27 +332,15 @@ public class MainMenu : MonoBehaviourPunCallbacks
         Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
     }
 
-    protected GameObject[] getAllGameObjectsArrow()
-    {
-        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("arrow");
-        return arrayAll;
-    }
-
-    protected GameObject[] getAllGameObjectsAvatar()
-    {
-        GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("avatar");
-        return arrayAll;
-    }
-
     public void toggleGlobalSharing()
     {
-        foreach (GameObject arrow in getAllGameObjectsArrow())
+        foreach (GameObject arrow in StaticGaze.GetAllArrowGameObjects())
         {
-            foreach (GameObject avatar in getAllGameObjectsAvatar())
+            foreach (GameObject avatar in StaticGaze.GetAllAvatarGameObjects())
             {
                 if (avatar.GetComponent<BasicAvatarMovementSynchronizer>().photonView.OwnerActorNr == arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr)
                 {
-                    arrow.GetComponent<InstantiateArrows>().ToggleSharing();
+                    arrow.GetComponent<InstantiateArrows>().ToggleSharingGlobal();
                     arrow.GetComponent<InstantiateArrows>().SetTextOfGlobalGazingLabel();
                 }
             }
