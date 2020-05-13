@@ -22,27 +22,6 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     }
 
     /// <summary>
-    /// Checks for the input source type of the detected controllers
-    /// </summary>
-    /// <remarks>
-    /// Change InputSourceType.Controller to InputSourceType.Hand for testing in unity editor
-    /// In unity editor use gesture hand from input simulation service found in the mixed reality toolkit to test as controller of HTC Vive
-    /// </remarks>
-    /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
-    protected bool GetIsUsingVive()
-    {
-        isUsingVive = false;
-        foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
-        {
-            if (controller.InputSource.SourceType == InputSourceType.Controller)
-            {
-                isUsingVive = true;
-            }
-        }
-        return isUsingVive;
-    }
-
-    /// <summary>
     /// Checks if HTC Vive is being used, if so goes trough all the possible
     /// objects that can be clicked, finds the one that has been hit and sets
     /// the public variables pointerHitPosition, pointerHitRotation and objectBeingHit
@@ -50,7 +29,7 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData"> Data from a click Input Event</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        if (GetIsUsingVive() == true)
+        if (StaticGaze.GetIsUsingVive() == true)
         {
             foreach (GameObject controller in GetAllGameObjectsWithArrowScriptTesting2())
             {
@@ -75,9 +54,9 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
         return arrayAll;
     }
 
-    public void OnPointerDown(MixedRealityPointerEventData eventData) {}
+    public void OnPointerDown(MixedRealityPointerEventData eventData) { }
 
-    public void OnPointerDragged(MixedRealityPointerEventData eventData) {}
+    public void OnPointerDragged(MixedRealityPointerEventData eventData) { }
 
-    public void OnPointerUp(MixedRealityPointerEventData eventData) {}
+    public void OnPointerUp(MixedRealityPointerEventData eventData) { }
 }

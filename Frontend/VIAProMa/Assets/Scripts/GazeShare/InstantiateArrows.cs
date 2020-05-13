@@ -8,6 +8,30 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEditor;
 
+public static class StaticGaze
+{
+    /// <summary>
+    /// Checks for the input source type of the detected controllers
+    /// </summary>
+    /// <remarks>
+    /// Change InputSourceType.Controller to InputSourceType.Hand for testing in unity editor
+    /// In unity editor use gesture hand from input simulation service found in the mixed reality toolkit to test as controller of HTC Vive
+    /// </remarks>
+    /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
+    public static bool GetIsUsingVive()
+    {
+        bool isUsingVive = false;
+        foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
+        {
+            if (controller.InputSource.SourceType == InputSourceType.Controller)
+            {
+                isUsingVive = true;
+            }
+        }
+        return isUsingVive;
+    }
+}
+
 /// <summary>
 /// Monitors the user's arrow and synchronizes it with remote users
 /// Handles incoming synchronization messages about the remote users arrows
@@ -89,7 +113,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void MoveMyArrow()
     {
-        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && GetIsUsingVive() == false && sharing == true && sharingGlobal == true)
+        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && StaticGaze.GetIsUsingVive() == false && sharing == true && sharingGlobal == true)
         {
             // Copy rotation of DefaultCursor
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
@@ -98,7 +122,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = target.transform.rotation;
             deviceUsed = 1;
         }
-        else if (GetIsUsingVive() == true && sharing == true && sharingGlobal == true)
+        else if (StaticGaze.GetIsUsingVive() == true && sharing == true && sharingGlobal == true)
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
             transform.position = GetHitPositionOfPointedObjectFinal();
@@ -129,27 +153,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = far;
             transform.rotation = rot;
         }
-    }
-
-    /// <summary>
-    /// Checks for the input source type of the detected controllers
-    /// </summary>
-    /// <remarks>
-    /// Change InputSourceType.Controller to InputSourceType.Hand for testing in unity editor
-    /// In unity editor use gesture hand from input simulation service found in the mixed reality toolkit to test as controller of HTC Vive
-    /// </remarks>
-    /// <returns>True if user is using HTC Vive and False if using Hololens</returns>
-    protected bool GetIsUsingVive()
-    {
-        isUsingVive = false;
-        foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
-        {
-            if (controller.InputSource.SourceType == InputSourceType.Controller)
-            {
-                isUsingVive = true;
-            }
-        }
-        return isUsingVive;
     }
 
 
@@ -242,20 +245,20 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
     }
 
-    protected string GetNameOfOwner(GameObject arrow)
-    {
-        return arrow.GetPhotonView().Owner.NickName;
-    }
+        protected string GetNameOfOwner(GameObject arrow)
+        {
+            return arrow.GetPhotonView().Owner.NickName;
+        }
 
-    protected Sprite GetIconForDevice(int device)
-    {
-        if (device == 1)
+        protected Sprite GetIconForDevice(int device)
         {
-            return hololensIcon;
+            if (device == 1)
+            {
+                return hololensIcon;
+            }
+            else
+            {
+                return htcViveIcon;
+            }
         }
-        else
-        {
-            return htcViveIcon;
-        }
-    }
 }
