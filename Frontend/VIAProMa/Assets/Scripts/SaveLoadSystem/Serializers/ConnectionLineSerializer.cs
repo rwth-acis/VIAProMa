@@ -30,7 +30,7 @@ public class ConnectionLineSerializer : MonoBehaviour, ISerializable
     /// Expects the keys "start", "destination" in order to load the issue
     /// </summary>
     /// <param name="serializedObject">The SerializedObject with the save data</param>
-    public async void Deserialize(SerializedObject serializedObject)
+    public void Deserialize(SerializedObject serializedObject)
     {
         Vector3 startPos = serializedObject.Vector3s[startObjectPositionKey];
         Vector3 destinationPos = serializedObject.Vector3s[destinationObjectPositionKey];
