@@ -4,10 +4,21 @@ using UnityEngine;
 
 public class LineDrawLogicTester : MonoBehaviour
 {
-    [SerializeField] private ConnectionLinesMenu linedrawlogicscript;
+    private ConnectionLinesMenu linedrawlogicscript;
+
+    private void Start()
+    {
+        WindowManager.Instance.ConnectionLinesMenu.Open(new Vector3(0,0,1.5f), this.transform.eulerAngles);
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if(linedrawlogicscript == null)
+        {
+            linedrawlogicscript = WindowManager.Instance.GetComponentInChildren<ConnectionLinesMenu>();
+        }
+
         if (Input.GetKeyDown(KeyCode.F1))
         {
             linedrawlogicscript.EnterLineDrawMode();
