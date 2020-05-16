@@ -213,7 +213,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// <returns>The color of the arrow</returns>
     protected Color GetColorForUser(int userID)
     {
-        switch (userID)
+        var hue = Random.Range(0f, 1f);
+        return Color.HSVToRGB(hue, 1f, 1f);
+        /*switch (userID)
         {
             case 1:
                 return new Color(1.0f, 0.5f, 0f, 0.5f);
@@ -223,7 +225,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
                 return new Color(0f, 0f, 0f, 0.5f);
             default:
                 return Color.white;
-        }
+        }*/
     }
 
     /// <summary>
