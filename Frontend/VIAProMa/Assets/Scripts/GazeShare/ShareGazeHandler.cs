@@ -57,6 +57,17 @@ public class ShareGazeHandler : MonoBehaviourPun, IPunObservable
         }
     }
 
+    public void toggleSharing()
+    {
+        foreach (GameObject arrow in StaticGaze.GetAllArrowGameObjects())
+        {
+            if (arrow.GetComponent<InstantiateArrows>().photonView.OwnerActorNr == photonView.OwnerActorNr)
+            {
+                StaticGaze.ToggleSharing();
+                isSharing = StaticGaze.sharing;
+            }
+        }
+    }
 
     protected GameObject[] GetShareGazeLabelObject()
     {

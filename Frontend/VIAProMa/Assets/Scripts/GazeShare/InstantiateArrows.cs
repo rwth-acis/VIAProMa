@@ -10,6 +10,8 @@ using UnityEditor;
 
 public static class StaticGaze
 {
+    [HideInInspector] public static bool sharing { get; private set; }
+
     /// <summary>
     /// Checks for the input source type of the detected controllers
     /// </summary>
@@ -63,6 +65,16 @@ public static class StaticGaze
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("avatar");
         return arrayAll;
     }
+
+    public static void InstantiateSharing()
+    {
+        sharing = true;
+    }
+
+    public static void ToggleSharing()
+    {
+        sharing = !sharing;
+    }
 }
 
 /// <summary>
@@ -76,21 +88,26 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Vector3 far = new Vector3(0f, -10f, 0f);
     protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     protected bool isUsingVive;
-    [HideInInspector] public bool sharing { get; private set; }
-    [HideInInspector] public bool sharingGlobal { get; private set; }
     protected int deviceUsed;
     protected int deviceUsedTarget;
     protected string textToShow;
     protected string targetTextToShow;
     protected Sprite hololensIcon;
     protected Sprite htcViveIcon;
+    [HideInInspector] public bool sharingGlobal { get; private set; }
+
 
     public void Start()
     {
-        sharing = true;
-        sharingGlobal = true;
+        StaticGaze.InstantiateSharing();
+        InstantiateSharingGlobal();
         hololensIcon = Resources.Load<Sprite>("hololens");
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
+    }
+
+    public void InstantiateSharingGlobal()
+    {
+        sharingGlobal = true;
     }
 
     public void ToggleSharingGlobal()
@@ -146,7 +163,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void MoveMyArrow()
     {
-        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && StaticGaze.GetIsUsingVive() == false && sharing == true && sharingGlobal == true)
+        if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && StaticGaze.GetIsUsingVive() == false && StaticGaze.sharing == true && sharingGlobal == true)
         {
             // Copy rotation of DefaultCursor
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
@@ -155,7 +172,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = target.transform.rotation;
             deviceUsed = 1;
         }
-        else if (StaticGaze.GetIsUsingVive() == true && sharing == true && sharingGlobal == true)
+        else if (StaticGaze.GetIsUsingVive() == true && StaticGaze.sharing == true && sharingGlobal == true)
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
             transform.position = GetHitPositionOfPointedObjectFinal();
