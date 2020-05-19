@@ -95,7 +95,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Sprite hololensIcon;
     protected Sprite htcViveIcon;
     [HideInInspector] public bool sharingGlobal { get; private set; }
-
+    //GetComponent variables
+    private TextMeshPro globalGazingLabel;
+    private Renderer rendererComponent;
+    private TextMeshPro photonTextMeshPro;
+    private SpriteRenderer photonSpriteRenderer;
 
     public void Start()
     {
@@ -103,6 +107,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         InstantiateSharingGlobal();
         hololensIcon = Resources.Load<Sprite>("hololens");
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
+        //GetComponent variables
+        globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
+        rendererComponent = GetComponent<Renderer>();
+        photonTextMeshPro = gameObject.GetComponentInChildren<TextMeshPro>();
+        photonSpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
     }
 
     public void InstantiateSharingGlobal()
@@ -144,15 +153,15 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             MoveMyArrow();
             SetColorOfArrow();
             textToShow = photonView.Owner.NickName;
-            gameObject.GetComponentInChildren<TextMeshPro>().text = textToShow;
-            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = GetIconForDevice(deviceUsed);
+            photonTextMeshPro.text = textToShow;
+            photonSpriteRenderer.sprite = GetIconForDevice(deviceUsed);
         }
         else
         {
             MoveOtherArrows();
             SetColorOfArrow();
-            gameObject.GetComponentInChildren<TextMeshPro>().text = targetTextToShow;
-            gameObject.GetComponentInChildren<SpriteRenderer>().sprite = GetIconForDevice(deviceUsedTarget);
+            photonTextMeshPro.text = targetTextToShow;
+            photonSpriteRenderer.sprite = GetIconForDevice(deviceUsedTarget);
         }
     }
 
@@ -233,7 +242,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void SetColorOfArrow()
     {
-        GetComponent<Renderer>().material.color = GetColorForUser(photonView.OwnerActorNr);
+        rendererComponent.material.color = GetColorForUser(photonView.OwnerActorNr);
     }
 
     protected GameObject GetGlobalGazingLabelObject()
@@ -278,11 +287,11 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         if (sharingGlobal == true)
         {
-            GetGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Disable Gazing";
+            globalGazingLabel.text = "Disable Gazing";
         }
         else
         {
-            GetGlobalGazingLabelObject().GetComponent<TextMeshPro>().text = "Enable Gazing";
+            globalGazingLabel.text = "Enable Gazing";
         }
     }
 
