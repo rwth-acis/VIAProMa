@@ -25,7 +25,7 @@ public static class StaticGaze
         bool isUsingVive = false;
         foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
         {
-            if (controller.InputSource.SourceType == InputSourceType.Controller)
+            if (controller.InputSource.SourceType == InputSourceType.Hand)
             {
                 isUsingVive = true;
             }
@@ -259,12 +259,19 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Vector3 GetHitPositionOfPointedObjectFinal()
     {
         Vector3 hitPositionResult = far;
-        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
+        RaycastHit raycastHit;
+        GameObject objectBeingHit;
+        /*foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
                 hitPositionResult = controller.GetComponent<ArrowControllerHandler>().pointerHitPosition;
             }
+        }*/
+        if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
+        {
+            objectBeingHit = raycastHit.collider.gameObject;
+            hitPositionResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitPosition;
         }
         return hitPositionResult;
     }
@@ -273,12 +280,19 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Quaternion GetHitRotationOfPointedObjectFinal()
     {
         Quaternion hitRotationResult = rot;
-        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
+        RaycastHit raycastHit;
+        GameObject objectBeingHit;
+        /*foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
                 hitRotationResult = controller.GetComponent<ArrowControllerHandler>().pointerHitRotation;
             }
+        }*/
+        if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
+        {
+            objectBeingHit = raycastHit.collider.gameObject;
+            hitRotationResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitRotation;
         }
         return hitRotationResult;
     }
