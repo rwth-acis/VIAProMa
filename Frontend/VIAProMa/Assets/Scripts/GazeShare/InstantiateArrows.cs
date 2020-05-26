@@ -107,9 +107,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         InstantiateSharingGlobal();
         hololensIcon = Resources.Load<Sprite>("hololens");
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
+        SetColorOfArrow();
         //GetComponent variables
         globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
-        rendererComponent = GetComponent<Renderer>();
         photonTextMeshPro = gameObject.GetComponentInChildren<TextMeshPro>();
         photonSpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
     }
@@ -151,7 +151,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             MoveMyArrow();
-            SetColorOfArrow();
             textToShow = photonView.Owner.NickName;
             photonTextMeshPro.text = textToShow;
             photonSpriteRenderer.sprite = GetIconForDevice(deviceUsed);
@@ -159,7 +158,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         else
         {
             MoveOtherArrows();
-            SetColorOfArrow();
+            //SetColorOfArrow();
             photonTextMeshPro.text = targetTextToShow;
             photonSpriteRenderer.sprite = GetIconForDevice(deviceUsedTarget);
         }
@@ -220,7 +219,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     /// <param name="userID">A owner actor number of a photon view</param>
     /// <returns>The color of the arrow</returns>
-    protected Color GetColorForUser(int userID)
+    protected Color GetColor()
     {
         var hue = Random.Range(0f, 1f);
         return Color.HSVToRGB(hue, 1f, 1f);
@@ -242,7 +241,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void SetColorOfArrow()
     {
-        rendererComponent.material.color = GetColorForUser(photonView.OwnerActorNr);
+        GetComponent<Renderer>().material.color = GetColor();
     }
 
     protected GameObject GetGlobalGazingLabelObject()
