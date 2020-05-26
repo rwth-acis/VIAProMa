@@ -261,18 +261,18 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         Vector3 hitPositionResult = far;
         RaycastHit raycastHit;
         GameObject objectBeingHit;
-        /*foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
+        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
                 hitPositionResult = controller.GetComponent<ArrowControllerHandler>().pointerHitPosition;
             }
-        }*/
-        if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
+        }
+        /*if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
         {
             objectBeingHit = raycastHit.collider.gameObject;
             hitPositionResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitPosition;
-        }
+        }*/
         return hitPositionResult;
     }
 
@@ -282,18 +282,18 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         Quaternion hitRotationResult = rot;
         RaycastHit raycastHit;
         GameObject objectBeingHit;
-        /*foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
+        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
         {
             if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
             {
                 hitRotationResult = controller.GetComponent<ArrowControllerHandler>().pointerHitRotation;
             }
-        }*/
-        if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
+        }
+        /*if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
         {
             objectBeingHit = raycastHit.collider.gameObject;
             hitRotationResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitRotation;
-        }
+        }*/
         return hitRotationResult;
     }
 
