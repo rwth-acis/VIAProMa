@@ -95,11 +95,13 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Sprite hololensIcon;
     protected Sprite htcViveIcon;
     [HideInInspector] public bool sharingGlobal { get; private set; }
-    //GetComponent variables
+    // GetComponent variables
     private TextMeshPro globalGazingLabel;
     private Renderer rendererComponent;
     private TextMeshPro photonTextMeshPro;
     private SpriteRenderer photonSpriteRenderer;
+    // Bit mask for raycasting layers
+    int layerMask;
 
     public void Start()
     {
@@ -108,10 +110,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         hololensIcon = Resources.Load<Sprite>("hololens");
         htcViveIcon = Resources.Load<Sprite>("htcVivePro");
         SetColorOfArrow();
-        //GetComponent variables
+        // GetComponent variables
         globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
         photonTextMeshPro = gameObject.GetComponentInChildren<TextMeshPro>();
         photonSpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
+        // Bit shift the index of the layer (8) to get a bit mask. This would cast rays only against colliders in layer 8.
+        layerMask = 1 << 8;
     }
 
     public void InstantiateSharingGlobal()
@@ -223,17 +227,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         var hue = Random.Range(0f, 1f);
         return Color.HSVToRGB(hue, 1f, 1f);
-        /*switch (userID)
-        {
-            case 1:
-                return new Color(1.0f, 0.5f, 0f, 0.5f);
-            case 2:
-                return new Color(1.0f, 0f, 1.0f, 0.5f);
-            case 3:
-                return new Color(0f, 0f, 0f, 0.5f);
-            default:
-                return Color.white;
-        }*/
     }
 
     /// <summary>
@@ -267,10 +260,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
                 hitPositionResult = controller.GetComponent<ArrowControllerHandler>().pointerHitPosition;
             }
         }
-        /*if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
+        /*if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out raycastHit, Mathf.Infinity, layerMask))
         {
             objectBeingHit = raycastHit.collider.gameObject;
             hitPositionResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitPosition;
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * raycastHit.distance, Color.yellow);
+            Debug.Log("Did hit " + objectBeingHit.name);
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+            Debug.Log("Did not Hit");
         }*/
         return hitPositionResult;
     }
@@ -288,10 +288,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
                 hitRotationResult = controller.GetComponent<ArrowControllerHandler>().pointerHitRotation;
             }
         }
-        /*if (Physics.Raycast(transform.position, transform.forward, out raycastHit))
+        /*if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out raycastHit, Mathf.Infinity, layerMask))
         {
             objectBeingHit = raycastHit.collider.gameObject;
             hitRotationResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitRotation;
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * raycastHit.distance, Color.yellow);
+            Debug.Log("Did hit " + objectBeingHit.name);
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+            Debug.Log("Did not Hit");
         }*/
         return hitRotationResult;
     }
