@@ -230,11 +230,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     }
 
     /// <summary>
-    /// Gets the renderer of the gameobject to change color
+    /// Gets the renderer of the gameobject to change color ans set opacity
     /// </summary>
     protected void SetColorOfArrow()
     {
-        GetComponent<Renderer>().material.color = GetColor();
+        Color generatedColor = GetColor();
+        GetComponent<Renderer>().material.color = new Color(generatedColor.r, generatedColor.g, generatedColor.b, 0.3f);
     }
 
     protected GameObject GetGlobalGazingLabelObject()
