@@ -100,8 +100,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     private Renderer rendererComponent;
     private TextMeshPro photonTextMeshPro;
     private SpriteRenderer photonSpriteRenderer;
-    // Bit mask for raycasting layers
-    int layerMask;
 
     public void Start()
     {
@@ -114,8 +112,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
         photonTextMeshPro = gameObject.GetComponentInChildren<TextMeshPro>();
         photonSpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
-        // Bit shift the index of the layer (8) to get a bit mask. This would cast rays only against colliders in layer 8.
-        layerMask = 1 << 8;
     }
 
     public void InstantiateSharingGlobal()
@@ -187,8 +183,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         else if (StaticGaze.GetIsUsingVive() == true && StaticGaze.sharing == true && sharingGlobal == true)
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
-            transform.position = RaycastVive.pointerHitPosition; //GetHitPositionOfPointedObjectFinal();
-            transform.rotation = RaycastVive.pointerHitRotation; //GetHitRotationOfPointedObjectFinal();
+            transform.position = RaycastVive.pointerHitPosition; 
+            transform.rotation = RaycastVive.pointerHitRotation; 
             deviceUsed = 2;
         }
         else
@@ -217,7 +213,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
     }
 
-
     /// <summary>
     /// Depending on the owner actor number this method gives the color of the arrow
     /// </summary>
@@ -242,66 +237,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         GameObject globalGazinglabelObject = GameObject.Find("GlobalGazingLabel");
         return globalGazinglabelObject;
-    }
-
-    /// <summary>
-    /// Checks all objects that can be hit by a controller(pointer)
-    /// by finding the objects having the correct tag(show arrow) in the scene
-    /// </summary>
-    /// <returns>The hit position of the controller(pointer) on the object</returns>
-    protected Vector3 GetHitPositionOfPointedObjectFinal()
-    {
-        Vector3 hitPositionResult = far;
-        RaycastHit raycastHit;
-        GameObject objectBeingHit;
-        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
-        {
-            if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
-            {
-                hitPositionResult = controller.GetComponent<ArrowControllerHandler>().pointerHitPosition;
-            }
-        }
-        /*if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out raycastHit, Mathf.Infinity, layerMask))
-        {
-            objectBeingHit = raycastHit.collider.gameObject;
-            hitPositionResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitPosition;
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * raycastHit.distance, Color.yellow);
-            Debug.Log("Did hit " + objectBeingHit.name);
-        }
-        else
-        {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            Debug.Log("Did not Hit");
-        }*/
-        return hitPositionResult;
-    }
-
-    /// <returns>The hit rotation of the controller(pointer) on the object</returns>
-    protected Quaternion GetHitRotationOfPointedObjectFinal()
-    {
-        Quaternion hitRotationResult = rot;
-        RaycastHit raycastHit;
-        GameObject objectBeingHit;
-        foreach (GameObject controller in StaticGaze.GetAllGameObjectsWithArrow())
-        {
-            if (controller.GetComponent<ArrowControllerHandler>().pointerHitPosition != far)
-            {
-                hitRotationResult = controller.GetComponent<ArrowControllerHandler>().pointerHitRotation;
-            }
-        }
-        /*if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out raycastHit, Mathf.Infinity, layerMask))
-        {
-            objectBeingHit = raycastHit.collider.gameObject;
-            hitRotationResult = objectBeingHit.GetComponent<ArrowControllerHandler>().pointerHitRotation;
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * raycastHit.distance, Color.yellow);
-            Debug.Log("Did hit " + objectBeingHit.name);
-        }
-        else
-        {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
-            Debug.Log("Did not Hit");
-        }*/
-        return hitRotationResult;
     }
 
     public void SetTextOfGlobalGazingLabel()
