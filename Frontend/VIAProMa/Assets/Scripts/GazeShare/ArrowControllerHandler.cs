@@ -49,24 +49,23 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData"> Data from a click Input Event</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        RaycastHit raycastHit;
-        //if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Pointable")))
-        if (Physics.Raycast(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Pointable")))
+        if (StaticGaze.GetIsUsingVive() == true) // might not be needed
         {
-            objectBeingHit = raycastHit.collider.gameObject;
-            pointerHitPosition = raycastHit.point;
-            pointerHitRotation = Quaternion.LookRotation(eventData.Pointer.Result.Details.Normal);
-            Debug.DrawRay(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward * raycastHit.distance, Color.yellow);
-            Debug.Log("Did hit " + objectBeingHit.name);
-        }
-        else
-        {
-            Debug.DrawRay(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward * 1000, Color.white);
-            Debug.Log("Did not hit");
-        }
-        /*if (StaticGaze.GetIsUsingVive() == true)
-        {
-            foreach (GameObject controller in GetAllGameObjectsWithArrowScript())
+            RaycastHit raycastHit;
+            if (Physics.Raycast(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Pointable")))
+            {
+                objectBeingHit = raycastHit.collider.gameObject;
+                pointerHitPosition = raycastHit.point;
+                pointerHitRotation = Quaternion.LookRotation(eventData.Pointer.Result.Details.Normal);
+                Debug.DrawRay(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward * raycastHit.distance, Color.yellow);
+                Debug.Log("Did hit " + objectBeingHit.name);
+            }
+            else
+            {
+                Debug.DrawRay(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward * 1000, Color.white);
+                Debug.Log("Did not hit");
+            }
+            /*foreach (GameObject controller in GetAllGameObjectsWithArrowScript())
             {
                 if (controller.name != gameObject.name)
                 {
@@ -79,11 +78,11 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
                     objectBeingHit = result.Details.Object;
                     pointerHitRotation = Quaternion.LookRotation(result.Details.Normal);
                 }
-            }
-        }*/
+            }*/
+        }
     }
 
-    protected GameObject[] GetAllGameObjectsWithArrowScript()
+        protected GameObject[] GetAllGameObjectsWithArrowScript()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
         return arrayAll;
