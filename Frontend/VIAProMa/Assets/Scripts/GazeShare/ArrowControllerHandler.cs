@@ -15,10 +15,14 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     [HideInInspector] public Vector3 pointerHitPosition { get; private set; }
     [HideInInspector] public Quaternion pointerHitRotation { get; private set; }
     [HideInInspector] public GameObject objectBeingHit { get; private set; }
+    // Bit mask for raycasting layers
+    private int layerMask;
 
     public void Start()
     {
         pointerHitPosition = new Vector3(0f, -10f, 0f);
+        // Bit shift the index of the layer (8) to get a bit mask. This would cast rays only against colliders in layer 8.
+        layerMask = 1 << 8;
     }
 
     public void Update()
@@ -52,7 +56,7 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
         if (StaticGaze.GetIsUsingVive() == true) // might not be needed
         {
             RaycastHit raycastHit;
-            if (Physics.Raycast(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Pointable")))
+            if (Physics.Raycast(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward, out raycastHit, Mathf.Infinity, layerMask))
             {
                 objectBeingHit = raycastHit.collider.gameObject;
                 pointerHitPosition = raycastHit.point;
