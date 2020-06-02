@@ -53,7 +53,7 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData"> Data from a click Input Event</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        if (StaticGaze.GetIsUsingVive() == true) // might not be needed
+        /*if (StaticGaze.GetIsUsingVive() == true) // might not be needed
         {
             RaycastHit raycastHit;
             if (Physics.Raycast(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward, out raycastHit, Mathf.Infinity, layerMask))
@@ -69,7 +69,8 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
                 Debug.DrawRay(eventData.currentInputModule.transform.position, eventData.currentInputModule.transform.forward * 1000, Color.white);
                 Debug.Log("Did not hit");
             }
-            /*foreach (GameObject controller in GetAllGameObjectsWithArrowScript())
+            // old code
+            foreach (GameObject controller in GetAllGameObjectsWithArrowScript())
             {
                 if (controller.name != gameObject.name)
                 {
@@ -82,11 +83,11 @@ public class ArrowControllerHandler : MonoBehaviour, IMixedRealityPointerHandler
                     objectBeingHit = result.Details.Object;
                     pointerHitRotation = Quaternion.LookRotation(result.Details.Normal);
                 }
-            }*/
-        }
+            }
+        }*/
     }
 
-        protected GameObject[] GetAllGameObjectsWithArrowScript()
+    protected GameObject[] GetAllGameObjectsWithArrowScript()
     {
         GameObject[] arrayAll = GameObject.FindGameObjectsWithTag("showArrow");
         return arrayAll;

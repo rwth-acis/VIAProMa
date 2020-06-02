@@ -187,8 +187,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         else if (StaticGaze.GetIsUsingVive() == true && StaticGaze.sharing == true && sharingGlobal == true)
         {
             GameObject target = GameObject.FindGameObjectWithTag("cursor");
-            transform.position = GetHitPositionOfPointedObjectFinal();
-            transform.rotation = GetHitRotationOfPointedObjectFinal();
+            transform.position = RaycastVive.pointerHitPosition; //GetHitPositionOfPointedObjectFinal();
+            transform.rotation = RaycastVive.pointerHitRotation; //GetHitRotationOfPointedObjectFinal();
             deviceUsed = 2;
         }
         else
