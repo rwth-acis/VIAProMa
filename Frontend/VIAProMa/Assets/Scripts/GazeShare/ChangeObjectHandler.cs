@@ -11,18 +11,17 @@ using TMPro;
 public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
 {
 
-    protected Vector3 far = new Vector3(0f, -10f, 0f);
-    protected Vector3 aLittleLeftOpen = new Vector3(0.05445f, 0f, 0f);
-    protected Vector3 aLittleLeftClosed = new Vector3(0f, 0f, 0.05445f);
-    protected Vector3 scaleFactor = new Vector3(0.5f, 0.5f, 0.5f);
-
-    [SerializeField] protected Mesh cylindricalArrowMesh;
-    [SerializeField] protected Mesh conicArrowMesh;
-    [SerializeField] protected Mesh monkeyArrowMesh;
-    [SerializeField] protected Mesh sphericalArrowMesh;
-    protected Mesh[] meshArray = new Mesh[4];
-    protected int counter;
-    protected int targetCounter;
+    private Vector3 far = new Vector3(0f, -10f, 0f);
+    private Vector3 aLittleLeftOpen = new Vector3(0.05445f, 0f, 0f);
+    private Vector3 aLittleLeftClosed = new Vector3(0f, 0f, 0.05445f);
+    private Vector3 scaleFactor = new Vector3(0.5f, 0.5f, 0.5f);
+    [SerializeField] private Mesh cylindricalArrowMesh;
+    [SerializeField] private Mesh conicArrowMesh;
+    [SerializeField] private Mesh monkeyArrowMesh;
+    [SerializeField] private Mesh sphericalArrowMesh;
+    private Mesh[] meshArray = new Mesh[4];
+    private int counter;
+    private int targetCounter;
 
 
     /// <summary>
