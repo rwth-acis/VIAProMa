@@ -15,10 +15,11 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
     protected Vector3 aLittleLeftOpen = new Vector3(0.05445f, 0f, 0f);
     protected Vector3 aLittleLeftClosed = new Vector3(0f, 0f, 0.05445f);
     protected Vector3 scaleFactor = new Vector3(0.5f, 0.5f, 0.5f);
-    protected Mesh circularArrow;
-    protected Mesh conicArrow;
-    protected Mesh monkeyArrow;
-    protected Mesh sphericArrow;
+
+    [SerializeField] protected Mesh cylindricalArrowMesh;
+    [SerializeField] protected Mesh conicArrowMesh;
+    [SerializeField] protected Mesh monkeyArrowMesh;
+    [SerializeField] protected Mesh sphericalArrowMesh;
     protected Mesh[] meshArray = new Mesh[4];
     protected int counter;
     protected int targetCounter;
@@ -30,14 +31,10 @@ public class ChangeObjectHandler : MonoBehaviourPun, IPunObservable
     /// </summary>
     void Start()
     {
-        circularArrow = Resources.Load<Mesh>("CircularArrow");
-        conicArrow = Resources.Load<Mesh>("ConicArrow");
-        monkeyArrow = Resources.Load<Mesh>("MonkeyArrow");
-        sphericArrow = Resources.Load<Mesh>("SphericArrow");
-        meshArray[0] = circularArrow;
-        meshArray[1] = conicArrow;
-        meshArray[2] = monkeyArrow;
-        meshArray[3] = sphericArrow;
+        meshArray[0] = cylindricalArrowMesh; 
+        meshArray[1] = conicArrowMesh; 
+        meshArray[2] = monkeyArrowMesh; 
+        meshArray[3] = sphericalArrowMesh; 
         counter = 0;
         targetCounter = 0;
         GameObject.Find("ChangeMeshLabel").GetComponent<TextMeshPro>().text = "Change Object";

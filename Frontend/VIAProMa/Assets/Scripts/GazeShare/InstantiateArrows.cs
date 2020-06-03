@@ -158,7 +158,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         else
         {
             MoveOtherArrows();
-            //SetColorOfArrow();
             photonTextMeshPro.text = targetTextToShow;
             photonSpriteRenderer.sprite = GetIconForDevice(deviceUsedTarget);
         }
