@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class UserManager : Singleton<UserManager>
 {
-    private UserRoles role = UserRoles.DEVELOPER;
+    private UserRoles role = UserRoles.STUDENT;
 
     public event EventHandler UserRoleChanged;
 
@@ -19,9 +19,11 @@ public class UserManager : Singleton<UserManager>
             role = value;
             if (PhotonNetwork.IsConnected)
             {
+                Debug.Log("connect");
                 PlayerPropertyUtilities.SetProperty(UserRoleSynchronizer.roleKey, (byte)role);
             }
             UserRoleChanged?.Invoke(this, EventArgs.Empty);
+            Debug.Log("not sure");
         }
     }
 }

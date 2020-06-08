@@ -21,10 +21,8 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
     [SerializeField] private Renderer roleBackground;
 
     [Header("Role Colors")]
-    [SerializeField] private Color productOwnerColor;
-    [SerializeField] private Color scrumMasterColor;
-    [SerializeField] private Color developerColor;
-    [SerializeField] private Color StakeHolderColor;
+    [SerializeField] private Color tutorColor;
+    [SerializeField] private Color studentColor;
 
     private PhotonView photonView;
     private UserRoles userRole;
@@ -39,17 +37,11 @@ public class IdCardController : MonoBehaviour, IOnEventCallback
             roleLabel.text = userRole.GetDescription();
             switch(userRole)
             {
-                case UserRoles.PRODUCT_OWNER:
-                    roleBackground.material.color = productOwnerColor;
+                case UserRoles.TUTOR:
+                    roleBackground.material.color = tutorColor;
                     break;
-                case UserRoles.SCRUM_MASTER:
-                    roleBackground.material.color = scrumMasterColor;
-                    break;
-                case UserRoles.DEVELOPER:
-                    roleBackground.material.color = developerColor;
-                    break;
-                case UserRoles.STAKEHOLDER:
-                    roleBackground.material.color = StakeHolderColor;
+                case UserRoles.STUDENT:
+                    roleBackground.material.color = studentColor;
                     break;
             }
         }
