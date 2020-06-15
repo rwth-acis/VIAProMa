@@ -30,6 +30,7 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     [Tooltip("The button which confirms the settings and creates the room")]
     [SerializeField] private Interactable createRoomButton;
 
+    private GameObject PARTICIPANTLIST;
     private bool windowEnabled = true;
 
     /// <summary>
@@ -142,6 +143,8 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
             roomOptions = new RoomOptions { MaxPlayers = (byte)memberNumberSlider.ValueInt };
         }
         PhotonNetwork.CreateRoom(roomNameField.Text, roomOptions);
+
+        WindowManager.Instance.ParticipantList.Open(transform.forward + new Vector3(0.6f, 0.5540501f, 1), transform.localEulerAngles);
     }
 
     /// <summary>
@@ -149,6 +152,17 @@ public class CreateRoomMenu : MonoBehaviour, IWindow
     /// </summary>
     public void Open()
     {
+        gameObject.SetActive(true);
+        WindowOpen = false;
+    }
+
+    /// <summary>
+    /// Opens the window, i.e. makes it visible and opens the list of participants
+    /// </summary>
+    public void Open(GameObject participantList)
+    {
+        PARTICIPANTLIST = participantList;
+        PARTICIPANTLIST.SetActive(true);
         gameObject.SetActive(true);
         WindowOpen = false;
     }

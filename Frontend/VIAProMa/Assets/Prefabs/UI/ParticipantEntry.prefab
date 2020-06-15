@@ -684,8 +684,6 @@ GameObject:
   - component: {fileID: 7655337951845463687}
   - component: {fileID: 4321091085884517587}
   - component: {fileID: 6241626657840152726}
-  - component: {fileID: 3375135811412090843}
-  - component: {fileID: 8670479006165070248}
   m_Layer: 0
   m_Name: ParticipantEntry
   m_TagString: Untagged
@@ -753,7 +751,7 @@ MonoBehaviour:
   OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8670479006165070248}
+      - m_Target: {fileID: 0}
         m_MethodName: ItemSelected
         m_Mode: 1
         m_Arguments:
@@ -778,33 +776,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.6, y: 0.08, z: 0.01}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3375135811412090843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7307507875746102812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d5089df289670340accb0a89659c687, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomNameLabel: {fileID: 2405299068644506128}
-  memberNumberLabel: {fileID: 0}
-  lockIcon: {fileID: 1297687348236082277}
---- !u!114 &8670479006165070248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7307507875746102812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98d5636bb70a77c499d4340d69ce88ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8238966499728384245
 GameObject:
   m_ObjectHideFlags: 0
