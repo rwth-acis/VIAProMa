@@ -130,7 +130,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     private void CheckButtonStates()
     {
-        roomButton.Enabled = PhotonNetwork.IsConnected;
+        //roomButton.Enabled = PhotonNetwork.IsConnected;
         chatButton.Enabled = PhotonNetwork.InRoom;
         microphoneButton.Enabled = PhotonNetwork.InRoom;
         saveButton.Enabled = PhotonNetwork.InRoom;
@@ -163,11 +163,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.InLobby)
         {
-            roomButtonText.text = "Rooms";
+            Debug.Log("inlobby");
+            roomButtonText.text = "Group Space";
         }
         else
         {
-            roomButtonText.text = "Leave Room";
+            Debug.Log("inspace");
+            roomButtonText.text = "Leave Space";
         }
         CheckButtonStates();
     }
@@ -231,14 +233,18 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void RoomButtonClicked()
     {
+        Debug.Log("button");
         // if in lobby: show room menu
         // otherwise: leave the current room
         if (PhotonNetwork.InLobby)
         {
-            WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            //WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            Debug.Log("Load the group space");
+            PhotonNetwork.LoadLevel("GroupSpace");
         }
         else
         {
+            Debug.Log("leave");
             PhotonNetwork.LeaveRoom();
         }
         foldController.FoldCube();

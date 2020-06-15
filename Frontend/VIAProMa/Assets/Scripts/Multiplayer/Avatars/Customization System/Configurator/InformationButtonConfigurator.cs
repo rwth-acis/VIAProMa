@@ -12,7 +12,7 @@ public class InformationButtonConfigurator : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        informationButton.SetActive(false);
+        informationButton.SetActive(true);
     }
 
     public void Open()
