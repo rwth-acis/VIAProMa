@@ -1,19 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public class HeatmapVisualizatior : MonoBehaviour
+public class HeatmapVisualizer : MonoBehaviour
 {
-    public static HeatmapVisualizatior instance;
+    public static HeatmapVisualizer instance;
     [Header("Data information")]
     public int valueRange = 100;
-    public int arraySize = 20;
+    public int arraySize = 40;
     [SerializeField]
     public int[,] data;
     int min, max;
     [Header("Visualization")]
-    public float width = 20;
-    public float height = 5;
+    public float width = 10;
+    public float height = 3;
     public float pointSize = 0.5f;
     public Gradient colorGradient;
     public GameObject spherePrefab;
@@ -42,8 +43,8 @@ public class HeatmapVisualizatior : MonoBehaviour
         // Initialize Dots in child object.
         // Position of this transform is also middle of the Heatmap
         points = new HeatmapPoint[arraySize, arraySize];
-        Vector3 bottomLeft = transform.position - new Vector3(width / 2, 0, width / 2);
         float stepSize = width / arraySize;
+        Vector3 bottomLeft = transform.position - new Vector3((width - stepSize) / 2, 0, (width - stepSize) / 2);
         for (int x = 0; x < arraySize; x++)
         {
             for (int z = 0; z < arraySize; z++)
@@ -54,6 +55,9 @@ public class HeatmapVisualizatior : MonoBehaviour
                 points[x, z].UpdateData(0);
             }
         }
+        //Update userpositions every second
+        InvokeRepeating("UpdateFromUserPositions", 1f, 1f);
+
     }
 
     public void UpdateData(int[,] data)
@@ -76,7 +80,38 @@ public class HeatmapVisualizatior : MonoBehaviour
         }
         print(s);
     }
-    
+
+
+    private void UpdateFromUserPositions()
+    {
+   /*     foreach (var player in PhotonNetwork.CurrentRoom.Players)
+        {
+            //TODO sync positions and run UpdateDataPoint
+        }
+        */
+        //Workaround for own position
+
+        var position = GameObject.Find("Main Camera").transform.position;
+        Debug.Log("Player position is: " +position);
+        IncreaseDataPoint(position.x, position.z-2.0f);
+    }
+
+    /// <summary>
+    /// Increase the data of the heatmap at global position x,z and update the visualization
+    /// </summary>
+    /// <param name="x"> -width/2 <= x < width/2 </param>
+    /// <param name="z"> -width/2 <= z < width/2 </param>
+    /// <param name="value"> 0 <= value < size(int) </param>
+    public void IncreaseDataPoint(float x, float z)
+    {
+        if (x < -width / 2 || width / 2 <= x) return;
+        if (z < -width / 2 || width / 2 <= z) return;
+
+        int positionX = Mathf.FloorToInt((x + width / 2) * arraySize / width);
+        int positionZ = Mathf.FloorToInt((z + width / 2) * arraySize / width);
+        data[positionX, positionZ]++;
+        points[positionX, positionZ].UpdateData(data[positionX, positionZ]);
+    }
 
     //
     // Visualization
@@ -149,6 +184,5 @@ public class HeatmapVisualizatior : MonoBehaviour
 
         Gizmos.DrawWireCube(transform.position + Vector3.up * (height / 2), new Vector3(width, height, width));
     }
-
 
 }

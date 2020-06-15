@@ -12,15 +12,15 @@ public class HeatmapPoint : MonoBehaviour
     {
         this.value = value;
         // Change Color
-        Color color = HeatmapVisualizatior.instance.GetColor(value);
+        Color color = HeatmapVisualizer.instance.GetColor(value);
         renderer.material.color = color;
         // Change position
         Vector3 position = transform.position;
-        position.y = HeatmapVisualizatior.instance.GetHeight(value);
+        position.y = HeatmapVisualizer.instance.GetHeight(value);
         transform.position = position;
         // Change size
         Vector3 size = transform.localScale;
-        size = Vector3.one * HeatmapVisualizatior.instance.GetSize(value);
+        size = Vector3.one * HeatmapVisualizer.instance.GetSize(value);
         transform.localScale = size;
     }
 }
