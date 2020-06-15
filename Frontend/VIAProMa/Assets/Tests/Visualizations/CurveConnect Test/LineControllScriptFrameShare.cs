@@ -26,6 +26,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
     Triple<int, int, int> current;
     int framecount = 0;
 
+    //For distinguishing between random objects and start/goal
+    List<GameObject> startGoalObjectsWithCollider;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +44,18 @@ public class LineControllScriptFrameShare : MonoBehaviour
         );
         lineRenderer.colorGradient = gradient;
         resetAStar();
+
+        //Get the colliders from all child objects of start and goal
+        List<Collider> startGoalCollider = new List<Collider>();
+        startGoalCollider.AddRange(startObject.GetComponentsInChildren<Collider>());
+        startGoalCollider.AddRange(goalObject.GetComponentsInChildren<Collider>());
+
+        //Convert to game objects
+        startGoalObjectsWithCollider = new List<GameObject>();
+        foreach (Collider col in startGoalCollider)
+        {
+            startGoalObjectsWithCollider.Add(col.gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -59,11 +74,26 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
     }
 
+    List<Collider> getChildColliders(GameObject obj)
+    {
+        List<Collider> objectCollider = new List<Collider>();
+        return getChildCollidersHelper(obj, objectCollider);
+    }
+
+    List<Collider> getChildCollidersHelper(GameObject obj, List<Collider> objectCollider)
+    {
+        objectCollider.Add(startObject.GetComponent<Collider>());
+
+        return null;
+    }
+
     //gets the neighbors of a node by projecting a cube the length stepSize on every size and than checks for collision.
     List<Triple<int, int, int>> getNeighbors(Triple<int, int, int> node)
     {
         //TODO map to the plane between start and goal
         List<Triple<int, int, int>> neighbors = new List<Triple<int, int, int>>();
+
+        bool collision = false;
 
         for (int x = -1; x <= 1; x += 1)
         {
@@ -72,13 +102,39 @@ public class LineControllScriptFrameShare : MonoBehaviour
                 for (int z = -1; z <= 1; z += 1)
                 {
                     if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
-                        && (node.Item2 + y >= 0)) //dont bent it downwards
+                        && (node.Item2 + y >= 0)) //dont bent the path downwards
                     {
-                        Collider[] objectsInRange = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2));
-                        if (objectsInRange.Length == 0)
+                        //Check for collisons with something other than start/goal or childrens of start/goal
+                        Collider[] colliderInRange = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2));
+                        bool isStartGoalObject = false;
+                        if (colliderInRange.Length != 0)
+                        {
+                            foreach (Collider col in colliderInRange)
+                            {
+                                foreach (GameObject obj in startGoalObjectsWithCollider)
+                                {
+                                    if (col.gameObject == obj)
+                                    {
+                                        isStartGoalObject = true;
+                                        break;
+                                    }
+
+                                }
+                                if (!isStartGoalObject)
+                                {
+                                    collision = true;
+                                    break;
+                                }
+                                isStartGoalObject = false;
+                            }
+                        }
+                        
+
+                        if (!collision)
                         {
                             neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
                         }
+                        collision = false;
                     }
                 }
             }
