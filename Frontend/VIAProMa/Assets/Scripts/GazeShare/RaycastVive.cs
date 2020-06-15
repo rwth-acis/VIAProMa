@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
-using UnityEngine.EventSystems;
 
-public class RaycastVive : MonoBehaviour, IEventSystemHandler, IMixedRealityPointerHandler
+public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandler 
 {
     protected bool isUsingVive;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
@@ -15,16 +14,22 @@ public class RaycastVive : MonoBehaviour, IEventSystemHandler, IMixedRealityPoin
     private int layerMask;
 
     // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
         pointerHitPosition = new Vector3(0f, -10f, 0f);
         // Bit shift the index of the layer (8) to get a bit mask. This would cast rays only against colliders in layer 8.
         layerMask = 1 << 8;
+        // Registering a global event handler (would become obsolete with a MRTK update)
+        InputSystem?.Register(gameObject);
+        
     }
 
     // Update is called once per frame
-    void Update()
+    void Update() { }
+
+    public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
+        // Raycasting would become obsolete with a MRTK update
         if (StaticGaze.GetIsUsingVive() == true) // might not be needed
         {
             RaycastHit raycastHit;
@@ -49,9 +54,4 @@ public class RaycastVive : MonoBehaviour, IEventSystemHandler, IMixedRealityPoin
     public void OnPointerDragged(MixedRealityPointerEventData eventData) { }
 
     public void OnPointerUp(MixedRealityPointerEventData eventData) { }
-
-    public void OnPointerClicked(MixedRealityPointerEventData eventData)
-    {
-
-    }
 }
