@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
+using UnityEngine.EventSystems;
 
-public class RaycastVive : MonoBehaviour
+public class RaycastVive : MonoBehaviour, IEventSystemHandler, IMixedRealityPointerHandler
 {
     protected bool isUsingVive;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
@@ -41,5 +42,16 @@ public class RaycastVive : MonoBehaviour
                 Debug.Log("Did not hit");
             }
         }
+    }
+
+    public void OnPointerDown(MixedRealityPointerEventData eventData) { }
+
+    public void OnPointerDragged(MixedRealityPointerEventData eventData) { }
+
+    public void OnPointerUp(MixedRealityPointerEventData eventData) { }
+
+    public void OnPointerClicked(MixedRealityPointerEventData eventData)
+    {
+
     }
 }
