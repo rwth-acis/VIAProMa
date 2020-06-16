@@ -99,6 +99,7 @@ It contains two scripts “start_network.bat” and “start_network.sh”. On Windows, 
 After that, open the Build Settings Window and change the Target SDK Version and Minimum Platform Version to 10.0.18362.0.
 
 **Problem:** The shared room which was created in one app instance does not appear on the other app instance.
+
 **Solution:** Make sure that both app instances use the same gameVersion which is specified in the launcher script. (Assets/Scripts/Multiplayer/Launcher.cs)
 Also ensure that both app instances use the same Photon PUN version.
 The PUN version can be seen in the Photon server settings.
