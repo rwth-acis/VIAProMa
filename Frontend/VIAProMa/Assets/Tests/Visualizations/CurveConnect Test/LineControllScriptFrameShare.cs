@@ -156,16 +156,18 @@ public class LineControllScriptFrameShare : MonoBehaviour
         Debug.Log(framecount);
         start = startObject.transform.position;
         goal = goalObject.transform.position;
+
         openSet = new SimplePriorityQueue<Triple<int, int, int>>();
-        openSet.Enqueue(new Triple<int, int, int>(0, 0, 0), 0);
         cameFrom = new Dictionary<Triple<int, int, int>, Triple<int, int, int>>();
         gScore = new Dictionary<Triple<int, int, int>, float>();
-        gScore.Add(new Triple<int, int, int>(0, 0, 0), Vector3.Distance(start, goal));
-        current = new Triple<int, int, int>(0, 0, 0);
+        Vector3 startPositionContinous = startObject.transform.position / stepSize;
+        Triple<int, int, int> startPositionDiscrete = new Triple<int, int, int>((int)startPositionContinous.x, (int)startPositionContinous.y, (int)startPositionContinous.z);
+        openSet.Enqueue(startPositionDiscrete, 0);
+        gScore.Add(startPositionDiscrete, Vector3.Distance(start, goal));
         framecount = 0;
     }
-    //Implementation from https://en.wikipedia.org/wiki/A*_search_algorithm. As heuristic, the distance between
-    //start and goal is used, which is admissable and consistent.
+    //A* with the heuristic: "euclidian distance between
+    //start and goal" which is admissable and consistent.
     List<Vector3> A_Star(GameObject startObject, GameObject goalObject)
     {
         //When finding a path takes longer than 30 frames, give up
@@ -173,9 +175,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
         {
             resetAStar();
         }
-        //Turn off the collision from start and goal TODO change this so that the collision with them gets just ignored
-        //startObject.GetComponent<Collider>().enabled = false;
-        //goalObject.GetComponent<Collider>().enabled = false;
 
         DateTime startTime = DateTime.Now;
         
@@ -184,8 +183,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
             current = openSet.Dequeue();
             if (Vector3.Distance(tupleToVector(current), goal) <= stepSize)
             {
-                //startObject.GetComponent<Collider>().enabled = true;
-                //goalObject.GetComponent<Collider>().enabled = true;
                 List<Vector3> optimalPath = reconstruct_path(cameFrom, current);
                 resetAStar();
                 return optimalPath;
@@ -221,8 +218,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
         {
             //open set is empty and goal is never reached => no possible path
             resetAStar();
-            //startObject.GetComponent<Collider>().enabled = true;
-            //goalObject.GetComponent<Collider>().enabled = true;
             return new List<Vector3>();
         }
 
