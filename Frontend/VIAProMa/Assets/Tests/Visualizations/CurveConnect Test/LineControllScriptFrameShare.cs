@@ -74,19 +74,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
     }
 
-    List<Collider> getChildColliders(GameObject obj)
-    {
-        List<Collider> objectCollider = new List<Collider>();
-        return getChildCollidersHelper(obj, objectCollider);
-    }
-
-    List<Collider> getChildCollidersHelper(GameObject obj, List<Collider> objectCollider)
-    {
-        objectCollider.Add(startObject.GetComponent<Collider>());
-
-        return null;
-    }
-
     //gets the neighbors of a node by projecting a cube the length stepSize on every size and than checks for collision.
     List<Triple<int, int, int>> getNeighbors(Triple<int, int, int> node)
     {
