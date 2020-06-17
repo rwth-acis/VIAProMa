@@ -11,6 +11,7 @@ using UnityEngine;
 public class MultiplayerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject playerAvatarPrefab;
+    [SerializeField] private GameObject TablePrefab;
 
     /// <summary>
     /// Checks if the component is set up correctly
@@ -30,6 +31,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
+
+        ///first person in the room create the table
+        if (GameObject.Find("Table") == null)
+        {
+            ResourceManager.Instance.SceneNetworkInstantiate(TablePrefab, Vector3.zero, Quaternion.identity, (instance) => 
+            {
+                instance.name = "Table";
+            });
+        }
     }
 
     /// <summary>
