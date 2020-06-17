@@ -3,21 +3,32 @@ using System.Collections.Generic;
 
 public class IntTriple
 {
-    public Triple<int, int, int> triple;
+    //public Triple<int, int, int> triple;
+    public int x;
+    public int y;
+    public int z;
 
     public IntTriple(int int1, int int2, int int3)
     {
-        triple = new Triple<int, int, int>(int1, int2, int3);
+        x = int1;
+        y = int2;
+        z = int3;
     }
 
     public static IntTriple operator +(IntTriple triple1, IntTriple triple2)
     {
-        return new IntTriple(triple1.triple.Item1 + triple2.triple.Item1, triple1.triple.Item2 + triple2.triple.Item2, triple1.triple.Item3 + triple2.triple.Item3);
+        return new IntTriple(triple1.x + triple2.x, triple1.y + triple2.y, triple1.z + triple2.z);
     }
 
     public override bool Equals(object obj)
     {
-        return triple.Equals(obj);
+        if (obj == null || (obj as IntTriple) == null) //if the object is null or the cast fails
+            return false;
+        else
+        {
+            IntTriple triple = (IntTriple)obj;
+            return x == triple.x && y == triple.y && z == triple.z;
+        }
     }
     public static bool operator ==(IntTriple triple1, IntTriple triple2)
     {
@@ -30,11 +41,11 @@ public class IntTriple
     }
     public override int GetHashCode()
     {
-        return triple.GetHashCode();
+        return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
     }
 
     public static IntTriple operator *(IntTriple triple, int scalar)
     {
-        return new IntTriple(triple.triple.Item1 * scalar, triple.triple.Item2 * scalar , triple.triple.Item3 * scalar);
+        return new IntTriple(triple.x * scalar, triple.y * scalar , triple.z * scalar);
     }
 }
