@@ -29,6 +29,13 @@ public class LineControllScriptFrameShare : MonoBehaviour
     //For distinguishing between random objects and start/goal
     List<GameObject> startGoalObjectsWithCollider;
 
+    BoxCollider startBoundingBox;
+    BoxCollider goalBoundingBox;
+
+    GameObject boundContainerStart;
+    GameObject boundContainerEnd;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,6 +63,41 @@ public class LineControllScriptFrameShare : MonoBehaviour
         {
             startGoalObjectsWithCollider.Add(col.gameObject);
         }
+
+        startBoundingBox = startObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
+        goalBoundingBox = goalObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
+
+        
+        //BoxCollider boundingboxOnOtherLayer = (BoxCollider)new Collider();
+        //boundingboxOnOtherLayer.center = ((BoxCollider)startBoundingBox).center;
+        //boundingboxOnOtherLayer.size = ((BoxCollider)startBoundingBox).size;
+
+        boundContainerStart = new GameObject();
+        boundContainerStart.transform.parent = startObject.transform;
+        boundContainerStart.transform.localPosition = Vector3.zero;
+        boundContainerStart.layer = 6;
+        boundContainerStart.name = "Hallu";
+
+        boundContainerStart.AddComponent<BoxCollider>();
+        BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
+        Vector3 test = boundingboxOnOtherLayer.transform.localPosition;
+        Vector3 test2 = boundContainerStart.transform.localPosition;
+        boundingboxOnOtherLayer.name = "CurveConnectBoundingBox";
+        boundingboxOnOtherLayer.size = startBoundingBox.size;
+        boundingboxOnOtherLayer.center = startBoundingBox.center;
+
+        
+        boundContainerEnd = new GameObject();
+        boundContainerEnd.transform.parent = goalObject.transform;
+        boundContainerEnd.transform.localPosition = Vector3.zero;
+        boundContainerEnd.layer = 6;
+        boundContainerEnd.name = "Hallu";
+
+        boundContainerEnd.AddComponent<BoxCollider>();
+        BoxCollider boundingboxOnOtherLayerEnd = boundContainerEnd.GetComponent<BoxCollider>();
+        boundingboxOnOtherLayerEnd.name = "Bruhh";
+        boundingboxOnOtherLayerEnd.size = goalBoundingBox.size;
+        boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
     }
 
     // Update is called once per frame
@@ -92,6 +134,27 @@ public class LineControllScriptFrameShare : MonoBehaviour
                         && (node.Item2 + y >= 0)) //dont bent the path below the ground
                     {
                         //Check for collisons with something other than start/goal or childrens of start/goal
+
+                        Collider test = boundContainerStart.GetComponent<BoxCollider>();
+                        Vector3 test2 = test.transform.position;
+                        Vector3 test3 = boundContainerStart.transform.position;
+
+                        Collider[] colliderInRangeTest = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2), default, 1 << 6);
+
+                        if (colliderInRangeTest.Length > 0)
+                        {
+                            neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
+                        }
+                        else
+                        {
+                            Collider[] colliderInRange = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2));
+                            if (colliderInRange.Length == 0)
+                            {
+                                neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
+                            }
+                        }
+
+                        /*
                         Collider[] colliderInRange = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2));
                         bool isStartGoalObject = false;
                         if (colliderInRange.Length != 0)
@@ -122,6 +185,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
                             neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
                         }
                         collision = false;
+                        */
+
+                        
                     }
                 }
             }
@@ -129,9 +195,10 @@ public class LineControllScriptFrameShare : MonoBehaviour
         return neighbors;
     }
 
-
-    //bool claculateClusters
-
+    public static bool collidesWithStartGoal(Vector3 center, Vector3 halfExtends, Collider startBoundingBox, Collider goalBoundingBox)
+    {
+        return false;
+    }
  
     //TODO Improvable by given every node a pointer to it's ancestor which is much quicker then looking it up in a dictonary
     List<Vector3> reconstruct_path(Dictionary<Triple<int, int, int>, Triple<int, int, int>> cameFrom, Triple<int, int, int> current)
