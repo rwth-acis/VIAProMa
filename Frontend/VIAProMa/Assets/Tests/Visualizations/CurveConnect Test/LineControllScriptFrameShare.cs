@@ -122,8 +122,8 @@ public class LineControllScriptFrameShare : MonoBehaviour
         //TODO map to the plane between start and goal
         List<Triple<int, int, int>> neighbors = new List<Triple<int, int, int>>();
 
-        bool collision = false;
-
+        
+        
         for (int x = -1; x <= 1; x += 1)
         {
             for (int y = -1; y <= 1; y += 1)
@@ -134,11 +134,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                         && (node.Item2 + y >= 0)) //dont bent the path below the ground
                     {
                         //Check for collisons with something other than start/goal or childrens of start/goal
-
-                        Collider test = boundContainerStart.GetComponent<BoxCollider>();
-                        Vector3 test2 = test.transform.position;
-                        Vector3 test3 = boundContainerStart.transform.position;
-
+                        /*
                         Collider[] colliderInRangeTest = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2), default, 1 << 6);
 
                         if (colliderInRangeTest.Length > 0)
@@ -152,6 +148,13 @@ public class LineControllScriptFrameShare : MonoBehaviour
                             {
                                 neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
                             }
+                        }
+                        */
+                        Triple<int, int, int>  cell = new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z);
+
+                        if ( !collisonWithObstacle(tupleToVector(cell), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)) )
+                        {
+                            neighbors.Add(cell);
                         }
 
                         /*
@@ -195,9 +198,26 @@ public class LineControllScriptFrameShare : MonoBehaviour
         return neighbors;
     }
 
-    public static bool collidesWithStartGoal(Vector3 center, Vector3 halfExtends, Collider startBoundingBox, Collider goalBoundingBox)
+    //Only things outside the boundingbox of start and goal are considered obstacles
+    public static bool collisonWithObstacle(Vector3 center, Vector3 cell)
     {
-        return false;
+        Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, cell, default, 1 << 6);
+
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        if (collidionsWithStartGoal.Length > 0)
+        {
+            return false;
+        }
+        else
+        {
+            Collider[] colliderInRange = Physics.OverlapBox(center, cell);
+            //Collides the cell with nothing else? 
+            if (colliderInRange.Length == 0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
  
     //TODO Improvable by given every node a pointer to it's ancestor which is much quicker then looking it up in a dictonary
@@ -220,6 +240,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
     {
         return new Vector3(tuple.Item1 * stepSize, tuple.Item2 * stepSize, tuple.Item3 * stepSize);
     }
+
 
     void resetAStar()
     {
