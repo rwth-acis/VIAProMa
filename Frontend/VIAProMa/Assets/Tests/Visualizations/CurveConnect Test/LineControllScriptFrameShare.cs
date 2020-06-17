@@ -18,12 +18,12 @@ public class LineControllScriptFrameShare : MonoBehaviour
     Vector3 start;
     Vector3 goal;
     //Priority queu that contains the nodes that may need to be expanded
-    SimplePriorityQueue<Triple<int, int, int>> openSet;
+    SimplePriorityQueue<IntTriple> openSet;
     //For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
-    Dictionary<Triple<int, int, int>, Triple<int, int, int>> cameFrom;
+    Dictionary<IntTriple, IntTriple> cameFrom;
     //For node n, gScore[n] is the cost of the cheapest path from start to n currently known.
-    Dictionary<Triple<int, int, int>, float> gScore;
-    Triple<int, int, int> current;
+    Dictionary<IntTriple, float> gScore;
+    IntTriple current;
     int framecount = 0;
 
     //For distinguishing between random objects and start/goal
@@ -117,10 +117,10 @@ public class LineControllScriptFrameShare : MonoBehaviour
     }
 
     //gets the neighbors of a node by projecting a cube with the length stepSize  to every side and then checks for collision.
-    List<Triple<int, int, int>> getNeighbors(Triple<int, int, int> node)
+    List<IntTriple> getNeighbors(IntTriple node)
     {
         //TODO map to the plane between start and goal
-        List<Triple<int, int, int>> neighbors = new List<Triple<int, int, int>>();
+        List<IntTriple> neighbors = new List<IntTriple>();
 
         
         
@@ -131,66 +131,14 @@ public class LineControllScriptFrameShare : MonoBehaviour
                 for (int z = -1; z <= 1; z += 1)
                 {
                     if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
-                        && (node.Item2 + y >= 0)) //dont bent the path below the ground
+                        && (node.y + y >= 0)) //dont bent the path below the ground
                     {
-                        //Check for collisons with something other than start/goal or childrens of start/goal
-                        /*
-                        Collider[] colliderInRangeTest = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2), default, 1 << 6);
+                        IntTriple  cell = new IntTriple(node.x + x, node.y + y, node.z + z);
 
-                        if (colliderInRangeTest.Length > 0)
-                        {
-                            neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
-                        }
-                        else
-                        {
-                            Collider[] colliderInRange = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2));
-                            if (colliderInRange.Length == 0)
-                            {
-                                neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
-                            }
-                        }
-                        */
-                        Triple<int, int, int>  cell = new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z);
-
-                        if ( !collisonWithObstacle(tupleToVector(cell), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)) )
+                        if ( !collisonWithObstacle(tupleToVector(cell,stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)) )
                         {
                             neighbors.Add(cell);
-                        }
-
-                        /*
-                        Collider[] colliderInRange = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2));
-                        bool isStartGoalObject = false;
-                        if (colliderInRange.Length != 0)
-                        {
-                            foreach (Collider col in colliderInRange)
-                            {
-                                foreach (GameObject obj in startGoalObjectsWithCollider)
-                                {
-                                    if (col.gameObject == obj)
-                                    {
-                                        isStartGoalObject = true;
-                                        break;
-                                    }
-
-                                }
-                                if (!isStartGoalObject)
-                                {
-                                    collision = true;
-                                    break;
-                                }
-                                isStartGoalObject = false;
-                            }
-                        }
-                        
-
-                        if (!collision)
-                        {
-                            neighbors.Add(new Triple<int, int, int>(node.Item1 + x, node.Item2 + y, node.Item3 + z));
-                        }
-                        collision = false;
-                        */
-
-                        
+                        }                        
                     }
                 }
             }
@@ -199,9 +147,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
     }
 
     //Only things outside the boundingbox of start and goal are considered obstacles
-    public static bool collisonWithObstacle(Vector3 center, Vector3 cell)
+    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends)
     {
-        Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, cell, default, 1 << 6);
+        Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, halfExtends, default, 1 << 6);
 
         //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
         if (collidionsWithStartGoal.Length > 0)
@@ -210,7 +158,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
         else
         {
-            Collider[] colliderInRange = Physics.OverlapBox(center, cell);
+            Collider[] colliderInRange = Physics.OverlapBox(center, halfExtends);
             //Collides the cell with nothing else? 
             if (colliderInRange.Length == 0)
             {
@@ -221,24 +169,24 @@ public class LineControllScriptFrameShare : MonoBehaviour
     }
  
     //TODO Improvable by given every node a pointer to it's ancestor which is much quicker then looking it up in a dictonary
-    List<Vector3> reconstruct_path(Dictionary<Triple<int, int, int>, Triple<int, int, int>> cameFrom, Triple<int, int, int> current)
+    List<Vector3> reconstruct_path(Dictionary<IntTriple, IntTriple> cameFrom, IntTriple current)
     {
         List<Vector3> totalPath = new List<Vector3>();
-        totalPath.Add(tupleToVector(current));
+        totalPath.Add(tupleToVector(current, stepSize));
 
-        Triple<int, int, int> ancestor;
+        IntTriple ancestor;
         while (cameFrom.TryGetValue(current, out ancestor))
         {
-            totalPath.Add(tupleToVector(ancestor));
+            totalPath.Add(tupleToVector(ancestor, stepSize));
             current = ancestor;
         }
 
         return totalPath;
     }
 
-    Vector3 tupleToVector(Triple<int, int, int> tuple)
+    public static Vector3 tupleToVector(IntTriple tuple, float stepSize)
     {
-        return new Vector3(tuple.Item1 * stepSize, tuple.Item2 * stepSize, tuple.Item3 * stepSize);
+        return new Vector3(tuple.x, tuple.y, tuple.z)*stepSize;
     }
 
 
@@ -248,11 +196,11 @@ public class LineControllScriptFrameShare : MonoBehaviour
         start = startObject.transform.position;
         goal = goalObject.transform.position;
 
-        openSet = new SimplePriorityQueue<Triple<int, int, int>>();
-        cameFrom = new Dictionary<Triple<int, int, int>, Triple<int, int, int>>();
-        gScore = new Dictionary<Triple<int, int, int>, float>();
+        openSet = new SimplePriorityQueue<IntTriple>();
+        cameFrom = new Dictionary<IntTriple, IntTriple>();
+        gScore = new Dictionary<IntTriple, float>();
         Vector3 startPositionContinous = startObject.transform.position / stepSize;
-        Triple<int, int, int> startPositionDiscrete = new Triple<int, int, int>((int)startPositionContinous.x, (int)startPositionContinous.y, (int)startPositionContinous.z);
+        IntTriple startPositionDiscrete = new IntTriple((int)startPositionContinous.x, (int)startPositionContinous.y, (int)startPositionContinous.z);
         openSet.Enqueue(startPositionDiscrete, 0);
         gScore.Add(startPositionDiscrete, Vector3.Distance(start, goal));
         framecount = 0;
@@ -272,20 +220,20 @@ public class LineControllScriptFrameShare : MonoBehaviour
         while (openSet.Count != 0 && DateTime.Now - startTime < TimeSpan.FromMilliseconds(maxProcessingTimePerFrame))
         {
             current = openSet.Dequeue();
-            if (Vector3.Distance(tupleToVector(current), goal) <= stepSize)
+            if (Vector3.Distance(tupleToVector(current, stepSize), goal) <= stepSize)
             {
                 List<Vector3> optimalPath = reconstruct_path(cameFrom, current);
                 resetAStar();
                 return optimalPath;
             }
 
-            List<Triple<int, int, int>> neighbors = getNeighbors(current);
+            List<IntTriple> neighbors = getNeighbors(current);
 
             //TODO Maby here multithreading?
-            foreach (Triple<int, int, int> neighbor in neighbors)
+            foreach (IntTriple neighbor in neighbors)
             {
-                float h = Vector3.Distance(tupleToVector(neighbor), goal);
-                float tentative_gScore = gScore[current] + Vector3.Distance(tupleToVector(current), tupleToVector(neighbor));
+                float h = Vector3.Distance(tupleToVector(neighbor, stepSize), goal);
+                float tentative_gScore = gScore[current] + Vector3.Distance(tupleToVector(current, stepSize), tupleToVector(neighbor, stepSize));
                 float neighboreGScore;
                 if (gScore.TryGetValue(neighbor, out neighboreGScore))
                 {
