@@ -74,7 +74,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
     }
 
-    //gets the neighbors of a node by projecting a cube the length stepSize on every size and than checks for collision.
+    //gets the neighbors of a node by projecting a cube with the length stepSize  to every side and then checks for collision.
     List<Triple<int, int, int>> getNeighbors(Triple<int, int, int> node)
     {
         //TODO map to the plane between start and goal
@@ -89,7 +89,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                 for (int z = -1; z <= 1; z += 1)
                 {
                     if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
-                        && (node.Item2 + y >= 0)) //dont bent the path downwards
+                        && (node.Item2 + y >= 0)) //dont bent the path below the ground
                     {
                         //Check for collisons with something other than start/goal or childrens of start/goal
                         Collider[] colliderInRange = Physics.OverlapBox(new Vector3((node.Item1 + x) * stepSize, (node.Item2 + y) * stepSize, (node.Item3 + z) * stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2));
@@ -128,6 +128,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
         return neighbors;
     }
+
+
+    //bool claculateClusters
 
  
     //TODO Improvable by given every node a pointer to it's ancestor which is much quicker then looking it up in a dictonary

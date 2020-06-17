@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Maze
 {
-    private Dictionary<IntTriple,Cluster> clusters;
+    private Dictionary<IntTriple, Cluster> clusters;
 
     public Maze(float distanceStartGoal, float stepSize)
     {
@@ -15,28 +15,44 @@ public class Maze
     {
         Cluster newCluster = new Cluster();
 
-        //check for already computed entrances of adjacent clusters (not in diaginal direction)
-        IntTriple offset = new IntTriple(-1, -1, -1);
-        List<Vector3> entrances;
+        //check for already computed entrances of adjacent clusters (not in diagonal direction)
         for (int x = -1; x <= 1; x += 2)
         {
-            IntTriple xOffset = new IntTriple(x,0,0);
-            entrances = clusters[clusterNumber + xOffset].getEntrances(xOffset);
-            if (entrances != null)
-            {
-                newCluster.setEntrances(xOffset * -1, entrances);
-            }
+            setUniqueEntrances(newCluster, clusterNumber, new IntTriple(x, 0, 0));
         }
 
         for (int y = -1; y <= 1; y += 2)
         {
-
+            setUniqueEntrances(newCluster, clusterNumber, new IntTriple(0, y, 0));
         }
 
         for (int z = -1; z <= 1; z += 2)
         {
+            setUniqueEntrances(newCluster, clusterNumber, new IntTriple(0, 0, z));
+        }
+
+    }
+
+    //Sets an entrance only when it wasn't already set
+    private void setUniqueEntrances(Cluster cluster, IntTriple clusterNumber, IntTriple direction)
+    {
+        //Was the adjacent cluster in direction "direction" already generated?
+        //Yes => take the entrances from the adjacent cluster, because they were already calculated
+        if (clusters.ContainsKey(clusterNumber + direction))
+        {
+            cluster.setEntrances(direction, clusters[clusterNumber + direction].getEntrances(direction * -1));
+        }
+        //No => calculate the entrances
+        else
+        {
+            List<Vector3> entrances;
 
         }
+    }
+
+    //Recursevly calculates the entrances in a direction
+    private void calculateEntrances(Vector3 middlePoint, float collisionSize, float minSize, bool cutVertically, List<Vector3> entrances)
+    {
 
     }
 }
