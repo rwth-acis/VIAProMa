@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using static LineControllScriptFrameShare;
+using static System.Math;
 
 public class Maze
 {
     private Dictionary<IntTriple, Cluster> clusters;
-    private int clusterSize; //how many cells are in one edge of a cluster
     private float stepSize; //how big are the cells
+    private int clusterSize; //how many cells are in one edge of a cluster
+    
 
-    public Maze(float distanceStartGoal, float stepSize)
+    public Maze(float stepSize, int clusterSize)
     {
         clusters = new Dictionary<IntTriple, Cluster>();
+        this.stepSize = stepSize;
+        this.clusterSize = clusterSize;
     }
 
     public void addCluster(IntTriple clusterNumber)
@@ -49,10 +53,11 @@ public class Maze
         else
         {
             Vector3 directionVec = tupleToVector(direction,1);
+            Vector3 directionVecMask = new Vector3(Abs(directionVec.x), Abs(directionVec.y), Abs(directionVec.z));
             float clusterLength = clusterSize * stepSize;
             cluster.setEntrances(direction,
                  calculateEntrances(tupleToVector(clusterNumber,clusterLength) + directionVec*clusterLength / 2, //This is the middle of the clusterside in direction 'direction'
-                 (directionVec* stepSize)/2 + (new Vector3(1,1,1)-directionVec)* clusterLength, //This results in a cube with the length 'stepSize/2' in direction 'direction' and the length 'clusterLength' in the other two orthogonal directions
+                 (directionVecMask * stepSize)/2 + (new Vector3(1,1,1)- directionVecMask) * clusterLength, //This results in a cube with the length 'stepSize/2' in direction 'direction' and the length 'clusterLength' in the other two orthogonal directions
                  direction, stepSize)
                  );
         }
@@ -83,21 +88,26 @@ public class Maze
             }
             else
             {
-                if (normal.y == 0)
-                    normalOrthogonal = new Vector3(0, 0, 1);
+                if (normal.x == 0)
+                    normalOrthogonal = new Vector3(0, normal.z, normal.y);
                 else
-                    normalOrthogonal = new Vector3(0,1,0);
+                    normalOrthogonal = new Vector3(0,0,1);
             }
-            Vector3 boxScaling = normalOrthogonal/2;
-            Vector3 newBoxSize = new Vector3(boxSize.x * boxScaling.x, boxSize.y * boxScaling.y, boxSize.z * boxScaling.z);
-            float quarterBoxLengthInDirection = (newBoxSize.x + newBoxSize.y + newBoxSize.z)/2;
+            Vector3 normalOrthogonalMask = new Vector3(Abs(normalOrthogonal.x), Abs(normalOrthogonal.y), Abs(normalOrthogonal.z));
+            Vector3 boxScaling = normalOrthogonalMask/ 2;
+            boxScaling = new Vector3(1, 1, 1) - boxScaling;
+            boxSize.Scale(boxScaling);
+            Vector3 boxSiceCopy = boxSize;
+            boxSiceCopy.Scale(normalOrthogonalMask);
 
-            if (newBoxSize.x <= stepSize && newBoxSize.y <= stepSize && newBoxSize.z <= stepSize)
+            float quarterBoxLengthInDirection = boxSiceCopy.magnitude / 2;
+
+            if (boxSize.x <= stepSize && boxSize.y <= stepSize && boxSize.z <= stepSize)
                 return;
             else
             {
-                calculateEntrancesHelper(center + normalOrthogonal * quarterBoxLengthInDirection, newBoxSize, normal, stepSize, !cutVertically, entrances);
-                calculateEntrancesHelper(center + normalOrthogonal * -quarterBoxLengthInDirection, newBoxSize, normal, stepSize, !cutVertically, entrances);
+                calculateEntrancesHelper(center + normalOrthogonal * quarterBoxLengthInDirection, boxSize, normal, stepSize, !cutVertically, entrances);
+                calculateEntrancesHelper(center + normalOrthogonal * -quarterBoxLengthInDirection, boxSize, normal, stepSize, !cutVertically, entrances);
             }
         }
         else
