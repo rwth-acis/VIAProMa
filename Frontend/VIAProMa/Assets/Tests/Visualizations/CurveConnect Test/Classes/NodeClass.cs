@@ -1,15 +1,12 @@
 ﻿using System;
+using UnityEngine;
 
 public class Node
 {
-    public Triple<int, int, int> position
+    private Vector3 position
     {
         get;
-        set;
     }
-    public Node cameFrom
-    {
-        get;
-        set;
-    }
+    
+    
 }

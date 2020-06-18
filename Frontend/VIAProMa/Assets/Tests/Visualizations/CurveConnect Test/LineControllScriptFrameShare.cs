@@ -67,11 +67,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
         startBoundingBox = startObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
         goalBoundingBox = goalObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
 
-        
-        //BoxCollider boundingboxOnOtherLayer = (BoxCollider)new Collider();
-        //boundingboxOnOtherLayer.center = ((BoxCollider)startBoundingBox).center;
-        //boundingboxOnOtherLayer.size = ((BoxCollider)startBoundingBox).size;
-
         boundContainerStart = new GameObject();
         boundContainerStart.transform.parent = startObject.transform;
         boundContainerStart.transform.localPosition = Vector3.zero;
@@ -80,8 +75,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         boundContainerStart.AddComponent<BoxCollider>();
         BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
-        Vector3 test = boundingboxOnOtherLayer.transform.localPosition;
-        Vector3 test2 = boundContainerStart.transform.localPosition;
         boundingboxOnOtherLayer.name = "CurveConnectBoundingBox";
         boundingboxOnOtherLayer.size = startBoundingBox.size;
         boundingboxOnOtherLayer.center = startBoundingBox.center;
@@ -98,6 +91,12 @@ public class LineControllScriptFrameShare : MonoBehaviour
         boundingboxOnOtherLayerEnd.name = "Bruhh";
         boundingboxOnOtherLayerEnd.size = goalBoundingBox.size;
         boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
+
+
+        //Test Stuff
+        Maze test = new Maze(stepSize,5);
+        test.addCluster(new IntTriple(0, 0, 0));
+        test.addCluster(new IntTriple(0, 0, 1));
     }
 
     // Update is called once per frame
@@ -265,6 +264,8 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
     List<Vector3> HPA()
     {
+        //Create start cluster
+
         return null;
     }
 
