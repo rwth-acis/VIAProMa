@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3159,6 +3159,85 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1214472304
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1214472305}
+  - component: {fileID: 1214472306}
+  m_Layer: 0
+  m_Name: Heatmap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1214472305
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214472304}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1214472306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214472304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6fd4e1d700ecb4a8f2f87f3785268c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueRange: 100
+  arraySize: 40
+  width: 10
+  height: 3
+  pointSize: 0.5
+  colorGradient:
+    serializedVersion: 2
+    key0: {r: 0, g: 0.05094845, b: 0.4528302, a: 0.39215687}
+    key1: {r: 0, g: 0.253716, b: 1, a: 0.39215687}
+    key2: {r: 0.6995947, g: 0.70752674, b: 0.0033373982, a: 0.39215687}
+    key3: {r: 0.83953786, g: 0.8490566, b: 0.0040049935, a: 0}
+    key4: {r: 0.010334489, g: 0.3129872, b: 0.036005788, a: 0}
+    key5: {r: 0.018689938, g: 0.5660378, b: 0.06511652, a: 0}
+    key6: {r: 0.33962262, g: 0.24190101, b: 0.24190101, a: 0}
+    key7: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 0}
+    ctime0: 0
+    ctime1: 13300
+    ctime2: 14456
+    ctime3: 17348
+    ctime4: 27178
+    ctime5: 49151
+    ctime6: 60524
+    ctime7: 65535
+    atime0: 0
+    atime1: 55319
+    atime2: 65535
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 3
+  spherePrefab: {fileID: 2405503873890670273, guid: dcfb2f83ef1baf24d9ee347c66ad59ce,
+    type: 3}
 --- !u!1 &1734783556
 GameObject:
   m_ObjectHideFlags: 0

@@ -57,40 +57,54 @@ public class HeatmapVisualizer : MonoBehaviour
         }
         //Update userpositions every second
         InvokeRepeating("UpdateFromUserPositions", 1f, 1f);
+        //Update Visualization for all points with new min max values every 5 seconds
+        InvokeRepeating("UpdateDataInvoke", 5f, 5f);
 
     }
 
+    /// <summary>
+    /// Replaces the saved Heatmapdata with the given data and Updates the visualization according to the new Min and Max Values
+    /// </summary>
+    /// <param name="data">New Heatmapdata</param>
     public void UpdateData(int[,] data)
     {
         this.data = data;
-
         min = FindMin(data);
         max = FindMax(data);
-
-        string s = "";
         // Update Data on all points
         for (int x = 0; x < arraySize; x++)
         {
             for (int z = 0; z < arraySize; z++)
             {
                 points[x, z].UpdateData(data[x, z]);
-                s += data[x, z];
             }
-            s += "\n";
         }
-        print(s);
     }
 
+    /// <summary>
+    /// Call UpdataData as an Invoke every x seconds
+    /// </summary>
+    private void UpdateDataInvoke()
+    {
+        UpdateData(data);
+    }
 
+    /// <summary>
+    /// Get position of all users and Update Heatmap acordingly
+    /// </summary>
     private void UpdateFromUserPositions()
     {
-   /*     foreach (var player in PhotonNetwork.CurrentRoom.Players)
+        if (PhotonNetwork.InRoom)
         {
-            //TODO sync positions and run UpdateDataPoint
-        }
-        */
-        //Workaround for own position
+            foreach (var player in PhotonNetwork.CurrentRoom.Players)
+            {
+                //TODO sync positions and run UpdateDataPoint
+                Debug.Log(player.Value.UserId);
+            }
 
+        }
+
+        //Workaround for own position
         var position = GameObject.Find("Main Camera").transform.position;
         Debug.Log("Player position is: " +position);
         IncreaseDataPoint(position.x, position.z-2.0f);
@@ -116,24 +130,52 @@ public class HeatmapVisualizer : MonoBehaviour
     //
     // Visualization
     //
+
+    /// <summary>
+    /// Get color form the gradient for the given value in comparison to the max and min values
+    /// </summary>
+    /// <param name="value">The value of the sought color</param>
+    /// <returns></returns>
     public Color GetColor(int value)
     {
         return colorGradient.Evaluate(Value2Range(value));
     }
+
+    /// <summary>
+    /// Get height for the given value in comparison to the max and min values
+    /// </summary>
+    /// <param name="value">The value of the sought height</param>
+    /// <returns></returns>
     public float GetHeight(int value)
     {
         return Value2Range(value) * height;
     }
+
+    /// <summary>
+    /// Get size for the given value in comparison to the max and min values
+    /// </summary>
+    /// <param name="value">The value of the sought size</param>
+    /// <returns></returns>
     public float GetSize(int value)
     {
         return Value2Range(value) * pointSize;
     }
 
+    /// <summary>
+    /// Returns the linear mapping of the value from (min, max) to (0,1)
+    /// </summary>
+    /// <param name="value">The mapped value</param>
+    /// <returns></returns>
     public float Value2Range(int value)
     {
         return (value - min) / (float)(max-min);
     }
 
+    /// <summary>
+    /// Returns the minimum value in a given array
+    /// </summary>
+    /// <param name="array">The searched array</param>
+    /// <returns></returns>
     public int FindMin(int[,] array)
     {
         int min = 100000;
@@ -146,6 +188,12 @@ public class HeatmapVisualizer : MonoBehaviour
         }
         return min;
     }
+
+    /// <summary>
+    /// Returns the maximum value in a given array
+    /// </summary>
+    /// <param name="array">The searched array</param>
+    /// <returns></returns>
     public int FindMax(int[,] array)
     {
         int max = 0;
@@ -162,6 +210,13 @@ public class HeatmapVisualizer : MonoBehaviour
     //
     // Debug
     //
+
+    /// <summary>
+    /// Debugfunction that creates an array with testdata for a given size and range from Perlin Noise
+    /// </summary>
+    /// <param name="size">The height and width of the array</param>
+    /// <param name="range">The maximum of the values inside the array</param>
+    /// <returns></returns>
     int[,] GenerateTestData(int size, int range)
     {
         int[,] testData = new int[size,size];
