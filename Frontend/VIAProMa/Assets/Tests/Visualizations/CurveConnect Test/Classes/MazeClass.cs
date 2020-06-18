@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static LineControllScriptFrameShare;
 
 public class Maze
 {
     private Dictionary<IntTriple, Cluster> clusters;
+    private int clusterSize; //how many cells are in one edge of a cluster
+    private float stepSize; //how big are the cells
 
     public Maze(float distanceStartGoal, float stepSize)
     {
@@ -45,14 +48,61 @@ public class Maze
         //No => calculate the entrances
         else
         {
-            List<Vector3> entrances;
-
+            Vector3 directionVec = tupleToVector(direction,1);
+            float clusterLength = clusterSize * stepSize;
+            cluster.setEntrances(direction,
+                 calculateEntrances(tupleToVector(clusterNumber,clusterLength) + directionVec*clusterLength / 2, //This is the middle of the clusterside in direction 'direction'
+                 (directionVec* stepSize)/2 + (new Vector3(1,1,1)-directionVec)* clusterLength, //This results in a cube with the length 'stepSize/2' in direction 'direction' and the length 'clusterLength' in the other two orthogonal directions
+                 direction, stepSize)
+                 );
         }
     }
 
-    //Recursevly calculates the entrances in a direction
-    private void calculateEntrances(Vector3 middlePoint, float collisionSize, float minSize, bool cutVertically, List<Vector3> entrances)
+    //Recursevly calculates the entrances with a given box
+    private List<Vector3> calculateEntrances(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize)
     {
+        List<Vector3> entrances = new List<Vector3>();
+        calculateEntrancesHelper(center, boxSize, normal, stepSize, true, entrances);
+        return entrances;
+    }
 
+    private void calculateEntrancesHelper(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize, bool cutVertically, List<Vector3> entrances)
+    {
+        
+
+        if (collisonWithObstacle(center, boxSize / 2))
+        {
+            Vector3 normalOrthogonal;
+            //Rotates the normal in the local coordinate system to the right(if verical) or up (if !vertical). I am not using a rotation Matrix/Qaternion because it would be to slow.
+            if (cutVertically)
+            {
+                if (normal.y == 0)
+                    normalOrthogonal = new Vector3(normal.z, normal.x, 0);
+                else
+                    normalOrthogonal = new Vector3(0, 1, 0);
+            }
+            else
+            {
+                if (normal.y == 0)
+                    normalOrthogonal = new Vector3(0, 0, 1);
+                else
+                    normalOrthogonal = new Vector3(0,1,0);
+            }
+            Vector3 boxScaling = normalOrthogonal/2;
+            Vector3 newBoxSize = new Vector3(boxSize.x * boxScaling.x, boxSize.y * boxScaling.y, boxSize.z * boxScaling.z);
+            float quarterBoxLengthInDirection = (newBoxSize.x + newBoxSize.y + newBoxSize.z)/2;
+
+            if (newBoxSize.x <= stepSize && newBoxSize.y <= stepSize && newBoxSize.z <= stepSize)
+                return;
+            else
+            {
+                calculateEntrancesHelper(center + normalOrthogonal * quarterBoxLengthInDirection, newBoxSize, normal, stepSize, !cutVertically, entrances);
+                calculateEntrancesHelper(center + normalOrthogonal * -quarterBoxLengthInDirection, newBoxSize, normal, stepSize, !cutVertically, entrances);
+            }
+        }
+        else
+        {
+            entrances.Add(center);
+        }
     }
 }
