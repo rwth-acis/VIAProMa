@@ -38,6 +38,7 @@ public class Maze
             setUniqueEntrances(newCluster, clusterNumber, new IntTriple(0, 0, z));
         }
 
+        clusters.Add(clusterNumber,newCluster);
     }
 
     //Sets an entrance only when it wasn't already set
@@ -63,7 +64,8 @@ public class Maze
         }
     }
 
-    //Recursevly calculates the entrances with a given box
+    //Recursevly calculates the entrances with a given scan box, that gets divided verticaly/horizontal until the box
+    //doesn't contain an obstacle or until every side of the box is smaller than the step size. 
     private List<Vector3> calculateEntrances(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize)
     {
         List<Vector3> entrances = new List<Vector3>();
@@ -78,7 +80,7 @@ public class Maze
         if (collisonWithObstacle(center, boxSize / 2))
         {
             Vector3 normalOrthogonal;
-            //Rotates the normal in the local coordinate system to the right(if verical) or up (if !vertical). I am not using a rotation Matrix/Qaternion because it would be to slow.
+            //Rotates the normal in the local coordinate system to the right(if cutVertical) or up (if !cutVertical). I am not using a rotation Matrix/Qaternion because it would be to slow.
             if (cutVertically)
             {
                 if (normal.y == 0)
@@ -100,6 +102,7 @@ public class Maze
             Vector3 boxSiceCopy = boxSize;
             boxSiceCopy.Scale(normalOrthogonalMask);
 
+            //Will be used to determine the new centers
             float quarterBoxLengthInDirection = boxSiceCopy.magnitude / 2;
 
             if (boxSize.x <= stepSize && boxSize.y <= stepSize && boxSize.z <= stepSize)
