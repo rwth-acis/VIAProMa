@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Node
 {
@@ -8,5 +9,8 @@ public class Node
         get;
     }
     
-    
+    private List<Edge> edges
+    {
+        get;
+    }
 }

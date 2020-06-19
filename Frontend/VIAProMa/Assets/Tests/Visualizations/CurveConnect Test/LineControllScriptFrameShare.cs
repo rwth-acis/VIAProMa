@@ -134,7 +134,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                     {
                         IntTriple  cell = new IntTriple(node.x + x, node.y + y, node.z + z);
 
-                        if ( !collisonWithObstacle(tupleToVector(cell,stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)) )
+                        if (!collisonWithObstacle(tupleToVector(cell,stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)) )
                         {
                             neighbors.Add(cell);
                         }                        
@@ -261,21 +261,5 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         return null;
     }
-
-    List<Vector3> HPA()
-    {
-        //Create start cluster
-
-        return null;
-    }
-
-    //Make cube clutsers. Divide each side on a cube in a normal cluster and use normal HPA entrance generation on it.
-    //Then, use 3D A* to find path between the entrances.
-    void abstractCluster()
-    {
-          
-    }
-
-
 
 }

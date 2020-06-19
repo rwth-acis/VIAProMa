@@ -48,4 +48,9 @@ public class IntTriple
     {
         return new IntTriple(triple.x * scalar, triple.y * scalar , triple.z * scalar);
     }
+
+    public static IntTriple operator /(IntTriple triple, int scalar)
+    {
+        return new IntTriple(triple.x / scalar, triple.y / scalar, triple.z / scalar);
+    }
 }

@@ -3,9 +3,9 @@
 public class Edge
 {
     float costs;
-    Node endNode;
+    Object endNode;
 
-    public Edge(Node node, float costs)
+    public Edge(Object node, float costs)
     {
         endNode = node;
         this.costs = costs;

@@ -22,20 +22,63 @@ public class Maze
     {
         Cluster newCluster = new Cluster();
 
-        //check for already computed entrances of adjacent clusters (not in diagonal direction)
-        for (int x = -1; x <= 1; x += 2)
+        //Set the entrance for every site
+
+        //Iterates through the triples like (-1,0,0) -> (1,0,0) -> (0,-1,0) -> (0,1,0) ...
+        IntTriple TripleIterator(IntTriple triple)
         {
-            setUniqueEntrances(newCluster, clusterNumber, new IntTriple(x, 0, 0));
+            if (triple.x < 0 || triple.y < 0 || triple.z < 0)
+                return (triple * -1);
+            else
+                return new IntTriple(0, -triple.x, -triple.y);
         }
 
-        for (int y = -1; y <= 1; y += 2)
+        for (IntTriple x = new IntTriple(-1, 0, 0); x != new IntTriple(0, 0, 0); x=TripleIterator(x))
         {
-            setUniqueEntrances(newCluster, clusterNumber, new IntTriple(0, y, 0));
+            setUniqueEntrances(newCluster, clusterNumber, x);
         }
 
-        for (int z = -1; z <= 1; z += 2)
+        List<IntTriple> GetNeighbors(IntTriple node)
         {
-            setUniqueEntrances(newCluster, clusterNumber, new IntTriple(0, 0, z));
+            List<IntTriple> neighbors = new List<IntTriple>();
+
+
+            for (int x = -1; x <= 1; x += 1)
+            {
+                for (int y = -1; y <= 1; y += 1)
+                {
+                    for (int z = -1; z <= 1; z += 1)
+                    {
+                        IntTriple cell = new IntTriple(node.x + x, node.y + y, node.z + z);
+                        if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
+                            && clusterNumber == cell/clusterSize) //stay in the same cluster
+                        {
+                            if (!collisonWithObstacle(tupleToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
+                            {
+                                neighbors.Add(cell);
+                            }
+                        }
+                    }
+                }
+            }
+            return neighbors;
+        }
+
+        //calculate edges between entrances
+        for (IntTriple x = new IntTriple(-1, 0, 0); x != new IntTriple(0, 0, 1); x = TripleIterator(x))
+        {
+            for (IntTriple y = TripleIterator(x); y != new IntTriple(0, 0, 0); y = TripleIterator(y))
+            {
+                foreach (Entrance entranceX in newCluster.getEntrances(x))
+                {
+                    foreach (Entrance entranceY in newCluster.getEntrances(y))
+                    {
+                        float costs = AStar.AStarSearch(entranceX.position + tupleToVector(x * -1,stepSize/2), entranceY.position + tupleToVector(y * -1, stepSize / 2), stepSize, GetNeighbors, false).length;
+                        entranceX.edges.Add(new Edge(entranceY, costs));
+                        entranceY.edges.Add(new Edge(entranceX, costs));
+                    }
+                }
+            }
         }
 
         clusters.Add(clusterNumber,newCluster);
@@ -66,17 +109,15 @@ public class Maze
 
     //Recursevly calculates the entrances with a given scan box, that gets divided verticaly/horizontal until the box
     //doesn't contain an obstacle or until every side of the box is smaller than the step size. 
-    private List<Vector3> calculateEntrances(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize)
+    private List<Entrance> calculateEntrances(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize)
     {
-        List<Vector3> entrances = new List<Vector3>();
+        List<Entrance> entrances = new List<Entrance>();
         calculateEntrancesHelper(center, boxSize, normal, stepSize, true, entrances);
         return entrances;
     }
 
-    private void calculateEntrancesHelper(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize, bool cutVertically, List<Vector3> entrances)
+    private void calculateEntrancesHelper(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize, bool cutVertically, List<Entrance> entrances)
     {
-        
-
         if (collisonWithObstacle(center, boxSize / 2))
         {
             Vector3 normalOrthogonal;
@@ -115,7 +156,7 @@ public class Maze
         }
         else
         {
-            entrances.Add(center);
+            entrances.Add(new Entrance(center));
         }
     }
 }
