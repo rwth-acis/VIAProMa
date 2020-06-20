@@ -4,22 +4,13 @@ using UnityEngine;
 
 public class HPAStar
 {
-    private GameObject startObject;
-    private GameObject goalObject;
-    private Maze searchMaze;
+    
 
-    public HPAStar(GameObject startObject, GameObject goalObject, float stepSize, int clusterSize)
+    public static List<Vector3> HPAStarSearch(Vector3 start, Vector3 goal, float stepSize, int clusterSize)
     {
-        this.startObject = startObject;
-        this.goalObject = goalObject;
-        searchMaze = new Maze(stepSize, clusterSize);
-    }
-
-    public List<Vector3> HPAStarSearch()
-    {
-        //
-
-
+        Maze searchMaze = new Maze(stepSize, clusterSize);
+        searchMaze.InsertStartOrGoalNode(start, true);
+        searchMaze.InsertStartOrGoalNode(goal, false);
 
         return null;
     }

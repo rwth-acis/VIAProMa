@@ -6,6 +6,8 @@ public class Cluster
 {
     //The entraces on the cluster side (1,0,0) for example would be the entraces on the plane that is in direction (1,0,0) from the middle of the cluster.
     private Dictionary<IntTriple, List<Entrance>> clusterSides;
+    public Entrance start { get; set; }
+    public Entrance goal { get; set; }
 
     public Cluster()
     {

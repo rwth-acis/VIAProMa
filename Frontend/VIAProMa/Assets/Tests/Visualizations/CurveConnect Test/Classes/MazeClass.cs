@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static LineControllScriptFrameShare;
@@ -9,7 +9,7 @@ public class Maze
     private Dictionary<IntTriple, Cluster> clusters;
     private float stepSize; //how big are the cells
     private int clusterSize; //how many cells are in one edge of a cluster
-    
+
 
     public Maze(float stepSize, int clusterSize)
     {
@@ -18,27 +18,18 @@ public class Maze
         this.clusterSize = clusterSize;
     }
 
-    public void addCluster(IntTriple clusterNumber)
+    //Iterates through the triples like (-1,0,0) -> (1,0,0) -> (0,-1,0) -> (0,1,0) ...
+    private IntTriple TripleIterator(IntTriple triple)
     {
-        Cluster newCluster = new Cluster();
+        if (triple.x < 0 || triple.y < 0 || triple.z < 0)
+            return (triple * -1);
+        else
+            return new IntTriple(0, -triple.x, -triple.y);
+    }
 
-        //Set the entrance for every site
-
-        //Iterates through the triples like (-1,0,0) -> (1,0,0) -> (0,-1,0) -> (0,1,0) ...
-        IntTriple TripleIterator(IntTriple triple)
-        {
-            if (triple.x < 0 || triple.y < 0 || triple.z < 0)
-                return (triple * -1);
-            else
-                return new IntTriple(0, -triple.x, -triple.y);
-        }
-
-        for (IntTriple x = new IntTriple(-1, 0, 0); x != new IntTriple(0, 0, 0); x=TripleIterator(x))
-        {
-            setUniqueEntrances(newCluster, clusterNumber, x);
-        }
-
-        List<IntTriple> GetNeighbors(IntTriple node)
+    Func<IntTriple, List<IntTriple>> GetNeighborsFunctionGenerator(IntTriple clusterNumber)
+    {
+        List<IntTriple> getNeighbors(IntTriple node)
         {
             List<IntTriple> neighbors = new List<IntTriple>();
 
@@ -51,7 +42,7 @@ public class Maze
                     {
                         IntTriple cell = new IntTriple(node.x + x, node.y + y, node.z + z);
                         if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
-                            && clusterNumber == cell/clusterSize) //stay in the same cluster
+                            && clusterNumber == cell / clusterSize) //stay in the same cluster
                         {
                             if (!collisonWithObstacle(tupleToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
                             {
@@ -64,6 +55,26 @@ public class Maze
             return neighbors;
         }
 
+        return getNeighbors;
+
+    }
+
+    public void addCluster(IntTriple clusterNumber)
+    {
+        if (clusters.ContainsKey(clusterNumber))
+            return;
+
+        Cluster newCluster = new Cluster();
+
+        //Set the entrance for every site
+
+        for (IntTriple x = new IntTriple(-1, 0, 0); x != new IntTriple(0, 0, 0); x = TripleIterator(x))
+        {
+            setUniqueEntrances(newCluster, clusterNumber, x);
+        }
+
+
+
         //calculate edges between entrances
         for (IntTriple x = new IntTriple(-1, 0, 0); x != new IntTriple(0, 0, 1); x = TripleIterator(x))
         {
@@ -73,7 +84,7 @@ public class Maze
                 {
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
-                        float costs = AStar.AStarSearch(entranceX.position + tupleToVector(x * -1,stepSize/2), entranceY.position + tupleToVector(y * -1, stepSize / 2), stepSize, GetNeighbors, false).length;
+                        float costs = AStar.AStarSearch(entranceX.position + tupleToVector(x * -1, stepSize / 2), entranceY.position + tupleToVector(y * -1, stepSize / 2), stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
                         entranceX.edges.Add(new Edge(entranceY, costs));
                         entranceY.edges.Add(new Edge(entranceX, costs));
                     }
@@ -81,7 +92,7 @@ public class Maze
             }
         }
 
-        clusters.Add(clusterNumber,newCluster);
+        clusters.Add(clusterNumber, newCluster);
     }
 
     //Sets an entrance only when it wasn't already set
@@ -96,12 +107,12 @@ public class Maze
         //No => calculate the entrances
         else
         {
-            Vector3 directionVec = tupleToVector(direction,1);
+            Vector3 directionVec = tupleToVector(direction, 1);
             Vector3 directionVecMask = new Vector3(Abs(directionVec.x), Abs(directionVec.y), Abs(directionVec.z));
             float clusterLength = clusterSize * stepSize;
             cluster.setEntrances(direction,
-                 calculateEntrances(tupleToVector(clusterNumber,clusterLength) + directionVec*clusterLength / 2, //This is the middle of the clusterside in direction 'direction'
-                 (directionVecMask * stepSize)/2 + (new Vector3(1,1,1)- directionVecMask) * clusterLength, //This results in a cube with the length 'stepSize/2' in direction 'direction' and the length 'clusterLength' in the other two orthogonal directions
+                 calculateEntrances(tupleToVector(clusterNumber, clusterLength) + directionVec * clusterLength / 2, //This is the middle of the clusterside in direction 'direction'
+                 (directionVecMask * stepSize) / 2 + (new Vector3(1, 1, 1) - directionVecMask) * clusterLength, //This results in a cube with the length 'stepSize/2' in direction 'direction' and the length 'clusterLength' in the other two orthogonal directions
                  direction, stepSize)
                  );
         }
@@ -134,10 +145,10 @@ public class Maze
                 if (normal.x == 0)
                     normalOrthogonal = new Vector3(0, normal.z, normal.y);
                 else
-                    normalOrthogonal = new Vector3(0,0,1);
+                    normalOrthogonal = new Vector3(0, 0, 1);
             }
             Vector3 normalOrthogonalMask = new Vector3(Abs(normalOrthogonal.x), Abs(normalOrthogonal.y), Abs(normalOrthogonal.z));
-            Vector3 boxScaling = normalOrthogonalMask/ 2;
+            Vector3 boxScaling = normalOrthogonalMask / 2;
             boxScaling = new Vector3(1, 1, 1) - boxScaling;
             boxSize.Scale(boxScaling);
             Vector3 boxSiceCopy = boxSize;
@@ -158,5 +169,31 @@ public class Maze
         {
             entrances.Add(new Entrance(center));
         }
+    }
+
+    //For inserting start and goal into the maze.
+    public void InsertStartOrGoalNode(Vector3 position, bool start)
+    {
+        position /= stepSize * clusterSize;
+        IntTriple clusterNumber = new IntTriple((int)position.x, (int)position.y, (int)position.z);
+        addCluster(clusterNumber);
+        Cluster cluster = clusters[clusterNumber];
+
+        Entrance newNode = new Entrance(position);
+
+        for (IntTriple x = new IntTriple(-1, 0, 0); x != new IntTriple(0, 0, 0); x = TripleIterator(x))
+        {
+            foreach (Entrance entrance in cluster.getEntrances(x))
+            {
+                float costs = AStar.AStarSearch(entrance.position + tupleToVector(x * -1, stepSize / 2), position, stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
+                newNode.edges.Add(new Edge(entrance, costs));
+                entrance.edges.Add(new Edge(newNode, costs));
+            }
+        }
+        if (start)
+            cluster.start = newNode;
+        else
+            cluster.goal = newNode;
+            
     }
 }

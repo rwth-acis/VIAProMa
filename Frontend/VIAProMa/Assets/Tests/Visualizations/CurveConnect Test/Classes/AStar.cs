@@ -7,10 +7,6 @@ using static LineControllScriptFrameShare;
 
 public class AStar
 {
-	public AStar()
-	{
-	}
-
     public static List<Vector3> reconstruct_path(Dictionary<IntTriple, IntTriple> cameFrom, IntTriple current, float stepSize)
     {
         List<Vector3> totalPath = new List<Vector3>();
@@ -29,12 +25,12 @@ public class AStar
     public struct AStarResult
     {
         public List<Vector3> path { get; set; }
-        public float length { get; set; }
+        public float costs { get; set; }
 
         public AStarResult(List<Vector3> path, float length)
         {
             this.path = path;
-            this.length = length;
+            this.costs = length;
         }
     }
 
