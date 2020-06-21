@@ -96,11 +96,11 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
 
         //Test Stuff
-        /*
+        
         Maze test = new Maze(stepSize,5);
         test.addCluster(new IntTriple(0, 0, 0));
         test.addCluster(new IntTriple(0, 0, 1));
-        */
+        
     }
 
     // Update is called once per frame

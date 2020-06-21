@@ -42,7 +42,7 @@ public class Maze
                     for (int z = -1; z <= 1; z += 1)
                     {
                         IntTriple cell = new IntTriple(node.x + x, node.y + y, node.z + z);
-
+                        /*
                         if ((x != 0 || y != 0 || z != 0))
                         {
                             Debug.Log("jo");
@@ -52,9 +52,9 @@ public class Maze
                         {
                             Debug.Log("Jo");
                         }
-
+                        */
                         if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
-                            && clusterNumber == cell / clusterSize) //stay in the same cluster
+                            && clusterNumber == CellToCluster(cell,clusterSize)) //stay in the same cluster
                         {
                             if (!collisonWithObstacle(CellToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
                             {
@@ -119,12 +119,14 @@ public class Maze
         //No => calculate the entrances
         else
         {
-            Vector3 directionVec = CellToVector(direction, 1);
+            Vector3 directionVec = new Vector3(direction.x,direction.y,direction.z);
             Vector3 directionVecMask = new Vector3(Abs(directionVec.x), Abs(directionVec.y), Abs(directionVec.z));
             float clusterLength = clusterSize * stepSize;
             cluster.setEntrances(direction,
                  calculateEntrances(CellToVector(clusterNumber, clusterLength) + directionVec * clusterLength / 2, //This is the middle of the clusterside in direction 'direction'
-                 (directionVecMask * stepSize) / 2 + (new Vector3(1, 1, 1) - directionVecMask) * clusterLength, //This results in a cube with the length 'stepSize/2' in direction 'direction' and the length 'clusterLength' in the other two orthogonal directions
+                 (directionVecMask * stepSize) / 2 + (new Vector3(1, 1, 1) - directionVecMask) * clusterLength, //This results in a cube with the length 'stepSize/2' in direction 
+                                                                                                                //'direction' and the length 'clusterLength' in the other two orthogonal
+                                                                                                                //directions. It will be used to scan for obstacles on the cluster side
                  direction, stepSize)
                  );
         }
@@ -143,9 +145,9 @@ public class Maze
     {
         if (collisonWithObstacle(center, boxSize / 2))
         {
-            Vector3 normalOrthogonal;
+            Vector3 normalOrthogonal = new Vector3();
             //Rotates the normal in the local coordinate system to the right(if cutVertical) or up (if !cutVertical). I am not using a rotation Matrix/Qaternion because it would be to slow.
-            if (cutVertically)
+            /*if (cutVertically)
             {
                 if (normal.y == 0)
                     normalOrthogonal = new Vector3(normal.z, normal.x, 0);
@@ -159,6 +161,43 @@ public class Maze
                 else
                     normalOrthogonal = new Vector3(0, 0, 1);
             }
+            */
+
+            Vector3 normalVec = new Vector3(normal.x, normal.y, normal.z);
+            /*
+            if (normal.y == 0)
+            {
+                if (cutVertically)
+                    normalOrthogonal = Quaternion.Euler(0, 90, 0) * normalVec;
+                else
+                    normalOrthogonal = new Vector3(0, 1, 0);
+            }
+            else
+            {
+                if (cutVertically)
+                    //normalOrthogonal = Quaternion.Euler(0, 0, 90) * normalVec;
+                    normalOrthogonal = new Vector3(1,0,0);
+                else
+                    //normalOrthogonal = Quaternion.Euler(90, 0, 0) * normalVec;
+                    normalOrthogonal = new Vector3(0, 0, 1);
+            }
+            */
+
+            if (cutVertically)
+            {
+                if (normal.x != 0)
+                    normalOrthogonal = new Vector3(0, 0, 1);
+                else
+                    normalOrthogonal = new Vector3(1, 0, 0);
+            }
+            else
+            {
+                if (normal.y == 0)
+                    normalOrthogonal = new Vector3(0, 1, 0);
+                else
+                    normalOrthogonal = new Vector3(0,0,1);
+            }
+           
             Vector3 normalOrthogonalMask = new Vector3(Abs(normalOrthogonal.x), Abs(normalOrthogonal.y), Abs(normalOrthogonal.z));
             Vector3 boxScaling = normalOrthogonalMask / 2;
             boxScaling = new Vector3(1, 1, 1) - boxScaling;
