@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
+using static IntTriple;
 
 public class LineControllScriptFrameShare : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
     Dictionary<IntTriple, float> gScore;
     IntTriple current;
     int framecount = 0;
+    IntTriple goalCell;
 
     //For distinguishing between random objects and start/goal
     List<GameObject> startGoalObjectsWithCollider;
@@ -94,9 +96,11 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
 
         //Test Stuff
+        /*
         Maze test = new Maze(stepSize,5);
         test.addCluster(new IntTriple(0, 0, 0));
         test.addCluster(new IntTriple(0, 0, 1));
+        */
     }
 
     // Update is called once per frame
@@ -134,7 +138,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                     {
                         IntTriple  cell = new IntTriple(node.x + x, node.y + y, node.z + z);
 
-                        if (!collisonWithObstacle(tupleToVector(cell,stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)) )
+                        if (!collisonWithObstacle(CellToVector(cell,stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)) )
                         {
                             neighbors.Add(cell);
                         }                        
@@ -171,23 +175,17 @@ public class LineControllScriptFrameShare : MonoBehaviour
     List<Vector3> reconstruct_path(Dictionary<IntTriple, IntTriple> cameFrom, IntTriple current)
     {
         List<Vector3> totalPath = new List<Vector3>();
-        totalPath.Add(tupleToVector(current, stepSize));
+        totalPath.Add(CellToVector(current, stepSize));
 
         IntTriple ancestor;
         while (cameFrom.TryGetValue(current, out ancestor))
         {
-            totalPath.Add(tupleToVector(ancestor, stepSize));
+            totalPath.Add(CellToVector(ancestor, stepSize));
             current = ancestor;
         }
 
         return totalPath;
     }
-
-    public static Vector3 tupleToVector(IntTriple tuple, float stepSize)
-    {
-        return new Vector3(tuple.x, tuple.y, tuple.z)*stepSize;
-    }
-
 
     void resetAStar()
     {
@@ -198,10 +196,10 @@ public class LineControllScriptFrameShare : MonoBehaviour
         openSet = new SimplePriorityQueue<IntTriple>();
         cameFrom = new Dictionary<IntTriple, IntTriple>();
         gScore = new Dictionary<IntTriple, float>();
-        Vector3 startPositionContinous = startObject.transform.position / stepSize;
-        IntTriple startPositionDiscrete = new IntTriple((int)startPositionContinous.x, (int)startPositionContinous.y, (int)startPositionContinous.z);
-        openSet.Enqueue(startPositionDiscrete, 0);
-        gScore.Add(startPositionDiscrete, Vector3.Distance(start, goal));
+        IntTriple startPositionCell = VectorToCell(startObject.transform.position, stepSize);
+        goalCell = VectorToCell(goal, stepSize);
+        openSet.Enqueue(startPositionCell, 0);
+        gScore.Add(startPositionCell, Vector3.Distance(start, goal));
         framecount = 0;
     }
     //A* with the heuristic: "euclidian distance between
@@ -219,7 +217,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         while (openSet.Count != 0 && DateTime.Now - startTime < TimeSpan.FromMilliseconds(maxProcessingTimePerFrame))
         {
             current = openSet.Dequeue();
-            if (Vector3.Distance(tupleToVector(current, stepSize), goal) <= stepSize)
+            if (current == goalCell)
             {
                 List<Vector3> optimalPath = reconstruct_path(cameFrom, current);
                 resetAStar();
@@ -231,8 +229,8 @@ public class LineControllScriptFrameShare : MonoBehaviour
             //TODO Maby here multithreading?
             foreach (IntTriple neighbor in neighbors)
             {
-                float h = Vector3.Distance(tupleToVector(neighbor, stepSize), goal);
-                float tentative_gScore = gScore[current] + Vector3.Distance(tupleToVector(current, stepSize), tupleToVector(neighbor, stepSize));
+                float h = Vector3.Distance(CellToVector(neighbor, stepSize), goal);
+                float tentative_gScore = gScore[current] + Vector3.Distance(CellToVector(current, stepSize), CellToVector(neighbor, stepSize));
                 float neighboreGScore;
                 if (gScore.TryGetValue(neighbor, out neighboreGScore))
                 {

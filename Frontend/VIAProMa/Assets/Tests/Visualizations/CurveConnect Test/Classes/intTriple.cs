@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class IntTriple
 {
@@ -52,5 +53,16 @@ public class IntTriple
     public static IntTriple operator /(IntTriple triple, int scalar)
     {
         return new IntTriple(triple.x / scalar, triple.y / scalar, triple.z / scalar);
+    }
+
+    public static Vector3 CellToVector(IntTriple triple, float stepSize)
+    {
+        return new Vector3(triple.x, triple.y, triple.z) *stepSize + new Vector3(stepSize/2,stepSize/2,stepSize/2);
+    }
+
+    public static IntTriple VectorToCell(Vector3 vector, float stepSize)
+    {
+        Vector3 inverseVector = vector /stepSize;
+        return new IntTriple((int)inverseVector.x, (int)inverseVector.y, (int)inverseVector.z);
     }
 }

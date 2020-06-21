@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static LineControllScriptFrameShare;
 using static System.Math;
+using static IntTriple;
 
 public class Maze
 {
@@ -41,10 +42,21 @@ public class Maze
                     for (int z = -1; z <= 1; z += 1)
                     {
                         IntTriple cell = new IntTriple(node.x + x, node.y + y, node.z + z);
+
+                        if ((x != 0 || y != 0 || z != 0))
+                        {
+                            Debug.Log("jo");
+                        }
+                        IntTriple test = cell / clusterSize;
+                        if (test == clusterNumber)
+                        {
+                            Debug.Log("Jo");
+                        }
+
                         if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
                             && clusterNumber == cell / clusterSize) //stay in the same cluster
                         {
-                            if (!collisonWithObstacle(tupleToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
+                            if (!collisonWithObstacle(CellToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
                             {
                                 neighbors.Add(cell);
                             }
@@ -84,7 +96,7 @@ public class Maze
                 {
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
-                        float costs = AStar.AStarSearch(entranceX.position + tupleToVector(x * -1, stepSize / 2), entranceY.position + tupleToVector(y * -1, stepSize / 2), stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
+                        float costs = AStar.AStarSearch(entranceX.position + CellToVector(x * -1, stepSize / 2), entranceY.position + CellToVector(y * -1, stepSize / 2), stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
                         entranceX.edges.Add(new Edge(entranceY, costs));
                         entranceY.edges.Add(new Edge(entranceX, costs));
                     }
@@ -107,11 +119,11 @@ public class Maze
         //No => calculate the entrances
         else
         {
-            Vector3 directionVec = tupleToVector(direction, 1);
+            Vector3 directionVec = CellToVector(direction, 1);
             Vector3 directionVecMask = new Vector3(Abs(directionVec.x), Abs(directionVec.y), Abs(directionVec.z));
             float clusterLength = clusterSize * stepSize;
             cluster.setEntrances(direction,
-                 calculateEntrances(tupleToVector(clusterNumber, clusterLength) + directionVec * clusterLength / 2, //This is the middle of the clusterside in direction 'direction'
+                 calculateEntrances(CellToVector(clusterNumber, clusterLength) + directionVec * clusterLength / 2, //This is the middle of the clusterside in direction 'direction'
                  (directionVecMask * stepSize) / 2 + (new Vector3(1, 1, 1) - directionVecMask) * clusterLength, //This results in a cube with the length 'stepSize/2' in direction 'direction' and the length 'clusterLength' in the other two orthogonal directions
                  direction, stepSize)
                  );
@@ -185,7 +197,7 @@ public class Maze
         {
             foreach (Entrance entrance in cluster.getEntrances(x))
             {
-                float costs = AStar.AStarSearch(entrance.position + tupleToVector(x * -1, stepSize / 2), position, stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
+                float costs = AStar.AStarSearch(entrance.position + CellToVector(x * -1, stepSize / 2), position, stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
                 newNode.edges.Add(new Edge(entrance, costs));
                 entrance.edges.Add(new Edge(newNode, costs));
             }
