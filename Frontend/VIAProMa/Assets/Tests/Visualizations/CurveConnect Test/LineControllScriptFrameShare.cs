@@ -14,20 +14,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
     public Color c2 = Color.red;
     public int maxProcessingTimePerFrame = 25;
 
-
-    //Content for A*
-    Vector3 start;
-    Vector3 goal;
-    //Priority queu that contains the nodes that may need to be expanded
-    SimplePriorityQueue<IntTriple> openSet;
-    //For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start
-    Dictionary<IntTriple, IntTriple> cameFrom;
-    //For node n, gScore[n] is the cost of the cheapest path from start to n currently known.
-    Dictionary<IntTriple, float> gScore;
-    IntTriple current;
-    int framecount = 0;
-    IntTriple goalCell;
-
     //For distinguishing between random objects and start/goal
     List<GameObject> startGoalObjectsWithCollider;
 
@@ -52,7 +38,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
             new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
         );
         lineRenderer.colorGradient = gradient;
-        resetAStar();
 
         //Get the colliders from all child objects of start and goal
         List<Collider> startGoalCollider = new List<Collider>();
@@ -125,21 +110,6 @@ public class LineControllScriptFrameShare : MonoBehaviour
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = lineVectorArray.Length;
         lineRenderer.SetPositions(lineVectorArray);
-        
-
-        /*
-        //List<Vector3> linePath = A_Star(startObject, goalObject);
-        framecount++;
-        if (linePath != null)
-        {
-            LineRenderer lineRenderer = GetComponent<LineRenderer>();
-            lineRenderer.positionCount = linePath.Count + 2;
-
-            linePath.Insert(0, goalObject.transform.position);
-            linePath.Add(startObject.transform.position);
-            lineRenderer.SetPositions(linePath.ToArray());
-        }
-        */
     }
 
     //Functions for the A* Search
@@ -209,95 +179,4 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
         return true;
     }
- 
-    //TODO Improvable by given every node a pointer to it's ancestor which is much quicker then looking it up in a dictonary
-    List<Vector3> reconstruct_path(Dictionary<IntTriple, IntTriple> cameFrom, IntTriple current)
-    {
-        List<Vector3> totalPath = new List<Vector3>();
-        totalPath.Add(CellToVector(current, stepSize));
-
-        IntTriple ancestor;
-        while (cameFrom.TryGetValue(current, out ancestor))
-        {
-            totalPath.Add(CellToVector(ancestor, stepSize));
-            current = ancestor;
-        }
-
-        return totalPath;
-    }
-
-    void resetAStar()
-    {
-        Debug.Log(framecount);
-        start = startObject.transform.position;
-        goal = goalObject.transform.position;
-
-        openSet = new SimplePriorityQueue<IntTriple>();
-        cameFrom = new Dictionary<IntTriple, IntTriple>();
-        gScore = new Dictionary<IntTriple, float>();
-        IntTriple startPositionCell = VectorToCell(startObject.transform.position, stepSize);
-        goalCell = VectorToCell(goal, stepSize);
-        openSet.Enqueue(startPositionCell, 0);
-        gScore.Add(startPositionCell, Vector3.Distance(start, goal));
-        framecount = 0;
-    }
-    //A* with the heuristic: "euclidian distance between
-    //start and goal" which is admissable and consistent.
-    List<Vector3> A_Star(GameObject startObject, GameObject goalObject)
-    {
-        //When finding a path takes longer than 30 frames, give up
-        if (framecount >= 30)
-        {
-            resetAStar();
-        }
-
-        DateTime startTime = DateTime.Now;
-
-        //while (openSet.Count != 0 && DateTime.Now - startTime < TimeSpan.FromMilliseconds(maxProcessingTimePerFrame))
-        while (openSet.Count != 0)
-        {
-            current = openSet.Dequeue();
-            if (current == goalCell)
-            {
-                List<Vector3> optimalPath = reconstruct_path(cameFrom, current);
-                resetAStar();
-                return optimalPath;
-            }
-
-            List<IntTriple> neighbors = GetNeighbors(current);
-
-            //TODO Maby here multithreading?
-            foreach (IntTriple neighbor in neighbors)
-            {
-                float h = Vector3.Distance(CellToVector(neighbor, stepSize), goal);
-                float tentative_gScore = gScore[current] + Vector3.Distance(CellToVector(current, stepSize), CellToVector(neighbor, stepSize));
-                float neighboreGScore;
-                if (gScore.TryGetValue(neighbor, out neighboreGScore))
-                {
-                    if (tentative_gScore < neighboreGScore)
-                    {
-                        cameFrom[neighbor] = current;
-                        gScore[neighbor] = tentative_gScore;
-                        openSet.EnqueueWithoutDuplicates(neighbor, neighboreGScore + h);
-                    }
-                }
-                //if neighbore dosn't have a gScore then it's infinit and therefore bigger than tentative_gScore
-                else
-                {
-                    cameFrom[neighbor] = current;
-                    gScore[neighbor] = tentative_gScore;
-                    openSet.EnqueueWithoutDuplicates(neighbor, tentative_gScore + h);
-                }
-            }
-        }
-        if (openSet.Count == 0)
-        {
-            //open set is empty and goal is never reached => no possible path
-            resetAStar();
-            return new List<Vector3>();
-        }
-
-        return null;
-    }
-
 }
