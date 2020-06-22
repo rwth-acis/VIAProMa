@@ -64,7 +64,10 @@ public class IntTriple
     public static IntTriple VectorToCell(Vector3 vector, float stepSize)
     {
         Vector3 inverseVector = vector /stepSize;
-        return new IntTriple((int)inverseVector.x, (int)inverseVector.y, (int)inverseVector.z);
+        //return new IntTriple((int)inverseVector.x, (int)inverseVector.y, (int)inverseVector.z);
+        return new IntTriple(   inverseVector.x >= 0 ? (int)inverseVector.x : Mathf.FloorToInt(inverseVector.x),
+                                inverseVector.y >= 0 ? (int)inverseVector.y : Mathf.FloorToInt(inverseVector.y),
+                                inverseVector.z >= 0 ? (int)inverseVector.z : Mathf.FloorToInt(inverseVector.z));
     }
 
     public static IntTriple CellToCluster(IntTriple cell, int clusterSize)

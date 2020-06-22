@@ -82,9 +82,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         //Test Stuff
         
-        //Maze test = new Maze(stepSize,5);
-        //test.addCluster(new IntTriple(0, 0, 0));
-        //test.addCluster(new IntTriple(0, 0, 1));
+        Maze test = new Maze(stepSize,5);
+        test.addCluster(new IntTriple(0, 0, 0));
+        test.addCluster(new IntTriple(0, 0, 1));
         
     }
 
@@ -96,7 +96,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         //List<Vector3> linePath = A_Star(startObject, goalObject);
         
-        List<IntTriple> linePathCell = AStar.AStarSearchTest<IntTriple>(startCell, goalCell, stepSize, GetNeighbors, (x,y) => x==y, HeuristicGenerator(goalObject.transform.position), CostsBetween).path;
+        List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCell, goalCell, stepSize, GetNeighbors, (x,y) => x==y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize)).path;
         
         
         Vector3[] lineVectorArray = new Vector3[linePathCell.Count+2];
@@ -144,7 +144,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         return neighbors;
     }
 
-    Func<IntTriple, float> HeuristicGenerator(Vector3 goal)
+    public  static Func<IntTriple, float> HeuristicGenerator(Vector3 goal, float stepSize)
     {
         float Heuristic(IntTriple cell)
         {
@@ -153,9 +153,13 @@ public class LineControllScriptFrameShare : MonoBehaviour
         return Heuristic;
     }
 
-    float CostsBetween(IntTriple cell1, IntTriple cell2)
+    public static Func<IntTriple, IntTriple, float> CostsBetweenGenerator(float stepSize)
     {
-        return Vector3.Distance(CellToVector(cell1,stepSize),CellToVector(cell2,stepSize));
+        float CostsBetween(IntTriple cell1, IntTriple cell2)
+        {
+            return Vector3.Distance(CellToVector(cell1, stepSize), CellToVector(cell2, stepSize));
+        }
+        return CostsBetween;
     }
 
     //Only things outside the boundingbox of start and goal are considered obstacles

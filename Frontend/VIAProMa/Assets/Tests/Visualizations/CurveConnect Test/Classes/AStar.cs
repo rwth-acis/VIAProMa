@@ -63,7 +63,7 @@ public class AStar
     }
 
 
-    public static AStarResult<T> AStarSearchTest<T>(T start, T goal, float stepSize, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T,T,float> CostsBetween, bool calculatePath = true)
+    public static AStarResult<T> AStarSearch<T>(T start, T goal, float stepSize, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T,T,float> CostsBetween, bool calculatePath = true)
     {
 
 

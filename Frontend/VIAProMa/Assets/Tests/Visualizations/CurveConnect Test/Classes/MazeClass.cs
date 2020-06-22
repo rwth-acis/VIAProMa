@@ -96,7 +96,9 @@ public class Maze
                 {
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
-                        float costs = AStar.AStarSearch(entranceX.position + CellToVector(x * -1, stepSize / 2), entranceY.position + CellToVector(y * -1, stepSize / 2), stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
+                        float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entranceX.position + CellToVector(x * -1, stepSize / 2),stepSize), VectorToCell(entranceY.position + CellToVector(y * -1, stepSize / 2),stepSize), 
+                            stepSize, GetNeighborsFunctionGenerator(clusterNumber), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
+                            LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
                         entranceX.edges.Add(new Edge(entranceY, costs));
                         entranceY.edges.Add(new Edge(entranceX, costs));
                     }
