@@ -96,7 +96,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         //List<Vector3> linePath = A_Star(startObject, goalObject);
         
-        List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCell, goalCell, stepSize, GetNeighbors, (x,y) => x==y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize)).path;
+        List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCell, goalCell, GetNeighbors, (x,y) => x==y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize)).path;
         
         
         Vector3[] lineVectorArray = new Vector3[linePathCell.Count+2];

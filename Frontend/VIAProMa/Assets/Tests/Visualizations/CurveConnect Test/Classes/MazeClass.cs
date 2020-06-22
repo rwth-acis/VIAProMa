@@ -19,14 +19,7 @@ public class Maze
         this.clusterSize = clusterSize;
     }
 
-    //Iterates through the triples like (-1,0,0) -> (1,0,0) -> (0,-1,0) -> (0,1,0) ...
-    private IntTriple TripleIterator(IntTriple triple)
-    {
-        if (triple.x < 0 || triple.y < 0 || triple.z < 0)
-            return (triple * -1);
-        else
-            return new IntTriple(0, -triple.x, -triple.y);
-    }
+   
 
     Func<IntTriple, List<IntTriple>> GetNeighborsFunctionGenerator(IntTriple clusterNumber)
     {
@@ -96,11 +89,11 @@ public class Maze
                 {
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
-                        float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entranceX.position + CellToVector(x * -1, stepSize / 2),stepSize), VectorToCell(entranceY.position + CellToVector(y * -1, stepSize / 2),stepSize), 
-                            stepSize, GetNeighborsFunctionGenerator(clusterNumber), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
+                        float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entranceX.position + CellToVector(x * -1, stepSize / 2),stepSize), VectorToCell(entranceY.position + CellToVector(y * -1, stepSize / 2),stepSize),
+                            GetNeighborsFunctionGenerator(clusterNumber), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
                             LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
-                        entranceX.edges.Add(new Edge(entranceY, costs));
-                        entranceY.edges.Add(new Edge(entranceX, costs));
+                        entranceX.edges.Add(entranceY, costs);
+                        entranceY.edges.Add(entranceX, costs);
                     }
                 }
             }
@@ -148,42 +141,8 @@ public class Maze
         if (collisonWithObstacle(center, boxSize / 2))
         {
             Vector3 normalOrthogonal = new Vector3();
-            //Rotates the normal in the local coordinate system to the right(if cutVertical) or up (if !cutVertical). I am not using a rotation Matrix/Qaternion because it would be to slow.
-            /*if (cutVertically)
-            {
-                if (normal.y == 0)
-                    normalOrthogonal = new Vector3(normal.z, normal.x, 0);
-                else
-                    normalOrthogonal = new Vector3(0, 1, 0);
-            }
-            else
-            {
-                if (normal.x == 0)
-                    normalOrthogonal = new Vector3(0, normal.z, normal.y);
-                else
-                    normalOrthogonal = new Vector3(0, 0, 1);
-            }
-            */
 
             Vector3 normalVec = new Vector3(normal.x, normal.y, normal.z);
-            /*
-            if (normal.y == 0)
-            {
-                if (cutVertically)
-                    normalOrthogonal = Quaternion.Euler(0, 90, 0) * normalVec;
-                else
-                    normalOrthogonal = new Vector3(0, 1, 0);
-            }
-            else
-            {
-                if (cutVertically)
-                    //normalOrthogonal = Quaternion.Euler(0, 0, 90) * normalVec;
-                    normalOrthogonal = new Vector3(1,0,0);
-                else
-                    //normalOrthogonal = Quaternion.Euler(90, 0, 0) * normalVec;
-                    normalOrthogonal = new Vector3(0, 0, 1);
-            }
-            */
 
             if (cutVertically)
             {
@@ -225,12 +184,12 @@ public class Maze
     }
 
     //For inserting start and goal into the maze.
-    public void InsertStartOrGoalNode(Vector3 position, bool start)
+    public Entrance InsertStartOrGoalNode(Vector3 position, bool start)
     {
-        position /= stepSize * clusterSize;
-        IntTriple clusterNumber = new IntTriple((int)position.x, (int)position.y, (int)position.z);
+        IntTriple clusterNumber = CellToCluster(VectorToCell(position,stepSize),clusterSize);
         addCluster(clusterNumber);
         Cluster cluster = clusters[clusterNumber];
+        IntTriple goalCell = VectorToCell(position,stepSize);
 
         Entrance newNode = new Entrance(position);
 
@@ -238,15 +197,19 @@ public class Maze
         {
             foreach (Entrance entrance in cluster.getEntrances(x))
             {
-                float costs = AStar.AStarSearch(entrance.position + CellToVector(x * -1, stepSize / 2), position, stepSize, GetNeighborsFunctionGenerator(clusterNumber), false).costs;
-                newNode.edges.Add(new Edge(entrance, costs));
-                entrance.edges.Add(new Edge(newNode, costs));
+               
+                float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entrance.position + CellToVector(x * -1, stepSize / 2), stepSize), goalCell,
+                            GetNeighborsFunctionGenerator(clusterNumber), (item1, item2) => item1 == item2, LineControllScriptFrameShare.HeuristicGenerator(position, stepSize),
+                            LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
+                newNode.edges.Add(entrance, costs);
+                entrance.edges.Add(newNode, costs);
             }
         }
         if (start)
             cluster.start = newNode;
         else
             cluster.goal = newNode;
-            
+
+        return newNode;
     }
 }

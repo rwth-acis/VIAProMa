@@ -53,4 +53,6 @@ public class Triple<T1, T2, T3> : IEquatable<Object>
     {
         return !triple1.Equals(triple2);
     }
+
+
 }

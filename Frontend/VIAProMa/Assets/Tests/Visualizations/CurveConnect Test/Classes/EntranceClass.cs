@@ -6,12 +6,16 @@ public class Entrance
 {
     public Vector3 position
     { get; }
-    public List<Edge> edges
+    //public List<Edge> edgesOld
+    //{ get; }
+
+    public Dictionary<Entrance, float> edges
     { get; }
 
     public Entrance(Vector3 position)
     {
         this.position = position;
-        edges = new List<Edge>();
+        //edgesOld = new List<Edge>();
+        edges = new Dictionary<Entrance, float>();
     }
 }
