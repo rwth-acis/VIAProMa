@@ -92,8 +92,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected int deviceUsedTarget;
     protected string textToShow;
     protected string targetTextToShow;
-    protected Sprite hololensIcon;
-    protected Sprite htcViveIcon;
+    [SerializeField] private Sprite hololensIcon;
+    [SerializeField] private Sprite htcViveIcon;
     [HideInInspector] public bool sharingGlobal { get; private set; }
     // GetComponent variables
     private TextMeshPro globalGazingLabel;
@@ -105,8 +105,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     {
         StaticGaze.InstantiateSharing();
         InstantiateSharingGlobal();
-        hololensIcon = Resources.Load<Sprite>("hololens");
-        htcViveIcon = Resources.Load<Sprite>("htcVivePro");
         SetColorOfArrow();
         // GetComponent variables
         globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
