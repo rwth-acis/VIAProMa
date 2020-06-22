@@ -97,16 +97,38 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         //Test Stuff
         
-        Maze test = new Maze(stepSize,5);
-        test.addCluster(new IntTriple(0, 0, 0));
-        test.addCluster(new IntTriple(0, 0, 1));
+        //Maze test = new Maze(stepSize,5);
+        //test.addCluster(new IntTriple(0, 0, 0));
+        //test.addCluster(new IntTriple(0, 0, 1));
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        List<Vector3> linePath = A_Star(startObject, goalObject);
+        IntTriple startCell = VectorToCell(startObject.transform.position,stepSize);
+        IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
+
+        //List<Vector3> linePath = A_Star(startObject, goalObject);
+        
+        List<IntTriple> linePathCell = AStar.AStarSearchTest<IntTriple>(startCell, goalCell, stepSize, GetNeighbors, (x,y) => x==y, HeuristicGenerator(goalObject.transform.position), CostsBetween).path;
+        
+        
+        Vector3[] lineVectorArray = new Vector3[linePathCell.Count+2];
+        lineVectorArray[0] = goalObject.transform.position;
+        for (int i = 1; i < linePathCell.Count+1; i++)
+        {
+            lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+        }
+        lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.positionCount = lineVectorArray.Length;
+        lineRenderer.SetPositions(lineVectorArray);
+        
+
+        /*
+        //List<Vector3> linePath = A_Star(startObject, goalObject);
         framecount++;
         if (linePath != null)
         {
@@ -117,10 +139,13 @@ public class LineControllScriptFrameShare : MonoBehaviour
             linePath.Add(startObject.transform.position);
             lineRenderer.SetPositions(linePath.ToArray());
         }
+        */
     }
 
+    //Functions for the A* Search
+
     //gets the neighbors of a node by projecting a cube with the length stepSize  to every side and then checks for collision.
-    List<IntTriple> getNeighbors(IntTriple node)
+    List<IntTriple> GetNeighbors(IntTriple node)
     {
         //TODO map to the plane between start and goal
         List<IntTriple> neighbors = new List<IntTriple>();
@@ -147,6 +172,20 @@ public class LineControllScriptFrameShare : MonoBehaviour
             }
         }
         return neighbors;
+    }
+
+    Func<IntTriple, float> HeuristicGenerator(Vector3 goal)
+    {
+        float Heuristic(IntTriple cell)
+        {
+            return Vector3.Distance(CellToVector(cell,stepSize),goal);
+        }
+        return Heuristic;
+    }
+
+    float CostsBetween(IntTriple cell1, IntTriple cell2)
+    {
+        return Vector3.Distance(CellToVector(cell1,stepSize),CellToVector(cell2,stepSize));
     }
 
     //Only things outside the boundingbox of start and goal are considered obstacles
@@ -213,8 +252,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
 
         DateTime startTime = DateTime.Now;
-        
-        while (openSet.Count != 0 && DateTime.Now - startTime < TimeSpan.FromMilliseconds(maxProcessingTimePerFrame))
+
+        //while (openSet.Count != 0 && DateTime.Now - startTime < TimeSpan.FromMilliseconds(maxProcessingTimePerFrame))
+        while (openSet.Count != 0)
         {
             current = openSet.Dequeue();
             if (current == goalCell)
@@ -224,7 +264,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                 return optimalPath;
             }
 
-            List<IntTriple> neighbors = getNeighbors(current);
+            List<IntTriple> neighbors = GetNeighbors(current);
 
             //TODO Maby here multithreading?
             foreach (IntTriple neighbor in neighbors)
