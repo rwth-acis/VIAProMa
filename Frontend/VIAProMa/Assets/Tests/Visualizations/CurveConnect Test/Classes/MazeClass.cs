@@ -35,17 +35,7 @@ public class Maze
                     for (int z = -1; z <= 1; z += 1)
                     {
                         IntTriple cell = new IntTriple(node.x + x, node.y + y, node.z + z);
-                        /*
-                        if ((x != 0 || y != 0 || z != 0))
-                        {
-                            Debug.Log("jo");
-                        }
-                        IntTriple test = cell / clusterSize;
-                        if (test == clusterNumber)
-                        {
-                            Debug.Log("Jo");
-                        }
-                        */
+
                         if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
                             && clusterNumber == CellToCluster(cell,clusterSize)) //stay in the same cluster
                         {
@@ -89,6 +79,8 @@ public class Maze
                 {
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
+                        if (CellToCluster(VectorToCell(entranceX.position, stepSize), clusterSize) != CellToCluster(VectorToCell(entranceY.position, stepSize), clusterSize))
+                            Debug.Log("Mäh");
                         float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entranceX.position + CellToVector(x * -1, stepSize / 2),stepSize), VectorToCell(entranceY.position + CellToVector(y * -1, stepSize / 2),stepSize),
                             GetNeighborsFunctionGenerator(clusterNumber), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
                             LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;

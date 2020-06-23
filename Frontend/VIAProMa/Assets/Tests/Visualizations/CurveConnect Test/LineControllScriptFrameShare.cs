@@ -66,7 +66,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         boundingboxOnOtherLayer.size = startBoundingBox.size;
         boundingboxOnOtherLayer.center = startBoundingBox.center;
 
-        
+
         boundContainerEnd = new GameObject();
         boundContainerEnd.transform.parent = goalObject.transform;
         boundContainerEnd.transform.localPosition = Vector3.zero;
@@ -81,16 +81,20 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
 
         //Test Stuff
-        
-        Maze test = new Maze(stepSize,5);
-        test.addCluster(new IntTriple(0, 0, 0));
-        test.addCluster(new IntTriple(0, 0, 1));
-        
-    }
 
+        //Maze test = new Maze(stepSize,5);
+        //test.addCluster(new IntTriple(0, 0, 0));
+        //test.addCluster(new IntTriple(0, 0, 1));
+        List<Vector3> lineVectorList = HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, 1, 5);
+
+        lineRenderer.positionCount = lineVectorList.Count;
+        lineRenderer.SetPositions(lineVectorList.ToArray());
+
+    }
     // Update is called once per frame
     void Update()
     {
+        /*
         IntTriple startCell = VectorToCell(startObject.transform.position,stepSize);
         IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
 
@@ -110,6 +114,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = lineVectorArray.Length;
         lineRenderer.SetPositions(lineVectorArray);
+        */
     }
 
     //Functions for the A* Search

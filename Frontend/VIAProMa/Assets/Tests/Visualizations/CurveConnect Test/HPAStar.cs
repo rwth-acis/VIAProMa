@@ -15,7 +15,14 @@ public class HPAStar
         Entrance goalEntrance = searchMaze.InsertStartOrGoalNode(goal, false);
         List<Entrance> path = AStar.AStarSearch<Entrance>(startEntrance,goalEntrance, GetNeighboresGenerator(searchMaze, stepSize, clusterSize), (x,y) => x==y, HeuristicGenerator(goal), CostsBetween).path;
 
-        return null;
+        List<Vector3> positions = new List<Vector3>();
+
+        foreach (Entrance entrance in path)
+        {
+            positions.Add(entrance.position);
+        }
+
+        return positions;
     }
 
     static Func<Entrance, List<Entrance>> GetNeighboresGenerator(Maze searchMaze, float stepSize, int clusterSize)
