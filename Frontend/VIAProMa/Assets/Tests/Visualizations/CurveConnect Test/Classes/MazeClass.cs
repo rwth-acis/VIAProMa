@@ -21,7 +21,7 @@ public class Maze
 
    
 
-    Func<IntTriple, List<IntTriple>> GetNeighborsFunctionGenerator(IntTriple clusterNumber)
+    public static Func<IntTriple, List<IntTriple>> GetNeighborsFunctionGenerator(IntTriple clusterNumber, int clusterSize, float stepSize)
     {
         List<IntTriple> getNeighbors(IntTriple node)
         {
@@ -59,6 +59,10 @@ public class Maze
         if (clusters.ContainsKey(clusterNumber))
             return;
 
+        //Don't go below the ground
+        if (clusterNumber.y < 0)
+            return;
+
         Cluster newCluster = new Cluster();
 
         //Set the entrance for every site
@@ -79,7 +83,7 @@ public class Maze
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
                         float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entranceX.position + CellToVector(x * -1, stepSize / 2),stepSize), VectorToCell(entranceY.position + CellToVector(y * -1, stepSize / 2),stepSize),
-                            GetNeighborsFunctionGenerator(clusterNumber), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
+                            GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
                             LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
                         entranceX.edges.Add(entranceY, costs);
                         entranceY.edges.Add(entranceX, costs);
@@ -188,7 +192,7 @@ public class Maze
             {
                
                 float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entrance.position + CellToVector(x * -1, stepSize / 2), stepSize), goalCell,
-                            GetNeighborsFunctionGenerator(clusterNumber), (item1, item2) => item1 == item2, LineControllScriptFrameShare.HeuristicGenerator(position, stepSize),
+                            GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1, item2) => item1 == item2, LineControllScriptFrameShare.HeuristicGenerator(position, stepSize),
                             LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
                 newNode.edges.Add(entrance, costs);
                 entrance.edges.Add(newNode, costs);

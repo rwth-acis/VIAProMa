@@ -7,18 +7,19 @@ using static LineControllScriptFrameShare;
 
 public class Greedy
 {
-    public static List<T> GreedySearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic)
+    public static AStar.AStarResult<T> GreedySearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween)
     {
         //SimplePriorityQueue<T> openSet = new SimplePriorityQueue<T>();
         //openSet.Enqueue(start,Heuristic(start));
         int count = 0;
+        float pathCosts = 0;
         List<T> path = new List<T>();
         path.Add(start);
         T current = start;
         T cheapestNeigbor = start;
         float lowestCosts = float.PositiveInfinity;
 
-        while (!GoalTest(current,goal) && count < 300)
+        while (!GoalTest(current, goal) && count < 300)
         {
             List<T> neigbors = GetNeighbors(current);
             foreach (T neighbor in neigbors)
@@ -31,10 +32,11 @@ public class Greedy
                 }
             }
             lowestCosts = float.PositiveInfinity;
+            pathCosts += CostsBetween(current,cheapestNeigbor);
             current = cheapestNeigbor;
             path.Add(current);
             count++;
         }
-        return path;
+        return new AStar.AStarResult<T>(path, pathCosts);
     }
 }

@@ -8,21 +8,6 @@ using static LineControllScriptFrameShare;
 
 public class AStar
 {
-    public static List<Vector3> reconstruct_path(Dictionary<IntTriple, IntTriple> cameFrom, IntTriple current, float stepSize)
-    {
-        List<Vector3> totalPath = new List<Vector3>();
-        totalPath.Add(CellToVector(current, stepSize));
-
-        IntTriple ancestor;
-        while (cameFrom.TryGetValue(current, out ancestor))
-        {
-            totalPath.Add(CellToVector(ancestor, stepSize));
-            current = ancestor;
-        }
-
-        return totalPath;
-    }
-
     public static List<T> reconstruct_path<T>(Dictionary<T, T> cameFrom, T current)
     {
         List<T> totalPath = new List<T>();
