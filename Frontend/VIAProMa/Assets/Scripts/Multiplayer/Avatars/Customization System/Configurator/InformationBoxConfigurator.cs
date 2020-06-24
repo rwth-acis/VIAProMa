@@ -22,16 +22,11 @@ public class InformationBoxConfigurator : MonoBehaviour
     private GameObject barchartInstance;
     private GameObject scatterplotInstance;
     private GameObject progressbarInstance;
-    private Scene currentScene;
-    string sceneName;
 
     // Start is called before the first frame update
     private void Start()
     {
-        currentScene = SceneManager.GetActiveScene();
-        sceneName = currentScene.name;
-        Debug.Log(sceneName);
-        informationBox.SetActive(false);
+        informationBox.SetActive(true);
     }
 
     public void Open()

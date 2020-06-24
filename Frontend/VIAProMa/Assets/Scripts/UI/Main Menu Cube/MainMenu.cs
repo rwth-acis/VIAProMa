@@ -239,8 +239,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (PhotonNetwork.InLobby)
         {
             WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-            //Debug.Log("Load the group space");
-            //PhotonNetwork.LoadLevel("GroupSpace");
         }
         else
         {

@@ -30,16 +30,20 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Client is now in the room " + PhotonNetwork.CurrentRoom.Name);
+
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
 
         ///first person in the room create the table
+        /*
         if (GameObject.Find("Table") == null)
         {
+            Debug.Log("create table");
             ResourceManager.Instance.SceneNetworkInstantiate(TablePrefab, Vector3.zero, Quaternion.identity, (instance) => 
             {
                 instance.name = "Table";
             });
         }
+        */
     }
 
     /// <summary>
