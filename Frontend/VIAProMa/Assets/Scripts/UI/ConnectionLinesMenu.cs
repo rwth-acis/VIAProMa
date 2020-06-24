@@ -152,6 +152,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     {
         _isDeleteLineModeActivated = false;
         _isLineModeActivated = false;
+        IssueSelectionManager.Instance.EndSelectionMode();
 
         //Disable the highlights on the issue cards
         if (_startObject != null)
@@ -159,7 +160,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
             IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
             if (startIssueSelector != null)
             {
-                startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+                //startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+                startIssueSelector.Selected = false;
             }
         }
         if (_destinationObject != null)
@@ -167,7 +169,8 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
             IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
             if (destinationIssueSelector != null)
             {
-                destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+                //destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+                destinationIssueSelector.Selected = false;
             }
         }
 
@@ -222,6 +225,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
 
         _isLineModeActivated = false;
         _isDeleteLineModeActivated = false;
+        IssueSelectionManager.Instance.EndSelectionMode();
         _isThick = false;
         _chosenColor = defaultColor;
     }
@@ -265,6 +269,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         }
         optionWindow.SetActive(true);
         _isLineModeActivated = true;
+        IssueSelectionManager.Instance.StartSelectionMode();
     }
 
 
@@ -281,17 +286,27 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         if (_startObject == null || _destinationObject == null)
         {
             _isLineModeActivated = !_isLineModeActivated;
+            if(IsLineModeActivated)
+            {
+                IssueSelectionManager.Instance.StartSelectionMode();
+            }
+            else
+            {
+                IssueSelectionManager.Instance.EndSelectionMode();
+            }
             return;
         }
         IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
         if (startIssueSelector != null)
         {
-            startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+            //startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+            startIssueSelector.Selected = false;
         }
         IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
         if (destinationIssueSelector != null)
         {
-            destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+            //destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+            destinationIssueSelector.Selected = false;
         }
         if (_startObject.GetComponent<VisualizationSelector>() != null)
         {
@@ -308,6 +323,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         _startObject = null;
         _destinationObject = null;
         _isLineModeActivated = false;
+        IssueSelectionManager.Instance.EndSelectionMode();
     }
 
     /// <summary>
@@ -338,17 +354,27 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
             if (_startObject == null || _destinationObject == null)
             {
                 _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
+                if (IsDeleteLineModeActivated)
+                {
+                    IssueSelectionManager.Instance.StartSelectionMode();
+                }
+                else
+                {
+                    IssueSelectionManager.Instance.EndSelectionMode();
+                }
                 return;
             }
             IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
             if (startIssueSelector != null)
             {
-                startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+                //startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+                startIssueSelector.Selected = false;
             }
             IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
             if (destinationIssueSelector != null)
             {
-                destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+                //destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+                destinationIssueSelector.Selected = false;
             }
             if (_startObject.GetComponent<VisualizationSelector>() != null)
             {
@@ -381,6 +407,14 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
             lineDrawButton.Enabled = false;
         }
         _isDeleteLineModeActivated = !_isDeleteLineModeActivated;
+        if (IsDeleteLineModeActivated)
+        {
+            IssueSelectionManager.Instance.StartSelectionMode();
+        }
+        else
+        {
+            IssueSelectionManager.Instance.EndSelectionMode();
+        }
     }
 
     /// <summary>

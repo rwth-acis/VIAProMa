@@ -188,6 +188,10 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
+        if (this.Selected == true)
+        {
+            return;
+        }
         if (IssueSelectionManager.Instance.SelectionModeActive)
         {
             ToggleSelection();
@@ -199,7 +203,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             {
                 if(manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().originalRendererColor;
+                    //manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().Selected = false;
                 }
                 if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<VisualizationSelector>() != null)
                 {
@@ -212,7 +217,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             {
                 if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().originalRendererColor;
+                    //manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().Selected = false;
                 }
                 if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<VisualizationSelector>() != null)
                 {
@@ -221,7 +227,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
                 manager.ConnectionLinesMenu.DestinationObject = gameObject;
                 manager.ConnectionLinesMenu.OneSelected = false;
             }
-            backgroundRenderer.material.color = selectedColor;
+            //backgroundRenderer.material.color = selectedColor;
+            this.Selected = true;
         }
     }
 }

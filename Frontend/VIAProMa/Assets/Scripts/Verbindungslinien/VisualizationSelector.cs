@@ -21,9 +21,10 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
             {
                 if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().originalRendererColor;
+                    //manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().Selected = false;
                 }
-                if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<VisualizationSelector>() != null)
+                    if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<VisualizationSelector>() != null)
                 {
                     manager.ConnectionLinesMenu.StartObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
                 }
@@ -34,7 +35,8 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
             {
                 if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>() != null)
                 {
-                    manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().originalRendererColor;
+                    //manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().Selected = false;
                 }
                 if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<VisualizationSelector>() != null)
                 {
