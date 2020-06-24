@@ -15,6 +15,10 @@ public class VisualizationSelector : MonoBehaviour, IMixedRealityPointerHandler
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
+        if(gameObject == manager.ConnectionLinesMenu.StartObject || gameObject == manager.ConnectionLinesMenu.DestinationObject)
+        {
+            return;
+        }
         if (manager.ConnectionLinesMenu.IsLineModeActivated || manager.ConnectionLinesMenu.IsDeleteLineModeActivated)
         {
             if (!manager.ConnectionLinesMenu.OneSelected)
