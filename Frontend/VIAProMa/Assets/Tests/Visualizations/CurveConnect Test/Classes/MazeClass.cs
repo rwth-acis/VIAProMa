@@ -68,8 +68,8 @@ public class Maze
             setUniqueEntrances(newCluster, clusterNumber, x);
         }
 
-
-
+        int test = 0;
+        DateTime start = DateTime.Now;
         //calculate edges between entrances
         for (IntTriple x = new IntTriple(-1, 0, 0); x != new IntTriple(0, 0, 1); x = TripleIterator(x))
         {
@@ -79,8 +79,8 @@ public class Maze
                 {
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
-                        if (CellToCluster(VectorToCell(entranceX.position, stepSize), clusterSize) != CellToCluster(VectorToCell(entranceY.position, stepSize), clusterSize))
-                            Debug.Log("Mäh");
+                        if (clusterNumber == new IntTriple(-1, -1, -1))
+                            test++;
                         float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entranceX.position + CellToVector(x * -1, stepSize / 2),stepSize), VectorToCell(entranceY.position + CellToVector(y * -1, stepSize / 2),stepSize),
                             GetNeighborsFunctionGenerator(clusterNumber), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
                             LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
@@ -90,6 +90,10 @@ public class Maze
                 }
             }
         }
+
+        Debug.Log((DateTime.Now-start).TotalMilliseconds);
+        if ((DateTime.Now - start).TotalMilliseconds >= 2000)
+        { Debug.Log(clusterNumber.x + " " + clusterNumber.y + " " + clusterNumber.z); }
 
         clusters.Add(clusterNumber, newCluster);
     }

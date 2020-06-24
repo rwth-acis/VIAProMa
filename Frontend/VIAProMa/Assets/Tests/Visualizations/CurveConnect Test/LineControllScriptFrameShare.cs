@@ -82,39 +82,66 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         //Test Stuff
 
-        //Maze test = new Maze(stepSize,5);
-        //test.addCluster(new IntTriple(0, 0, 0));
-        //test.addCluster(new IntTriple(0, 0, 1));
-        List<Vector3> lineVectorList = HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, 1, 5);
+        //List<Vector3> lineVectorList = HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, 1, 5);
 
-        lineRenderer.positionCount = lineVectorList.Count;
-        lineRenderer.SetPositions(lineVectorList.ToArray());
+        //LineRenderer lineRenderer = GetComponent<LineRenderer>();
+        //lineRenderer.positionCount = lineVectorList.Count;
+        //lineRenderer.SetPositions(lineVectorList.ToArray());
 
+        //float test = Vector3.Distance(CellToVector(new IntTriple(-7,0,-13), stepSize), new Vector3(8,0,-13));
+        //float test2 = Vector3.Distance(CellToVector(new IntTriple(-7, 0, -12), stepSize), new Vector3(8, 0, -13));
+        //Debug.Log("fug");
     }
     // Update is called once per frame
     void Update()
     {
-        /*
-        IntTriple startCell = VectorToCell(startObject.transform.position,stepSize);
-        IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
-
-        //List<Vector3> linePath = A_Star(startObject, goalObject);
-        
-        List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCell, goalCell, GetNeighbors, (x,y) => x==y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize)).path;
-        
-        
-        Vector3[] lineVectorArray = new Vector3[linePathCell.Count+2];
-        lineVectorArray[0] = goalObject.transform.position;
-        for (int i = 1; i < linePathCell.Count+1; i++)
+        bool astar = true;
+        if (astar)
         {
-            lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
-        }
-        lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+            IntTriple startCell = VectorToCell(startObject.transform.position, stepSize);
+            IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
 
-        LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.positionCount = lineVectorArray.Length;
-        lineRenderer.SetPositions(lineVectorArray);
-        */
+            //List<Vector3> linePath = A_Star(startObject, goalObject);
+
+            List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCell, goalCell, GetNeighbors, (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize)).path;
+
+
+            Vector3[] lineVectorArray = new Vector3[linePathCell.Count + 2];
+            lineVectorArray[0] = goalObject.transform.position;
+            for (int i = 1; i < linePathCell.Count + 1; i++)
+            {
+                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+            }
+            lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+
+            LineRenderer lineRenderer = GetComponent<LineRenderer>();
+            lineRenderer.positionCount = lineVectorArray.Length;
+            lineRenderer.SetPositions(lineVectorArray);
+        }
+        else
+        {
+
+            IntTriple startCell = VectorToCell(startObject.transform.position, stepSize);
+            IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
+
+            
+
+            List<IntTriple> linePathCell = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighbors, (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize));
+
+
+            Vector3[] lineVectorArray = new Vector3[linePathCell.Count + 2];
+            lineVectorArray[0] = startObject.transform.position;
+            for (int i = 1; i < linePathCell.Count + 1; i++)
+            {
+                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+            }
+            lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
+
+            LineRenderer lineRenderer = GetComponent<LineRenderer>();
+            lineRenderer.positionCount = lineVectorArray.Length;
+            lineRenderer.SetPositions(lineVectorArray);
+
+        }
     }
 
     //Functions for the A* Search
