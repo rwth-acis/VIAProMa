@@ -14,6 +14,7 @@ public class InformationButtonConfigurator : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject InformationBoxPrefab;
+    [SerializeField] private GameObject TablePrefab;
 
     private GameObject informationbox;
 

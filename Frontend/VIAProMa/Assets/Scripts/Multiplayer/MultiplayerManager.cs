@@ -13,6 +13,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject playerAvatarPrefab;
     [SerializeField] private GameObject TablePrefab;
 
+    private GameObject Table;
+
     /// <summary>
     /// Checks if the component is set up correctly
     /// </summary>
@@ -34,16 +36,15 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         ResourceManager.Instance.NetworkInstantiate(playerAvatarPrefab, Vector3.zero, Quaternion.identity);
 
         ///first person in the room create the table
-        /*
-        if (GameObject.Find("Table") == null)
+        Table = GameObject.Find("Table(clone");
+        if (Table == null)
         {
             Debug.Log("create table");
-            ResourceManager.Instance.SceneNetworkInstantiate(TablePrefab, Vector3.zero, Quaternion.identity, (instance) => 
-            {
-                instance.name = "Table";
-            });
+            Vector3 pos = Vector3.zero;
+            pos.y = 0f;
+            Table = PhotonNetwork.InstantiateSceneObject("Table", pos, TablePrefab.transform.rotation, 0, null);
+            //ResourceManager.Instance.NetworkInstantiate(TablePrefab, pos, TablePrefab.transform.rotation);
         }
-        */
     }
 
     /// <summary>
