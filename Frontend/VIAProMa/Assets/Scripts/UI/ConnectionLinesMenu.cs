@@ -148,11 +148,54 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
     public event EventHandler WindowClosed;
 
 
+    public void DeactivateModes()
+    {
+        _isDeleteLineModeActivated = false;
+        _isLineModeActivated = false;
+
+        //Disable the highlights on the issue cards
+        if (_startObject != null)
+        {
+            IssueSelector startIssueSelector = _startObject.GetComponent<IssueSelector>();
+            if (startIssueSelector != null)
+            {
+                startIssueSelector.backgroundRenderer.material.color = startIssueSelector.originalRendererColor;
+            }
+        }
+        if (_destinationObject != null)
+        {
+            IssueSelector destinationIssueSelector = _destinationObject.GetComponent<IssueSelector>();
+            if (destinationIssueSelector != null)
+            {
+                destinationIssueSelector.backgroundRenderer.material.color = destinationIssueSelector.originalRendererColor;
+            }
+        }
+
+        //Disable the highlights on visualizations
+        if (_startObject != null && _startObject.GetComponent<VisualizationSelector>() != null)
+        {
+            _startObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
+        }
+        if (_destinationObject != null && _destinationObject.GetComponent<VisualizationSelector>() != null)
+        {
+            _destinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
+        }
+
+        _startObject = null;
+        _destinationObject = null;
+
+        //Reset menu
+        optionWindow.SetActive(false);
+        deleteCaption.SetText("Enter Single Delete");
+        lineDrawButton.Enabled = true;
+    }
+
     public void Close()
     {
         colorChooser.ColorChosen -= ColorChosenEventHandler;
         gameObject.SetActive(false);
         WindowClosed?.Invoke(this, EventArgs.Empty);
+        DeactivateModes();
     }
 
     public void Open()
