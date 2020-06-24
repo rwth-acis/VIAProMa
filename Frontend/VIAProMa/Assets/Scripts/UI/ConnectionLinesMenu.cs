@@ -258,7 +258,7 @@ public class ConnectionLinesMenu : MonoBehaviour, IWindow
         {
             _destinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
         }
-        if (_startObject != null && _destinationObject != null)
+        if (_startObject != null && _destinationObject != null && _startObject != _destinationObject)
         {
             SetLine();
         }
