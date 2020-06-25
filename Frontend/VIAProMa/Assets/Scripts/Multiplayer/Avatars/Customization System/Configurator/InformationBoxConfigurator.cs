@@ -19,6 +19,7 @@ public class InformationBoxConfigurator : MonoBehaviour
     [SerializeField] private GameObject ProgressBarPrefab;
 
     // instances
+    private GameObject table;
     private GameObject barchartInstance;
     private GameObject scatterplotInstance;
     private GameObject progressbarInstance;
@@ -26,6 +27,7 @@ public class InformationBoxConfigurator : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        table = GameObject.Find("Table(Clone)");
         informationBox.SetActive(true);
     }
 
@@ -51,26 +53,29 @@ public class InformationBoxConfigurator : MonoBehaviour
         }
         else
         {
-            instance = GameObject.Instantiate(prefab, targetPosition, targetRotation);
+            instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
+            instance.transform.parent = table.transform;
         }
     }
 
     public void BarchartButtonClicked()
     {
         Debug.Log("Barchart Button Clicked");
-        Vector3 targetPosition = GameObject.Find("Table").transform.position;
-        targetPosition.y = 2f;
+        Vector3 targetPosition = table.transform.position;
+        targetPosition.y += 1f;
         targetPosition.x -= 1f;
         targetPosition.z += 0.5f;
-        Debug.Log(targetPosition);
+        //Debug.Log(targetPosition);
+        //barchartInstance = ResourceManager.Instance.NetworkInstantiate(BarchartPrefab, targetPosition, Quaternion.identity);
         InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
+        //barchartInstance.transform.parent = table.transform;
     }
     
     public void ScatterplotButtonClicked()
     {
         Debug.Log("Scatterplot Button Clicked");
-        Vector3 targetPosition = GameObject.Find("Table").transform.position;
-        targetPosition.y = 2f;
+        Vector3 targetPosition = table.transform.position;
+        targetPosition.y += 1f;
         targetPosition.x -= 2.4f;
         targetPosition.z += 0.5f;
         InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
@@ -79,8 +84,8 @@ public class InformationBoxConfigurator : MonoBehaviour
     public void ProgressBarButtonClicked()
     {
         Debug.Log("ProgressBar Button Clicked");
-        Vector3 targetPosition = GameObject.Find("Table").transform.position;
-        targetPosition.y = 2f;
+        Vector3 targetPosition = table.transform.position;
+        //targetPosition.y = 2f;
         targetPosition.x -= 4f;
         targetPosition.z += 0.5f;
         InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
