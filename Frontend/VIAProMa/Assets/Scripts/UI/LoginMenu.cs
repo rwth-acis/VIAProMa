@@ -107,5 +107,6 @@ public class LoginMenu : MonoBehaviour, IWindow
     public void OnRoleChanged()
     {
         UserManager.Instance.UserRole = (UserRoles)roleToggles.CurrentIndex;
+        Debug.Log(roleToggles.CurrentIndex);
     }
 }
