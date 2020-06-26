@@ -43,7 +43,9 @@ public class InformationBoxConfigurator : MonoBehaviour
 
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
     {
-        Quaternion targetRotation = transform.rotation;
+        //Quaternion targetRotation = transform.rotation;
+        Quaternion targetRotation = Quaternion.identity;
+        //Quaternion targetRotation = table.transform.rotation;
 
         if (instance != null)
         {
@@ -62,8 +64,8 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         Debug.Log("Barchart Button Clicked");
         Vector3 targetPosition = table.transform.position;
-        targetPosition.y += 1f;
-        targetPosition.x -= 1f;
+        targetPosition.y += 1.2f;
+        //targetPosition.x -= 1f;
         targetPosition.z += 0.5f;
         //Debug.Log(targetPosition);
         //barchartInstance = ResourceManager.Instance.NetworkInstantiate(BarchartPrefab, targetPosition, Quaternion.identity);
@@ -75,8 +77,8 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         Debug.Log("Scatterplot Button Clicked");
         Vector3 targetPosition = table.transform.position;
-        targetPosition.y += 1f;
-        targetPosition.x -= 2.4f;
+        targetPosition.y += 1.2f;
+        targetPosition.x -= 1f;
         targetPosition.z += 0.5f;
         InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
     }
@@ -85,8 +87,8 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         Debug.Log("ProgressBar Button Clicked");
         Vector3 targetPosition = table.transform.position;
-        //targetPosition.y = 2f;
-        targetPosition.x -= 4f;
+        targetPosition.y += 1.22f;
+        targetPosition.x -= 2f;
         targetPosition.z += 0.5f;
         InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
     }
