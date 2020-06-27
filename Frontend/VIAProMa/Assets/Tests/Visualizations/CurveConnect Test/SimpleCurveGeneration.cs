@@ -73,8 +73,8 @@ public class SimpleCurveGerneration
         Vector3 center = startAdjusted + direction * distance/2;
 
         //Generate bounding box:
-        Vector3 minPoint = center + new Vector3(0,2,0) - direction*(distance*0.2f);
-        Vector3 maxPoint = center + new Vector3(0, 2, 0) + direction * (distance * 0.2f);
+        Vector3 minPoint = center; //+ new Vector3(0,2,0) - direction*(distance*0.2f);
+        Vector3 maxPoint = center; //+ new Vector3(0, 2, 0) + direction * (distance * 0.2f);
 
         Collider[] colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up));
 
@@ -83,6 +83,9 @@ public class SimpleCurveGerneration
             minPoint = new Vector3(Mathf.Min(minPoint.x,collider.bounds.min.x), Mathf.Min(minPoint.y, collider.bounds.min.y), Mathf.Min(minPoint.z, collider.bounds.min.z));
             maxPoint = new Vector3(Mathf.Max(maxPoint.x, collider.bounds.max.x), Mathf.Max(maxPoint.y, collider.bounds.max.y), Mathf.Max(maxPoint.z, collider.bounds.max.z));
         }
+
+        
+            
 
         Vector3[] controllPoints = new Vector3[6];
         controllPoints[0] = start;
@@ -107,12 +110,42 @@ public class SimpleCurveGerneration
         intersectionPoints[0] = new Vector3(float.NaN, float.NaN, float.NaN);
         intersectionPoints[1] = new Vector3(float.NaN, float.NaN, float.NaN);
 
+        bool differentValue = true;
+
+        //Check if there is more then one valid intersection
         foreach (Vector3 point in potentialPoints)
         {
-            //Is the vec not NaN and inside the rectangle? There should always be two.
+            Vector3 firstReal = new Vector3(float.NaN, float.NaN, float.NaN);
+            
+            if (!float.IsNaN(point.x))
+            {
+                if (!float.IsNaN(firstReal.x))
+                {
+                    firstReal = point;
+                }
+                else
+                {
+                    differentValue &= VecEqVec(point, firstReal);
+                }
+            }
+        }
+        
+
+
+
+        foreach (Vector3 point in potentialPoints)
+        {
+            //Is the vec not NaN and inside the rectangle?
             if (!float.IsNaN(point.x) && VecGreaterEqVec(point, minPoint) && VecSmallerEqVec(point, maxPoint))
             {
-                intersectionPoints[float.IsNaN(intersectionPoints[0].x) ? 0 : 1] = point;
+                if (float.IsNaN(intersectionPoints[0].x))
+                {
+                    intersectionPoints[0] = point;
+                }
+                else if (!differentValue || !VecEqVec(point, intersectionPoints[0]))
+                {
+                    intersectionPoints[1] = point;
+                }
             }
         }
 
@@ -128,8 +161,9 @@ public class SimpleCurveGerneration
             controllPoints[4] = intersectionPoints[0];
         }
 
-        controllPoints[1] = controllPoints[1] + new Vector3(0, 1+(maxPoint.y-startAdjusted.y)*0.2f, 0) - direction * (1.5f + 1/Math.Abs(0.01f +Vector3.Distance(start, new Vector3(controllPoints[1].x,start.y, controllPoints[1].z))));
-        controllPoints[4] = controllPoints[4] + new Vector3(0, 1 + (maxPoint.y - startAdjusted.y) * 0.2f, 0) + direction * (1.5f + 1 / Math.Abs(0.01f + Vector3.Distance(goal, new Vector3(controllPoints[1].x, start.y, controllPoints[1].z))));
+        //Shift them away from the obstacle to prevent collisions
+        controllPoints[1] = controllPoints[1] + new Vector3(0, 1 + (maxPoint.y - startAdjusted.y) * 0.2f, 0) - direction * (distance/2) / (5 + Vector3.Distance(start, new Vector3(controllPoints[1].x, start.y, controllPoints[1].z)));
+        controllPoints[4] = controllPoints[4] + new Vector3(0, 1 + (maxPoint.y - startAdjusted.y) * 0.2f, 0) + direction * (distance/2) / (5 + Vector3.Distance(goal, new Vector3(controllPoints[4].x, start.y, controllPoints[4].z)));
 
         controllPoints[2] = controllPoints[1] + new Vector3(0, 2, 0) - 2*direction;
         controllPoints[3] = controllPoints[4] + new Vector3(0, 2, 0) + 2*direction;
@@ -155,6 +189,11 @@ public class SimpleCurveGerneration
 
     static bool FloatEq(float x, float y)
     {
-        return Math.Abs(x - y) < 0.001f;
+        return Math.Abs(x - y) < 0.1f;
+    }
+
+    static bool VecEqVec(Vector3 vec1, Vector3 vec2)
+    {
+        return FloatEq(vec1.x, vec2.x) && FloatEq(vec1.y, vec2.y) && FloatEq(vec1.z, vec2.z);
     }
 }
