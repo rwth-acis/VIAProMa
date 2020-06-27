@@ -73,8 +73,8 @@ public class SimpleCurveGerneration
         Vector3 center = startAdjusted + direction * distance/2;
 
         //Generate bounding box:
-        Vector3 minPoint = center;
-        Vector3 maxPoint = center;
+        Vector3 minPoint = center + new Vector3(0,2,0) - direction*(distance*0.2f);
+        Vector3 maxPoint = center + new Vector3(0, 2, 0) + direction * (distance * 0.2f);
 
         Collider[] colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up));
 
@@ -128,8 +128,11 @@ public class SimpleCurveGerneration
             controllPoints[4] = intersectionPoints[0];
         }
 
-        controllPoints[2] = controllPoints[1] + new Vector3(0, 1, 0);
-        controllPoints[3] = controllPoints[4] + new Vector3(0, 1, 0);
+        controllPoints[1] = controllPoints[1] + new Vector3(0, 1+(maxPoint.y-startAdjusted.y)*0.2f, 0) - direction;
+        controllPoints[4] = controllPoints[4] + new Vector3(0, 1 + (maxPoint.y - startAdjusted.y) * 0.2f, 0) + direction;
+
+        controllPoints[2] = controllPoints[1] + new Vector3(0, 2, 0) - 2*direction;
+        controllPoints[3] = controllPoints[4] + new Vector3(0, 2, 0) + 2*direction;
 
         pointVis[1].transform.position = controllPoints[1];
         pointVis[2].transform.position = controllPoints[2];
