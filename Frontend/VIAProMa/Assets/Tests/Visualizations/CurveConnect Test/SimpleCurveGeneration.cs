@@ -109,7 +109,7 @@ public class SimpleCurveGerneration
 
         foreach (Vector3 point in potentialPoints)
         {
-            //Is the vec not NaN and inside the rectangle?
+            //Is the vec not NaN and inside the rectangle? There should always be two.
             if (!float.IsNaN(point.x) && VecGreaterEqVec(point, minPoint) && VecSmallerEqVec(point, maxPoint))
             {
                 intersectionPoints[float.IsNaN(intersectionPoints[0].x) ? 0 : 1] = point;
@@ -128,8 +128,8 @@ public class SimpleCurveGerneration
             controllPoints[4] = intersectionPoints[0];
         }
 
-        controllPoints[1] = controllPoints[1] + new Vector3(0, 1+(maxPoint.y-startAdjusted.y)*0.2f, 0) - direction;
-        controllPoints[4] = controllPoints[4] + new Vector3(0, 1 + (maxPoint.y - startAdjusted.y) * 0.2f, 0) + direction;
+        controllPoints[1] = controllPoints[1] + new Vector3(0, 1+(maxPoint.y-startAdjusted.y)*0.2f, 0) - direction * (1.5f + 1/Math.Abs(0.01f +Vector3.Distance(start, new Vector3(controllPoints[1].x,start.y, controllPoints[1].z))));
+        controllPoints[4] = controllPoints[4] + new Vector3(0, 1 + (maxPoint.y - startAdjusted.y) * 0.2f, 0) + direction * (1.5f + 1 / Math.Abs(0.01f + Vector3.Distance(goal, new Vector3(controllPoints[1].x, start.y, controllPoints[1].z))));
 
         controllPoints[2] = controllPoints[1] + new Vector3(0, 2, 0) - 2*direction;
         controllPoints[3] = controllPoints[4] + new Vector3(0, 2, 0) + 2*direction;
