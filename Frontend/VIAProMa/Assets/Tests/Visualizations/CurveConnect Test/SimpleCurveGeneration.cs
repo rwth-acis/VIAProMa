@@ -92,7 +92,9 @@ public class SimpleCurveGerneration
 
         Vector3 center = startAdjusted + direction * distance/2;
 
-        //Prority 1: Try to draw the standart curve
+        float standartHeight = 4;
+
+        //Priority 1: Try to draw the standart curve
         Vector3[] checkCurve = BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 15);
         if (!CurveCollsionCheck(checkCurve))
         {
@@ -100,6 +102,7 @@ public class SimpleCurveGerneration
         }
 
 
+        //Genenerating the standart curve didn't work due to collsions. Try to set the controllpoints so, that no collion occures
 
         //Generate bounding box:
         Vector3 minPoint = center; //+ new Vector3(0,2,0) - direction*(distance*0.2f);
@@ -119,6 +122,9 @@ public class SimpleCurveGerneration
         Vector3[] controllPoints = new Vector3[6];
         controllPoints[0] = start;
         controllPoints[5] = goal;
+
+        
+
 
         minPoint = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
 
@@ -189,6 +195,97 @@ public class SimpleCurveGerneration
             controllPoints[1] = intersectionPoints[1];
             controllPoints[4] = intersectionPoints[0];
         }
+
+        //Determine if the curve should go above, left or right
+
+        float angle = Vector3.SignedAngle(Vector3.forward, direction, Vector3.up);
+
+        //Determine the collsion points for left/right
+        Vector3 leftLower = new Vector3(minPoint.x, standartHeight, minPoint.z);
+        Vector3 leftUpper = new Vector3(minPoint.x, standartHeight, maxPoint.z);
+        Vector3 rightUpper = new Vector3(maxPoint.x, standartHeight, maxPoint.z);
+        Vector3 rightLower = new Vector3(maxPoint.x, standartHeight, minPoint.z);
+
+        Vector3[] edgePoints = new Vector3[]{leftLower, leftUpper, rightUpper, rightLower};
+
+        //Determine which one is the closed to start
+        Vector3 closerOne = leftLower;
+        foreach (Vector3 point in edgePoints)
+        {
+            if (Vector3.Distance(start, point) < Vector3.Distance(start, closerOne))
+                closerOne = point;
+        }
+
+        //Is the way to the left or right faster than above? They above gets preferd, so even when left or right is a bit faster, above gets choosen to further standardise the look.
+        if (Vector3.Distance(start, closerOne) < Vector3.Distance(start, controllPoints[1]) - 2)
+        {
+            controllPoints[1] = closerOne;
+            if (Math.Abs(angle) < 1 || Math.Abs(angle - 180) < 20 || Math.Abs(angle + 180) < 1)
+            {
+                if (closerOne == leftUpper)
+                    controllPoints[4] = leftLower;
+                if (closerOne == leftLower)
+                    controllPoints[4] = leftUpper;
+                if (closerOne == rightUpper)
+                    controllPoints[4] = rightLower;
+                if (closerOne == rightLower)
+                    controllPoints[4] = rightUpper;
+
+
+            }
+            else if (Math.Abs(angle - 90) < 1 || Math.Abs(angle + 90) < 1)
+            {
+                if (closerOne == leftUpper)
+                    controllPoints[4] = rightUpper;
+                if (closerOne == leftLower)
+                    controllPoints[4] = rightLower;
+                if (closerOne == rightUpper)
+                    controllPoints[4] = leftUpper;
+                if (closerOne == rightLower)
+                    controllPoints[4] = leftLower;
+            }
+            else if ((angle > 0 && angle < 90) || (angle > -180 && angle < -90))
+            {
+                if (Vector3.Distance(start, leftUpper) < Vector3.Distance(start, rightLower))
+                {
+                    controllPoints[1] = leftUpper;
+                    controllPoints[4] = leftUpper;
+                }
+                else
+                {
+                    controllPoints[1] = rightLower;
+                    controllPoints[4] = rightLower;
+                }
+                 
+            }
+            else
+            {
+                if (Vector3.Distance(start, rightUpper) < Vector3.Distance(start, leftLower))
+                {
+                    controllPoints[1] = rightUpper;
+                    controllPoints[4] = rightUpper;
+                }
+                else
+                {
+                    controllPoints[1] = leftLower;
+                    controllPoints[4] = leftLower;
+                }
+
+                controllPoints[1] = Vector3.Distance(start, rightUpper) < Vector3.Distance(start, leftLower) ? rightUpper : leftLower;
+            }
+
+            controllPoints[2] = controllPoints[1];
+            controllPoints[3] = controllPoints[4];
+
+            pointVis[1].transform.position = controllPoints[1];
+            pointVis[2].transform.position = controllPoints[2];
+            pointVis[3].transform.position = controllPoints[3];
+            pointVis[4].transform.position = controllPoints[4];
+
+            return BezierCurve.calculateCurve(controllPoints, 50);
+        }
+
+        //The fastes way is above
 
         //Shift them away from the obstacle to prevent collisions
         controllPoints[1] = controllPoints[1] + new Vector3(0, 1 + (maxPoint.y - startAdjusted.y) * 0.2f, 0) - direction * (distance/2) / (5 + Vector3.Distance(start, new Vector3(controllPoints[1].x, start.y, controllPoints[1].z)));
