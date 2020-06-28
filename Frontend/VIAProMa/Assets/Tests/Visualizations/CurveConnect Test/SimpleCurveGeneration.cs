@@ -57,13 +57,33 @@ public class SimpleCurveGerneration
         return null;
     }
 
+    static bool CurveCollsionCheck(Vector3[] curve)
+    {
+        for (int i = 0; i < curve.Length - 2; i++)
+        {
+            Vector3 checkDirection = curve[i + 1] - curve[i];
+            float checkLength = Vector3.Distance(curve[i], curve[i + 1]);
+            checkDirection.Normalize();
+
+            Vector3 center = curve[i] + checkDirection * checkLength / 2;
+
+            if (LineControllScriptFrameShare.collisonWithObstacle(center, new Vector3(1, 1, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0))))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static Vector3[] startContinous(Vector3 start, Vector3 goal, GameObject[] pointVis)
     {
-        //Check for colliosons above the objects
-        float lowerOne = start.y < goal.y ? start.y : goal.y;
+        
 
-        Vector3 startAdjusted = new Vector3(start.x, lowerOne, start.z);
-        Vector3 goalAdjusted = new Vector3(goal.x, lowerOne, goal.z);
+        
+        float higherOne = start.y > goal.y ? start.y : goal.y;
+
+        Vector3 startAdjusted = new Vector3(start.x, higherOne, start.z);
+        Vector3 goalAdjusted = new Vector3(goal.x, higherOne, goal.z);
 
         Vector3 direction = goalAdjusted - startAdjusted;
         direction.Normalize();
@@ -71,6 +91,15 @@ public class SimpleCurveGerneration
         float distance = Vector3.Distance(startAdjusted,goalAdjusted);
 
         Vector3 center = startAdjusted + direction * distance/2;
+
+        //Prority 1: Try to draw the standart curve
+        Vector3[] checkCurve = BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 15);
+        if (!CurveCollsionCheck(checkCurve))
+        {
+            return BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
+        }
+
+
 
         //Generate bounding box:
         Vector3 minPoint = center; //+ new Vector3(0,2,0) - direction*(distance*0.2f);
