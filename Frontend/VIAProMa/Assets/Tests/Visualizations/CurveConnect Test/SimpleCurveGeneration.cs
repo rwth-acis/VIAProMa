@@ -101,11 +101,9 @@ public class SimpleCurveGerneration
 
         float standartHeight = 4;
 
-        Vector3[] intersectionPointsAbove = new Vector3[2];
-        intersectionPointsAbove[0] = new Vector3(float.NaN, float.NaN, float.NaN);
-        intersectionPointsAbove[1] = new Vector3(float.NaN, float.NaN, float.NaN);
+       
 
-        List<Vector3> intersectionPointsSide = new List<Vector3>();
+  
 
         //Priority 1: Try to draw the standart curve
         Vector3[] checkCurve = BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 15);
@@ -129,142 +127,18 @@ public class SimpleCurveGerneration
             maxPoint = new Vector3(Mathf.Max(maxPoint.x, collider.bounds.max.x), Mathf.Max(maxPoint.y, collider.bounds.max.y), Mathf.Max(maxPoint.z, collider.bounds.max.z));
         }
 
-        
-            
-
-        
-
-        
-
 
         minPoint = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
 
-      
+        Vector3 boundingBoxCenter = minPoint + (maxPoint - minPoint) * 0.5f;
 
-        Vector3 startOnMaxHeight = new Vector3(start.x, maxPoint.y, start.z);
-        //Calculate the controll points for the way above
-        //calculate the potential intersections from the line spanned by startOnMaxHeight+l*direction with the 4 lines that form the rectangle spanned by min and max
-        Vector3[] potentialPoints = new Vector3[4];
-
-        potentialPoints[0] = startOnMaxHeight + (minPoint.z - start.z) / direction.z * direction;
-        potentialPoints[1] = startOnMaxHeight + (minPoint.x - start.x) / direction.x * direction;
-
-        potentialPoints[2] = startOnMaxHeight + (maxPoint.z - start.z) / direction.z * direction;
-        potentialPoints[3] = startOnMaxHeight + (maxPoint.x - start.x) / direction.x * direction;
-
-        
-
-        bool differentValue = true;
-
-        //Check if there is more then one valid intersection
-        foreach (Vector3 point in potentialPoints)
-        {
-            Vector3 firstReal = new Vector3(float.NaN, float.NaN, float.NaN);
-            
-            if (!float.IsNaN(point.x))
-            {
-                if (!float.IsNaN(firstReal.x))
-                {
-                    firstReal = point;
-                }
-                else
-                {
-                    differentValue &= VecEqVec(point, firstReal);
-                }
-            }
-        }
-        
-
-
-
-        foreach (Vector3 point in potentialPoints)
-        {
-            //Is the vec not NaN and inside the rectangle?
-            if (!float.IsNaN(point.x) && VecGreaterEqVec(point, minPoint) && VecSmallerEqVec(point, maxPoint))
-            {
-                if (float.IsNaN(intersectionPointsAbove[0].x))
-                {
-                    intersectionPointsAbove[0] = point;
-                }
-                else if (!differentValue || !VecEqVec(point, intersectionPointsAbove[0]))
-                {
-                    intersectionPointsAbove[1] = point;
-                }
-            }
-        }
-
-        
-
-        //cp1 has to be the one that is closer to start
-        if (Vector3.Distance(start, intersectionPointsAbove[0]) > Vector3.Distance(start, intersectionPointsAbove[1]))
-        {
-            Vector3 temp = intersectionPointsAbove[0];
-            intersectionPointsAbove[0] = intersectionPointsAbove[1];
-            intersectionPointsAbove[1] = temp;
-        }
-
-        //Calculate the controll points at the left/right
-
-        //Determine the collsion points for left/right
-        Vector3 leftLower = new Vector3(minPoint.x, standartHeight, minPoint.z);
-        Vector3 leftUpper = new Vector3(minPoint.x, standartHeight, maxPoint.z);
-        Vector3 rightUpper = new Vector3(maxPoint.x, standartHeight, maxPoint.z);
-        Vector3 rightLower = new Vector3(maxPoint.x, standartHeight, minPoint.z);
-
-        Vector3[] edgePoints = new Vector3[]{leftLower, leftUpper, rightUpper, rightLower};
-
-        
-
-        Dictionary<bool, List<Vector3>> edgesSorted = new Dictionary<bool, List<Vector3>>(); //edgesSorted[false] yields all edges left from the line between start and goal and edgesSorted[true] all right
-        edgesSorted.Add(false, new List<Vector3>());
-        edgesSorted.Add(true, new List<Vector3>());
-
-        float impliciteLineFromStartToGoal(Vector3 point)
-        {
-            Vector2 normal = new Vector3(direction.z, -direction.x);
-            return (normal.x * point.x + normal.y * point.z) - (normal.x * start.x + normal.y * start.z);
-        }
-
-
-        foreach (Vector3 edge in edgePoints)
-        {
-            edgesSorted[impliciteLineFromStartToGoal(edge) < 0].Add(edge);
-        }
-
-        edgesSorted[false].Sort((x,y) => { return (int)(Vector3.Distance(x, start) - Vector3.Distance(y, start)); });
-        edgesSorted[true].Sort((x, y) => { return (int)(Vector3.Distance(x, start) - Vector3.Distance(y, start)); });
-
-        if (edgesSorted[false].Count == edgesSorted[true].Count)
-        {
-            //Determine which pair has the smaller way
-            bool closerPair;
-
-            float approximateWayLeft = Vector3.Distance(start, edgesSorted[false][0]) + Vector3.Distance(goal, edgesSorted[false][1]);
-            float approximateWayRight = Vector3.Distance(start, edgesSorted[true][0]) + Vector3.Distance(goal, edgesSorted[true][1]);
-
-            closerPair = approximateWayLeft > approximateWayRight;
-
-
-            intersectionPointsSide.Add(edgesSorted[closerPair][0]);
-            intersectionPointsSide.Add(edgesSorted[closerPair][1]);
-        }
-        else
-        {
-            if (edgesSorted[false].Count == 1)
-            {
-                intersectionPointsSide.Add(edgesSorted[false][0]);
-            }
-            else if(edgesSorted[true].Count == 1)
-            {
-                intersectionPointsSide.Add(edgesSorted[true][0]);
-            }
-
-        }
+        Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint,direction);
+        Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal,minPoint,maxPoint,direction,standartHeight);
 
 
         float distanceAbove = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsAbove[0], intersectionPointsAbove[1], goal});
         float distanceSide;
-        if (intersectionPointsSide.Count == 1)
+        if (intersectionPointsSide.Length == 1)
             distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], goal });
         else
             distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
@@ -292,19 +166,20 @@ public class SimpleCurveGerneration
 
         else
         {
-            if (intersectionPointsSide.Count == 1)
+            Vector3 boundingBoxCenterShifted = new Vector3(boundingBoxCenter.x, standartHeight, boundingBoxCenter.z);
+            if (intersectionPointsSide.Length == 1)
             {
                 controllPoints = new Vector3[3];
                 controllPoints[0] = start;
-                controllPoints[1] = intersectionPointsSide[0];
+                controllPoints[1] = shiftAway(intersectionPointsSide[0], boundingBoxCenterShifted);
                 controllPoints[2] = goal;
             }
             else
             {
                 controllPoints = new Vector3[4];
                 controllPoints[0] = start;
-                controllPoints[1] = intersectionPointsSide[0];
-                controllPoints[2] = intersectionPointsSide[1];
+                controllPoints[1] = shiftAway(intersectionPointsSide[0], boundingBoxCenterShifted);
+                controllPoints[2] = shiftAway(intersectionPointsSide[1], boundingBoxCenterShifted);
                 controllPoints[3] = goal;
             }
 
@@ -314,6 +189,142 @@ public class SimpleCurveGerneration
 
     }
 
+    static Vector3[] calculateIntersectionAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, Vector3 direction)
+    {
+        Vector3 startOnMaxHeight = new Vector3(start.x, maxPoint.y, start.z);
+        //Calculate the controll points for the way above
+        //calculate the potential intersections from the line spanned by startOnMaxHeight+l*direction with the 4 lines that form the rectangle spanned by min and max
+        Vector3[] potentialPoints = new Vector3[4];
+
+        potentialPoints[0] = startOnMaxHeight + (minPoint.z - start.z) / direction.z * direction;
+        potentialPoints[1] = startOnMaxHeight + (minPoint.x - start.x) / direction.x * direction;
+
+        potentialPoints[2] = startOnMaxHeight + (maxPoint.z - start.z) / direction.z * direction;
+        potentialPoints[3] = startOnMaxHeight + (maxPoint.x - start.x) / direction.x * direction;
+
+
+
+        bool differentValue = true;
+
+        //Check if there is more then one valid intersection
+        foreach (Vector3 point in potentialPoints)
+        {
+            Vector3 firstReal = new Vector3(float.NaN, float.NaN, float.NaN);
+
+            if (!float.IsNaN(point.x))
+            {
+                if (!float.IsNaN(firstReal.x))
+                {
+                    firstReal = point;
+                }
+                else
+                {
+                    differentValue &= VecEqVec(point, firstReal);
+                }
+            }
+        }
+
+        Vector3[] intersectionPointsAbove = new Vector3[2];
+        intersectionPointsAbove[0] = new Vector3(float.NaN, float.NaN, float.NaN);
+        intersectionPointsAbove[1] = new Vector3(float.NaN, float.NaN, float.NaN);
+
+        foreach (Vector3 point in potentialPoints)
+        {
+            //Is the vec not NaN and inside the rectangle?
+            if (!float.IsNaN(point.x) && VecGreaterEqVec(point, minPoint) && VecSmallerEqVec(point, maxPoint))
+            {
+                if (float.IsNaN(intersectionPointsAbove[0].x))
+                {
+                    intersectionPointsAbove[0] = point;
+                }
+                else if (!differentValue || !VecEqVec(point, intersectionPointsAbove[0]))
+                {
+                    intersectionPointsAbove[1] = point;
+                }
+            }
+        }
+
+
+
+        //cp1 has to be the one that is closer to start
+        if (Vector3.Distance(start, intersectionPointsAbove[0]) > Vector3.Distance(start, intersectionPointsAbove[1]))
+        {
+            Vector3 temp = intersectionPointsAbove[0];
+            intersectionPointsAbove[0] = intersectionPointsAbove[1];
+            intersectionPointsAbove[1] = temp;
+        }
+
+        return intersectionPointsAbove;
+    }
+    static Vector3[] calculateIntersectionSide(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, Vector3 direction, float standartHeight)
+    {
+        //Calculate the controll points at the left/right
+
+        //Determine the collsion points for left/right
+        Vector3 leftLower = new Vector3(minPoint.x, standartHeight, minPoint.z);
+        Vector3 leftUpper = new Vector3(minPoint.x, standartHeight, maxPoint.z);
+        Vector3 rightUpper = new Vector3(maxPoint.x, standartHeight, maxPoint.z);
+        Vector3 rightLower = new Vector3(maxPoint.x, standartHeight, minPoint.z);
+
+        Vector3[] edgePoints = new Vector3[] { leftLower, leftUpper, rightUpper, rightLower };
+
+
+
+        Dictionary<bool, List<Vector3>> edgesSorted = new Dictionary<bool, List<Vector3>>(); //edgesSorted[false] yields all edges left from the line between start and goal and edgesSorted[true] all right
+        edgesSorted.Add(false, new List<Vector3>());
+        edgesSorted.Add(true, new List<Vector3>());
+
+        List<Vector3> intersectionPointsSide = new List<Vector3>();
+
+        float impliciteLineFromStartToGoal(Vector3 point)
+        {
+            Vector2 normal = new Vector3(direction.z, -direction.x);
+            return (normal.x * point.x + normal.y * point.z) - (normal.x * start.x + normal.y * start.z);
+        }
+
+
+        foreach (Vector3 edge in edgePoints)
+        {
+            edgesSorted[impliciteLineFromStartToGoal(edge) < 0].Add(edge);
+        }
+
+        edgesSorted[false].Sort((x, y) => { return (int)(Vector3.Distance(x, start) - Vector3.Distance(y, start)); });
+        edgesSorted[true].Sort((x, y) => { return (int)(Vector3.Distance(x, start) - Vector3.Distance(y, start)); });
+
+        if (edgesSorted[false].Count == edgesSorted[true].Count)
+        {
+            //Determine which pair has the smaller way
+            bool closerPair;
+
+            float approximateWayLeft = Vector3.Distance(start, edgesSorted[false][0]) + Vector3.Distance(goal, edgesSorted[false][1]);
+            float approximateWayRight = Vector3.Distance(start, edgesSorted[true][0]) + Vector3.Distance(goal, edgesSorted[true][1]);
+
+            closerPair = approximateWayLeft > approximateWayRight;
+
+
+            intersectionPointsSide.Add(edgesSorted[closerPair][0]);
+            intersectionPointsSide.Add(edgesSorted[closerPair][1]);
+        }
+        else
+        {
+            if (edgesSorted[false].Count == 1)
+            {
+                intersectionPointsSide.Add(edgesSorted[false][0]);
+            }
+            else if (edgesSorted[true].Count == 1)
+            {
+                intersectionPointsSide.Add(edgesSorted[true][0]);
+            }
+
+        }
+
+        return intersectionPointsSide.ToArray();
+    }
+
+    static Vector3 shiftAway(Vector3 vec, Vector3 center)
+    {
+        return vec + (vec - center) * 0.5f;
+    }
 
     static bool VecSmallerEqVec(Vector3 vec1, Vector3 vec2)
     {
