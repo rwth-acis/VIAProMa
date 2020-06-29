@@ -23,6 +23,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
     GameObject boundContainerStart;
     GameObject boundContainerEnd;
 
+    //TODO delet
+    public GameObject[] testObject;
+
     enum PathAlgorithm
     {
         AStar,
@@ -57,13 +60,15 @@ public class LineControllScriptFrameShare : MonoBehaviour
         LineRenderer lineRendererGreedy = lineRendererGreedyObject.AddComponent<LineRenderer>();
         lineRendererGreedy.widthMultiplier = 0.1f;
 
+        /*
         GameObject lineRendererHPAStarObject = new GameObject();
         LineRenderer lineRendererHPAStar = lineRendererHPAStarObject.AddComponent<LineRenderer>();
         lineRendererHPAStar.widthMultiplier = 0.1f;
+        */
 
-        GameObject lineRendererTestObject = new GameObject();
-        LineRenderer lineRendererTest = lineRendererTestObject.AddComponent<LineRenderer>();
-        lineRendererTest.widthMultiplier = 0.1f;
+        GameObject lineRendererGreedyRefObject = new GameObject();
+        LineRenderer lineRendererGreedyRef = lineRendererGreedyRefObject.AddComponent<LineRenderer>();
+        lineRendererGreedyRef.widthMultiplier = 0.1f;
 
         //Get the colliders from all child objects of start and goal
         List<Collider> startGoalCollider = new List<Collider>();
@@ -109,8 +114,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
         //Test Cases
         Debug.Log("Start Goal distance:" + Vector3.Distance(startObject.transform.position, goalObject.transform.position));
 
+        
         //Calculate the nearly optimal path:
-        float stepSizeOpti = 0.5f;
+        float stepSizeOpti = 1f;
         IntTriple startCellOpti = VectorToCell(startObject.transform.position, stepSizeOpti);
         IntTriple goalCellOpti = VectorToCell(goalObject.transform.position, stepSizeOpti);
         List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCellOpti, goalCellOpti, GetNeighborsGenerator(stepSizeOpti), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSizeOpti), CostsBetweenGenerator(0.5f)).path;
@@ -121,10 +127,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSizeOpti);
         }
         lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
-
-        lineRendererTest.positionCount = lineVectorArray.Length;
-        lineRendererTest.SetPositions(lineVectorArray);
-
+  
         Debug.Log("OPtimal Path length:" + pathLength(lineVectorArray));
 
         DateTime startTime = DateTime.Now;
@@ -176,6 +179,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
         Debug.Log("Path Length:" + pathLength(lineVectorArray));
         //HPAStar
+
         /*
         Debug.Log("HPA");
         startTime = DateTime.Now;
@@ -184,6 +188,33 @@ public class LineControllScriptFrameShare : MonoBehaviour
         lineRendererHPAStar.SetPositions(linePathVector3.ToArray());
         Debug.Log((DateTime.Now - startTime).TotalMilliseconds);
         */
+
+        //Greedy refined
+        Debug.Log("Greedy Refined");
+        startTime = DateTime.Now;
+
+        result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
+        linePathCell = result.path;
+
+
+        lineVectorArray = new Vector3[linePathCell.Count + 2];
+        lineVectorArray[0] = startObject.transform.position;
+        for (int i = 1; i < linePathCell.Count + 1; i++)
+        {
+            lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+        }
+        lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
+
+        lineVectorArray = Greedy.postProcessing(lineVectorArray,3);
+        lineVectorArray = SimpleCurveGerneration.start(startObject.transform.position, goalObject.transform.position);
+
+        lineRendererGreedyRef.positionCount = lineVectorArray.Length;
+        lineRendererGreedyRef.SetPositions(lineVectorArray);
+        Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+        Debug.Log("Path Length:" + pathLength(lineVectorArray));
+
+        
+        
     }
     // Update is called once per frame
     void Update()
@@ -237,6 +268,26 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         }
         */
+
+        
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+        Vector3[] curve = SimpleCurveGerneration.startContinous(startObject.transform.position,goalObject.transform.position, testObject);
+        lineRenderer.positionCount = curve.Length;
+        lineRenderer.SetPositions(curve);
+        
+        /*
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+        Vector3[] controlPoints = new Vector3[testObject.Length];
+        for(int i = 0; i < testObject.Length; i++)
+        {
+            controlPoints[i] = testObject[i].transform.position;
+        }
+
+        Vector3[] curve = BezierCurve.calculateCurve(controlPoints, 50);
+        lineRenderer.positionCount = curve.Length;
+        lineRenderer.SetPositions(curve);
+        */
+        
     }
 
     //Functions for the A* Search
@@ -315,7 +366,48 @@ public class LineControllScriptFrameShare : MonoBehaviour
         return true;
     }
 
-    float pathLength(Vector3[] path)
+    //TODO actual use orientation
+    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton)
+    {
+        Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, halfExtends, default, 1 << 6);
+
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        if (collidionsWithStartGoal.Length > 0)
+        {
+            return false;
+        }
+        else
+        {
+            Collider[] colliderInRange = Physics.OverlapBox(center, halfExtends);
+            //Collides the cell with nothing else? 
+            if (colliderInRange.Length == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton)
+    {
+        //Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, halfExtends, orientaton, 1 << 6);
+
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+
+        Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton);
+        List<Collider> actuallColliders = new List<Collider>();
+
+        foreach (Collider collider in potentialColliders)
+        {
+            if (Physics.OverlapBox(collider.bounds.center, collider.bounds.extents, default, 1 << 6).Length == 0)
+            {
+                actuallColliders.Add(collider);
+            }
+        }
+        return actuallColliders.ToArray();
+    }
+
+    public static float pathLength(Vector3[] path)
     {
         float length = 0;
         for (int i = 0; i < path.Length - 2; i++)
