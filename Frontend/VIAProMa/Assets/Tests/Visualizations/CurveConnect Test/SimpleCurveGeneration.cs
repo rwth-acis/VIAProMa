@@ -174,9 +174,28 @@ public class SimpleCurveGerneration
             //cp Lies in the centroid of the trianlgle spanned by cPC1[0],cPC1[2] and the point (cPC1[0].x, cPC1[2].y, cPC1[0].x.z)
             controllPointsCurve1[1] = CalculateCentroid(controllPointsCurve1[0], controllPointsCurve1[2]);
 
-            //Test
-            Vector3 test = CalculateCentroid(new Vector3(0,0,0), new Vector3(3,4,0));
+            //Curve 3
+            controllPointsCurve3[0] = intersectionPointsAbove[1];
+            controllPointsCurve3[2] = goal;
+            controllPointsCurve3[1] = CalculateCentroid(controllPointsCurve3[2], controllPointsCurve3[0]);
 
+            //Curve 2 that connects Curve 1 and 3
+            controllPointsCurve2[0] = controllPointsCurve1[2];
+            controllPointsCurve2[3] = controllPointsCurve3[0];
+
+            Vector3 aboveMiddle = CalculateLineIntersection(controllPointsCurve1[1], controllPointsCurve1[2] - controllPointsCurve1[1], controllPointsCurve3[1], controllPointsCurve3[0] - controllPointsCurve3[1]);
+            controllPointsCurve2[1] = controllPointsCurve2[0] + (aboveMiddle - controllPointsCurve2[0]) / 2;
+            controllPointsCurve2[2] = controllPointsCurve2[3] + (aboveMiddle - controllPointsCurve2[3]) / 2;
+
+            Vector3[] curve1 = BezierCurve.calculateCurve(controllPointsCurve1, 20);
+            Vector3[] curve2 = BezierCurve.calculateCurve(controllPointsCurve2, 20);
+            Vector3[] curve3 = BezierCurve.calculateCurve(controllPointsCurve3, 20);
+            Vector3[] curve = new Vector3[curve1.Length + curve2.Length + curve3.Length];
+            curve1.CopyTo(curve,0);
+            curve2.CopyTo(curve, curve1.Length);
+            curve3.CopyTo(curve, curve1.Length+ curve2.Length);
+
+            return curve;
         }
 
         else
@@ -365,13 +384,21 @@ public class SimpleCurveGerneration
     {
         Vector3 p1 = new Vector3(p0.x, p2.y, p0.z);
 
-        Vector3 p01 = new Vector3(p0.x, (p2.y - p0.y)/2,p0.z);
+        Vector3 p01 = p1 + (p0 - p1) / 2;
         Vector3 p12 = p2 + (p1 - p2) / 2;
         Vector3 d1 = p2 - p01;
         Vector3 d2 = p0 - p12;
 
-        float r = (p12.y - p01.y - ((d1.y * p12.x + p01.x) / (d1.x))) / (d2.x / d1.x - d2.y);
+        //float r = (p12.y - p01.y - ((d1.y * p12.x + p01.x) / (d1.x))) / (d2.x / d1.x - d2.y);
 
-        return p12 + r*d2;
+        //return p12 + r*d2;
+        return CalculateLineIntersection(p01, d1, p12, d2);
+    }
+
+    static Vector3 CalculateLineIntersection(Vector3 startPoint1, Vector3 direction1, Vector3 startPoint2, Vector3 direction2)
+    {
+        //float r = (startPoint2.y - startPoint1.y - ((direction1.y * startPoint2.x + startPoint1.x) / (direction1.x))) / (direction2.x / direction1.x - direction2.y);
+        float r = (startPoint2.y-startPoint1.y- (direction1.y*(startPoint2.x - startPoint1.x) / (direction1.x))) / ((direction1.y*direction2.x)/(direction1.x) - direction2.y);
+        return startPoint2 + r * direction2;
     }
 }
