@@ -143,10 +143,11 @@ public class SimpleCurveGerneration
         else
             distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
 
-        Vector3[] controllPoints;
+        Vector3[] controllPoints = new Vector3[0];
 
-        if (distanceAbove < 1.3 * distanceSide)
+        if (distanceAbove < 1.5 * distanceSide)
         {
+            /*
             controllPoints = new Vector3[6];
             controllPoints[0] = start;
             controllPoints[5] = goal;
@@ -157,10 +158,24 @@ public class SimpleCurveGerneration
             controllPoints[2] = controllPoints[1] + new Vector3(0, 2, 0) - 2 * direction;
             controllPoints[3] = controllPoints[4] + new Vector3(0, 2, 0) + 2 * direction;
 
-            pointVis[1].transform.position = controllPoints[1];
-            pointVis[2].transform.position = controllPoints[2];
-            pointVis[3].transform.position = controllPoints[3];
-            pointVis[4].transform.position = controllPoints[4];
+            //pointVis[1].transform.position = controllPoints[1];
+            //pointVis[2].transform.position = controllPoints[2];
+            //pointVis[3].transform.position = controllPoints[3];
+            //pointVis[4].transform.position = controllPoints[4];
+            */
+
+            Vector3[] controllPointsCurve1 = new Vector3[3];
+            Vector3[] controllPointsCurve2 = new Vector3[4];
+            Vector3[] controllPointsCurve3 = new Vector3[3];
+
+            //Curve 1
+            controllPointsCurve1[0] = start;
+            controllPointsCurve1[2] = intersectionPointsAbove[0];
+            //cp Lies in the centroid of the trianlgle spanned by cPC1[0],cPC1[2] and the point (cPC1[0].x, cPC1[2].y, cPC1[0].x.z)
+            controllPointsCurve1[1] = CalculateCentroid(controllPointsCurve1[0], controllPointsCurve1[2]);
+
+            //Test
+            Vector3 test = CalculateCentroid(new Vector3(0,0,0), new Vector3(3,4,0));
 
         }
 
@@ -344,5 +359,19 @@ public class SimpleCurveGerneration
     static bool VecEqVec(Vector3 vec1, Vector3 vec2)
     {
         return FloatEq(vec1.x, vec2.x) && FloatEq(vec1.y, vec2.y) && FloatEq(vec1.z, vec2.z);
+    }
+
+    static Vector3 CalculateCentroid(Vector3 p0, Vector3 p2)
+    {
+        Vector3 p1 = new Vector3(p0.x, p2.y, p0.z);
+
+        Vector3 p01 = new Vector3(p0.x, (p2.y - p0.y)/2,p0.z);
+        Vector3 p12 = p2 + (p1 - p2) / 2;
+        Vector3 d1 = p2 - p01;
+        Vector3 d2 = p0 - p12;
+
+        float r = (p12.y - p01.y - ((d1.y * p12.x + p01.x) / (d1.x))) / (d2.x / d1.x - d2.y);
+
+        return p12 + r*d2;
     }
 }
