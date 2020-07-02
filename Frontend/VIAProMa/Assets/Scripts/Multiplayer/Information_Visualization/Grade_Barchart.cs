@@ -2,48 +2,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Grade_Barchart : MonoBehaviour
 {
     public i5.ViaProMa.Visualizations.Diagrams.Barchart barchart;
     public Vector3 size = Vector3.one;
-    public Vector3 pos;
+    public TextAsset jsonFile;
 
     private void Start()
     {
-        UpdateDiagram();
-    }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            UpdateDiagram();
-        }
-    }
-
-    private void UpdateDiagram()
-    {
         barchart.Size = size;
 
-        List<string> days = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
-        List<string> months = new List<string>() { "January", "February", "March", "April" };
-
+        Information MentorData = JsonUtility.FromJson<Information>(jsonFile.text);
         i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
         List<string> xValues = new List<string>();
         List<float> yValues = new List<float>();
         List<string> zValues = new List<string>();
         List<Color> colors = new List<Color>();
 
-        for (int i = 0; i < days.Count; i++)
+        foreach (Assignment assignment in MentorData.assignments)
         {
-            for (int j = 0; j < months.Count; j++)
-            {
-                xValues.Add(days[i]);
-                zValues.Add(months[j]);
-                yValues.Add(Random.Range(0, 11));
-                colors.Add(Random.ColorHSV());
-            }
+            xValues.Add(assignment.name);
+            yValues.Add(assignment.score);
+            zValues.Add("first semester");
+            colors.Add(Random.ColorHSV());
+
+            xValues.Add(assignment.name);
+            yValues.Add(assignment.score);
+            zValues.Add("second semester");
+            colors.Add(Random.ColorHSV());
         }
 
         TextDataColumn xColumn = new TextDataColumn(xValues);

@@ -43,9 +43,7 @@ public class InformationBoxConfigurator : MonoBehaviour
 
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
     {
-        //Quaternion targetRotation = transform.rotation;
         Quaternion targetRotation = Quaternion.identity;
-        //Quaternion targetRotation = table.transform.rotation;
 
         if (instance != null)
         {
@@ -67,11 +65,41 @@ public class InformationBoxConfigurator : MonoBehaviour
         targetPosition.y += 1.2f;
         //targetPosition.x -= 1f;
         targetPosition.z += 0.5f;
-        //Debug.Log(targetPosition);
-        //barchartInstance = ResourceManager.Instance.NetworkInstantiate(BarchartPrefab, targetPosition, Quaternion.identity);
         InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
-        //barchartInstance.transform.parent = table.transform;
     }
+
+    /*
+    private void BarchartUpdate()
+    {
+        i5.ViaProMa.Visualizations.Diagrams.Barchart barchart = barchartInstance;
+        barchart.Size = size;
+
+        i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
+        List<string> xValues = new List<string>();
+        List<float> yValues = new List<float>();
+        List<string> zValues = new List<string>();
+        List<Color> colors = new List<Color>();
+
+        foreach (Assignment assignment in MentorData.assignments)
+        {
+            xValues.Add(assignment.name);
+            yValues.Add(assignment.score);
+            colors.Add(Random.ColorHSV());
+        }
+
+        TextDataColumn xColumn = new TextDataColumn(xValues);
+        NumericDataColumn yColumn = new NumericDataColumn(yValues);
+        TextDataColumn zColumn = new TextDataColumn(zValues);
+
+        dataSet.DataColumns.Add(xColumn);
+        dataSet.DataColumns.Add(yColumn);
+        dataSet.DataColumns.Add(zColumn);
+        dataSet.DataPointColors = colors;
+
+        barchart.DataSet = dataSet;
+        barchart.UpdateDiagram();
+    }
+    */
     
     public void ScatterplotButtonClicked()
     {
