@@ -7,7 +7,7 @@ using Photon.Pun;
 public class HeatmapDataManagement : MonoBehaviour
 {
     [Header("Data information")]
-    public int valueRange = 100;
+    public int testDataRange = 100;
     public int arraySize = 40;
     [SerializeField]
     public int[,] data;
@@ -18,14 +18,21 @@ public class HeatmapDataManagement : MonoBehaviour
 
     private void Awake()
     {
-        heatmapVisualizer = GetComponent<HeatmapVisualizer>();
-        data = GenerateTestData(arraySize, 100);
 
+        heatmapVisualizer = GetComponent<HeatmapVisualizer>();
+        //data = GenerateTestData(arraySize, testDataRange);
+        data = new int[arraySize, arraySize];
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        //DEBUG:
+        var position = GameObject.Find("Main Camera").transform.position;
+        position.y = 1.8f;
+        GameObject.Find("Main Camera").transform.position = position;
+
+
         //Update userpositions every second
         InvokeRepeating("UpdateFromUserPositions", 1f, 1f);
 
@@ -69,7 +76,19 @@ public class HeatmapDataManagement : MonoBehaviour
 
         int positionX = Mathf.FloorToInt((x + heatmapVisualizer.width / 2) * arraySize / heatmapVisualizer.width);
         int positionZ = Mathf.FloorToInt((z + heatmapVisualizer.width / 2) * arraySize / heatmapVisualizer.width);
-        data[positionX, positionZ]++;
+
+        int maxDistance = 2;
+
+        for (int i = -maxDistance; i <= maxDistance; i++)
+        {
+            for (int j = -maxDistance; j <= maxDistance; j++)
+            {
+                if(positionX + i>=0 && positionX + i<arraySize && positionZ + j>=0&& positionZ + j < arraySize)
+                {
+                    data[positionX + i, positionZ + j] += 2 * maxDistance - Mathf.Abs(i) - Mathf.Abs(j);
+                }
+            }
+        }
 
         if (onDataChanged != null) onDataChanged();
     }
