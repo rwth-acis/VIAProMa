@@ -11,6 +11,7 @@ public class Grade_Barchart : MonoBehaviour
     public Vector3 size = Vector3.one;
     public TextAsset jsonFile;
 
+    [PunRPC]
     private void Start()
     {
 
