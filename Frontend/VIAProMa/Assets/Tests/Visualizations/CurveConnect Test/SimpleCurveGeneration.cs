@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SimpleCurveGerneration
 {
+    public static float distanceToObstacle = 0.3f;
     public static Vector3[] start(Vector3 start, Vector3 goal)
     {
         //Check for colliosons above the objects
@@ -129,12 +130,52 @@ public class SimpleCurveGerneration
 
         minPoint = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
 
+        //Generate bounding box for the sides:
+        Vector3 minPointSide = center;
+        Vector3 maxPointSide = center;
+
+        colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up));
+        foreach (Collider collider in colliders)
+        {
+            minPointSide = new Vector3(Mathf.Min(minPoint.x, collider.bounds.min.x), Mathf.Min(minPoint.y, collider.bounds.min.y), Mathf.Min(minPoint.z, collider.bounds.min.z));
+            maxPointSide = new Vector3(Mathf.Max(maxPoint.x, collider.bounds.max.x), Mathf.Max(maxPoint.y, collider.bounds.max.y), Mathf.Max(maxPoint.z, collider.bounds.max.z));
+        }
+
+        Vector3 reCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
+        Vector3 reExtend = maxPointSide - minPointSide + new Vector3(3, 0, 3);
+        reExtend.y = standartHeight + 2;
+        reExtend /= 2;
+        reCenter.y = reExtend.y;
+
+        Collider[] colllidersReScan = LineControllScriptFrameShare.GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity);
+        foreach (Collider collider in colllidersReScan)
+        {
+            minPointSide = new Vector3(Mathf.Min(minPointSide.x, collider.bounds.min.x), Mathf.Min(minPointSide.y, collider.bounds.min.y), Mathf.Min(minPointSide.z, collider.bounds.min.z));
+            maxPointSide = new Vector3(Mathf.Max(maxPointSide.x, collider.bounds.max.x), Mathf.Max(maxPointSide.y, collider.bounds.max.y), Mathf.Max(maxPointSide.z, collider.bounds.max.z));
+        }
+
+        for (int i = 0; i < 5 && colliders.Length != colllidersReScan.Length; i++)
+        {
+            colliders = colllidersReScan;
+            reCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
+            reExtend = maxPointSide - minPointSide + new Vector3(3, 0, 3);
+            reExtend.y = standartHeight + 2;
+            reExtend /= 2;
+            reCenter.y = reExtend.y;
+            colllidersReScan = LineControllScriptFrameShare.GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity);
+            foreach (Collider collider in colllidersReScan)
+            {
+                minPointSide = new Vector3(Mathf.Min(minPointSide.x, collider.bounds.min.x), Mathf.Min(minPointSide.y, collider.bounds.min.y), Mathf.Min(minPointSide.z, collider.bounds.min.z));
+                maxPointSide = new Vector3(Mathf.Max(maxPointSide.x, collider.bounds.max.x), Mathf.Max(maxPointSide.y, collider.bounds.max.y), Mathf.Max(maxPointSide.z, collider.bounds.max.z));
+            }
+            
+        }
+
+
         
 
-        Vector3 boundingBoxCenter = minPoint + (maxPoint - minPoint) * 0.5f;
-
         Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint,direction);
-        Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal,minPoint,maxPoint,direction,standartHeight);
+        Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, minPointSide, maxPointSide, direction,standartHeight);
 
 
         float distanceAbove = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsAbove[0], intersectionPointsAbove[1], goal});
@@ -155,6 +196,7 @@ public class SimpleCurveGerneration
 
         else
         {
+            Vector3 boundingBoxCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
             Vector3 boundingBoxCenterShifted = new Vector3(boundingBoxCenter.x, standartHeight, boundingBoxCenter.z);
             if (intersectionPointsSide.Length == 1)
             {
@@ -359,10 +401,10 @@ public class SimpleCurveGerneration
 
         Vector3 direction = middlePoints[1] - middlePoints[0];
         direction.Normalize();
-        middlePoints[0] -= direction;
-        middlePoints[0] += up;
-        middlePoints[1] += direction;
-        middlePoints[1] += up;
+        middlePoints[0] -= direction * distanceToObstacle;
+        middlePoints[0] += up * distanceToObstacle;
+        middlePoints[1] += direction * distanceToObstacle;
+        middlePoints[1] += up * distanceToObstacle;
 
         //Curve 1
         controllPointsCurve1[0] = start;
