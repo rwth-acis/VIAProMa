@@ -126,7 +126,10 @@ public class HeatmapVisualizer : MonoBehaviour
     /// <returns></returns>
     public float Value2Range(int value)
     {
-        return (value - min) / (float)(max-min);
+        if (max - min == 0)
+            return 0;
+        else
+            return (value - min) / (float)(max-min);
     }
 
     /// <summary>

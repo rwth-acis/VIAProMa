@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
-public class HeatmapDataManagement : MonoBehaviour
+public class HeatmapDataManagement : MonoBehaviourPunCallbacks
 {
     [Header("Data information")]
     public int testDataRange = 100;
@@ -14,14 +15,15 @@ public class HeatmapDataManagement : MonoBehaviour
     public event Action onDataChanged;
 
     HeatmapVisualizer heatmapVisualizer;
+    PhotonView photonView;
 
 
     private void Awake()
     {
 
         heatmapVisualizer = GetComponent<HeatmapVisualizer>();
-        //data = GenerateTestData(arraySize, testDataRange);
-        data = new int[arraySize, arraySize];
+        data = GenerateTestData(arraySize, testDataRange);
+        photonView = PhotonView.Get(this);
     }
 
     // Start is called before the first frame update
@@ -38,29 +40,64 @@ public class HeatmapDataManagement : MonoBehaviour
 
     }
 
+    public override void OnJoinedRoom()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("I am the Master");
+            //TODO: Get Data from server
+        }
+        else
+        {
+            Debug.Log(PhotonNetwork.MasterClient + " is the Master");
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log("New player joined");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("UpdateData", newPlayer, data);
+        }
+    }
+
+
+    [PunRPC]
+    void UpdateData(int[,] newData)
+    {
+        data = newData;
+    }
+
+
 
     /// <summary>
     /// Get position of all users and Update Heatmap acordingly
     /// </summary>
     private void UpdateFromUserPositions()
     {
-        if (PhotonNetwork.InRoom)
-        {
-            foreach (var player in PhotonNetwork.CurrentRoom.Players)
-            {
-                //TODO sync positions and run UpdateDataPoint
-                Debug.Log(player.Value.UserId);
-            }
-
-        }
-
-        //Workaround for own position
         var position = GameObject.Find("Main Camera").transform.position;
         Debug.Log("Player position is: " + position);
 
-        IncreaseDataPoint(position.x, position.z);
+        if (position.x < -heatmapVisualizer.width / 2 || heatmapVisualizer.width / 2 <= position.x) return;
+        if (position.z < -heatmapVisualizer.width / 2 || heatmapVisualizer.width / 2 <= position.z) return;
+
+        int x = Mathf.FloorToInt((position.x + heatmapVisualizer.width / 2) * arraySize / heatmapVisualizer.width);
+        int z = Mathf.FloorToInt((position.z + heatmapVisualizer.width / 2) * arraySize / heatmapVisualizer.width);
+
+        if (PhotonNetwork.InRoom)
+        {
+            photonView.RPC("UpdatePosition", RpcTarget.All, x, z);
+        }
 
     }
+
+    [PunRPC]
+    void UpdatePosition(int x, int z)
+    {
+        IncreaseDataPoint(x, z);
+    }
+
 
 
     /// <summary>
@@ -69,13 +106,8 @@ public class HeatmapDataManagement : MonoBehaviour
     /// <param name="x"> -width/2 <= x < width/2 </param>
     /// <param name="z"> -width/2 <= z < width/2 </param>
     /// <param name="value"> 0 <= value < size(int) </param>
-    public void IncreaseDataPoint(float x, float z)
+    public void IncreaseDataPoint(int x, int z)
     {
-        if (x < -heatmapVisualizer.width / 2 || heatmapVisualizer.width / 2 <= x) return;
-        if (z < -heatmapVisualizer.width / 2 || heatmapVisualizer.width / 2 <= z) return;
-
-        int positionX = Mathf.FloorToInt((x + heatmapVisualizer.width / 2) * arraySize / heatmapVisualizer.width);
-        int positionZ = Mathf.FloorToInt((z + heatmapVisualizer.width / 2) * arraySize / heatmapVisualizer.width);
 
         int maxDistance = 2;
 
@@ -83,9 +115,9 @@ public class HeatmapDataManagement : MonoBehaviour
         {
             for (int j = -maxDistance; j <= maxDistance; j++)
             {
-                if(positionX + i>=0 && positionX + i<arraySize && positionZ + j>=0&& positionZ + j < arraySize)
+                if(x + i>=0 && x + i<arraySize && z + j>=0&& z + j < arraySize)
                 {
-                    data[positionX + i, positionZ + j] += 2 * maxDistance - Mathf.Abs(i) - Mathf.Abs(j);
+                    data[x + i, z + j] += 2 * maxDistance - Mathf.Abs(i) - Mathf.Abs(j);
                 }
             }
         }
@@ -93,6 +125,43 @@ public class HeatmapDataManagement : MonoBehaviour
         if (onDataChanged != null) onDataChanged();
     }
 
+
+    public static int[,] StringToArray(string s)
+    {
+        string[] lines = s.Split('#');
+        int[,] array = new int[lines.Length, lines.Length];
+        for (int y = 0; y < array.GetLength(1); y++)
+        {
+            string[] sNums = lines[y].Split(';');
+            for (int x = 0; x < array.GetLength(0); x++)
+            {
+                int.TryParse(sNums[x], out array[x, y]);
+            }
+        }
+        return array;
+
+    }
+    public static string ArrayToString(int[,] array)
+    {
+        string s = "";
+        for (int y = 0; y < array.GetLength(1); y++)
+        {
+            for (int x = 0; x < array.GetLength(0); x++)
+            {
+                s += array[x, y];
+                if (x < array.GetLength(0) - 1)
+                {
+                    s += ";";
+                }
+            }
+            if (y < array.GetLength(1) - 1)
+            {
+                s += "#";
+            }
+        }
+
+        return s;
+    }
 
     /// <summary>
     /// Debugfunction that creates an array with testdata for a given size and range from Perlin Noise
@@ -103,17 +172,15 @@ public class HeatmapDataManagement : MonoBehaviour
     int[,] GenerateTestData(int size, int range)
     {
         int[,] testData = new int[size, size];
-        string s = "";
         for (int x = 0; x < size; x++)
         {
             for (int z = 0; z < size; z++)
             {
                 testData[x, z] = (int)(Mathf.PerlinNoise(x / (float)size, z / (float)size) * range);
-                s += testData[x, z];
+                //testData[x, z] = 0;
             }
-            s += "\n";
         }
-        print(s);
+        print(ArrayToString(testData));
         return testData;
     }
 
