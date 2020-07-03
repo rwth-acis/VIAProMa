@@ -6,9 +6,6 @@ using UnityEngine;
 public class HeatmapVisualizer : MonoBehaviour
 {
     public static HeatmapVisualizer instance;
-    [Header("Data information")]
-    public int valueRange = 100;
-    public int arraySize = 40;
     [SerializeField]
     public int[,] data;
     int min, max;
@@ -19,11 +16,15 @@ public class HeatmapVisualizer : MonoBehaviour
     public Gradient colorGradient;
     public GameObject spherePrefab;
 
+    HeatmapDataManagement heatmapDataManagement;
+
     //Rest
     HeatmapPoint[,] points;
 
     private void Awake()
     {
+        heatmapDataManagement = GetComponent<HeatmapDataManagement>();
+        heatmapDataManagement.onDataChanged += OnUpdateData;
         instance = this;
         min = 0;
         max = 100;
@@ -33,13 +34,14 @@ public class HeatmapVisualizer : MonoBehaviour
     {
         Setup();
 
-        data = GenerateTestData(arraySize, 100);
+        data = heatmapDataManagement.data;
 
         UpdateData(data);
     }
 
     public void Setup()
     {
+        int arraySize = heatmapDataManagement.arraySize;
         // Initialize Dots in child object.
         // Position of this transform is also middle of the Heatmap
         points = new HeatmapPoint[arraySize, arraySize];
@@ -55,11 +57,13 @@ public class HeatmapVisualizer : MonoBehaviour
                 points[x, z].UpdateData(0);
             }
         }
-        //Update userpositions every second
-        InvokeRepeating("UpdateFromUserPositions", 1f, 1f);
-        //Update Visualization for all points with new min max values every 5 seconds
-        InvokeRepeating("UpdateDataInvoke", 5f, 5f);
 
+    }
+
+
+    public void OnUpdateData()
+    {
+        UpdateData(heatmapDataManagement.data);
     }
 
     /// <summary>
@@ -72,59 +76,13 @@ public class HeatmapVisualizer : MonoBehaviour
         min = FindMin(data);
         max = FindMax(data);
         // Update Data on all points
-        for (int x = 0; x < arraySize; x++)
+        for (int x = 0; x < data.GetLength(0); x++)
         {
-            for (int z = 0; z < arraySize; z++)
+            for (int z = 0; z < data.GetLength(1); z++)
             {
                 points[x, z].UpdateData(data[x, z]);
             }
         }
-    }
-
-    /// <summary>
-    /// Call UpdataData as an Invoke every x seconds
-    /// </summary>
-    private void UpdateDataInvoke()
-    {
-        UpdateData(data);
-    }
-
-    /// <summary>
-    /// Get position of all users and Update Heatmap acordingly
-    /// </summary>
-    private void UpdateFromUserPositions()
-    {
-        if (PhotonNetwork.InRoom)
-        {
-            foreach (var player in PhotonNetwork.CurrentRoom.Players)
-            {
-                //TODO sync positions and run UpdateDataPoint
-                Debug.Log(player.Value.UserId);
-            }
-
-        }
-
-        //Workaround for own position
-        var position = GameObject.Find("Main Camera").transform.position;
-        Debug.Log("Player position is: " +position);
-        IncreaseDataPoint(position.x, position.z-2.0f);
-    }
-
-    /// <summary>
-    /// Increase the data of the heatmap at global position x,z and update the visualization
-    /// </summary>
-    /// <param name="x"> -width/2 <= x < width/2 </param>
-    /// <param name="z"> -width/2 <= z < width/2 </param>
-    /// <param name="value"> 0 <= value < size(int) </param>
-    public void IncreaseDataPoint(float x, float z)
-    {
-        if (x < -width / 2 || width / 2 <= x) return;
-        if (z < -width / 2 || width / 2 <= z) return;
-
-        int positionX = Mathf.FloorToInt((x + width / 2) * arraySize / width);
-        int positionZ = Mathf.FloorToInt((z + width / 2) * arraySize / width);
-        data[positionX, positionZ]++;
-        points[positionX, positionZ].UpdateData(data[positionX, positionZ]);
     }
 
     //
@@ -211,28 +169,7 @@ public class HeatmapVisualizer : MonoBehaviour
     // Debug
     //
 
-    /// <summary>
-    /// Debugfunction that creates an array with testdata for a given size and range from Perlin Noise
-    /// </summary>
-    /// <param name="size">The height and width of the array</param>
-    /// <param name="range">The maximum of the values inside the array</param>
-    /// <returns></returns>
-    int[,] GenerateTestData(int size, int range)
-    {
-        int[,] testData = new int[size,size];
-        string s = "";
-        for (int x = 0; x < size; x++)
-        {
-            for (int z = 0; z < size; z++)
-            {
-                testData[x, z] = (int)(Mathf.PerlinNoise(x/(float)size, z/(float)size) * range);
-                s += testData[x, z];
-            }
-            s += "\n";
-        }
-        print(s);
-        return testData;
-    }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

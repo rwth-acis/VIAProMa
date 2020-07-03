@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3169,6 +3169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1214472305}
   - component: {fileID: 1214472306}
+  - component: {fileID: 1214472307}
   m_Layer: 0
   m_Name: Heatmap
   m_TagString: Untagged
@@ -3184,7 +3185,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1214472304}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3202,8 +3203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b6fd4e1d700ecb4a8f2f87f3785268c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueRange: 100
-  arraySize: 40
   width: 10
   height: 3
   pointSize: 0.5
@@ -3238,6 +3237,20 @@ MonoBehaviour:
     m_NumAlphaKeys: 3
   spherePrefab: {fileID: 2405503873890670273, guid: dcfb2f83ef1baf24d9ee347c66ad59ce,
     type: 3}
+--- !u!114 &1214472307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214472304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92c7435601ef4d7469b20956b4d0ddf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueRange: 100
+  arraySize: 40
 --- !u!1 &1734783556
 GameObject:
   m_ObjectHideFlags: 0
