@@ -109,9 +109,9 @@ public class SimpleCurveGerneration
 
         //Genenerating the standart curve didn't work due to collsions. Try to set the controllpoints so, that no collion occures
 
-        //Generate bounding box:
-        Vector3 minPoint = center; //+ new Vector3(0,2,0) - direction*(distance*0.2f);
-        Vector3 maxPoint = center; //+ new Vector3(0, 2, 0) + direction * (distance * 0.2f);
+        //Generate bounding box for above:
+        Vector3 minPoint = center;
+        Vector3 maxPoint = center;
 
         Collider[] colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up));
 
@@ -121,8 +121,15 @@ public class SimpleCurveGerneration
             maxPoint = new Vector3(Mathf.Max(maxPoint.x, collider.bounds.max.x), Mathf.Max(maxPoint.y, collider.bounds.max.y), Mathf.Max(maxPoint.z, collider.bounds.max.z));
         }
 
+        if (minPoint == maxPoint)
+        {
+            minPoint += new Vector3(-1, -1, -1);
+            maxPoint += new Vector3(1, 1, 1);
+        }
 
         minPoint = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
+
+        
 
         Vector3 boundingBoxCenter = minPoint + (maxPoint - minPoint) * 0.5f;
 
@@ -134,8 +141,10 @@ public class SimpleCurveGerneration
         float distanceSide;
         if (intersectionPointsSide.Length == 1)
             distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], goal });
-        else
+        else if(intersectionPointsSide.Length == 2)
             distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
+        else
+            return BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
 
         Vector3[] controllPoints = new Vector3[0];
 
@@ -157,6 +166,7 @@ public class SimpleCurveGerneration
             else
             {
                 Vector3 up = intersectionPointsSide[0] - boundingBoxCenterShifted + intersectionPointsSide[1] - boundingBoxCenterShifted;
+                up.y = standartHeight;
                 up.Normalize();
 
                 return CalculateJoinedCurve(start, intersectionPointsSide, goal, up);
