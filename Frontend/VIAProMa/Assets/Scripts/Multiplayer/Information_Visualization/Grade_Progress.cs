@@ -4,24 +4,29 @@ using UnityEngine;
 
 public class Grade_Progress : MonoBehaviour
 {
-    [Range(0, 1)]
-    public float percentDone = 0f;
-    [Range(0, 1)]
-    public float percentInProgress = 0f;
+    //public float percentDone = 0f;
+    //public float percentInProgress = 0f;
 
     public GameObject progressBar;
-
     private IProgressBarVisuals progressBarVisuals;
+    public TextAsset jsonFile;
 
-    private void Awake()
+    private void Start()
     {
-        if (progressBar == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
-        }
+        Information MentorData = JsonUtility.FromJson<Information>(jsonFile.text);
+
+        float percentDone = MentorData.average_score/100f;
+        float percentInProgress = 1f - percentDone;
+
         progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
+
+        progressBarVisuals.PercentageDone = percentDone;
+        progressBarVisuals.PercentageInProgress = percentInProgress;
+
     }
 
+
+    /*
     // Update is called once per frame
     void Update()
     {
@@ -40,4 +45,5 @@ public class Grade_Progress : MonoBehaviour
             }
         }
     }
+    */
 }
