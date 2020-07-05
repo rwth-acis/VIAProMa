@@ -194,7 +194,8 @@ public class SimpleCurveGerneration
 
         if (distanceAbove < 1.5 * distanceSide)
         {
-            return CalculateJoinedCurve(start, intersectionPointsAbove, goal, Vector3.up);
+            //return CalculateJoinedCurve(start, intersectionPointsAbove, goal, Vector3.up);
+            return CalculateJoinedCurveSide(start, intersectionPointsAbove, goal, false);
         }
 
         else
@@ -215,7 +216,8 @@ public class SimpleCurveGerneration
                 up.Normalize();
 
                 //return CalculateJoinedCurve(start, intersectionPointsSide, goal, up);
-                return CalculateJoinedCurveSide(start, intersectionPointsSide, goal);
+                //return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, pointVis[0], pointVis[1], pointVis[2], pointVis[3]);
+                return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, true);
             }
 
         }
@@ -476,7 +478,7 @@ public class SimpleCurveGerneration
         return curve;
     }
 
-    public static Vector3[] CalculateJoinedCurveSide(Vector3 start, Vector3[] middlePoints, Vector3 goal, GameObject g0 = null, GameObject g1 = null, GameObject g2 = null, GameObject g3 = null)
+    public static Vector3[] CalculateJoinedCurveSide(Vector3 start, Vector3[] middlePoints, Vector3 goal, bool side, GameObject g0 = null, GameObject g1 = null, GameObject g2 = null, GameObject g3 = null)
     {
         Vector3[] controllPointsCurve1 = new Vector3[3];
         Vector3[] controllPointsCurve2 = new Vector3[4];
@@ -495,16 +497,20 @@ public class SimpleCurveGerneration
         up.Normalize();
         //(direction, normal, up) is an orthonormal basis for plane P spanned by start middlepoint[0] and goal
 
-        if (start.y > goal.y)
+
+        if (side)
         {
-            //calculate new middlePoints[1] in such a way that middlePoints[1] is on P
-            float l = (start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[1].x * normal.x - middlePoints[1].z * normal.z - middlePoints[1].y * normal.y) / normal.y;
-            middlePoints[1] = middlePoints[1] + l * Vector3.up;
-        }
-        else
-        {
-            float l = (start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[0].x * normal.x - middlePoints[0].z * normal.z - middlePoints[0].y * normal.y) / normal.y;
-            middlePoints[0] = middlePoints[0] + l * Vector3.up;
+            if (start.y > goal.y)
+            {
+                //calculate new middlePoints[1] in such a way that middlePoints[1] is on P
+                float l = (start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[1].x * normal.x - middlePoints[1].z * normal.z - middlePoints[1].y * normal.y) / normal.y;
+                middlePoints[1] = middlePoints[1] + l * Vector3.up;
+            }
+            else
+            {
+                float l = (start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[0].x * normal.x - middlePoints[0].z * normal.z - middlePoints[0].y * normal.y) / normal.y;
+                middlePoints[0] = middlePoints[0] + l * Vector3.up;
+            }
         }
 
 
@@ -533,10 +539,13 @@ public class SimpleCurveGerneration
         controllPointsCurve1[2] = planeToStandart * middlePoints[0];
 
         Vector2 p1 = new Vector2(start.x , middlePoints[0].y);
+        //g3.transform.position = planeToStandart * new Vector3(p1.x, p1.y, start.z);
         p1 = CalculateCentroid(start, p1, middlePoints[0]);
         controllPointsCurve1[1] = planeToStandart * new Vector3(p1.x,p1.y,start.z);
 
-
+        //g0.transform.position = controllPointsCurve1[0];
+        //g1.transform.position = controllPointsCurve1[1];
+        //g2.transform.position = controllPointsCurve1[2];
 
         //Curve 3
         controllPointsCurve3[0] = planeToStandart * middlePoints[1];
