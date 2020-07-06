@@ -22,6 +22,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
     [SerializeField] private Interactable microphoneButton;
+    [SerializeField] private Interactable participantlistButton;
 
     [Header("References")]
     [SerializeField] private GameObject issueShelfPrefab;
@@ -78,6 +79,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (chatButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatButton));
+        }
+        if (participantlistButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(participantlistButton));
         }
         if (microphoneButton == null)
         {
@@ -137,6 +142,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         loadButton.Enabled = PhotonNetwork.InRoom;
         issueShelfButton.Enabled = PhotonNetwork.InRoom;
         visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
+        participantlistButton.Enabled = PhotonNetwork.InRoom;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -247,6 +253,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public void ChatButtonClicked()
     {
         WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+        foldController.FoldCube();
+    }
+
+    public void ParticipantListButtonClicked()
+    {
+        WindowManager.Instance.ParticipantListWindow.Open(participantlistButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
         foldController.FoldCube();
     }
 

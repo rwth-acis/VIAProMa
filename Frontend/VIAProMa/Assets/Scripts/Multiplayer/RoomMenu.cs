@@ -19,7 +19,7 @@ public class RoomMenu : MonoBehaviour, IWindow
 
     [SerializeField] private CreateRoomMenu createRoomSubMenu;
 
-    public GameObject participantList;
+    //public GameObject participantList;
 
     /// <summary>
     /// The number of room entries which are shown on one page
@@ -137,8 +137,6 @@ public class RoomMenu : MonoBehaviour, IWindow
         if (windowEnabled)
         {
             PhotonNetwork.JoinRoom(roomListView.SeletedItem.RoomInfo.Name);
-
-            WindowManager.Instance.ParticipantList.Open(transform.forward + new Vector3(0.6f, 0.5540501f, 1) , transform.localEulerAngles);//(roomButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
         }
     }
 
@@ -170,7 +168,7 @@ public class RoomMenu : MonoBehaviour, IWindow
     /// </summary>
     public void OpenCreateRoomMenu()
     {
-        createRoomSubMenu.Open(participantList);
+        createRoomSubMenu.Open();
         WindowEnabled = false;
     }
 
