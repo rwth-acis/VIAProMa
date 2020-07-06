@@ -107,7 +107,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         InstantiateSharingGlobal();
         SetColorOfArrow();
         // GetComponent variables
-        globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
+        if (SceneManagerHelper.ActiveSceneName != "GazeShareTest")
+        {
+            globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
+        }
         photonTextMeshPro = gameObject.GetComponentInChildren<TextMeshPro>();
         photonSpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
     }
@@ -150,7 +153,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             MoveMyArrow();
             textToShow = photonView.Owner.NickName;
-            photonTextMeshPro.text = textToShow;
+            if (SceneManagerHelper.ActiveSceneName != "GazeShareTest")
+            {
+                photonTextMeshPro.text = textToShow;
+            }
             photonSpriteRenderer.sprite = GetIconForDevice(deviceUsed);
         }
         else
