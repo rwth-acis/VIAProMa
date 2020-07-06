@@ -16,6 +16,7 @@ public class HeatmapVisualizer : MonoBehaviour
     public Gradient colorGradient;
     public GameObject spherePrefab;
     public Transform content;
+    public GreyBox greybox;
 
     HeatmapDataManagement heatmapDataManagement;
 
@@ -26,6 +27,7 @@ public class HeatmapVisualizer : MonoBehaviour
     {
         heatmapDataManagement = GetComponent<HeatmapDataManagement>();
         heatmapDataManagement.onDataChanged += OnUpdateData;
+        greybox = FindObjectOfType<GreyBox>();
         content = transform.GetChild(0);
         instance = this;
         min = 0;
@@ -39,7 +41,7 @@ public class HeatmapVisualizer : MonoBehaviour
         data = heatmapDataManagement.data;
 
         UpdateData(data);
-        SetVisible(false);
+        SetVisible(true);
     }
 
     public void Setup()
@@ -66,6 +68,7 @@ public class HeatmapVisualizer : MonoBehaviour
     {
         if (!instance) return;
         instance.content.gameObject.SetActive(value);
+        instance.greybox.SetVisible(value);
     }
     public static void Toggle()
     {

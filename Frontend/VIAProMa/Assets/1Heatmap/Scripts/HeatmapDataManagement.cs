@@ -181,8 +181,8 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
         {
             for (int z = 0; z < size; z++)
             {
-                //testData[x, z] = (int)(Mathf.PerlinNoise(x / (float)size, z / (float)size) * range);
-                testData[x, z] = 0;
+                testData[x, z] = (int)(Mathf.PerlinNoise(x / (float)size, z / (float)size) * range);
+                //testData[x, z] = 0;
             }
         }
         print(ArrayToString(testData));
