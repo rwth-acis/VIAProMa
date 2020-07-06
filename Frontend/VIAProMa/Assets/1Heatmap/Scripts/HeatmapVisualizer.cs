@@ -27,7 +27,6 @@ public class HeatmapVisualizer : MonoBehaviour
         heatmapDataManagement = GetComponent<HeatmapDataManagement>();
         heatmapDataManagement.onDataChanged += OnUpdateData;
         content = transform.GetChild(0);
-
         instance = this;
         min = 0;
         max = 100;
@@ -40,6 +39,7 @@ public class HeatmapVisualizer : MonoBehaviour
         data = heatmapDataManagement.data;
 
         UpdateData(data);
+        SetVisible(false);
     }
 
     public void Setup()
@@ -62,10 +62,15 @@ public class HeatmapVisualizer : MonoBehaviour
         }
 
     }
-
-    public void Toggle(bool value)
+    public static void SetVisible(bool value)
     {
-        content.gameObject.SetActive(value);
+        if (!instance) return;
+        instance.content.gameObject.SetActive(value);
+    }
+    public static void Toggle()
+    {
+        if (!instance) return;
+        SetVisible(!instance.content.gameObject.activeSelf);
     }
 
 

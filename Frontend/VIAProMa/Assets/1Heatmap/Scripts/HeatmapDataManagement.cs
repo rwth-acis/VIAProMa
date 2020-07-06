@@ -21,9 +21,8 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-
-        heatmapVisualizer = GetComponent<HeatmapVisualizer>();
         heatmapSerializer = GetComponent<HeatmapSerializer>();
+        heatmapVisualizer = GetComponent<HeatmapVisualizer>();
         data = GenerateTestData(arraySize, testDataRange);
         photonView = PhotonView.Get(this);
     }
@@ -52,6 +51,11 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
         {
             Debug.Log(PhotonNetwork.MasterClient + " is the Master");
         }
+    }
+
+    public override void OnLeftRoom()
+    {
+        HeatmapVisualizer.SetVisible(false);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -177,8 +181,8 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
         {
             for (int z = 0; z < size; z++)
             {
-                testData[x, z] = (int)(Mathf.PerlinNoise(x / (float)size, z / (float)size) * range);
-                //testData[x, z] = 0;
+                //testData[x, z] = (int)(Mathf.PerlinNoise(x / (float)size, z / (float)size) * range);
+                testData[x, z] = 0;
             }
         }
         print(ArrayToString(testData));

@@ -22,6 +22,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
     [SerializeField] private Interactable microphoneButton;
+    [SerializeField] private Interactable heatmapButton;
 
     [Header("References")]
     [SerializeField] private GameObject issueShelfPrefab;
@@ -83,6 +84,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
         }
+        if (heatmapButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(heatmapButton));
+        }
+
 
         if (issueShelfPrefab == null)
         {
@@ -137,6 +143,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         loadButton.Enabled = PhotonNetwork.InRoom;
         issueShelfButton.Enabled = PhotonNetwork.InRoom;
         visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
+        heatmapButton.Enabled = PhotonNetwork.InRoom;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -242,6 +249,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
             PhotonNetwork.LeaveRoom();
         }
         foldController.FoldCube();
+    }
+
+    public void HeatmapButtonClicked()
+    {
+        HeatmapVisualizer.Toggle();
     }
 
     public void ChatButtonClicked()
