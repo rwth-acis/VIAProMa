@@ -11,12 +11,16 @@ public class HeatmapVisualizer : MonoBehaviour
     int min, max;
     [Header("Visualization")]
     public float width = 10;
-    public float height = 3;
-    public float pointSize = 0.5f;
-    public Gradient colorGradient;
     public GameObject spherePrefab;
     public Transform content;
     public GreyBox greybox;
+
+    public PointRepresentation[] pointRepresentations;
+
+    [Header("Visualization Types")]
+    public PointPosition position = new PointPosition();
+    public PointColor color = new PointColor();
+    public PointSize size = new PointSize();
 
     HeatmapDataManagement heatmapDataManagement;
 
@@ -39,7 +43,7 @@ public class HeatmapVisualizer : MonoBehaviour
         Setup();
 
         data = heatmapDataManagement.data;
-
+        pointRepresentations = new PointRepresentation[] { position, color, size };
         UpdateData(data);
         SetVisible(false);
     }
@@ -59,7 +63,6 @@ public class HeatmapVisualizer : MonoBehaviour
                 Vector3 position = bottomLeft + new Vector3(stepSize * x, 0, stepSize * z);
                 GameObject point = Instantiate(spherePrefab, position, Quaternion.Euler(Vector3.zero), content);
                 points[x, z] = point.GetComponent<HeatmapPoint>();
-                points[x, z].UpdateData(0);
             }
         }
     }
@@ -96,7 +99,10 @@ public class HeatmapVisualizer : MonoBehaviour
         {
             for (int z = 0; z < data.GetLength(1); z++)
             {
-                points[x, z].UpdateData(data[x, z]);
+                foreach (var representation in pointRepresentations)
+                {
+                    representation.UpdateData(points[x,z], data[x,z]);
+                }
             }
         }
     }
@@ -105,35 +111,6 @@ public class HeatmapVisualizer : MonoBehaviour
     // Visualization
     //
 
-    /// <summary>
-    /// Get color form the gradient for the given value in comparison to the max and min values
-    /// </summary>
-    /// <param name="value">The value of the sought color</param>
-    /// <returns></returns>
-    public Color GetColor(int value)
-    {
-        return colorGradient.Evaluate(Value2Range(value));
-    }
-
-    /// <summary>
-    /// Get height for the given value in comparison to the max and min values
-    /// </summary>
-    /// <param name="value">The value of the sought height</param>
-    /// <returns></returns>
-    public float GetHeight(int value)
-    {
-        return Value2Range(value) * height;
-    }
-
-    /// <summary>
-    /// Get size for the given value in comparison to the max and min values
-    /// </summary>
-    /// <param name="value">The value of the sought size</param>
-    /// <returns></returns>
-    public float GetSize(int value)
-    {
-        return Value2Range(value) * pointSize;
-    }
 
     /// <summary>
     /// Returns the linear mapping of the value from (min, max) to (0,1)
@@ -184,16 +161,116 @@ public class HeatmapVisualizer : MonoBehaviour
         return max;
     }
 
-    //
-    // Debug
-    //
 
-
-    private void OnDrawGizmosSelected()
+    [System.Serializable]
+    public class PointRepresentation
     {
-        Gizmos.color = Color.red;
+        public bool active = true;
+        public void UpdateData(HeatmapPoint point, int value)
+        {
+            if (active) ShowData(point, value);
+            else StandardData(point);
+        }
+        public virtual void ShowData(HeatmapPoint point, int value) { }
 
-        Gizmos.DrawWireCube(transform.position + Vector3.up * (height / 2), new Vector3(width, height, width));
+        public virtual void StandardData(HeatmapPoint point) { }
+
+        public static float Value2Range(int value)
+        {
+            return HeatmapVisualizer.instance.Value2Range(value);
+        }
+    }
+
+    [System.Serializable]
+    public class PointPosition : PointRepresentation
+    {
+
+        public float height = 3;
+        public override void ShowData(HeatmapPoint point, int value)
+        {
+            // Change position
+            Vector3 position = point.transform.position;
+            position.y = GetHeight(value);
+            point.transform.position = position;
+        }
+
+        public override void StandardData(HeatmapPoint point)
+        {
+            Vector3 position = point.transform.position;
+            position.y = 0;
+            point.transform.position = position;
+        }
+
+        /// <summary>
+        /// Get height for the given value in comparison to the max and min values
+        /// </summary>
+        /// <param name="value">The value of the sought height</param>
+        /// <returns></returns>
+        public float GetHeight(int value)
+        {
+            return Value2Range(value) * height;
+        }
+    }
+
+    [System.Serializable]
+    public class PointColor : PointRepresentation
+    {
+        public Gradient colorGradient;
+        public override void ShowData(HeatmapPoint point, int value)
+        {
+            // Change color
+            Color color = GetColor(value);
+            point.renderer.material.color = color;
+        }
+
+        public override void StandardData(HeatmapPoint point)
+        {
+            // Change color
+            Color color = colorGradient.Evaluate(0);
+            point.renderer.material.color = color;
+        }
+
+        /// <summary>
+        /// Get color form the gradient for the given value in comparison to the max and min values
+        /// </summary>
+        /// <param name="value">The value of the sought color</param>
+        /// <returns></returns>
+        public Color GetColor(int value)
+        {
+            return colorGradient.Evaluate(Value2Range(value));
+        }
+    }
+
+    [System.Serializable]
+    public class PointSize : PointRepresentation
+    {
+        public float pointSize = 0.5f;
+        public override void ShowData(HeatmapPoint point, int value)
+        {
+            // Change size
+            Vector3 size = point.transform.localScale;
+            size = Vector3.one * GetSize(value);
+            point.transform.localScale = size;
+        }
+
+        public override void StandardData(HeatmapPoint point)
+        {
+            Vector3 size = point.transform.localScale;
+            size = Vector3.one * pointSize;
+            point.transform.localScale = size;
+        }
+
+
+        /// <summary>
+        /// Get size for the given value in comparison to the max and min values
+        /// </summary>
+        /// <param name="value">The value of the sought size</param>
+        /// <returns></returns>
+        public float GetSize(int value)
+        {
+            return Value2Range(value) * pointSize;
+        }
+
     }
 
 }
