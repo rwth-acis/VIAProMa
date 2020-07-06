@@ -195,7 +195,7 @@ public class SimpleCurveGerneration
         if (distanceAbove < 1.5 * distanceSide)
         {
             //return CalculateJoinedCurve(start, intersectionPointsAbove, goal, Vector3.up);
-            return CalculateJoinedCurveSide(start, intersectionPointsAbove, goal, false);
+            return CalculateJoinedCurveSide(start, intersectionPointsAbove, goal);
         }
 
         else
@@ -217,7 +217,7 @@ public class SimpleCurveGerneration
 
                 //return CalculateJoinedCurve(start, intersectionPointsSide, goal, up);
                 //return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, pointVis[0], pointVis[1], pointVis[2], pointVis[3]);
-                return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, true);
+                return CalculateJoinedCurveSide(start, intersectionPointsSide, goal);
             }
 
         }
@@ -478,7 +478,7 @@ public class SimpleCurveGerneration
         return curve;
     }
 
-    public static Vector3[] CalculateJoinedCurveSide(Vector3 start, Vector3[] middlePoints, Vector3 goal, bool side, GameObject g0 = null, GameObject g1 = null, GameObject g2 = null, GameObject g3 = null)
+    public static Vector3[] CalculateJoinedCurveSide(Vector3 start, Vector3[] middlePoints, Vector3 goal, GameObject g0 = null, GameObject g1 = null, GameObject g2 = null, GameObject g3 = null)
     {
         Vector3[] controllPointsCurve1 = new Vector3[3];
         Vector3[] controllPointsCurve2 = new Vector3[4];
@@ -497,21 +497,25 @@ public class SimpleCurveGerneration
         up.Normalize();
         //(direction, normal, up) is an orthonormal basis for plane P spanned by start middlepoint[0] and goal
 
-
-        if (side)
-        {
             if (start.y > goal.y)
             {
                 //calculate new middlePoints[1] in such a way that middlePoints[1] is on P
-                float l = (start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[1].x * normal.x - middlePoints[1].z * normal.z - middlePoints[1].y * normal.y) / normal.y;
-                middlePoints[1] = middlePoints[1] + l * Vector3.up;
+                float coordinateForm = start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[1].x * normal.x - middlePoints[1].y * normal.y - middlePoints[1].z * normal.z;
+                if (!FloatEq(coordinateForm, 0))
+                {
+                    float l = coordinateForm / normal.y;
+                    middlePoints[1] = middlePoints[1] + l * Vector3.up;
+                }
             }
             else
             {
-                float l = (start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[0].x * normal.x - middlePoints[0].z * normal.z - middlePoints[0].y * normal.y) / normal.y;
-                middlePoints[0] = middlePoints[0] + l * Vector3.up;
+                float coordinateForm = start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[0].x * normal.x - middlePoints[0].y * normal.y - middlePoints[0].z * normal.z;
+                if (!FloatEq(coordinateForm, 0))
+                {
+                    float l = coordinateForm / normal.y;
+                    middlePoints[0] = middlePoints[0] + l * Vector3.up;
+                }
             }
-        }
 
 
         Matrix4x4 planeToStandart = new Matrix4x4(direction,up,normal, new Vector4(0,0,0,1));
