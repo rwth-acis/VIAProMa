@@ -10,6 +10,8 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
     [Header("Data information")]
     public int testDataRange = 100;
     public int arraySize = 40;
+    [Tooltip("Update intervall of the heatmap data in seconds")]
+    public float updateIntervall = 1f;
     [SerializeField]
     public int[,] data;
     public event Action onDataChanged;
@@ -30,14 +32,8 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        //DEBUG:
-        var position = GameObject.Find("Main Camera").transform.position;
-        position.y = 1.8f;
-        GameObject.Find("Main Camera").transform.position = position;
-
-
         //Update userpositions every second
-        InvokeRepeating("UpdateFromUserPositions", 1f, 1f);
+        InvokeRepeating("UpdateFromUserPositions", updateIntervall, updateIntervall);
 
     }
 

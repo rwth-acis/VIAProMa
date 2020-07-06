@@ -41,7 +41,7 @@ public class HeatmapVisualizer : MonoBehaviour
         data = heatmapDataManagement.data;
 
         UpdateData(data);
-        SetVisible(true);
+        SetVisible(false);
     }
 
     public void Setup()
@@ -62,8 +62,8 @@ public class HeatmapVisualizer : MonoBehaviour
                 points[x, z].UpdateData(0);
             }
         }
-
     }
+
     public static void SetVisible(bool value)
     {
         if (!instance) return;
