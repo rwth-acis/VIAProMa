@@ -15,6 +15,7 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
     public event Action onDataChanged;
 
     HeatmapVisualizer heatmapVisualizer;
+    HeatmapSerializer heatmapSerializer;
     PhotonView photonView;
 
 
@@ -22,6 +23,7 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
     {
 
         heatmapVisualizer = GetComponent<HeatmapVisualizer>();
+        heatmapSerializer = GetComponent<HeatmapSerializer>();
         data = GenerateTestData(arraySize, testDataRange);
         photonView = PhotonView.Get(this);
     }
@@ -45,7 +47,6 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.Log("I am the Master");
-            //TODO: Get Data from server
         }
         else
         {

@@ -15,6 +15,7 @@ public class HeatmapVisualizer : MonoBehaviour
     public float pointSize = 0.5f;
     public Gradient colorGradient;
     public GameObject spherePrefab;
+    public Transform content;
 
     HeatmapDataManagement heatmapDataManagement;
 
@@ -25,6 +26,8 @@ public class HeatmapVisualizer : MonoBehaviour
     {
         heatmapDataManagement = GetComponent<HeatmapDataManagement>();
         heatmapDataManagement.onDataChanged += OnUpdateData;
+        content = transform.GetChild(0);
+
         instance = this;
         min = 0;
         max = 100;
@@ -52,12 +55,17 @@ public class HeatmapVisualizer : MonoBehaviour
             for (int z = 0; z < arraySize; z++)
             {
                 Vector3 position = bottomLeft + new Vector3(stepSize * x, 0, stepSize * z);
-                GameObject point = Instantiate(spherePrefab, position, Quaternion.Euler(Vector3.zero), transform);
+                GameObject point = Instantiate(spherePrefab, position, Quaternion.Euler(Vector3.zero), content);
                 points[x, z] = point.GetComponent<HeatmapPoint>();
                 points[x, z].UpdateData(0);
             }
         }
 
+    }
+
+    public void Toggle(bool value)
+    {
+        content.gameObject.SetActive(value);
     }
 
 
