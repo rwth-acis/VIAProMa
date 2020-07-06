@@ -13,6 +13,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
     public Color c1 = Color.yellow;
     public Color c2 = Color.red;
     public int maxProcessingTimePerFrame = 25;
+    public bool testMode = false;
 
     //For distinguishing between random objects and start/goal
     List<GameObject> startGoalObjectsWithCollider;
@@ -36,6 +37,11 @@ public class LineControllScriptFrameShare : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Test Stuff
+
+        TestCaseGenerator.GenerateTestcase(startObject,goalObject);
+        //
+
         //Main line renderer
         LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
@@ -51,170 +57,172 @@ public class LineControllScriptFrameShare : MonoBehaviour
         );
         lineRenderer.colorGradient = gradient;
 
-        //Line renderer for the test scenarious
-        GameObject lineRendererAStarObject = new GameObject();
-        LineRenderer lineRendererAStar = lineRendererAStarObject.AddComponent<LineRenderer>();
-        lineRendererAStar.widthMultiplier = 0.1f;
-
-        GameObject lineRendererGreedyObject = new GameObject();
-        LineRenderer lineRendererGreedy = lineRendererGreedyObject.AddComponent<LineRenderer>();
-        lineRendererGreedy.widthMultiplier = 0.1f;
-
-        /*
-        GameObject lineRendererHPAStarObject = new GameObject();
-        LineRenderer lineRendererHPAStar = lineRendererHPAStarObject.AddComponent<LineRenderer>();
-        lineRendererHPAStar.widthMultiplier = 0.1f;
-        */
-
-        GameObject lineRendererGreedyRefObject = new GameObject();
-        LineRenderer lineRendererGreedyRef = lineRendererGreedyRefObject.AddComponent<LineRenderer>();
-        lineRendererGreedyRef.widthMultiplier = 0.1f;
-
-        //Get the colliders from all child objects of start and goal
-        List<Collider> startGoalCollider = new List<Collider>();
-        startGoalCollider.AddRange(startObject.GetComponentsInChildren<Collider>());
-        startGoalCollider.AddRange(goalObject.GetComponentsInChildren<Collider>());
-
-        //Convert to game objects
-        startGoalObjectsWithCollider = new List<GameObject>();
-        foreach (Collider col in startGoalCollider)
-        {
-            startGoalObjectsWithCollider.Add(col.gameObject);
-        }
-
-        startBoundingBox = startObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
-        goalBoundingBox = goalObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
-
-        boundContainerStart = new GameObject();
-        boundContainerStart.transform.parent = startObject.transform;
-        boundContainerStart.transform.localPosition = Vector3.zero;
-        boundContainerStart.layer = 6;
-        boundContainerStart.name = "Hallu";
-
-        boundContainerStart.AddComponent<BoxCollider>();
-        BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
-        boundingboxOnOtherLayer.name = "CurveConnectBoundingBox";
-        boundingboxOnOtherLayer.size = startBoundingBox.size;
-        boundingboxOnOtherLayer.center = startBoundingBox.center;
-
-
-        boundContainerEnd = new GameObject();
-        boundContainerEnd.transform.parent = goalObject.transform;
-        boundContainerEnd.transform.localPosition = Vector3.zero;
-        boundContainerEnd.layer = 6;
-        boundContainerEnd.name = "Hallu";
-
-        boundContainerEnd.AddComponent<BoxCollider>();
-        BoxCollider boundingboxOnOtherLayerEnd = boundContainerEnd.GetComponent<BoxCollider>();
-        boundingboxOnOtherLayerEnd.name = "Bruhh";
-        boundingboxOnOtherLayerEnd.size = goalBoundingBox.size;
-        boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
-
-
-        //Test Cases
-        Debug.Log("Start Goal distance:" + Vector3.Distance(startObject.transform.position, goalObject.transform.position));
-
         
-        //Calculate the nearly optimal path:
-        float stepSizeOpti = 1f;
-        IntTriple startCellOpti = VectorToCell(startObject.transform.position, stepSizeOpti);
-        IntTriple goalCellOpti = VectorToCell(goalObject.transform.position, stepSizeOpti);
-        List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCellOpti, goalCellOpti, GetNeighborsGenerator(stepSizeOpti), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSizeOpti), CostsBetweenGenerator(0.5f)).path;
-        Vector3[] lineVectorArray = new Vector3[linePathCell.Count + 2];
-        lineVectorArray[0] = goalObject.transform.position;
-        for (int i = 1; i < linePathCell.Count + 1; i++)
-        {
-            lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSizeOpti);
+            //Line renderer for the test scenarious
+            GameObject lineRendererAStarObject = new GameObject();
+            LineRenderer lineRendererAStar = lineRendererAStarObject.AddComponent<LineRenderer>();
+            lineRendererAStar.widthMultiplier = 0.1f;
+
+            GameObject lineRendererGreedyObject = new GameObject();
+            LineRenderer lineRendererGreedy = lineRendererGreedyObject.AddComponent<LineRenderer>();
+            lineRendererGreedy.widthMultiplier = 0.1f;
+
+            /*
+            GameObject lineRendererHPAStarObject = new GameObject();
+            LineRenderer lineRendererHPAStar = lineRendererHPAStarObject.AddComponent<LineRenderer>();
+            lineRendererHPAStar.widthMultiplier = 0.1f;
+            */
+
+            GameObject lineRendererGreedyRefObject = new GameObject();
+            LineRenderer lineRendererGreedyRef = lineRendererGreedyRefObject.AddComponent<LineRenderer>();
+            lineRendererGreedyRef.widthMultiplier = 0.1f;
+
+            //Get the colliders from all child objects of start and goal
+            List<Collider> startGoalCollider = new List<Collider>();
+            startGoalCollider.AddRange(startObject.GetComponentsInChildren<Collider>());
+            startGoalCollider.AddRange(goalObject.GetComponentsInChildren<Collider>());
+
+            //Convert to game objects
+            startGoalObjectsWithCollider = new List<GameObject>();
+            foreach (Collider col in startGoalCollider)
+            {
+                startGoalObjectsWithCollider.Add(col.gameObject);
+            }
+
+            startBoundingBox = startObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
+            goalBoundingBox = goalObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
+
+            boundContainerStart = new GameObject();
+            boundContainerStart.transform.parent = startObject.transform;
+            boundContainerStart.transform.localPosition = Vector3.zero;
+            boundContainerStart.layer = 6;
+            boundContainerStart.name = "Hallu";
+
+            boundContainerStart.AddComponent<BoxCollider>();
+            BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
+            boundingboxOnOtherLayer.name = "CurveConnectBoundingBox";
+            boundingboxOnOtherLayer.size = startBoundingBox.size;
+            boundingboxOnOtherLayer.center = startBoundingBox.center;
+
+
+            boundContainerEnd = new GameObject();
+            boundContainerEnd.transform.parent = goalObject.transform;
+            boundContainerEnd.transform.localPosition = Vector3.zero;
+            boundContainerEnd.layer = 6;
+            boundContainerEnd.name = "Hallu";
+
+            boundContainerEnd.AddComponent<BoxCollider>();
+            BoxCollider boundingboxOnOtherLayerEnd = boundContainerEnd.GetComponent<BoxCollider>();
+            boundingboxOnOtherLayerEnd.name = "Bruhh";
+            boundingboxOnOtherLayerEnd.size = goalBoundingBox.size;
+            boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
+
+            if (testMode)
+            {
+            //Test Cases
+            Debug.Log("Start Goal distance:" + Vector3.Distance(startObject.transform.position, goalObject.transform.position));
+
+
+            //Calculate the nearly optimal path:
+            float stepSizeOpti = 1f;
+            IntTriple startCellOpti = VectorToCell(startObject.transform.position, stepSizeOpti);
+            IntTriple goalCellOpti = VectorToCell(goalObject.transform.position, stepSizeOpti);
+            List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCellOpti, goalCellOpti, GetNeighborsGenerator(stepSizeOpti), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSizeOpti), CostsBetweenGenerator(0.5f)).path;
+            Vector3[] lineVectorArray = new Vector3[linePathCell.Count + 2];
+            lineVectorArray[0] = goalObject.transform.position;
+            for (int i = 1; i < linePathCell.Count + 1; i++)
+            {
+                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSizeOpti);
+            }
+            lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+
+            Debug.Log("OPtimal Path length:" + pathLength(lineVectorArray));
+
+            DateTime startTime = DateTime.Now;
+
+            //AStar
+            Debug.Log("AStar:");
+
+            IntTriple startCell = VectorToCell(startObject.transform.position, stepSize);
+            IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
+
+            //List<Vector3> linePath = A_Star(startObject, goalObject);
+            AStar.AStarResult<IntTriple> result = AStar.AStarSearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
+            linePathCell = result.path;
+
+
+            lineVectorArray = new Vector3[linePathCell.Count + 2];
+            lineVectorArray[0] = goalObject.transform.position;
+            for (int i = 1; i < linePathCell.Count + 1; i++)
+            {
+                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+            }
+            lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+
+            lineRendererAStar.positionCount = lineVectorArray.Length;
+            lineRendererAStar.SetPositions(lineVectorArray);
+
+            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+            Debug.Log("Path length:" + pathLength(lineVectorArray));
+
+            //Greedy
+            Debug.Log("Greedy");
+            startTime = DateTime.Now;
+
+            result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
+            linePathCell = result.path;
+
+
+            lineVectorArray = new Vector3[linePathCell.Count + 2];
+            lineVectorArray[0] = startObject.transform.position;
+            for (int i = 1; i < linePathCell.Count + 1; i++)
+            {
+                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+            }
+            lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
+
+
+            lineRendererGreedy.positionCount = lineVectorArray.Length;
+            lineRendererGreedy.SetPositions(lineVectorArray);
+            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+            Debug.Log("Path Length:" + pathLength(lineVectorArray));
+            //HPAStar
+
+            /*
+            Debug.Log("HPA");
+            startTime = DateTime.Now;
+            List<Vector3> linePathVector3 = HPAStar.RefinePath(HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, stepSize, 5),stepSize,5);
+            lineRendererHPAStar.positionCount = linePathVector3.Count;
+            lineRendererHPAStar.SetPositions(linePathVector3.ToArray());
+            Debug.Log((DateTime.Now - startTime).TotalMilliseconds);
+            */
+
+            //Greedy refined
+            Debug.Log("Greedy Refined");
+            startTime = DateTime.Now;
+
+            result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
+            linePathCell = result.path;
+
+
+            lineVectorArray = new Vector3[linePathCell.Count + 2];
+            lineVectorArray[0] = startObject.transform.position;
+            for (int i = 1; i < linePathCell.Count + 1; i++)
+            {
+                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+            }
+            lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
+
+            lineVectorArray = Greedy.postProcessing(lineVectorArray, 3);
+            lineVectorArray = SimpleCurveGerneration.start(startObject.transform.position, goalObject.transform.position);
+
+            lineRendererGreedyRef.positionCount = lineVectorArray.Length;
+            lineRendererGreedyRef.SetPositions(lineVectorArray);
+            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+            Debug.Log("Path Length:" + pathLength(lineVectorArray));
+
+
         }
-        lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
-  
-        Debug.Log("OPtimal Path length:" + pathLength(lineVectorArray));
-
-        DateTime startTime = DateTime.Now;
-        
-        //AStar
-        Debug.Log("AStar:");
-
-        IntTriple startCell = VectorToCell(startObject.transform.position, stepSize);
-        IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
-
-        //List<Vector3> linePath = A_Star(startObject, goalObject);
-        AStar.AStarResult<IntTriple> result = AStar.AStarSearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
-        linePathCell = result.path;
-
-
-        lineVectorArray = new Vector3[linePathCell.Count + 2];
-        lineVectorArray[0] = goalObject.transform.position;
-        for (int i = 1; i < linePathCell.Count + 1; i++)
-        {
-            lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
-        }
-        lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
-
-        lineRendererAStar.positionCount = lineVectorArray.Length;
-        lineRendererAStar.SetPositions(lineVectorArray);
-
-        Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-        Debug.Log("Path length:" + pathLength(lineVectorArray));
-        
-        //Greedy
-        Debug.Log("Greedy");
-        startTime = DateTime.Now;
-
-        result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
-        linePathCell = result.path;
-
-
-        lineVectorArray = new Vector3[linePathCell.Count + 2];
-        lineVectorArray[0] = startObject.transform.position;
-        for (int i = 1; i < linePathCell.Count + 1; i++)
-        {
-            lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
-        }
-        lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
-
-
-        lineRendererGreedy.positionCount = lineVectorArray.Length;
-        lineRendererGreedy.SetPositions(lineVectorArray);
-        Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-        Debug.Log("Path Length:" + pathLength(lineVectorArray));
-        //HPAStar
-
-        /*
-        Debug.Log("HPA");
-        startTime = DateTime.Now;
-        List<Vector3> linePathVector3 = HPAStar.RefinePath(HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, stepSize, 5),stepSize,5);
-        lineRendererHPAStar.positionCount = linePathVector3.Count;
-        lineRendererHPAStar.SetPositions(linePathVector3.ToArray());
-        Debug.Log((DateTime.Now - startTime).TotalMilliseconds);
-        */
-
-        //Greedy refined
-        Debug.Log("Greedy Refined");
-        startTime = DateTime.Now;
-
-        result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
-        linePathCell = result.path;
-
-
-        lineVectorArray = new Vector3[linePathCell.Count + 2];
-        lineVectorArray[0] = startObject.transform.position;
-        for (int i = 1; i < linePathCell.Count + 1; i++)
-        {
-            lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
-        }
-        lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
-
-        lineVectorArray = Greedy.postProcessing(lineVectorArray,3);
-        lineVectorArray = SimpleCurveGerneration.start(startObject.transform.position, goalObject.transform.position);
-
-        lineRendererGreedyRef.positionCount = lineVectorArray.Length;
-        lineRendererGreedyRef.SetPositions(lineVectorArray);
-        Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-        Debug.Log("Path Length:" + pathLength(lineVectorArray));
-
-        
-        
     }
     // Update is called once per frame
     void Update()
@@ -399,7 +407,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         foreach (Collider collider in potentialColliders)
         {
-            if (Physics.OverlapBox(collider.bounds.center, collider.bounds.extents, default, 1 << 6).Length == 0)
+            if (Physics.OverlapBox(collider.bounds.center, collider.bounds.extents + new Vector3(1,1,1), default, 1 << 6).Length == 0)
             {
                 actuallColliders.Add(collider);
             }
