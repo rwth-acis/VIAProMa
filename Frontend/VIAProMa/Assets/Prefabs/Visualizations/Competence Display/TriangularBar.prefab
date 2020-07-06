@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6160971805966802949}
   - component: {fileID: 6160971805966802946}
   - component: {fileID: 6160971805966802947}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TextMeshPro (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,8 +110,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Sample text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
@@ -149,7 +147,6 @@ MonoBehaviour:
   m_fontSizeMax: 2
   m_fontStyle: 0
   m_textAlignment: 514
-  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -176,6 +173,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -190,12 +188,9 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 6160971805966802948}
   m_subTextObjects:
@@ -218,7 +213,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6160971806445776251}
   - component: {fileID: 1515762610753748957}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TriangularBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +266,7 @@ GameObject:
   - component: {fileID: 6160971807135212943}
   - component: {fileID: 6160971807135212940}
   - component: {fileID: 6160971807135212941}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TextMeshPro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,8 +363,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Sample text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
@@ -407,7 +400,6 @@ MonoBehaviour:
   m_fontSizeMax: 2
   m_fontStyle: 0
   m_textAlignment: 514
-  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -434,6 +426,7 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
@@ -448,12 +441,9 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 6160971807135212942}
   m_subTextObjects:
@@ -473,10 +463,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6160971806445776251}
     m_Modifications:
-    - target: {fileID: 100000, guid: cff3a44380f28d94eb6fde47d085e84b, type: 3}
-      propertyPath: m_Name
-      value: TriangularBar Mesh
-      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: cff3a44380f28d94eb6fde47d085e84b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -532,6 +518,14 @@ PrefabInstance:
     - target: {fileID: 400000, guid: cff3a44380f28d94eb6fde47d085e84b, type: 3}
       propertyPath: m_LocalScale.z
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cff3a44380f28d94eb6fde47d085e84b, type: 3}
+      propertyPath: m_Name
+      value: TriangularBar Mesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cff3a44380f28d94eb6fde47d085e84b, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cff3a44380f28d94eb6fde47d085e84b, type: 3}
