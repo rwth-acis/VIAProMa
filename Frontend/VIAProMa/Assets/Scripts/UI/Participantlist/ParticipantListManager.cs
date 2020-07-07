@@ -9,8 +9,10 @@ using System;
 public class ParticipantListManager : MonoBehaviour, IWindow
 {
     private static Player[] Participants;
-    private RoomInfo RoomInfo;
-    public GameObject ListView;
+    //private RoomInfo RoomInfo;
+    private GameObject[] ListOfParticipants;
+    public GameObject ItemPrefab;
+    public GameObject DummyItem;
 
     //private bool windowEnabled = true;
 
@@ -34,21 +36,32 @@ public class ParticipantListManager : MonoBehaviour, IWindow
 
     private void Awake()
     {
-        if (ListView == null)
+        if (DummyItem == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(ListView));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(DummyItem));
         }
     }
 
-    public void UpdateListView() {
-        GameObject participantListItem = ListView.GetComponentInChildren<GameObject>();
-        participantListItem.GetComponent<TextMeshPro>().text = Participants[0].NickName;
+    public void UpdateListView()
+    {
+        //GameObject participantListItem = ListView.GetComponentInChildren<GameObject>();
+        //participantListItem.GetComponent<TextMeshPro>().text = Participants[0].NickName;
 
         int listLenght = Participants.Length;
-        for (int i = 1; i < listLenght-1; i++)
+        if (listLenght == 1)
         {
-            GameObject newListItem = Instantiate(participantListItem, ListView.transform, false);
-            newListItem.GetComponentInChildren<TextMeshPro>().text = Participants[i].NickName;
+            Debug.Log("in if");
+            DummyItem.GetComponentInChildren<TextMeshPro>().text = Participants[0].NickName;
+        }
+        else
+        {
+            ListOfParticipants[0].GetComponentInChildren<TextMeshPro>().text = Participants[0].NickName;
+            for (int i = 1; i < listLenght; i++)
+            {
+                Debug.Log(i);
+                ListOfParticipants[i] = Instantiate(ItemPrefab, ListOfParticipants[i - 1].transform, false);
+                ListOfParticipants[i].GetComponentInChildren<TextMeshPro>().text = Participants[i - 1].NickName;
+            }
         }
     }
 
@@ -57,8 +70,27 @@ public class ParticipantListManager : MonoBehaviour, IWindow
         Open();
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
+
         Participants = PhotonNetwork.PlayerList;
-        Debug.Log(Participants[0].NickName);
+
+        ListOfParticipants = new GameObject[Participants.Length + 1];
+        ListOfParticipants[0] = DummyItem;
+
+        if (Participants == null)
+        {
+            Debug.Log("Participant List is empty!");
+            return;
+        }
+        UpdateListView();
+    }
+
+    public void TestCall()
+    {
+        Participants = PhotonNetwork.PlayerList;
+
+        ListOfParticipants = new GameObject[Participants.Length + 1];
+        ListOfParticipants[0] = DummyItem;
+
         if (Participants == null)
         {
             Debug.Log("Participant List is empty!");
