@@ -1,39 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-public class BezierCurve
-{
-    public static Vector3[] calculateCubicCurve(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, int segmentCount)
-    {
-        Vector3[] curve = new Vector3[segmentCount];
-
-        for (int i = 1; i <= segmentCount; i++)
-        {
-            float t = i / (float)segmentCount;
-            Vector3 Vector3 = CalculateCubicBezierVector3(t, p1, p2, p3, p4);
-            curve[i - 1] = Vector3;
-        }
-
-        return curve;
-    }
-
-    static Vector3 CalculateCubicBezierVector3(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
-    {
-        float u = 1 - t;
-        float tt = t * t;
-        float uu = u * u;
-        float uuu = uu * u;
-        float ttt = tt * t;
-
-        Vector3 p = uuu * p0;
-        p += 3 * uu * t * p1;
-        p += 3 * u * tt * p2;
-        p += ttt * p3;
-
-        return p;
-    }
-
-    public static Vector3[] calculateCurve(Vector3[] controlPoints, int segmentCount)
+public class Curve
+{ 
+    public static Vector3[] CalculateBezierCurve(Vector3[] controlPoints, int segmentCount)
     {
         Vector3[] points = new Vector3[segmentCount + 1];
         for (int i = 0; i <= segmentCount; i++)

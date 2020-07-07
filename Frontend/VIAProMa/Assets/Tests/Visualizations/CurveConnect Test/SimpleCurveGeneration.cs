@@ -9,8 +9,6 @@ public class SimpleCurveGerneration
     {
         //Check for colliosons above the objects
 
-        Vector3[] curve;
-
         Vector3 higherOne = start.y > goal.y ? start : goal;
 
         Vector3 startAdjusted = new Vector3(start.x, higherOne.y, start.z);
@@ -32,7 +30,7 @@ public class SimpleCurveGerneration
                 Vector3 cp2 = startAdjusted + new Vector3(0, heigthOffset, 0) + direction * distance * (1-widthOffsetMult);
                 Vector3 cp3 = startAdjusted + new Vector3(0, heigthOffset, 0) + direction * distance * widthOffsetMult;
 
-                Vector3[] checkCurve = BezierCurve.calculateCubicCurve(start, cp2, cp3, goal, 10);
+                Vector3[] checkCurve = Curve.CalculateBezierCurve( new Vector3[] { start, cp2, cp3, goal }, 10);
 
                 //collision check
                 bool collsion = false;
@@ -52,7 +50,7 @@ public class SimpleCurveGerneration
 
                 if (!collsion)
                 {
-                    return BezierCurve.calculateCubicCurve(start, cp2, cp3, goal, 50);
+                    return Curve.CalculateBezierCurve(new Vector3[] { start, cp2, cp3, goal }, 50);
                 } 
             }
         }
@@ -101,10 +99,10 @@ public class SimpleCurveGerneration
   
 
         //Priority 1: Try to draw the standart curve
-        Vector3[] checkCurve = BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 15);
+        Vector3[] checkCurve = Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 15);
         if (!CurveCollsionCheck(checkCurve))
         {
-            return BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
+            return Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
         }
 
 
@@ -188,7 +186,7 @@ public class SimpleCurveGerneration
         else if(intersectionPointsSide.Length == 2)
             distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
         else
-            return BezierCurve.calculateCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
+            return Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
 
         Vector3[] controllPoints = new Vector3[0];
 
@@ -222,7 +220,7 @@ public class SimpleCurveGerneration
 
         }
 
-        return BezierCurve.calculateCurve(controllPoints, 50);
+        return Curve.CalculateBezierCurve(controllPoints, 50);
 
     }
 
@@ -467,9 +465,9 @@ public class SimpleCurveGerneration
         controllPointsCurve2[1] = controllPointsCurve2[0] + (aboveMiddle - controllPointsCurve2[0]) / 2;
         controllPointsCurve2[2] = controllPointsCurve2[3] + (aboveMiddle - controllPointsCurve2[3]) / 2;
 
-        Vector3[] curve1 = BezierCurve.calculateCurve(controllPointsCurve1, 20);
-        Vector3[] curve2 = BezierCurve.calculateCurve(controllPointsCurve2, 20);
-        Vector3[] curve3 = BezierCurve.calculateCurve(controllPointsCurve3, 20);
+        Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, 20);
+        Vector3[] curve2 = Curve.CalculateBezierCurve(controllPointsCurve2, 20);
+        Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, 20);
         Vector3[] curve = new Vector3[curve1.Length + curve2.Length + curve3.Length];
         curve1.CopyTo(curve, 0);
         curve2.CopyTo(curve, curve1.Length);
@@ -570,9 +568,9 @@ public class SimpleCurveGerneration
         Vector2 aboveMiddleP2 = (Vector2)middlePoints[1] + (aboveMiddle - (Vector2)middlePoints[1]) / 2;
         controllPointsCurve2[2] = planeToStandart * new Vector3(aboveMiddleP2.x, aboveMiddleP2.y, start.z);
 
-        Vector3[] curve1 = BezierCurve.calculateCurve(controllPointsCurve1, 20);
-        Vector3[] curve2 = BezierCurve.calculateCurve(controllPointsCurve2, 20);
-        Vector3[] curve3 = BezierCurve.calculateCurve(controllPointsCurve3, 20);
+        Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, 20);
+        Vector3[] curve2 = Curve.CalculateBezierCurve(controllPointsCurve2, 20);
+        Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, 20);
         Vector3[] curve = new Vector3[curve1.Length + curve2.Length + curve3.Length];
         curve1.CopyTo(curve, 0);
         curve2.CopyTo(curve, curve1.Length);
