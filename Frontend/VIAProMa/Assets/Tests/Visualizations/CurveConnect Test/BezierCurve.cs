@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class Curve
+public static class Curve
 { 
     public static Vector3[] CalculateBezierCurve(Vector3[] controlPoints, int segmentCount)
     {
@@ -36,5 +36,33 @@ public class Curve
             c /= i;
         }
         return c;
+    }
+
+    public static bool CurveCollsionCheck(Vector3[] curve)
+    {
+        for (int i = 0; i < curve.Length - 2; i++)
+        {
+            Vector3 checkDirection = curve[i + 1] - curve[i];
+            float checkLength = Vector3.Distance(curve[i], curve[i + 1]);
+            checkDirection.Normalize();
+
+            Vector3 center = curve[i] + checkDirection * checkLength / 2;
+
+            if (LineControllScriptFrameShare.collisonWithObstacle(center, new Vector3(1, 1, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0))))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static float CurveLength(Vector3[] path)
+    {
+        float length = 0;
+        for (int i = 0; i < path.Length - 2; i++)
+        {
+            length += Vector3.Distance(path[i], path[i + 1]);
+        }
+        return length;
     }
 }

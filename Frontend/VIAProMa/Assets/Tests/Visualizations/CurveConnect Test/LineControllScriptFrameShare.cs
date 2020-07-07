@@ -136,7 +136,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
             }
             lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
 
-            Debug.Log("OPtimal Path length:" + pathLength(lineVectorArray));
+            Debug.Log("OPtimal Path length:" + Curve.CurveLength(lineVectorArray));
 
             DateTime startTime = DateTime.Now;
 
@@ -163,7 +163,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineRendererAStar.SetPositions(lineVectorArray);
 
             Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path length:" + pathLength(lineVectorArray));
+            Debug.Log("Path length:" + Curve.CurveLength(lineVectorArray));
 
             //Greedy
             Debug.Log("Greedy");
@@ -185,7 +185,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineRendererGreedy.positionCount = lineVectorArray.Length;
             lineRendererGreedy.SetPositions(lineVectorArray);
             Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path Length:" + pathLength(lineVectorArray));
+            Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
             //HPAStar
 
             /*
@@ -219,7 +219,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineRendererGreedyRef.positionCount = lineVectorArray.Length;
             lineRendererGreedyRef.SetPositions(lineVectorArray);
             Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path Length:" + pathLength(lineVectorArray));
+            Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
 
 
         }
@@ -415,13 +415,5 @@ public class LineControllScriptFrameShare : MonoBehaviour
         return actuallColliders.ToArray();
     }
 
-    public static float pathLength(Vector3[] path)
-    {
-        float length = 0;
-        for (int i = 0; i < path.Length - 2; i++)
-        {
-            length += Vector3.Distance(path[i],path[i+1]);
-        }
-        return length;
-    }
+
 }

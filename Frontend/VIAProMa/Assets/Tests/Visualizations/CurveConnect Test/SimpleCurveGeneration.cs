@@ -57,23 +57,7 @@ public class SimpleCurveGerneration
         return null;
     }
 
-    static bool CurveCollsionCheck(Vector3[] curve)
-    {
-        for (int i = 0; i < curve.Length - 2; i++)
-        {
-            Vector3 checkDirection = curve[i + 1] - curve[i];
-            float checkLength = Vector3.Distance(curve[i], curve[i + 1]);
-            checkDirection.Normalize();
-
-            Vector3 center = curve[i] + checkDirection * checkLength / 2;
-
-            if (LineControllScriptFrameShare.collisonWithObstacle(center, new Vector3(1, 1, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0))))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+    
 
     public static Vector3[] startContinous(Vector3 start, Vector3 goal, GameObject[] pointVis)
     {
@@ -100,7 +84,7 @@ public class SimpleCurveGerneration
 
         //Priority 1: Try to draw the standart curve
         Vector3[] checkCurve = Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 15);
-        if (!CurveCollsionCheck(checkCurve))
+        if (!Curve.CurveCollsionCheck(checkCurve))
         {
             return Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
         }
@@ -179,12 +163,12 @@ public class SimpleCurveGerneration
 
 
 
-        float distanceAbove = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsAbove[0], intersectionPointsAbove[1], goal});
+        float distanceAbove = Curve.CurveLength(new Vector3[] { start, intersectionPointsAbove[0], intersectionPointsAbove[1], goal});
         float distanceSide;
         if (intersectionPointsSide.Length == 1)
-            distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], goal });
+            distanceSide = Curve.CurveLength(new Vector3[] { start, intersectionPointsSide[0], goal });
         else if(intersectionPointsSide.Length == 2)
-            distanceSide = LineControllScriptFrameShare.pathLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
+            distanceSide = Curve.CurveLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
         else
             return Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
 
