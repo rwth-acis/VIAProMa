@@ -866,7 +866,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.207}
+  m_AnchoredPosition: {x: 0, y: 0.196}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8695803788482474261
@@ -1073,65 +1073,100 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5871855450735670345}
     m_Modifications:
-    - target: {fileID: 192265965847788564, guid: 96bde93098893174d89e2f139c41f4d5,
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 12
+      propertyPath: Events.Array.size
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 192265965847788564, guid: 96bde93098893174d89e2f139c41f4d5,
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
-      propertyPath: m_textInfo.spaceCount
+      propertyPath: Events.Array.data[0].Settings.Array.size
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 192265965847788564, guid: 96bde93098893174d89e2f139c41f4d5,
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
-      propertyPath: m_textInfo.wordCount
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].Name
+      value: AudioEvent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].ClassName
+      value: InteractableAudioReceiver
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].AssemblyQualifiedName
+      value: Microsoft.MixedReality.Toolkit.UI.InteractableAudioReceiver, Microsoft.MixedReality.Toolkit.SDK
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].Settings.Array.data[0].Type
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].Settings.Array.data[0].Label
+      value: Audio Clip
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].Settings.Array.data[0].Name
+      value: AudioClip
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].Settings.Array.data[0].Tooltip
+      value: Assign an audioclip to play on click
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: Events.Array.data[0].HideUnityEvents
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 192265965847788564, guid: 96bde93098893174d89e2f139c41f4d5,
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 192265965847788564, guid: 96bde93098893174d89e2f139c41f4d5,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2405299068644506128, guid: 96bde93098893174d89e2f139c41f4d5,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 2405299068644506128, guid: 96bde93098893174d89e2f139c41f4d5,
-        type: 3}
-      propertyPath: m_textInfo.spaceCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2405299068644506128, guid: 96bde93098893174d89e2f139c41f4d5,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 2405299068644506128, guid: 96bde93098893174d89e2f139c41f4d5,
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 1
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1441430055047014605}
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnFriendButtonClicked
       objectReference: {fileID: 0}
-    - target: {fileID: 2405299068644506128, guid: 96bde93098893174d89e2f139c41f4d5,
+    - target: {fileID: 1321308113176939233, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 1
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2115865956628133395, guid: 96bde93098893174d89e2f139c41f4d5,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2405299068644506142, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 3156485292985038198, guid: 96bde93098893174d89e2f139c41f4d5,
+    - target: {fileID: 5239604334863014077, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}
-      propertyPath: m_Mesh
-      value: 
+      propertyPath: m_LocalPosition.z
+      value: 0.007
       objectReference: {fileID: 0}
     - target: {fileID: 7307507875746102812, guid: 96bde93098893174d89e2f139c41f4d5,
         type: 3}

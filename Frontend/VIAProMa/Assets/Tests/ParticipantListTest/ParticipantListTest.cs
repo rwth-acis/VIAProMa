@@ -8,8 +8,7 @@ using System.Linq;
 
 public class ParticipantListTest : MonoBehaviourPunCallbacks
 {
-    public GameObject SecondPlayerDummy;
-    public GameObject ThirdPlayerDummy;
+
     public GameObject ListWindow;
 
     private static System.Random random = new System.Random();
@@ -36,8 +35,7 @@ public class ParticipantListTest : MonoBehaviourPunCallbacks
         // we check if we are connected or not, we join if we are , else we initiate the connection to the server.
         if (PhotonNetwork.IsConnected)
         {
-            CreateNewRoom();
-            PhotonNetwork.JoinRoom("TestRoom");
+            PhotonNetwork.JoinOrCreateRoom("TestRoom", null, null);
         }
         else
         {
@@ -47,16 +45,10 @@ public class ParticipantListTest : MonoBehaviourPunCallbacks
         }
     }
 
-    private void CreateNewRoom() {
-        PhotonNetwork.CreateRoom("TestRoom");
-        Debug.Log("Created Test Room.");
-    }
-
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster");
-        CreateNewRoom();
-        PhotonNetwork.JoinRoom("TestRoom");
+        PhotonNetwork.JoinOrCreateRoom("TestRoom", null, null);
 
     }
 
@@ -69,16 +61,13 @@ public class ParticipantListTest : MonoBehaviourPunCallbacks
     {
         Debug.Log("Joined a room");
         PhotonNetwork.NickName = RandomString(5);
-        SecondPlayerDummy.SetActive(true);
-        //ThirdPlayerDummy.SetActive(true);
         ListWindow.GetComponent<ParticipantListManager>().TestCall();
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log("OnJoinRandomFailed. Creating new room");
-        CreateNewRoom();
-        PhotonNetwork.JoinRoom("TestRoom");
+        PhotonNetwork.JoinOrCreateRoom("TestRoom", null, null);
     }
 
     public static string RandomString(int length)

@@ -9,10 +9,10 @@ using System;
 public class ParticipantListManager : MonoBehaviour, IWindow
 {
     private static Player[] Participants;
-    //private RoomInfo RoomInfo;
     private GameObject[] ListOfParticipants;
     public GameObject ItemPrefab;
     public GameObject DummyItem;
+    //public Friendlist ListOfFriends; //implement when availabe
 
     //private bool windowEnabled = true;
 
@@ -44,9 +44,6 @@ public class ParticipantListManager : MonoBehaviour, IWindow
 
     public void UpdateListView()
     {
-        //GameObject participantListItem = ListView.GetComponentInChildren<GameObject>();
-        //participantListItem.GetComponent<TextMeshPro>().text = Participants[0].NickName;
-
         int listLenght = Participants.Length;
         if (listLenght == 1)
         {
@@ -108,5 +105,28 @@ public class ParticipantListManager : MonoBehaviour, IWindow
     {
         gameObject.SetActive(false);
         WindowClosed?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void OnFriendButtonClicked(UnityEngine.Object source)
+    {
+        string friendNickname = "not set";
+        string objectName = source.name;
+        Debug.Log(objectName);
+        //friendNickname = source.GetComponentInParent<TextMeshPro>().text;
+        AddFriend(friendNickname);
+        Debug.Log("On Button Friend Clicked");
+    }
+
+    private void AddFriend(string name)
+    {
+        foreach (Player user in Participants)
+        {
+            if (String.Equals(user.NickName, "name"))
+            {
+                string id = user.UserId;
+                //Friendlist.addFriendToList(id);
+                break;
+            }
+        }
     }
 }
