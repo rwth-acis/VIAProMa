@@ -50,7 +50,7 @@ public class ParticipantListManager : MonoBehaviour, IWindow
         int listLenght = Participants.Length;
         if (listLenght == 1)
         {
-            Debug.Log("in if");
+            Debug.Log("Single Player Mode");
             DummyItem.GetComponentInChildren<TextMeshPro>().text = Participants[0].NickName;
         }
         else
@@ -76,9 +76,9 @@ public class ParticipantListManager : MonoBehaviour, IWindow
         ListOfParticipants = new GameObject[Participants.Length + 1];
         ListOfParticipants[0] = DummyItem;
 
-        if (Participants == null)
+        if (Participants.Length == 0)
         {
-            Debug.Log("Participant List is empty!");
+            Debug.LogError("Participant List is empty!");
             return;
         }
         UpdateListView();
@@ -87,13 +87,13 @@ public class ParticipantListManager : MonoBehaviour, IWindow
     public void TestCall()
     {
         Participants = PhotonNetwork.PlayerList;
-
+        
         ListOfParticipants = new GameObject[Participants.Length + 1];
         ListOfParticipants[0] = DummyItem;
 
-        if (Participants == null)
+        if (Participants.Length == 0)
         {
-            Debug.Log("Participant List is empty!");
+            Debug.LogError("Participant List is empty!");
             return;
         }
         UpdateListView();
