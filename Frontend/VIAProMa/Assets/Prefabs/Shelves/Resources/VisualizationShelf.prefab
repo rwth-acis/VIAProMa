@@ -90,16 +90,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf12ee76e7e00a44a9a84256760020e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nodeList: []
   ignoreInactiveTransforms: 1
   sortType: 0
   surfaceType: 1
   orientType: 0
-  layout: 0
+  layout: 1
+  anchor: 4
+  anchorAlongAxis: 0
+  columnAlignment: 0
+  rowAlignment: 0
   radius: 2
   radialRange: 180
+  distance: 0
   rows: 5
+  columns: 3
   cellWidth: 0.25
   cellHeight: 0.361
+  assetVersion: 1
 --- !u!1001 &3248813199074726553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -107,6 +115,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1017480386145307303, guid: 451a9f192a2909b4b818cf53fcb08d29,
+        type: 3}
+      propertyPath: Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8344855326701432265, guid: 451a9f192a2909b4b818cf53fcb08d29,
         type: 3}
       propertyPath: m_Name
@@ -168,11 +181,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9182933871052352176, guid: 451a9f192a2909b4b818cf53fcb08d29,
-        type: 3}
-      propertyPath: Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1017480386145307303, guid: 451a9f192a2909b4b818cf53fcb08d29,
         type: 3}
       propertyPath: Enabled
       value: 0
