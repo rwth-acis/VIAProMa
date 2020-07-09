@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class ShowcaseHeatmap : MonoBehaviour
+public class ShowcaseHeatmap : MonoBehaviourPunCallbacks
 {
     private void Start()
     {
@@ -29,6 +29,7 @@ public class ShowcaseHeatmap : MonoBehaviour
         }
     }
 
+
     public void joinLobby()
     {
         PhotonNetwork.JoinLobby();
@@ -38,11 +39,5 @@ public class ShowcaseHeatmap : MonoBehaviour
     public void createRoom()
     {
         PhotonNetwork.CreateRoom("heatmapDemo");
-        Invoke("joinRoom", 0.5f);
-    }
-
-    public void joinRoom()
-    {
-        PhotonNetwork.JoinRoom("heatmapDemo");
     }
 }

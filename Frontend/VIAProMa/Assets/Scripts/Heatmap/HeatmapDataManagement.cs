@@ -5,58 +5,58 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
+
+/// <summary>
+/// Manager for heatmap data
+/// </summary>
 public class HeatmapDataManagement : MonoBehaviourPunCallbacks
 {
     [Header("Data information")]
-    public int testDataRange = 100;
+    public int testDataRange = 0;
     public int arraySize = 40;
     [Tooltip("Update intervall of the heatmap data in seconds")]
     public float updateIntervall = 1f;
-    [SerializeField]
+
+
     public int[,] data;
-    public event Action onDataChanged;
-
+    public event Action OnDataChanged;
     HeatmapVisualizer heatmapVisualizer;
-    HeatmapSerializer heatmapSerializer;
-    PhotonView photonView;
 
 
+    /// <summary>
+    /// Instanciates variables
+    /// </summary>
     private void Awake()
     {
-        heatmapSerializer = GetComponent<HeatmapSerializer>();
         heatmapVisualizer = GetComponent<HeatmapVisualizer>();
-        data = GenerateTestData(arraySize, testDataRange);
-        photonView = PhotonView.Get(this);
+        if (data == null)   data = GenerateTestData(arraySize, testDataRange);
     }
 
-    // Start is called before the first frame update
+
+    /// <summary>
+    /// Start invoke to update user positions every updateIntervall
+    /// </summary>
     void Start()
     {
-        //Update userpositions every second
         InvokeRepeating("UpdateFromUserPositions", updateIntervall, updateIntervall);
-
     }
 
-    public override void OnJoinedRoom()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("I am the Master");
-        }
-        else
-        {
-            Debug.Log(PhotonNetwork.MasterClient + " is the Master");
-        }
-    }
 
+    /// <summary>
+    /// Turn heatmap off when returning to the lobby
+    /// </summary>
     public override void OnLeftRoom()
     {
         HeatmapVisualizer.SetVisible(false);
     }
 
+
+    /// <summary>
+    /// Send new players the current data as masterclient
+    /// </summary>
+    /// <param name="newPlayer"></param>
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log("New player joined");
         if (PhotonNetwork.IsMasterClient)
         {
             photonView.RPC("UpdateData", newPlayer, data);
@@ -64,6 +64,10 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
     }
 
 
+    /// <summary>
+    /// PunRPC to recieve current Data from master client on room entrie
+    /// </summary>
+    /// <param name="newData"></param>
     [PunRPC]
     void UpdateData(int[,] newData)
     {
@@ -71,14 +75,12 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
     }
 
 
-
     /// <summary>
-    /// Get position of all users and Update Heatmap acordingly
+    /// Get own position and send the corresponding array position to all players inside the room
     /// </summary>
     private void UpdateFromUserPositions()
     {
-        var position = GameObject.Find("Main Camera").transform.position;
-        Debug.Log("Player position is: " + position);
+        var position = Camera.main.transform.position;
 
         if (position.x < -heatmapVisualizer.width / 2 || heatmapVisualizer.width / 2 <= position.x) return;
         if (position.z < -heatmapVisualizer.width / 2 || heatmapVisualizer.width / 2 <= position.z) return;
@@ -90,17 +92,21 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
         {
             photonView.RPC("UpdatePosition", RpcTarget.All, x, z);
         }
-
     }
 
+
+    /// <summary>
+    /// PunRPC to recieve current position of other players
+    /// </summary>
+    /// <param name="x">First array position </param>
+    /// <param name="z">Second array position</param>
     [PunRPC]
     void UpdatePosition(int x, int z)
     {
         IncreaseDataPoint(x, z);
     }
 
-
-
+    
     /// <summary>
     /// Increase the data of the heatmap at global position x,z and update the visualization
     /// </summary>
@@ -109,9 +115,7 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
     /// <param name="value"> 0 <= value < size(int) </param>
     public void IncreaseDataPoint(int x, int z)
     {
-
         int maxDistance = 2;
-
         for (int i = -maxDistance; i <= maxDistance; i++)
         {
             for (int j = -maxDistance; j <= maxDistance; j++)
@@ -122,50 +126,13 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
                 }
             }
         }
-
-        if (onDataChanged != null) onDataChanged();
+        OnDataChanged?.Invoke();
     }
 
-
-    public static int[,] StringToArray(string s)
-    {
-        string[] lines = s.Split('#');
-        int[,] array = new int[lines.Length, lines.Length];
-        for (int y = 0; y < array.GetLength(1); y++)
-        {
-            string[] sNums = lines[y].Split(';');
-            for (int x = 0; x < array.GetLength(0); x++)
-            {
-                int.TryParse(sNums[x], out array[x, y]);
-            }
-        }
-        return array;
-
-    }
-    public static string ArrayToString(int[,] array)
-    {
-        string s = "";
-        for (int y = 0; y < array.GetLength(1); y++)
-        {
-            for (int x = 0; x < array.GetLength(0); x++)
-            {
-                s += array[x, y];
-                if (x < array.GetLength(0) - 1)
-                {
-                    s += ";";
-                }
-            }
-            if (y < array.GetLength(1) - 1)
-            {
-                s += "#";
-            }
-        }
-
-        return s;
-    }
-
+    
     /// <summary>
-    /// Debugfunction that creates an array with testdata for a given size and range from Perlin Noise
+    /// Debugfunction that creates an array with testdata for a given size and range from Perlin Noise.
+    /// If range == 0, it is used to initilize the data array
     /// </summary>
     /// <param name="size">The height and width of the array</param>
     /// <param name="range">The maximum of the values inside the array</param>
@@ -178,11 +145,8 @@ public class HeatmapDataManagement : MonoBehaviourPunCallbacks
             for (int z = 0; z < size; z++)
             {
                 testData[x, z] = (int)(Mathf.PerlinNoise(x / (float)size, z / (float)size) * range);
-                //testData[x, z] = 0;
             }
         }
-        print(ArrayToString(testData));
         return testData;
     }
-
 }
