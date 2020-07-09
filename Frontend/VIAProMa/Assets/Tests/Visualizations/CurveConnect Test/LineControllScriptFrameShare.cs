@@ -13,7 +13,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
     public Color c1 = Color.yellow;
     public Color c2 = Color.red;
     public int maxProcessingTimePerFrame = 25;
-    public bool testMode = false;
+    public bool testMode = true;
 
     //For distinguishing between random objects and start/goal
     List<GameObject> startGoalObjectsWithCollider;
@@ -39,7 +39,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
     {
         //Test Stuff
 
-        TestCaseGenerator.GenerateTestcase(startObject,goalObject);
+        
         //
 
         //Main line renderer
@@ -58,67 +58,83 @@ public class LineControllScriptFrameShare : MonoBehaviour
         lineRenderer.colorGradient = gradient;
 
         
-            //Line renderer for the test scenarious
-            GameObject lineRendererAStarObject = new GameObject();
-            LineRenderer lineRendererAStar = lineRendererAStarObject.AddComponent<LineRenderer>();
-            lineRendererAStar.widthMultiplier = 0.1f;
+        //Line renderer for the test scenarious
+        GameObject lineRendererAStarObject = new GameObject();
+        LineRenderer lineRendererAStar = lineRendererAStarObject.AddComponent<LineRenderer>();
+        lineRendererAStar.widthMultiplier = 0.1f;
 
-            GameObject lineRendererGreedyObject = new GameObject();
-            LineRenderer lineRendererGreedy = lineRendererGreedyObject.AddComponent<LineRenderer>();
-            lineRendererGreedy.widthMultiplier = 0.1f;
+        GameObject lineRendererGreedyObject = new GameObject();
+        LineRenderer lineRendererGreedy = lineRendererGreedyObject.AddComponent<LineRenderer>();
+        lineRendererGreedy.widthMultiplier = 0.1f;
 
-            /*
-            GameObject lineRendererHPAStarObject = new GameObject();
-            LineRenderer lineRendererHPAStar = lineRendererHPAStarObject.AddComponent<LineRenderer>();
-            lineRendererHPAStar.widthMultiplier = 0.1f;
-            */
+            
+        GameObject lineRendererHPAStarObject = new GameObject();
+        LineRenderer lineRendererHPAStar = lineRendererHPAStarObject.AddComponent<LineRenderer>();
+        lineRendererHPAStar.widthMultiplier = 0.1f;
+            
 
-            GameObject lineRendererGreedyRefObject = new GameObject();
-            LineRenderer lineRendererGreedyRef = lineRendererGreedyRefObject.AddComponent<LineRenderer>();
-            lineRendererGreedyRef.widthMultiplier = 0.1f;
+        GameObject lineRendererGreedyRefObject = new GameObject();
+        LineRenderer lineRendererGreedyRef = lineRendererGreedyRefObject.AddComponent<LineRenderer>();
+        lineRendererGreedyRef.widthMultiplier = 0.1f;
 
-            //Get the colliders from all child objects of start and goal
-            List<Collider> startGoalCollider = new List<Collider>();
-            startGoalCollider.AddRange(startObject.GetComponentsInChildren<Collider>());
-            startGoalCollider.AddRange(goalObject.GetComponentsInChildren<Collider>());
+        //Get the colliders from all child objects of start and goal
+        List<Collider> startGoalCollider = new List<Collider>();
+        startGoalCollider.AddRange(startObject.GetComponentsInChildren<Collider>());
+        startGoalCollider.AddRange(goalObject.GetComponentsInChildren<Collider>());
 
-            //Convert to game objects
-            startGoalObjectsWithCollider = new List<GameObject>();
-            foreach (Collider col in startGoalCollider)
-            {
-                startGoalObjectsWithCollider.Add(col.gameObject);
-            }
+        //Convert to game objects
+        startGoalObjectsWithCollider = new List<GameObject>();
+        foreach (Collider col in startGoalCollider)
+        {
+            startGoalObjectsWithCollider.Add(col.gameObject);
+        }
 
-            startBoundingBox = startObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
-            goalBoundingBox = goalObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
+        startBoundingBox = startObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
+        goalBoundingBox = goalObject.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
 
-            boundContainerStart = new GameObject();
-            boundContainerStart.transform.parent = startObject.transform;
-            boundContainerStart.transform.localPosition = Vector3.zero;
-            boundContainerStart.layer = 6;
-            boundContainerStart.name = "Hallu";
+        boundContainerStart = new GameObject();
+        boundContainerStart.transform.parent = startObject.transform;
+        boundContainerStart.transform.localPosition = Vector3.zero;
+        boundContainerStart.layer = 6;
+        boundContainerStart.name = "Hallu";
 
-            boundContainerStart.AddComponent<BoxCollider>();
-            BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
-            boundingboxOnOtherLayer.name = "CurveConnectBoundingBox";
-            boundingboxOnOtherLayer.size = startBoundingBox.size;
-            boundingboxOnOtherLayer.center = startBoundingBox.center;
+        boundContainerStart.AddComponent<BoxCollider>();
+        BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
+        boundingboxOnOtherLayer.name = "CurveConnectBoundingBox";
+        boundingboxOnOtherLayer.size = startBoundingBox.size;
+        boundingboxOnOtherLayer.center = startBoundingBox.center;
 
 
-            boundContainerEnd = new GameObject();
-            boundContainerEnd.transform.parent = goalObject.transform;
-            boundContainerEnd.transform.localPosition = Vector3.zero;
-            boundContainerEnd.layer = 6;
-            boundContainerEnd.name = "Hallu";
+        boundContainerEnd = new GameObject();
+        boundContainerEnd.transform.parent = goalObject.transform;
+        boundContainerEnd.transform.localPosition = Vector3.zero;
+        boundContainerEnd.layer = 6;
+        boundContainerEnd.name = "Hallu";
 
-            boundContainerEnd.AddComponent<BoxCollider>();
-            BoxCollider boundingboxOnOtherLayerEnd = boundContainerEnd.GetComponent<BoxCollider>();
-            boundingboxOnOtherLayerEnd.name = "Bruhh";
-            boundingboxOnOtherLayerEnd.size = goalBoundingBox.size;
-            boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
+        boundContainerEnd.AddComponent<BoxCollider>();
+        BoxCollider boundingboxOnOtherLayerEnd = boundContainerEnd.GetComponent<BoxCollider>();
+        boundingboxOnOtherLayerEnd.name = "Bruhh";
+        boundingboxOnOtherLayerEnd.size = goalBoundingBox.size;
+        boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
 
-            if (testMode)
-            {
+        if (testMode)
+        {
+        System.IO.StreamWriter aStar = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\AStar.csv");
+        aStar.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+        System.IO.StreamWriter greedy = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Greedy.csv");
+        greedy.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+        System.IO.StreamWriter hpa = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Hpa.csv");
+        hpa.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+        System.IO.StreamWriter greedyRef = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\GreedyRef.csv");
+        greedyRef.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+        System.IO.StreamWriter simple = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Simple.csv");
+        simple.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+
+        for (int testN = 0; testN < 5; testN++)
+        {
+            int obstacelCount = TestCaseGenerator.GenerateTestcase(startObject, goalObject);
+            float startGoalDistance = Vector3.Distance(startObject.transform.position, goalObject.transform.position);
+
             //Test Cases
             Debug.Log("Start Goal distance:" + Vector3.Distance(startObject.transform.position, goalObject.transform.position));
 
@@ -137,6 +153,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
 
             Debug.Log("OPtimal Path length:" + Curve.CurveLength(lineVectorArray));
+
+            float optimal = Curve.CurveLength(lineVectorArray);
+
 
             DateTime startTime = DateTime.Now;
 
@@ -163,8 +182,12 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineRendererAStar.SetPositions(lineVectorArray);
 
             Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path length:" + Curve.CurveLength(lineVectorArray));
+            Debug.Log("Path length: " + Curve.CurveLength(lineVectorArray));
+            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
 
+            aStar.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
+                
             //Greedy
             Debug.Log("Greedy");
             startTime = DateTime.Now;
@@ -186,16 +209,23 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineRendererGreedy.SetPositions(lineVectorArray);
             Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
             Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
+            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
+
+            greedy.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
             //HPAStar
 
-            /*
+
             Debug.Log("HPA");
             startTime = DateTime.Now;
-            List<Vector3> linePathVector3 = HPAStar.RefinePath(HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, stepSize, 5),stepSize,5);
+            List<Vector3> linePathVector3 = HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, stepSize, 5);
             lineRendererHPAStar.positionCount = linePathVector3.Count;
             lineRendererHPAStar.SetPositions(linePathVector3.ToArray());
             Debug.Log((DateTime.Now - startTime).TotalMilliseconds);
-            */
+            Debug.Log("Path Length:" + Curve.CurveLength(linePathVector3.ToArray()));
+            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(linePathVector3.ToArray()));
+            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(linePathVector3.ToArray()));
+            hpa.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(linePathVector3.ToArray()) + ";" + Curve.CurveCollsionCount(linePathVector3.ToArray()) + ";" + Curve.MaximalCurveAngel(linePathVector3.ToArray()));
 
             //Greedy refined
             Debug.Log("Greedy Refined");
@@ -220,8 +250,25 @@ public class LineControllScriptFrameShare : MonoBehaviour
             lineRendererGreedyRef.SetPositions(lineVectorArray);
             Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
             Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
+            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
+            greedyRef.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
 
-
+            //Simple
+            Debug.Log("Simple");
+            startTime = DateTime.Now;
+            lineVectorArray = SimpleCurveGerneration.startContinous(startObject.transform.position, goalObject.transform.position);
+            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+            Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
+            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
+            simple.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
+        }
+        aStar.Close();
+        greedy.Close();
+        greedyRef.Close();
+        simple.Close();
+        hpa.Close();
         }
     }
     // Update is called once per frame
@@ -277,7 +324,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
         */
 
-        
+
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
         Vector3[] curve = SimpleCurveGerneration.startContinous(startObject.transform.position,goalObject.transform.position, testObject);
         lineRenderer.positionCount = curve.Length;

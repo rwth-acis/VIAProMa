@@ -59,7 +59,7 @@ public class SimpleCurveGerneration
 
     
 
-    public static Vector3[] startContinous(Vector3 start, Vector3 goal, GameObject[] pointVis)
+    public static Vector3[] startContinous(Vector3 start, Vector3 goal, GameObject[] pointVis = null)
     {
         
 
@@ -177,7 +177,7 @@ public class SimpleCurveGerneration
         if (distanceAbove < 1.5 * distanceSide)
         {
             //return CalculateJoinedCurve(start, intersectionPointsAbove, goal, Vector3.up);
-            return CalculateJoinedCurveSide(start, intersectionPointsAbove, goal);
+            return CalculateJoinedCurveSide(start, intersectionPointsAbove, goal, 15);
         }
 
         else
@@ -199,7 +199,7 @@ public class SimpleCurveGerneration
 
                 //return CalculateJoinedCurve(start, intersectionPointsSide, goal, up);
                 //return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, pointVis[0], pointVis[1], pointVis[2], pointVis[3]);
-                return CalculateJoinedCurveSide(start, intersectionPointsSide, goal);
+                return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, 15);
             }
 
         }
@@ -460,7 +460,7 @@ public class SimpleCurveGerneration
         return curve;
     }
 
-    public static Vector3[] CalculateJoinedCurveSide(Vector3 start, Vector3[] middlePoints, Vector3 goal, GameObject g0 = null, GameObject g1 = null, GameObject g2 = null, GameObject g3 = null)
+    public static Vector3[] CalculateJoinedCurveSide(Vector3 start, Vector3[] middlePoints, Vector3 goal, int segmentCount, GameObject g0 = null, GameObject g1 = null, GameObject g2 = null, GameObject g3 = null)
     {
         Vector3[] controllPointsCurve1 = new Vector3[3];
         Vector3[] controllPointsCurve2 = new Vector3[4];
@@ -552,9 +552,9 @@ public class SimpleCurveGerneration
         Vector2 aboveMiddleP2 = (Vector2)middlePoints[1] + (aboveMiddle - (Vector2)middlePoints[1]) / 2;
         controllPointsCurve2[2] = planeToStandart * new Vector3(aboveMiddleP2.x, aboveMiddleP2.y, start.z);
 
-        Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, 20);
-        Vector3[] curve2 = Curve.CalculateBezierCurve(controllPointsCurve2, 20);
-        Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, 20);
+        Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, segmentCount/3);
+        Vector3[] curve2 = Curve.CalculateBezierCurve(controllPointsCurve2, segmentCount/3);
+        Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, segmentCount/3);
         Vector3[] curve = new Vector3[curve1.Length + curve2.Length + curve3.Length];
         curve1.CopyTo(curve, 0);
         curve2.CopyTo(curve, curve1.Length);

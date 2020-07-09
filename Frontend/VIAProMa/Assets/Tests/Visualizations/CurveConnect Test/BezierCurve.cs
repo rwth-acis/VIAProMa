@@ -56,6 +56,35 @@ public static class Curve
         return false;
     }
 
+    public static int CurveCollsionCount(Vector3[] curve)
+    {
+        int collisionCount = 0;
+        for (int i = 0; i < curve.Length - 2; i++)
+        {
+            Vector3 checkDirection = curve[i + 1] - curve[i];
+            float checkLength = Vector3.Distance(curve[i], curve[i + 1]);
+            checkDirection.Normalize();
+
+            Vector3 center = curve[i] + checkDirection * checkLength / 2;
+
+            if (LineControllScriptFrameShare.collisonWithObstacle(center, new Vector3(0.2f, 0.2f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0))))
+            {
+                collisionCount++;
+            }
+        }
+        return collisionCount;
+    }
+
+    public static float MaximalCurveAngel(Vector3[] curve)
+    {
+        float maximumAngel = float.MinValue;
+        for (int i = 0; i < curve.Length - 2; i++)
+        {
+            maximumAngel = Mathf.Max(maximumAngel, Vector3.Angle(curve[i],curve[i+1]));    
+        }
+        return maximumAngel;
+    }
+
     public static float CurveLength(Vector3[] path)
     {
         float length = 0;

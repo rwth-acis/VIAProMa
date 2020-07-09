@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TestCaseGenerator
 {
-    public static void GenerateTestcase(GameObject start, GameObject goal)
+    public static int GenerateTestcase(GameObject start, GameObject goal)
     {
         var rand = new System.Random();
         int obstacleCount = rand.Next(3,15);
@@ -25,5 +25,6 @@ public class TestCaseGenerator
             obstacle.transform.rotation = Quaternion.Euler(rand.Next(rand.Next(0,359)), rand.Next(rand.Next(0, 359)), rand.Next(rand.Next(0, 359)));
             obstacle.transform.localScale = new Vector3(rand.Next(1,500)/100f, rand.Next(1, 500) / 100f, rand.Next(1, 500) / 100f);
         }
+        return obstacleCount;
     }
 }
