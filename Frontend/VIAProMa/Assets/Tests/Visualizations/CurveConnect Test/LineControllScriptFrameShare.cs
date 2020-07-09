@@ -61,21 +61,30 @@ public class LineControllScriptFrameShare : MonoBehaviour
         //Line renderer for the test scenarious
         GameObject lineRendererAStarObject = new GameObject();
         LineRenderer lineRendererAStar = lineRendererAStarObject.AddComponent<LineRenderer>();
+        lineRendererAStar.name = "AStar";
         lineRendererAStar.widthMultiplier = 0.1f;
 
         GameObject lineRendererGreedyObject = new GameObject();
         LineRenderer lineRendererGreedy = lineRendererGreedyObject.AddComponent<LineRenderer>();
+        lineRendererGreedy.name = "Greedy";
         lineRendererGreedy.widthMultiplier = 0.1f;
 
             
         GameObject lineRendererHPAStarObject = new GameObject();
         LineRenderer lineRendererHPAStar = lineRendererHPAStarObject.AddComponent<LineRenderer>();
+        lineRendererHPAStar.name = "HPA";
         lineRendererHPAStar.widthMultiplier = 0.1f;
             
 
         GameObject lineRendererGreedyRefObject = new GameObject();
         LineRenderer lineRendererGreedyRef = lineRendererGreedyRefObject.AddComponent<LineRenderer>();
+        lineRendererGreedyRef.name = "GreedyRef";
         lineRendererGreedyRef.widthMultiplier = 0.1f;
+
+        GameObject lineRendererSimpleObject = new GameObject();
+        LineRenderer lineRendererSimple = lineRendererSimpleObject.AddComponent<LineRenderer>();
+        lineRendererSimple.name = "Simple";
+        lineRendererSimple.widthMultiplier = 0.1f;
 
         //Get the colliders from all child objects of start and goal
         List<Collider> startGoalCollider = new List<Collider>();
@@ -119,150 +128,150 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
         if (testMode)
         {
-        System.IO.StreamWriter aStar = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\AStar.csv");
-        aStar.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
-        System.IO.StreamWriter greedy = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Greedy.csv");
-        greedy.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
-        System.IO.StreamWriter hpa = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Hpa.csv");
-        hpa.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
-        System.IO.StreamWriter greedyRef = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\GreedyRef.csv");
-        greedyRef.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
-        System.IO.StreamWriter simple = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Simple.csv");
-        simple.WriteLine("Obsacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+            System.IO.StreamWriter aStar = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\AStar.csv");
+            aStar.WriteLine("Obstacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+            System.IO.StreamWriter greedy = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Greedy.csv");
+            greedy.WriteLine("Obstacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+            System.IO.StreamWriter hpa = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Hpa.csv");
+            hpa.WriteLine("Obstacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+            System.IO.StreamWriter greedyRef = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\GreedyRef.csv");
+            greedyRef.WriteLine("Obstacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
+            System.IO.StreamWriter simple = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Simple.csv");
+            simple.WriteLine("Obstacle Count; Start Goal distance; Optimal Path length; Time; Path length;Path colliions;Path curvature");
 
-        for (int testN = 0; testN < 5; testN++)
-        {
-            int obstacelCount = TestCaseGenerator.GenerateTestcase(startObject, goalObject);
-            float startGoalDistance = Vector3.Distance(startObject.transform.position, goalObject.transform.position);
-
-            //Test Cases
-            Debug.Log("Start Goal distance:" + Vector3.Distance(startObject.transform.position, goalObject.transform.position));
-
-
-            //Calculate the nearly optimal path:
-            float stepSizeOpti = 1f;
-            IntTriple startCellOpti = VectorToCell(startObject.transform.position, stepSizeOpti);
-            IntTriple goalCellOpti = VectorToCell(goalObject.transform.position, stepSizeOpti);
-            List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCellOpti, goalCellOpti, GetNeighborsGenerator(stepSizeOpti), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSizeOpti), CostsBetweenGenerator(0.5f)).path;
-            Vector3[] lineVectorArray = new Vector3[linePathCell.Count + 2];
-            lineVectorArray[0] = goalObject.transform.position;
-            for (int i = 1; i < linePathCell.Count + 1; i++)
+            for (int testN = 0; testN < 100; testN++)
             {
-                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSizeOpti);
-            }
-            lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+                int obstacelCount = TestCaseGenerator.GenerateTestcase(startObject, goalObject);
+                float startGoalDistance = Vector3.Distance(startObject.transform.position, goalObject.transform.position);
 
-            Debug.Log("OPtimal Path length:" + Curve.CurveLength(lineVectorArray));
-
-            float optimal = Curve.CurveLength(lineVectorArray);
+                //Test Cases
+                Debug.Log("Start Goal distance:" + Vector3.Distance(startObject.transform.position, goalObject.transform.position));
 
 
-            DateTime startTime = DateTime.Now;
+                //Calculate the nearly optimal path:
+                float stepSizeOpti = 1f;
+                IntTriple startCellOpti = VectorToCell(startObject.transform.position, stepSizeOpti);
+                IntTriple goalCellOpti = VectorToCell(goalObject.transform.position, stepSizeOpti);
+                List<IntTriple> linePathCell = AStar.AStarSearch<IntTriple>(startCellOpti, goalCellOpti, GetNeighborsGenerator(stepSizeOpti), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSizeOpti), CostsBetweenGenerator(0.5f)).path;
+                Vector3[] lineVectorArray = new Vector3[linePathCell.Count + 2];
+                lineVectorArray[0] = goalObject.transform.position;
+                for (int i = 1; i < linePathCell.Count + 1; i++)
+                {
+                    lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSizeOpti);
+                }
+                lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
 
-            //AStar
-            Debug.Log("AStar:");
+                Debug.Log("OPtimal Path length:" + Curve.CurveLength(lineVectorArray));
 
-            IntTriple startCell = VectorToCell(startObject.transform.position, stepSize);
-            IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
-
-            //List<Vector3> linePath = A_Star(startObject, goalObject);
-            AStar.AStarResult<IntTriple> result = AStar.AStarSearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
-            linePathCell = result.path;
+                float optimal = Curve.CurveLength(lineVectorArray);
 
 
-            lineVectorArray = new Vector3[linePathCell.Count + 2];
-            lineVectorArray[0] = goalObject.transform.position;
-            for (int i = 1; i < linePathCell.Count + 1; i++)
-            {
-                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
-            }
-            lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+                DateTime startTime = DateTime.Now;
 
-            lineRendererAStar.positionCount = lineVectorArray.Length;
-            lineRendererAStar.SetPositions(lineVectorArray);
+                //AStar
+                Debug.Log("AStar:");
 
-            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path length: " + Curve.CurveLength(lineVectorArray));
-            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
-            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
+                IntTriple startCell = VectorToCell(startObject.transform.position, stepSize);
+                IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
 
-            aStar.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
+                //List<Vector3> linePath = A_Star(startObject, goalObject);
+                AStar.AStarResult<IntTriple> result = AStar.AStarSearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
+                linePathCell = result.path;
+
+
+                lineVectorArray = new Vector3[linePathCell.Count + 2];
+                lineVectorArray[0] = goalObject.transform.position;
+                for (int i = 1; i < linePathCell.Count + 1; i++)
+                {
+                    lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+                }
+                lineVectorArray[linePathCell.Count + 1] = startObject.transform.position;
+
+                lineRendererAStar.positionCount = lineVectorArray.Length;
+                lineRendererAStar.SetPositions(lineVectorArray);
+
+                Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+                Debug.Log("Path length: " + Curve.CurveLength(lineVectorArray));
+                Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+                Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
+
+                aStar.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
                 
-            //Greedy
-            Debug.Log("Greedy");
-            startTime = DateTime.Now;
+                //Greedy
+                Debug.Log("Greedy");
+                startTime = DateTime.Now;
 
-            result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
-            linePathCell = result.path;
-
-
-            lineVectorArray = new Vector3[linePathCell.Count + 2];
-            lineVectorArray[0] = startObject.transform.position;
-            for (int i = 1; i < linePathCell.Count + 1; i++)
-            {
-                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
-            }
-            lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
+                result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
+                linePathCell = result.path;
 
 
-            lineRendererGreedy.positionCount = lineVectorArray.Length;
-            lineRendererGreedy.SetPositions(lineVectorArray);
-            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
-            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
-            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
-
-            greedy.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
-            //HPAStar
+                lineVectorArray = new Vector3[linePathCell.Count + 2];
+                lineVectorArray[0] = startObject.transform.position;
+                for (int i = 1; i < linePathCell.Count + 1; i++)
+                {
+                    lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+                }
+                lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
 
 
-            Debug.Log("HPA");
-            startTime = DateTime.Now;
-            List<Vector3> linePathVector3 = HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, stepSize, 5);
-            lineRendererHPAStar.positionCount = linePathVector3.Count;
-            lineRendererHPAStar.SetPositions(linePathVector3.ToArray());
-            Debug.Log((DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path Length:" + Curve.CurveLength(linePathVector3.ToArray()));
-            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(linePathVector3.ToArray()));
-            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(linePathVector3.ToArray()));
-            hpa.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(linePathVector3.ToArray()) + ";" + Curve.CurveCollsionCount(linePathVector3.ToArray()) + ";" + Curve.MaximalCurveAngel(linePathVector3.ToArray()));
+                lineRendererGreedy.positionCount = lineVectorArray.Length;
+                lineRendererGreedy.SetPositions(lineVectorArray);
+                Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+                Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
+                Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+                Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
 
-            //Greedy refined
-            Debug.Log("Greedy Refined");
-            startTime = DateTime.Now;
-
-            result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
-            linePathCell = result.path;
+                greedy.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
+                //HPAStar
 
 
-            lineVectorArray = new Vector3[linePathCell.Count + 2];
-            lineVectorArray[0] = startObject.transform.position;
-            for (int i = 1; i < linePathCell.Count + 1; i++)
-            {
-                lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
-            }
-            lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
+                Debug.Log("HPA");
+                startTime = DateTime.Now;
+                List<Vector3> linePathVector3 = HPAStar.HPAStarSearch(startObject.transform.position, goalObject.transform.position, stepSize, 5);
+                lineRendererHPAStar.positionCount = linePathVector3.Count;
+                lineRendererHPAStar.SetPositions(linePathVector3.ToArray());
+                Debug.Log((DateTime.Now - startTime).TotalMilliseconds);
+                Debug.Log("Path Length:" + Curve.CurveLength(linePathVector3.ToArray()));
+                Debug.Log("Path colliions: " + Curve.CurveCollsionCount(linePathVector3.ToArray()));
+                Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(linePathVector3.ToArray()));
+                hpa.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(linePathVector3.ToArray()) + ";" + Curve.CurveCollsionCount(linePathVector3.ToArray()) + ";" + Curve.MaximalCurveAngel(linePathVector3.ToArray()));
 
-            lineVectorArray = Greedy.postProcessing(lineVectorArray, 3);
-            lineVectorArray = SimpleCurveGerneration.start(startObject.transform.position, goalObject.transform.position);
+                //Greedy refined
+                Debug.Log("Greedy Refined");
+                startTime = DateTime.Now;
 
-            lineRendererGreedyRef.positionCount = lineVectorArray.Length;
-            lineRendererGreedyRef.SetPositions(lineVectorArray);
-            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
-            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
-            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
-            greedyRef.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
+                result = Greedy.GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGenerator(stepSize), (x, y) => x == y, HeuristicGenerator(goalObject.transform.position, stepSize), CostsBetweenGenerator(stepSize));
+                linePathCell = result.path;
 
-            //Simple
-            Debug.Log("Simple");
-            startTime = DateTime.Now;
-            lineVectorArray = SimpleCurveGerneration.startContinous(startObject.transform.position, goalObject.transform.position);
-            Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
-            Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
-            Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
-            Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
-            simple.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
+
+                lineVectorArray = new Vector3[linePathCell.Count + 2];
+                lineVectorArray[0] = startObject.transform.position;
+                for (int i = 1; i < linePathCell.Count + 1; i++)
+                {
+                    lineVectorArray[i] = CellToVector(linePathCell[i - 1], stepSize);
+                }
+                lineVectorArray[linePathCell.Count + 1] = goalObject.transform.position;
+                lineVectorArray = Greedy.postProcessing(lineVectorArray, 3);
+
+                lineRendererGreedyRef.positionCount = lineVectorArray.Length;
+                lineRendererGreedyRef.SetPositions(lineVectorArray);
+                Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+                Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
+                Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+                Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
+                greedyRef.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
+
+                //Simple
+                Debug.Log("Simple");
+                startTime = DateTime.Now;
+                lineVectorArray = SimpleCurveGerneration.startContinous(startObject.transform.position, goalObject.transform.position);
+                lineRendererSimple.positionCount = lineVectorArray.Length;
+                lineRendererSimple.SetPositions(lineVectorArray);
+                Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
+                Debug.Log("Path Length:" + Curve.CurveLength(lineVectorArray));
+                Debug.Log("Path colliions: " + Curve.CurveCollsionCount(lineVectorArray));
+                Debug.Log("Path curvature: " + Curve.MaximalCurveAngel(lineVectorArray));
+                simple.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
         }
         aStar.Close();
         greedy.Close();
