@@ -162,6 +162,11 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
             Debug.Log("Sending main menu initialization data.\nIssueShelfId: " + issueShelfId + "; visualizationShelfId" + visualizationShelfId);
             photonView.RPC("Initialize", RpcTarget.Others, issueShelfId, visualizationShelfId);
+
+            if(WindowManager.Instance.ParticipantListWindow.enabled == true) //as soon as a new player joins room update playerlist of room
+            {
+                WindowManager.Instance.ParticipantListWindow.UpdateParticipantList();
+            }
         }
     }
 
