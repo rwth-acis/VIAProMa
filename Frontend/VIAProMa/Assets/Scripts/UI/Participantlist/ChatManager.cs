@@ -3,11 +3,15 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(PhotonView))]
 public class ChatManager : Singleton<ChatManager>
 {
+    public string setUsername;
+
     private PhotonView photonView;
 
     public event EventHandler<ChatMessageEventArgs> MessageReceived;
@@ -15,6 +19,7 @@ public class ChatManager : Singleton<ChatManager>
     public bool RecordMessages { get; set; } = true;
 
     public List<ChatMessageEventArgs> ChatMessages { get; private set; }
+
 
     protected override void Awake()
     {
@@ -26,7 +31,8 @@ public class ChatManager : Singleton<ChatManager>
     public async void SendChatMessage(string text)
     {
         short textId = await NetworkedStringManager.StringToId(text);
-        photonView.RPC("ChatMessageReceived", RpcTarget.All, textId);
+        photonView.RPC("ChatMessageReceived", RpcTarget.All, textId) ;
+
     }
 
     [PunRPC]
@@ -50,4 +56,16 @@ public class ChatManager : Singleton<ChatManager>
         }
         MessageReceived?.Invoke(this, args);
     }
+
+    public void sendTextTo(string username, string text)
+    {
+        SendChatMessage(username + "@ " + text);
+    }
+
+    public void getUsername(string username)
+    {
+        string setUsername = username;
+    }
+
 }
+
