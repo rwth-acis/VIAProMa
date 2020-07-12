@@ -62,10 +62,5 @@ public class ChatManager : Singleton<ChatManager>
         SendChatMessage(username + "@ " + text);
     }
 
-    public void getUsername(string username)
-    {
-        string setUsername = username;
-    }
-
 }
 

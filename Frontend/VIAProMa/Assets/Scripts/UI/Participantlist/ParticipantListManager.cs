@@ -23,7 +23,7 @@ public class ParticipantListManager : MonoBehaviour, IWindow
     //Public Varibales
     public GameObject ItemPrefab;
     public GameObject DummyItem;
-    public FriendListManager FriendsManager ;
+    private FriendListManager FriendsManager ;
 
     public bool WindowEnabled { get; set; } // not used
     public event EventHandler WindowClosed;
@@ -176,6 +176,7 @@ public class ParticipantListManager : MonoBehaviour, IWindow
     public void GetFriendList(FriendListManager fmanager)
     {
         FriendsManager = fmanager;
+        Debug.Log("connected Participantlist to Friendlist.");
     }
 
 
@@ -185,13 +186,16 @@ public class ParticipantListManager : MonoBehaviour, IWindow
     /// <param name="name">unsername of the person that should be added as friend.</param>
     public void AddFriend(string name)
     {
-        Debug.Log("Added Friend:"+name);
         foreach (Player user in Participants)
         {
-            if (String.Equals(user.NickName, "name"))
+            Debug.Log("in for each");
+            Debug.Log(user.NickName);
+            Debug.Log(name);
+            if (user.NickName == name)
             {
                 string id = user.UserId;
                 FriendsManager.AddFriendById(id);
+                Debug.Log("Added Friend:" + name);
                 break;
             }
         }

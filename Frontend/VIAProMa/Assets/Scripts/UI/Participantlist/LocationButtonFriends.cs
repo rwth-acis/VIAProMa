@@ -8,7 +8,7 @@ using TMPro;
 public class LocationButtonFriends : MonoBehaviour, IMixedRealityPointerHandler
 {
     public TextMeshPro TextObject;
-    public ChatMenu chatmanager;
+    public FriendListManager Listmanager;
 
     public void OnPointerDown(MixedRealityPointerEventData eventData)
     {
@@ -28,6 +28,6 @@ public class LocationButtonFriends : MonoBehaviour, IMixedRealityPointerHandler
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         string userName = TextObject.text;
-        //chatmanager.GetUsername(userName);
+        Listmanager.FriendButtonClicked(userName);
     }
 }

@@ -110,7 +110,7 @@ public class FriendListManager : MonoBehaviour, IWindow
                 ListOfFriends[i].transform.position += Vector3.forward * 0.04f;
                 ListOfFriends[i].GetComponentInChildren<TextMeshPro>().text = FriendIds[i];
                 ButtonScript = ListOfFriends[i].GetComponent<LocationButtonFriends>();
-                ButtonScript.chatmanager = Chatmanager;
+                ButtonScript.Listmanager = this;
             }
         }
 
@@ -128,7 +128,7 @@ public class FriendListManager : MonoBehaviour, IWindow
 
     private bool LoadFreindsfromFile()
     {
-       string[] ids = System.IO.File.ReadAllLines(@"friends.txt");
+       string[] ids = System.IO.File.ReadAllLines(@"Assets\Scripts\UI\Participantlist\friends.txt");
        if(ids.Length == 0)
         {
             Debug.Log("No friends so far");
@@ -143,7 +143,7 @@ public class FriendListManager : MonoBehaviour, IWindow
 
     private void SaveFriendsToFile()
     {
-        System.IO.File.WriteAllLines(@"friends.txt", FriendIds);
+        System.IO.File.WriteAllLines(@"Assets\Scripts\UI\Participantlist\friends.txt", FriendIds);
     }
 
     public void AddFriendById(string userId)
@@ -173,4 +173,11 @@ public class FriendListManager : MonoBehaviour, IWindow
     {
         Chatmanager = manager;
     }
+
+    public void FriendButtonClicked(string username)
+    {
+        Chatmanager.getUsername(username);
+        Chatmanager.Open();
+    }
 }
+

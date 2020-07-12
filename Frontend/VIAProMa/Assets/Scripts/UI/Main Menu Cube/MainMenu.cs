@@ -277,9 +277,9 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void FriendListButtonClicked()
     {
-        WindowManager.Instance.FriendListWindow.Open();// friendlistButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+        WindowManager.Instance.FriendListWindow.Open(friendlistButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
         WindowManager.Instance.FriendListWindow.SetChatManager(WindowManager.Instance.ChatMenu);
-       foldController.FoldCube();
+        foldController.FoldCube();
     }
 
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)

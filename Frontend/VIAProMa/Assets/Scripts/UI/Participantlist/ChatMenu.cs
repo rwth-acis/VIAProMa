@@ -170,4 +170,9 @@ public class ChatMenu : MonoBehaviour, IWindow
     }
 
 
+    public void getUsername(string username)
+    {
+        string setUsername = username;
+    }
+
 }
