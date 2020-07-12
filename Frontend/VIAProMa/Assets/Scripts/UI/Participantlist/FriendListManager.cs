@@ -15,18 +15,15 @@ public class FriendListManager : MonoBehaviour, IWindow
     private static Player[] Friend;
     private object friendList;
     private float[] Friends; // float ist Platzsparender 
-
-    private GameObject[] ListOfFriends;
     public GameObject ItemPrefab;
     public GameObject DummyItem;
+
+    private GameObject[] ListOfFriends;
     private LocationButton ButtonScript;
     private bool[] UserExistsInRoom;
     private bool ListInitiated = false;
 
     // public Recievermanager buttonManager; 
-
-    public GameObject vorlage;
-    public GameObject platzhaltzer;
 
   
 
@@ -35,15 +32,15 @@ public class FriendListManager : MonoBehaviour, IWindow
     // add friendtoList übergabewert user id 
 
 
-    private object GetFriendList()
-    {
-        return friendList;
-    }
+    //private object GetFriendList()
+    //{
+    //    return friendList;
+    //}
 
-    private void SetFriendList(object value)
-    {
-        friendList = value;
-    }
+    //private void SetFriendList(object value)
+    //{
+    //    friendList = value;
+    //}
 
     public bool WindowEnabled {
         get; set; } // not used
@@ -58,7 +55,7 @@ public class FriendListManager : MonoBehaviour, IWindow
         }
     }
 
-    public object Friendlist { get; private set; }
+    //public object Friendlist { get; private set; }
 
     public void Close()
     {
@@ -98,7 +95,7 @@ public class FriendListManager : MonoBehaviour, IWindow
 
     public void OnUpdatedFriendsList()
     {
-        Debug.Log("Updated: " + PhotonNetwork.Friend.Count.ToString());
+       // Debug.Log("Updated: " + PhotonNetwork.Friend.Count.ToString());
     }
 
 
@@ -110,14 +107,14 @@ public class FriendListManager : MonoBehaviour, IWindow
     public void AddFriendname(string name)
     {
         Debug.Log("Added Friend:" + name);
-        foreach (Player user in Friend)
-        {
-            if (String.Equals(user.NickName, "name"))
-            {
-            string id = user.UserId;
-            break;
-            }
-        }
+        //foreach (Player user in Friend)
+        //{
+        //    if (String.Equals(user.NickName, "name"))
+        //    {
+        //    string id = user.UserId;
+        //    break;
+        //    }
+        //}
     }
 
      void AddFriendToList(string id)

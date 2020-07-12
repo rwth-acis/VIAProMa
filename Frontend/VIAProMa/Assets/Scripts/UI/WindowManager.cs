@@ -11,6 +11,7 @@ public class WindowManager : Singleton<WindowManager>
     [SerializeField] private GameObject saveProjectMenuPrefab;
     [SerializeField] private GameObject loginMenuPrefab;
     [SerializeField] private GameObject participantListPrefab;
+    [SerializeField] private GameObject friendListPrefab;
 
     private void Start()
     {
@@ -20,6 +21,7 @@ public class WindowManager : Singleton<WindowManager>
         SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
         LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
         ParticipantListWindow = (ParticipantListManager)InstantiateWindow(participantListPrefab);
+        FriendListWindow = (FriendListManager)InstantiateWindow(friendListPrefab);
     }
 
     private IWindow InstantiateWindow(GameObject prefab)
@@ -47,4 +49,6 @@ public class WindowManager : Singleton<WindowManager>
     public LoginMenu LoginMenu { get; private set; }
 
     public ParticipantListManager ParticipantListWindow { get; private set; }
+
+    public FriendListManager FriendListWindow { get; private set; }
 }
