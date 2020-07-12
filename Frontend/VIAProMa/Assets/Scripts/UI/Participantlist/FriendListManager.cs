@@ -8,24 +8,18 @@ using TMPro;
 
 public class FriendListManager : MonoBehaviour, IWindow
 {
-    //Variablen erstellen
-    //private static Player[] Friend;
-    //private object friendList;
     private List<string> FriendIds;
     private GameObject[] ListOfFriends;
     public GameObject ItemPrefab;
     public GameObject DummyItem;
     private bool ListInitiated = false;
+    private ChatMenu Chatmanager;
+    private Player[] userInLobby;
 
     public bool WindowEnabled { get; set; } // not used
     public event EventHandler WindowClosed;
 
-    //private LocationButton ButtonScript;
-    //private bool[] UserExistsInRoom;
-
-    // public Recievermanager buttonManager; 
-
-
+    private LocationButtonFriends ButtonScript;
 
     //funktion die Liste abdatetet
     // add friendtoList übergabewert user id 
@@ -60,11 +54,14 @@ public class FriendListManager : MonoBehaviour, IWindow
     public void Open(Vector3 position, Vector3 eulerAngles)
     {
         Open();
-       //ListInitiated = true;
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
 
-        LoadFreindsfromFile();
+        if (LoadFreindsfromFile() == false)
+        {
+            InitializeEmptyList();
+            return;
+        }
 
         ListOfFriends = new GameObject[FriendIds.Count + 1];
         ListOfFriends[0] = DummyItem;
@@ -112,8 +109,8 @@ public class FriendListManager : MonoBehaviour, IWindow
                 ListOfFriends[i].transform.position += Vector3.down * 0.31f;
                 ListOfFriends[i].transform.position += Vector3.forward * 0.04f;
                 ListOfFriends[i].GetComponentInChildren<TextMeshPro>().text = FriendIds[i];
-                //ButtonScript = ListOfFriends[i].GetComponent<LocationButton>();
-                //ButtonScript.ListManager = this;
+                ButtonScript = ListOfFriends[i].GetComponent<LocationButtonFriends>();
+                ButtonScript.chatmanager = Chatmanager;
             }
         }
 
@@ -129,14 +126,24 @@ public class FriendListManager : MonoBehaviour, IWindow
         //implement
     }
 
-    private void LoadFreindsfromFile()
+    private bool LoadFreindsfromFile()
     {
-        System.IO.File.ReadAllLines(@"friends.txt");
+       string[] ids = System.IO.File.ReadAllLines(@"friends.txt");
+       if(ids.Length == 0)
+        {
+            Debug.Log("No friends so far");
+            return false;
+        }
+       foreach(string id in ids)
+        {
+            FriendIds.Add(id);
+        }
+        return true;
     }
 
     private void SaveFriendsToFile()
     {
-        //implement
+        System.IO.File.WriteAllLines(@"friends.txt", FriendIds);
     }
 
     public void AddFriendById(string userId)
@@ -154,6 +161,16 @@ public class FriendListManager : MonoBehaviour, IWindow
         {
             Destroy(ListOfFriends[i]);
         }
-        // ButtonScript = null;
+        ButtonScript = null;
+    }
+
+    private void InitializeEmptyList()
+    {
+        DummyItem.SetActive(false);
+    }
+
+    public void SetChatManager(ChatMenu manager)
+    {
+        Chatmanager = manager;
     }
 }

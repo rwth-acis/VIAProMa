@@ -23,7 +23,7 @@ public class ParticipantListManager : MonoBehaviour, IWindow
     //Public Varibales
     public GameObject ItemPrefab;
     public GameObject DummyItem;
-    public FriendListManager FriendsManager ; 
+    public FriendListManager FriendsManager ;
 
     public bool WindowEnabled { get; set; } // not used
     public event EventHandler WindowClosed;
@@ -173,9 +173,9 @@ public class ParticipantListManager : MonoBehaviour, IWindow
         UpdateListView();
     }
 
-    public void GetFriendList(FriendListManager manager)
+    public void GetFriendList(FriendListManager fmanager)
     {
-        FriendsManager = manager;
+        FriendsManager = fmanager;
     }
 
 
