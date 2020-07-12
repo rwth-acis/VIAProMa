@@ -144,8 +144,8 @@ public class ParticipantListManager : MonoBehaviour, IWindow
             for (int i = 1; i < listLenght; i++)
             {
                 ListOfParticipants[i] = Instantiate(ItemPrefab, ListOfParticipants[i - 1].transform, false);
-                ListOfParticipants[i].transform.position += Vector3.down * 0.31f;
-                ListOfParticipants[i].transform.position += Vector3.forward * 0.04f;
+                ListOfParticipants[i].transform.position += Vector3.down * 0.1f;
+                //ListOfParticipants[i].transform.position += Vector3.forward * 0.04f;
                 ListOfParticipants[i].GetComponentInChildren<TextMeshPro>().text = Participants[i].NickName;
                 ButtonScript =  ListOfParticipants[i].GetComponent<LocationButton>();
                 ButtonScript.ListManager = this;
