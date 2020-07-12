@@ -86,7 +86,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(participantlistButton));
         }
-        if (participantlistButton == null)
+        if (friendlistButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(friendlistButton));
         }
@@ -276,7 +276,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public void FriendListButtonClicked()
     {
-        WindowManager.Instance.FriendListWindow.Open(friendlistButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+        WindowManager.Instance.FriendListWindow.Open();// friendlistButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
         foldController.FoldCube();
     }
 

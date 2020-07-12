@@ -23,7 +23,7 @@ public class ParticipantListManager : MonoBehaviour, IWindow
     //Public Varibales
     public GameObject ItemPrefab;
     public GameObject DummyItem;
-    //public Friendlist ListOfFriends; //implement when availabe
+    public FriendListManager FriendsManager ; 
 
     public bool WindowEnabled { get; set; } // not used
     public event EventHandler WindowClosed;
@@ -173,6 +173,11 @@ public class ParticipantListManager : MonoBehaviour, IWindow
         UpdateListView();
     }
 
+    public void GetFriendList(FriendListManager manager)
+    {
+        FriendsManager = manager;
+    }
+
 
     /// <summary>
     /// Gets called when the button of a participant is clicked and envokes the friendslist add functionality
@@ -186,7 +191,7 @@ public class ParticipantListManager : MonoBehaviour, IWindow
             if (String.Equals(user.NickName, "name"))
             {
                 string id = user.UserId;
-                //Friendlist.addFriendToList(id);
+                FriendsManager.AddFriendById(id);
                 break;
             }
         }
