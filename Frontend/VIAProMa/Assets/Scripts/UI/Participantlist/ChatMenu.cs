@@ -10,6 +10,7 @@ public class ChatMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private TextMeshPro chatHistory;
     [SerializeField] private InputField chatInputField;
+    [SerializeField] private InputField chatReceiverInputField; //here
     [SerializeField] private Interactable sendButton;
     [SerializeField] private Interactable pageUpButton;
     [SerializeField] private Interactable pageDownButton;
@@ -39,6 +40,10 @@ public class ChatMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatInputField));
         }
+        if (chatReceiverInputField == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatInputField));
+        }
         if (sendButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(sendButton));
@@ -65,7 +70,9 @@ public class ChatMenu : MonoBehaviour, IWindow
         ChatManager.Instance.ChatMessages.Clear();
         ChatManager.Instance.RecordMessages = false; // no need to record messages anymore
         chatInputField.TextChanged += OnMessageTextChanged;
+        chatReceiverInputField.TextChanged += OnMessageTextChanged; //here
         sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
+        sendButton.Enabled = !string.IsNullOrEmpty(chatReceiverInputField.Text); //IsNullOrEmpty kann keine zwei Argumente annehmen
         CheckPageButtons();
     }
 
