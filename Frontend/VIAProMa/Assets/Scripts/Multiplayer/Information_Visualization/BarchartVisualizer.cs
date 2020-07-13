@@ -1,21 +1,36 @@
 ﻿using i5.ViaProMa.Visualizations.Common;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 using Photon.Pun;
 using Photon.Realtime;
 
 public class BarchartVisualizer : MonoBehaviour
 {
-    public i5.ViaProMa.Visualizations.Diagrams.Barchart barchart;
-    public Vector3 size = Vector3.one;
+    private i5.ViaProMa.Visualizations.Diagrams.Barchart barchart;
+    public string name = "";
+    private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
+    public event EventHandler ConfigurationChanged;
 
-    [PunRPC]
-    private void Start()
+    private void Awake()
     {
+        barchart = GetComponent<i5.ViaProMa.Visualizations.Diagrams.Barchart>();
+        name = PhotonNetwork.NickName;
+        Debug.Log("barchart visualizer:"+name);
+    }
 
+    private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
+    {
         barchart.Size = size;
+        jsonFile = (TextAsset)Resources.Load(name + ".json", typeof(TextAsset));
+
+        if (jsonFile==null)
+        {
+            return null;
+        }
 
         Information MentorData = JsonUtility.FromJson<Information>(jsonFile.text);
         i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
@@ -29,12 +44,12 @@ public class BarchartVisualizer : MonoBehaviour
             xValues.Add(assignment.name);
             yValues.Add(assignment.score);
             zValues.Add("first semester");
-            colors.Add(Random.ColorHSV());
+            colors.Add(UnityEngine.Random.ColorHSV());
 
             xValues.Add(assignment.name);
             yValues.Add(assignment.score);
             zValues.Add("second semester");
-            colors.Add(Random.ColorHSV());
+            colors.Add(UnityEngine.Random.ColorHSV());
         }
 
         TextDataColumn xColumn = new TextDataColumn(xValues);
@@ -46,7 +61,16 @@ public class BarchartVisualizer : MonoBehaviour
         dataSet.DataColumns.Add(zColumn);
         dataSet.DataPointColors = colors;
 
-        barchart.DataSet = dataSet;
-        barchart.UpdateDiagram();
+        return dataSet;
+    }
+
+    public async void UpdateView()
+    {
+        i5.ViaProMa.Visualizations.Common.DataSet dataset = await JsonFileToDataSet();
+        if (dataset != null)
+        {
+            barchart.DataSet = dataset;
+            barchart.UpdateDiagram();
+        }
     }
 }

@@ -46,6 +46,22 @@ MonoBehaviour:
   contentParent: {fileID: 2738293818602002424}
   barPrefab: {fileID: 3410340232927607401, guid: d79154f4aaaa6724f8c99b948900002d,
     type: 3}
+--- !u!114 &5775049666098408059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2738293818969125529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3668073901bf7b84a8e4b41ed10659b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synchronizePosition: 1
+  synchronizeRotation: 1
+  synchronizeScale: 0
+  lerpSpeed: 15
 --- !u!114 &6164830260613798488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,8 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f96a17d6c5c0cb4893a364ab282c4ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  barchart: {fileID: 2466545383945992682}
-  size: {x: 1, y: 1, z: 1}
+  name: 
   jsonFile: {fileID: 4900000, guid: ec3b844ca52e25a4ebed2c8e3f236deb, type: 3}
 --- !u!114 &7736531977461895906
 MonoBehaviour:
@@ -107,11 +122,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: bar
-      objectReference: {fileID: 0}
-    - target: {fileID: 208045533994884588, guid: 72b65a4d45d6e074aa7911739f9a34ef,
-        type: 3}
-      propertyPath: ticksInCells
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8451295563011644673, guid: 72b65a4d45d6e074aa7911739f9a34ef,
         type: 3}
@@ -182,6 +192,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 208045533994884588, guid: 72b65a4d45d6e074aa7911739f9a34ef,
+        type: 3}
+      propertyPath: ticksInCells
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 701112397120405491, guid: 72b65a4d45d6e074aa7911739f9a34ef,
         type: 3}

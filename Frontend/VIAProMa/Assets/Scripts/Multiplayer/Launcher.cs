@@ -53,7 +53,8 @@ public class Launcher : MonoBehaviourPunCallbacks
             PhotonNetwork.GameVersion = gameVersion;
             PhotonNetwork.ConnectUsingSettings();
             Debug.Log("now the offline mode is " + PhotonNetwork.OfflineMode);
-            PhotonNetwork.NickName = "Guest" + UnityEngine.Random.Range(0, 1000);
+            //PhotonNetwork.NickName = "Guest" + UnityEngine.Random.Range(0, 1000);
+            PhotonNetwork.NickName = "Wendy";
         }
     }
 
