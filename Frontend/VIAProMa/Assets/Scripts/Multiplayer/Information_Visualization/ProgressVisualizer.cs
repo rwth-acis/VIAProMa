@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grade_Progress : MonoBehaviour
+public class ProgressVisualizer : MonoBehaviour
 {
     //public float percentDone = 0f;
     //public float percentInProgress = 0f;

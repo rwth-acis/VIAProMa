@@ -5,7 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class Grade_Barchart : MonoBehaviour
+public class BarchartVisualizer : MonoBehaviour
 {
     public i5.ViaProMa.Visualizations.Diagrams.Barchart barchart;
     public Vector3 size = Vector3.one;

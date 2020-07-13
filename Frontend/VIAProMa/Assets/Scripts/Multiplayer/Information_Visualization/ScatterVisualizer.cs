@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Test script which controls the scatter plot and fills it with test data
 /// </summary>
-public class Grade_Scatterplot : MonoBehaviour
+public class ScatterVisualizer : MonoBehaviour
 {
     public i5.ViaProMa.Visualizations.Common.Diagram diagram;
     public Vector3 size = Vector3.one;
