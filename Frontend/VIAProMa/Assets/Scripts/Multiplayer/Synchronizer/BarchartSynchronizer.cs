@@ -54,14 +54,16 @@ public class BarchartSynchronizer : TransformSynchronizer
 
     private async void SendConfiguration()
     {
-        short nameId = await NetworkedStringManager.StringToId(visualizer.name);
-        photonView.RPC("SetConfiguration", RpcTarget.Others, nameId);
+        //short nameId = await NetworkedStringManager.StringToId(visualizer.name);
+        Debug.Log("SendConfiguration: " + visualizer.name);
+        photonView.RPC("SetConfiguration", RpcTarget.All, visualizer.name);
     }
 
     [PunRPC]
-    private async void SetConfiguration(short nameId)
+    private async void SetConfiguration(string name)
     {
-        string name = await NetworkedStringManager.GetString(nameId);
+        //string name = await NetworkedStringManager.GetString(nameId);
+        Debug.Log("SetConfiguration: " + name);
         visualizer.name = name;
         visualizer.UpdateView();
     }

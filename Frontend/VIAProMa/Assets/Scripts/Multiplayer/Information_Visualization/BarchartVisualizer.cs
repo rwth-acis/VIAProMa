@@ -9,26 +9,32 @@ using Photon.Realtime;
 
 public class BarchartVisualizer : MonoBehaviour
 {
-    private i5.ViaProMa.Visualizations.Diagrams.Barchart barchart;
-    public string name = "";
+    private i5.ViaProMa.Visualizations.Common.Diagram barchart;
+    public string name { get; set; } = "";
+    //public string name { get; set; } = PhotonNetwork.NickName;
     private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
     public event EventHandler ConfigurationChanged;
+    //private PhotonView photonView;
+
 
     private void Awake()
     {
-        barchart = GetComponent<i5.ViaProMa.Visualizations.Diagrams.Barchart>();
+        barchart = GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
         name = PhotonNetwork.NickName;
+        //name = photonView.Owner.NickName;
         Debug.Log("barchart visualizer:"+name);
     }
 
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
     {
         barchart.Size = size;
-        jsonFile = (TextAsset)Resources.Load(name + ".json", typeof(TextAsset));
+        Debug.Log(name);
+        jsonFile = (TextAsset)Resources.Load(name, typeof(TextAsset));
 
         if (jsonFile==null)
         {
+            Debug.Log("failed to get the file");
             return null;
         }
 
