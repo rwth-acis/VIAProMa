@@ -10,7 +10,7 @@ public class VisualizationInstantiator : MonoBehaviour, IMixedRealityPointerHand
     [SerializeField] private GameObject visualizationPrefab;
 
     private BoundingBoxStateController boxStateController;
-    private ManipulationHandler handler;
+    private ObjectManipulator handler;
 
     private void Awake()
     {
@@ -34,7 +34,7 @@ public class VisualizationInstantiator : MonoBehaviour, IMixedRealityPointerHand
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
             }
             boxStateController.BoundingBoxActive = true;
-            handler = instance.GetComponentInChildren<ManipulationHandler>();
+            handler = instance.GetComponentInChildren<ObjectManipulator>();
             handler.OnPointerDown(eventData);
         });
     }
