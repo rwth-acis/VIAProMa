@@ -18,14 +18,34 @@ public class BarchartSynchronizer : TransformSynchronizer
         visualizer = GetComponent<BarchartVisualizer>();
     }
 
+    public void Initial(string name)
+    {
+        visualizer.name = name;
+        initialized = true;
+        SendConfiguration();
+    }
     private void Start()
     {
+        //object[] data = this.gameObject.GetPhotonView().instantiationData;
+        //object[] data = this.gameObject.GetPhotonView().instantiationData;
+
+        /*
+        if (PhotonNetwork.NickName == data[0])
+        {
+            initialized = true;
+            SendConfiguration();
+        }
+        */
+
+        /*
         if (PhotonNetwork.IsMasterClient)
         {
             initialized = true;
             SendConfiguration(); 
         }
+        */
     }
+    
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {

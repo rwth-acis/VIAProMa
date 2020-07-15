@@ -12,10 +12,11 @@ public class InformationButtonConfigurator : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private GameObject informationButton;
 
-    [Header("References")]
-    [SerializeField] private GameObject InformationBoxPrefab;
+    //[Header("References")]
+    //[SerializeField] private GameObject InformationBoxPrefab;
 
-    private GameObject informationbox;
+    //public GameObject informationbox;
+    //private GameObject informationbox;
     private UserRoles userRole;
 
     private void Start()
@@ -56,6 +57,7 @@ public class InformationButtonConfigurator : MonoBehaviour
     }
 */
 
+/*
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
     {
         Quaternion targetRotation = transform.rotation;
@@ -71,7 +73,9 @@ public class InformationButtonConfigurator : MonoBehaviour
             instance = GameObject.Instantiate(prefab, targetPosition, targetRotation);
         }
     }
+*/
 
+/*
     public void Onclicked()
     {
         Vector3 targetPosition = transform.position - 0.5f * transform.right;
@@ -79,5 +83,7 @@ public class InformationButtonConfigurator : MonoBehaviour
         InstantiateControl(InformationBoxPrefab, ref informationbox, targetPosition);
         informationbox.transform.parent = transform;
     }
+*/
+
 
 }

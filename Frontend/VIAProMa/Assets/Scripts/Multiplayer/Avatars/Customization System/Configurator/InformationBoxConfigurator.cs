@@ -1,5 +1,6 @@
 ﻿using i5.ViaProMa.UI;
 using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,12 +24,29 @@ public class InformationBoxConfigurator : MonoBehaviour
     private GameObject barchartInstance;
     private GameObject scatterplotInstance;
     private GameObject progressbarInstance;
+    private PhotonView photonView;
+    private string name;
+    
+    private void Awake()
+    {
+        photonView = GetComponent<PhotonView>();
+        informationBox.SetActive(false);
+        if (photonView != null)
+        {
+            name = photonView.Owner.NickName;
+        }
+        else
+        {
+            name = "Wendy";
+            Debug.Log("photonview error");
+        }
+    }
 
     // Start is called before the first frame update
     private void Start()
     {
         table = GameObject.Find("Table(Clone)");
-        informationBox.SetActive(true);
+        informationBox.SetActive(false);
     }
 
     public void Open()
@@ -43,6 +61,8 @@ public class InformationBoxConfigurator : MonoBehaviour
 
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
     {
+        //object[] data = new object[1];
+        //data[0] = photonView.Owner.NickName;
         Quaternion targetRotation = Quaternion.identity;
 
         if (instance != null)
@@ -58,7 +78,6 @@ public class InformationBoxConfigurator : MonoBehaviour
         }
     }
 
-    [PunRPC]
     public void BarchartButtonClicked()
     {
         Debug.Log("Barchart Button Clicked");
@@ -67,6 +86,9 @@ public class InformationBoxConfigurator : MonoBehaviour
         //targetPosition.x -= 1f;
         targetPosition.z += 0.5f;
         InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
+        BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
+        synch.Initial(name);
+        Close();
     }
     
     public void ScatterplotButtonClicked()
@@ -77,6 +99,7 @@ public class InformationBoxConfigurator : MonoBehaviour
         targetPosition.x -= 1f;
         targetPosition.z += 0.5f;
         InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
+        Close();
     }
 
     public void ProgressBarButtonClicked()
@@ -87,6 +110,7 @@ public class InformationBoxConfigurator : MonoBehaviour
         targetPosition.x -= 2f;
         targetPosition.z += 0.5f;
         InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
+        Close();
     }
 
 }

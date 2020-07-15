@@ -15,9 +15,7 @@ public class BarchartVisualizer : MonoBehaviour
     private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
     public event EventHandler ConfigurationChanged;
-    //private PhotonView photonView;
-
-
+    private PhotonView photonView;
     private void Awake()
     {
         barchart = GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
