@@ -40,7 +40,7 @@ public static class Curve
 
     public static bool CurveCollsionCheck(Vector3[] curve)
     {
-        for (int i = 0; i < curve.Length - 2; i++)
+        for (int i = 0; i <= curve.Length - 2; i++)
         {
             Vector3 checkDirection = curve[i + 1] - curve[i];
             float checkLength = Vector3.Distance(curve[i], curve[i + 1]);
@@ -59,7 +59,7 @@ public static class Curve
     public static int CurveCollsionCount(Vector3[] curve)
     {
         int collisionCount = 0;
-        for (int i = 0; i < curve.Length - 2; i++)
+        for (int i = 0; i <= curve.Length - 2; i++)
         {
             Vector3 checkDirection = curve[i + 1] - curve[i];
             float checkLength = Vector3.Distance(curve[i], curve[i + 1]);
@@ -78,7 +78,7 @@ public static class Curve
     public static float MaximalCurveAngel(Vector3[] curve)
     {
         float maximumAngel = float.MinValue;
-        for (int i = 0; i < curve.Length - 2; i++)
+        for (int i = 0; i <= curve.Length - 2; i++)
         {
             maximumAngel = Mathf.Max(maximumAngel, Vector3.Angle(curve[i],curve[i+1]));    
         }
@@ -88,7 +88,7 @@ public static class Curve
     public static float CurveLength(Vector3[] path)
     {
         float length = 0;
-        for (int i = 0; i < path.Length - 2; i++)
+        for (int i = 0; i <= path.Length - 2; i++)
         {
             length += Vector3.Distance(path[i], path[i + 1]);
         }
