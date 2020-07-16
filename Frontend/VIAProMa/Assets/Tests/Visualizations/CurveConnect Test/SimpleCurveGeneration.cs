@@ -277,17 +277,53 @@ public class SimpleCurveGerneration
     }
     static Vector3[] calculateIntersectionSide(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, Vector3 direction, float standartHeight)
     {
+        float ImpliciteLine(Vector3 point, Vector3 suppVector, Vector3 directionVec)
+        {
+            Vector2 normal = new Vector3(directionVec.z, -directionVec.x);
+            return (normal.x * point.x + normal.y * point.z) - (normal.x * suppVector.x + normal.y * suppVector.z);
+        }
+
+        
+        Vector2 CalculatePlacmentToBoundingbox(Vector3 point, Vector3 min, Vector3 max)
+        {
+            Vector2 pointVec2 = new Vector2(point.x, point.z);
+            Vector2 minVec2 = new Vector2(min.x, min.z);
+            Vector2 maxVec2 = new Vector2(max.x, max.z);
+
+            Vector2 placment = new Vector2();
+            if (pointVec2.x < minVec2.x)
+                placment.x = 0;
+            else
+            {
+                if (pointVec2.x < maxVec2.x)
+                    placment.x = 1;
+                else
+                    placment.x = 2;
+            }
+
+            if (pointVec2.y < minVec2.y)
+                placment.y = 0;
+            else
+            {
+                if (pointVec2.y < maxVec2.y)
+                    placment.y = 1;
+                else
+                    placment.y = 2;
+            }
+            return placment;
+        }
+        
+
         //Calculate the controll points at the left/right
 
         float higherY = Mathf.Max(start.y , goal.y);
 
         //Determine the collsion points for left/right
-        Vector3 leftLower = new Vector3(minPoint.x, higherY + standartHeight, minPoint.z);
-        Vector3 leftUpper = new Vector3(minPoint.x, higherY + standartHeight, maxPoint.z);
-        Vector3 rightUpper = new Vector3(maxPoint.x, higherY + standartHeight, maxPoint.z);
-        Vector3 rightLower = new Vector3(maxPoint.x, higherY + standartHeight, minPoint.z);
-
-        Vector3[] edgePoints = new Vector3[] { leftLower, leftUpper, rightUpper, rightLower };
+        Vector3[,] edgePoints = new Vector3[3,3];
+        edgePoints[0,0] = new Vector3(minPoint.x, higherY + standartHeight, minPoint.z);
+        edgePoints[0,2] = new Vector3(minPoint.x, higherY + standartHeight, maxPoint.z);
+        edgePoints[2,0] = new Vector3(maxPoint.x, higherY + standartHeight, minPoint.z);
+        edgePoints[2,2] = new Vector3(maxPoint.x, higherY + standartHeight, maxPoint.z);
 
 
 
@@ -297,49 +333,114 @@ public class SimpleCurveGerneration
 
         List<Vector3> intersectionPointsSide = new List<Vector3>();
 
-        float impliciteLineFromStartToGoal(Vector3 point)
+        Vector2 startPlacment = CalculatePlacmentToBoundingbox(start, minPoint, maxPoint);
+        Vector2 goalPlacment = CalculatePlacmentToBoundingbox(goal, minPoint, maxPoint);
+        Vector2 currentPosition = startPlacment;
+
+        Vector2 TryDirection(Vector2 curr, Vector2 dir)
         {
-            Vector2 normal = new Vector3(direction.z, -direction.x);
-            return (normal.x * point.x + normal.y * point.z) - (normal.x * start.x + normal.y * start.z);
+            curr += dir;
+            if (curr.x < 0 || curr.x > 2 || curr.y < 0 || curr.y > 2 || (curr.x == 1 && curr.y == 1))
+            {
+                return new Vector2(float.NaN, float.NaN);
+            }
+            else
+            {
+                return curr;
+            }
+        }
+        Vector2 NextDirection(Vector2 dir)
+        {
+            if (dir.x == -1)
+                return new Vector2(0, 1);
+            else if (dir.y == 1)
+                return new Vector2(1, 0);
+            else if (dir.x == 1)
+                return new Vector2(0, -1);
+            else
+                return new Vector2(float.NaN,float.NaN);
         }
 
-
-        foreach (Vector3 edge in edgePoints)
+        Vector2 oldPosition = currentPosition;
+        Vector2 nextPosition = currentPosition;
+        for (Vector2 dir = new Vector2(-1, 0); !float.IsNaN(dir.x); dir = NextDirection(dir))
         {
-            edgesSorted[impliciteLineFromStartToGoal(edge) < 0].Add(edge);
+            nextPosition = TryDirection(currentPosition, dir);
+            if (!float.IsNaN(nextPosition.x))
+            {
+                currentPosition = nextPosition;
+                //Path 1
+                Vector2 oldDir = dir;
+                Vector2 nextDir = new Vector2(-1, 0);
+                while (currentPosition != goalPlacment)
+                {
+                    for (nextDir = new Vector2(-1, 0); !float.IsNaN(nextDir.x); nextDir = NextDirection(nextDir))
+                    {
+                        nextPosition = TryDirection(currentPosition,nextDir);
+                        if (!float.IsNaN(nextPosition.x) && nextPosition != oldPosition)
+                        {
+                            oldPosition = currentPosition;
+                            currentPosition = nextPosition;
+                            if (oldDir != nextDir)
+                            {
+                                edgesSorted[false].Add(edgePoints[(int)oldPosition.x, (int)oldPosition.y]);
+                            }
+                            oldDir = nextDir;
+                            break;
+                        }
+                    }
+                }
+
+                //Path 2
+                //find new start direction
+                
+                for (nextDir = new Vector2(-1, 0); !float.IsNaN(nextDir.x); nextDir = NextDirection(nextDir))
+                {
+                    if (!float.IsNaN(TryDirection(startPlacment, nextDir).x) && nextDir != dir)
+                    {
+                        break;
+                    } 
+                }
+                //go path 2
+                currentPosition = TryDirection(startPlacment, nextDir);
+                oldDir = nextDir;
+                oldPosition = startPlacment;
+                while (currentPosition != goalPlacment)
+                {
+                    for (nextDir = new Vector2(-1, 0); !float.IsNaN(nextDir.x); nextDir = NextDirection(nextDir))
+                    {
+                        nextPosition = TryDirection(currentPosition, nextDir);
+                        if (!float.IsNaN(nextPosition.x) && nextPosition != oldPosition)
+                        {
+                            oldPosition = currentPosition;
+                            currentPosition = nextPosition;
+                            if (oldDir != nextDir)
+                            {
+                                edgesSorted[true].Add(edgePoints[(int)oldPosition.x, (int)oldPosition.y]);
+                            }
+                            oldDir = nextDir;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
         }
 
-        edgesSorted[false].Sort((x, y) => { return (int)(Vector3.Distance(x, start) - Vector3.Distance(y, start)); });
-        edgesSorted[true].Sort((x, y) => { return (int)(Vector3.Distance(x, start) - Vector3.Distance(y, start)); });
-
-        if (edgesSorted[false].Count == edgesSorted[true].Count)
+        if (edgesSorted[false].Count != edgesSorted[true].Count)
         {
-            //Determine which pair has the smaller way
-            bool closerPair;
-
-            float approximateWayLeft = Vector3.Distance(start, edgesSorted[false][0]) + Vector3.Distance(goal, edgesSorted[false][1]);
-            float approximateWayRight = Vector3.Distance(start, edgesSorted[true][0]) + Vector3.Distance(goal, edgesSorted[true][1]);
-
-            closerPair = approximateWayLeft > approximateWayRight;
-
-
-            intersectionPointsSide.Add(edgesSorted[closerPair][0]);
-            intersectionPointsSide.Add(edgesSorted[closerPair][1]);
+            if (edgesSorted[false].Count < edgesSorted[true].Count)
+                return edgesSorted[false].ToArray();
+            else
+                return edgesSorted[true].ToArray();
         }
         else
         {
-            if (edgesSorted[false].Count == 1)
-            {
-                intersectionPointsSide.Add(edgesSorted[false][0]);
-            }
-            else if (edgesSorted[true].Count == 1)
-            {
-                intersectionPointsSide.Add(edgesSorted[true][0]);
-            }
+            float approximateWayLeft = Vector3.Distance(start, edgesSorted[false][0]) + Vector3.Distance(goal, edgesSorted[false][1]);
+            float approximateWayRight = Vector3.Distance(start, edgesSorted[true][0]) + Vector3.Distance(goal, edgesSorted[true][1]);
 
+            return edgesSorted[approximateWayLeft > approximateWayRight].ToArray();
         }
-
-        return intersectionPointsSide.ToArray();
     }
 
     static Vector3 shiftAway(Vector3 vec, Vector3 center)
