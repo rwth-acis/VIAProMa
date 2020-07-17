@@ -1,49 +1,41 @@
+using i5.ViaProMa.Visualizations.Common;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class ProgressVisualizer : MonoBehaviour
 {
     //public float percentDone = 0f;
     //public float percentInProgress = 0f;
-
     public GameObject progressBar;
     private IProgressBarVisuals progressBarVisuals;
+    public string name {get; set;} = "";
     public TextAsset jsonFile;
+    public event EventHandler ConfigurationChanged;
 
-    private void Start()
+    private void Awake()
     {
+        name = PhotonNetwork.NickName;
+        progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
+    }
+
+    public async void UpdateView()
+    {
+        jsonFile = (TextAsset)Resources.Load(name, typeof(TextAsset));
         Information MentorData = JsonUtility.FromJson<Information>(jsonFile.text);
 
-        float percentDone = MentorData.average_score/100f;
-        float percentInProgress = 1f - percentDone;
-
-        progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
-
-        progressBarVisuals.PercentageDone = percentDone;
-        progressBarVisuals.PercentageInProgress = percentInProgress;
-
-    }
-
-
-    /*
-    // Update is called once per frame
-    void Update()
-    {
-        progressBarVisuals.PercentageDone = percentDone;
-        progressBarVisuals.PercentageInProgress = percentInProgress;
-    }
-
-    private void OnValidate()
-    {
-        if (progressBar != null)
+        if (jsonFile != null)
         {
-            progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
-            if (progressBarVisuals == null)
-            {
-                progressBar = null;
-            }
+            float percentDone = MentorData.average_score/100f;
+            float percentInProgress = 1f - percentDone;
+
+            progressBarVisuals.PercentageDone = percentDone;
+            progressBarVisuals.PercentageInProgress = percentInProgress;
         }
     }
-    */
+
 }

@@ -112,6 +112,8 @@ public class InformationBoxConfigurator : MonoBehaviour
         targetPosition.x -= 2f;
         targetPosition.z += 0.5f;
         InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
+        ProgressSynchronizer synch = (ProgressSynchronizer) progressbarInstance.GetComponent(typeof(ProgressSynchronizer));
+        synch.Initial(name);
         Close();
     }
 
