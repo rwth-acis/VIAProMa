@@ -99,6 +99,8 @@ public class InformationBoxConfigurator : MonoBehaviour
         targetPosition.x -= 1f;
         targetPosition.z += 0.5f;
         InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
+        ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
+        synch.Initial(name);
         Close();
     }
 

@@ -1,23 +1,40 @@
 ﻿using i5.ViaProMa.Visualizations.Common;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
+using Photon.Pun;
+using Photon.Realtime;
 
 /// <summary>
 /// Test script which controls the scatter plot and fills it with test data
 /// </summary>
 public class ScatterVisualizer : MonoBehaviour
 {
-    public i5.ViaProMa.Visualizations.Common.Diagram diagram;
-    public Vector3 size = Vector3.one;
+    private i5.ViaProMa.Visualizations.Common.Diagram diagram;
+    public string name {get; set;} = "";
+    private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
+    public event EventHandler ConfigurationChanged;
+    
+    private void Awake()
+    {
+        diagram = GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
+        name = PhotonNetwork.NickName;
+    }
 
-    /// <summary>
-    /// Fills the diagram with test data
-    /// </summary>
-    private void Start()
+    private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
     {
         diagram.Size = size;
+        jsonFile = (TextAsset)Resources.Load(name, typeof(TextAsset));
+
+        if (jsonFile==null)
+        {
+            Debug.Log("failed to get the file");
+            return null;
+        }
+
         Information MentorData = JsonUtility.FromJson<Information>(jsonFile.text);
         i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
         List<string> xValues = new List<string>();
@@ -30,12 +47,12 @@ public class ScatterVisualizer : MonoBehaviour
             xValues.Add(assignment.name);
             yValues.Add(assignment.score);
             zValues.Add("first semester");
-            colors.Add(Random.ColorHSV());
+            colors.Add(UnityEngine.Random.ColorHSV());
 
             xValues.Add(assignment.name);
             yValues.Add(assignment.score);
             zValues.Add("second semester");
-            colors.Add(Random.ColorHSV());
+            colors.Add(UnityEngine.Random.ColorHSV());
         }
 
         TextDataColumn xColumn = new TextDataColumn(xValues);
@@ -47,16 +64,16 @@ public class ScatterVisualizer : MonoBehaviour
         dataSet.DataColumns.Add(zColumn);
         dataSet.DataPointColors = colors;
 
-        /*
-        dataset.DataColumns.Add(new TextDataColumn(new List<string>() { "a", "b", "c", "d", "e" }));
-        dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 1, 2, 10, 4, 5 }));
-        dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 0, 1, 2, 3, 4 }));
-        dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 1, 2, 3, 2, 0.5f}));
-        dataset.DataPointColors = new List<Color>() { Color.red, Color.white, Color.yellow, Color.blue, Color.green };
-        */
+        return dataSet;
+    }
 
-
-        diagram.DataSet = dataSet;
-        diagram.UpdateDiagram();
+    public async void UpdateView()
+    {
+        i5.ViaProMa.Visualizations.Common.DataSet dataset = await JsonFileToDataSet();
+        if (dataset != null)
+        {
+            diagram.DataSet = dataset;
+            diagram.UpdateDiagram();
+        }
     }
 }

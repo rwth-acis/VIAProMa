@@ -22,19 +22,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &3277950261369632678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6224725455273125573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b892db2811b14b438397dedf7569633, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  synchronizeColor: 0
 --- !u!114 &4135741380247457264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +56,20 @@ MonoBehaviour:
   contentParent: {fileID: 6224725456042853284}
   pointPrefab: {fileID: 1037116000602898, guid: 3925b53b9c585a74fb30d37980296211,
     type: 3}
-  sphereSize: 0.04
+  sphereSize: 0.1
+--- !u!114 &7905003651654877038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6224725455273125573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b800ddda5002eaf42a1b3379ad0b88e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jsonFile: {fileID: 4900000, guid: ec3b844ca52e25a4ebed2c8e3f236deb, type: 3}
 --- !u!114 &7998440567639791224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 889cf250a9686284fa48bde7f9f5fac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8517043767906599201
+--- !u!114 &5054058591729763096
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,12 +91,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6224725455273125573}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b800ddda5002eaf42a1b3379ad0b88e9, type: 3}
+  m_Script: {fileID: 11500000, guid: f6722cc6090642f4688cc6574744f483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  diagram: {fileID: 7024101401368869287}
-  size: {x: 1, y: 1, z: 1}
-  jsonFile: {fileID: 4900000, guid: ec3b844ca52e25a4ebed2c8e3f236deb, type: 3}
+  synchronizePosition: 1
+  synchronizeRotation: 1
+  synchronizeScale: 0
+  lerpSpeed: 15
 --- !u!1001 &2534297731158391749
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -11,7 +11,6 @@ public class BarchartVisualizer : MonoBehaviour
 {
     private i5.ViaProMa.Visualizations.Common.Diagram barchart;
     public string name { get; set; } = "";
-    //public string name { get; set; } = PhotonNetwork.NickName;
     private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
     public event EventHandler ConfigurationChanged;
