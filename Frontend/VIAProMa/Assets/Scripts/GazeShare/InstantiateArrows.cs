@@ -100,6 +100,8 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     private Renderer rendererComponent;
     private TextMeshPro photonTextMeshPro;
     private SpriteRenderer photonSpriteRenderer;
+    // Laser pointer
+    private LineRenderer lineRenderer;
 
     public void Start()
     {
@@ -113,6 +115,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         }
         photonTextMeshPro = gameObject.GetComponentInChildren<TextMeshPro>();
         photonSpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
+        // Setting up the laser pointer
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.enabled = false;
+        lineRenderer.useWorldSpace = true;
     }
 
     public void InstantiateSharingGlobal()
@@ -182,6 +188,10 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = currentHitPosition;
             transform.rotation = target.transform.rotation;
             deviceUsed = 1;
+            // Laser functionality
+            lineRenderer.SetPosition(0, Camera.main.transform.position);
+            lineRenderer.SetPosition(1, currentHitPosition);
+            lineRenderer.enabled = true;
         }
         else if (StaticGaze.GetIsUsingVive() == true && StaticGaze.sharing == true && sharingGlobal == true)
         {
@@ -189,11 +199,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = RaycastVive.pointerHitPosition; 
             transform.rotation = RaycastVive.pointerHitRotation; 
             deviceUsed = 2;
+            // Laser functionality
+            lineRenderer.SetPosition(0, Camera.main.transform.position);
+            lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
+            lineRenderer.enabled = true;
         }
         else
         {
             transform.position = far;
             transform.rotation = rot;
+            // Laser functionality 
+            lineRenderer.enabled = false;
         }
     }
 
@@ -208,11 +224,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             transform.position = targetPosition;
             transform.rotation = targetRotation;
+            // Laser functionality
+            lineRenderer.SetPosition(0, Camera.main.transform.position);
+            lineRenderer.SetPosition(1, targetPosition);
+            lineRenderer.enabled = true;
         }
         else
         {
             transform.position = far;
             transform.rotation = rot;
+            // Laser functionality 
+            lineRenderer.enabled = false;
         }
     }
 

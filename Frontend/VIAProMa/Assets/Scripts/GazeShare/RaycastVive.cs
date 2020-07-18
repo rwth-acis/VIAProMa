@@ -38,12 +38,12 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
                 objectBeingHit = raycastHit.collider.gameObject;
                 pointerHitPosition = raycastHit.point;
                 pointerHitRotation = Quaternion.LookRotation(raycastHit.normal);
-                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * raycastHit.distance, Color.yellow);
+                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * raycastHit.distance, Color.green, 10);
                 Debug.Log("Did hit " + objectBeingHit.name);
             }
             else
             {
-                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 1000, Color.white);
+                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 1000, Color.red, 10);
                 Debug.Log("Did not hit");
             }
         }
