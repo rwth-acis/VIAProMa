@@ -93,8 +93,8 @@ public class SimpleCurveGerneration
         //Genenerating the standart curve didn't work due to collsions. Try to set the controllpoints so, that no collion occures
 
         //Generate bounding box for above:
-        Vector3 minPoint = center;
-        Vector3 maxPoint = center;
+        Vector3 minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        Vector3 maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
         Collider[] colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up));
 
@@ -113,8 +113,8 @@ public class SimpleCurveGerneration
         minPoint = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
 
         //Generate bounding box for the sides:
-        Vector3 minPointSide = center;
-        Vector3 maxPointSide = center;
+        Vector3 minPointSide = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        Vector3 maxPointSide = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
         colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up));
         foreach (Collider collider in colliders)
@@ -179,33 +179,11 @@ public class SimpleCurveGerneration
             //return CalculateJoinedCurve(start, intersectionPointsAbove, goal, Vector3.up);
             return CalculateJoinedCurveSide(start, intersectionPointsAbove, goal, 15);
         }
-
         else
         {
-            Vector3 boundingBoxCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
-            Vector3 boundingBoxCenterShifted = new Vector3(boundingBoxCenter.x, standartHeight, boundingBoxCenter.z);
-            if (intersectionPointsSide.Length == 1)
-            {
-                controllPoints = new Vector3[3];
-                controllPoints[0] = start;
-                controllPoints[1] = shiftAway(intersectionPointsSide[0], boundingBoxCenterShifted);
-                controllPoints[2] = goal;
-            }
-            else
-            {
-                Vector3 up = intersectionPointsSide[0] - boundingBoxCenterShifted + intersectionPointsSide[1] - boundingBoxCenterShifted;
-                up.y = standartHeight;
-                up.Normalize();
-
-                //return CalculateJoinedCurve(start, intersectionPointsSide, goal, up);
-                //return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, pointVis[0], pointVis[1], pointVis[2], pointVis[3]);
-                return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, 15);
-            }
-
+            //return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, pointVis[0], pointVis[1], pointVis[2], pointVis[3]);
+            return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, 15);
         }
-
-        return Curve.CalculateBezierCurve(controllPoints, 50);
-
     }
 
     static Vector3[] calculateIntersectionAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, Vector3 direction)
@@ -566,100 +544,135 @@ public class SimpleCurveGerneration
         Vector3[] controllPointsCurve1 = new Vector3[3];
         Vector3[] controllPointsCurve2 = new Vector3[4];
         Vector3[] controllPointsCurve3 = new Vector3[3];
+        int higherOne = start.y > goal.y ? 0 : 1;
 
         Vector3 direction = goal - start;
         direction.Normalize();
         Vector3 normal;
-        if (start.y > goal.y)
-            normal = Vector3.Cross(middlePoints[0] - start, direction);
+        //Calculate the normal from the plane P spanned by start, the middle point at the higher one and goal
+        if (middlePoints.Length == 2)
+        {
+            normal = Vector3.Cross(middlePoints[higherOne] - start, direction);
+        }
         else
-            normal = Vector3.Cross(middlePoints[1] - start, direction);
+            normal = Vector3.Cross(middlePoints[0] - start, direction);
 
         normal.Normalize();
         Vector3 up = Vector3.Cross(direction, normal);
         up.Normalize();
-        //(direction, normal, up) is an orthonormal basis for plane P spanned by start middlepoint[0] and goal
+        //(direction, normal, up) is now an orthonormal basis for P
 
-            if (start.y > goal.y)
+        //When there are two middle points, shift the middle point that wasn't used to create P down on P
+        if (middlePoints.Length == 2)
+        {
+            float coordinateForm = start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[1 - higherOne].x * normal.x - middlePoints[1 - higherOne].y * normal.y - middlePoints[1 - higherOne].z * normal.z;
+            if (!FloatEq(coordinateForm, 0))
             {
-                //calculate new middlePoints[1] in such a way that middlePoints[1] is on P
-                float coordinateForm = start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[1].x * normal.x - middlePoints[1].y * normal.y - middlePoints[1].z * normal.z;
-                if (!FloatEq(coordinateForm, 0))
-                {
-                    float l = coordinateForm / normal.y;
-                    middlePoints[1] = middlePoints[1] + l * Vector3.up;
-                }
+                float l = coordinateForm / normal.y;
+                middlePoints[1 - higherOne] = middlePoints[1 - higherOne] + l * Vector3.up;
             }
-            else
-            {
-                float coordinateForm = start.x * normal.x + start.y * normal.y + start.z * normal.z - middlePoints[0].x * normal.x - middlePoints[0].y * normal.y - middlePoints[0].z * normal.z;
-                if (!FloatEq(coordinateForm, 0))
-                {
-                    float l = coordinateForm / normal.y;
-                    middlePoints[0] = middlePoints[0] + l * Vector3.up;
-                }
-            }
+        }
 
 
+        //Set the base transform matrixes
         Matrix4x4 planeToStandart = new Matrix4x4(direction,up,normal, new Vector4(0,0,0,1));
         Matrix4x4 standartToPlane = planeToStandart.inverse;
 
         //Transform the points into the new basis
         start = standartToPlane * new Vector4(start.x,start.y,start.z,1);
         goal = standartToPlane * new Vector4(goal.x, goal.y, goal.z, 1);
-        middlePoints[0] = standartToPlane * new Vector4(middlePoints[0].x, middlePoints[0].y, middlePoints[0].z, 1);
-        middlePoints[1] = standartToPlane * new Vector4(middlePoints[1].x, middlePoints[1].y, middlePoints[1].z, 1);
+        for(int i = 0; i < middlePoints.Length; i++)
+            middlePoints[i] = standartToPlane * new Vector4(middlePoints[i].x, middlePoints[i].y, middlePoints[i].z, 1);
 
         //Shift the middlepoints away from the obstacle
-        middlePoints[0] += new Vector3(-distanceToObstacle,distanceToObstacle,0);
-        middlePoints[1] += new Vector3(distanceToObstacle, distanceToObstacle, 0);
-
+        if (middlePoints.Length == 2)
+        {
+            middlePoints[0] += new Vector3(-distanceToObstacle, distanceToObstacle, 0);
+            middlePoints[1] += new Vector3(distanceToObstacle, distanceToObstacle, 0);
+        }
+        else
+            middlePoints[0] += new Vector3(0,distanceToObstacle,0);
         /*
         g0.transform.position = planeToStandart * start;
         g1.transform.position = planeToStandart * middlePoints[0];
         g2.transform.position = planeToStandart * middlePoints[1];
         g3.transform.position = planeToStandart * goal;
         */
+        Vector3[] curve = null;
+        if (middlePoints.Length == 2)
+        {
+            //Curve 1
+            controllPointsCurve1[0] = planeToStandart * start;
+            controllPointsCurve1[2] = planeToStandart * middlePoints[0];
 
-        //Curve 1
-        controllPointsCurve1[0] = planeToStandart * start;
-        controllPointsCurve1[2] = planeToStandart * middlePoints[0];
+            Vector2 p1;
+            if(start.x < middlePoints[0].x)
+                p1 = new Vector2(start.x, middlePoints[0].y);
+            else
+                p1 = new Vector2(middlePoints[0].x, start.y);
 
-        Vector2 p1 = new Vector2(start.x , middlePoints[0].y);
-        //g3.transform.position = planeToStandart * new Vector3(p1.x, p1.y, start.z);
-        p1 = CalculateCentroid(start, p1, middlePoints[0]);
-        controllPointsCurve1[1] = planeToStandart * new Vector3(p1.x,p1.y,start.z);
+            //g3.transform.position = planeToStandart * new Vector3(p1.x, p1.y, start.z);
+            p1 = CalculateCentroid(start, p1, middlePoints[0]);
+            controllPointsCurve1[1] = planeToStandart * new Vector3(p1.x, p1.y, start.z);
 
-        //g0.transform.position = controllPointsCurve1[0];
-        //g1.transform.position = controllPointsCurve1[1];
-        //g2.transform.position = controllPointsCurve1[2];
+            //g0.transform.position = controllPointsCurve1[0];
+            //g1.transform.position = controllPointsCurve1[1];
+            //g2.transform.position = controllPointsCurve1[2];
 
-        //Curve 3
-        controllPointsCurve3[0] = planeToStandart * middlePoints[1];
-        controllPointsCurve3[2] = planeToStandart * goal;
+            //Curve 3
+            controllPointsCurve3[0] = planeToStandart * middlePoints[1];
+            controllPointsCurve3[2] = planeToStandart * goal;
 
-        Vector2 p2 = new Vector2(goal.x, middlePoints[1].y);
-        p2 = CalculateCentroid(goal, p2, middlePoints[1]);
-        controllPointsCurve3[1] = planeToStandart * new Vector3(p2.x, p2.y, start.z);
+            Vector2 p2;
+            if (goal.x > middlePoints[1].x)
+                p2 = new Vector2(goal.x, middlePoints[1].y);
+            else
+                p2 = new Vector2(middlePoints[1].x, goal.y);
+            p2 = CalculateCentroid(goal, p2, middlePoints[1]);
+            controllPointsCurve3[1] = planeToStandart * new Vector3(p2.x, p2.y, start.z);
 
-        //Curve 2 that connects Curve 1 and 3
-        controllPointsCurve2[0] = controllPointsCurve1[2];
-        controllPointsCurve2[3] = controllPointsCurve3[0];
+            //Curve 2 that connects Curve 1 and 3
+            controllPointsCurve2[0] = controllPointsCurve1[2];
+            controllPointsCurve2[3] = controllPointsCurve3[0];
 
-        Vector2 aboveMiddle = CalculateLineIntersection(p1, (Vector2)middlePoints[0] - p1, p2, (Vector2)middlePoints[1] - p2);
-        Vector2 aboveMiddleP1 = (Vector2)middlePoints[0] + (aboveMiddle - (Vector2)middlePoints[0]) / 2;
-        controllPointsCurve2[1] = planeToStandart * new Vector3(aboveMiddleP1.x, aboveMiddleP1.y, start.z);
+            Vector2 aboveMiddle = CalculateLineIntersection(p1, (Vector2)middlePoints[0] - p1, p2, (Vector2)middlePoints[1] - p2);
+            Vector2 aboveMiddleP1 = (Vector2)middlePoints[0] + (aboveMiddle - (Vector2)middlePoints[0]) / 2;
+            controllPointsCurve2[1] = planeToStandart * new Vector3(aboveMiddleP1.x, aboveMiddleP1.y, start.z);
 
-        Vector2 aboveMiddleP2 = (Vector2)middlePoints[1] + (aboveMiddle - (Vector2)middlePoints[1]) / 2;
-        controllPointsCurve2[2] = planeToStandart * new Vector3(aboveMiddleP2.x, aboveMiddleP2.y, start.z);
+            Vector2 aboveMiddleP2 = (Vector2)middlePoints[1] + (aboveMiddle - (Vector2)middlePoints[1]) / 2;
+            controllPointsCurve2[2] = planeToStandart * new Vector3(aboveMiddleP2.x, aboveMiddleP2.y, start.z);
 
-        Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, segmentCount/3);
-        Vector3[] curve2 = Curve.CalculateBezierCurve(controllPointsCurve2, segmentCount/3);
-        Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, segmentCount/3);
-        Vector3[] curve = new Vector3[curve1.Length + curve2.Length + curve3.Length];
-        curve1.CopyTo(curve, 0);
-        curve2.CopyTo(curve, curve1.Length);
-        curve3.CopyTo(curve, curve1.Length + curve2.Length);
+            Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, segmentCount / 3);
+            Vector3[] curve2 = Curve.CalculateBezierCurve(controllPointsCurve2, segmentCount / 3);
+            Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, segmentCount / 3);
+            curve = new Vector3[curve1.Length + curve2.Length + curve3.Length];
+            curve1.CopyTo(curve, 0);
+            curve2.CopyTo(curve, curve1.Length);
+            curve3.CopyTo(curve, curve1.Length + curve2.Length);
+        }
+        else
+        {
+            //Curve 1
+            controllPointsCurve1[0] = planeToStandart * start;
+            controllPointsCurve1[2] = planeToStandart * middlePoints[0];
+            Vector2 p1 = new Vector2(start.x, middlePoints[0].y);
+            controllPointsCurve1[1] = planeToStandart * new Vector3(p1.x, p1.y, start.z);
+
+            //Curve 3
+            controllPointsCurve3[0] = planeToStandart * middlePoints[0];
+            controllPointsCurve3[2] = planeToStandart * goal;
+            p1 = new Vector2(goal.x, middlePoints[0].y);
+            controllPointsCurve3[1] = planeToStandart * new Vector3(p1.x, p1.y, start.z);
+
+            //Because we don't need a middle curve here, curve 2 isn't used
+
+            Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, segmentCount / 2);
+            Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, segmentCount / 2);
+
+            curve = new Vector3[curve1.Length + curve3.Length];
+            curve1.CopyTo(curve, 0);
+            curve3.CopyTo(curve, curve1.Length);
+        }
 
         return curve;
     }
