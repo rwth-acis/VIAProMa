@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Priority_Queue;
 using static IntTriple;
+using UnityEditor;
 
 public class LineControllScriptFrameShare : MonoBehaviour
 {
@@ -105,12 +105,11 @@ public class LineControllScriptFrameShare : MonoBehaviour
         boundContainerStart.transform.parent = startObject.transform;
         boundContainerStart.transform.localPosition = Vector3.zero;
         boundContainerStart.layer = 6;
-        boundContainerStart.name = "Hallu";
 
         boundContainerStart.AddComponent<BoxCollider>();
         BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
-        boundingboxOnOtherLayer.name = "CurveConnectBoundingBox";
-        boundingboxOnOtherLayer.size = startBoundingBox.size;
+        boundingboxOnOtherLayer.name = "Start Collider";
+        boundingboxOnOtherLayer.size = startBoundingBox.size + new Vector3(0.3f,0.3f,0.3f);
         boundingboxOnOtherLayer.center = startBoundingBox.center;
 
 
@@ -118,13 +117,13 @@ public class LineControllScriptFrameShare : MonoBehaviour
         boundContainerEnd.transform.parent = goalObject.transform;
         boundContainerEnd.transform.localPosition = Vector3.zero;
         boundContainerEnd.layer = 6;
-        boundContainerEnd.name = "Hallu";
 
         boundContainerEnd.AddComponent<BoxCollider>();
         BoxCollider boundingboxOnOtherLayerEnd = boundContainerEnd.GetComponent<BoxCollider>();
-        boundingboxOnOtherLayerEnd.name = "Bruhh";
-        boundingboxOnOtherLayerEnd.size = goalBoundingBox.size;
+        boundingboxOnOtherLayerEnd.name = "Goal Collider";
+        boundingboxOnOtherLayerEnd.size = goalBoundingBox.size + new Vector3(0.3f, 0.3f, 0.3f); ;
         boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
+        
 
         if (testMode)
         {
@@ -312,7 +311,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                     //Simple
                     //Debug.Log("Simple");
                     startTime = DateTime.Now;
-                    lineVectorArray = SimpleCurveGerneration.startContinous(startObject.transform.position, goalObject.transform.position);
+                    lineVectorArray = SimpleCurveGerneration.startContinous(startObject.transform.position, goalObject.transform.position, boundContainerStart, boundContainerEnd);
                     lineRendererSimple.positionCount = lineVectorArray.Length;
                     lineRendererSimple.SetPositions(lineVectorArray);
                     //Debug.Log("Time: " + (DateTime.Now - startTime).TotalMilliseconds);
@@ -400,7 +399,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
 
 
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        Vector3[] curve = SimpleCurveGerneration.startContinous(startObject.transform.position,goalObject.transform.position, testObject);
+        Vector3[] curve = SimpleCurveGerneration.startContinous(startObject.transform.position,goalObject.transform.position, boundContainerStart, boundContainerEnd, testObject);
         lineRenderer.positionCount = curve.Length;
         lineRenderer.SetPositions(curve);
         
@@ -517,24 +516,29 @@ public class LineControllScriptFrameShare : MonoBehaviour
         return true;
     }
 
-    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton)
+    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startBound, GameObject endBound)
     {
-        //Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, halfExtends, orientaton, 1 << 6);
-
-        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        
 
         Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton);
         List<Collider> actuallColliders = new List<Collider>();
 
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        Collider startCollider = startBound.GetComponent<Collider>();
+        Collider endCollider = endBound.GetComponent<Collider>();
         foreach (Collider collider in potentialColliders)
         {
-            if (Physics.OverlapBox(collider.bounds.center, collider.bounds.extents + new Vector3(1,1,1), default, 1 << 6).Length == 0)
+            Vector3 useless = new Vector3();
+            var test = startCollider.transform.position;
+            float usless2 = 0;
+            ;
+            if (!Physics.ComputePenetration(startCollider, startCollider.transform.position, startCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out useless, out usless2)
+                && !Physics.ComputePenetration(endCollider, endCollider.transform.position, endCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out useless, out usless2))
             {
-                actuallColliders.Add(collider);
+                actuallColliders.Add(collider);  
             }
         }
         return actuallColliders.ToArray();
     }
-
 
 }
