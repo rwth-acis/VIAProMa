@@ -189,7 +189,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = target.transform.rotation;
             deviceUsed = 1;
             // Laser functionality
-            lineRenderer.SetPosition(0, Camera.main.transform.position);
+            lineRenderer.SetPosition(0, MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
             lineRenderer.SetPosition(1, currentHitPosition);
             lineRenderer.enabled = true;
         }

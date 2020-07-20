@@ -10,6 +10,7 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     [HideInInspector] public static Vector3 pointerHitPosition { get; private set; }
     [HideInInspector] public static Quaternion pointerHitRotation { get; private set; }
     [HideInInspector] public static GameObject objectBeingHit { get; private set; }
+    [HideInInspector] public static Vector3 pointerOrigin { get; private set; }
     // Bit mask for raycasting layers
     private int layerMask;
 
@@ -17,6 +18,7 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     new void Start()
     {
         pointerHitPosition = new Vector3(0f, -10f, 0f);
+        pointerOrigin = new Vector3(0f, -10f, 0f);
         // Bit shift the index of the layer (8) to get a bit mask. This would cast rays only against colliders in layer 8.
         layerMask = 1 << 8;
         // Registering a global event handler (would become obsolete with a MRTK update)
@@ -46,6 +48,7 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
                 Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 1000, Color.red, 10);
                 Debug.Log("Did not hit");
             }
+            pointerOrigin = Camera.main.transform.position;
         }
     }
 
