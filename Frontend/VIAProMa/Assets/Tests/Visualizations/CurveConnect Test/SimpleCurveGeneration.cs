@@ -104,45 +104,50 @@ public class SimpleCurveGerneration
 
         //Genenerating the standart curve didn't work due to collsions. Try to set the controllpoints so, that no collisions occure
 
-        //Calculate the two points that indicate that the boudning box would include start or goal if min or max were set behind them.
-        //They are the minimal and maximal point of the cube spanned by start and goal
-        Vector3 restrictionMin = new Vector3(Mathf.Min(start.x,goal.x), Mathf.Min(start.y, goal.y), Mathf.Min(start.z, goal.z));
-        Vector3 restrictionMax = new Vector3(Mathf.Max(start.x, goal.x), Mathf.Max(start.y, goal.y), Mathf.Max(start.z, goal.z));
-
+        //Sets min and max in such a way that they include as many of the obstacles as possible but never start or goal
         void SetMinMax(Collider[] colliderss, ref Vector3 min, ref Vector3 max)
         {
-            Vector3 test = restrictionMin;
-            Vector3 test2 = restrictionMax;
             foreach (Collider collider in colliderss)
             {
                 min = Vector3.Min(min, collider.bounds.min);
                 max = Vector3.Max(max, collider.bounds.max);
+                float correctionOffset = distance * 0.1f;
 
-                if (min.x < restrictionMin.x && min.y < restrictionMin.y && min.z < restrictionMin.z)
-                {
-                    float correctionX = restrictionMin.x - min.x;
-                    float correctionY = restrictionMin.y - min.y;
-                    float correctionZ = restrictionMin.z - min.z;
-
-                    if (correctionX < correctionY && correctionX < correctionZ)
-                        min.x += correctionX;
-                    else if (correctionY < correctionX && correctionY < correctionZ)
-                        min.y += correctionY;
+                if (VecGreaterEqVec(start, min) && VecSmallerEqVec(start, max))
+                {                  
+                    Vector3 startGoal = goal - start;
+                    Vector2 correction = new Vector2(startGoal.x, startGoal.z);
+                    correction.Normalize();
+                    if (Mathf.Abs(correction.x) > Mathf.Abs(correction.y))
+                        correction = new Vector2(Mathf.Sign(correction.x),0);
                     else
-                        min.z += correctionZ;
+                        correction = new Vector2(0,Mathf.Sign(correction.y));
+                    if(correction.x < 0)
+                        max.x = start.x - correctionOffset;
+                    else if(correction.y < 0)
+                        max.z = start.z - correctionOffset;
+                    else if(correction.x > 0)
+                        min.x = start.x + correctionOffset;
+                    else
+                        min.z = start.z + correctionOffset;
                 }
-                if (restrictionMax.x < max.x && restrictionMax.y < max.y && restrictionMax.z < max.z)
+                if (VecGreaterEqVec(goal, min) && VecSmallerEqVec(goal, max))
                 {
-                    float correctionX = restrictionMax.x - max.x;
-                    float correctionY = restrictionMax.y - max.y;
-                    float correctionZ = restrictionMax.z - max.z;
-
-                    if (correctionX > correctionY && correctionX > correctionZ)
-                        max.x += correctionX;
-                    else if (correctionY > correctionX && correctionY > correctionZ)
-                        max.y += correctionY;
+                    Vector3 goalStart = start - goal;
+                    Vector2 correction = new Vector2(goalStart.x, goalStart.z);
+                    correction.Normalize();
+                    if (Mathf.Abs(correction.x) > Mathf.Abs(correction.y))
+                        correction = new Vector2(Mathf.Sign(correction.x), 0);
                     else
-                        max.z += correctionZ;
+                        correction = new Vector2(0, Mathf.Sign(correction.y));
+                    if (correction.x < 0)
+                        max.x = goal.x - correctionOffset;
+                    else if (correction.y < 0)
+                        max.z = goal.z - correctionOffset;
+                    else if (correction.x > 0)
+                        min.x = goal.x + correctionOffset;
+                    else
+                        min.z = goal.z + correctionOffset;
                 }
             }
         }
@@ -192,12 +197,11 @@ public class SimpleCurveGerneration
         }
 
 
-        
+        pointVis[0].transform.position = minPointSide;
+        pointVis[1].transform.position = maxPointSide;
 
         Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint,direction);
         Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, minPointSide, maxPointSide, direction,standartHeight);
-
-        //check if the points are between start and goal and not to far above or to the side
 
 
 
