@@ -200,7 +200,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = RaycastVive.pointerHitRotation; 
             deviceUsed = 2;
             // Laser functionality
-            lineRenderer.SetPosition(0, Camera.main.transform.position);
+            lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
             lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
             lineRenderer.enabled = true;
         }
@@ -225,7 +225,14 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = targetPosition;
             transform.rotation = targetRotation;
             // Laser functionality
-            lineRenderer.SetPosition(0, Camera.main.transform.position);
+            if (deviceUsedTarget == 1) // HoloLens
+            {
+                lineRenderer.SetPosition(0, MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
+            }
+            else if (deviceUsedTarget == 2) // Vive
+            {
+                lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
+            }           
             lineRenderer.SetPosition(1, targetPosition);
             lineRenderer.enabled = true;
         }
