@@ -57,7 +57,7 @@ public class SimpleCurveGerneration
         return null;
     }
 
-    static Vector3[] standartCurve(Vector3 start, Vector3 goal, int segmentCount, float height)
+    static Vector3[] StandartCurve(Vector3 start, Vector3 goal, int segmentCount, float height)
     {
         float higherOne = start.y > goal.y ? start.y : goal.y;
 
@@ -95,23 +95,55 @@ public class SimpleCurveGerneration
 
 
         //Priority 1: Try to draw the standart curve
-        Vector3[] checkCurve = standartCurve(start,goal,15,standartHeight);
+        Vector3[] checkCurve = StandartCurve(start,goal,15,standartHeight);
         if (!Curve.CurveCollsionCheck(checkCurve))
         {
-            return standartCurve(start, goal, 50, standartHeight);
+            return StandartCurve(start, goal, 50, standartHeight);
         }
 
 
         //Genenerating the standart curve didn't work due to collsions. Try to set the controllpoints so, that no collisions occure
-        
 
-        
+        //Calculate the two points that indicate that the boudning box would include start or goal if min or max were set behind them.
+        //They are the minimal and maximal point of the cube spanned by start and goal
+        Vector3 restrictionMin = new Vector3(Mathf.Min(start.x,goal.x), Mathf.Min(start.y, goal.y), Mathf.Min(start.z, goal.z));
+        Vector3 restrictionMax = new Vector3(Mathf.Max(start.x, goal.x), Mathf.Max(start.y, goal.y), Mathf.Max(start.z, goal.z));
+
         void SetMinMax(Collider[] colliderss, ref Vector3 min, ref Vector3 max)
         {
+            Vector3 test = restrictionMin;
+            Vector3 test2 = restrictionMax;
             foreach (Collider collider in colliderss)
             {
-                //if()
                 min = Vector3.Min(min, collider.bounds.min);
+                max = Vector3.Max(max, collider.bounds.max);
+
+                if (min.x < restrictionMin.x && min.y < restrictionMin.y && min.z < restrictionMin.z)
+                {
+                    float correctionX = restrictionMin.x - min.x;
+                    float correctionY = restrictionMin.y - min.y;
+                    float correctionZ = restrictionMin.z - min.z;
+
+                    if (correctionX < correctionY && correctionX < correctionZ)
+                        min.x += correctionX;
+                    else if (correctionY < correctionX && correctionY < correctionZ)
+                        min.y += correctionY;
+                    else
+                        min.z += correctionZ;
+                }
+                if (restrictionMax.x < max.x && restrictionMax.y < max.y && restrictionMax.z < max.z)
+                {
+                    float correctionX = restrictionMax.x - max.x;
+                    float correctionY = restrictionMax.y - max.y;
+                    float correctionZ = restrictionMax.z - max.z;
+
+                    if (correctionX > correctionY && correctionX > correctionZ)
+                        max.x += correctionX;
+                    else if (correctionY > correctionX && correctionY > correctionZ)
+                        max.y += correctionY;
+                    else
+                        max.z += correctionZ;
+                }
             }
         }
 
@@ -121,11 +153,7 @@ public class SimpleCurveGerneration
 
         Collider[] colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up), startBound, endBound);
 
-        foreach (Collider collider in colliders)
-        {
-            minPoint = new Vector3(Mathf.Min(minPoint.x,collider.bounds.min.x), Mathf.Min(minPoint.y, collider.bounds.min.y), Mathf.Min(minPoint.z, collider.bounds.min.z));
-            maxPoint = new Vector3(Mathf.Max(maxPoint.x, collider.bounds.max.x), Mathf.Max(maxPoint.y, collider.bounds.max.y), Mathf.Max(maxPoint.z, collider.bounds.max.z));
-        }
+        SetMinMax(colliders, ref minPoint, ref maxPoint);
 
         if (minPoint == maxPoint)
         {
@@ -140,11 +168,7 @@ public class SimpleCurveGerneration
         Vector3 maxPointSide = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
         colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up), startBound, endBound);
-        foreach (Collider collider in colliders)
-        {
-            minPointSide = new Vector3(Mathf.Min(minPoint.x, collider.bounds.min.x), Mathf.Min(minPoint.y, collider.bounds.min.y), Mathf.Min(minPoint.z, collider.bounds.min.z));
-            maxPointSide = new Vector3(Mathf.Max(maxPoint.x, collider.bounds.max.x), Mathf.Max(maxPoint.y, collider.bounds.max.y), Mathf.Max(maxPoint.z, collider.bounds.max.z));
-        }
+        SetMinMax(colliders, ref minPointSide, ref maxPointSide);
 
         Vector3 reCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
         Vector3 reExtend = maxPointSide - minPointSide + new Vector3(3, 0, 3);
@@ -153,11 +177,7 @@ public class SimpleCurveGerneration
         reCenter.y = reExtend.y;
         
         Collider[] colllidersReScan = LineControllScriptFrameShare.GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
-        foreach (Collider collider in colllidersReScan)
-        {
-            minPointSide = new Vector3(Mathf.Min(minPointSide.x, collider.bounds.min.x), Mathf.Min(minPointSide.y, collider.bounds.min.y), Mathf.Min(minPointSide.z, collider.bounds.min.z));
-            maxPointSide = new Vector3(Mathf.Max(maxPointSide.x, collider.bounds.max.x), Mathf.Max(maxPointSide.y, collider.bounds.max.y), Mathf.Max(maxPointSide.z, collider.bounds.max.z));
-        }
+        SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
 
         for (int i = 0; i < 5 && colliders.Length != colllidersReScan.Length; i++)
         {
@@ -168,12 +188,7 @@ public class SimpleCurveGerneration
             reExtend /= 2;
             reCenter.y = reExtend.y;
             colllidersReScan = LineControllScriptFrameShare.GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
-            foreach (Collider collider in colllidersReScan)
-            {
-                minPointSide = new Vector3(Mathf.Min(minPointSide.x, collider.bounds.min.x), Mathf.Min(minPointSide.y, collider.bounds.min.y), Mathf.Min(minPointSide.z, collider.bounds.min.z));
-                maxPointSide = new Vector3(Mathf.Max(maxPointSide.x, collider.bounds.max.x), Mathf.Max(maxPointSide.y, collider.bounds.max.y), Mathf.Max(maxPointSide.z, collider.bounds.max.z));
-            }
-            
+            SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
         }
 
 
@@ -226,7 +241,7 @@ public class SimpleCurveGerneration
 
         bool differentValue = true;
 
-        //Check if there is more then one valid intersection
+        //Check if there is more than one valid intersection
         foreach (Vector3 point in potentialPoints)
         {
             Vector3 firstReal = new Vector3(float.NaN, float.NaN, float.NaN);
@@ -441,11 +456,6 @@ public class SimpleCurveGerneration
         }
     }
 
-    static Vector3 shiftAway(Vector3 vec, Vector3 center)
-    {
-        return vec + (vec - center) * 0.5f;
-    }
-
     static bool VecSmallerEqVec(Vector3 vec1, Vector3 vec2)
     {
         return (vec1.x < vec2.x || FloatEq(vec1.x,vec2.x)) && (vec1.y < vec2.y || FloatEq(vec1.y, vec2.y)) && (vec1.z < vec2.z || FloatEq(vec1.z, vec2.z));
@@ -514,7 +524,7 @@ public class SimpleCurveGerneration
     {
         if (middlePoints.Length == 0)
         {
-            return standartCurve(start, goal, 50, 4);
+            return StandartCurve(start, goal, 50, 4);
         }
 
         Vector3[] controllPointsCurve1 = new Vector3[3];
