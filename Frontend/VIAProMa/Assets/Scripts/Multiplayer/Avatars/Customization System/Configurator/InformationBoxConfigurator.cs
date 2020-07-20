@@ -61,8 +61,6 @@ public class InformationBoxConfigurator : MonoBehaviour
 
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
     {
-        //object[] data = new object[1];
-        //data[0] = photonView.Owner.NickName;
         Quaternion targetRotation = Quaternion.identity;
 
         if (instance != null)
@@ -81,26 +79,34 @@ public class InformationBoxConfigurator : MonoBehaviour
     public void BarchartButtonClicked()
     {
         Debug.Log("Barchart Button Clicked");
-        Vector3 targetPosition = table.transform.position;
-        targetPosition.y += 1.2f;
-        //targetPosition.x -= 1f;
-        targetPosition.z += 0.5f;
-        InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
-        BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
-        synch.Initial(name);
+        if (UserManager.Instance.UserRole == UserRoles.TUTOR)
+        {
+            Vector3 targetPosition = table.transform.position;
+            targetPosition.y += 1.2f;
+            //targetPosition.x -= 1f;
+            targetPosition.z += 0.5f;
+            InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
+            BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
+            synch.Initial(name);
+        }
+
         Close();
     }
     
     public void ScatterplotButtonClicked()
     {
         Debug.Log("Scatterplot Button Clicked");
-        Vector3 targetPosition = table.transform.position;
-        targetPosition.y += 1.2f;
-        targetPosition.x -= 1f;
-        targetPosition.z += 0.5f;
-        InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
-        ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
-        synch.Initial(name);
+        if (UserManager.Instance.UserRole == UserRoles.TUTOR)
+        {
+            Vector3 targetPosition = table.transform.position;
+            targetPosition.y += 1.2f;
+            targetPosition.x -= 1f;
+            targetPosition.z += 0.5f;
+            InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
+            ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
+            synch.Initial(name);
+        }
+
         Close();
     }
 
