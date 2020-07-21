@@ -63,7 +63,7 @@ public class SimpleCurveGerneration
                 max = Vector3.Max(max, collider.bounds.max);
                 float correctionOffset = distance * 0.1f;
 
-                if (VecGreaterEqVec(start, min) && VecSmallerEqVec(start, max))
+                if (start.x >= min.x && start.z >= min.z && start.x <= max.x && start.z <= max.z)
                 {                  
                     Vector3 startGoal = goal - start;
                     Vector2 correction = new Vector2(startGoal.x, startGoal.z);
@@ -81,7 +81,7 @@ public class SimpleCurveGerneration
                     else
                         min.z = start.z + correctionOffset;
                 }
-                if (VecGreaterEqVec(goal, min) && VecSmallerEqVec(goal, max))
+                if (goal.x >= min.x && goal.z >= min.z && goal.x <= max.x && goal.z <= max.z)
                 {
                     Vector3 goalStart = start - goal;
                     Vector2 correction = new Vector2(goalStart.x, goalStart.z);
