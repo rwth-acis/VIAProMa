@@ -109,7 +109,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
         boundContainerStart.AddComponent<BoxCollider>();
         BoxCollider boundingboxOnOtherLayer = boundContainerStart.GetComponent<BoxCollider>();
         boundingboxOnOtherLayer.name = "Start Collider";
-        boundingboxOnOtherLayer.size = startBoundingBox.size + new Vector3(0.3f,0.3f,0.3f);
+        boundingboxOnOtherLayer.size = startBoundingBox.size + new Vector3(0.2f,0.2f,0.2f);
         boundingboxOnOtherLayer.center = startBoundingBox.center;
 
 
@@ -121,8 +121,10 @@ public class LineControllScriptFrameShare : MonoBehaviour
         boundContainerEnd.AddComponent<BoxCollider>();
         BoxCollider boundingboxOnOtherLayerEnd = boundContainerEnd.GetComponent<BoxCollider>();
         boundingboxOnOtherLayerEnd.name = "Goal Collider";
-        boundingboxOnOtherLayerEnd.size = goalBoundingBox.size + new Vector3(0.3f, 0.3f, 0.3f); ;
+        boundingboxOnOtherLayerEnd.size = goalBoundingBox.size + new Vector3(0.2f, 0.2f, 0.2f);
         boundingboxOnOtherLayerEnd.center = goalBoundingBox.center;
+
+        GameObject appBar = GameObject.Find("App Bar Configurable(Clone)");
         
 
         if (testMode)
@@ -230,7 +232,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                     //aStar.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
                     averageTimeAStar += (float)(DateTime.Now - startTime).TotalMilliseconds;
                     averageDistanceDiffAStar += Curve.CurveLength(lineVectorArray) - optimal;
-                    averageCollisionsAStar += Curve.CurveCollsionCount(lineVectorArray);
+                    averageCollisionsAStar += Curve.CurveCollsionCount(lineVectorArray, boundContainerStart, boundContainerEnd);
                     averageCurvatureAStar += Curve.MaximalCurveAngel(lineVectorArray);
 
                     //Greedy
@@ -260,7 +262,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                     //greedy.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
                     averageTimeGreedy += (float)(DateTime.Now - startTime).TotalMilliseconds;
                     averageDistanceDiffGreedy += Curve.CurveLength(lineVectorArray) - optimal;
-                    averageCollisionsGreedy += Curve.CurveCollsionCount(lineVectorArray);
+                    averageCollisionsGreedy += Curve.CurveCollsionCount(lineVectorArray, boundContainerStart, boundContainerEnd);
                     averageCurvatureGreedy += Curve.MaximalCurveAngel(lineVectorArray);
 
                     //HPAStar
@@ -304,7 +306,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                     //greedyRef.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
                     averageTimeGreedyRef += (float)(DateTime.Now - startTime).TotalMilliseconds;
                     averageDistanceDiffGreedyRef += Curve.CurveLength(lineVectorArray) - optimal;
-                    averageCollisionsGreedyRef += Curve.CurveCollsionCount(lineVectorArray);
+                    averageCollisionsGreedyRef += Curve.CurveCollsionCount(lineVectorArray, boundContainerStart, boundContainerEnd);
                     averageCurvatureGreedyRef += Curve.MaximalCurveAngel(lineVectorArray);
 
 
@@ -321,7 +323,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
                     //simple.WriteLine(obstacelCount + ";" + startGoalDistance + ";" + optimal + ";" + (DateTime.Now - startTime).TotalMilliseconds + ";" + Curve.CurveLength(lineVectorArray) + ";" + Curve.CurveCollsionCount(lineVectorArray) + ";" + Curve.MaximalCurveAngel(lineVectorArray));
                     averageTimeSimple += (float)(DateTime.Now - startTime).TotalMilliseconds;
                     averageDistanceDiffSimple += Curve.CurveLength(lineVectorArray) - optimal;
-                    averageCollisionsSimple += Curve.CurveCollsionCount(lineVectorArray);
+                    averageCollisionsSimple += Curve.CurveCollsionCount(lineVectorArray, boundContainerStart, boundContainerEnd);
                     averageCurvatureSimple += Curve.MaximalCurveAngel(lineVectorArray);
                 }
                 time.WriteLine(distance + ";" + averageTimeAStar / ((distance / 2)+1) + ";" + averageTimeGreedy / ((distance / 2)+1) + ";" + averageTimeGreedyRef + ";" + averageTimeSimple);
@@ -397,31 +399,19 @@ public class LineControllScriptFrameShare : MonoBehaviour
         }
         */
 
-
-        LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        Vector3[] curve = SimpleCurveGerneration.startContinous(startObject.transform.position,goalObject.transform.position, boundContainerStart, boundContainerEnd, testObject);
-        lineRenderer.positionCount = curve.Length;
-        lineRenderer.SetPositions(curve);
         
-        /*
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        Vector3[] controlPoints = new Vector3[testObject.Length];
-        for(int i = 0; i < testObject.Length; i++)
-        {
-            controlPoints[i] = testObject[i].transform.position;
-        }
-
-        Vector3[] curve = BezierCurve.calculateCurve(controlPoints, 50);
+        //Vector3[] curve = SimpleCurveGerneration.startContinous(startObject.transform.position,goalObject.transform.position, boundContainerStart, boundContainerEnd, testObject);
+        Vector3[] curve = JoinedCurveGeneration.start(startObject.transform.position, goalObject.transform.position, boundContainerStart, boundContainerEnd, stepSize);
         lineRenderer.positionCount = curve.Length;
         lineRenderer.SetPositions(curve);
-        */
         
     }
 
     //Functions for the A* Search
 
     //gets the neighbors of a node by projecting a cube with the length stepSize  to every side and then checks for collision.
-    Func<IntTriple, List<IntTriple>> GetNeighborsGenerator(float stepSize)
+    public static Func<IntTriple, List<IntTriple>> GetNeighborsGenerator(float stepSize)
     {
         List<IntTriple> GetNeighbors(IntTriple node)
         {
@@ -495,8 +485,9 @@ public class LineControllScriptFrameShare : MonoBehaviour
     }
 
     //TODO actual use orientation
-    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton)
+    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startBound, GameObject endBound)
     {
+        /*
         Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, halfExtends, default, 1 << 6);
 
         //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
@@ -514,6 +505,8 @@ public class LineControllScriptFrameShare : MonoBehaviour
             }
         }
         return true;
+        */
+        return GetCollidorsFromObstacles(center, halfExtends, orientaton, startBound, endBound).Length != 0;
     }
 
     public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startBound, GameObject endBound)
@@ -528,12 +521,22 @@ public class LineControllScriptFrameShare : MonoBehaviour
         Collider endCollider = endBound.GetComponent<Collider>();
         foreach (Collider collider in potentialColliders)
         {
-            Vector3 useless = new Vector3();
+            Vector3 startCorrVec = new Vector3();
             var test = startCollider.transform.position;
-            float usless2 = 0;
-            ;
-            if (!Physics.ComputePenetration(startCollider, startCollider.transform.position, startCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out useless, out usless2)
-                && !Physics.ComputePenetration(endCollider, endCollider.transform.position, endCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out useless, out usless2))
+            float startCorrDist = 0;
+
+            Vector3 endCorrVec = new Vector3();
+            float endCorrDist = 0;
+
+            bool isFromAppBar = false;
+            if (collider.transform.root != null)
+            {
+                isFromAppBar = collider.transform.root.gameObject.name == "App Bar Configurable(Clone)";
+            }
+
+            if (!Physics.ComputePenetration(startCollider, startCollider.transform.position, startCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out startCorrVec, out startCorrDist)
+                && !Physics.ComputePenetration(endCollider, endCollider.transform.position, endCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out endCorrVec, out endCorrDist)
+                && !isFromAppBar)
             {
                 actuallColliders.Add(collider);  
             }
