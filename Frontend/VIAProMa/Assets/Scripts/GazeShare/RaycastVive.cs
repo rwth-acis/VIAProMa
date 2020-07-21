@@ -31,6 +31,9 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
+        // Laser pointer timer
+        InstantiateArrows.ResetTimer();
+
         // Raycasting would become obsolete with a MRTK update
         if (StaticGaze.GetIsUsingVive() == true) // might not be needed
         {
