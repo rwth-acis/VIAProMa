@@ -85,6 +85,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 {
     protected Vector3 targetPosition;
     protected Quaternion targetRotation;
+    private Vector3 targetOrigin;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
     protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     protected bool isUsingVive;
@@ -141,6 +142,16 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
+            // Laser functionality
+            if (StaticGaze.GetIsUsingVive() == false) // HoloLens
+            {
+                stream.SendNext(MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
+            }
+            else if (StaticGaze.GetIsUsingVive() == true)
+            {
+                stream.SendNext(RaycastVive.pointerOrigin);
+            }
+
             stream.Serialize(ref deviceUsed);
             stream.Serialize(ref textToShow);
         }
@@ -148,6 +159,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             targetPosition = (Vector3)stream.ReceiveNext();
             targetRotation = (Quaternion)stream.ReceiveNext();
+            // Laser functionality
+            targetOrigin = (Vector3)stream.ReceiveNext();
+
             stream.Serialize(ref deviceUsedTarget);
             stream.Serialize(ref targetTextToShow);
         }
@@ -225,16 +239,16 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = targetPosition;
             transform.rotation = targetRotation;
             // Laser functionality
-            if (deviceUsedTarget == 1) // HoloLens
+            if (targetPosition == far)
             {
-                lineRenderer.SetPosition(0, MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
+                lineRenderer.enabled = false;
             }
-            else if (deviceUsedTarget == 2) // Vive
+            else
             {
-                lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
-            }           
-            lineRenderer.SetPosition(1, targetPosition);
-            lineRenderer.enabled = true;
+                lineRenderer.SetPosition(0, targetOrigin);
+                lineRenderer.SetPosition(1, targetPosition);
+                lineRenderer.enabled = true;
+            }
         }
         else
         {
