@@ -9,18 +9,24 @@ using Photon.Realtime;
 
 public class BarchartVisualizer : MonoBehaviour
 {
+    public GameObject bar;
     private i5.ViaProMa.Visualizations.Common.Diagram barchart;
     public string name { get; set; } = "";
     private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
     public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
+    
     private void Awake()
     {
-        barchart = GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
+        barchart = bar.GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
         name = PhotonNetwork.NickName;
-        //name = photonView.Owner.NickName;
         Debug.Log("barchart visualizer:"+name);
+        
+        if (UserManager.Instance.UserRole != UserRoles.TUTOR)
+        {
+            bar.SetActive(false);
+        }
     }
 
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()

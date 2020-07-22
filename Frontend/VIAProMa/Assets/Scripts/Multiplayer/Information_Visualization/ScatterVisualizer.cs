@@ -12,6 +12,7 @@ using Photon.Realtime;
 /// </summary>
 public class ScatterVisualizer : MonoBehaviour
 {
+    public GameObject scatter;
     private i5.ViaProMa.Visualizations.Common.Diagram diagram;
     public string name {get; set;} = "";
     private Vector3 size = Vector3.one;
@@ -23,6 +24,11 @@ public class ScatterVisualizer : MonoBehaviour
     {
         diagram = GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
         name = PhotonNetwork.NickName;
+
+        if (UserManager.Instance.UserRole != UserRoles.TUTOR)
+        {
+            scatter.SetActive(false);
+        }
     }
 
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
