@@ -14,6 +14,10 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     // Bit mask for raycasting layers
     private int layerMask;
 
+    // Laser pointer timer for the HTC Vive
+    private float waitTime;
+    public static float timer { get; private set; }
+
     // Start is called before the first frame update
     new void Start()
     {
@@ -23,14 +27,32 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
         layerMask = 1 << 8;
         // Registering a global event handler (would become obsolete with a MRTK update)
         InputSystem?.Register(gameObject);
-        
+
+        // Laser pointer timer for the HTC Vive
+        waitTime = 5.0f;
+        timer = 0.0f;
     }
 
     // Update is called once per frame
-    void Update() { }
+    void Update()
+    {
+        // Laser pointer timer for the HTC Vive
+        if (timer != 0.0f)
+        {
+            timer += Time.deltaTime;
+            if (timer > waitTime)
+            {
+                timer = 0.0f;
+            }
+        } 
+    }
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
+        // Laser pointer timer for the HTC Vive
+        timer = 0.0f;
+        timer += Time.deltaTime;
+
         // Raycasting would become obsolete with a MRTK update
         if (StaticGaze.GetIsUsingVive() == true) // might not be needed
         {

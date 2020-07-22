@@ -214,9 +214,16 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = RaycastVive.pointerHitRotation; 
             deviceUsed = 2;
             // Laser functionality
-            lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
-            lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
-            lineRenderer.enabled = true;
+            if (RaycastVive.timer != 0.0f)
+            {
+                lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
+                lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
+                lineRenderer.enabled = true;
+            }
+            else
+            {
+                lineRenderer.enabled = false;
+            }
         }
         else
         {
@@ -245,9 +252,19 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             }
             else
             {
-                lineRenderer.SetPosition(0, targetOrigin);
-                lineRenderer.SetPosition(1, targetPosition);
-                lineRenderer.enabled = true;
+                if (StaticGaze.GetIsUsingVive() == false || RaycastVive.timer != 0.0f)
+                {
+                    lineRenderer.SetPosition(0, targetOrigin);
+                    lineRenderer.SetPosition(1, targetPosition);
+                    lineRenderer.enabled = true;
+                    //lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
+                    //lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
+                    //lineRenderer.enabled = true;
+                }
+                else
+                {
+                    lineRenderer.enabled = false;
+                }
             }
         }
         else
