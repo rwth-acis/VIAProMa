@@ -13,8 +13,6 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     [HideInInspector] public static Vector3 pointerOrigin { get; private set; }
     // Bit mask for raycasting layers
     private int layerMask;
-    // Laser pointer timer
-    public static bool timerOn;
 
     // Start is called before the first frame update
     new void Start()
@@ -25,8 +23,7 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
         layerMask = 1 << 8;
         // Registering a global event handler (would become obsolete with a MRTK update)
         InputSystem?.Register(gameObject);
-        // Laser pointer timer
-        timerOn = false;
+        
     }
 
     // Update is called once per frame
@@ -34,12 +31,12 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
+        // Laser pointer timer
+        InstantiateArrows.ResetTimer();
+
         // Raycasting would become obsolete with a MRTK update
         if (StaticGaze.GetIsUsingVive() == true) // might not be needed
         {
-            // Laser pointer timer
-            timerOn = true;
-
             RaycastHit raycastHit;
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, Mathf.Infinity, layerMask))
             {
