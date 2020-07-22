@@ -103,15 +103,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     private SpriteRenderer photonSpriteRenderer;
     // Laser pointer
     private LineRenderer lineRenderer;
-    private static bool timerOn;
-    private float waitTime;
-    private float scrollBar;
-    private static float timer;
-    public static void ResetTimer()
-    {
-        timer = 0.0f;
-        timerOn = true;
-    }
 
     public void Start()
     {
@@ -129,11 +120,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
         lineRenderer.useWorldSpace = true;
-        timerOn = false;
-        waitTime = 5.0f;
-        timer = 0.0f;
-        scrollBar = 1.0f;
-}
+    }
 
     public void InstantiateSharingGlobal()
     {
@@ -182,19 +169,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
 
     protected virtual void Update()
     {
-        // Laser pointer timer
-        if (timerOn == true)
-        {
-            timer += Time.deltaTime;
-            // Check if we have reached beyond waitTime seconds
-            if (timer > waitTime)
-            {
-                // Remove the recorded waitTime seconds and turn off the timer
-                timer = timer - waitTime;
-                timerOn = false;
-            }
-        }
-
         if (photonView.IsMine)
         {
             MoveMyArrow();
@@ -240,16 +214,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = RaycastVive.pointerHitRotation; 
             deviceUsed = 2;
             // Laser functionality
-            if (timerOn == true)
-            {
-                lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
-                lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
-                lineRenderer.enabled = true;
-            }
-            else
-            {
-                lineRenderer.enabled = false;
-            }
+            lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
+            lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
+            lineRenderer.enabled = true;
         }
         else
         {
@@ -272,7 +239,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = targetPosition;
             transform.rotation = targetRotation;
             // Laser functionality
-            if (targetPosition == far || timerOn == false)
+            if (targetPosition == far)
             {
                 lineRenderer.enabled = false;
             }
