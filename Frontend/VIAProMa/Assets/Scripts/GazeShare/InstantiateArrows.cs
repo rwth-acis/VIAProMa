@@ -103,15 +103,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     private SpriteRenderer photonSpriteRenderer;
     // Laser pointer
     private LineRenderer lineRenderer;
-    private static bool timerOn;
     private float waitTime;
     private float scrollBar;
-    private static float timer;
-    public static void ResetTimer()
-    {
-        timer = 0.0f;
-        timerOn = true;
-    }
+    private float timer;
 
     public void Start()
     {
@@ -129,7 +123,6 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.enabled = false;
         lineRenderer.useWorldSpace = true;
-        timerOn = false;
         waitTime = 5.0f;
         timer = 0.0f;
         scrollBar = 1.0f;
@@ -159,10 +152,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             if (StaticGaze.GetIsUsingVive() == false) // HoloLens
             {
                 stream.SendNext(MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
+                stream.SendNext(-1.0f);
             }
             else if (StaticGaze.GetIsUsingVive() == true)
             {
                 stream.SendNext(RaycastVive.pointerOrigin);
+                stream.SendNext(timer);
             }
 
             stream.Serialize(ref deviceUsed);
@@ -174,6 +169,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             targetRotation = (Quaternion)stream.ReceiveNext();
             // Laser functionality
             targetOrigin = (Vector3)stream.ReceiveNext();
+            timer = (float)stream.ReceiveNext();
 
             stream.Serialize(ref deviceUsedTarget);
             stream.Serialize(ref targetTextToShow);
@@ -183,15 +179,25 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected virtual void Update()
     {
         // Laser pointer timer
-        if (timerOn == true)
+        if (timer != -1.0f) // Meaning the HoloLens is being used
         {
-            timer += Time.deltaTime;
-            // Check if we have reached beyond waitTime seconds
-            if (timer > waitTime)
+            if (RaycastVive.timerOn == true && timer == 0.0f) // Start state
             {
-                // Remove the recorded waitTime seconds and turn off the timer
-                timer = timer - waitTime;
-                timerOn = false;
+                RaycastVive.timerOn = false;
+                timer += Time.deltaTime;
+            }
+            else if (RaycastVive.timerOn == true && timer != 0.0f) // Reset state (the controller button was pressed again)
+            {
+                timer = 0.0f;
+                timer += Time.deltaTime; // Otherwise the ray wouldn't show if you clicked again too soon 
+            }
+            else if (RaycastVive.timerOn == false && timer != 0.0f) // Running state
+            {
+                timer += Time.deltaTime;
+                if (timer > waitTime)
+                {
+                    timer = 0.0f;
+                }
             }
         }
 
@@ -240,7 +246,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = RaycastVive.pointerHitRotation; 
             deviceUsed = 2;
             // Laser functionality
-            if (timerOn == true)
+            if (timer <= waitTime && timer != 0.0f)
             {
                 lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
                 lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
@@ -272,15 +278,15 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.position = targetPosition;
             transform.rotation = targetRotation;
             // Laser functionality
-            if (targetPosition == far || timerOn == false)
-            {
-                lineRenderer.enabled = false;
-            }
-            else
+            if (targetPosition != far && (timer <= waitTime && timer != 0.0f))
             {
                 lineRenderer.SetPosition(0, targetOrigin);
                 lineRenderer.SetPosition(1, targetPosition);
                 lineRenderer.enabled = true;
+            }
+            else
+            {
+                lineRenderer.enabled = false;
             }
         }
         else
