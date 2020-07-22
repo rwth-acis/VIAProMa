@@ -1,4 +1,5 @@
-﻿using i5.ViaProMa.UI;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using i5.ViaProMa.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -13,6 +14,10 @@ public class InformationBoxConfigurator : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private GameObject informationBox;
+    [SerializeField] private Interactable BarchartButton;
+    [SerializeField] private Interactable ScatterplotButton;
+    [SerializeField] private Interactable ProgressButton;
+
 
     [Header("References")]
     [SerializeField] private GameObject BarchartPrefab;
@@ -30,6 +35,9 @@ public class InformationBoxConfigurator : MonoBehaviour
     private void Awake()
     {
         photonView = GetComponent<PhotonView>();
+        BarchartButton.Enabled = true;
+        ScatterplotButton.Enabled = true;
+        ProgressButton.Enabled = true;
         informationBox.SetActive(false);
         if (photonView != null)
         {
@@ -47,6 +55,13 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         table = GameObject.Find("Table(Clone)");
         informationBox.SetActive(false);
+
+        if (UserManager.Instance.UserRole != UserRoles.TUTOR)
+        {
+            Debug.Log("button false");
+            BarchartButton.Enabled = false;
+            ScatterplotButton.Enabled = false;
+        }
     }
 
     public void Open()
@@ -79,34 +94,26 @@ public class InformationBoxConfigurator : MonoBehaviour
     public void BarchartButtonClicked()
     {
         Debug.Log("Barchart Button Clicked");
-        if (UserManager.Instance.UserRole == UserRoles.TUTOR)
-        {
-            Vector3 targetPosition = table.transform.position;
-            targetPosition.y += 1.2f;
-            //targetPosition.x -= 1f;
-            targetPosition.z += 0.5f;
-            InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
-            BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
-            synch.Initial(name);
-        }
-
+        Vector3 targetPosition = table.transform.position;
+        targetPosition.y += 1.2f;
+        //targetPosition.x -= 1f;
+        targetPosition.z += 0.5f;
+        InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
+        BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
+        synch.Initial(name);
         Close();
     }
     
     public void ScatterplotButtonClicked()
     {
         Debug.Log("Scatterplot Button Clicked");
-        if (UserManager.Instance.UserRole == UserRoles.TUTOR)
-        {
-            Vector3 targetPosition = table.transform.position;
-            targetPosition.y += 1.2f;
-            targetPosition.x -= 1f;
-            targetPosition.z += 0.5f;
-            InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
-            ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
-            synch.Initial(name);
-        }
-
+        Vector3 targetPosition = table.transform.position;
+        targetPosition.y += 1.2f;
+        targetPosition.x -= 1f;
+        targetPosition.z += 0.5f;
+        InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
+        ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
+        synch.Initial(name);
         Close();
     }
 
