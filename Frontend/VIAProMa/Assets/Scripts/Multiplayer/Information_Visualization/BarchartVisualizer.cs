@@ -13,6 +13,7 @@ public class BarchartVisualizer : MonoBehaviour
     public string name { get; set; } = "";
     private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
+    public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
     private PhotonView photonView;
     private void Awake()
@@ -72,6 +73,7 @@ public class BarchartVisualizer : MonoBehaviour
         i5.ViaProMa.Visualizations.Common.DataSet dataset = await JsonFileToDataSet();
         if (dataset != null)
         {
+            textLabel.Text = name + ", assignments";
             barchart.DataSet = dataset;
             barchart.UpdateDiagram();
         }
