@@ -76,6 +76,12 @@ public class BarchartVisualizer : MonoBehaviour
     public async void UpdateView()
     {
         i5.ViaProMa.Visualizations.Common.DataSet dataset = await JsonFileToDataSet();
+
+        if (name == PhotonNetwork.NickName)
+        {
+            bar.SetActive(true);
+        }
+
         if (dataset != null)
         {
             textLabel.Text = name + ", assignments";
