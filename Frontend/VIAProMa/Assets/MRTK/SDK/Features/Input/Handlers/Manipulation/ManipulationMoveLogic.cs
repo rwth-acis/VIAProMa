@@ -56,7 +56,7 @@ namespace Microsoft.MixedReality.Toolkit.Physics
             {
                 // Compute how far away the object should be based on the ratio of the current to original hand distance
                 float currentHandDistance = GetDistanceToBody(pointerCentroidPose);
-                distanceRatio = currentHandDistance / pointerRefDistance;
+                distanceRatio = currentHandDistance / Math.Max(0.5f, pointerRefDistance);
             }
 
             if (usePointerRotation)
