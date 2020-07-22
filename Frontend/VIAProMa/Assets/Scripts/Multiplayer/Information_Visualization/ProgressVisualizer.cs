@@ -33,6 +33,7 @@ public class ProgressVisualizer : MonoBehaviour
             float percentDone = MentorData.average_score/100f;
             float percentInProgress = 1f - percentDone;
 
+            progressBarVisuals.Title = name + ", average score";
             progressBarVisuals.PercentageDone = percentDone;
             progressBarVisuals.PercentageInProgress = percentInProgress;
         }
