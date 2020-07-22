@@ -16,6 +16,7 @@ public class ScatterVisualizer : MonoBehaviour
     public string name {get; set;} = "";
     private Vector3 size = Vector3.one;
     public TextAsset jsonFile;
+    public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
     
     private void Awake()
@@ -72,6 +73,7 @@ public class ScatterVisualizer : MonoBehaviour
         i5.ViaProMa.Visualizations.Common.DataSet dataset = await JsonFileToDataSet();
         if (dataset != null)
         {
+            textLabel.Text = name + ", assignments";
             diagram.DataSet = dataset;
             diagram.UpdateDiagram();
         }
