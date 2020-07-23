@@ -1,4 +1,5 @@
 ﻿using i5.ViaProMa.UI;
+using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -9,81 +10,35 @@ using UnityEngine;
 
 public class InformationButtonConfigurator : MonoBehaviour
 {
-    [Header("UI Elements")]
-    [SerializeField] private GameObject informationButton;
+    [SerializeField] private Interactable InformationButton;
+    public bool status {get; set;} = true;
+    //private PhotonView photonView;
+    public event EventHandler ConfigurationChanged;
 
-    //[Header("References")]
-    //[SerializeField] private GameObject InformationBoxPrefab;
+    private void Awake()
+    {
+        //photonView = GetComponent<PhotonView>();
 
-    //public GameObject informationbox;
-    //private GameObject informationbox;
-    private UserRoles userRole;
+        if (UserManager.Instance.UserRole == UserRoles.TUTOR)
+        {
+            status = false;
+        }
+    }
 
     private void Start()
     {
-        userRole = UserManager.Instance.UserRole;
-
-        if (PhotonNetwork.InLobby)
-        {
-            Debug.Log("IFB:inlobby");
-            informationButton.SetActive(false);
-        }
         /*
-        else if (userRole==UserRoles.TUTOR)
+        if (photonView.Owner.NickName == PhotonNetwork.NickName)
         {
-            Debug.Log("tutor");
-            informationButton.SetActive(false);
+            InformationButtonSynchronizer synch = (InformationButtonSynchronizer) InformationButton.GetComponent(typeof(InformationButtonSynchronizer));
+            synch.Initial();
         }
         */
-        else
-        {
-            Debug.Log("IFB:inroom");
-            informationButton.SetActive(true);
-        }
     }
 
-/*
-    private void Update()
+    public async void Update()
     {
-        userRole = UserManager.Instance.UserRole;
-        if (userRole==UserRoles.TUTOR)
-        {
-            informationButton.SetActive(false);
-        }
-        else
-        {
-            informationButton.SetActive(true);
-        }
+        InformationButton.Enabled = status;
     }
-*/
-
-/*
-    private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
-    {
-        Quaternion targetRotation = transform.rotation;
-
-        if (instance != null)
-        {
-            instance.SetActive(true);
-            instance.transform.position = targetPosition;
-            instance.transform.rotation = targetRotation;
-        }
-        else
-        {
-            instance = GameObject.Instantiate(prefab, targetPosition, targetRotation);
-        }
-    }
-*/
-
-/*
-    public void Onclicked()
-    {
-        Vector3 targetPosition = transform.position - 0.5f * transform.right;
-        targetPosition.y -= 0.2f;
-        InstantiateControl(InformationBoxPrefab, ref informationbox, targetPosition);
-        informationbox.transform.parent = transform;
-    }
-*/
-
 
 }

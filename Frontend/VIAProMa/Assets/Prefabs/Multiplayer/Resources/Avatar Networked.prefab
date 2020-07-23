@@ -12,28 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 919af6fb78a8b2942a7473451eaf6239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3345304639103648882
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3691807027411771635}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dae6a2ebe9426864ea4ed349b930d4d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  informationBox: {fileID: 6161324963259494149}
-  BarchartButton: {fileID: 0}
-  ScatterplotButton: {fileID: 0}
-  ProgressButton: {fileID: 0}
-  BarchartPrefab: {fileID: 2738293818969125529, guid: 06c5755353d2c0b42940295cf2c0cb2f,
-    type: 3}
-  ScatterplotPrefab: {fileID: 6224725455273125573, guid: 84eff4db52fdb9143931779dc7f9d9a6,
-    type: 3}
-  ProgressBarPrefab: {fileID: 3440714514617847667, guid: 5f4d8c0830bb7d64880e0868eaf574e2,
-    type: 3}
 --- !u!114 &4713766230370141145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,11 +472,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3758325422943209134, guid: fddad501a37828346aa422a968ca8973,
-        type: 3}
-      propertyPath: informationButton
-      value: 
-      objectReference: {fileID: 4895464692637726770}
     - target: {fileID: 7619380334928439543, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
       propertyPath: m_RootOrder
@@ -528,6 +501,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3622205155585502208, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: ObservedComponents.Array.data[0]
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3175911472484408859, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
@@ -589,6 +567,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3758325422943209134, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: informationButton
+      value: 
+      objectReference: {fileID: 4895464692637726770}
     - target: {fileID: 8910572902152758168, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -699,7 +682,9 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 17
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3175911472484408859, guid: fddad501a37828346aa422a968ca8973, type: 3}
+    - {fileID: 3622205155585502208, guid: fddad501a37828346aa422a968ca8973, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fddad501a37828346aa422a968ca8973, type: 3}
 --- !u!1 &3691807027411771635 stripped
 GameObject:
@@ -725,19 +710,13 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6523064825053795340}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6161324963259494149 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1083107520500300553, guid: fddad501a37828346aa422a968ca8973,
-    type: 3}
-  m_PrefabInstance: {fileID: 6523064825053795340}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7077670836391271166 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4088816312058580722, guid: fddad501a37828346aa422a968ca8973,
     type: 3}
   m_PrefabInstance: {fileID: 6523064825053795340}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6161324963259494149}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dae6a2ebe9426864ea4ed349b930d4d3, type: 3}
