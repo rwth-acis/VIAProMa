@@ -95,9 +95,9 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         Debug.Log("Barchart Button Clicked");
         Vector3 targetPosition = table.transform.position;
-        targetPosition.y += 1.2f;
-        //targetPosition.x -= 1f;
-        targetPosition.z += 0.5f;
+        targetPosition.y += 1.5f;
+        targetPosition.x += 0.78f;
+        targetPosition.z -= 0.5f;
         InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
         BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
         synch.Initial(name);
@@ -108,9 +108,9 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         Debug.Log("Scatterplot Button Clicked");
         Vector3 targetPosition = table.transform.position;
-        targetPosition.y += 1.2f;
-        targetPosition.x -= 1f;
-        targetPosition.z += 0.5f;
+        targetPosition.y += 1.5f;
+        //targetPosition.x += 0.7f;
+        targetPosition.z -= 0.5f;
         InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
         ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
         synch.Initial(name);
@@ -121,9 +121,9 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         Debug.Log("ProgressBar Button Clicked");
         Vector3 targetPosition = table.transform.position;
-        targetPosition.y += 1.22f;
-        targetPosition.x -= 2f;
-        targetPosition.z += 0.5f;
+        targetPosition.y += 1.5f;
+        targetPosition.x -= 0.78f;
+        targetPosition.z -= 0.5f;
         InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
         ProgressSynchronizer synch = (ProgressSynchronizer) progressbarInstance.GetComponent(typeof(ProgressSynchronizer));
         synch.Initial(name);
