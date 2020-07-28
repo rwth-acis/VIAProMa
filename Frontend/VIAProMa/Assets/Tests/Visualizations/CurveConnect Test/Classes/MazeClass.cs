@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static LineControllScriptFrameShare;
 using static System.Math;
 using static IntTriple;
 
@@ -39,7 +38,7 @@ public class Maze
                         if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
                             && clusterNumber == CellToCluster(cell,clusterSize)) //stay in the same cluster
                         {
-                            if (!collisonWithObstacle(CellToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
+                            if (!HPAStar.collisonWithObstacle(CellToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
                             {
                                 neighbors.Add(cell);
                             }
@@ -83,8 +82,8 @@ public class Maze
                     foreach (Entrance entranceY in newCluster.getEntrances(y))
                     {
                         float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entranceX.position + CellToVector(x * -1, stepSize / 2),stepSize), VectorToCell(entranceY.position + CellToVector(y * -1, stepSize / 2),stepSize),
-                            GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1,item2) => item1==item2, LineControllScriptFrameShare.HeuristicGenerator(entranceY.position, stepSize), 
-                            LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
+                            GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1,item2) => item1==item2, HPAStar.HeuristicGeneratorGrid(entranceY.position, stepSize),
+                            HPAStar.CostsBetweenGeneratorGrid(stepSize), false).costs;
                         entranceX.edges.Add(entranceY, costs);
                         entranceY.edges.Add(entranceX, costs);
                     }
@@ -131,7 +130,7 @@ public class Maze
 
     private void calculateEntrancesHelper(Vector3 center, Vector3 boxSize, IntTriple normal, float stepSize, bool cutVertically, List<Entrance> entrances)
     {
-        if (collisonWithObstacle(center, boxSize / 2))
+        if (HPAStar.collisonWithObstacle(center, boxSize / 2))
         {
             Vector3 normalOrthogonal = new Vector3();
 
@@ -192,8 +191,8 @@ public class Maze
             {
                
                 float costs = AStar.AStarSearch<IntTriple>(VectorToCell(entrance.position + CellToVector(x * -1, stepSize / 2), stepSize), goalCell,
-                            GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1, item2) => item1 == item2, LineControllScriptFrameShare.HeuristicGenerator(position, stepSize),
-                            LineControllScriptFrameShare.CostsBetweenGenerator(stepSize), false).costs;
+                            GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1, item2) => item1 == item2, HPAStar.HeuristicGeneratorGrid(position, stepSize),
+                            HPAStar.CostsBetweenGeneratorGrid(stepSize), false).costs;
                 newNode.edges.Add(entrance, costs);
                 entrance.edges.Add(newNode, costs);
             }

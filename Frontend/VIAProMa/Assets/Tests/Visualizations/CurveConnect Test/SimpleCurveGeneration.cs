@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimpleCurveGerneration
+public class SimpleCurveGerneration : CurveGenerator
 {
     public static float distanceToObstacle = 0.3f;
     
@@ -18,7 +18,7 @@ public class SimpleCurveGerneration
         float distance = Vector3.Distance(startAdjusted, goalAdjusted);
         Vector3 center = startAdjusted + direction * distance / 2;
 
-        return Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, height, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, height, 0), goal }, 50);
+        return CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, height, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, height, 0), goal }, 50);
     }
 
     public static Vector3[] startContinous(Vector3 start, Vector3 goal, GameObject startBound, GameObject endBound, GameObject[] pointVis = null)
@@ -46,7 +46,7 @@ public class SimpleCurveGerneration
 
         //Priority 1: Try to draw the standart curve
         Vector3[] checkCurve = StandartCurve(start,goal,15,standartHeight);
-        if (!Curve.CurveCollsionCheck(checkCurve, startBound, endBound))
+        if (!CurveGenerator.CurveCollsionCheck(checkCurve, startBound, endBound))
         {
             return StandartCurve(start, goal, 50, standartHeight);
         }
@@ -106,7 +106,7 @@ public class SimpleCurveGerneration
         Vector3 minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-        Collider[] colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up), startBound, endBound);
+        Collider[] colliders = GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up), startBound, endBound);
 
         SetMinMax(colliders, ref minPoint, ref maxPoint);
 
@@ -122,7 +122,7 @@ public class SimpleCurveGerneration
         Vector3 minPointSide = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPointSide = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-        colliders = LineControllScriptFrameShare.GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up), startBound, endBound);
+        colliders = GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up), startBound, endBound);
         SetMinMax(colliders, ref minPointSide, ref maxPointSide);
 
         Vector3 reCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
@@ -131,7 +131,7 @@ public class SimpleCurveGerneration
         reExtend /= 2;
         reCenter.y = reExtend.y;
         
-        Collider[] colllidersReScan = LineControllScriptFrameShare.GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
+        Collider[] colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
         SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
 
         for (int i = 0; i < 5 && colliders.Length != colllidersReScan.Length; i++)
@@ -142,7 +142,7 @@ public class SimpleCurveGerneration
             reExtend.y = standartHeight + 2;
             reExtend /= 2;
             reCenter.y = reExtend.y;
-            colllidersReScan = LineControllScriptFrameShare.GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
+            colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
             SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
         }
 
@@ -155,14 +155,14 @@ public class SimpleCurveGerneration
 
 
 
-        float distanceAbove = Curve.CurveLength(new Vector3[] { start, intersectionPointsAbove[0], intersectionPointsAbove[1], goal});
+        float distanceAbove = CurveLength(new Vector3[] { start, intersectionPointsAbove[0], intersectionPointsAbove[1], goal});
         float distanceSide;
         if (intersectionPointsSide.Length == 1)
-            distanceSide = Curve.CurveLength(new Vector3[] { start, intersectionPointsSide[0], goal });
+            distanceSide = CurveLength(new Vector3[] { start, intersectionPointsSide[0], goal });
         else if(intersectionPointsSide.Length == 2)
-            distanceSide = Curve.CurveLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
+            distanceSide = CurveLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
         else
-            return Curve.CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
+            return CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
 
         Vector3[] controllPoints = new Vector3[0];
 
@@ -582,9 +582,9 @@ public class SimpleCurveGerneration
             Vector2 aboveMiddleP2 = (Vector2)middlePoints[1] + (aboveMiddle - (Vector2)middlePoints[1]) / 2;
             controllPointsCurve2[2] = planeToStandart * new Vector3(aboveMiddleP2.x, aboveMiddleP2.y, start.z);
 
-            Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, segmentCount / 3);
-            Vector3[] curve2 = Curve.CalculateBezierCurve(controllPointsCurve2, segmentCount / 3);
-            Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, segmentCount / 3);
+            Vector3[] curve1 = CurveGenerator.CalculateBezierCurve(controllPointsCurve1, segmentCount / 3);
+            Vector3[] curve2 = CurveGenerator.CalculateBezierCurve(controllPointsCurve2, segmentCount / 3);
+            Vector3[] curve3 = CurveGenerator.CalculateBezierCurve(controllPointsCurve3, segmentCount / 3);
             curve = new Vector3[curve1.Length + curve2.Length + curve3.Length];
             curve1.CopyTo(curve, 0);
             curve2.CopyTo(curve, curve1.Length);
@@ -606,8 +606,8 @@ public class SimpleCurveGerneration
 
             //Because we don't need a middle curve here, curve 2 isn't used
 
-            Vector3[] curve1 = Curve.CalculateBezierCurve(controllPointsCurve1, segmentCount / 2);
-            Vector3[] curve3 = Curve.CalculateBezierCurve(controllPointsCurve3, segmentCount / 2);
+            Vector3[] curve1 = CurveGenerator.CalculateBezierCurve(controllPointsCurve1, segmentCount / 2);
+            Vector3[] curve3 = CurveGenerator.CalculateBezierCurve(controllPointsCurve3, segmentCount / 2);
 
             curve = new Vector3[curve1.Length + curve3.Length];
             curve1.CopyTo(curve, 0);

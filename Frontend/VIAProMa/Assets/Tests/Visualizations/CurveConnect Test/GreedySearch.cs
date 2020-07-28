@@ -5,9 +5,9 @@ using Priority_Queue;
 using static IntTriple;
 using static LineControllScriptFrameShare;
 
-public class Greedy
+public class Greedy : GridSearch
 {
-    public static AStar.AStarResult<T> GreedySearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween)
+    public static AStar.SearchResult<T> GreedySearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween)
     {
         //SimplePriorityQueue<T> openSet = new SimplePriorityQueue<T>();
         //openSet.Enqueue(start,Heuristic(start));
@@ -37,46 +37,7 @@ public class Greedy
             path.Add(current);
             count++;
         }
-        return new AStar.AStarResult<T>(path, pathCosts);
-    }
-
-    public static AStar.AStarResult<T> GreedySearchAlt<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween)
-    {
-        //SimplePriorityQueue<T> openSet = new SimplePriorityQueue<T>();
-        //openSet.Enqueue(start,Heuristic(start));
-        int count = 0;
-        float pathCosts = 0;
-        List<T> path = new List<T>();
-        List<T> forbidden = new List<T>();
-        path.Add(start);
-        T current = start;
-        T cheapestNeigbor = start;
-        float lowestCosts = float.PositiveInfinity;
-
-        while (!GoalTest(current, goal) && count < 300)
-        {
-            List<T> neigbors = GetNeighbors(current);
-            foreach (T neighbor in neigbors)
-            {
-                float costs = Heuristic(neighbor);
-                if (costs < lowestCosts && !forbidden.Contains(neighbor))
-                {
-                    cheapestNeigbor = neighbor;
-                    lowestCosts = costs;
-                }
-            }
-            lowestCosts = float.PositiveInfinity;
-            pathCosts += CostsBetween(current, cheapestNeigbor);
-            if (path.Contains(cheapestNeigbor))
-            {
-                forbidden.Add(cheapestNeigbor);
-                path.RemoveAt(path.Count - 1);
-            }
-            current = cheapestNeigbor;
-            path.Add(current);
-            count++;
-        }
-        return new AStar.AStarResult<T>(path, pathCosts);
+        return new AStar.SearchResult<T>(path, pathCosts);
     }
 
     public static Vector3[] postProcessing(Vector3[] path, float scanCubeSize)
@@ -106,5 +67,10 @@ public class Greedy
         }
 
         return refinedPath.ToArray();
+    }
+
+    public static SearchResult<IntTriple> GreedyGridSearch(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition)
+    {
+        return GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(stepSize));
     }
 }

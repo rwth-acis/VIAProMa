@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public static class Curve
+public abstract class CurveGenerator
 { 
     public static Vector3[] CalculateBezierCurve(Vector3[] controlPoints, int segmentCount)
     {
@@ -49,7 +49,7 @@ public static class Curve
 
             Vector3 center = curve[i] + checkDirection * checkLength / 2;
 
-            if (LineControllScriptFrameShare.collisonWithObstacle(center, new Vector3(0.1f, 0.1f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound))
+            if (collisonWithObstacle(center, new Vector3(0.1f, 0.1f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound))
             {
                 return true;
             }
@@ -68,7 +68,7 @@ public static class Curve
 
             Vector3 center = curve[i] + checkDirection * checkLength / 2;
 
-            if (LineControllScriptFrameShare.collisonWithObstacle(center, new Vector3(0.2f, 0.2f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound))
+            if (collisonWithObstacle(center, new Vector3(0.2f, 0.2f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound))
             {
                 collisionCount++;
             }
@@ -107,4 +107,87 @@ public static class Curve
         curve[path.Count + 1] = start;
         return curve;
     }
+
+    //Only things outside the boundingbox of start and goal are considered obstacles
+    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends)
+    {
+        Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, halfExtends, default, 1 << 6);
+
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        if (collidionsWithStartGoal.Length > 0)
+        {
+            return false;
+        }
+        else
+        {
+            Collider[] colliderInRange = Physics.OverlapBox(center, halfExtends);
+            //Collides the cell with nothing else? 
+            if (colliderInRange.Length == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //TODO actual use orientation
+    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startBound, GameObject endBound)
+    {
+        /*
+        Collider[] collidionsWithStartGoal = Physics.OverlapBox(center, halfExtends, default, 1 << 6);
+
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        if (collidionsWithStartGoal.Length > 0)
+        {
+            return false;
+        }
+        else
+        {
+            Collider[] colliderInRange = Physics.OverlapBox(center, halfExtends);
+            //Collides the cell with nothing else? 
+            if (colliderInRange.Length == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+        */
+        return GetCollidorsFromObstacles(center, halfExtends, orientaton, startBound, endBound).Length != 0;
+    }
+
+    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startBound, GameObject endBound)
+    {
+
+
+        Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton);
+        List<Collider> actuallColliders = new List<Collider>();
+
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        Collider startCollider = startBound.GetComponent<Collider>();
+        Collider endCollider = endBound.GetComponent<Collider>();
+        foreach (Collider collider in potentialColliders)
+        {
+            Vector3 startCorrVec = new Vector3();
+            var test = startCollider.transform.position;
+            float startCorrDist = 0;
+
+            Vector3 endCorrVec = new Vector3();
+            float endCorrDist = 0;
+
+            bool isFromAppBar = false;
+            if (collider.transform.root != null)
+            {
+                isFromAppBar = collider.transform.root.gameObject.name == "App Bar Configurable(Clone)";
+            }
+
+            if (!Physics.ComputePenetration(startCollider, startCollider.transform.position, startCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out startCorrVec, out startCorrDist)
+                && !Physics.ComputePenetration(endCollider, endCollider.transform.position, endCollider.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out endCorrVec, out endCorrDist)
+                && !isFromAppBar)
+            {
+                actuallColliders.Add(collider);
+            }
+        }
+        return actuallColliders.ToArray();
+    }
+
 }

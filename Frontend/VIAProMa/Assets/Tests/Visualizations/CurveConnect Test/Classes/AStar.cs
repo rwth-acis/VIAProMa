@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
 using static IntTriple;
-using static LineControllScriptFrameShare;
+//using static LineControllScriptFrameShare;
 
 
-public class AStar
+public class AStar : GridSearch
 {
     public static List<T> reconstruct_path<T>(Dictionary<T, T> cameFrom, T current)
     {
@@ -23,32 +23,12 @@ public class AStar
         return totalPath;
     }
 
-    public struct AStarResult
-    {
-        public List<Vector3> path { get; set; }
-        public float costs { get; set; }
-
-        public AStarResult(List<Vector3> path, float length)
-        {
-            this.path = path;
-            this.costs = length;
-        }
-    }
-
-    public struct AStarResult<T>
-    {
-        public List<T> path { get; set; }
-        public float costs { get; set; }
-
-        public AStarResult(List<T> path, float length)
-        {
-            this.path = path;
-            this.costs = length;
-        }
-    }
 
 
-    public static AStarResult<T> AStarSearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T,T,float> CostsBetween, bool calculatePath = true)
+
+
+
+    public static SearchResult<T> AStarSearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T,T,float> CostsBetween, bool calculatePath = true)
     {
 
 
@@ -68,7 +48,7 @@ public class AStar
                 if (calculatePath)
                     optimalPath = reconstruct_path<T>(cameFrom, current);
 
-                return new AStarResult<T>(optimalPath, gScore[current]);
+                return new SearchResult<T>(optimalPath, gScore[current]);
             }
 
             List<T> neighbors = GetNeighbors(current);
@@ -100,9 +80,15 @@ public class AStar
         if (openSet.Count == 0)
         {
             //open set is empty and goal is never reached => no possible path
-            return new AStarResult<T>(new List<T>(), float.PositiveInfinity);
+            return new SearchResult<T>(new List<T>(), float.PositiveInfinity);
         }
-        return new AStarResult<T>(null, float.PositiveInfinity);
+        return new SearchResult<T>(null, float.PositiveInfinity);
     }
+
+    public static SearchResult<IntTriple> AStarGridSearch(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition)
+    {
+        return AStarSearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(0.5f));
+    }
+
 
 }

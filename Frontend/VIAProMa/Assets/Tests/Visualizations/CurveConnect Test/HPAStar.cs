@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static IntTriple;
 
-public class HPAStar
+public class HPAStar : GridSearch
 {
     
 
@@ -67,8 +67,8 @@ public class HPAStar
             IntTriple clusterNumber2 = CellToCluster(secondCell, clusterSize);
 
             List<IntTriple> triplePath = AStar.AStarSearch<IntTriple>(firstCell, secondCell,
-                            Maze.GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1, item2) => item1 == item2, LineControllScriptFrameShare.HeuristicGenerator(path[i+1], stepSize),
-                            LineControllScriptFrameShare.CostsBetweenGenerator(stepSize)).path;
+                            Maze.GetNeighborsFunctionGenerator(clusterNumber, clusterSize, stepSize), (item1, item2) => item1 == item2, HeuristicGeneratorGrid(path[i+1], stepSize),
+                            CostsBetweenGeneratorGrid(stepSize)).path;
             foreach (IntTriple triple in triplePath)
             {
                 refinedPath.Add(CellToVector(triple,stepSize));
