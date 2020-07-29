@@ -75,4 +75,9 @@ public class AppBarActions : MonoBehaviour
         appBarPlacer.TargetBoundingBox.Target.transform.localRotation = startRotation;
         appBarPlacer.TargetBoundingBox.Target.transform.localScale = startScale;
     }
+
+    public void Connect()
+    {
+        
+    }
 }
