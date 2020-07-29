@@ -52,7 +52,7 @@ public class LineControllScriptFrameShare : MonoBehaviour
     void Update()
     {      
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        Vector3[] curve = JoinedCurveGeneration.start(startObject.transform.position, goalObject.transform.position, boundContainerStart, boundContainerEnd, stepSize);
+        Vector3[] curve = JoinedCurveGeneration.start(startObject, goalObject, stepSize);
         lineRenderer.positionCount = curve.Length;
         lineRenderer.SetPositions(curve);
     }

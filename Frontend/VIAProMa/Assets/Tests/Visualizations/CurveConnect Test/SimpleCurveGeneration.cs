@@ -21,8 +21,11 @@ public class SimpleCurveGerneration : CurveGenerator
         return CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, height, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, height, 0), goal }, 50);
     }
 
-    public static Vector3[] StartGeneration(Vector3 start, Vector3 goal, GameObject startBound, GameObject endBound, int curveSegmentCount)
-    {     
+    public static Vector3[] StartGeneration(GameObject startObject, GameObject goalObject, int curveSegmentCount)
+    {
+        Vector3 start = startObject.transform.position;
+        Vector3 goal = goalObject.transform.position;
+
         float higherOne = start.y > goal.y ? start.y : goal.y;
 
         Vector3 startAdjusted = new Vector3(start.x, higherOne, start.z);
@@ -43,7 +46,7 @@ public class SimpleCurveGerneration : CurveGenerator
 
         //Priority 1: Try to draw the standart curve
         Vector3[] checkCurve = StandartCurve(start,goal,15,standartHeight);
-        if (!CurveCollsionCheck(checkCurve, startBound, endBound))
+        if (!CurveCollsionCheck(checkCurve, startObject, goalObject))
         {
             return StandartCurve(start, goal, curveSegmentCount, standartHeight);
         }
@@ -103,7 +106,7 @@ public class SimpleCurveGerneration : CurveGenerator
         Vector3 minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-        Collider[] colliders = GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up), startBound, endBound);
+        Collider[] colliders = GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up), startObject, goalObject);
 
         SetMinMax(colliders, ref minPoint, ref maxPoint);
 
@@ -119,7 +122,7 @@ public class SimpleCurveGerneration : CurveGenerator
         Vector3 minPointSide = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPointSide = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-        colliders = GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up), startBound, endBound);
+        colliders = GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up), startObject, goalObject);
         SetMinMax(colliders, ref minPointSide, ref maxPointSide);
 
         Vector3 reCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
@@ -128,7 +131,7 @@ public class SimpleCurveGerneration : CurveGenerator
         reExtend /= 2;
         reCenter.y = reExtend.y;
         
-        Collider[] colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
+        Collider[] colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startObject, goalObject);
         SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
 
         for (int i = 0; i < 5 && colliders.Length != colllidersReScan.Length; i++)
@@ -139,7 +142,7 @@ public class SimpleCurveGerneration : CurveGenerator
             reExtend.y = standartHeight + 2;
             reExtend /= 2;
             reCenter.y = reExtend.y;
-            colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startBound, endBound);
+            colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startObject, goalObject);
             SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
         }
 

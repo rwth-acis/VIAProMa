@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class JoinedCurveGeneration
 {
-    public static Vector3[] start(Vector3 start, Vector3 goal, GameObject startBound, GameObject endBound, float stepSize, int CurveSegmentCount = 60)
+    public static Vector3[] start(GameObject startObject, GameObject goalObject, float stepSize, int CurveSegmentCount = 60)
     {
-        Vector3[] curve = SimpleCurveGerneration.StartGeneration(start, goal, startBound, endBound, CurveSegmentCount);
-        if (CurveGenerator.CurveCollsionCheck(curve, startBound, endBound))
+        Vector3 start = startObject.transform.position;
+        Vector3 goal = goalObject.transform.position;
+
+        Vector3[] curve = SimpleCurveGerneration.StartGeneration(startObject, goalObject, CurveSegmentCount);
+        if (CurveGenerator.CurveCollsionCheck(curve, startObject, goalObject))
         {
             List<IntTriple> path;
             IntTriple startCell = IntTriple.VectorToCell(start, stepSize);

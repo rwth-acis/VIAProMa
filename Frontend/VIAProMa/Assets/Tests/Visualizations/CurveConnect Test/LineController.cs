@@ -26,7 +26,7 @@ public class LineController : MonoBehaviour
     {
         foreach(ConnectionCurve connectionCurve in curves)
         {
-            Vector3[] curve = JoinedCurveGeneration.start(connectionCurve.start.transform.position, connectionCurve.goal.transform.position, connectionCurve.startBound, connectionCurve.goalBound, stepSize, curveSegmentCount);
+            Vector3[] curve = JoinedCurveGeneration.start(connectionCurve.start, connectionCurve.goal, stepSize, curveSegmentCount);
             connectionCurve.lineRenderer.positionCount = curve.Length;
             connectionCurve.lineRenderer.SetPositions(curve);
         }
@@ -43,8 +43,6 @@ public class ConnectionCurve
     public GameObject start { get; }
     public GameObject goal { get; }
     public LineRenderer lineRenderer { get; }
-    public GameObject startBound { get; }
-    public GameObject goalBound {get;}
 
     public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController)
     {
@@ -69,25 +67,23 @@ public class ConnectionCurve
         );
         lineRenderer.colorGradient = gradient;
 
-        startBound = GenerateCurveBoundingContainer(start);
-        goalBound = GenerateCurveBoundingContainer(goal);
     }
 
-    GameObject GenerateCurveBoundingContainer(GameObject objectWithBound)
-    {
-        BoxCollider curveBoundingBox = objectWithBound.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
+    //GameObject GenerateCurveBoundingContainer(GameObject objectWithBound)
+    //{
+    //    BoxCollider curveBoundingBox = objectWithBound.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
 
-        GameObject boundContainer = new GameObject();
-        boundContainer.transform.parent = objectWithBound.transform;
-        boundContainer.transform.localPosition = Vector3.zero;
-        boundContainer.layer = 6;
+    //    GameObject boundContainer = new GameObject();
+    //    boundContainer.transform.parent = objectWithBound.transform;
+    //    boundContainer.transform.localPosition = Vector3.zero;
+    //    boundContainer.layer = 6;
 
-        boundContainer.AddComponent<BoxCollider>();
-        BoxCollider boundingboxOnOtherLayer = boundContainer.GetComponent<BoxCollider>();
-        boundingboxOnOtherLayer.name = "CurveBoundingBox";
-        boundingboxOnOtherLayer.size = curveBoundingBox.size + new Vector3(0.2f, 0.2f, 0.2f);
-        boundingboxOnOtherLayer.center = curveBoundingBox.center;
+    //    boundContainer.AddComponent<BoxCollider>();
+    //    BoxCollider boundingboxOnOtherLayer = boundContainer.GetComponent<BoxCollider>();
+    //    boundingboxOnOtherLayer.name = "CurveBoundingBox";
+    //    boundingboxOnOtherLayer.size = curveBoundingBox.size + new Vector3(0.2f, 0.2f, 0.2f);
+    //    boundingboxOnOtherLayer.center = curveBoundingBox.center;
 
-        return boundContainer;
-    }
+    //    return boundContainer;
+    //}
 }
