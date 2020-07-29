@@ -11,6 +11,11 @@ public class AppBarActions : MonoBehaviour
 {
     private AppBarPlacer appBarPlacer;
 
+    public GameObject lineControllerPrefab;
+    private GameObject lineController;
+    public GameObject test1;
+    public GameObject test2;
+
     private Vector3 startPosition;
     private Quaternion startRotation;
     private Vector3 startScale;
@@ -30,6 +35,10 @@ public class AppBarActions : MonoBehaviour
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
         }
+
+        lineController = GameObject.Find("LineController(Clone)");
+        if(lineController == null)
+            lineController = Instantiate(lineControllerPrefab);
     }
 
     /// <summary>
@@ -78,6 +87,9 @@ public class AppBarActions : MonoBehaviour
 
     public void Connect()
     {
-        
+        GameObject[] testArr = new GameObject[2];
+        testArr[0] = appBarPlacer.TargetBoundingBox.Target;
+        testArr[1] = GameObject.Find("Building Progress Bar");
+        lineController.SendMessage("AddConnectionCurve", testArr);
     }
 }
