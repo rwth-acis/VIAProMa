@@ -18,7 +18,7 @@ public class LineController : MonoBehaviour
         curves = new List<ConnectionCurve>();
 
         //Test
-        AddConnectionCurve(start,goal);
+        //AddConnectionCurve(start,goal);
     }
 
     // Update is called once per frame
@@ -32,9 +32,9 @@ public class LineController : MonoBehaviour
         }
     }
 
-    void AddConnectionCurve(GameObject start, GameObject goal)
+    void AddConnectionCurve(GameObject[] startGoal)
     {
-        curves.Add(new ConnectionCurve(start, goal, this.gameObject));
+        curves.Add(new ConnectionCurve(startGoal[0], startGoal[1], this.gameObject));
     }
 }
 
@@ -68,22 +68,4 @@ public class ConnectionCurve
         lineRenderer.colorGradient = gradient;
 
     }
-
-    //GameObject GenerateCurveBoundingContainer(GameObject objectWithBound)
-    //{
-    //    BoxCollider curveBoundingBox = objectWithBound.transform.Find("Bounding Box").gameObject.GetComponent<BoxCollider>();
-
-    //    GameObject boundContainer = new GameObject();
-    //    boundContainer.transform.parent = objectWithBound.transform;
-    //    boundContainer.transform.localPosition = Vector3.zero;
-    //    boundContainer.layer = 6;
-
-    //    boundContainer.AddComponent<BoxCollider>();
-    //    BoxCollider boundingboxOnOtherLayer = boundContainer.GetComponent<BoxCollider>();
-    //    boundingboxOnOtherLayer.name = "CurveBoundingBox";
-    //    boundingboxOnOtherLayer.size = curveBoundingBox.size + new Vector3(0.2f, 0.2f, 0.2f);
-    //    boundingboxOnOtherLayer.center = curveBoundingBox.center;
-
-    //    return boundContainer;
-    //}
 }
