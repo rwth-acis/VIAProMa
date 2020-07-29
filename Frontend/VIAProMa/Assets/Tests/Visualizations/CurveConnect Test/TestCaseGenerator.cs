@@ -227,7 +227,7 @@ public class TestCaseGenerator
                 //Simple
                 //Debug.Log("Simple");
                 startTime = DateTime.Now;
-                lineVectorArray = SimpleCurveGerneration.startContinous(startObject.transform.position, goalObject.transform.position, boundContainerStart, boundContainerEnd);
+                lineVectorArray = SimpleCurveGerneration.StartGeneration(startObject.transform.position, goalObject.transform.position, boundContainerStart, boundContainerEnd, 15);
                 lineRendererSimple.positionCount = lineVectorArray.Length;
                 lineRendererSimple.SetPositions(lineVectorArray);
                 averageTimeSimple += (float)(DateTime.Now - startTime).TotalMilliseconds;

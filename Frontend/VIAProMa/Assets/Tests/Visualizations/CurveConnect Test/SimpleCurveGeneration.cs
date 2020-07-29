@@ -21,11 +21,8 @@ public class SimpleCurveGerneration : CurveGenerator
         return CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, height, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, height, 0), goal }, 50);
     }
 
-    public static Vector3[] startContinous(Vector3 start, Vector3 goal, GameObject startBound, GameObject endBound, GameObject[] pointVis = null)
-    {
-        
-
-        
+    public static Vector3[] StartGeneration(Vector3 start, Vector3 goal, GameObject startBound, GameObject endBound, int curveSegmentCount)
+    {     
         float higherOne = start.y > goal.y ? start.y : goal.y;
 
         Vector3 startAdjusted = new Vector3(start.x, higherOne, start.z);
@@ -46,9 +43,9 @@ public class SimpleCurveGerneration : CurveGenerator
 
         //Priority 1: Try to draw the standart curve
         Vector3[] checkCurve = StandartCurve(start,goal,15,standartHeight);
-        if (!CurveGenerator.CurveCollsionCheck(checkCurve, startBound, endBound))
+        if (!CurveCollsionCheck(checkCurve, startBound, endBound))
         {
-            return StandartCurve(start, goal, 50, standartHeight);
+            return StandartCurve(start, goal, curveSegmentCount, standartHeight);
         }
 
 
@@ -146,10 +143,6 @@ public class SimpleCurveGerneration : CurveGenerator
             SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
         }
 
-
-        //pointVis[0].transform.position = minPointSide;
-        //pointVis[1].transform.position = maxPointSide;
-
         Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint,direction);
         Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, minPointSide, maxPointSide, direction,standartHeight);
 
@@ -162,19 +155,17 @@ public class SimpleCurveGerneration : CurveGenerator
         else if(intersectionPointsSide.Length == 2)
             distanceSide = CurveLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
         else
-            return CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, 4, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, 4, 0), goal }, 50);
+            return StandartCurve(start,goal,curveSegmentCount,4);
 
         Vector3[] controllPoints = new Vector3[0];
 
         if (distanceAbove < 1.5 * distanceSide)
         {
-            //return CalculateJoinedCurve(start, intersectionPointsAbove, goal, Vector3.up);
-            return CalculateJoinedCurve(start, intersectionPointsAbove, goal, 15);
+            return CalculateJoinedCurve(start, intersectionPointsAbove, goal, curveSegmentCount);
         }
         else
         {
-            //return CalculateJoinedCurveSide(start, intersectionPointsSide, goal, pointVis[0], pointVis[1], pointVis[2], pointVis[3]);
-            return CalculateJoinedCurve(start, intersectionPointsSide, goal, 15);
+            return CalculateJoinedCurve(start, intersectionPointsSide, goal, curveSegmentCount);
         }
     }
 

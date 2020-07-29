@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class JoinedCurveGeneration
 {
-    public static Vector3[] start(Vector3 start, Vector3 goal, GameObject startBound, GameObject endBound, float stepSize)
+    public static Vector3[] start(Vector3 start, Vector3 goal, GameObject startBound, GameObject endBound, float stepSize, int CurveSegmentCount = 60)
     {
-        Vector3[] curve = SimpleCurveGerneration.startContinous(start, goal, startBound, endBound);
+        Vector3[] curve = SimpleCurveGerneration.StartGeneration(start, goal, startBound, endBound, CurveSegmentCount);
         if (CurveGenerator.CurveCollsionCheck(curve, startBound, endBound))
         {
             List<IntTriple> path;
