@@ -63,7 +63,8 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
                 var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                 if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
                 {
-                    target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                    if(mainPointer.Result.CurrentPointerTarget != null)
+                        target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                     if(target != null)
                         AddConnectionCurve(tempCurve.start, target);
                     StopConnecting();
