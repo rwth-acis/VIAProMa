@@ -14,11 +14,14 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
     SimulatedHandData handData;
     public bool connecting = false;
 
+    //Temp Curve
+    private ConnectionCurve tempCurve;
+    DateTime clickTimeStamp;
+
     //Test
     public GameObject startTest;
     public GameObject goalTest;
-    private GameObject currentConnectingStart;
-    DateTime clickTimeStamp;
+
 
     // Start is called before the first frame update
     void Start()
@@ -44,24 +47,31 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
             connectionCurve.lineRenderer.SetPositions(curve);
         }
 
+        if (tempCurve != null)
+        {
+            Vector3[] curve = JoinedCurveGeneration.start(tempCurve.start, tempCurve.goal, stepSize, curveSegmentCount);
+            tempCurve.lineRenderer.positionCount = curve.Length;
+            tempCurve.lineRenderer.SetPositions(curve);
+        }
+
         if (connecting)
         {
             GameObject target = null;
             if (mainPointer != null)
             {
-                
+                tempCurve.goal.transform.position = mainPointer.Position;
                 var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                 if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
                 {
                     target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                     if(target != null)
-                        AddConnectionCurve(currentConnectingStart, target);
-                    connecting = false;
+                        AddConnectionCurve(tempCurve.start, target);
+                    StopConnecting();
                 }
             }
             else
             {
-                connecting = false;
+                StopConnecting();
             }
         }
     }
@@ -89,7 +99,15 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
                     if (p.Result != null)
                     {
                         mainPointer = p;
-                        currentConnectingStart = start;
+                        GameObject currentConnectingStart = start;
+                        GameObject tempGoal = new GameObject("Temp Goal");
+                        GameObject tempBox = new GameObject("Bounding Box");
+                        tempBox.transform.parent = tempGoal.transform;
+                        BoxCollider collider = tempBox.AddComponent<BoxCollider>();
+                        collider.name = "Bounding Box";
+                        collider.enabled = false;
+                        tempGoal.transform.position = p.Position;
+                        tempCurve = new ConnectionCurve(start, tempGoal, this.gameObject);
                         clickTimeStamp = DateTime.Now;
                     }
 
@@ -108,6 +126,14 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
         Debug.Log("Jo");
     }
     void IMixedRealityPointerHandler.OnPointerUp(MixedRealityPointerEventData eventData) { }
+
+    void StopConnecting()
+    {
+        Destroy(tempCurve.goal);
+        Destroy(tempCurve.lineRenderer);
+        tempCurve = null;
+        connecting = false;
+    }
 }
 
 public class ConnectionCurve
@@ -129,7 +155,7 @@ public class ConnectionCurve
         Color c2 = Color.red;
 
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.widthMultiplier = 0.1f;
+        lineRenderer.widthMultiplier = 0.025f;
 
         float alpha = 1.0f;
         Gradient gradient = new Gradient();
