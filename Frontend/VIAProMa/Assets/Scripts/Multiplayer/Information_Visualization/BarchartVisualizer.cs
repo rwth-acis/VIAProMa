@@ -16,6 +16,7 @@ public class BarchartVisualizer : MonoBehaviour
     public TextAsset jsonFile;
     public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
+
     
     private void Awake()
     {
@@ -27,6 +28,11 @@ public class BarchartVisualizer : MonoBehaviour
         {
             bar.SetActive(false);
         }
+    }
+
+    public void Close()
+    {
+        PhotonNetwork.Destroy(bar);
     }
 
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
