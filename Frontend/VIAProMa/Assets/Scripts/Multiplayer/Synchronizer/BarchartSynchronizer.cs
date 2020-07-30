@@ -24,6 +24,19 @@ public class BarchartSynchronizer : TransformSynchronizer
         initialized = true;
         SendConfiguration();
     }
+
+    public void Close()
+    {
+        photonView.RPC("Destroy", RpcTarget.MasterClient);
+    }
+
+    [PunRPC]
+    private void Destroy()
+    {
+        PhotonNetwork.Destroy(visualizer.bar);
+    }
+
+
     private void Start()
     {
         //object[] data = this.gameObject.GetPhotonView().instantiationData;

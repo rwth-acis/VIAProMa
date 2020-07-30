@@ -30,11 +30,6 @@ public class BarchartVisualizer : MonoBehaviour
         }
     }
 
-    public void Close()
-    {
-        PhotonNetwork.Destroy(bar);
-    }
-
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
     {
         barchart.Size = size;
