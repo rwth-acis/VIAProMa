@@ -87,9 +87,6 @@ public class AppBarActions : MonoBehaviour
 
     public void Connect()
     {
-        GameObject[] testArr = new GameObject[2];
-        testArr[0] = appBarPlacer.TargetBoundingBox.Target;
-        testArr[1] = GameObject.Find("Building Progress Bar");
-        lineController.SendMessage("AddConnectionCurve", testArr);
+        lineController.SendMessage("StartConnecting", appBarPlacer.TargetBoundingBox.Target);
     }
 }
