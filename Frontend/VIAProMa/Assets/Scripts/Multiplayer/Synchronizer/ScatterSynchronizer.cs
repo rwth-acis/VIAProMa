@@ -24,6 +24,17 @@ public class ScatterSynchronizer : TransformSynchronizer
         SendConfiguration();
     }
 
+    public void Close()
+    {
+        photonView.RPC("Destroy", RpcTarget.MasterClient);
+    }
+
+    [PunRPC]
+    private void Destroy()
+    {
+        PhotonNetwork.Destroy(visualizer.scatter);
+    }
+
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)

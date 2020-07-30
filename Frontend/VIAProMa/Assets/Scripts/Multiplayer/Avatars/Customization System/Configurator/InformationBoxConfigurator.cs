@@ -24,14 +24,21 @@ public class InformationBoxConfigurator : MonoBehaviour
     [SerializeField] private GameObject ScatterplotPrefab;
     [SerializeField] private GameObject ProgressBarPrefab;
 
+    // organizer
+    private BarchartOrganizer barorganizer;
+    private ScatterOrganizer sctorganizer;
+
+    // list
+    private GameObject BarchartList;
+    private GameObject ScatterList;
+
     // instances
     private GameObject table;
     private GameObject barchartInstance;
     private GameObject scatterplotInstance;
     private GameObject progressbarInstance;
     private PhotonView photonView;
-    private BarchartOrganizer organizer;
-    private GameObject BarchartList;
+
     private string name;
     
     private void Awake()
@@ -56,9 +63,17 @@ public class InformationBoxConfigurator : MonoBehaviour
     private void Start()
     {
         table = GameObject.Find("Table(Clone)");
+
+        //organizer
+        barorganizer = table.GetComponent<BarchartOrganizer>();
+        sctorganizer = table.GetComponent<ScatterOrganizer>();
+
+        //list
         BarchartList = GameObject.Find("BarchartList");
+        ScatterList = GameObject.Find("ScatterList");
+
+
         informationBox.SetActive(false);
-        organizer = table.GetComponent<BarchartOrganizer>();
 
         if (UserManager.Instance.UserRole != UserRoles.TUTOR)
         {
@@ -100,7 +115,7 @@ public class InformationBoxConfigurator : MonoBehaviour
         Debug.Log("Barchart Button Clicked");
         if (barchartInstance == null)
         {
-            organizer.Clear();
+            barorganizer.Clear();
             Vector3 targetPosition = table.transform.position;
             targetPosition.y += 1.5f;
             targetPosition.x += 0.78f;
@@ -119,11 +134,13 @@ public class InformationBoxConfigurator : MonoBehaviour
         Debug.Log("Scatterplot Button Clicked");
         if (scatterplotInstance == null)
         {
+            sctorganizer.Clear();
             Vector3 targetPosition = table.transform.position;
             targetPosition.y += 1.5f;
             //targetPosition.x += 0.7f;
             targetPosition.z -= 0.5f;
             InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
+            scatterplotInstance.transform.parent = ScatterList.transform;
             ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
             synch.Initial(name);
         }
