@@ -38,7 +38,7 @@ public class SimpleCurveGerneration : CurveGenerator
 
         Vector3 center = startAdjusted + direction * distance/2;
 
-        float standartHeight = 4;
+        float standartHeight = 0.5f;
 
 
 
@@ -158,7 +158,7 @@ public class SimpleCurveGerneration : CurveGenerator
         else if(intersectionPointsSide.Length == 2)
             distanceSide = CurveLength(new Vector3[] { start, intersectionPointsSide[0], intersectionPointsSide[1], goal });
         else
-            return StandartCurve(start,goal,curveSegmentCount,4);
+            return StandartCurve(start,goal,curveSegmentCount,standartHeight);
 
         Vector3[] controllPoints = new Vector3[0];
 
