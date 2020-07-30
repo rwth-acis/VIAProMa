@@ -30,7 +30,7 @@ public abstract class GridSearch : CurveGenerator
     }
 
     //gets the neighbors of a node by projecting a cube with the length stepSize  to every side and then checks for collision.
-    public static Func<IntTriple, List<IntTriple>> GetNeighborsGeneratorGrid(float stepSize)
+    public static Func<IntTriple, List<IntTriple>> GetNeighborsGeneratorGrid(float stepSize, GameObject startObject, GameObject goalObject)
     {
         List<IntTriple> GetNeighbors(IntTriple node)
         {
@@ -50,7 +50,7 @@ public abstract class GridSearch : CurveGenerator
                         {
                             IntTriple cell = new IntTriple(node.x + x, node.y + y, node.z + z);
 
-                            if (!collisonWithObstacle(CellToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2)))
+                            if (!collisonWithObstacle(CellToVector(cell, stepSize), new Vector3(stepSize / 2, stepSize / 2, stepSize / 2), startObject, goalObject))
                             {
                                 neighbors.Add(cell);
                             }

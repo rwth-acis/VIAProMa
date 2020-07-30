@@ -397,9 +397,18 @@ public class SimpleCurveGerneration : CurveGenerator
         }
         else
         {
-            float approximateWayLeft = Vector3.Distance(start, edgesSorted[false][0]) + Vector3.Distance(goal, edgesSorted[false][1]);
-            float approximateWayRight = Vector3.Distance(start, edgesSorted[true][0]) + Vector3.Distance(goal, edgesSorted[true][1]);
-
+            float approximateWayLeft;
+            float approximateWayRight;
+            if (edgesSorted[false].Count == 2)
+            {
+                approximateWayLeft = Vector3.Distance(start, edgesSorted[false][0]) + Vector3.Distance(goal, edgesSorted[false][1]);
+                approximateWayRight = Vector3.Distance(start, edgesSorted[true][0]) + Vector3.Distance(goal, edgesSorted[true][1]);
+            }
+            else
+            {
+                approximateWayLeft = Vector3.Distance(start, edgesSorted[false][0]) + Vector3.Distance(edgesSorted[false][0], goal);
+                approximateWayRight = Vector3.Distance(start, edgesSorted[true][0]) + Vector3.Distance(edgesSorted[true][0], goal);
+            }
             return edgesSorted[approximateWayLeft > approximateWayRight].ToArray();
         }
     }

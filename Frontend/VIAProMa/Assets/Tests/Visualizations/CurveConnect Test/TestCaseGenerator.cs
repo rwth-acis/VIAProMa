@@ -117,7 +117,7 @@ public class TestCaseGenerator
                 float stepSizeOpti = 0.5f;
                 IntTriple startCellOpti = VectorToCell(startObject.transform.position, stepSizeOpti);
                 IntTriple goalCellOpti = VectorToCell(goalObject.transform.position, stepSizeOpti);
-                List<IntTriple> linePathCell = AStar.AStarGridSearch(startCellOpti, goalCellOpti, stepSizeOpti, goalObject.transform.position).path;
+                List<IntTriple> linePathCell = AStar.AStarGridSearch(startCellOpti, goalCellOpti, stepSizeOpti, goalObject.transform.position, startObject, goalObject).path;
                 Vector3[] lineVectorArray = new Vector3[linePathCell.Count + 2];
                 lineVectorArray[0] = goalObject.transform.position;
                 for (int i = 1; i < linePathCell.Count + 1; i++)
@@ -140,7 +140,7 @@ public class TestCaseGenerator
                 IntTriple goalCell = VectorToCell(goalObject.transform.position, stepSize);
 
                 //List<Vector3> linePath = A_Star(startObject, goalObject);
-                AStar.SearchResult<IntTriple> result = AStar.AStarGridSearch(startCell,goalCell,stepSize,goalObject.transform.position);
+                AStar.SearchResult<IntTriple> result = AStar.AStarGridSearch(startCell,goalCell,stepSize,goalObject.transform.position, startObject, goalObject);
                 linePathCell = result.path;
 
 
@@ -164,7 +164,7 @@ public class TestCaseGenerator
                 //Greedy
                 startTime = DateTime.Now;
 
-                result = Greedy.GreedyGridSearch(startCell, goalCell, stepSize, goalObject.transform.position);
+                result = Greedy.GreedyGridSearch(startCell, goalCell, stepSize, goalObject.transform.position, startObject, goalObject);
                 linePathCell = result.path;
 
 
@@ -203,7 +203,7 @@ public class TestCaseGenerator
                 //Debug.Log("Greedy Refined");
                 startTime = DateTime.Now;
 
-                result = Greedy.GreedyGridSearch(startCell, goalCell, stepSize, goalObject.transform.position);
+                result = Greedy.GreedyGridSearch(startCell, goalCell, stepSize, goalObject.transform.position, startObject, goalObject);
                 linePathCell = result.path;
 
 

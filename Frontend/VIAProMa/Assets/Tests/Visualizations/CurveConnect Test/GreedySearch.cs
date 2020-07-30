@@ -69,8 +69,8 @@ public class Greedy : GridSearch
         return refinedPath.ToArray();
     }
 
-    public static SearchResult<IntTriple> GreedyGridSearch(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition)
+    public static SearchResult<IntTriple> GreedyGridSearch(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition, GameObject startObject, GameObject goalObject)
     {
-        return GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(stepSize));
+        return GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize, startObject,goalObject), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(stepSize));
     }
 }

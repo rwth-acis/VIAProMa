@@ -16,9 +16,9 @@ public class JoinedCurveGeneration
             IntTriple startCell = IntTriple.VectorToCell(start, stepSize);
             IntTriple goalCell = IntTriple.VectorToCell(goal, stepSize);
             if (Vector3.Distance(start, goal) < 18)
-                path = AStar.AStarGridSearch(startCell, goalCell, stepSize, goal).path;
+                path = AStar.AStarGridSearch(startCell, goalCell, stepSize, goal, startObject, goalObject).path;
             else
-                path = Greedy.GreedyGridSearch(startCell, goalCell, stepSize, goal).path;
+                path = Greedy.GreedyGridSearch(startCell, goalCell, stepSize, goal, startObject, goalObject).path;
             curve = CurveGenerator.IntTripleArrayToCurve(path,start,goal,stepSize);
         }
 

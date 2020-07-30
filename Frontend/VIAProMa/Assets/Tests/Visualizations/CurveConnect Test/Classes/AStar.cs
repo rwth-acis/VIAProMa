@@ -28,7 +28,7 @@ public class AStar : GridSearch
 
 
 
-    public static SearchResult<T> AStarSearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T,T,float> CostsBetween, bool calculatePath = true)
+    public static SearchResult<T> AStarSearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween, bool calculatePath = true)
     {
 
 
@@ -85,9 +85,9 @@ public class AStar : GridSearch
         return new SearchResult<T>(null, float.PositiveInfinity);
     }
 
-    public static SearchResult<IntTriple> AStarGridSearch(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition)
+    public static SearchResult<IntTriple> AStarGridSearch(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition, GameObject startObject, GameObject goalObject)
     {
-        return AStarSearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(0.5f));
+        return AStarSearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize,startObject, goalObject), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(0.5f));
     }
 
 
