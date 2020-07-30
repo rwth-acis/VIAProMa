@@ -1,16 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.Input;
 
-public class LineController : MonoBehaviour
+public class LineController : MonoBehaviour, IMixedRealityPointerHandler
 {
     public static float stepSize = 1;
     public static int curveSegmentCount = 60;
     List<ConnectionCurve> curves;
+    IMixedRealityPointer mainPointer = null;
+    SimulatedHandData handData;
+    public bool connecting = false;
 
     //Test
-    public GameObject start;
-    public GameObject goal;
+    public GameObject startTest;
+    public GameObject goalTest;
+    private GameObject currentConnectingStart;
+    DateTime clickTimeStamp;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +26,12 @@ public class LineController : MonoBehaviour
         curves = new List<ConnectionCurve>();
 
         //Test
-        //AddConnectionCurve(start,goal);
+        if (startTest != null && goalTest != null)
+        {
+            GameObject[] test = new GameObject[] {startTest,goalTest};
+            //AddConnectionCurve(test);
+        }
+        
     }
 
     // Update is called once per frame
@@ -30,12 +43,71 @@ public class LineController : MonoBehaviour
             connectionCurve.lineRenderer.positionCount = curve.Length;
             connectionCurve.lineRenderer.SetPositions(curve);
         }
+
+        if (connecting)
+        {
+            GameObject target = null;
+            if (mainPointer != null)
+            {
+                
+                var cursor = (AnimatedCursor)mainPointer.BaseCursor;
+                if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
+                {
+                    target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                    if(target != null)
+                        AddConnectionCurve(currentConnectingStart, target);
+                    connecting = false;
+                }
+            }
+            else
+            {
+                connecting = false;
+            }
+        }
     }
 
-    void AddConnectionCurve(GameObject[] startGoal)
+    void AddConnectionCurve(GameObject start, GameObject goal)
     {
-        curves.Add(new ConnectionCurve(startGoal[0], startGoal[1], this.gameObject));
+        curves.Add(new ConnectionCurve(start, goal, this.gameObject));
     }
+
+    void StartConnecting(GameObject start)
+    {
+        connecting = true;
+        foreach (var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
+        {
+            // Ignore anything that is not a hand because we want articulated hands
+            if (source.SourceType == InputSourceType.Hand)
+            {
+                foreach (var p in source.Pointers)
+                {
+                    if (p is IMixedRealityNearPointer)
+                    {
+                        // Ignore near pointers, we only want the rays
+                        continue;
+                    }
+                    if (p.Result != null)
+                    {
+                        mainPointer = p;
+                        currentConnectingStart = start;
+                        clickTimeStamp = DateTime.Now;
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    void IMixedRealityPointerHandler.OnPointerDown(MixedRealityPointerEventData eventData) { }
+
+    void IMixedRealityPointerHandler.OnPointerDragged(MixedRealityPointerEventData eventData) { }
+
+    void IMixedRealityPointerHandler.OnPointerClicked(MixedRealityPointerEventData eventData)
+    {
+        Debug.Log("Jo");
+    }
+    void IMixedRealityPointerHandler.OnPointerUp(MixedRealityPointerEventData eventData) { }
 }
 
 public class ConnectionCurve
