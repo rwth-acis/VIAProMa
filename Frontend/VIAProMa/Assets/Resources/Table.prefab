@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3911035677605690364}
   - component: {fileID: 8383326845247074891}
   - component: {fileID: 1354568264558982665}
+  - component: {fileID: 1244840453540238086}
   m_Layer: 0
   m_Name: Table
   m_TagString: Untagged
@@ -117,6 +118,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BarchartList: {fileID: 1745568862554610173}
+--- !u!114 &1244840453540238086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010113653518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1887a233a17738b489462cd5852718e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synchronizePosition: 1
+  synchronizeRotation: 1
+  synchronizeScale: 0
+  lerpSpeed: 15
 --- !u!1 &1597334476520414
 GameObject:
   m_ObjectHideFlags: 0
@@ -2001,11 +2018,11 @@ PrefabInstance:
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1354568264558982665}
+      objectReference: {fileID: 1244840453540238086}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Compress
+      value: CompressOnclick
       objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
@@ -2172,7 +2189,7 @@ PrefabInstance:
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1354568264558982665}
+      objectReference: {fileID: 1244840453540238086}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -2186,7 +2203,7 @@ PrefabInstance:
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Newspace
+      value: NewspaceOnclick
       objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
