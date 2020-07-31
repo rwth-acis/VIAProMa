@@ -27,10 +27,12 @@ public class InformationBoxConfigurator : MonoBehaviour
     // organizer
     private BarchartOrganizer barorganizer;
     private ScatterOrganizer sctorganizer;
+    private ProgressOrganizer pgorganizer;
 
     // list
     private GameObject BarchartList;
     private GameObject ScatterList;
+    private GameObject ProgressList;
 
     // instances
     private GameObject table;
@@ -67,11 +69,12 @@ public class InformationBoxConfigurator : MonoBehaviour
         //organizer
         barorganizer = table.GetComponent<BarchartOrganizer>();
         sctorganizer = table.GetComponent<ScatterOrganizer>();
+        pgorganizer = table.GetComponent<ProgressOrganizer>();
 
         //list
         BarchartList = GameObject.Find("BarchartList");
         ScatterList = GameObject.Find("ScatterList");
-
+        ProgressList = GameObject.Find("ProgressList");
 
         informationBox.SetActive(false);
 
@@ -153,11 +156,13 @@ public class InformationBoxConfigurator : MonoBehaviour
         Debug.Log("ProgressBar Button Clicked");
         if (progressbarInstance == null)
         {
+            pgorganizer.Clear();
             Vector3 targetPosition = table.transform.position;
             targetPosition.y += 1.5f;
             targetPosition.x -= 0.78f;
             targetPosition.z -= 0.5f;
             InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
+            progressbarInstance.transform.parent = ProgressList.transform;
             ProgressSynchronizer synch = (ProgressSynchronizer) progressbarInstance.GetComponent(typeof(ProgressSynchronizer));
             synch.Initial(name);
         }

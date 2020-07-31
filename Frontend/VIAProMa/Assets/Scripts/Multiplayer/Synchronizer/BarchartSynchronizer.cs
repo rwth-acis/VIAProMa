@@ -36,30 +36,6 @@ public class BarchartSynchronizer : TransformSynchronizer
         PhotonNetwork.Destroy(visualizer.bar);
     }
 
-
-    private void Start()
-    {
-        //object[] data = this.gameObject.GetPhotonView().instantiationData;
-        //object[] data = this.gameObject.GetPhotonView().instantiationData;
-
-        /*
-        if (PhotonNetwork.NickName == data[0])
-        {
-            initialized = true;
-            SendConfiguration();
-        }
-        */
-
-        /*
-        if (PhotonNetwork.IsMasterClient)
-        {
-            initialized = true;
-            SendConfiguration(); 
-        }
-        */
-    }
-    
-
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)

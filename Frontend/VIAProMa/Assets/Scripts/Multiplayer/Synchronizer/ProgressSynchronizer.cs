@@ -24,6 +24,17 @@ public class ProgressSynchronizer : TransformSynchronizer
         SendConfiguration();
     }
 
+    public void Close()
+    {
+        photonView.RPC("Destroy", RpcTarget.MasterClient);
+    }
+
+    [PunRPC]
+    private void Destroy()
+    {
+        PhotonNetwork.Destroy(visualizer.progressBar);
+    }
+
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
@@ -51,7 +62,6 @@ public class ProgressSynchronizer : TransformSynchronizer
 
     private async void SendConfiguration()
     {
-        //short nameId = await NetworkedStringManager.StringToId(visualizer.name);
         Debug.Log("SendConfiguration: " + visualizer.name);
         photonView.RPC("SetConfiguration", RpcTarget.All, visualizer.name);
     }
@@ -59,7 +69,6 @@ public class ProgressSynchronizer : TransformSynchronizer
     [PunRPC]
     private async void SetConfiguration(string name)
     {
-        //string name = await NetworkedStringManager.GetString(nameId);
         Debug.Log("SetConfiguration: " + name);
         visualizer.name = name;
         visualizer.UpdateView();
