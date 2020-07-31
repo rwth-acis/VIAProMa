@@ -16,11 +16,18 @@ public class ProgressVisualizer : MonoBehaviour
     public string name {get; set;} = "";
     public TextAsset jsonFile;
     public event EventHandler ConfigurationChanged;
+    private GameObject ProgressList;
 
     private void Awake()
     {
         name = PhotonNetwork.NickName;
         progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
+    }
+
+    private void Start()
+    {
+        ProgressList = GameObject.Find("ProgressList");
+        progressBar.transform.parent = ProgressList.transform;
     }
 
     public async void UpdateView()

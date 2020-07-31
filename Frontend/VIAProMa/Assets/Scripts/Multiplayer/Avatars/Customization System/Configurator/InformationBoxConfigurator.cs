@@ -24,15 +24,10 @@ public class InformationBoxConfigurator : MonoBehaviour
     [SerializeField] private GameObject ScatterplotPrefab;
     [SerializeField] private GameObject ProgressBarPrefab;
 
-    // organizer
-    private BarchartOrganizer barorganizer;
-    private ScatterOrganizer sctorganizer;
-    private ProgressOrganizer pgorganizer;
-
-    // list
-    private GameObject BarchartList;
-    private GameObject ScatterList;
-    private GameObject ProgressList;
+    // organ-synchronizer
+    private BOSynchronizer bosynchronizer;
+    private SOSynchronizer sosynchronizer;
+    private POSynchronizer posynchronizer;
 
     // instances
     private GameObject table;
@@ -66,15 +61,10 @@ public class InformationBoxConfigurator : MonoBehaviour
     {
         table = GameObject.Find("Table(Clone)");
 
-        //organizer
-        barorganizer = table.GetComponent<BarchartOrganizer>();
-        sctorganizer = table.GetComponent<ScatterOrganizer>();
-        pgorganizer = table.GetComponent<ProgressOrganizer>();
-
-        //list
-        BarchartList = GameObject.Find("BarchartList");
-        ScatterList = GameObject.Find("ScatterList");
-        ProgressList = GameObject.Find("ProgressList");
+        //organizer-synchronizer
+        bosynchronizer = table.GetComponent<BOSynchronizer>();
+        sosynchronizer = table.GetComponent<SOSynchronizer>();
+        posynchronizer = table.GetComponent<POSynchronizer>();
 
         informationBox.SetActive(false);
 
@@ -118,13 +108,12 @@ public class InformationBoxConfigurator : MonoBehaviour
         Debug.Log("Barchart Button Clicked");
         if (barchartInstance == null)
         {
-            barorganizer.Clear();
+            bosynchronizer.SendClear();
             Vector3 targetPosition = table.transform.position;
             targetPosition.y += 1.5f;
             targetPosition.x += 0.78f;
             targetPosition.z -= 0.5f;
             InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
-            barchartInstance.transform.parent = BarchartList.transform;
             BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
             synch.Initial(name);
         }
@@ -137,13 +126,12 @@ public class InformationBoxConfigurator : MonoBehaviour
         Debug.Log("Scatterplot Button Clicked");
         if (scatterplotInstance == null)
         {
-            sctorganizer.Clear();
+            sosynchronizer.SendClear();
             Vector3 targetPosition = table.transform.position;
             targetPosition.y += 1.5f;
             //targetPosition.x += 0.7f;
             targetPosition.z -= 0.5f;
             InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
-            scatterplotInstance.transform.parent = ScatterList.transform;
             ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
             synch.Initial(name);
         }
@@ -156,13 +144,12 @@ public class InformationBoxConfigurator : MonoBehaviour
         Debug.Log("ProgressBar Button Clicked");
         if (progressbarInstance == null)
         {
-            pgorganizer.Clear();
+            posynchronizer.SendClear();
             Vector3 targetPosition = table.transform.position;
             targetPosition.y += 1.5f;
             targetPosition.x -= 0.78f;
             targetPosition.z -= 0.5f;
             InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
-            progressbarInstance.transform.parent = ProgressList.transform;
             ProgressSynchronizer synch = (ProgressSynchronizer) progressbarInstance.GetComponent(typeof(ProgressSynchronizer));
             synch.Initial(name);
         }

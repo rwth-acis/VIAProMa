@@ -23,24 +23,35 @@ public class SOSynchronizer : TransformSynchronizer
         initialized = true;
     }
 
+    public void SendClear()
+    {
+        photonView.RPC("myClear2", RpcTarget.MasterClient);
+    }
+
+    [PunRPC]
+    private void myClear2()
+    {
+        organizer.myClear();
+    }
+
     public void NewspaceOnclick()
     {
-        photonView.RPC("Newspace", RpcTarget.MasterClient);
+        photonView.RPC("Newspace2", RpcTarget.MasterClient);
     }
 
     public void CompressOnclick()
     {
-        photonView.RPC("Compress", RpcTarget.MasterClient);
+        photonView.RPC("Compress2", RpcTarget.MasterClient);
     }
 
     [PunRPC]
-    private void Newspace()
+    private void Newspace2()
     {
         organizer.Newspace();
     }
 
     [PunRPC]
-    private void Compress()
+    private void Compress2()
     {
         organizer.Compress();
     }

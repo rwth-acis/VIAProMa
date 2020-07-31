@@ -12,7 +12,7 @@ public class ScatterOrganizer : MonoBehaviour
     [SerializeField] private GameObject ScatterList;
     private Vector3 newpos = new Vector3(0f, 1.5f, -0.5f);
 
-    public void Clear()
+    public void myClear()
     {
         int num = ScatterList.transform.childCount;
 

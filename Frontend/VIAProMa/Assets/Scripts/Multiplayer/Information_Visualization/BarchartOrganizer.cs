@@ -12,7 +12,7 @@ public class BarchartOrganizer : MonoBehaviour
     [SerializeField] private GameObject BarchartList;
     private Vector3 newpos = new Vector3(0.78f, 1.5f, -0.5f);
 
-    public void Clear()
+    public void myClear()
     {
         int num = BarchartList.transform.childCount;
 

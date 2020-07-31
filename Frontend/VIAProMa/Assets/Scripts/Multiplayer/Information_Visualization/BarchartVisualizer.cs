@@ -16,6 +16,7 @@ public class BarchartVisualizer : MonoBehaviour
     public TextAsset jsonFile;
     public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
+    private GameObject BarchartList;
 
     
     private void Awake()
@@ -28,6 +29,12 @@ public class BarchartVisualizer : MonoBehaviour
         {
             bar.SetActive(false);
         }
+    }
+
+    private void Start()
+    {
+        BarchartList = GameObject.Find("BarchartList");
+        bar.transform.parent = BarchartList.transform;
     }
 
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()

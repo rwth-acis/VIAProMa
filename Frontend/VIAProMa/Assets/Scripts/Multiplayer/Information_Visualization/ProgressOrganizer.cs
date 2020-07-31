@@ -12,10 +12,9 @@ public class ProgressOrganizer : MonoBehaviour
     [SerializeField] private GameObject ProgressList;
     private Vector3 newpos = new Vector3(-0.78f, 1.5f, -0.5f);
 
-    public void Clear()
+    public void myClear()
     {
         int num = ProgressList.transform.childCount;
-        Debug.Log("progresslist:" + num);
 
         if (num != 0)
         {

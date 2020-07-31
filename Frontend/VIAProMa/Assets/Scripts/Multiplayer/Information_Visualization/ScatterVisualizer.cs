@@ -19,6 +19,7 @@ public class ScatterVisualizer : MonoBehaviour
     public TextAsset jsonFile;
     public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
+    private GameObject ScatterList;
     
     private void Awake()
     {
@@ -29,6 +30,12 @@ public class ScatterVisualizer : MonoBehaviour
         {
             scatter.SetActive(false);
         }
+    }
+
+    private void Start()
+    {
+        ScatterList = GameObject.Find("ScatterList");
+        scatter.transform.parent = ScatterList.transform;
     }
 
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
