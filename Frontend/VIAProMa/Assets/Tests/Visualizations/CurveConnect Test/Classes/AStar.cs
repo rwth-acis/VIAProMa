@@ -19,7 +19,7 @@ public class AStar : GridSearch
             totalPath.Add(ancestor);
             current = ancestor;
         }
-
+        totalPath.Reverse();
         return totalPath;
     }
 
