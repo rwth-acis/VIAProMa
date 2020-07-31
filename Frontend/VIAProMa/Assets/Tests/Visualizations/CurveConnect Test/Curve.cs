@@ -44,7 +44,7 @@ public abstract class CurveGenerator
         for (int i = 0; i <= curve.Length - 2; i++)
         {
             Vector3 checkDirection = curve[i + 1] - curve[i];
-            float checkLength = Vector3.Distance(curve[i], curve[i + 1]);
+            float checkLength = checkDirection.magnitude;
             checkDirection.Normalize();
 
             Vector3 center = curve[i] + checkDirection * checkLength / 2;
@@ -99,12 +99,12 @@ public abstract class CurveGenerator
     public static Vector3[] IntTripleArrayToCurve(List<IntTriple> path, Vector3 start, Vector3 goal, float stepSize)
     {
         Vector3[] curve = new Vector3[path.Count + 2];
-        curve[0] = goal;
+        curve[0] = start;
         for (int i = 1; i < path.Count + 1; i++)
         {
             curve[i] = IntTriple.CellToVector(path[i - 1], stepSize);
         }
-        curve[path.Count + 1] = start;
+        curve[path.Count + 1] = goal;
         return curve;
     }
 
@@ -114,7 +114,6 @@ public abstract class CurveGenerator
         return collisonWithObstacle(center, halfExtends, Quaternion.identity, startObject, goalObject);
     }
 
-    //TODO actual use orientation
     public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject)
     {
         return GetCollidorsFromObstacles(center, halfExtends, orientaton, startObject, goalObject).Length != 0;
@@ -129,32 +128,47 @@ public abstract class CurveGenerator
         foreach (Collider collider in potentialColliders)
         {
             GameObject parent = collider.transform.root.gameObject;
-            bool test1 = parent != startObject.transform.root.gameObject;
-            bool test2 = parent != goalObject.transform.root.gameObject;
-            bool test3 = parent.name != "App Bar Configurable(Clone)";
 
-            Vector3 endCorrVec = new Vector3();
-            float endCorrDist = 0;
-            Vector3 startCorrVec = new Vector3();
-            float startCorrDist = 0;
+            //They never get used, but are required for the penetration calculation
+            Vector3 tempVec = new Vector3();
+            float tempDist = 0;
 
-            BoxCollider startBound = startObject.transform.Find("Bounding Box").GetComponent<BoxCollider>();
-            bool startBoundStatus = startBound.enabled;
-            startBound.enabled = true;
-            BoxCollider goalBound = goalObject.transform.Find("Bounding Box").GetComponent<BoxCollider>();
-            bool goalBoundStatus = goalBound.enabled;
-            goalBound.enabled = true;
-
-            bool collideWithStart = Physics.ComputePenetration(startBound, startBound.transform.position, startBound.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out startCorrVec, out startCorrDist);
-            bool collidesWithGoal = Physics.ComputePenetration(goalBound, goalBound.transform.position, goalBound.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out endCorrVec, out endCorrDist);
             
-            if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && parent.name != "App Bar Configurable(Clone)" && !collideWithStart && !collidesWithGoal)
+
+            
+            if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && parent.name != "App Bar Configurable(Clone)")
             {
-                actuallColliders.Add(collider);
+                Transform startBound = startObject.transform.Find("Bounding Box");
+                Transform endBound = goalObject.transform.Find("Bounding Box");
+                bool collidesWithStart = false;
+                bool collidesWithGoal = false;
+                
+               
+                
+                if (startBound != null)
+                {
+                    BoxCollider startBoundingBox = startBound.GetComponent<BoxCollider>();
+                    bool startBoundStatus = startBoundingBox.enabled;
+                    startBoundingBox.enabled = true;
+                    collidesWithStart = Physics.ComputePenetration(startBoundingBox, startBoundingBox.transform.position, startBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
+                    startBoundingBox.enabled = startBoundStatus;
+                }
+                if (endBound != null && !collidesWithStart)
+                {
+                    BoxCollider goalBoundingBox = endBound.GetComponent<BoxCollider>();
+                    bool goalBoundStatus = goalBoundingBox.enabled;
+                    goalBoundingBox.enabled = true;
+                    collidesWithGoal = Physics.ComputePenetration(goalBoundingBox, goalBoundingBox.transform.position, goalBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
+                    goalBoundingBox.enabled = goalBoundStatus;
+                }
+
+                if (!collidesWithStart && !collidesWithGoal)
+                {
+                    actuallColliders.Add(collider);
+                }
             }
 
-            startBound.enabled = startBoundStatus;
-            goalBound.enabled = goalBoundStatus;
+            
         }
         return actuallColliders.ToArray();
     }
