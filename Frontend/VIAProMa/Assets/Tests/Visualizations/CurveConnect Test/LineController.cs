@@ -57,7 +57,9 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
         if (connecting)
         {
             GameObject target = null;
-            if (mainPointer != null)
+            //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
+            //But ToString then returns null.
+            if (mainPointer.ToString() != "null")
             {
                 tempCurve.goal.transform.position = mainPointer.Position;
                 var cursor = (AnimatedCursor)mainPointer.BaseCursor;
@@ -165,6 +167,5 @@ public class ConnectionCurve
             new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
         );
         lineRenderer.colorGradient = gradient;
-
     }
 }
