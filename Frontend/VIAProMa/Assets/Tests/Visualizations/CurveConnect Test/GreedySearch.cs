@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
-using static IntTriple;
-using static LineControllScriptFrameShare;
 
 public class Greedy : GridSearch
 {
-    public static AStar.SearchResult<T> GreedySearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween)
+    public static SearchResult<T> GreedySearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween)
     {
-        //SimplePriorityQueue<T> openSet = new SimplePriorityQueue<T>();
-        //openSet.Enqueue(start,Heuristic(start));
         int count = 0;
         float pathCosts = 0;
         List<T> path = new List<T>();
@@ -37,7 +33,7 @@ public class Greedy : GridSearch
             path.Add(current);
             count++;
         }
-        return new AStar.SearchResult<T>(path, pathCosts);
+        return new SearchResult<T>(path, pathCosts);
     }
 
     public static Vector3[] postProcessing(Vector3[] path, float scanCubeSize)
