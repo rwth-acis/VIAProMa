@@ -39,7 +39,7 @@ public abstract class CurveGenerator
         return c;
     }
 
-    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startBound, GameObject endBound)
+    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startBound, GameObject endBound, int layermask = 0b11111111)
     {
         for (int i = 0; i <= curve.Length - 2; i++)
         {
@@ -49,7 +49,7 @@ public abstract class CurveGenerator
 
             Vector3 center = curve[i] + checkDirection * checkLength / 2;
 
-            if (collisonWithObstacle(center, new Vector3(0.1f, 0.1f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound))
+            if (collisonWithObstacle(center, new Vector3(0.1f, 0.1f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound, layermask))
             {
                 return true;
             }
@@ -114,63 +114,79 @@ public abstract class CurveGenerator
         return collisonWithObstacle(center, halfExtends, Quaternion.identity, startObject, goalObject);
     }
 
-    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject)
+    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111)
     {
-        return GetCollidorsFromObstacles(center, halfExtends, orientaton, startObject, goalObject).Length != 0;
-    }
-
-    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject)
-    {
-        Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton);
+        Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton, layermask);
         List<Collider> actuallColliders = new List<Collider>();
 
         //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
         foreach (Collider collider in potentialColliders)
         {
-            GameObject parent = collider.transform.root.gameObject;
-
-            //They never get used, but are required for the penetration calculation
-            Vector3 tempVec = new Vector3();
-            float tempDist = 0;
-
-            
-
-            
-            if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && parent.name != "App Bar Configurable(Clone)")
+            if (IsValidCollider(collider, startObject, goalObject, layermask))
             {
-                Transform startBound = startObject.transform.Find("Bounding Box");
-                Transform endBound = goalObject.transform.Find("Bounding Box");
-                bool collidesWithStart = false;
-                bool collidesWithGoal = false;
-                
-               
-                
-                if (startBound != null)
-                {
-                    BoxCollider startBoundingBox = startBound.GetComponent<BoxCollider>();
-                    bool startBoundStatus = startBoundingBox.enabled;
-                    startBoundingBox.enabled = true;
-                    collidesWithStart = Physics.ComputePenetration(startBoundingBox, startBoundingBox.transform.position, startBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
-                    startBoundingBox.enabled = startBoundStatus;
-                }
-                if (endBound != null && !collidesWithStart)
-                {
-                    BoxCollider goalBoundingBox = endBound.GetComponent<BoxCollider>();
-                    bool goalBoundStatus = goalBoundingBox.enabled;
-                    goalBoundingBox.enabled = true;
-                    collidesWithGoal = Physics.ComputePenetration(goalBoundingBox, goalBoundingBox.transform.position, goalBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
-                    goalBoundingBox.enabled = goalBoundStatus;
-                }
-
-                if (!collidesWithStart && !collidesWithGoal)
-                {
-                    actuallColliders.Add(collider);
-                }
+                return true;
             }
+        }
+        return false;
+    }
 
-            
+
+    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111)
+    {
+        Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton, layermask);
+        List<Collider> actuallColliders = new List<Collider>();
+
+        //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
+        foreach (Collider collider in potentialColliders)
+        {
+            if (IsValidCollider(collider, startObject, goalObject, layermask))
+            {
+                actuallColliders.Add(collider);
+            }
         }
         return actuallColliders.ToArray();
+    }
+
+    static private bool IsValidCollider(Collider collider, GameObject startObject, GameObject goalObject, int layerMask)
+    {
+        GameObject parent = collider.transform.root.gameObject;
+
+        //They never get used, but are required for the penetration calculation
+        Vector3 tempVec = new Vector3();
+        float tempDist = 0;
+
+        if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && parent.name != "App Bar Configurable(Clone)")
+        {
+            Transform startBound = startObject.transform.Find("Bounding Box");
+            Transform endBound = goalObject.transform.Find("Bounding Box");
+            bool collidesWithStart = false;
+            bool collidesWithGoal = false;
+
+
+
+            if (startBound != null)
+            {
+                BoxCollider startBoundingBox = startBound.GetComponent<BoxCollider>();
+                bool startBoundStatus = startBoundingBox.enabled;
+                startBoundingBox.enabled = true;
+                collidesWithStart = Physics.ComputePenetration(startBoundingBox, startBoundingBox.transform.position, startBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
+                startBoundingBox.enabled = startBoundStatus;
+            }
+            if (endBound != null && !collidesWithStart)
+            {
+                BoxCollider goalBoundingBox = endBound.GetComponent<BoxCollider>();
+                bool goalBoundStatus = goalBoundingBox.enabled;
+                goalBoundingBox.enabled = true;
+                collidesWithGoal = Physics.ComputePenetration(goalBoundingBox, goalBoundingBox.transform.position, goalBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
+                goalBoundingBox.enabled = goalBoundStatus;
+            }
+
+            if (!collidesWithStart && !collidesWithGoal)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
