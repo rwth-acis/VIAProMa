@@ -39,7 +39,7 @@ public abstract class CurveGenerator
         return c;
     }
 
-    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startBound, GameObject endBound, int layermask = 0b11111111)
+    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startBound, GameObject endBound, int layermask = 0b11111111, bool checkEndCollision = false)
     {
         for (int i = 0; i <= curve.Length - 2; i++)
         {
@@ -49,7 +49,7 @@ public abstract class CurveGenerator
 
             Vector3 center = curve[i] + checkDirection * checkLength / 2;
 
-            if (collisonWithObstacle(center, new Vector3(0.1f, 0.1f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound, layermask))
+            if (collisonWithObstacle(center, new Vector3(0.1f, 0.1f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound, layermask, checkEndCollision))
             {
                 return true;
             }
@@ -114,7 +114,7 @@ public abstract class CurveGenerator
         return collisonWithObstacle(center, halfExtends, Quaternion.identity, startObject, goalObject);
     }
 
-    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111)
+    public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111, bool checkEndCollision = true)
     {
         Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton, layermask);
         List<Collider> actuallColliders = new List<Collider>();
@@ -122,7 +122,7 @@ public abstract class CurveGenerator
         //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
         foreach (Collider collider in potentialColliders)
         {
-            if (IsValidCollider(collider, startObject, goalObject, layermask))
+            if (IsValidCollider(collider, startObject, goalObject))
             {
                 return true;
             }
@@ -131,7 +131,7 @@ public abstract class CurveGenerator
     }
 
 
-    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111)
+    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111, bool checkEndCollision = true)
     {
         Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton, layermask);
         List<Collider> actuallColliders = new List<Collider>();
@@ -139,7 +139,7 @@ public abstract class CurveGenerator
         //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
         foreach (Collider collider in potentialColliders)
         {
-            if (IsValidCollider(collider, startObject, goalObject, layermask))
+            if (IsValidCollider(collider, startObject, goalObject))
             {
                 actuallColliders.Add(collider);
             }
@@ -147,43 +147,27 @@ public abstract class CurveGenerator
         return actuallColliders.ToArray();
     }
 
-    static private bool IsValidCollider(Collider collider, GameObject startObject, GameObject goalObject, int layerMask)
+    static private bool IsValidCollider(Collider collider, GameObject startObject, GameObject goalObject, bool checkEndCollision = true)
     {
         GameObject parent = collider.transform.root.gameObject;
-
-        //They never get used, but are required for the penetration calculation
-        Vector3 tempVec = new Vector3();
-        float tempDist = 0;
-
-        if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && parent.name != "App Bar Configurable(Clone)")
+        if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && parent.name.Substring(0,7) != "App Bar")
         {
-            Transform startBound = startObject.transform.Find("Bounding Box");
-            Transform endBound = goalObject.transform.Find("Bounding Box");
             bool collidesWithStart = false;
             bool collidesWithGoal = false;
 
-
-
-            if (startBound != null)
+            if (checkEndCollision)
             {
-                BoxCollider startBoundingBox = startBound.GetComponent<BoxCollider>();
-                bool startBoundStatus = startBoundingBox.enabled;
-                startBoundingBox.enabled = true;
-                collidesWithStart = Physics.ComputePenetration(startBoundingBox, startBoundingBox.transform.position, startBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
-                startBoundingBox.enabled = startBoundStatus;
-            }
-            if (endBound != null && !collidesWithStart)
-            {
-                BoxCollider goalBoundingBox = endBound.GetComponent<BoxCollider>();
-                bool goalBoundStatus = goalBoundingBox.enabled;
-                goalBoundingBox.enabled = true;
-                collidesWithGoal = Physics.ComputePenetration(goalBoundingBox, goalBoundingBox.transform.position, goalBoundingBox.transform.rotation, collider, collider.transform.position, collider.transform.rotation, out tempVec, out tempDist);
-                goalBoundingBox.enabled = goalBoundStatus;
-            }
+                collidesWithStart = (collider.ClosestPoint(startObject.transform.position) - startObject.transform.position).magnitude < 0.1;
 
-            if (!collidesWithStart && !collidesWithGoal)
-            {
-                return true;
+                if (!collidesWithStart)
+                {
+                    collidesWithGoal = (collider.ClosestPoint(goalObject.transform.position) - goalObject.transform.position).magnitude < 0.1;
+                }
+
+                if (!collidesWithStart && !collidesWithGoal)
+                {
+                    return true;
+                } 
             }
         }
         return false;
