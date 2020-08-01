@@ -89,4 +89,9 @@ public class AppBarActions : MonoBehaviour
     {
         lineController.SendMessage("StartConnecting", appBarPlacer.TargetBoundingBox.Target);
     }
+
+    public void Disconnect()
+    {
+        lineController.SendMessage("StartDisconnecting");
+    }
 }
