@@ -122,7 +122,7 @@ public abstract class CurveGenerator
         //Does the cell collide with the start or goal boundingbox (which is on layer 6)?
         foreach (Collider collider in potentialColliders)
         {
-            if (IsValidCollider(collider, startObject, goalObject))
+            if (IsValidCollider(collider, startObject, goalObject, checkEndCollision))
             {
                 return true;
             }
@@ -163,11 +163,11 @@ public abstract class CurveGenerator
                 {
                     collidesWithGoal = (collider.ClosestPoint(goalObject.transform.position) - goalObject.transform.position).magnitude < 0.1;
                 }
+            }
 
-                if (!collidesWithStart && !collidesWithGoal)
-                {
-                    return true;
-                } 
+            if (!collidesWithStart && !collidesWithGoal)
+            {
+                return true;
             }
         }
         return false;
