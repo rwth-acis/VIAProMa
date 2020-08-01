@@ -9,14 +9,26 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
 {
     public static float stepSize = 1;
     public static int curveSegmentCount = 60;
+    public GameObject DeleteCube;
+    GameObject instantiatedDeletCube;
     List<ConnectionCurve> curves;
     IMixedRealityPointer mainPointer = null;
-    SimulatedHandData handData;
-    public bool connecting = false;
+    public enum State
+    {
+        defaultMode,
+        connecting,
+        deleting
+    }
+
+    public State currState = State.defaultMode;
 
     //Temp Curve
     private ConnectionCurve tempCurve;
     DateTime clickTimeStamp;
+
+    //Colour settings for the curves
+    Gradient defaultColour;
+    Gradient deletColour;
 
     //Test
     public GameObject startTest;
@@ -28,25 +40,43 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
     {
         curves = new List<ConnectionCurve>();
 
+        //Setting up the colours
+        Color c1 = Color.red;
+        Color c2 = Color.red;
+
+        float alpha = 1.0f;
+        defaultColour = new Gradient();
+        defaultColour.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(Color.green, 0), new GradientColorKey(new Color(0.2f, 0.8f, 0.02f, 1f), 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+        );
+
+
+        deletColour = new Gradient();
+        deletColour.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(Color.red, 0), new GradientColorKey(Color.yellow, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+        );
+
         //Test
         if (startTest != null && goalTest != null)
         {
-            GameObject[] test = new GameObject[] {startTest,goalTest};
-            //AddConnectionCurve(test);
-        }
-        
+            AddConnectionCurve(startTest,goalTest);
+        }       
     }
 
     // Update is called once per frame
     void Update()
     {
-        foreach(ConnectionCurve connectionCurve in curves)
+        //Update Curves
+        foreach (ConnectionCurve connectionCurve in curves)
         {
             Vector3[] curve = JoinedCurveGeneration.start(connectionCurve.start, connectionCurve.goal, stepSize, curveSegmentCount);
             connectionCurve.lineRenderer.positionCount = curve.Length;
             connectionCurve.lineRenderer.SetPositions(curve);
         }
 
+        //Update the tempcurve if existing
         if (tempCurve != null)
         {
             Vector3[] curve = JoinedCurveGeneration.start(tempCurve.start, tempCurve.goal, stepSize, curveSegmentCount);
@@ -54,28 +84,76 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
             tempCurve.lineRenderer.SetPositions(curve);
         }
 
-        if (connecting)
+        
+
+            switch (currState)
         {
-            GameObject target = null;
-            //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
-            //But ToString then returns null.
-            if (mainPointer.ToString() != "null")
-            {
-                tempCurve.goal.transform.position = mainPointer.Position;
-                var cursor = (AnimatedCursor)mainPointer.BaseCursor;
-                if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
+            case State.defaultMode:
+                break;
+
+            case State.connecting:
+                GameObject target = null;
+                //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
+                //But ToString then returns null.
+                if (mainPointer.ToString() != "null")
                 {
-                    if(mainPointer.Result.CurrentPointerTarget != null)
-                        target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
-                    if(target != null)
-                        AddConnectionCurve(tempCurve.start, target);
+                    tempCurve.goal.transform.position = mainPointer.Position;
+                    var cursor = (AnimatedCursor)mainPointer.BaseCursor;
+                    if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
+                    {
+                        if (mainPointer.Result.CurrentPointerTarget != null)
+                            target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        if (target != null)
+                            AddConnectionCurve(tempCurve.start, target);
+                        StopConnecting();
+                    }
+                }
+                else
+                {
                     StopConnecting();
                 }
-            }
-            else
-            {
-                StopConnecting();
-            }
+                break;
+
+            case State.deleting:
+                if (mainPointer.ToString() != "null")
+                {
+                    //Update Delete Cube transform
+                    var ray = mainPointer.Rays[0];
+                    instantiatedDeletCube.transform.position = ray.Origin + ray.Direction.normalized * 0.5f;
+                    instantiatedDeletCube.transform.rotation = Quaternion.LookRotation(ray.Direction.normalized, Vector3.up);
+                    
+                    //Necassrary because you shouldn't delete an object from a list, while iterating over it
+                    List<ConnectionCurve> curvesToDelete = new List<ConnectionCurve>();
+                    //Check which curves colide with the delete cube
+                    foreach (ConnectionCurve connectionCurve in curves)
+                    {
+                        Vector3[] curve = new Vector3[connectionCurve.lineRenderer.positionCount];
+                        connectionCurve.lineRenderer.GetPositions(curve);
+                        if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal, 0b100000000, false))
+                        {
+                            connectionCurve.lineRenderer.colorGradient = deletColour;
+                            if (((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select)
+                            {
+                                curvesToDelete.Add(connectionCurve);
+                            }
+                        }
+                        else
+                        {
+                            connectionCurve.lineRenderer.colorGradient = defaultColour;
+                        }
+                    }
+
+                    foreach (ConnectionCurve connectionCurve in curvesToDelete)
+                    {
+                        Destroy(connectionCurve.lineRenderer);
+                        curves.Remove(connectionCurve);
+                    }
+                }
+                else
+                    Destroy(instantiatedDeletCube);
+                
+
+                break;
         }
     }
 
@@ -86,37 +164,18 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
 
     void StartConnecting(GameObject start)
     {
-        connecting = true;
-        foreach (var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
-        {
-            // Ignore anything that is not a hand because we want articulated hands
-            if (source.SourceType == InputSourceType.Hand)
-            {
-                foreach (var p in source.Pointers)
-                {
-                    if (p is IMixedRealityNearPointer)
-                    {
-                        // Ignore near pointers, we only want the rays
-                        continue;
-                    }
-                    if (p.Result != null)
-                    {
-                        mainPointer = p;
-                        GameObject currentConnectingStart = start;
-                        GameObject tempGoal = new GameObject("Temp Goal");
-                        GameObject tempBox = new GameObject("Bounding Box");
-                        tempBox.transform.parent = tempGoal.transform;
-                        BoxCollider collider = tempBox.AddComponent<BoxCollider>();
-                        collider.name = "Bounding Box";
-                        collider.enabled = false;
-                        tempGoal.transform.position = p.Position;
-                        tempCurve = new ConnectionCurve(start, tempGoal, this.gameObject);
-                        clickTimeStamp = DateTime.Now;
-                    }
-
-                }
-            }
-        }
+        currState = State.connecting;
+        RefreshPointer();
+        GameObject currentConnectingStart = start;
+        GameObject tempGoal = new GameObject("Temp Goal");
+        GameObject tempBox = new GameObject("Bounding Box");
+        tempBox.transform.parent = tempGoal.transform;
+        BoxCollider collider = tempBox.AddComponent<BoxCollider>();
+        collider.name = "Bounding Box";
+        collider.enabled = false;
+        tempGoal.transform.position = mainPointer.Position;
+        tempCurve = new ConnectionCurve(start, tempGoal, this.gameObject);
+        clickTimeStamp = DateTime.Now;
     }
 
 
@@ -135,7 +194,39 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
         Destroy(tempCurve.goal);
         Destroy(tempCurve.lineRenderer);
         tempCurve = null;
-        connecting = false;
+        currState = State.defaultMode;
+    }
+
+    void StartDisconnecting()
+    {
+        currState = State.deleting;
+        RefreshPointer();
+        instantiatedDeletCube = Instantiate(DeleteCube);
+    }
+
+    public void RefreshPointer()
+    {
+        foreach (var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
+        {
+            // Ignore anything that is not a hand because we want articulated hands
+            if (source.SourceType == InputSourceType.Hand)
+            {
+                foreach (var p in source.Pointers)
+                {
+                    if (p is IMixedRealityNearPointer)
+                    {
+                        // Ignore near pointers, we only want the rays
+                        continue;
+                    }
+                    if (p.Result != null)
+                    {
+                        mainPointer = p;
+                        return;
+                    }
+
+                }
+            }
+        }
     }
 }
 
@@ -154,8 +245,8 @@ public class ConnectionCurve
         lineObject.transform.parent = LineController.transform;
         lineRenderer = lineObject.AddComponent<LineRenderer>();
 
-        Color c1 = Color.yellow;
-        Color c2 = Color.red;
+        Color c1 = Color.green;
+        Color c2 = Color.green;
 
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.025f;
