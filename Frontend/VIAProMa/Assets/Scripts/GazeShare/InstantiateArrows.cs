@@ -101,8 +101,9 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     private Renderer rendererComponent;
     private TextMeshPro photonTextMeshPro;
     private SpriteRenderer photonSpriteRenderer;
-    // Laser pointer
+    // Laser pointer and timer
     private LineRenderer lineRenderer;
+    private float timer;
 
     public void Start()
     {
@@ -146,10 +147,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             if (StaticGaze.GetIsUsingVive() == false) // HoloLens
             {
                 stream.SendNext(MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
+                stream.SendNext(-1.0f); // Negative time value for the HoloLens
             }
             else if (StaticGaze.GetIsUsingVive() == true)
             {
                 stream.SendNext(RaycastVive.pointerOrigin);
+                stream.SendNext(RaycastVive.timer);
             }
 
             stream.Serialize(ref deviceUsed);
@@ -161,6 +164,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             targetRotation = (Quaternion)stream.ReceiveNext();
             // Laser functionality
             targetOrigin = (Vector3)stream.ReceiveNext();
+            timer = (float)stream.ReceiveNext();
 
             stream.Serialize(ref deviceUsedTarget);
             stream.Serialize(ref targetTextToShow);
@@ -252,7 +256,13 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             }
             else
             {
-                if (StaticGaze.GetIsUsingVive() == false || RaycastVive.timer != 0.0f)
+                if (deviceUsedTarget == 1)
+                {
+                    lineRenderer.SetPosition(0, targetOrigin);
+                    lineRenderer.SetPosition(1, targetPosition);
+                    lineRenderer.enabled = true;
+                }
+                else if (deviceUsedTarget == 2 && timer != 0.0f)
                 {
                     lineRenderer.SetPosition(0, targetOrigin);
                     lineRenderer.SetPosition(1, targetPosition);

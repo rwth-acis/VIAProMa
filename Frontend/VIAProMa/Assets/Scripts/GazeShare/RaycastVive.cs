@@ -50,8 +50,8 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         // Laser pointer timer for the HTC Vive
-        timer = 0.0f;
-        timer += Time.deltaTime;
+        timer = 1.0f;
+        //timer += Time.deltaTime;
 
         // Raycasting would become obsolete with a MRTK update
         if (StaticGaze.GetIsUsingVive() == true) // might not be needed
