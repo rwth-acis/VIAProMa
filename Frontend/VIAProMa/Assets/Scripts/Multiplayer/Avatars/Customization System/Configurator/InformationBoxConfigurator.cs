@@ -33,9 +33,9 @@ public class InformationBoxConfigurator : MonoBehaviour
 
     // instances
     private GameObject table;
-    private GameObject barchartInstance;
-    private GameObject scatterplotInstance;
-    private GameObject progressbarInstance;
+    public GameObject barchartInstance; //{ get; set; } = null;
+    public GameObject scatterplotInstance; //{ get; set; } = null;
+    public GameObject progressbarInstance; //{ get; set; } = null;
     //private PhotonView photonView;
     public string name { get; set; } = "";
     
@@ -140,8 +140,6 @@ public class InformationBoxConfigurator : MonoBehaviour
             BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
             synch.Initial(name);
         }
-        
-        Close();
     }
     
     public void ScatterplotButtonClick()
@@ -159,8 +157,6 @@ public class InformationBoxConfigurator : MonoBehaviour
             ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
             synch.Initial(name);
         }
-        
-        Close();
     }
 
     public void ProgressBarButtonClick()
@@ -178,8 +174,6 @@ public class InformationBoxConfigurator : MonoBehaviour
             ProgressSynchronizer synch = (ProgressSynchronizer) progressbarInstance.GetComponent(typeof(ProgressSynchronizer));
             synch.Initial(name);
         }
-        
-        Close();
     }
 
 }

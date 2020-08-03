@@ -38,6 +38,7 @@ public class IBCSynchronizer : TransformSynchronizer
 
     public void BarchartButtonOnclick()
     {
+        informationbox.Close();
         photonView.RPC("BarchartButton", RpcTarget.MasterClient, name);
     }
 
@@ -47,10 +48,18 @@ public class IBCSynchronizer : TransformSynchronizer
         Debug.Log("ibcsynchronizer: " + fname);
         informationbox.name = fname;
         informationbox.BarchartButtonClick();
+        photonView.RPC("BarchartRef", RpcTarget.All, informationbox.barchartInstance);
+    }
+
+    [PunRPC]
+    private void BarchartRef(GameObject bar)
+    {
+        informationbox.barchartInstance = bar;
     }
 
     public void ScatterButtonOnclick()
     {
+        informationbox.Close();
         photonView.RPC("ScatterButton", RpcTarget.MasterClient, name);
     }
 
@@ -63,6 +72,7 @@ public class IBCSynchronizer : TransformSynchronizer
 
     public void ProgressButtonOnclick()
     {
+        informationbox.Close();
         photonView.RPC("ProgressButton", RpcTarget.MasterClient, name);
     }
     
