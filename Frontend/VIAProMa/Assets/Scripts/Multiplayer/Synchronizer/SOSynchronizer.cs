@@ -25,14 +25,17 @@ public class SOSynchronizer : TransformSynchronizer
 
     public void SendClear()
     {
-        photonView.RPC("myClear2", RpcTarget.MasterClient);
+        organizer.myClear();
+        //photonView.RPC("myClear2", RpcTarget.MasterClient);
     }
 
+    /*
     [PunRPC]
     private void myClear2()
     {
         organizer.myClear();
     }
+    */
 
     public void NewspaceOnclick()
     {

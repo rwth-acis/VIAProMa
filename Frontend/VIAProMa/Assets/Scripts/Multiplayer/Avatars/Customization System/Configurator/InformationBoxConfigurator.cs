@@ -19,10 +19,12 @@ public class InformationBoxConfigurator : MonoBehaviour
     [SerializeField] private Interactable ProgressButton;
 
 
+    /*
     [Header("References")]
     [SerializeField] private GameObject BarchartPrefab;
     [SerializeField] private GameObject ScatterplotPrefab;
     [SerializeField] private GameObject ProgressBarPrefab;
+    */
 
     // organ-synchronizer
     private BOSynchronizer bosynchronizer;
@@ -34,17 +36,17 @@ public class InformationBoxConfigurator : MonoBehaviour
     private GameObject barchartInstance;
     private GameObject scatterplotInstance;
     private GameObject progressbarInstance;
-    private PhotonView photonView;
-
-    private string name;
+    //private PhotonView photonView;
+    public string name { get; set; } = "";
     
     private void Awake()
     {
-        photonView = GetComponent<PhotonView>();
+        //photonView = GetComponent<PhotonView>();
         BarchartButton.Enabled = true;
         ScatterplotButton.Enabled = true;
         ProgressButton.Enabled = true;
         informationBox.SetActive(false);
+        /*
         if (photonView != null)
         {
             name = photonView.Owner.NickName;
@@ -54,6 +56,7 @@ public class InformationBoxConfigurator : MonoBehaviour
             name = "Wendy";
             Debug.Log("photonview error");
         }
+        */
     }
 
     // Start is called before the first frame update
@@ -86,6 +89,7 @@ public class InformationBoxConfigurator : MonoBehaviour
         informationBox.SetActive(false);
     }
 
+    /*
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
     {
         Quaternion targetRotation = Quaternion.identity;
@@ -102,8 +106,26 @@ public class InformationBoxConfigurator : MonoBehaviour
             instance.transform.parent = table.transform;
         }
     }
+    */
+    private void InstantiateControl(string prefab, ref GameObject instance, Vector3 targetPosition)
+    {
+        Quaternion targetRotation = Quaternion.identity;
 
-    public void BarchartButtonClicked()
+        if (instance != null)
+        {
+            instance.SetActive(true);
+            instance.transform.position = targetPosition;
+            instance.transform.rotation = targetRotation;
+        }
+        else
+        {
+            instance = PhotonNetwork.InstantiateSceneObject(prefab, targetPosition, targetRotation);
+            instance.transform.parent = table.transform;
+        }
+    }
+
+
+    public void BarchartButtonClick()
     {
         Debug.Log("Barchart Button Clicked");
         if (barchartInstance == null)
@@ -113,7 +135,8 @@ public class InformationBoxConfigurator : MonoBehaviour
             targetPosition.y += 1.5f;
             targetPosition.x += 0.78f;
             targetPosition.z -= 0.5f;
-            InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
+            //InstantiateControl(BarchartPrefab, ref barchartInstance, targetPosition);
+            InstantiateControl("bar", ref barchartInstance, targetPosition);
             BarchartSynchronizer synch = (BarchartSynchronizer) barchartInstance.GetComponent(typeof(BarchartSynchronizer));
             synch.Initial(name);
         }
@@ -121,7 +144,7 @@ public class InformationBoxConfigurator : MonoBehaviour
         Close();
     }
     
-    public void ScatterplotButtonClicked()
+    public void ScatterplotButtonClick()
     {
         Debug.Log("Scatterplot Button Clicked");
         if (scatterplotInstance == null)
@@ -131,7 +154,8 @@ public class InformationBoxConfigurator : MonoBehaviour
             targetPosition.y += 1.5f;
             //targetPosition.x += 0.7f;
             targetPosition.z -= 0.5f;
-            InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
+            //InstantiateControl(ScatterplotPrefab, ref scatterplotInstance, targetPosition);
+            InstantiateControl("scatter", ref scatterplotInstance, targetPosition);
             ScatterSynchronizer synch = (ScatterSynchronizer) scatterplotInstance.GetComponent(typeof(ScatterSynchronizer));
             synch.Initial(name);
         }
@@ -139,7 +163,7 @@ public class InformationBoxConfigurator : MonoBehaviour
         Close();
     }
 
-    public void ProgressBarButtonClicked()
+    public void ProgressBarButtonClick()
     {
         Debug.Log("ProgressBar Button Clicked");
         if (progressbarInstance == null)
@@ -149,7 +173,8 @@ public class InformationBoxConfigurator : MonoBehaviour
             targetPosition.y += 1.5f;
             targetPosition.x -= 0.78f;
             targetPosition.z -= 0.5f;
-            InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
+            //InstantiateControl(ProgressBarPrefab, ref progressbarInstance, targetPosition);
+            InstantiateControl("progress", ref progressbarInstance, targetPosition);
             ProgressSynchronizer synch = (ProgressSynchronizer) progressbarInstance.GetComponent(typeof(ProgressSynchronizer));
             synch.Initial(name);
         }
