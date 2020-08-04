@@ -126,7 +126,7 @@ public abstract class CurveGenerator
             {
                 return true;
             }
-        }
+         }
         return false;
     }
 
@@ -157,18 +157,28 @@ public abstract class CurveGenerator
 
             if (checkEndCollision)
             {
-                collidesWithStart = (collider.ClosestPoint(startObject.transform.position) - startObject.transform.position).magnitude < 0.1;
 
-                if (!collidesWithStart)
+                if (collider is BoxCollider || collider is SphereCollider || collider is CapsuleCollider)
                 {
-                    collidesWithGoal = (collider.ClosestPoint(goalObject.transform.position) - goalObject.transform.position).magnitude < 0.1;
+                    collidesWithStart = (collider.ClosestPoint(startObject.transform.position) - startObject.transform.position).magnitude < 0.1;
+
+                    if (!collidesWithStart)
+                    {
+                        collidesWithGoal = (collider.ClosestPoint(goalObject.transform.position) - goalObject.transform.position).magnitude < 0.1;
+                    }
+
+                    if (!collidesWithStart && !collidesWithGoal)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return true;
                 }
             }
 
-            if (!collidesWithStart && !collidesWithGoal)
-            {
-                return true;
-            }
+           
         }
         return false;
     }
