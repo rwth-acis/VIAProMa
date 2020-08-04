@@ -150,7 +150,7 @@ public abstract class CurveGenerator
     static private bool IsValidCollider(Collider collider, GameObject startObject, GameObject goalObject, bool checkEndCollision = true)
     {
         GameObject parent = collider.transform.root.gameObject;
-        if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && parent.name.Substring(0,7) != "App Bar")
+        if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && (parent.name.Length < 8 || parent.name.Substring(0,7) != "App Bar"))
         {
             bool collidesWithStart = false;
             bool collidesWithGoal = false;
