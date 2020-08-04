@@ -177,6 +177,8 @@ public abstract class CurveGenerator
                     return true;
                 }
             }
+            else
+                return true;
 
            
         }
