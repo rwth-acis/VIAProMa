@@ -45,8 +45,8 @@ public abstract class GridSearch : CurveGenerator
                 {
                     for (int z = -1; z <= 1; z += 1)
                     {
-                        if ((x != 0 || y != 0 || z != 0) //dont return the node as its own neighbor
-                            && (node.y + y >= 0)) //dont bent the path below the ground
+                        if ((x != 0 || y != 0 || z != 0)) //dont return the node as its own neighbor
+                            //&& (node.y + y >= 0)) //dont bent the path below the ground
                         {
                             IntTriple cell = new IntTriple(node.x + x, node.y + y, node.z + z);
 

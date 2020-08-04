@@ -39,7 +39,7 @@ public abstract class CurveGenerator
         return c;
     }
 
-    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startBound, GameObject endBound, int layermask = 0b11111111, bool checkEndCollision = false)
+    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startBound, GameObject endBound, int layermask = 0b11111111, bool checkEndCollision = true)
     {
         for (int i = 0; i <= curve.Length - 2; i++)
         {
