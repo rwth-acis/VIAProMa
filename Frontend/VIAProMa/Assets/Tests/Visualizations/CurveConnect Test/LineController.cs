@@ -5,7 +5,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 
-public class LineController : MonoBehaviour, IMixedRealityPointerHandler
+public class LineController : MonoBehaviour
 {
     public static float stepSize = 1;
     public static int curveSegmentCount = 60;
@@ -86,12 +86,16 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
 
         
 
-            switch (currState)
+        switch (currState)
         {
             case State.defaultMode:
+                if (instantiatedDeletCube != null)
+                    Destroy(instantiatedDeletCube);
                 break;
 
             case State.connecting:
+                if (instantiatedDeletCube != null)
+                    Destroy(instantiatedDeletCube);
                 GameObject target = null;
                 //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
                 //But ToString then returns null.
@@ -121,7 +125,7 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
                     var ray = mainPointer.Rays[0];
                     instantiatedDeletCube.transform.position = ray.Origin + ray.Direction.normalized * 0.5f;
                     instantiatedDeletCube.transform.rotation = Quaternion.LookRotation(ray.Direction.normalized, Vector3.up);
-                    
+
                     //Necassrary because you shouldn't delete an object from a list, while iterating over it
                     List<ConnectionCurve> curvesToDelete = new List<ConnectionCurve>();
                     //Check which curves colide with the delete cube
@@ -150,8 +154,10 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
                     }
                 }
                 else
+                {
                     Destroy(instantiatedDeletCube);
-                
+                    currState = State.defaultMode;
+                }
 
                 break;
         }
@@ -179,16 +185,6 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
     }
 
 
-    void IMixedRealityPointerHandler.OnPointerDown(MixedRealityPointerEventData eventData) { }
-
-    void IMixedRealityPointerHandler.OnPointerDragged(MixedRealityPointerEventData eventData) { }
-
-    void IMixedRealityPointerHandler.OnPointerClicked(MixedRealityPointerEventData eventData)
-    {
-        Debug.Log("Jo");
-    }
-    void IMixedRealityPointerHandler.OnPointerUp(MixedRealityPointerEventData eventData) { }
-
     void StopConnecting()
     {
         Destroy(tempCurve.goal);
@@ -199,9 +195,30 @@ public class LineController : MonoBehaviour, IMixedRealityPointerHandler
 
     void StartDisconnecting()
     {
-        currState = State.deleting;
-        RefreshPointer();
-        instantiatedDeletCube = Instantiate(DeleteCube);
+        if (currState != State.deleting)
+        {
+            currState = State.deleting;
+            RefreshPointer();
+            instantiatedDeletCube = Instantiate(DeleteCube); 
+        }
+    }
+
+    void DeleteCurves(GameObject startOrEndPoint)
+    {
+        List<ConnectionCurve> curvesToDelete = new List<ConnectionCurve>();
+        foreach (ConnectionCurve connectionCurve in curves)
+        {
+            if (connectionCurve.start == startOrEndPoint || connectionCurve.goal == startOrEndPoint)
+            {
+                curvesToDelete.Add(connectionCurve);
+            }
+        }
+        foreach (ConnectionCurve connectionCurve in curvesToDelete)
+        {
+            Destroy(connectionCurve.lineRenderer);
+            curves.Remove(connectionCurve);
+        }
+        
     }
 
     public void RefreshPointer()

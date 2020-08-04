@@ -47,6 +47,9 @@ public class AppBarActions : MonoBehaviour
     /// </summary>
     public void RemoveObject()
     {
+        //Remove the curves connected with the object
+        lineController.SendMessage("DeleteCurves", appBarPlacer.TargetBoundingBox.Target);
+
         if (TargetNetworked)
         {
             PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
@@ -61,6 +64,7 @@ public class AppBarActions : MonoBehaviour
         {
             Destroy(appBarPlacer.TargetBoundingBox.gameObject);
         }
+
         // finally also destroy the app bar
         Destroy(gameObject);
     }
