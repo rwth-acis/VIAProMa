@@ -39,22 +39,76 @@ public abstract class CurveGenerator
         return c;
     }
 
-    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startBound, GameObject endBound, int layermask = 0b11111111, bool checkEndCollision = true)
+    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startObject, GameObject goalObject, int layermask = 0b11111111, bool checkEndCollision = true , float distanceToObstacle = 0.2f)
     {
-        for (int i = 0; i <= curve.Length - 2; i++)
+        int curveIncrement = (curve.Length - 2) / 60;
+        if (curveIncrement < 1)
+            curveIncrement = 1;
+        int lastChecked = 0;
+
+        //Check from start to the first. This has to be done seperatly, because otherwise the sphere around start would detect collisions behind the object.
+        Collider[] potentialColliders = Physics.OverlapCapsule(curve[0] + (curve[curveIncrement] - curve[0]).normalized * distanceToObstacle, curve[curveIncrement], distanceToObstacle);
+        foreach (Collider coll in potentialColliders)
         {
-            Vector3 checkDirection = curve[i + 1] - curve[i];
+            if (IsValidCollider(coll, startObject, goalObject))
+                return true;
+        }
+
+        for (int i = curveIncrement; i < curve.Length - 1 - curveIncrement; i += curveIncrement)
+        {
+            potentialColliders = Physics.OverlapCapsule(curve[i], curve[i+curveIncrement],distanceToObstacle);
+            foreach (Collider coll in potentialColliders)
+            {
+                if (IsValidCollider(coll, startObject, goalObject))
+                    return true;
+            }
+            lastChecked = i + curveIncrement;
+        }
+
+        //Check form the last checked to the end
+        potentialColliders = Physics.OverlapCapsule(curve[lastChecked] , curve[curve.Length - 1] +(curve[lastChecked] - curve[curve.Length - 1]).normalized * distanceToObstacle, distanceToObstacle);
+        foreach (Collider coll in potentialColliders)
+        {
+            if (IsValidCollider(coll, startObject, goalObject))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static void CollTest(Vector3[] curve)
+    {
+        int curveIncrement = (curve.Length - 2) / 10;
+        if (curveIncrement < 1)
+            curveIncrement = 1;
+
+        //Start to the first one
+        Vector3 checkDirection1 = curve[1] - curve[0];
+        float checkLength1 = checkDirection1.magnitude;
+        checkDirection1.Normalize();
+        GameObject test1 = new GameObject();
+        CapsuleCollider coll1 = test1.AddComponent<CapsuleCollider>();
+        coll1.radius = 0.3f;
+        coll1.height = checkLength1;
+        coll1.transform.rotation = Quaternion.LookRotation(checkDirection1, Vector3.up);
+        coll1.transform.position = curve[0] + checkDirection1 * checkLength1 / 2;
+        coll1.direction = 2;
+        int lastChecked = 0;
+        for (int i = 1; i < curve.Length - 1 - curveIncrement; i+= curveIncrement)
+        {
+            Vector3 checkDirection = curve[i + curveIncrement] - curve[i];
             float checkLength = checkDirection.magnitude;
             checkDirection.Normalize();
-
-            Vector3 center = curve[i] + checkDirection * checkLength / 2;
-
-            if (collisonWithObstacle(center, new Vector3(0.1f, 0.1f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound, layermask, checkEndCollision))
-            {
-                return true;
-            }
+            GameObject test = new GameObject();
+            CapsuleCollider coll = test.AddComponent<CapsuleCollider>();
+            coll.radius = 0.3f;
+            coll.height = checkLength+2*coll.radius;
+            coll.transform.rotation = Quaternion.LookRotation(checkDirection, Vector3.up);
+            coll.transform.position = curve[i] + checkDirection * checkLength / 2;
+            coll.direction = 2;
+            lastChecked = i + curveIncrement;
         }
-        return false;
+        
     }
 
     public static int CurveCollsionCount(Vector3[] curve, GameObject startBound, GameObject endBound)
