@@ -28,15 +28,14 @@ public class SimpleCurveGerneration : CurveGenerator
 
         float higherOne = start.y > goal.y ? start.y : goal.y;
 
-        Vector3 startAdjusted = new Vector3(start.x, higherOne, start.z);
-        Vector3 goalAdjusted = new Vector3(goal.x, higherOne, goal.z);
+     
 
-        Vector3 direction = goalAdjusted - startAdjusted;
+        Vector3 direction = goal - start;
         direction.Normalize();
 
-        float distance = Vector3.Distance(startAdjusted,goalAdjusted);
+        float distance = Vector3.Distance(start,goal);
 
-        Vector3 center = startAdjusted + direction * distance/2;
+        Vector3 center = start + direction * distance/2;
 
         float standartHeight = 0.5f;
 
@@ -45,10 +44,10 @@ public class SimpleCurveGerneration : CurveGenerator
 
 
         //Priority 1: Try to draw the standart curve
-        Vector3[] checkCurve = StandartCurve(start,goal,15,standartHeight);
-        if (!CurveCollsionCheck(checkCurve, startObject, goalObject))
+        Vector3[]standartCurve = StandartCurve(start,goal, curveSegmentCount, standartHeight);
+        if (!CurveCollsionCheck(standartCurve, startObject, goalObject))
         {
-            return StandartCurve(start, goal, curveSegmentCount, standartHeight);
+            return standartCurve;
         }
 
 
@@ -101,7 +100,32 @@ public class SimpleCurveGerneration : CurveGenerator
                 }
             }
         }
+        void ScanForObstacles(ref Vector3 min, ref Vector3 max, Vector3 startBox, Vector3 extendVector)
+        {
+            Vector3 normal = Vector3.Cross(direction, Vector3.up);
+            normal.Normalize();
+            Vector3 up = Vector3.Cross(direction, normal);
+            if (up.y < 0)
+                up *= -1;
 
+            //Scan with the starting box
+            Collider[] ReScancolliders = GetCollidorsFromObstacles(center + up*startBox.y, startBox, Quaternion.LookRotation(direction, up), startObject, goalObject);
+            SetMinMax(ReScancolliders, ref min, ref max);
+
+            //Rescan as long as new collider show up or the scan maximum of 5 is reached
+            int oldLength = ReScancolliders.Length;
+            int i = 1;
+            bool newObstacles = false;
+            do
+            {
+                newObstacles = false;
+                ReScancolliders = GetCollidorsFromObstacles(center + up * extendVector.y * i, startBox + extendVector * i, Quaternion.LookRotation(direction, up),startObject, goalObject);
+                if (ReScancolliders.Length > oldLength)
+                    newObstacles = true;
+                i++;
+            }
+            while (i <= 5 && newObstacles);
+        }
         //Generate bounding box for above:
         Vector3 minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
