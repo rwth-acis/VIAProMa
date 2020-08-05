@@ -618,6 +618,7 @@ namespace Microsoft.MixedReality.Toolkit.UI
 
         private void HandleManipulationStarted()
         {
+            constraints = new ConstraintManager(gameObject);
             isManipulationStarted = true;
             isNearManipulation = IsNearManipulation();
             // TODO: If we are on HoloLens 1, push and pop modal input handler so that we can use old
@@ -640,7 +641,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
                 wasKinematic = rigidBody.isKinematic;
                 rigidBody.isKinematic = false;
             }
-            
             constraints.Initialize(new MixedRealityPose(HostTransform.position, HostTransform.rotation));
         }
 
