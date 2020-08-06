@@ -15,6 +15,7 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     private int layerMask;
 
     // Laser pointer timer for the HTC Vive
+    public static bool laserOn { get; private set; }
     private float waitTime;
     public static float timer { get; private set; }
 
@@ -29,6 +30,7 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
         InputSystem?.Register(gameObject);
 
         // Laser pointer timer for the HTC Vive
+        laserOn = false;
         waitTime = 5.0f;
         timer = 0.0f;
     }
@@ -78,4 +80,9 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     public void OnPointerDragged(MixedRealityPointerEventData eventData) { }
 
     public void OnPointerUp(MixedRealityPointerEventData eventData) { }
+
+    public static void ToggleLaser()
+    {
+        laserOn = !laserOn;
+    }
 }

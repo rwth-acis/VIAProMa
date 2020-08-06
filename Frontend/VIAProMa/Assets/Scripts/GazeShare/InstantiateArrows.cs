@@ -207,9 +207,12 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = target.transform.rotation;
             deviceUsed = 1;
             // Laser functionality
-            lineRenderer.SetPosition(0, MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
-            lineRenderer.SetPosition(1, currentHitPosition);
-            lineRenderer.enabled = true;
+            if (RaycastVive.laserOn == true)
+            {
+                lineRenderer.SetPosition(0, MixedRealityToolkit.InputSystem.GazeProvider.GazeOrigin);
+                lineRenderer.SetPosition(1, currentHitPosition);
+                lineRenderer.enabled = true;
+            }
         }
         else if (StaticGaze.GetIsUsingVive() == true && StaticGaze.sharing == true && sharingGlobal == true)
         {
@@ -218,7 +221,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             transform.rotation = RaycastVive.pointerHitRotation; 
             deviceUsed = 2;
             // Laser functionality
-            if (RaycastVive.timer != 0.0f)
+            if (RaycastVive.timer != 0.0f && RaycastVive.laserOn == true)
             {
                 lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
                 lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
@@ -256,20 +259,17 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
             }
             else
             {
-                if (deviceUsedTarget == 1)
+                if (deviceUsedTarget == 1 && RaycastVive.laserOn == true)
                 {
                     lineRenderer.SetPosition(0, targetOrigin);
                     lineRenderer.SetPosition(1, targetPosition);
                     lineRenderer.enabled = true;
                 }
-                else if (deviceUsedTarget == 2 && timer != 0.0f)
+                else if (deviceUsedTarget == 2 && timer != 0.0f && RaycastVive.laserOn == true)
                 {
                     lineRenderer.SetPosition(0, targetOrigin);
                     lineRenderer.SetPosition(1, targetPosition);
                     lineRenderer.enabled = true;
-                    //lineRenderer.SetPosition(0, RaycastVive.pointerOrigin);
-                    //lineRenderer.SetPosition(1, RaycastVive.pointerHitPosition);
-                    //lineRenderer.enabled = true;
                 }
                 else
                 {

@@ -27,7 +27,7 @@ public class GazeShareTester_Evaluation : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.P))
         {
-
+            RaycastVive.ToggleLaser();
         }
     }
 }
