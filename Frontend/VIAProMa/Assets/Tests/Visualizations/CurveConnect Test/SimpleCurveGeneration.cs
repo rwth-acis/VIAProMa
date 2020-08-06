@@ -26,9 +26,9 @@ public class SimpleCurveGerneration : CurveGenerator
         Vector3 start = startObject.transform.position;
         Vector3 goal = goalObject.transform.position;
 
-        float higherOne = start.y > goal.y ? start.y : goal.y;
+        //float higherOne = start.y > goal.y ? start.y : goal.y;
+        
 
-     
 
         Vector3 direction = goal - start;
         direction.Normalize();
@@ -44,7 +44,7 @@ public class SimpleCurveGerneration : CurveGenerator
 
 
         //Priority 1: Try to draw the standart curve
-        Vector3[]standartCurve = StandartCurve(start,goal, curveSegmentCount, standartHeight);
+        Vector3[] standartCurve = StandartCurve(start,goal, curveSegmentCount, standartHeight);
         if (!CurveCollsionCheck(standartCurve, startObject, goalObject))
         {
             return standartCurve;
@@ -54,9 +54,9 @@ public class SimpleCurveGerneration : CurveGenerator
         //Genenerating the standart curve didn't work due to collsions. Try to set the controllpoints so, that no collisions occure
 
         //Sets min and max in such a way that they include as many of the obstacles as possible but never start or goal
-        void SetMinMax(Collider[] colliderss, ref Vector3 min, ref Vector3 max)
+        void SetMinMax(Collider[] colliders, ref Vector3 min, ref Vector3 max)
         {
-            foreach (Collider collider in colliderss)
+            foreach (Collider collider in colliders)
             {
                 min = Vector3.Min(min, collider.bounds.min);
                 max = Vector3.Max(max, collider.bounds.max);
@@ -100,75 +100,83 @@ public class SimpleCurveGerneration : CurveGenerator
                 }
             }
         }
-        void ScanForObstacles(ref Vector3 min, ref Vector3 max, Vector3 startBox, Vector3 extendVector)
+        void ScanForObstaclesAbove(ref Vector3 min, ref Vector3 max)
         {
-            Vector3 normal = Vector3.Cross(direction, Vector3.up);
-            normal.Normalize();
-            Vector3 up = Vector3.Cross(direction, normal);
-            if (up.y < 0)
-                up *= -1;
+            float lowerY = start.y < goal.y ? start.y : goal.y;
+            Vector3 directionAdjusted = new Vector3(direction.x, 0, direction.z);
+            directionAdjusted.Normalize();
+            float distanceAdjusted = (new Vector3(start.x, 0, start.z) - new Vector3(goal.x, 0, goal.z)).magnitude;
+            Vector3 centerAdjusted = new Vector3(start.x, lowerY, start.z) + directionAdjusted * distanceAdjusted / 2;
+            Vector3 startBoxHalfExtend = new Vector3(3*distanceToObstacle, (Math.Abs(start.y - goal.y) + standartHeight + distanceToObstacle*3)/2, distance / 2.1f);
 
-            //Scan with the starting box
-            Collider[] ReScancolliders = GetCollidorsFromObstacles(center + up*startBox.y, startBox, Quaternion.LookRotation(direction, up), startObject, goalObject);
+            Collider[] ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0,startBoxHalfExtend.y,0), 
+                startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
             SetMinMax(ReScancolliders, ref min, ref max);
-
-            //Rescan as long as new collider show up or the scan maximum of 5 is reached
             int oldLength = ReScancolliders.Length;
             int i = 1;
             bool newObstacles = false;
             do
             {
                 newObstacles = false;
-                ReScancolliders = GetCollidorsFromObstacles(center + up * extendVector.y * i, startBox + extendVector * i, Quaternion.LookRotation(direction, up),startObject, goalObject);
+                startBoxHalfExtend.y = (max.y + 3*distanceToObstacle)/2;
+                ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0),
+                    startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
+                ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0), startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
                 if (ReScancolliders.Length > oldLength)
+                {
+                    SetMinMax(ReScancolliders, ref min, ref max);
                     newObstacles = true;
+                }
+                i++;
+            } while (i <= 100 && newObstacles);
+
+        }
+        void ScanForObstaclesSide(ref Vector3 min, ref Vector3 max)
+        {
+            Vector3 normal = Vector3.Cross(direction, Vector3.up);
+            normal.Normalize();
+            Vector3 up = Vector3.Cross(direction, normal);
+            if (up.y < 0)
+                up *= -1;
+            Vector3 startBoxHalfExtend = new Vector3(distanceToObstacle, (standartHeight + distanceToObstacle) / 2, distance / 2.1f);
+
+            //Scan with the starting box
+            Collider[] ReScancolliders = GetCollidorsFromObstacles(center + up * startBoxHalfExtend.y, startBoxHalfExtend, Quaternion.LookRotation(direction, up), startObject, goalObject);
+            SetMinMax(ReScancolliders, ref min, ref max);
+
+            //Rescan as long as new collider show up or the maximal number of scans is reached
+            int oldLength = ReScancolliders.Length;
+            int i = 1;
+            bool newObstacles = false;
+            do
+            {
+                newObstacles = false;
+                Vector3 boxCenter = min + (max - min) * 0.5f;
+                Vector3 halfExtend = max - min + new Vector3(10 * distanceToObstacle, 0, 10 * distanceToObstacle);
+                halfExtend.y = standartHeight + distanceToObstacle;
+                halfExtend /= 2;
+                boxCenter.y = halfExtend.y;
+                ReScancolliders = GetCollidorsFromObstacles(boxCenter, halfExtend, Quaternion.identity ,startObject, goalObject);
+                if (ReScancolliders.Length > oldLength)
+                {
+                    SetMinMax(ReScancolliders,ref min, ref max);
+                    newObstacles = true;
+                }
                 i++;
             }
-            while (i <= 5 && newObstacles);
+            while (i <= 100 && newObstacles);
         }
         //Generate bounding box for above:
         Vector3 minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-        Collider[] colliders = GetCollidorsFromObstacles(center,new Vector3(0.2f,Math.Abs(start.y-goal.y)+20,distance/2.1f),Quaternion.LookRotation(direction,Vector3.up), startObject, goalObject);
-
-        SetMinMax(colliders, ref minPoint, ref maxPoint);
-
-        if (minPoint == maxPoint)
-        {
-            minPoint += new Vector3(-1, -1, -1);
-            maxPoint += new Vector3(1, 1, 1);
-        }
-
-        minPoint = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
+        ScanForObstaclesAbove(ref minPoint, ref maxPoint);
 
         //Generate bounding box for the sides:
         Vector3 minPointSide = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPointSide = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-        colliders = GetCollidorsFromObstacles(center + new Vector3(0,2,0), new Vector3(3, 4, distance / 2.1f), Quaternion.LookRotation(direction, Vector3.up), startObject, goalObject);
-        SetMinMax(colliders, ref minPointSide, ref maxPointSide);
-
-        Vector3 reCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
-        Vector3 reExtend = maxPointSide - minPointSide + new Vector3(3, 0, 3);
-        reExtend.y = standartHeight + 2;
-        reExtend /= 2;
-        reCenter.y = reExtend.y;
-        
-        Collider[] colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startObject, goalObject);
-        SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
-
-        for (int i = 0; i < 5 && colliders.Length != colllidersReScan.Length; i++)
-        {
-            colliders = colllidersReScan;
-            reCenter = minPointSide + (maxPointSide - minPointSide) * 0.5f;
-            reExtend = maxPointSide - minPointSide + new Vector3(3, 0, 3);
-            reExtend.y = standartHeight + 2;
-            reExtend /= 2;
-            reCenter.y = reExtend.y;
-            colllidersReScan = GetCollidorsFromObstacles(reCenter, reExtend, Quaternion.identity, startObject, goalObject);
-            SetMinMax(colllidersReScan, ref minPointSide, ref maxPointSide);
-        }
+        ScanForObstaclesSide(ref minPointSide, ref maxPointSide);
 
         Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint,direction);
         Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, minPointSide, maxPointSide, direction,standartHeight);
