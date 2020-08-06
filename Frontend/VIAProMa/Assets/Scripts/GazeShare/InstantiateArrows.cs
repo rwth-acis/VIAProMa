@@ -111,7 +111,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         InstantiateSharingGlobal();
         SetColorOfArrow();
         // GetComponent variables
-        if (SceneManagerHelper.ActiveSceneName != "GazeShareTest")
+        if (SceneManagerHelper.ActiveSceneName == "MainScene")
         {
             globalGazingLabel = GetGlobalGazingLabelObject().GetComponent<TextMeshPro>();
         }
