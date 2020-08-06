@@ -178,7 +178,7 @@ public class SimpleCurveGerneration : CurveGenerator
 
         ScanForObstaclesSide(ref minPointSide, ref maxPointSide);
 
-        Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint,direction);
+        Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint);
         Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, minPointSide, maxPointSide, direction,standartHeight);
 
 
@@ -204,18 +204,21 @@ public class SimpleCurveGerneration : CurveGenerator
         }
     }
 
-    static Vector3[] calculateIntersectionAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, Vector3 direction)
+    static Vector3[] calculateIntersectionAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint)
     {
         Vector3 startOnMaxHeight = new Vector3(start.x, maxPoint.y, start.z);
+        Vector3 direction = goal - start;
+        Vector3 directionAdjusted = new Vector3(direction.x, 0, direction.z);
+        directionAdjusted.Normalize();
         //Calculate the controll points for the way above
         //calculate the potential intersections from the line spanned by startOnMaxHeight+l*direction with the 4 lines that form the rectangle spanned by min and max
         Vector3[] potentialPoints = new Vector3[4];
 
-        potentialPoints[0] = startOnMaxHeight + (minPoint.z - start.z) / direction.z * direction;
-        potentialPoints[1] = startOnMaxHeight + (minPoint.x - start.x) / direction.x * direction;
+        potentialPoints[0] = startOnMaxHeight + (minPoint.z - start.z) / directionAdjusted.z * directionAdjusted;
+        potentialPoints[1] = startOnMaxHeight + (minPoint.x - start.x) / directionAdjusted.x * directionAdjusted;
 
-        potentialPoints[2] = startOnMaxHeight + (maxPoint.z - start.z) / direction.z * direction;
-        potentialPoints[3] = startOnMaxHeight + (maxPoint.x - start.x) / direction.x * direction;
+        potentialPoints[2] = startOnMaxHeight + (maxPoint.z - start.z) / directionAdjusted.z * directionAdjusted;
+        potentialPoints[3] = startOnMaxHeight + (maxPoint.x - start.x) / directionAdjusted.x * directionAdjusted;
 
 
 
