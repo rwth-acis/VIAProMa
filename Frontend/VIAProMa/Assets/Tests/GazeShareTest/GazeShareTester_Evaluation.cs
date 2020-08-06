@@ -14,7 +14,7 @@ public class GazeShareTester_Evaluation : MonoBehaviour
             if (PhotonNetwork.IsConnected)
             {
                 Debug.Log("Connecting to room", gameObject);
-                PhotonNetwork.JoinOrCreateRoom("GazeTest", null, null);
+                PhotonNetwork.JoinOrCreateRoom("GazeEvaluation", null, null);
             }
         }
         else if (Input.GetKeyDown(KeyCode.F5))
@@ -24,6 +24,10 @@ public class GazeShareTester_Evaluation : MonoBehaviour
                 Debug.Log("Toggling voice");
                 PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled = !PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled;
             }
+        }
+        else if (Input.GetKeyDown(KeyCode.P))
+        {
+
         }
     }
 }
