@@ -171,12 +171,17 @@ public class SimpleCurveGerneration : CurveGenerator
         Vector3 maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
         ScanForObstaclesAbove(ref minPoint, ref maxPoint);
+        Vector3 extendVector = new Vector3(distanceToObstacle, distanceToObstacle, distanceToObstacle);
+        minPoint -= extendVector;
+        maxPoint += extendVector;
 
         //Generate bounding box for the sides:
         Vector3 minPointSide = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 maxPointSide = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
         ScanForObstaclesSide(ref minPointSide, ref maxPointSide);
+        minPointSide -= extendVector;
+        maxPointSide += extendVector;
 
         Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint);
         Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, minPointSide, maxPointSide, direction,standartHeight);
@@ -562,14 +567,14 @@ public class SimpleCurveGerneration : CurveGenerator
         for(int i = 0; i < middlePoints.Length; i++)
             middlePoints[i] = standartToPlane * new Vector4(middlePoints[i].x, middlePoints[i].y, middlePoints[i].z, 1);
 
-        //Shift the middlepoints away from the obstacle
-        if (middlePoints.Length == 2)
-        {
-            middlePoints[0] += new Vector3(-distanceToObstacle, distanceToObstacle, 0);
-            middlePoints[1] += new Vector3(distanceToObstacle, distanceToObstacle, 0);
-        }
-        else
-            middlePoints[0] += new Vector3(0,distanceToObstacle,0);
+        ////Shift the middlepoints away from the obstacle
+        //if (middlePoints.Length == 2)
+        //{
+        //    middlePoints[0] += new Vector3(-distanceToObstacle, distanceToObstacle, 0);
+        //    middlePoints[1] += new Vector3(distanceToObstacle, distanceToObstacle, 0);
+        //}
+        //else
+        //    middlePoints[0] += new Vector3(0,distanceToObstacle,0);
         /*
         g0.transform.position = planeToStandart * start;
         g1.transform.position = planeToStandart * middlePoints[0];
