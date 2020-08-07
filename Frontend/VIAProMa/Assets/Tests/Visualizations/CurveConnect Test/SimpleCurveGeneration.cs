@@ -107,7 +107,7 @@ public class SimpleCurveGerneration : CurveGenerator
             directionAdjusted.Normalize();
             float distanceAdjusted = (new Vector3(start.x, 0, start.z) - new Vector3(goal.x, 0, goal.z)).magnitude;
             Vector3 centerAdjusted = new Vector3(start.x, lowerY, start.z) + directionAdjusted * distanceAdjusted / 2;
-            Vector3 startBoxHalfExtend = new Vector3(3*distanceToObstacle, (Math.Abs(start.y - goal.y) + standartHeight + distanceToObstacle*3)/2, distance / 2.1f);
+            Vector3 startBoxHalfExtend = new Vector3(1.1f*distanceToObstacle, (Math.Abs(start.y - goal.y) + standartHeight + distanceToObstacle*3)/2, distance / 2.1f);
 
             Collider[] ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0,startBoxHalfExtend.y,0), 
                 startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
