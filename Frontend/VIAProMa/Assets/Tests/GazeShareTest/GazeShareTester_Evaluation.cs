@@ -29,5 +29,10 @@ public class GazeShareTester_Evaluation : MonoBehaviour
         {
             RaycastVive.ToggleLaser();
         }
+        else if (Input.GetKeyDown(KeyCode.T))
+        {
+            PhotonNetwork.Instantiate("Progress Bar", new Vector3(-1.726f, 0.51f, -1.229f), Quaternion.Euler(0,60,0), 0);
+            PhotonNetwork.Instantiate("Issue Shelf", new Vector3(-1.726f, 0.51f, -1.229f), Quaternion.Euler(0, 60, 0), 0);
+        }   
     }
 }
