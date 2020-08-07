@@ -84,5 +84,13 @@ public class RaycastVive : InputSystemGlobalListener, IMixedRealityPointerHandle
     public static void ToggleLaser()
     {
         laserOn = !laserOn;
+        if (laserOn == true)
+        {
+            Debug.Log("Laser on");
+        }
+        else
+        {
+            Debug.Log("Laser off");
+        }
     }
 }

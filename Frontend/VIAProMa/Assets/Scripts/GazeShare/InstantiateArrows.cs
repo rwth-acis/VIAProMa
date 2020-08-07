@@ -88,6 +88,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     private Vector3 targetOrigin;
     protected Vector3 far = new Vector3(0f, -10f, 0f);
     protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
+    private float arrowOpacity = 0.3f;
     protected bool isUsingVive;
     protected int deviceUsed;
     protected int deviceUsedTarget;
@@ -177,7 +178,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
         {
             MoveMyArrow();
             textToShow = photonView.Owner.NickName;
-            if (SceneManagerHelper.ActiveSceneName != "GazeShareTest")
+            if (SceneManagerHelper.ActiveSceneName == "MainScene")
             {
                 photonTextMeshPro.text = textToShow;
             }
@@ -198,6 +199,18 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void MoveMyArrow()
     {
+        // Turn arrow on/off
+        if (RaycastVive.laserOn == true)
+        {
+            // Make the arrow invisible
+            transform.localScale = new Vector3(0f,0f,0f);
+        }
+        else
+        {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            lineRenderer.enabled = false;
+        }
+
         if (MixedRealityToolkit.InputSystem.GazeProvider.GazeTarget && StaticGaze.GetIsUsingVive() == false && StaticGaze.sharing == true && sharingGlobal == true)
         {
             // Copy rotation of DefaultCursor
@@ -248,6 +261,18 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     /// </summary>
     protected void MoveOtherArrows()
     {
+        // Turn arrow on/off
+        if (RaycastVive.laserOn == true)
+        {
+            // Make the arrow invisible
+            transform.localScale = new Vector3(0f, 0f, 0f);
+        }
+        else
+        {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            lineRenderer.enabled = false;
+        }
+
         if (sharingGlobal == true)
         {
             transform.position = targetPosition;
@@ -303,7 +328,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected void SetColorOfArrow()
     {
         Color generatedColor = GetColor();
-        GetComponent<Renderer>().material.color = new Color(generatedColor.r, generatedColor.g, generatedColor.b, 0.3f);
+        GetComponent<Renderer>().material.color = new Color(generatedColor.r, generatedColor.g, generatedColor.b, arrowOpacity);
     }
 
     protected GameObject GetGlobalGazingLabelObject()
