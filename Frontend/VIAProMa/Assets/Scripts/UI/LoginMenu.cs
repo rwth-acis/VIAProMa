@@ -1,4 +1,6 @@
 ﻿using ExitGames.Client.Photon;
+using i5.Toolkit.Core.OpenIDConnectClient;
+using i5.Toolkit.Core.ServiceCore;
 using i5.ViaProMa.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
@@ -6,6 +8,8 @@ using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -13,8 +17,9 @@ using UnityEngine;
 /// </summary>
 public class LoginMenu : MonoBehaviour, IWindow
 {
-    [SerializeField] private InputField nameInputField;
-    [SerializeField] private Interactable doneButton;
+    [SerializeField] private TextMeshPro nameLabel;
+    [SerializeField] private Interactable learningLayersLoginButton;
+    [SerializeField] private Interactable logoutButton;
     [SerializeField] private InteractableToggleCollection roleToggles;
 
     public bool WindowEnabled { get; set; }
@@ -23,29 +28,27 @@ public class LoginMenu : MonoBehaviour, IWindow
 
     public event EventHandler WindowClosed;
 
+    private OpenIDConnectService oidcService;
+    private IUserInfo cachedUserInfo;
+
     private void Awake()
     {
-        if (nameInputField == null)
+        if (nameLabel == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(nameInputField));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(nameLabel));
         }
-        else
+        if (learningLayersLoginButton == null)
         {
-            nameInputField.TextChanged += NameInputChanged;
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(learningLayersLoginButton));
         }
-        if (doneButton == null)
+        if (logoutButton == null)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(doneButton));
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(logoutButton));
         }
         if (roleToggles == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(roleToggles));
         }
-    }
-
-    private void NameInputChanged(object sender, EventArgs e)
-    {
-        doneButton.Enabled = !string.IsNullOrWhiteSpace(nameInputField.Text);
     }
 
     public void Close()
@@ -67,11 +70,15 @@ public class LoginMenu : MonoBehaviour, IWindow
         transform.localEulerAngles = eulerAngles;
     }
 
-    private void Initialize()
+    private async void Initialize()
     {
-        nameInputField.Text = PhotonNetwork.NickName;
+        if (oidcService == null)
+        {
+            oidcService = ServiceManager.GetService<OpenIDConnectService>();
+        }
+        nameLabel.text = await GetUserNameAsync();
         roleToggles.CurrentIndex = (int)UserManager.Instance.UserRole;
-        for (int i=0;i<roleToggles.ToggleList.Length;i++)
+        for (int i = 0; i < roleToggles.ToggleList.Length; i++)
         {
             int dimension = 0;
             if (i == roleToggles.CurrentIndex)
@@ -80,16 +87,66 @@ public class LoginMenu : MonoBehaviour, IWindow
             }
             roleToggles.ToggleList[i].SetDimensionIndex(dimension);
         }
+        SetButtonStates();
     }
 
-    public void SetName()
+    private async Task<string> GetUserNameAsync()
     {
-        if (!string.IsNullOrWhiteSpace(nameInputField.Text))
+        if (oidcService.IsLoggedIn)
         {
-            PhotonNetwork.NickName = nameInputField.Text;
+            if (cachedUserInfo == null)
+            {
+                cachedUserInfo = await oidcService.GetUserDataAsync();
+            }
+            return cachedUserInfo.FullName;
+        }
+        else
+        {
+            return PhotonNetwork.NickName;
+        }
+    }
+
+    private void SetButtonStates()
+    {
+        logoutButton.gameObject.SetActive(oidcService.IsLoggedIn);
+        learningLayersLoginButton.gameObject.SetActive(!oidcService.IsLoggedIn);
+    }
+
+    public void LoginButtonPressed()
+    {
+        oidcService.LoginCompleted += OnLogin;
+        oidcService.OpenLoginPage();
+    }
+
+    private async void OnLogin(object sender, EventArgs e)
+    {
+        oidcService.LoginCompleted -= OnLogin;
+        string userName = await GetUserNameAsync();
+        nameLabel.text = userName;
+        SetPhotonName(name);
+        SetButtonStates();
+    }
+
+    public void LogoutButtonPressed()
+    {
+        oidcService.LogoutCompleted += OnLogout;
+        oidcService.Logout();
+    }
+
+    private void OnLogout(object sender, EventArgs e)
+    {
+        oidcService.LogoutCompleted -= OnLogout;
+        SetButtonStates();
+        SetPhotonName(UserManager.Instance.DefaultName);
+    }
+
+    public void SetPhotonName(string name)
+    {
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            PhotonNetwork.NickName = name;
             RaiseNameChangedEvent();
         }
-        Close();
     }
 
     private void RaiseNameChangedEvent()
