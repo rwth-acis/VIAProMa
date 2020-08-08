@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
-using static IntTriple;
 //using static LineControllScriptFrameShare;
 
 
@@ -25,7 +25,63 @@ public class AStar : GridSearch
 
 
 
+    IEnumerator AStarSearchCoroutine(AStarParameter<IntTriple> parameter)
+    {
+        SimplePriorityQueue<IntTriple> openSet = new SimplePriorityQueue<IntTriple>();
+        Dictionary<IntTriple, IntTriple> cameFrom = new Dictionary<IntTriple, IntTriple>();
+        Dictionary<IntTriple, float> gScore = new Dictionary<IntTriple, float>();
+        openSet.Enqueue(parameter.start, 0);
+        gScore.Add(parameter.start, parameter.Heuristic(parameter.start));
+        IntTriple current;
 
+        while (openSet.Count != 0)
+        {
+            current = openSet.Dequeue();
+            if (parameter.GoalTest(current, parameter.goal))
+            {
+                List<IntTriple> optimalPath = null;
+                if (parameter.calculatePath)
+                    optimalPath = reconstruct_path<IntTriple>(cameFrom, current);
+
+                parameter.output = new SearchResult<IntTriple>(optimalPath, gScore[current]);
+                return null;
+            }
+
+            List<IntTriple> neighbors = parameter.GetNeighbors(current);
+
+            //IntTripleODO Maby here multithreading?
+            foreach (IntTriple neighbor in neighbors)
+            {
+                float h = parameter.Heuristic(neighbor);
+                float tentative_gScore = gScore[current] + parameter.CostsBetween(current, neighbor);
+                float neighboreGScore;
+                if (gScore.TryGetValue(neighbor, out neighboreGScore))
+                {
+                    if (tentative_gScore < neighboreGScore)
+                    {
+                        cameFrom[neighbor] = current;
+                        gScore[neighbor] = tentative_gScore;
+                        openSet.EnqueueWithoutDuplicates(neighbor, neighboreGScore + h);
+                    }
+                }
+                //if neighbore dosn't have a gScore then it's infinit and therefore bigger than tentative_gScore
+                else
+                {
+                    cameFrom[neighbor] = current;
+                    gScore[neighbor] = tentative_gScore;
+                    openSet.EnqueueWithoutDuplicates(neighbor, tentative_gScore + h);
+                }
+            }
+        }
+        if (openSet.Count == 0)
+        {
+            //open set is empty and goal is never reached => no possible path
+            parameter.output = new SearchResult<IntTriple>(new List<IntTriple>(), float.PositiveInfinity);
+            return null;
+        }
+        parameter.output = new SearchResult<IntTriple>(null, float.PositiveInfinity);
+        return null;
+    }
 
 
     public static SearchResult<T> AStarSearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween, bool calculatePath = true)
@@ -91,4 +147,32 @@ public class AStar : GridSearch
     }
 
 
+}
+
+//Necassary for the coroutine, because StartCoroutine only allows one parameter
+public class AStarParameter<T>
+{
+    public T start;
+    public T goal;
+    public Func<T, List<T>> GetNeighbors;
+    public Func<T, T, bool> GoalTest;
+    public Func<T, float> Heuristic;
+    public Func<T, T, float> CostsBetween;
+    public bool calculatePath;
+
+    //Extra parameters for controling the coroutine
+    public bool isRunning;
+    public AStar.SearchResult<IntTriple> output;
+
+    public AStarParameter(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween, bool calculatePath = true)
+    {
+        this.start = start;
+        this.goal = goal;
+        this.GetNeighbors = GetNeighbors;
+        this.GoalTest = GoalTest;
+        this.Heuristic = Heuristic;
+        this.CostsBetween = CostsBetween;
+        this.calculatePath = calculatePath;
+        isRunning = false;
+    }
 }
