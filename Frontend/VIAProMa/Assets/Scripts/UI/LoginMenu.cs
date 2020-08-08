@@ -123,7 +123,7 @@ public class LoginMenu : MonoBehaviour, IWindow
         oidcService.LoginCompleted -= OnLogin;
         string userName = await GetUserNameAsync();
         nameLabel.text = userName;
-        SetPhotonName(name);
+        SetPhotonName(userName);
         SetButtonStates();
     }
 
@@ -131,6 +131,8 @@ public class LoginMenu : MonoBehaviour, IWindow
     {
         oidcService.LogoutCompleted += OnLogout;
         oidcService.Logout();
+        nameLabel.text = UserManager.Instance.DefaultName;
+        SetPhotonName(UserManager.Instance.DefaultName);
     }
 
     private void OnLogout(object sender, EventArgs e)
@@ -140,11 +142,11 @@ public class LoginMenu : MonoBehaviour, IWindow
         SetPhotonName(UserManager.Instance.DefaultName);
     }
 
-    public void SetPhotonName(string name)
+    public void SetPhotonName(string userName)
     {
-        if (!string.IsNullOrWhiteSpace(name))
+        if (!string.IsNullOrWhiteSpace(userName))
         {
-            PhotonNetwork.NickName = name;
+            PhotonNetwork.NickName = userName;
             RaiseNameChangedEvent();
         }
     }
