@@ -6,17 +6,16 @@ using UnityEngine;
 
 public class MainServiceBootstrapper : BaseServiceBootstrapper
 {
-    [SerializeField] private OpenIDConnectServiceConfiguration openIdConnectConfiguration;
     [SerializeField] private ClientDataObject learningLayersClientData;
 
     protected override void RegisterServices()
     {
-        OpenIDConnectService oidcService = new OpenIDConnectService(openIdConnectConfiguration);
+        OpenIDConnectService oidcService = new OpenIDConnectService();
         LearningLayersOIDCProvider provider = new LearningLayersOIDCProvider();
         provider.AuthorizationFlow = AuthorizationFlow.AUTHORIZATION_CODE;
         provider.ClientData = learningLayersClientData.clientData;
         oidcService.OidcProvider = provider;
-        //oidcService.UriSchema = "viaproma";
+        oidcService.RedirectURI = "viaproma://";
         ServiceManager.RegisterService(oidcService);
     }
 

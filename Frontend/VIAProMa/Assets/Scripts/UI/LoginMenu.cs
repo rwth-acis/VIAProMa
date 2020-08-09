@@ -29,6 +29,7 @@ public class LoginMenu : MonoBehaviour, IWindow
     public event EventHandler WindowClosed;
 
     private OpenIDConnectService oidcService;
+    private bool subscribedToOidc = false;
     private IUserInfo cachedUserInfo;
 
     private void Awake()
@@ -114,13 +115,18 @@ public class LoginMenu : MonoBehaviour, IWindow
 
     public void LoginButtonPressed()
     {
-        oidcService.LoginCompleted += OnLogin;
+        if (!subscribedToOidc)
+        {
+            oidcService.LoginCompleted += OnLogin;
+            subscribedToOidc = true;
+        }
         oidcService.OpenLoginPage();
     }
 
     private async void OnLogin(object sender, EventArgs e)
     {
         oidcService.LoginCompleted -= OnLogin;
+        subscribedToOidc = false;
         string userName = await GetUserNameAsync();
         nameLabel.text = userName;
         SetPhotonName(userName);
