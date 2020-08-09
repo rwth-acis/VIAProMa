@@ -22,10 +22,19 @@ public class LoginMenu : MonoBehaviour, IWindow
     [SerializeField] private Interactable logoutButton;
     [SerializeField] private InteractableToggleCollection roleToggles;
 
+    /// <summary>
+    /// Gets or sets enabled/disabled state of the window
+    /// </summary>
     public bool WindowEnabled { get; set; }
 
+    /// <summary>
+    /// Gets or sets whether the window is currently open
+    /// </summary>
     public bool WindowOpen => gameObject.activeSelf;
 
+    /// <summary>
+    /// Event which is raised once the window is closed
+    /// </summary>
     public event EventHandler WindowClosed;
 
     private OpenIDConnectService oidcService;
@@ -52,18 +61,29 @@ public class LoginMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Closes the window
+    /// </summary>
     public void Close()
     {
         gameObject.SetActive(false);
         WindowClosed?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Opens the window
+    /// </summary>
     public void Open()
     {
         gameObject.SetActive(true);
         Initialize();
     }
 
+    /// <summary>
+    /// Opens the window at the given position and rotation
+    /// </summary>
+    /// <param name="position">The position of the window</param>
+    /// <param name="eulerAngles">The rotation in euler angles of the window</param>
     public void Open(Vector3 position, Vector3 eulerAngles)
     {
         Open();
@@ -71,6 +91,7 @@ public class LoginMenu : MonoBehaviour, IWindow
         transform.localEulerAngles = eulerAngles;
     }
 
+    // Initializes the controls of the window
     private async void Initialize()
     {
         if (oidcService == null)
@@ -91,8 +112,10 @@ public class LoginMenu : MonoBehaviour, IWindow
         SetButtonStates();
     }
 
+    // Fetches the user name which should be displayed
     private async Task<string> GetUserNameAsync()
     {
+        // if we are logged in, we take the user data which are provided by the login service
         if (oidcService.IsLoggedIn)
         {
             if (cachedUserInfo == null)
@@ -101,20 +124,28 @@ public class LoginMenu : MonoBehaviour, IWindow
             }
             return cachedUserInfo.FullName;
         }
+        // if we are not logged in, we take the nick name given by the PhotonNetwork
         else
         {
             return PhotonNetwork.NickName;
         }
     }
 
+    // sets the button's visibility based on whether the user is logged in or logged out
     private void SetButtonStates()
     {
         logoutButton.gameObject.SetActive(oidcService.IsLoggedIn);
         learningLayersLoginButton.gameObject.SetActive(!oidcService.IsLoggedIn);
     }
 
+    /// <summary>
+    /// Called if the login button is pressed
+    /// </summary>
     public void LoginButtonPressed()
     {
+        // only subscribe to the LoginCompleted event if we are not already subscribed
+        // this is to avoid that the raised event is handled multiple times,
+        // e.g. if the user does not complete the login the first time
         if (!subscribedToOidc)
         {
             oidcService.LoginCompleted += OnLogin;
@@ -123,8 +154,10 @@ public class LoginMenu : MonoBehaviour, IWindow
         oidcService.OpenLoginPage();
     }
 
+    // Called by the LoginCompleted event once the login has happened successfully
     private async void OnLogin(object sender, EventArgs e)
     {
+        // un-subscribe from the event and also remember that we are not subscribed anymore
         oidcService.LoginCompleted -= OnLogin;
         subscribedToOidc = false;
         string userName = await GetUserNameAsync();
@@ -133,22 +166,33 @@ public class LoginMenu : MonoBehaviour, IWindow
         SetButtonStates();
     }
 
+    /// <summary>
+    /// Called if the logout button is pressed
+    /// </summary>
     public void LogoutButtonPressed()
     {
+        // since the Learning Layers logout always succeeds,
+        // there is no need to remember the event subscription status like with the login procedure
         oidcService.LogoutCompleted += OnLogout;
         oidcService.Logout();
         nameLabel.text = UserManager.Instance.DefaultName;
         SetPhotonName(UserManager.Instance.DefaultName);
     }
 
+    // Called by the LogoutCompleted event
     private void OnLogout(object sender, EventArgs e)
     {
+        // un-subscribe from hte LogoutCompleted event
         oidcService.LogoutCompleted -= OnLogout;
+        // update the button statuses
         SetButtonStates();
+        // reset the photon nickname to the default guest name that was determined in the beginning
+        // this way, a person will always have the same guest name in one session
         SetPhotonName(UserManager.Instance.DefaultName);
     }
 
-    public void SetPhotonName(string userName)
+    // Sets the photon name in the photon network to the given userName
+    private void SetPhotonName(string userName)
     {
         if (!string.IsNullOrWhiteSpace(userName))
         {
@@ -157,6 +201,7 @@ public class LoginMenu : MonoBehaviour, IWindow
         }
     }
 
+    // broadcasts to all other participants that the name of this user was changed
     private void RaiseNameChangedEvent()
     {
         if (PhotonNetwork.IsConnected)
@@ -169,6 +214,10 @@ public class LoginMenu : MonoBehaviour, IWindow
         }
     }
 
+    /// <summary>
+    /// Called by the radio buttons if the user role is changed
+    /// Updates the user role in the system
+    /// </summary>
     public void OnRoleChanged()
     {
         UserManager.Instance.UserRole = (UserRoles)roleToggles.CurrentIndex;
