@@ -25,7 +25,7 @@ public class AStar : GridSearch
 
 
 
-    IEnumerator AStarSearchCoroutine(AStarParameter parameter)
+    public static IEnumerator AStarSearchCoroutine(AStarParameter parameter)
     {
         SimplePriorityQueue<IntTriple> openSet = new SimplePriorityQueue<IntTriple>();
         Dictionary<IntTriple, IntTriple> cameFrom = new Dictionary<IntTriple, IntTriple>();
@@ -167,6 +167,7 @@ public class AStarParameter
     //Extra parameters for controling the coroutine
     public bool isRunning;
     public AStar.SearchResult<IntTriple> output;
+    public Vector3[] curve;
 
     public AStarParameter(IntTriple start, IntTriple goal, Func<IntTriple, List<IntTriple>> GetNeighbors, Func<IntTriple, IntTriple, bool> GoalTest, Func<IntTriple, float> Heuristic, Func<IntTriple, IntTriple, float> CostsBetween, bool calculatePath = true)
     {
@@ -177,7 +178,7 @@ public class AStarParameter
         this.Heuristic = Heuristic;
         this.CostsBetween = CostsBetween;
         this.calculatePath = calculatePath;
-        isRunning = false;
+        isRunning = true;
     }
 
     public AStarParameter(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition, GameObject startObject, GameObject goalObject)
@@ -189,6 +190,10 @@ public class AStarParameter
         Heuristic = AStar.HeuristicGeneratorGrid(goalPosition, stepSize);
         CostsBetween = AStar.CostsBetweenGeneratorGrid(stepSize);
         calculatePath = true;
-        isRunning = false;
+        isRunning = true;
+    }
+
+    public AStarParameter(Vector3[] curve) {
+        this.curve = curve;
     }
 }
