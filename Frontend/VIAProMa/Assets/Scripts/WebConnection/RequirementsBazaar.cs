@@ -17,7 +17,12 @@ public static class RequirementsBazaar
     public static async Task<ApiResult<Project[]>> GetProjects()
     {
         Debug.Log("Requirements Baazar: GetProjects");
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects");
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
+            null,
+            -1,
+            null,
+            true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -38,7 +43,12 @@ public static class RequirementsBazaar
     /// <returns>The categories of the project, contained in the APIResult object</returns>
     public static async Task<ApiResult<Category[]>> GetCategoriesInProject(int projectId)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories");
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
+            null,
+            -1,
+            null,
+            true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -65,7 +75,12 @@ public static class RequirementsBazaar
             return new ApiResult<Issue>(cached);
         }
 
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId);
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId,
+            null,
+            -1,
+            null,
+            true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -108,7 +123,7 @@ public static class RequirementsBazaar
         {
             path += "&search=" + search;
         }
-        Response resp = await Rest.GetAsync(path);
+        Response resp = await Rest.GetAsync(path, null, -1, null, true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -155,7 +170,7 @@ public static class RequirementsBazaar
         {
             path += "&search=" + search;
         }
-        Response resp = await Rest.GetAsync(path);
+        Response resp = await Rest.GetAsync(path, null, -1, null, true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
