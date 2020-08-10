@@ -33,20 +33,35 @@ public class AStar : GridSearch
         openSet.Enqueue(parameter.start, 0);
         gScore.Add(parameter.start, parameter.Heuristic(parameter.start));
         IntTriple current;
-        parameter.isRunning = true;
+        parameter.status = AStarStatus.Running;
+        DateTime timeAtBeginOfFrame = DateTime.Now;
+        int frameCount = 0;
 
         while (openSet.Count != 0)
         {
+            if ((DateTime.Now - timeAtBeginOfFrame).TotalMilliseconds > 10)
+            {
+                frameCount++;
+                if (frameCount > 10)
+                {
+                    Debug.Log("Too Long");
+                    parameter.status = AStarStatus.Failure;
+                    yield break;
+                }
+                yield return null;
+                timeAtBeginOfFrame = DateTime.Now;
+            }
+
             current = openSet.Dequeue();
             if (parameter.GoalTest(current, parameter.goal))
             {
                 List<IntTriple> optimalPath = null;
                 if (parameter.calculatePath)
-                    optimalPath = reconstruct_path<IntTriple>(cameFrom, current);
+                    optimalPath = AStar.reconstruct_path<IntTriple>(cameFrom, current);
 
-                parameter.output = new SearchResult<IntTriple>(optimalPath, gScore[current]);
-                parameter.isRunning = false;
-                return null;
+                parameter.output = new AStar.SearchResult<IntTriple>(optimalPath, gScore[current]);
+                parameter.status = AStarStatus.Finished;
+                yield break;
             }
 
             List<IntTriple> neighbors = parameter.GetNeighbors(current);
@@ -78,13 +93,12 @@ public class AStar : GridSearch
         if (openSet.Count == 0)
         {
             //open set is empty and goal is never reached => no possible path
-            parameter.output = new SearchResult<IntTriple>(new List<IntTriple>(), float.PositiveInfinity);
-            parameter.isRunning = false;
-            return null;
+            parameter.output = new AStar.SearchResult<IntTriple>(new List<IntTriple>(), float.PositiveInfinity);
+            parameter.status = AStarStatus.Finished;
+            yield break;
         }
-        parameter.output = new SearchResult<IntTriple>(null, float.PositiveInfinity);
-        parameter.isRunning = false;
-        return null;
+        parameter.output = new AStar.SearchResult<IntTriple>(null, float.PositiveInfinity);
+        parameter.status = AStarStatus.Finished;
     }
 
 
@@ -165,7 +179,7 @@ public class AStarParameter
     public bool calculatePath;
 
     //Extra parameters for controling the coroutine
-    public bool isRunning;
+    public AStarStatus status;
     public AStar.SearchResult<IntTriple> output;
     public Vector3[] curve;
 
@@ -178,7 +192,7 @@ public class AStarParameter
         this.Heuristic = Heuristic;
         this.CostsBetween = CostsBetween;
         this.calculatePath = calculatePath;
-        isRunning = true;
+        status = AStarStatus.Waiting;
     }
 
     public AStarParameter(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition, GameObject startObject, GameObject goalObject)
@@ -190,10 +204,19 @@ public class AStarParameter
         Heuristic = AStar.HeuristicGeneratorGrid(goalPosition, stepSize);
         CostsBetween = AStar.CostsBetweenGeneratorGrid(stepSize);
         calculatePath = true;
-        isRunning = true;
+        status = AStarStatus.Waiting;
     }
 
-    public AStarParameter(Vector3[] curve) {
-        this.curve = curve;
+    public AStarParameter() {
+        status = AStarStatus.NoHandler;
     }
+}
+
+public enum AStarStatus
+{
+    Running,
+    Failure,
+    Finished,
+    Waiting,
+    NoHandler
 }

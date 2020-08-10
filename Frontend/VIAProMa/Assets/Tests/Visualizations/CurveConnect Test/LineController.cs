@@ -14,6 +14,7 @@ public class LineController : MonoBehaviour
     GameObject instantiatedDeletCube;
     List<ConnectionCurve> curves;
     IMixedRealityPointer mainPointer = null;
+    JoinedCurveGeneration curveGenerator;
     public enum State
     {
         defaultMode,
@@ -40,6 +41,7 @@ public class LineController : MonoBehaviour
     void Start()
     {
         curves = new List<ConnectionCurve>();
+        curveGenerator = GetComponent<JoinedCurveGeneration>();
 
         //Setting up the colours
         Color c1 = Color.red;
@@ -72,29 +74,7 @@ public class LineController : MonoBehaviour
         //Update Curves
         foreach (ConnectionCurve connectionCurve in curves)
         {
-            AStarParameter result = JoinedCurveGeneration.start(connectionCurve.start, connectionCurve.goal, stepSize, curveSegmentCount);
-            if (result.curve != null)
-            {
-                Vector3[] curve = result.curve;
-                connectionCurve.lineRenderer.positionCount = curve.Length;
-                connectionCurve.lineRenderer.SetPositions(curve);
-            }
-            else
-            {
-                if (connectionCurve.currentCoroutine == null)
-                {
-                    
-                    StartCoroutine("AStarSearchCoroutine", result);
-                    connectionCurve.currentCoroutine = result;
-                }
-                if(!connectionCurve.currentCoroutine.isRunning)
-                {
-                    Vector3[] curve = CurveGenerator.IntTripleArrayToCurve(connectionCurve.currentCoroutine.output.path, connectionCurve.start.transform.position, connectionCurve.goal.transform.position, stepSize);
-                    connectionCurve.lineRenderer.positionCount = curve.Length;
-                    connectionCurve.lineRenderer.SetPositions(curve);
-                    connectionCurve.currentCoroutine = null;
-                }
-            }
+            curveGenerator.UpdateCurve(connectionCurve,stepSize);
         }
 
         //Update the tempcurve if existing
@@ -266,82 +246,7 @@ public class LineController : MonoBehaviour
         }
     }
 
-    public IEnumerator AStarSearchCoroutine(AStarParameter parameter)
-    {
-        SimplePriorityQueue<IntTriple> openSet = new SimplePriorityQueue<IntTriple>();
-        Dictionary<IntTriple, IntTriple> cameFrom = new Dictionary<IntTriple, IntTriple>();
-        Dictionary<IntTriple, float> gScore = new Dictionary<IntTriple, float>();
-        openSet.Enqueue(parameter.start, 0);
-        gScore.Add(parameter.start, parameter.Heuristic(parameter.start));
-        IntTriple current;
-        parameter.isRunning = true;
-        DateTime timeAtBeginOfFrame = DateTime.Now;
-        int frameCount = 0;
-
-        while (openSet.Count != 0)
-        {
-            if ((DateTime.Now - timeAtBeginOfFrame).TotalMilliseconds > 5)
-            {
-                Debug.Log("Next Frame");
-                frameCount++;
-                if (frameCount > 5)
-                {
-                    Debug.Log("Fuck this");
-                    yield break;
-                    
-                }
-                yield return null;
-                timeAtBeginOfFrame = DateTime.Now;
-            }
-
-            current = openSet.Dequeue();
-            if (parameter.GoalTest(current, parameter.goal))
-            {
-                List<IntTriple> optimalPath = null;
-                if (parameter.calculatePath)
-                    optimalPath = AStar.reconstruct_path<IntTriple>(cameFrom, current);
-
-                parameter.output = new AStar.SearchResult<IntTriple>(optimalPath, gScore[current]);
-                parameter.isRunning = false;
-                yield break;
-            }
-
-            List<IntTriple> neighbors = parameter.GetNeighbors(current);
-
-            //IntTripleODO Maby here multithreading?
-            foreach (IntTriple neighbor in neighbors)
-            {
-                float h = parameter.Heuristic(neighbor);
-                float tentative_gScore = gScore[current] + parameter.CostsBetween(current, neighbor);
-                float neighboreGScore;
-                if (gScore.TryGetValue(neighbor, out neighboreGScore))
-                {
-                    if (tentative_gScore < neighboreGScore)
-                    {
-                        cameFrom[neighbor] = current;
-                        gScore[neighbor] = tentative_gScore;
-                        openSet.EnqueueWithoutDuplicates(neighbor, neighboreGScore + h);
-                    }
-                }
-                //if neighbore dosn't have a gScore then it's infinit and therefore bigger than tentative_gScore
-                else
-                {
-                    cameFrom[neighbor] = current;
-                    gScore[neighbor] = tentative_gScore;
-                    openSet.EnqueueWithoutDuplicates(neighbor, tentative_gScore + h);
-                }
-            }
-        }
-        if (openSet.Count == 0)
-        {
-            //open set is empty and goal is never reached => no possible path
-            parameter.output = new AStar.SearchResult<IntTriple>(new List<IntTriple>(), float.PositiveInfinity);
-            parameter.isRunning = false;
-            yield break;
-        }
-        parameter.output = new AStar.SearchResult<IntTriple>(null, float.PositiveInfinity);
-        parameter.isRunning = false;
-    }
+   
 }
 
 public class ConnectionCurve
@@ -349,7 +254,8 @@ public class ConnectionCurve
     public GameObject start { get; }
     public GameObject goal { get; }
     public LineRenderer lineRenderer { get; }
-    public AStarParameter currentCoroutine;
+    public AStarParameter coroutineData;
+    public Coroutine coroutine;
 
     public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController)
     {
@@ -373,5 +279,7 @@ public class ConnectionCurve
             new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
         );
         lineRenderer.colorGradient = gradient;
+
+        coroutineData = new AStarParameter();
     }
 }
