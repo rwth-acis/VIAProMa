@@ -35,6 +35,7 @@ public class LineController : MonoBehaviour
     //Test
     public GameObject startTest;
     public GameObject goalTest;
+    GameObject tempGoal = null;
 
 
     // Start is called before the first frame update
@@ -99,7 +100,15 @@ public class LineController : MonoBehaviour
                 //But ToString then returns null.
                 if (mainPointer.ToString() != "null")
                 {
-                    tempCurve.goal.transform.position = mainPointer.Position;
+                    if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
+                    {
+                        tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                    }
+                    else
+                    {
+                        tempCurve.goal = tempGoal;
+                        tempCurve.goal.transform.position = mainPointer.Position;
+                    }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                     if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
                     {
@@ -171,7 +180,7 @@ public class LineController : MonoBehaviour
         currState = State.connecting;
         RefreshPointer();
         GameObject currentConnectingStart = start;
-        GameObject tempGoal = new GameObject("Temp Goal");
+        tempGoal = new GameObject("Temp Goal");
         GameObject tempBox = new GameObject("Bounding Box");
         tempBox.transform.parent = tempGoal.transform;
         BoxCollider collider = tempBox.AddComponent<BoxCollider>();
@@ -185,7 +194,7 @@ public class LineController : MonoBehaviour
 
     void StopConnecting()
     {
-        Destroy(tempCurve.goal);
+        Destroy(tempGoal);
         Destroy(tempCurve.lineRenderer);
         tempCurve = null;
         currState = State.defaultMode;
@@ -250,7 +259,7 @@ public class LineController : MonoBehaviour
 public class ConnectionCurve
 {
     public GameObject start { get; }
-    public GameObject goal { get; }
+    public GameObject goal { get; set; }
     public LineRenderer lineRenderer { get; }
     public AStarParameter coroutineData;
     public Coroutine coroutine;
