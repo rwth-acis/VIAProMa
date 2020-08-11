@@ -59,6 +59,7 @@ public class AStar : GridSearch
                 if (parameter.calculatePath)
                     optimalPath = AStar.reconstruct_path<IntTriple>(cameFrom, current);
 
+                Debug.Log(frameCount);
                 parameter.output = new AStar.SearchResult<IntTriple>(optimalPath, gScore[current]);
                 parameter.status = AStarStatus.Finished;
                 yield break;
