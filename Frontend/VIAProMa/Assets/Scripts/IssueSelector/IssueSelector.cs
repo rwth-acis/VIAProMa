@@ -11,13 +11,16 @@ using Microsoft.MixedReality.Toolkit.Input;
 public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointerHandler
 {
     [SerializeField] private GameObject selectionIndicator;
-    [SerializeField] private Renderer backgroundRenderer;
+    [SerializeField] [HideInInspector] public Renderer backgroundRenderer;
 
     private IssueDataDisplay issueDataDisplay;
     private bool selected;
-    private Color originalRendererColor;
+    [HideInInspector] public Color originalRendererColor;
 
     public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
+
+    public WindowManager manager;
+
 
     /// <summary>
     /// True if the issue is currently selected
@@ -74,6 +77,8 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
             Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
             UpdateView();
         }
+        manager = GameObject.FindWithTag("LineDraw").GetComponent<WindowManager>();
+        
     }
 
     /// <summary>
@@ -178,14 +183,52 @@ public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointer
 
     /// <summary>
     /// Called by the Mixed Reality Toolkit if the object was clicked
+    /// If the LineDraw mode is active, the object is saved as either start or destination.
     /// </summary>
     /// <param name="eventData">The event data of the interaction</param>
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
+        if (this.Selected == true)
+        {
+            return;
+        }
         if (IssueSelectionManager.Instance.SelectionModeActive)
         {
             ToggleSelection();
             eventData.Use();
+        }
+        if (manager.ConnectionLinesMenu.IsLineModeActivated || manager.ConnectionLinesMenu.IsDeleteLineModeActivated)
+        {
+            if (!manager.ConnectionLinesMenu.OneSelected)
+            {
+                if(manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>() != null)
+                {
+                    //manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.StartObject.GetComponent<IssueSelector>().Selected = false;
+                }
+                if (manager.ConnectionLinesMenu.StartObject != null && manager.ConnectionLinesMenu.StartObject.GetComponent<VisualizationSelector>() != null)
+                {
+                    manager.ConnectionLinesMenu.StartObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                }
+                manager.ConnectionLinesMenu.StartObject = gameObject;
+                manager.ConnectionLinesMenu.OneSelected = true;
+            }
+            else
+            {
+                if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>() != null)
+                {
+                    //manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().backgroundRenderer.material.color = manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().originalRendererColor;
+                    manager.ConnectionLinesMenu.DestinationObject.GetComponent<IssueSelector>().Selected = false;
+                }
+                if (manager.ConnectionLinesMenu.DestinationObject != null && manager.ConnectionLinesMenu.DestinationObject.GetComponent<VisualizationSelector>() != null)
+                {
+                    manager.ConnectionLinesMenu.DestinationObject.transform.Find("HighlightingCube").gameObject.SetActive(false);
+                }
+                manager.ConnectionLinesMenu.DestinationObject = gameObject;
+                manager.ConnectionLinesMenu.OneSelected = false;
+            }
+            //backgroundRenderer.material.color = selectedColor;
+            this.Selected = true;
         }
     }
 }

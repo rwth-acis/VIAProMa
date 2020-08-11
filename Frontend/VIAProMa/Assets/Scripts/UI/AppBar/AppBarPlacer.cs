@@ -79,12 +79,14 @@ public class AppBarPlacer : MonoBehaviour
         transform.position = smooth ? Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * backgroundBarMoveSpeed) : finalPosition;
 
         // Rotate on the y axis
-        Vector3 direction = (boundingBox.TargetBounds.bounds.center - finalPosition).normalized;
+        Vector3 direction = -faceNormal.normalized;
+
         if (direction != Vector3.zero)
         {
             Vector3 eulerAngles = Quaternion.LookRotation(direction, Vector3.up).eulerAngles;
             eulerAngles.x = 0f;
             eulerAngles.z = 0f;
+
             transform.eulerAngles = eulerAngles;
         }
         else

@@ -17,6 +17,7 @@ public static class RequirementsBazaar
     public static async Task<ApiResult<Project[]>> GetProjects()
     {
         Debug.Log("Requirements Baazar: GetProjects");
+        Debug.Log(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects");
         Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects");
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)

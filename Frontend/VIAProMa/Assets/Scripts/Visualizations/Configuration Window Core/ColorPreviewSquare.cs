@@ -1,4 +1,6 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using i5.ViaProMa.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +24,7 @@ public class ColorPreviewSquare : MonoBehaviour
         }
     }
 
-    public ConfigurationColorChooser ColorChooser
+    public ConfigurationColorChooser ColorChooser 
     {
         get; set;
     }

@@ -15,6 +15,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [SerializeField] private Interactable serverConnectionButton;
     [SerializeField] private Interactable saveButton;
     [SerializeField] private Interactable loadButton;
+    [SerializeField] private Interactable connectionLinesButton;
     [SerializeField] private Interactable issueShelfButton;
     [SerializeField] private Interactable visualizationShelfButton;
     [SerializeField] private Interactable loginButton;
@@ -54,6 +55,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (loadButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(loadButton));
+        }
+        if (connectionLinesButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(connectionLinesButton));
         }
         if (issueShelfButton == null)
         {
@@ -214,6 +219,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         WindowManager.Instance.LoginMenu.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
     }
 
+
     public void ShowAvatarConfiguration()
     {
         InstantiateControl(
@@ -328,5 +334,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         PhotonView view = PhotonView.Find(photonId);
         visualizationShelfInstance = view.gameObject;
         Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+    }
+
+    public void ShowConnectionLinesMenu()
+    {
+        WindowManager.Instance.ConnectionLinesMenu.Open(connectionLinesButton.transform.position - 0.6f * transform.right, connectionLinesButton.transform.eulerAngles);
     }
 }

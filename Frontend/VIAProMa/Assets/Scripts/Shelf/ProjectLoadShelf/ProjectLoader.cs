@@ -28,11 +28,29 @@ public class ProjectLoader : Shelf, ILoadShelf
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelfBoards));
         }
     }
-
     private void Start()
     {
         LoadContent();
     }
+
+    private void OnEnable()
+    {
+        GameObject[] projectfiles = GameObject.FindGameObjectsWithTag("ProjectFile");
+        foreach (GameObject file in projectfiles)
+        {
+            Destroy(file);
+        }
+        for (int board = 0; board < shelfBoards.Length; board++)
+        {
+            shelfBoards[board].Collection = new GameObject[0];
+        }
+        LoadContent();
+    }
+
+    //private void OnDisable()
+    //{
+        
+    //}
 
     public async void LoadContent()
     {

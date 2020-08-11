@@ -34,7 +34,7 @@ To do so, the asset has to be aquired first, then downloaded and then imported.
 5. Once PUN has been downloaded, an import window will appear.
 Select everything and click on import.
 6. After the successful import of the assets, a window should appear which asks for an app ID.
-7. Create a free Photon Engine accout under [https://www.photonengine.com/en/pun](https://www.photonengine.com/en/pun).
+7. Create a free Photon Engine account under [https://www.photonengine.com/en/pun](https://www.photonengine.com/en/pun).
 8. Register a Photon PUN application in order to generate an app ID.
 9. Enter the app ID in the dialog window in Unity.
 If the window has not appeared or has already been closed, go to Window > Photon Unity Networking > Highlight Server Settings and enter the app ID in the inspector under "Settings/ App Id Realtime".
@@ -42,7 +42,7 @@ If the window has not appeared or has already been closed, go to Window > Photon
 11. In the import window, select everything that is selectable and click on import.
 Some parts of the import are not selectable.
 This is fine since they have already been imported with the Photon PUN 2 package.
-12. In the the dashboard of the Photon Engine account, create a register a new Photon Voice application and copy its app ID.
+12. In the dashboard of the Photon Engine account, register a new Photon Voice application and copy its app ID.
 13. After the import, go to Window > Photon Unity Networking > Highlight Server Settings and enter the voice app ID under "Settings/ App Id Voice".
 14. Open the scene "Main Scene".
 A prompt will appear which will ask to import TMP Essentials. Click on the upper button.
