@@ -80,9 +80,7 @@ public class LineController : MonoBehaviour
         //Update the tempcurve if existing
         if (tempCurve != null)
         {
-            //Vector3[] curve = JoinedCurveGeneration.start(tempCurve.start, tempCurve.goal, stepSize, curveSegmentCount);
-            //tempCurve.lineRenderer.positionCount = curve.Length;
-            //tempCurve.lineRenderer.SetPositions(curve);
+            curveGenerator.UpdateCurve(tempCurve, stepSize);
         }
         
 
