@@ -18,7 +18,7 @@ public class JoinedCurveGeneration : MonoBehaviour
 
             if (Vector3.Distance(start, goal) < 20)
             {
-                if (connectioCurve.coroutineData.status == AStarStatus.NoHandler)
+                if (connectioCurve.coroutineData.status == CoroutineStatus.NoHandler)
                     connectioCurve.coroutine = StartCoroutine(AStarHandler(startCell, goalCell, stepSize, connectioCurve));
             }
             else
@@ -29,7 +29,7 @@ public class JoinedCurveGeneration : MonoBehaviour
                 {
                     StopCoroutine(connectioCurve.coroutine);
                 }
-                connectioCurve.coroutineData = new AStarParameter();
+                connectioCurve.coroutineData = new CoroutineData();
                 connectioCurve.lineRenderer.positionCount = curve.Length;
                 connectioCurve.lineRenderer.SetPositions(curve);
             }
@@ -40,7 +40,7 @@ public class JoinedCurveGeneration : MonoBehaviour
             {
                 StopCoroutine(connectioCurve.coroutine);
             }
-            connectioCurve.coroutineData = new AStarParameter();
+            connectioCurve.coroutineData = new CoroutineData();
             connectioCurve.lineRenderer.positionCount = curve.Length;
             connectioCurve.lineRenderer.SetPositions(curve);
         }  
@@ -48,25 +48,26 @@ public class JoinedCurveGeneration : MonoBehaviour
 
     IEnumerator AStarHandler(IntTriple startCell, IntTriple goalCell, float stepSize, ConnectionCurve connectionCurve)
     {
-        AStarParameter data = new AStarParameter(startCell, goalCell, stepSize, connectionCurve.goal.transform.position, connectionCurve.start, connectionCurve.goal);
+        CoroutineData data = new CoroutineData();
+        data.status = CoroutineStatus.Running;
         connectionCurve.coroutineData = data;
-        yield return StartCoroutine(AStar.AStarSearchCoroutine(data));
+        yield return StartCoroutine(AStar.AStarGridSearchCoroutine(startCell,goalCell,stepSize, connectionCurve.start, connectionCurve.goal, data));
         Vector3 start = connectionCurve.start.transform.position;
         Vector3 goal = connectionCurve.goal.transform.position;
         Vector3[] curve;
         List<IntTriple> path = new List<IntTriple>();
         switch (data.status)
         {
-            case AStarStatus.Finished:
+            case CoroutineStatus.Finished:
                 path = connectionCurve.coroutineData.output.path;
                 break;
-            case AStarStatus.Failure:
+            case CoroutineStatus.Failure:
                 path = Greedy.GreedyGridSearch(startCell,goalCell,stepSize,goal, connectionCurve.goal, connectionCurve.start).path;
                 break;
         }
         curve = CurveGenerator.IntTripleArrayToCurve(path, start, goal, stepSize);
         connectionCurve.lineRenderer.positionCount = curve.Length;
         connectionCurve.lineRenderer.SetPositions(curve);
-        connectionCurve.coroutineData = new AStarParameter();
+        connectionCurve.coroutineData = new CoroutineData();
     }
 }

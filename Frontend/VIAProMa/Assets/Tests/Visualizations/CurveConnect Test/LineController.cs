@@ -252,7 +252,7 @@ public class ConnectionCurve
     public GameObject start { get; }
     public GameObject goal { get; }
     public LineRenderer lineRenderer { get; }
-    public AStarParameter coroutineData;
+    public CoroutineData coroutineData;
     public Coroutine coroutine;
 
     public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController)
@@ -278,6 +278,6 @@ public class ConnectionCurve
         );
         lineRenderer.colorGradient = gradient;
 
-        coroutineData = new AStarParameter();
+        coroutineData = new CoroutineData();
     }
 }

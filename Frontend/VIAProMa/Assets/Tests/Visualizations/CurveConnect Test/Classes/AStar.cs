@@ -25,15 +25,14 @@ public class AStar : GridSearch
 
 
 
-    public static IEnumerator AStarSearchCoroutine(AStarParameter parameter)
+    public static IEnumerator AStarSearchCoroutine(IntTriple start, IntTriple goal, Func<IntTriple, List<IntTriple>> GetNeighbors, Func<IntTriple, IntTriple, bool> GoalTest, Func<IntTriple, float> Heuristic, Func<IntTriple, IntTriple, float> CostsBetween, CoroutineData data, bool calculatePath = true)
     {
         SimplePriorityQueue<IntTriple> openSet = new SimplePriorityQueue<IntTriple>();
         Dictionary<IntTriple, IntTriple> cameFrom = new Dictionary<IntTriple, IntTriple>();
         Dictionary<IntTriple, float> gScore = new Dictionary<IntTriple, float>();
-        openSet.Enqueue(parameter.start, 0);
-        gScore.Add(parameter.start, parameter.Heuristic(parameter.start));
+        openSet.Enqueue(start, 0);
+        gScore.Add(start, Heuristic(start));
         IntTriple current;
-        parameter.status = AStarStatus.Running;
         DateTime timeAtBeginOfFrame = DateTime.Now;
         int frameCount = 0;
 
@@ -45,7 +44,7 @@ public class AStar : GridSearch
                 if (frameCount > 10)
                 {
                     Debug.Log("Too Long");
-                    parameter.status = AStarStatus.Failure;
+                    data.status = CoroutineStatus.Failure;
                     yield break;
                 }
                 yield return null;
@@ -53,25 +52,25 @@ public class AStar : GridSearch
             }
 
             current = openSet.Dequeue();
-            if (parameter.GoalTest(current, parameter.goal))
+            if (GoalTest(current, goal))
             {
                 List<IntTriple> optimalPath = null;
-                if (parameter.calculatePath)
+                if (calculatePath)
                     optimalPath = AStar.reconstruct_path<IntTriple>(cameFrom, current);
 
                 Debug.Log(frameCount);
-                parameter.output = new AStar.SearchResult<IntTriple>(optimalPath, gScore[current]);
-                parameter.status = AStarStatus.Finished;
+                data.output = new AStar.SearchResult<IntTriple>(optimalPath, gScore[current]);
+                data.status = CoroutineStatus.Finished;
                 yield break;
             }
 
-            List<IntTriple> neighbors = parameter.GetNeighbors(current);
+            List<IntTriple> neighbors = GetNeighbors(current);
 
-            //IntTripleODO Maby here multithreading?
+            //TODO Maby here multithreading?
             foreach (IntTriple neighbor in neighbors)
             {
-                float h = parameter.Heuristic(neighbor);
-                float tentative_gScore = gScore[current] + parameter.CostsBetween(current, neighbor);
+                float h = Heuristic(neighbor);
+                float tentative_gScore = gScore[current] + CostsBetween(current, neighbor);
                 float neighboreGScore;
                 if (gScore.TryGetValue(neighbor, out neighboreGScore))
                 {
@@ -94,14 +93,17 @@ public class AStar : GridSearch
         if (openSet.Count == 0)
         {
             //open set is empty and goal is never reached => no possible path
-            parameter.output = new AStar.SearchResult<IntTriple>(new List<IntTriple>(), float.PositiveInfinity);
-            parameter.status = AStarStatus.Finished;
+            data.status = CoroutineStatus.Failure;
             yield break;
         }
-        parameter.output = new AStar.SearchResult<IntTriple>(null, float.PositiveInfinity);
-        parameter.status = AStarStatus.Finished;
+        data.output = new AStar.SearchResult<IntTriple>(null, float.PositiveInfinity);
+        data.status = CoroutineStatus.Failure;
     }
 
+    public static IEnumerator AStarGridSearchCoroutine(IntTriple startCell, IntTriple goalCell, float stepSize, GameObject startObject, GameObject goalObject, CoroutineData data)
+    {
+        return AStarSearchCoroutine(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize, startObject, goalObject), (x, y) => x == y, HeuristicGeneratorGrid(goalObject.transform.position, stepSize), CostsBetweenGeneratorGrid(stepSize), data);
+    }
 
     public static SearchResult<T> AStarSearch<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween, bool calculatePath = true)
     {
@@ -169,51 +171,21 @@ public class AStar : GridSearch
 }
 
 //Necassary for the coroutine, because StartCoroutine only allows one parameter
-public class AStarParameter
+public class CoroutineData
 {
-    public IntTriple start;
-    public IntTriple goal;
-    public Func<IntTriple, List<IntTriple>> GetNeighbors;
-    public Func<IntTriple, IntTriple, bool> GoalTest;
-    public Func<IntTriple, float> Heuristic;
-    public Func<IntTriple, IntTriple, float> CostsBetween;
-    public bool calculatePath;
-
     //Extra parameters for controling the coroutine
-    public AStarStatus status;
+    public CoroutineStatus status;
     public AStar.SearchResult<IntTriple> output;
     public Vector3[] curve;
 
-    public AStarParameter(IntTriple start, IntTriple goal, Func<IntTriple, List<IntTriple>> GetNeighbors, Func<IntTriple, IntTriple, bool> GoalTest, Func<IntTriple, float> Heuristic, Func<IntTriple, IntTriple, float> CostsBetween, bool calculatePath = true)
-    {
-        this.start = start;
-        this.goal = goal;
-        this.GetNeighbors = GetNeighbors;
-        this.GoalTest = GoalTest;
-        this.Heuristic = Heuristic;
-        this.CostsBetween = CostsBetween;
-        this.calculatePath = calculatePath;
-        status = AStarStatus.Waiting;
-    }
 
-    public AStarParameter(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition, GameObject startObject, GameObject goalObject)
-    {
-        start = startCell;
-        goal = goalCell;
-        GetNeighbors = AStar.GetNeighborsGeneratorGrid(stepSize, startObject, goalObject);
-        GoalTest = (x, y) => x == y;
-        Heuristic = AStar.HeuristicGeneratorGrid(goalPosition, stepSize);
-        CostsBetween = AStar.CostsBetweenGeneratorGrid(stepSize);
-        calculatePath = true;
-        status = AStarStatus.Waiting;
-    }
 
-    public AStarParameter() {
-        status = AStarStatus.NoHandler;
+    public CoroutineData() {
+        status = CoroutineStatus.NoHandler;
     }
 }
 
-public enum AStarStatus
+public enum CoroutineStatus
 {
     Running,
     Failure,
