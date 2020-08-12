@@ -10,6 +10,7 @@ public class WindowManager : Singleton<WindowManager>
     [SerializeField] private GameObject chatMenuPrefab;
     [SerializeField] private GameObject saveProjectMenuPrefab;
     [SerializeField] private GameObject loginMenuPrefab;
+    [SerializeField] private GameObject virtualEnvironmentsMenuPrefab;
 
     private void Start()
     {
@@ -18,6 +19,7 @@ public class WindowManager : Singleton<WindowManager>
         ChatMenu = (ChatMenu)InstantiateWindow(chatMenuPrefab);
         SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
         LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
+        virtualEnvironmentsMenu = (virtualEnvironmentsMenu)InstantiateWindow(virtualEnvironmentsMenuPrefab);
     }
 
     private IWindow InstantiateWindow(GameObject prefab)
@@ -43,4 +45,6 @@ public class WindowManager : Singleton<WindowManager>
     public SaveProjectWindow SaveProjectWindow { get; private set; }
 
     public LoginMenu LoginMenu { get; private set; }
+
+    public virtualEnvironmentsMenu virtualEnvironmentsMenu { get; private set; }
 }

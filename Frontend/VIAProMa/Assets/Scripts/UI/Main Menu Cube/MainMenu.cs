@@ -1,6 +1,7 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Windows;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     [SerializeField] private Interactable visualizationShelfButton;
     [SerializeField] private Interactable loginButton;
     [SerializeField] private Interactable roomButton;
+    [SerializeField] private Interactable advancedSettingsButton;
     [SerializeField] private TextMeshPro roomButtonText;
     [SerializeField] private Interactable chatButton;
     [SerializeField] private Interactable microphoneButton;
@@ -70,6 +72,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (roomButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(roomButton));
+        }
+        if (advancedSettingsButton == null)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, nameof(advancedSettingsButton));
         }
         if (roomButtonText == null)
         {
@@ -137,6 +143,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
         loadButton.Enabled = PhotonNetwork.InRoom;
         issueShelfButton.Enabled = PhotonNetwork.InRoom;
         visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
+        //advancedSettingsButton.Enabled = System.Windows.Graphics.HolographicDisplay.isOpaque;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -226,6 +233,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
     public void ShowServerStatusMenu()
     {
         WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
+        foldController.FoldCube();
+    }
+
+    public void ShowVirtualEnvironmentsMenu()
+    {
+        WindowManager.Instance.virtualEnvironmentsMenu.Open(advancedSettingsButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
         foldController.FoldCube();
     }
 
