@@ -14,15 +14,19 @@ using UnityEngine;
 /// </summary>
 public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 {
+    [SerializeField] private EnvironmentListView environmentListView;
 
     [SerializeField] private Interactable pageUpButton;
     [SerializeField] private Interactable pageDownButton;
 
+  
 
     /// <summary>
-    /// The number of room entries which are shown on one page
+    /// The number of environment entries which are shown on one page
     /// </summary>
     public int entriesPerPage = 2;
+
+    private List<EnvironmentData> environments = new List<EnvironmentData>();
 
     private int page = 0;
     private bool windowEnabled = true;
@@ -70,10 +74,25 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
         }
 
+     //   environmentListView.ItemSelected += OnEnvironmentSelected;
+
         Close();
     }
 
-   
+    /// <summary>
+    /// Called if a element of the room list view was selected by the user
+    /// Makes sure that the client joins the selected room
+    /// </summary>
+    /// <param name="skybox">The selected skybox</param>
+    /// <param name="e">Arguments about the list view selection event</param>
+//    private void OnEnvironmentSelected(Material skybox, EnvironmentViewItemSelectedArgs e)
+  //  {
+  //      if (windowEnabled)
+  //      {
+  //          Render.Settings.skybox = skybox;
+  //      }
+  //  }
+
     /// <summary>
     /// Called if the user pushes the page up button
     /// Swiches to the previous page
@@ -82,6 +101,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     {
         page = Mathf.Max(0, page - 1);
         SetPageButtonStates();
+        UpdateEnvironmentDisplay();
     }
 
     /// <summary>
@@ -90,8 +110,9 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     /// </summary>
     public void PageDown()
     {
-        page = Mathf.Min(page + 1, 5);
+        page = Mathf.Min(page + 1, ((environments.Count - 1) / entriesPerPage));
         SetPageButtonStates();
+        UpdateEnvironmentDisplay();
     }
 
 
@@ -110,13 +131,33 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
             pageUpButton.Enabled = true;
         }
 
-        if (page == 5) // last page
+        if (page == ((environments.Count - 1) / entriesPerPage)) // last page
         {
             pageDownButton.Enabled = false;
         }
         else
         {
             pageDownButton.Enabled = true;
+        }
+    }
+
+
+    /// <summary>
+    /// Updates the list view showing the environment lists (on the current page)
+    /// </summary>
+    private void UpdateEnvironmentDisplay()
+    {
+        if (environments.Count > 0)
+        {
+            // get the start index and length of the sub array to display
+            // make sure that it stays within the bounds of the room list
+            int startIndex = Mathf.Min(page * entriesPerPage, environments.Count - 1);
+            int length = Mathf.Min(environments.Count - startIndex, entriesPerPage);
+            environmentListView.Items = environments.GetRange(startIndex, length);
+        }
+        else
+        {
+            environmentListView.Items = new List<EnvironmentData>();
         }
     }
 
