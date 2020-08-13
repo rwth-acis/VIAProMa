@@ -39,7 +39,7 @@ public abstract class CurveGenerator
         return c;
     }
 
-    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startObject, GameObject goalObject, int layermask = 0b11111111, bool checkEndCollision = true , float distanceToObstacle = 0.2f)
+    public static bool CurveCollsionCheck(Vector3[] curve, GameObject startObject, GameObject goalObject, int layermask = 0b1111111, bool checkEndCollision = true , float distanceToObstacle = 0.2f)
     {
         int curveIncrement = (curve.Length - 2) / 60;
         if (curveIncrement < 1)
@@ -47,7 +47,7 @@ public abstract class CurveGenerator
         int lastChecked = 0;
 
         //Check from start to the first. This has to be done seperatly, because otherwise the sphere around start would detect collisions behind the object.
-        Collider[] potentialColliders = Physics.OverlapCapsule(curve[0] + (curve[curveIncrement] - curve[0]).normalized * distanceToObstacle, curve[curveIncrement], distanceToObstacle);
+        Collider[] potentialColliders = Physics.OverlapCapsule(curve[0] + (curve[curveIncrement] - curve[0]).normalized * distanceToObstacle, curve[curveIncrement], distanceToObstacle, layermask);
         foreach (Collider coll in potentialColliders)
         {
             if (IsValidCollider(coll, startObject, goalObject))
@@ -56,7 +56,7 @@ public abstract class CurveGenerator
 
         for (int i = curveIncrement; i < curve.Length - 1 - curveIncrement; i += curveIncrement)
         {
-            potentialColliders = Physics.OverlapCapsule(curve[i], curve[i+curveIncrement],distanceToObstacle);
+            potentialColliders = Physics.OverlapCapsule(curve[i], curve[i+curveIncrement],distanceToObstacle, layermask);
             foreach (Collider coll in potentialColliders)
             {
                 if (IsValidCollider(coll, startObject, goalObject))
@@ -66,7 +66,7 @@ public abstract class CurveGenerator
         }
 
         //Check form the last checked to the end
-        potentialColliders = Physics.OverlapCapsule(curve[lastChecked] , curve[curve.Length - 1] +(curve[lastChecked] - curve[curve.Length - 1]).normalized * distanceToObstacle, distanceToObstacle);
+        potentialColliders = Physics.OverlapCapsule(curve[lastChecked] , curve[curve.Length - 1] +(curve[lastChecked] - curve[curve.Length - 1]).normalized * distanceToObstacle, distanceToObstacle, layermask);
         foreach (Collider coll in potentialColliders)
         {
             if (IsValidCollider(coll, startObject, goalObject))
