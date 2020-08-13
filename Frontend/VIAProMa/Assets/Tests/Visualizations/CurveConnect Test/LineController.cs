@@ -140,7 +140,7 @@ public class LineController : MonoBehaviour
                     {
                         Vector3[] curve = new Vector3[connectionCurve.lineRenderer.positionCount];
                         connectionCurve.lineRenderer.GetPositions(curve);
-                        if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal, 0b100000000, false))
+                        if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal, 0b100000000, false, 0.05f))
                         {
                             connectionCurve.lineRenderer.colorGradient = deletColour;
                             if (((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select)
