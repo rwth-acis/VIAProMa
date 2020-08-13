@@ -172,7 +172,7 @@ public class LineController : MonoBehaviour
 
     void AddConnectionCurve(GameObject start, GameObject goal)
     {
-        curves.Add(new ConnectionCurve(start, goal, this.gameObject));
+        curves.Add(new ConnectionCurve(start, goal, gameObject));
     }
 
     void StartConnecting(GameObject start)
@@ -181,13 +181,8 @@ public class LineController : MonoBehaviour
         RefreshPointer();
         GameObject currentConnectingStart = start;
         tempGoal = new GameObject("Temp Goal");
-        GameObject tempBox = new GameObject("Bounding Box");
-        tempBox.transform.parent = tempGoal.transform;
-        BoxCollider collider = tempBox.AddComponent<BoxCollider>();
-        collider.name = "Bounding Box";
-        collider.enabled = false;
         tempGoal.transform.position = mainPointer.Position;
-        tempCurve = new ConnectionCurve(start, tempGoal, this.gameObject);
+        tempCurve = new ConnectionCurve(start, tempGoal, gameObject, Color.yellow, Color.yellow);
         clickTimeStamp = DateTime.Now;
     }
 
@@ -264,7 +259,10 @@ public class ConnectionCurve
     public CoroutineData coroutineData;
     public Coroutine coroutine;
 
-    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController)
+    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController) : this(start, goal, LineController, Color.green, Color.green) { }
+    
+
+    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
     {
         this.start = start;
         this.goal = goal;
@@ -273,16 +271,13 @@ public class ConnectionCurve
         lineObject.transform.parent = LineController.transform;
         lineRenderer = lineObject.AddComponent<LineRenderer>();
 
-        Color c1 = Color.green;
-        Color c2 = Color.green;
-
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.025f;
 
         float alpha = 1.0f;
         Gradient gradient = new Gradient();
         gradient.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(c1, 0.0f), new GradientColorKey(c2, 1.0f) },
+            new GradientColorKey[] { new GradientColorKey(color1, 0.0f), new GradientColorKey(color2, 1.0f) },
             new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
         );
         lineRenderer.colorGradient = gradient;
