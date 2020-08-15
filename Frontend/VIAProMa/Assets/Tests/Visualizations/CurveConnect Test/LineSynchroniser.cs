@@ -10,7 +10,15 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
     {
         if (stream.IsWriting)
         {
-            stream.SendNext(ColorEnum.connected);
+            stream.SendNext(line.colorGradient.colorKeys[0].color.r);
+            stream.SendNext(line.colorGradient.colorKeys[0].color.g);
+            stream.SendNext(line.colorGradient.colorKeys[0].color.b);
+            stream.SendNext(line.colorGradient.colorKeys[0].color.a);
+
+            stream.SendNext(line.colorGradient.colorKeys[1].color.r);
+            stream.SendNext(line.colorGradient.colorKeys[1].color.g);
+            stream.SendNext(line.colorGradient.colorKeys[1].color.b);
+            stream.SendNext(line.colorGradient.colorKeys[1].color.a);
             //stream.SendNext(line.material);
             //stream.SendNext(line.widthMultiplier);
             //stream.SendNext(line.colorGradient);
@@ -21,7 +29,22 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
         }
         else
         {
-            ColorEnum test = (ColorEnum)stream.ReceiveNext();
+            Color c1 = new Color();
+            c1.r = (float)stream.ReceiveNext();
+            c1.g = (float)stream.ReceiveNext();
+            c1.b = (float)stream.ReceiveNext();
+            c1.a = (float)stream.ReceiveNext();
+            Color c2 = new Color();
+            c2.r = (float)stream.ReceiveNext();
+            c2.g = (float)stream.ReceiveNext();
+            c2.b = (float)stream.ReceiveNext();
+            c2.a = (float)stream.ReceiveNext();
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(
+                new GradientColorKey[] { new GradientColorKey(c1, 0.0f), new GradientColorKey(c2, 1.0f) },
+                new GradientAlphaKey[] { new GradientAlphaKey(1, 0.0f), new GradientAlphaKey(1, 1.0f) }
+            );
+
             //line.material = (Material)stream.ReceiveNext();
             //line.widthMultiplier = (float)stream.ReceiveNext();
             //line.colorGradient = (Gradient)stream.ReceiveNext();
@@ -33,6 +56,8 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
     public void Start()
     {
         line = GetComponent<LineRenderer>();
+        line.material = new Material(Shader.Find("Sprites/Default"));
+        line.widthMultiplier = 0.025f;
     }
 }
 

@@ -28,8 +28,9 @@ public class LineController : MonoBehaviour
     DateTime clickTimeStamp;
 
     //Colour settings for the curves
-    Gradient defaultColour;
-    Gradient deletColour;
+    public Gradient defaultColour;
+    public Gradient deletColour;
+    public Gradient connectColour;
 
     //Test
     public GameObject startTest;
@@ -60,6 +61,13 @@ public class LineController : MonoBehaviour
             new GradientColorKey[] { new GradientColorKey(Color.red, 0), new GradientColorKey(Color.yellow, 1.0f) },
             new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
         );
+
+        connectColour = new Gradient();
+        connectColour.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(Color.yellow, 0), new GradientColorKey(Color.yellow, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+        );
+
 
         //Test
         if (startTest != null && goalTest != null)
