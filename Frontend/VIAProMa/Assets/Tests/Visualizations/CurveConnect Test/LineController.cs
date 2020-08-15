@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
-using Priority_Queue;
+using Photon.Pun;
 
 public class LineController : MonoBehaviour
 {
@@ -217,7 +216,11 @@ public class LineController : MonoBehaviour
         }
         foreach (ConnectionCurve connectionCurve in curvesToDelete)
         {
-            Destroy(connectionCurve.lineRenderer);
+            if (connectionCurve.photonView != null)
+                PhotonNetwork.Destroy(connectionCurve.photonView);
+            else
+                Destroy(connectionCurve.lineRenderer);
+
             curves.Remove(connectionCurve);
         }
         
@@ -258,6 +261,7 @@ public class ConnectionCurve
     public LineRenderer lineRenderer { get; }
     public CoroutineData coroutineData;
     public Coroutine coroutine;
+    public PhotonView photonView;
 
     public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController) : this(start, goal, LineController, Color.green, Color.green) { }
     
@@ -266,10 +270,20 @@ public class ConnectionCurve
     {
         this.start = start;
         this.goal = goal;
-
-        GameObject lineObject = new GameObject();
+        GameObject lineObject;
+        if (PhotonNetwork.InRoom)
+        {
+            lineObject = PhotonNetwork.Instantiate("Connection Curve", Vector3.zero, Quaternion.identity);
+            photonView = lineObject.GetComponent<PhotonView>();
+            lineRenderer = lineObject.GetComponent<LineRenderer>();
+        }
+        else
+        {
+            lineObject = new GameObject();
+            lineRenderer = lineObject.AddComponent<LineRenderer>();
+        }
         lineObject.transform.parent = LineController.transform;
-        lineRenderer = lineObject.AddComponent<LineRenderer>();
+        
 
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.025f;
