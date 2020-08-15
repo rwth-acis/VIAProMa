@@ -19,13 +19,10 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
             stream.SendNext(line.colorGradient.colorKeys[1].color.g);
             stream.SendNext(line.colorGradient.colorKeys[1].color.b);
             stream.SendNext(line.colorGradient.colorKeys[1].color.a);
-            //stream.SendNext(line.material);
-            //stream.SendNext(line.widthMultiplier);
-            //stream.SendNext(line.colorGradient);
-            //stream.SendNext(line.positionCount);
-            //Vector3[] positions = new Vector3[line.positionCount];
-            //line.GetPositions(positions);
-            //stream.SendNext(positions);
+            stream.SendNext(line.positionCount);
+            Vector3[] positions = new Vector3[line.positionCount];
+            line.GetPositions(positions);
+            stream.SendNext(positions);
         }
         else
         {
@@ -45,11 +42,9 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
                 new GradientAlphaKey[] { new GradientAlphaKey(1, 0.0f), new GradientAlphaKey(1, 1.0f) }
             );
 
-            //line.material = (Material)stream.ReceiveNext();
-            //line.widthMultiplier = (float)stream.ReceiveNext();
-            //line.colorGradient = (Gradient)stream.ReceiveNext();
-            //line.positionCount = (int)stream.ReceiveNext();
-            //line.SetPositions((Vector3[])stream.ReceiveNext());
+            line.colorGradient = gradient;
+            line.positionCount = (int)stream.ReceiveNext();
+            line.SetPositions((Vector3[])stream.ReceiveNext());
         }
     }
 
