@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class LineSynchroniser : MonoBehaviour
+public class LineSynchroniser : MonoBehaviour, IPunObservable
 {
     LineRenderer line;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
