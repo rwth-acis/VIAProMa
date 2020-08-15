@@ -155,7 +155,7 @@ public class LineController : MonoBehaviour
 
                     foreach (ConnectionCurve connectionCurve in curvesToDelete)
                     {
-                        Destroy(connectionCurve.lineRenderer);
+                        DeleteConnectionCurve(connectionCurve);
                         curves.Remove(connectionCurve);
                     }
                 }
@@ -167,6 +167,14 @@ public class LineController : MonoBehaviour
 
                 break;
         }
+    }
+
+    void DeleteConnectionCurve(ConnectionCurve connectionCurve)
+    {
+        if (connectionCurve.photonView != null)
+            PhotonNetwork.Destroy(connectionCurve.photonView);
+        else
+            Destroy(connectionCurve.lineRenderer);
     }
 
     void AddConnectionCurve(GameObject start, GameObject goal)
@@ -189,7 +197,7 @@ public class LineController : MonoBehaviour
     void StopConnecting()
     {
         Destroy(tempGoal);
-        Destroy(tempCurve.lineRenderer);
+        DeleteConnectionCurve(tempCurve);
         tempCurve = null;
         currState = State.defaultMode;
     }
@@ -216,10 +224,7 @@ public class LineController : MonoBehaviour
         }
         foreach (ConnectionCurve connectionCurve in curvesToDelete)
         {
-            if (connectionCurve.photonView != null)
-                PhotonNetwork.Destroy(connectionCurve.photonView);
-            else
-                Destroy(connectionCurve.lineRenderer);
+            DeleteConnectionCurve(connectionCurve);
 
             curves.Remove(connectionCurve);
         }
@@ -282,7 +287,7 @@ public class ConnectionCurve
             lineObject = new GameObject();
             lineRenderer = lineObject.AddComponent<LineRenderer>();
         }
-        lineObject.transform.parent = LineController.transform;
+        //lineObject.transform.parent = LineController.transform;
         
 
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
