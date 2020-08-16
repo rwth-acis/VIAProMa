@@ -5,7 +5,7 @@ using Photon.Pun;
 
 public class LineSynchroniser : MonoBehaviour, IPunObservable
 {
-    LineRenderer line;
+    public LineRenderer line;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -50,7 +50,6 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
 
     public void Start()
     {
-        line = GetComponent<LineRenderer>();
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.widthMultiplier = 0.025f;
     }
