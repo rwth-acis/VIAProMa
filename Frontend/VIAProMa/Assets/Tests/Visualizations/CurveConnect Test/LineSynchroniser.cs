@@ -50,7 +50,10 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
 
     public void Start()
     {
+<<<<<<< HEAD
         //line = GetComponent<LineRenderer>();
+=======
+>>>>>>> 658b1df17350e8bee188f8120b22de6d37634bd5
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.widthMultiplier = 0.025f;
     }
