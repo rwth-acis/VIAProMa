@@ -26,7 +26,7 @@ public class LineController : MonoBehaviour
     public State currState = State.defaultMode;
 
     //Temp Curve
-    private ConnectionCurveWrapper tempCurve;
+    private ConnectionCurve tempCurve;
     DateTime clickTimeStamp;
 
     //Colour settings for the curves
@@ -68,29 +68,13 @@ public class LineController : MonoBehaviour
         {
             AddConnectionCurve(startTest,goalTest);
         }
-        tempCurve = new ConnectionCurveWrapper();
-        //curveGenerator.StartCoroutine(curveGenerator.UpdaterCoroutine(curves,tempCurve,stepSize));
-        //Task.Run(() => JoinedCurveGeneration.UpdateAsync(curves, tempCurve, stepSize));
-        Task test = JoinedCurveGeneration.UpdateAsync(curves, tempCurve, stepSize);
-        Debug.Log("Hey");
+
+        Task test = JoinedCurveGeneration.UpdateAsync(curves, stepSize);
     }
 
     // Update is called once per frame
     void Update()
     {
-        ////Update Curves
-        //foreach (ConnectionCurve connectionCurve in curves)
-        //{
-        //    curveGenerator.UpdateCurve(connectionCurve,stepSize);
-        //}
-
-        ////Update the tempcurve if existing
-        //if (tempCurve != null)
-        //{
-        //    curveGenerator.UpdateCurve(tempCurve, stepSize);
-        //}
-        
-
         switch (currState)
         {
             case State.defaultMode:
@@ -108,12 +92,12 @@ public class LineController : MonoBehaviour
                 {
                     if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
                     {
-                        tempCurve.curve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                     }
                     else
                     {
-                        tempCurve.curve.goal = tempGoal;
-                        tempCurve.curve.goal.transform.position = mainPointer.Position;
+                        tempCurve.goal = tempGoal;
+                        tempCurve.goal.transform.position = mainPointer.Position;
                     }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                     if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
@@ -121,7 +105,7 @@ public class LineController : MonoBehaviour
                         if (mainPointer.Result.CurrentPointerTarget != null)
                             target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                         if (target != null)
-                            AddConnectionCurve(tempCurve.curve.start, target);
+                            AddConnectionCurve(tempCurve.start, target);
                         StopConnecting();
                     }
                 }
@@ -188,15 +172,17 @@ public class LineController : MonoBehaviour
         GameObject currentConnectingStart = start;
         tempGoal = new GameObject("Temp Goal");
         tempGoal.transform.position = mainPointer.Position;
-        tempCurve.curve = new ConnectionCurve(start, tempGoal, gameObject, Color.yellow, Color.yellow);
+        tempCurve = new ConnectionCurve(start, tempGoal, gameObject, Color.yellow, Color.yellow);
+        curves.Add(tempCurve);
         clickTimeStamp = DateTime.Now;
     }
 
 
     void StopConnecting()
     {
+        curves.Remove(tempCurve);
         Destroy(tempGoal);
-        Destroy(tempCurve.curve.lineRenderer);
+        Destroy(tempCurve.lineRenderer);
         tempCurve = null;
         currState = State.defaultMode;
     }
