@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Threading.Tasks;
 
 public class JoinedCurveGeneration : MonoBehaviour
 {
+    public float standartHeight = 0.2f;
     public void UpdateCurve(ConnectionCurve connectioCurve, float stepSize, int CurveSegmentCount = 60)
     {
         Vector3 start = connectioCurve.start.transform.position;
@@ -44,6 +47,91 @@ public class JoinedCurveGeneration : MonoBehaviour
             connectioCurve.lineRenderer.positionCount = curve.Length;
             connectioCurve.lineRenderer.SetPositions(curve);
         }  
+    }
+
+    IEnumerator UpdateCurveCoroutine(ConnectionCurve connectionCurve, float stepSize, int curveSegmentCount = 60)
+    {
+        Vector3 start = connectionCurve.start.transform.position;
+        Vector3 goal = connectionCurve.goal.transform.position;
+
+        Vector3[] curve = SimpleCurveGerneration.StartGeneration(connectionCurve.start, connectionCurve.goal, curveSegmentCount);
+        if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal))
+        {
+            IntTriple startCell = IntTriple.VectorToCell(start, stepSize);
+            IntTriple goalCell = IntTriple.VectorToCell(goal, stepSize);
+            CoroutineData data = new CoroutineData();
+            yield return StartCoroutine(AStar.AStarGridSearchCoroutine(startCell, goalCell, stepSize, connectionCurve.start, connectionCurve.goal, data));
+            if (data.status == CoroutineStatus.Failure)
+            {
+                data = new CoroutineData();
+                if (data.status == CoroutineStatus.Failure)
+                    curve = SimpleCurveGerneration.StandartCurve(connectionCurve.start.transform.position, connectionCurve.goal.transform.position, curveSegmentCount, 0.5f);
+                else
+                    curve = CurveGenerator.IntTripleArrayToCurve(data.output.path, start, goal, stepSize);
+            }
+            else
+                curve = CurveGenerator.IntTripleArrayToCurve(data.output.path, start, goal, stepSize); ;
+
+        }
+
+        connectionCurve.lineRenderer.positionCount = curve.Length;
+        connectionCurve.lineRenderer.SetPositions(curve);
+    }
+
+    public IEnumerator UpdaterCoroutine(List<ConnectionCurve> curves, ConnectionCurveWrapper tempCurve, float stepSize)
+    {
+        DateTime timeStamp;
+        while (true)
+        {
+            timeStamp = DateTime.Now;
+            foreach (ConnectionCurve curve in curves)
+            {
+                
+                UpdateCurveCoroutine(curve,stepSize);
+                if ((DateTime.Now - timeStamp).TotalMilliseconds > 10)
+                {
+                    Debug.Log("Next frame for curve generation");
+                    yield return null;
+                    timeStamp = DateTime.Now;
+                }
+                    
+            }
+            if (tempCurve.curve != null)
+            {
+                UpdateCurveCoroutine(tempCurve.curve, stepSize);
+            }
+            yield return null;
+        }
+    }
+
+    public static async Task UpdateAsync(List<ConnectionCurve> curves, ConnectionCurveWrapper tempCurve, float stepSize)
+    {
+        while (true)
+        {
+            var taskList = new List<Task<GridSearch.SearchResult<IntTriple>>>();
+            var tasks = new Dictionary<Task<GridSearch.SearchResult<IntTriple>>, ConnectionCurve>();
+            foreach (ConnectionCurve connectionCurve in curves)
+            {
+                IntTriple startCell = IntTriple.VectorToCell(connectionCurve.start.transform.position, stepSize);
+                IntTriple goalCell = IntTriple.VectorToCell(connectionCurve.goal.transform.position, stepSize);
+                tasks.Add(AStar.AStarGridSearchAsync(startCell, goalCell, stepSize, connectionCurve.start, connectionCurve.goal), connectionCurve);
+            }
+            while (tasks.Count > 0)
+            {
+                Task<GridSearch.SearchResult<IntTriple>> finishedTask = await Task.WhenAny(tasks.Keys);
+                if (true)
+                {
+                    ConnectionCurve connectionCurve = tasks[finishedTask];
+                    Vector3[] curve = CurveGenerator.IntTripleArrayToCurve(finishedTask.Result.path, connectionCurve.start.transform.position, connectionCurve.goal.transform.position, stepSize);
+                    connectionCurve.lineRenderer.positionCount = curve.Length;
+                    connectionCurve.lineRenderer.SetPositions(curve); 
+                }
+                tasks.Remove(finishedTask);
+                await Task.Yield();
+            }
+            await Task.Yield();
+        }
+        
     }
 
     IEnumerator AStarHandler(IntTriple startCell, IntTriple goalCell, float stepSize, ConnectionCurve connectionCurve)

@@ -5,6 +5,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using Priority_Queue;
+using System.Threading.Tasks;
 
 public class LineController : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class LineController : MonoBehaviour
     public State currState = State.defaultMode;
 
     //Temp Curve
-    private ConnectionCurve tempCurve;
+    private ConnectionCurveWrapper tempCurve;
     DateTime clickTimeStamp;
 
     //Colour settings for the curves
@@ -66,23 +67,28 @@ public class LineController : MonoBehaviour
         if (startTest != null && goalTest != null)
         {
             AddConnectionCurve(startTest,goalTest);
-        }       
+        }
+        tempCurve = new ConnectionCurveWrapper();
+        //curveGenerator.StartCoroutine(curveGenerator.UpdaterCoroutine(curves,tempCurve,stepSize));
+        //Task.Run(() => JoinedCurveGeneration.UpdateAsync(curves, tempCurve, stepSize));
+        Task test = JoinedCurveGeneration.UpdateAsync(curves, tempCurve, stepSize);
+        Debug.Log("Hey");
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Update Curves
-        foreach (ConnectionCurve connectionCurve in curves)
-        {
-            curveGenerator.UpdateCurve(connectionCurve,stepSize);
-        }
+        ////Update Curves
+        //foreach (ConnectionCurve connectionCurve in curves)
+        //{
+        //    curveGenerator.UpdateCurve(connectionCurve,stepSize);
+        //}
 
-        //Update the tempcurve if existing
-        if (tempCurve != null)
-        {
-            curveGenerator.UpdateCurve(tempCurve, stepSize);
-        }
+        ////Update the tempcurve if existing
+        //if (tempCurve != null)
+        //{
+        //    curveGenerator.UpdateCurve(tempCurve, stepSize);
+        //}
         
 
         switch (currState)
@@ -102,12 +108,12 @@ public class LineController : MonoBehaviour
                 {
                     if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
                     {
-                        tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        tempCurve.curve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                     }
                     else
                     {
-                        tempCurve.goal = tempGoal;
-                        tempCurve.goal.transform.position = mainPointer.Position;
+                        tempCurve.curve.goal = tempGoal;
+                        tempCurve.curve.goal.transform.position = mainPointer.Position;
                     }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                     if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
@@ -115,7 +121,7 @@ public class LineController : MonoBehaviour
                         if (mainPointer.Result.CurrentPointerTarget != null)
                             target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                         if (target != null)
-                            AddConnectionCurve(tempCurve.start, target);
+                            AddConnectionCurve(tempCurve.curve.start, target);
                         StopConnecting();
                     }
                 }
@@ -182,7 +188,7 @@ public class LineController : MonoBehaviour
         GameObject currentConnectingStart = start;
         tempGoal = new GameObject("Temp Goal");
         tempGoal.transform.position = mainPointer.Position;
-        tempCurve = new ConnectionCurve(start, tempGoal, gameObject, Color.yellow, Color.yellow);
+        tempCurve.curve = new ConnectionCurve(start, tempGoal, gameObject, Color.yellow, Color.yellow);
         clickTimeStamp = DateTime.Now;
     }
 
@@ -190,7 +196,7 @@ public class LineController : MonoBehaviour
     void StopConnecting()
     {
         Destroy(tempGoal);
-        Destroy(tempCurve.lineRenderer);
+        Destroy(tempCurve.curve.lineRenderer);
         tempCurve = null;
         currState = State.defaultMode;
     }
@@ -284,4 +290,9 @@ public class ConnectionCurve
 
         coroutineData = new CoroutineData();
     }
+}
+
+public class ConnectionCurveWrapper
+{
+    public ConnectionCurve curve { get; set; }
 }
