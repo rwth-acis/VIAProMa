@@ -4,8 +4,9 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 
-public class LineController : MonoBehaviour
+public class LineController : OnJoinedInstantiate
 {
     public static float stepSize = 1;
     public static int curveSegmentCount = 60;
@@ -20,7 +21,7 @@ public class LineController : MonoBehaviour
         connecting,
         deleting
     }
-
+    
     public State currState = State.defaultMode;
 
     //Temp Curve
@@ -264,7 +265,10 @@ public class LineController : MonoBehaviour
         }
     }
 
-   
+    public override void OnLeftRoom()
+    {
+        Debug.Log("Test");
+    }
 }
 
 public class ConnectionCurve
