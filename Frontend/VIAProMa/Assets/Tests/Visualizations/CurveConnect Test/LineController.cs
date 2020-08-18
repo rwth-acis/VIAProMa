@@ -187,6 +187,7 @@ public class LineController : OnJoinedInstantiate
             Destroy(connectionCurve.lineRenderer);
     }
 
+    [PunRPC]
     void AddConnectionCurve(GameObject start, GameObject goal)
     {
         curves.Add(new ConnectionCurve(start, goal, gameObject, curveConnectPrefab));
@@ -290,17 +291,15 @@ public class ConnectionCurve
         this.goal = goal;
         GameObject lineObject = null;
         if (PhotonNetwork.InRoom)
-        {
-            //lineObject = PhotonNetwork.Instantiate("Connection Curve", Vector3.zero, Quaternion.identity);
- 
+        { 
             void callBack(GameObject test)
             {
                 lineObject = test;
             }
             ResourceManager.Instance.SceneNetworkInstantiate(prefab,Vector3.zero,Quaternion.identity, callBack);
             photonView = lineObject.GetComponent<PhotonView>();
-            photonView.RequestOwnership();
             lineRenderer = lineObject.GetComponent<LineRenderer>();
+            photonView.RPC("AddConnectionCurve",RpcTarget.Others, start, goal);
         }
         else
         {
