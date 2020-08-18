@@ -76,7 +76,7 @@ public class LineController : OnJoinedInstantiate
         //Test
         if (startTest != null && goalTest != null)
         {
-            AddConnectionCurve(startTest,goalTest);
+            curves.Add(CreateConnectionCurve(startTest,goalTest,gameObject, Color.green, Color.green));
         }
 
         Task test = JoinedCurveGeneration.UpdateAsync(curves, stepSize);
@@ -115,7 +115,7 @@ public class LineController : OnJoinedInstantiate
                         if (mainPointer.Result.CurrentPointerTarget != null)
                             target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                         if (target != null)
-                            AddConnectionCurve(tempCurve.start, target);
+                            curves.Add(CreateConnectionCurve(tempCurve.start, target, gameObject, Color.green, Color.green));
                         StopConnecting();
                     }
                 }
@@ -172,16 +172,30 @@ public class LineController : OnJoinedInstantiate
 
     void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
-        if (connectionCurve.photonView != null)
-            PhotonNetwork.Destroy(connectionCurve.photonView);
+        if (connectionCurve.isNetworked)
+            PhotonNetwork.Destroy(connectionCurve.GetComponent<PhotonView>());
         else
             Destroy(connectionCurve.lineRenderer);
     }
 
-    [PunRPC]
-    void AddConnectionCurve(GameObject start, GameObject goal)
+    ConnectionCurve CreateConnectionCurve(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
     {
-        curves.Add(new ConnectionCurve(start, goal, gameObject, curveConnectPrefab));
+        ConnectionCurve curve = null;
+        void callBack(GameObject result)
+        {
+            curve = result.GetComponent<ConnectionCurve>();
+        }
+        if (PhotonNetwork.InRoom)
+        {
+            ResourceManager.Instance.SceneNetworkInstantiate(curveConnectPrefab, Vector3.zero, Quaternion.identity, callBack);
+            curve.isNetworked = true;
+        }
+        else
+        {
+            curve = Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
+            curve.isNetworked = false;
+        }
+        return curve.Setup(start, goal, LineController, color1, color2);
     }
 
     void StartConnecting(GameObject start)
@@ -191,7 +205,7 @@ public class LineController : OnJoinedInstantiate
         GameObject currentConnectingStart = start;
         tempGoal = new GameObject("Temp Goal");
         tempGoal.transform.position = mainPointer.Position;
-        tempCurve = new ConnectionCurve(start, tempGoal, gameObject, curveConnectPrefab, Color.yellow, Color.yellow);
+        tempCurve = CreateConnectionCurve(start, tempGoal, gameObject, Color.yellow, Color.yellow);
         curves.Add(tempCurve);
         clickTimeStamp = DateTime.Now;
     }
@@ -266,56 +280,56 @@ public class LineController : OnJoinedInstantiate
     }
 }
 
-public class ConnectionCurve
-{
-    public GameObject start { get; }
-    public GameObject goal { get; set; }
-    public LineRenderer lineRenderer { get; }
-    public CoroutineData coroutineData;
-    public Coroutine coroutine;
-    public PhotonView photonView;
+//public class ConnectionCurve
+//{
+//    public GameObject start { get; }
+//    public GameObject goal { get; set; }
+//    public LineRenderer lineRenderer { get; }
+//    public CoroutineData coroutineData;
+//    public Coroutine coroutine;
+//    public PhotonView photonView;
 
-    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, GameObject prefab) : this(start, goal, LineController, prefab, Color.green, Color.green) { }
-
-
-    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, GameObject prefab, Color color1, Color color2)
-    {
-        this.start = start;
-        this.goal = goal;
-        GameObject lineObject = null;
-        if (PhotonNetwork.InRoom)
-        {
-            void callBack(GameObject test)
-            {
-                lineObject = test;
-            }
-            ResourceManager.Instance.SceneNetworkInstantiate(prefab, Vector3.zero, Quaternion.identity, callBack);
-            photonView = lineObject.GetComponent<PhotonView>();
-            lineRenderer = lineObject.GetComponent<LineRenderer>();
-            //photonView.RPC("AddConnectionCurve", RpcTarget.Others, start, goal);
-        }
-        else
-        {
-            lineObject = new GameObject();
-            lineRenderer = lineObject.AddComponent<LineRenderer>();
-        }
-        //lineObject.transform.parent = LineController.transform;
+//    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, GameObject prefab) : this(start, goal, LineController, prefab, Color.green, Color.green) { }
 
 
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.widthMultiplier = 0.025f;
+//    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, GameObject prefab, Color color1, Color color2)
+//    {
+//        this.start = start;
+//        this.goal = goal;
+//        GameObject lineObject = null;
+//        if (PhotonNetwork.InRoom)
+//        {
+//            void callBack(GameObject test)
+//            {
+//                lineObject = test;
+//            }
+//            ResourceManager.Instance.SceneNetworkInstantiate(prefab, Vector3.zero, Quaternion.identity, callBack);
+//            photonView = lineObject.GetComponent<PhotonView>();
+//            lineRenderer = lineObject.GetComponent<LineRenderer>();
+//            //photonView.RPC("AddConnectionCurve", RpcTarget.Others, start, goal);
+//        }
+//        else
+//        {
+//            lineObject = new GameObject();
+//            lineRenderer = lineObject.AddComponent<LineRenderer>();
+//        }
+//        //lineObject.transform.parent = LineController.transform;
 
-        float alpha = 1.0f;
-        Gradient gradient = new Gradient();
-        gradient.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(color1, 0.0f), new GradientColorKey(color2, 1.0f) },
-            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
-        );
-        lineRenderer.colorGradient = gradient;
 
-        coroutineData = new CoroutineData();
-    }
-}
+//        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+//        lineRenderer.widthMultiplier = 0.025f;
+
+//        float alpha = 1.0f;
+//        Gradient gradient = new Gradient();
+//        gradient.SetKeys(
+//            new GradientColorKey[] { new GradientColorKey(color1, 0.0f), new GradientColorKey(color2, 1.0f) },
+//            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+//        );
+//        lineRenderer.colorGradient = gradient;
+
+//        coroutineData = new CoroutineData();
+//    }
+//}
 
 public class ConnectionCurveWrapper
 {
