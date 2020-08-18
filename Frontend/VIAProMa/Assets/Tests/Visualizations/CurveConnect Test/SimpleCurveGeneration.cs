@@ -7,7 +7,7 @@ public class SimpleCurveGerneration : CurveGenerator
     public static float distanceToObstacle = 0.5f;
     
 
-    static Vector3[] StandartCurve(Vector3 start, Vector3 goal, int segmentCount, float height)
+    public static Vector3[] StandartCurve(Vector3 start, Vector3 goal, int segmentCount, float height)
     {
         float higherOne = start.y > goal.y ? start.y : goal.y;
 
@@ -37,6 +37,7 @@ public class SimpleCurveGerneration : CurveGenerator
 
         Vector3 center = start + direction * distance/2;
 
+        //TODO put in parameter
         float standartHeight = 0.5f;
 
 

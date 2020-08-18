@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Priority_Queue;
+using System.Threading.Tasks;
 
 public class Greedy : GridSearch
 {
@@ -28,7 +29,7 @@ public class Greedy : GridSearch
                 }
             }
             lowestCosts = float.PositiveInfinity;
-            pathCosts += CostsBetween(current,cheapestNeigbor);
+            pathCosts += CostsBetween(current, cheapestNeigbor);
             current = cheapestNeigbor;
             path.Add(current);
             count++;
@@ -45,8 +46,8 @@ public class Greedy : GridSearch
 
         foreach (Vector3 point in path)
         {
-            lowerLeftCorner = new Vector3(point.x - scanCubeSize/2, point.y - scanCubeSize/2, point.z);
-            upperRigthCorner = lowerLeftCorner + new Vector3(scanCubeSize,scanCubeSize,scanCubeSize);
+            lowerLeftCorner = new Vector3(point.x - scanCubeSize / 2, point.y - scanCubeSize / 2, point.z);
+            upperRigthCorner = lowerLeftCorner + new Vector3(scanCubeSize, scanCubeSize, scanCubeSize);
 
             int pointCount = 0;
             foreach (Vector3 point2 in path)
@@ -67,6 +68,53 @@ public class Greedy : GridSearch
 
     public static SearchResult<IntTriple> GreedyGridSearch(IntTriple startCell, IntTriple goalCell, float stepSize, Vector3 goalPosition, GameObject startObject, GameObject goalObject)
     {
-        return GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize, startObject,goalObject), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(stepSize));
+        return GreedySearch<IntTriple>(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize, startObject, goalObject), (x, y) => x == y, HeuristicGeneratorGrid(goalPosition, stepSize), CostsBetweenGeneratorGrid(stepSize));
+    }
+
+    public static async Task<SearchResult<T>> GreedySearchAsync<T>(T start, T goal, Func<T, List<T>> GetNeighbors, Func<T, T, bool> GoalTest, Func<T, float> Heuristic, Func<T, T, float> CostsBetween, bool calculatePath = true)
+    {
+        float pathCosts = 0;
+        List<T> path = new List<T>();
+        path.Add(start);
+        T current = start;
+        T cheapestNeigbor = start;
+        float lowestCosts = float.PositiveInfinity;
+        int frameCount = 0;
+        DateTime timeAtBeginOfFrame = DateTime.Now;
+
+        while (!GoalTest(current, goal))
+        {
+            if ((DateTime.Now - timeAtBeginOfFrame).TotalMilliseconds > 7)
+            {
+                frameCount++;
+                if (frameCount > 3)
+                {
+                    Debug.Log("Too Long");
+                    return new SearchResult<T>(null, float.NaN);
+                }
+                await Task.Yield();
+                timeAtBeginOfFrame = DateTime.Now;
+            }
+
+            List<T> neigbors = GetNeighbors(current);
+            foreach (T neighbor in neigbors)
+            {
+                float costs = Heuristic(neighbor);
+                if (costs < lowestCosts && !path.Contains(neighbor))
+                {
+                    cheapestNeigbor = neighbor;
+                    lowestCosts = costs;
+                }
+            }
+            lowestCosts = float.PositiveInfinity;
+            pathCosts += CostsBetween(current, cheapestNeigbor);
+            current = cheapestNeigbor;
+            path.Add(current);
+        }
+        return new SearchResult<T>(path, pathCosts);
+    }
+    public static Task<SearchResult<IntTriple>> GreedyGridSearchAsync(IntTriple startCell, IntTriple goalCell, float stepSize, GameObject startObject, GameObject goalObject)
+    {
+        return GreedySearchAsync(startCell, goalCell, GetNeighborsGeneratorGrid(stepSize, startObject, goalObject), (x, y) => x == y, HeuristicGeneratorGrid(goalObject.transform.position, stepSize), CostsBetweenGeneratorGrid(stepSize));
     }
 }
