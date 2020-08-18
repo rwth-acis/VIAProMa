@@ -54,6 +54,12 @@ public class LineSynchroniser : MonoBehaviour, IPunObservable
         //line.material = new Material(Shader.Find("Sprites/Default"));
         //line.widthMultiplier = 0.025f;
     }
+
+    [PunRPC]
+    void AddCurve()
+    {
+        
+    }
 }
 
 public enum ColorEnum
