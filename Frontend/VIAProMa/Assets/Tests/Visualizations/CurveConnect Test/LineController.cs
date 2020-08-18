@@ -299,13 +299,8 @@ public class ConnectionCurve
             }
             ResourceManager.Instance.SceneNetworkInstantiate(prefab,Vector3.zero,Quaternion.identity, callBack);
             photonView = lineObject.GetComponent<PhotonView>();
-            OwnershipRequester ownerShipRequester = lineObject.GetComponent<OwnershipRequester>();
-
-            lineRenderer = lineObject.GetComponent<LineRenderer>();
-            //photonView.TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
-            //ownerShipRequester.EnsureOwnership();
-            //ownerShipRequester.ReleaseOwnershipLock();
             photonView.RequestOwnership();
+            lineRenderer = lineObject.GetComponent<LineRenderer>();
         }
         else
         {
