@@ -23,6 +23,7 @@ public class LineController : OnJoinedInstantiate
     }
     
     public State currState = State.defaultMode;
+    public GameObject curveConnectPrefab;
 
     //Temp Curve
     private ConnectionCurve tempCurve;
@@ -188,7 +189,7 @@ public class LineController : OnJoinedInstantiate
 
     void AddConnectionCurve(GameObject start, GameObject goal)
     {
-        curves.Add(new ConnectionCurve(start, goal, gameObject));
+        curves.Add(new ConnectionCurve(start, goal, gameObject, curveConnectPrefab));
     }
 
     void StartConnecting(GameObject start)
@@ -198,7 +199,7 @@ public class LineController : OnJoinedInstantiate
         GameObject currentConnectingStart = start;
         tempGoal = new GameObject("Temp Goal");
         tempGoal.transform.position = mainPointer.Position;
-        tempCurve = new ConnectionCurve(start, tempGoal, gameObject, Color.yellow, Color.yellow);
+        tempCurve = new ConnectionCurve(start, tempGoal, gameObject, curveConnectPrefab, Color.yellow, Color.yellow);
         clickTimeStamp = DateTime.Now;
     }
 
@@ -280,19 +281,31 @@ public class ConnectionCurve
     public Coroutine coroutine;
     public PhotonView photonView;
 
-    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController) : this(start, goal, LineController, Color.green, Color.green) { }
+    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, GameObject prefab) : this(start, goal, LineController, prefab, Color.green, Color.green) { }
     
 
-    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
+    public ConnectionCurve(GameObject start, GameObject goal, GameObject LineController, GameObject prefab, Color color1, Color color2)
     {
         this.start = start;
         this.goal = goal;
-        GameObject lineObject;
+        GameObject lineObject = null;
         if (PhotonNetwork.InRoom)
         {
-            lineObject = PhotonNetwork.Instantiate("Connection Curve", Vector3.zero, Quaternion.identity);
+            //lineObject = PhotonNetwork.Instantiate("Connection Curve", Vector3.zero, Quaternion.identity);
+ 
+            void callBack(GameObject test)
+            {
+                lineObject = test;
+            }
+            ResourceManager.Instance.SceneNetworkInstantiate(prefab,Vector3.zero,Quaternion.identity, callBack);
             photonView = lineObject.GetComponent<PhotonView>();
+            OwnershipRequester ownerShipRequester = lineObject.GetComponent<OwnershipRequester>();
+
             lineRenderer = lineObject.GetComponent<LineRenderer>();
+            //photonView.TransferOwnership(PhotonNetwork.LocalPlayer.ActorNumber);
+            //ownerShipRequester.EnsureOwnership();
+            //ownerShipRequester.ReleaseOwnershipLock();
+            photonView.RequestOwnership();
         }
         else
         {
