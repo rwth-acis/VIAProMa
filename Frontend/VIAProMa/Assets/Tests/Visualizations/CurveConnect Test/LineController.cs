@@ -187,7 +187,9 @@ public class LineController : OnJoinedInstantiate
         }
         if (PhotonNetwork.InRoom)
         {
-            ResourceManager.Instance.SceneNetworkInstantiate(curveConnectPrefab, Vector3.zero, Quaternion.identity, callBack);
+            object[] test = new object[1];
+            test[0] = Vector3.left;
+            ResourceManager.Instance.SceneNetworkInstantiate(curveConnectPrefab, Vector3.zero, Quaternion.identity, callBack, test);
             curve.isNetworked = true;
         }
         else

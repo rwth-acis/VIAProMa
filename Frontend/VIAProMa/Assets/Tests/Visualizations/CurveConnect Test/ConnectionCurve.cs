@@ -13,7 +13,8 @@ public class ConnectionCurve : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        var view = GetComponent<PhotonView>();
+        var test = (Vector3)view.InstantiationData[0];
     }
 
     public ConnectionCurve Setup(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
