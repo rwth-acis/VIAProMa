@@ -175,6 +175,7 @@ public class LineController : OnJoinedInstantiate
 
     void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
+        connectionCurve.GetComponent<OwnershipRequester>().EnsureOwnership();
         PhotonNetwork.Destroy(connectionCurve.GetComponent<PhotonView>());
     }
 
