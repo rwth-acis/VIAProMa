@@ -201,7 +201,7 @@ public class LineController : OnJoinedInstantiate
             curve = Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
             curve.isNetworked = false;
         }
-        return curve.Setup(start, goal, LineController, color1, color2);
+        return curve.Setup(color1, color2);
     }
 
     void StartConnecting(GameObject start)

@@ -20,16 +20,27 @@ public class ConnectionCurve : MonoBehaviour
         start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
         goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
         lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
+        lineRenderer = GetComponent<LineRenderer>();
+
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.widthMultiplier = 0.025f;
+
+        float alpha = 1.0f;
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(Color.green, 0.0f), new GradientColorKey(Color.green, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+        );
+        lineRenderer.colorGradient = gradient;
+
         lineController.curves.Add(this);
     }
 
-    public ConnectionCurve Setup(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
+    public ConnectionCurve Setup(Color color1, Color color2)
     {
         //this.start = start;
         //this.goal = goal;
         //lineObject.transform.parent = LineController.transform;
-        lineRenderer = GetComponent<LineRenderer>();
-
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.025f;
 
@@ -41,11 +52,6 @@ public class ConnectionCurve : MonoBehaviour
         );
         lineRenderer.colorGradient = gradient;
         return this;
-    }
-
-    public ConnectionCurve Setup(GameObject start, GameObject goal, GameObject LineController)
-    {
-        return Setup(start,goal,LineController, Color.green, Color.green);
     }
 
     private void OnDestroy()
