@@ -9,7 +9,6 @@ public class ConnectionCurve : MonoBehaviour
     public GameObject start { get; set; }
     public GameObject goal { get; set; }
     public LineRenderer lineRenderer;
-    public bool isNetworked { get; set; }
     LineController lineController;
     // Start is called before the first frame update
 

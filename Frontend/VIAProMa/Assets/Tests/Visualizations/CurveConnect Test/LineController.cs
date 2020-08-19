@@ -175,10 +175,7 @@ public class LineController : OnJoinedInstantiate
 
     void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
-        if (connectionCurve.isNetworked)
-            PhotonNetwork.Destroy(connectionCurve.GetComponent<PhotonView>());
-        else
-            Destroy(connectionCurve.lineRenderer);
+        PhotonNetwork.Destroy(connectionCurve.GetComponent<PhotonView>());
     }
 
     ConnectionCurve CreateConnectionCurve(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
@@ -194,12 +191,10 @@ public class LineController : OnJoinedInstantiate
             data[0] = start.GetComponent<PhotonView>().ViewID;
             data[1] = goal.GetComponent<PhotonView>().ViewID;
             ResourceManager.Instance.SceneNetworkInstantiate(curveConnectPrefab, Vector3.zero, Quaternion.identity, callBack, data);
-            curve.isNetworked = true;
         }
         else
         {
             curve = Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
-            curve.isNetworked = false;
         }
         return curve.Setup(color1, color2);
     }
