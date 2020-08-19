@@ -8,10 +8,12 @@ public class ConnectionCurve : MonoBehaviour
 
     public GameObject start { get; set; }
     public GameObject goal { get; set; }
-    public LineRenderer lineRenderer { get; set; }
+    public LineRenderer lineRenderer;
     public bool isNetworked { get; set; }
     LineController lineController;
     // Start is called before the first frame update
+
+
     void Start()
     {
         var view = GetComponent<PhotonView>();
@@ -20,7 +22,6 @@ public class ConnectionCurve : MonoBehaviour
         start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
         goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
         lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
-        lineRenderer = GetComponent<LineRenderer>();
 
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.025f;
