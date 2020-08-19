@@ -10,17 +10,23 @@ public class ConnectionCurve : MonoBehaviour
     public GameObject goal { get; set; }
     public LineRenderer lineRenderer { get; set; }
     public bool isNetworked { get; set; }
+    LineController lineController;
     // Start is called before the first frame update
     void Start()
     {
         var view = GetComponent<PhotonView>();
-        var test = (Vector3)view.InstantiationData[0];
+        int startID = (int)view.InstantiationData[0];
+        int goalID = (int)view.InstantiationData[1];
+        start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
+        goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
+        lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
+        lineController.curves.Add(this);
     }
 
     public ConnectionCurve Setup(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
     {
-        this.start = start;
-        this.goal = goal;
+        //this.start = start;
+        //this.goal = goal;
         //lineObject.transform.parent = LineController.transform;
         lineRenderer = GetComponent<LineRenderer>();
 
@@ -40,5 +46,10 @@ public class ConnectionCurve : MonoBehaviour
     public ConnectionCurve Setup(GameObject start, GameObject goal, GameObject LineController)
     {
         return Setup(start,goal,LineController, Color.green, Color.green);
+    }
+
+    private void OnDestroy()
+    {
+        lineController.curves.Remove(this);
     }
 }
