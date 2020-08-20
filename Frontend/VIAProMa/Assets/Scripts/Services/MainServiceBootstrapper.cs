@@ -15,7 +15,9 @@ public class MainServiceBootstrapper : BaseServiceBootstrapper
         provider.AuthorizationFlow = AuthorizationFlow.AUTHORIZATION_CODE;
         provider.ClientData = learningLayersClientData.clientData;
         oidcService.OidcProvider = provider;
-        oidcService.RedirectURI = "viaproma://";
+#if UNITY_WSA
+        oidcService.RedirectURI = "viaproma:/";
+#endif
         ServiceManager.RegisterService(oidcService);
     }
 
