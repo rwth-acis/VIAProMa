@@ -8,6 +8,7 @@ public class ConnectionCurve : MonoBehaviour
 
     public GameObject start { get; set; }
     public GameObject goal { get; set; }
+    public bool isTemp { get; set; }
     public LineRenderer lineRenderer;
     LineController lineController;
     // Start is called before the first frame update
@@ -36,11 +37,9 @@ public class ConnectionCurve : MonoBehaviour
         lineController.curves.Add(this);
     }
 
-    public ConnectionCurve Setup(Color color1, Color color2)
+    [PunRPC]
+    public ConnectionCurve SetColor(Vector4 color1, Vector4 color2)
     {
-        //this.start = start;
-        //this.goal = goal;
-        //lineObject.transform.parent = LineController.transform;
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.025f;
 
