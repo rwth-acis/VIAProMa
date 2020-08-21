@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnvironmentDataDisplay : DataDisplay<EnvironmentData>
 {
     [SerializeField] private TextMeshPro environmentNameLabel;
-    [SerializeField] private TextMeshPro previewImage;
+    [SerializeField] private SpriteRenderer previewImage;
 
 
     private Interactable button;

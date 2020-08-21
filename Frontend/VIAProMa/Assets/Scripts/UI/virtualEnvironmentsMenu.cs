@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Controls the menu which allows a user to select existing rooms (or navigate to the menu where a new room can be created)
@@ -18,8 +19,9 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 
     [SerializeField] private Interactable pageUpButton;
     [SerializeField] private Interactable pageDownButton;
-
-  
+    [SerializeField] private Material[] backgrounds;
+    [SerializeField] private Sprite[] previewImages;
+    [SerializeField] private string[] names;
 
     /// <summary>
     /// The number of environment entries which are shown on one page
@@ -72,6 +74,15 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         if (pageDownButton == null)
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
+        }
+
+        //Insert environments into list
+        for(int i = 0; i < names.Length; i++)
+        {
+            if (previewImages[i] != null && backgrounds[i] != null)
+            {
+                environments.Add(new EnvironmentData(names[i], previewImages[i], backgrounds[i]));
+            }
         }
 
      //   environmentListView.ItemSelected += OnEnvironmentSelected;
@@ -157,6 +168,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         }
         else
         {
+            Debug.Log("Keine in der Liste");
             environmentListView.Items = new List<EnvironmentData>();
         }
     }
@@ -168,6 +180,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     {
         gameObject.SetActive(true);
         WindowOpen = true;
+        UpdateEnvironmentDisplay();
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
