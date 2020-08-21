@@ -12,7 +12,7 @@ public class AppBarActions : MonoBehaviour
     private AppBarPlacer appBarPlacer;
 
     public GameObject lineControllerPrefab;
-    private GameObject lineController;
+    private LineController lineController;
     public GameObject test1;
     public GameObject test2;
 
@@ -36,9 +36,11 @@ public class AppBarActions : MonoBehaviour
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
         }
 
-        lineController = GameObject.Find("LineController(Clone)");
-        if(lineController == null)
-            lineController = Instantiate(lineControllerPrefab);
+        GameObject lineObject = GameObject.Find("LineController(Clone)");
+        if (lineObject == null)
+            lineController = Instantiate(lineControllerPrefab).GetComponent<LineController>();
+        else
+            lineController = lineObject.GetComponent<LineController>();
     }
 
     /// <summary>
@@ -48,7 +50,7 @@ public class AppBarActions : MonoBehaviour
     public void RemoveObject()
     {
         //Remove the curves connected with the object
-        lineController.SendMessage("DeleteCurves", appBarPlacer.TargetBoundingBox.Target);
+        lineController.DeleteCurves(appBarPlacer.TargetBoundingBox.Target);
 
         if (TargetNetworked)
         {
@@ -91,11 +93,13 @@ public class AppBarActions : MonoBehaviour
 
     public void Connect()
     {
-        lineController.SendMessage("StartConnecting", appBarPlacer.TargetBoundingBox.Target);
+        //lineController.SendMessage("StartConnecting", appBarPlacer.TargetBoundingBox.Target);
+        lineController.ChangeState(LineController.State.connecting, appBarPlacer.TargetBoundingBox.Target);
     }
 
     public void Disconnect()
     {
-        lineController.SendMessage("StartDisconnecting");
+        //lineController.SendMessage("StartDisconnecting");
+        lineController.ChangeState(LineController.State.deleting);
     }
 }

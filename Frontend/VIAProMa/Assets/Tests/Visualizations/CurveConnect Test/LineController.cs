@@ -77,7 +77,6 @@ public class LineController : OnJoinedInstantiate
         //Test
         if (startTest != null && goalTest != null)
         {
-            //curves.Add(CreateConnectionCurve(startTest,goalTest,gameObject, Color.green, Color.green));
             CreateConnectionCurve(startTest, goalTest);
         }
 
@@ -90,14 +89,7 @@ public class LineController : OnJoinedInstantiate
         
         switch (currState)
         {
-            case State.defaultMode:
-                if (instantiatedDeletCube != null)
-                    Destroy(instantiatedDeletCube);
-                break;
-
             case State.connecting:
-                if (instantiatedDeletCube != null)
-                    Destroy(instantiatedDeletCube);
                 if (tempCurve != null)
                 {
                     GameObject target = null;
@@ -121,12 +113,12 @@ public class LineController : OnJoinedInstantiate
                                 target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                             if (target != null)
                                 CreateConnectionCurve(tempCurve.start, target);
-                            StopConnecting();
+                            ChangeState(State.defaultMode);
                         }
                     }
                     else
                     {
-                        StopConnecting();
+                        ChangeState(State.defaultMode);
                     }
                 }
                 else
@@ -175,10 +167,43 @@ public class LineController : OnJoinedInstantiate
                 }
                 else
                 {
-                    Destroy(instantiatedDeletCube);
-                    currState = State.defaultMode;
+                    ChangeState(State.defaultMode);
                 }
 
+                break;
+        }
+    }
+
+    public void ChangeState(State state , GameObject start = null)
+    {
+        
+        if (state == currState)
+            return;
+
+        //End the efffects from the old state
+        switch (currState)
+        {
+            case State.deleting:
+                StopDisconnecting();
+                break;
+            case State.connecting:
+                StopConnecting();
+                break;
+        }
+
+        //Initalise the new state
+        switch (state)
+        {
+            case State.defaultMode:
+                currState = State.defaultMode;
+                break;
+            case State.deleting:
+                StartDisconnecting();
+                currState = State.deleting;
+                break;
+            case State.connecting:
+                StartConnecting(start);
+                currState = State.connecting;
                 break;
         }
     }
@@ -211,7 +236,6 @@ public class LineController : OnJoinedInstantiate
 
     void StartConnecting(GameObject start)
     {
-        currState = State.connecting;
         RefreshPointer();
         GameObject currentConnectingStart = start;
         tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
@@ -222,7 +246,6 @@ public class LineController : OnJoinedInstantiate
 
     void StopConnecting()
     {
-        //curves.Remove(tempCurve);
         PhotonNetwork.Destroy(tempGoal);
         foreach (ConnectionCurve curve in curves)
         {
@@ -231,7 +254,6 @@ public class LineController : OnJoinedInstantiate
                 DeleteConnectionCurve(curve);
             }
         }
-        currState = State.defaultMode;
     }
 
     void StartDisconnecting()
@@ -244,7 +266,11 @@ public class LineController : OnJoinedInstantiate
         }
     }
 
-    void DeleteCurves(GameObject startOrEndPoint)
+    void StopDisconnecting()
+    {
+        Destroy(instantiatedDeletCube);
+    }
+    public void DeleteCurves(GameObject startOrEndPoint)
     {
         List<ConnectionCurve> curvesToDelete = new List<ConnectionCurve>();
         foreach (ConnectionCurve connectionCurve in curves)
