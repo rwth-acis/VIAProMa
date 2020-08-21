@@ -81,7 +81,7 @@ public class LineController : OnJoinedInstantiate
             CreateConnectionCurve(startTest, goalTest, gameObject, Color.green, Color.green);
         }
 
-        Task test = JoinedCurveGeneration.UpdateAsync(curves, stepSize);
+        Task test = JoinedCurveGeneration.UpdateAsync(curves,stepSize);
     }
 
     // Update is called once per frame
@@ -175,8 +175,9 @@ public class LineController : OnJoinedInstantiate
 
     void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
-        connectionCurve.GetComponent<OwnershipRequester>().EnsureOwnership();
-        PhotonNetwork.Destroy(connectionCurve.GetComponent<PhotonView>());
+        var view = connectionCurve.GetComponent<PhotonView>();
+        view.RequestOwnership();
+        PhotonNetwork.Destroy(view);
     }
 
     ConnectionCurve CreateConnectionCurve(GameObject start, GameObject goal, GameObject LineController, Color color1, Color color2)
