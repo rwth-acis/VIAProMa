@@ -37,5 +37,16 @@ public class EnvironmentDataDisplay : DataDisplay<EnvironmentData>
     public override void UpdateView()
     {
         base.UpdateView();
+        if (content != null)
+        {
+            if(content.EnvironmentName != null)
+            {
+                environmentNameLabel.text = content.EnvironmentName;
+            }
+            if (content.EnvironmentPreviewImage != null)
+            {
+                previewImage.sprite = (Sprite)content.EnvironmentPreviewImage;
+            }
+        }
     }
 }

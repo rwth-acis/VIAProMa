@@ -100,7 +100,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
   //  {
   //      if (windowEnabled)
   //      {
-  //          Render.Settings.skybox = skybox;
+  //          RenderSettings.skybox = skybox;
   //      }
   //  }
 
