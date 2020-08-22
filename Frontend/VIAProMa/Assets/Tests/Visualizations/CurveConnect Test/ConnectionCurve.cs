@@ -11,6 +11,7 @@ public class ConnectionCurve : MonoBehaviour
     public bool isTemp { get; set; }
     public LineRenderer lineRenderer;
     LineController lineController;
+    public bool isMarked { get; set; }
     // Start is called before the first frame update
 
 
@@ -38,10 +39,10 @@ public class ConnectionCurve : MonoBehaviour
     }
 
     [PunRPC]
-    public ConnectionCurve SetColor(Vector3 color1RGB, float color1Alpha, Vector3 color2RGB, float color2Alpha)
+    public ConnectionCurve SetColor(float[] color1Arr, float[] color2Arr)
     {
-        Color color1 = new Vector4(color1RGB.x, color1RGB.y, color1RGB.z, color1Alpha);
-        Color color2 = new Vector4(color2RGB.x, color2RGB.y, color2RGB.z, color2Alpha);
+        Color color1 = new Color(color1Arr[0], color1Arr[1], color1Arr[2], color1Arr[3]);
+        Color color2 = new Color(color2Arr[0], color2Arr[1], color2Arr[2], color2Arr[3]);
         float alpha = 1.0f;
         Gradient gradient = new Gradient();
         gradient.SetKeys(

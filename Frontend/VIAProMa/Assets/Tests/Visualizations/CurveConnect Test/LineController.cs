@@ -128,9 +128,7 @@ public class LineController : OnJoinedInstantiate
                         if (curve.isTemp)
                         {
                             tempCurve = curve;
-                            Vector3 yellowRGB = (Vector4)Color.yellow;
-                            float yellowAlpha = ((Vector4)Color.yellow).z;
-                            tempCurve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, yellowRGB, yellowAlpha, yellowRGB, yellowAlpha);
+                            tempCurve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, ColorPhoton(Color.yellow), ColorPhoton(Color.yellow));
                             break;
                         }  
                     }
@@ -152,17 +150,21 @@ public class LineController : OnJoinedInstantiate
                     {
                         Vector3[] curve = new Vector3[connectionCurve.lineRenderer.positionCount];
                         connectionCurve.lineRenderer.GetPositions(curve);
+                        var view = connectionCurve.GetComponent<PhotonView>();
                         if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal, 0b100000000, false, 0.05f))
                         {
-                            connectionCurve.lineRenderer.colorGradient = deletColour;
+                            connectionCurve.isMarked = true;
+                            view.RPC("SetColor",RpcTarget.All, ColorPhoton(Color.red), ColorPhoton(Color.yellow));
+                            //connectionCurve.lineRenderer.colorGradient = deletColour;
                             if (((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select)
                             {
                                 curvesToDelete.Add(connectionCurve);
                             }
                         }
-                        else
+                        else if(connectionCurve.isMarked)
                         {
-                            connectionCurve.lineRenderer.colorGradient = defaultColour;
+                            connectionCurve.isMarked = false;
+                            view.RPC("SetColor", RpcTarget.All, ColorPhoton(Color.green), ColorPhoton(Color.green));
                         }
                     }
 
@@ -320,5 +322,15 @@ public class LineController : OnJoinedInstantiate
     public override void OnLeftRoom()
     {
         Debug.Log("Test");
+    }
+
+    public float[] ColorPhoton(Color color)
+    {
+        float[] arr = new float[4];
+        arr[0] = color.r;
+        arr[1] = color.g;
+        arr[2] = color.b;
+        arr[3] = color.a;
+        return arr;
     }
 }
