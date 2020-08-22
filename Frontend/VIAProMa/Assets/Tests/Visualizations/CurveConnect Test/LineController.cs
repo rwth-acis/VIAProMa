@@ -32,10 +32,7 @@ public class LineController : OnJoinedInstantiate
     ConnectionCurve tempCurve;
     DateTime clickTimeStamp;
 
-    //Colour settings for the curves
-    public Gradient defaultColour;
-    public Gradient deletColour;
-    public Gradient connectColour;
+
 
     //Test
     public GameObject startTest;
@@ -49,35 +46,10 @@ public class LineController : OnJoinedInstantiate
         curves = new List<ConnectionCurve>();
         curveGenerator = GetComponent<JoinedCurveGeneration>();
 
-        //Setting up the colours
-        Color c1 = Color.red;
-        Color c2 = Color.red;
-
-        float alpha = 1.0f;
-        defaultColour = new Gradient();
-        defaultColour.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(Color.green, 0), new GradientColorKey(new Color(0.2f, 0.8f, 0.02f, 1f), 1.0f) },
-            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
-        );
-
-
-        deletColour = new Gradient();
-        deletColour.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(Color.red, 0), new GradientColorKey(Color.yellow, 1.0f) },
-            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
-        );
-
-        connectColour = new Gradient();
-        connectColour.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(Color.yellow, 0), new GradientColorKey(Color.yellow, 1.0f) },
-            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
-        );
-
-
         //Test
         if (startTest != null && goalTest != null)
         {
-            CreateConnectionCurve(startTest, goalTest);
+            CreateConnectionCurveScene(startTest, goalTest);
         }
 
         Task test = JoinedCurveGeneration.UpdateAsync(curves,stepSize);
@@ -90,48 +62,33 @@ public class LineController : OnJoinedInstantiate
         switch (currState)
         {
             case State.connecting:
-                if (tempCurve != null)
+                GameObject target = null;
+                //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
+                //But ToString then returns null.
+                if (mainPointer.ToString() != "null")
                 {
-                    GameObject target = null;
-                    //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
-                    //But ToString then returns null.
-                    if (mainPointer.ToString() != "null")
+                    if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
                     {
-                        if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
-                        {
-                            tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
-                        }
-                        else
-                        {
-                            tempCurve.goal = tempGoal;
-                            tempCurve.goal.transform.position = mainPointer.Position;
-                        }
-                        var cursor = (AnimatedCursor)mainPointer.BaseCursor;
-                        if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
-                        {
-                            if (mainPointer.Result.CurrentPointerTarget != null)
-                                target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
-                            if (target != null)
-                                CreateConnectionCurve(tempCurve.start, target);
-                            ChangeState(State.defaultMode);
-                        }
+                        tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                     }
                     else
                     {
+                        tempCurve.goal = tempGoal;
+                        tempCurve.goal.transform.position = mainPointer.Position;
+                    }
+                    var cursor = (AnimatedCursor)mainPointer.BaseCursor;
+                    if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
+                    {
+                        if (mainPointer.Result.CurrentPointerTarget != null)
+                            target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        if (target != null)
+                            CreateConnectionCurveScene(tempCurve.start, target);
                         ChangeState(State.defaultMode);
                     }
                 }
                 else
                 {
-                    foreach (ConnectionCurve curve in curves)
-                    {
-                        if (curve.isTemp)
-                        {
-                            tempCurve = curve;
-                            tempCurve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, ColorPhoton(Color.yellow), ColorPhoton(Color.yellow));
-                            break;
-                        }  
-                    }
+                    ChangeState(State.defaultMode);
                 }
                 break;
 
@@ -164,7 +121,7 @@ public class LineController : OnJoinedInstantiate
                         else if(connectionCurve.isMarked)
                         {
                             connectionCurve.isMarked = false;
-                            view.RPC("SetColor", RpcTarget.All, ColorPhoton(Color.green), ColorPhoton(Color.green));
+                            view.RPC("ResetColor", RpcTarget.All);
                         }
                     }
 
@@ -223,30 +180,43 @@ public class LineController : OnJoinedInstantiate
         PhotonNetwork.Destroy(view);
     }
 
-    void CreateConnectionCurve(GameObject start, GameObject goal, bool isTemp = false)
+    void CreateConnectionCurveScene(GameObject start, GameObject goal)
     {
         if (PhotonNetwork.InRoom)
         {
             object[] data = new object[2];
             data[0] = start.GetComponent<PhotonView>().ViewID;
             data[1] = goal.GetComponent<PhotonView>().ViewID;
-            ResourceManager.Instance.SceneNetworkInstantiate(curveConnectPrefab, Vector3.zero, Quaternion.identity, (instance) => 
-            {
-                ConnectionCurve connectionCurve = instance.GetComponent<ConnectionCurve>();
-                connectionCurve.isTemp = isTemp;
-            }, data);
+            ResourceManager.Instance.SceneNetworkInstantiate(curveConnectPrefab, Vector3.zero, Quaternion.identity, (x) => {}, data);
         }
         else
         {
             Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
         }
     }
+    ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
+    {
+        ConnectionCurve curve;
+        if (PhotonNetwork.InRoom)
+        {
+            object[] data = new object[2];
+            data[0] = start.GetComponent<PhotonView>().ViewID;
+            data[1] = goal.GetComponent<PhotonView>().ViewID;
+            curve = PhotonNetwork.Instantiate("Connection Curve", Vector3.zero, Quaternion.identity, 0, data).GetComponent<ConnectionCurve>();
+        }
+        else
+        {
+            curve = Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
+        }
+        return curve;
+    }
 
     void StartConnecting(GameObject start)
     {
         RefreshPointer();
         tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
-        CreateConnectionCurve(start, tempGoal, true);
+        tempCurve = CreateConnectionCurveOwn(start,tempGoal);
+        tempCurve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, ColorPhoton(Color.yellow), ColorPhoton(Color.yellow));
         clickTimeStamp = DateTime.Now;
     }
 
@@ -254,13 +224,7 @@ public class LineController : OnJoinedInstantiate
     void StopConnecting()
     {
         PhotonNetwork.Destroy(tempGoal);
-        foreach (ConnectionCurve curve in curves)
-        {
-            if (curve.isTemp)
-            {
-                DeleteConnectionCurve(curve);
-            }
-        }
+        DeleteConnectionCurve(tempCurve);
     }
 
     void StartDisconnecting()
@@ -280,7 +244,7 @@ public class LineController : OnJoinedInstantiate
         {
             if (curve.isMarked)
             {
-                curve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, ColorPhoton(Color.green), ColorPhoton(Color.green));
+                curve.GetComponent<PhotonView>().RPC("ResetColor", RpcTarget.All);
             }
         }
     }

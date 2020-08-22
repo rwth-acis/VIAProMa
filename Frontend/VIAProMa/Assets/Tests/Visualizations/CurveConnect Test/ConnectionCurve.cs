@@ -12,6 +12,7 @@ public class ConnectionCurve : MonoBehaviour
     public LineRenderer lineRenderer;
     LineController lineController;
     public bool isMarked { get; set; }
+    Gradient defaultColor;
     // Start is called before the first frame update
 
 
@@ -24,22 +25,23 @@ public class ConnectionCurve : MonoBehaviour
         goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
         lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
 
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        //lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.widthMultiplier = 0.025f;
+        defaultColor = lineRenderer.colorGradient;
 
-        float alpha = 1.0f;
-        Gradient gradient = new Gradient();
-        gradient.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(Color.green, 0.0f), new GradientColorKey(Color.green, 1.0f) },
-            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
-        );
-        lineRenderer.colorGradient = gradient;
+        //float alpha = 1.0f;
+        //Gradient gradient = new Gradient();
+        //gradient.SetKeys(
+        //    new GradientColorKey[] { new GradientColorKey(Color.green, 0.0f), new GradientColorKey(Color.green, 1.0f) },
+        //    new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+        //);
+        //lineRenderer.colorGradient = gradient;
 
         lineController.curves.Add(this);
     }
 
     [PunRPC]
-    public ConnectionCurve SetColor(float[] color1Arr, float[] color2Arr)
+    public void SetColor(float[] color1Arr, float[] color2Arr)
     {
         Color color1 = new Color(color1Arr[0], color1Arr[1], color1Arr[2], color1Arr[3]);
         Color color2 = new Color(color2Arr[0], color2Arr[1], color2Arr[2], color2Arr[3]);
@@ -50,7 +52,12 @@ public class ConnectionCurve : MonoBehaviour
             new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
         );
         lineRenderer.colorGradient = gradient;
-        return this;
+    }
+
+    [PunRPC]
+    public void ResetColor()
+    {
+        lineRenderer.colorGradient = defaultColor;
     }
 
     private void OnDestroy()
