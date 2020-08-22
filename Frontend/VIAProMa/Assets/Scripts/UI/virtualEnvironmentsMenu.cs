@@ -19,9 +19,9 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 
     [SerializeField] private Interactable pageUpButton;
     [SerializeField] private Interactable pageDownButton;
-    [SerializeField] private Material[] backgrounds;
+    [SerializeField] private Material[] environmentSkyboxes;
     [SerializeField] private Sprite[] previewImages;
-    [SerializeField] private string[] names;
+    [SerializeField] private string[] environmentNames;
 
     /// <summary>
     /// The number of environment entries which are shown on one page
@@ -77,11 +77,11 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         }
 
         //Insert environments into list
-        for(int i = 0; i < names.Length; i++)
+        for(int i = 0; i < environmentNames.Length; i++)
         {
-            if (previewImages[i] != null && backgrounds[i] != null)
+            if (previewImages[i] != null && environmentSkyboxes[i] != null)
             {
-                environments.Add(new EnvironmentData(names[i], previewImages[i], backgrounds[i]));
+                environments.Add(new EnvironmentData(environmentNames[i], previewImages[i], environmentSkyboxes[i]));
             }
         }
 
@@ -168,7 +168,6 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         }
         else
         {
-            Debug.Log("Keine in der Liste");
             environmentListView.Items = new List<EnvironmentData>();
         }
     }
