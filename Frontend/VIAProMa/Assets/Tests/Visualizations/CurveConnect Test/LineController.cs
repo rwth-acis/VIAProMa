@@ -126,7 +126,13 @@ public class LineController : OnJoinedInstantiate
                     foreach (ConnectionCurve curve in curves)
                     {
                         if (curve.isTemp)
+                        {
                             tempCurve = curve;
+                            Vector3 yellowRGB = (Vector4)Color.yellow;
+                            float yellowAlpha = ((Vector4)Color.yellow).z;
+                            tempCurve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, yellowRGB, yellowAlpha, yellowRGB, yellowAlpha);
+                            break;
+                        }  
                     }
                 }
                 break;
@@ -237,7 +243,6 @@ public class LineController : OnJoinedInstantiate
     void StartConnecting(GameObject start)
     {
         RefreshPointer();
-        GameObject currentConnectingStart = start;
         tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
         CreateConnectionCurve(start, tempGoal, true);
         clickTimeStamp = DateTime.Now;

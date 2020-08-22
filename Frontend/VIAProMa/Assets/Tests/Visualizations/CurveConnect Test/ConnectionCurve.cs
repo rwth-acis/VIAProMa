@@ -38,11 +38,10 @@ public class ConnectionCurve : MonoBehaviour
     }
 
     [PunRPC]
-    public ConnectionCurve SetColor(Vector4 color1, Vector4 color2)
+    public ConnectionCurve SetColor(Vector3 color1RGB, float color1Alpha, Vector3 color2RGB, float color2Alpha)
     {
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.widthMultiplier = 0.025f;
-
+        Color color1 = new Vector4(color1RGB.x, color1RGB.y, color1RGB.z, color1Alpha);
+        Color color2 = new Vector4(color2RGB.x, color2RGB.y, color2RGB.z, color2Alpha);
         float alpha = 1.0f;
         Gradient gradient = new Gradient();
         gradient.SetKeys(
