@@ -94,10 +94,11 @@ public class LoginMenu : MonoBehaviour, IWindow
     // Initializes the controls of the window
     private async void Initialize()
     {
-        if (oidcService == null)
+        if (oidcService == null && ServiceManager.ServiceExists<OpenIDConnectService>())
         {
             oidcService = ServiceManager.GetService<OpenIDConnectService>();
         }
+
         nameLabel.text = await GetUserNameAsync();
         roleToggles.CurrentIndex = (int)UserManager.Instance.UserRole;
         for (int i = 0; i < roleToggles.ToggleList.Length; i++)
@@ -116,7 +117,7 @@ public class LoginMenu : MonoBehaviour, IWindow
     private async Task<string> GetUserNameAsync()
     {
         // if we are logged in, we take the user data which are provided by the login service
-        if (oidcService.IsLoggedIn)
+        if (oidcService != null && oidcService.IsLoggedIn)
         {
             if (cachedUserInfo == null)
             {
@@ -134,8 +135,16 @@ public class LoginMenu : MonoBehaviour, IWindow
     // sets the button's visibility based on whether the user is logged in or logged out
     private void SetButtonStates()
     {
-        logoutButton.gameObject.SetActive(oidcService.IsLoggedIn);
-        learningLayersLoginButton.gameObject.SetActive(!oidcService.IsLoggedIn);
+        if (oidcService != null)
+        {
+            logoutButton.gameObject.SetActive(oidcService.IsLoggedIn);
+            learningLayersLoginButton.gameObject.SetActive(!oidcService.IsLoggedIn);
+        }
+        else
+        {
+            logoutButton.gameObject.SetActive(false);
+            learningLayersLoginButton.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -146,6 +155,11 @@ public class LoginMenu : MonoBehaviour, IWindow
         // only subscribe to the LoginCompleted event if we are not already subscribed
         // this is to avoid that the raised event is handled multiple times,
         // e.g. if the user does not complete the login the first time
+        if (oidcService == null)
+        {
+            return;
+        }
+
         if (!subscribedToOidc)
         {
             oidcService.LoginCompleted += OnLogin;
@@ -157,6 +171,11 @@ public class LoginMenu : MonoBehaviour, IWindow
     // Called by the LoginCompleted event once the login has happened successfully
     private async void OnLogin(object sender, EventArgs e)
     {
+        if (oidcService == null)
+        {
+            return;
+        }
+
         // un-subscribe from the event and also remember that we are not subscribed anymore
         oidcService.LoginCompleted -= OnLogin;
         subscribedToOidc = false;
@@ -171,6 +190,11 @@ public class LoginMenu : MonoBehaviour, IWindow
     /// </summary>
     public void LogoutButtonPressed()
     {
+        if (oidcService == null)
+        {
+            return;
+        }
+
         // since the Learning Layers logout always succeeds,
         // there is no need to remember the event subscription status like with the login procedure
         oidcService.LogoutCompleted += OnLogout;
@@ -182,6 +206,11 @@ public class LoginMenu : MonoBehaviour, IWindow
     // Called by the LogoutCompleted event
     private void OnLogout(object sender, EventArgs e)
     {
+        if (oidcService == null)
+        {
+            return;
+        }
+
         // un-subscribe from hte LogoutCompleted event
         oidcService.LogoutCompleted -= OnLogout;
         // update the button statuses
