@@ -276,6 +276,13 @@ public class LineController : OnJoinedInstantiate
     void StopDisconnecting()
     {
         Destroy(instantiatedDeletCube);
+        foreach (ConnectionCurve curve in curves)
+        {
+            if (curve.isMarked)
+            {
+                curve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, ColorPhoton(Color.green), ColorPhoton(Color.green));
+            }
+        }
     }
     public void DeleteCurves(GameObject startOrEndPoint)
     {
