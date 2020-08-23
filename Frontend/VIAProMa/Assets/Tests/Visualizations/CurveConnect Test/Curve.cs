@@ -50,7 +50,7 @@ public abstract class CurveGenerator
         Collider[] potentialColliders = Physics.OverlapCapsule(curve[0] + (curve[curveIncrement] - curve[0]).normalized * distanceToObstacle, curve[curveIncrement], distanceToObstacle, layermask);
         foreach (Collider coll in potentialColliders)
         {
-            if (IsValidCollider(coll, startObject, goalObject))
+            if (IsValidCollider(coll, startObject, goalObject, checkEndCollision))
                 return true;
         }
 
@@ -59,7 +59,7 @@ public abstract class CurveGenerator
             potentialColliders = Physics.OverlapCapsule(curve[i], curve[i+curveIncrement],distanceToObstacle, layermask);
             foreach (Collider coll in potentialColliders)
             {
-                if (IsValidCollider(coll, startObject, goalObject))
+                if (IsValidCollider(coll, startObject, goalObject, checkEndCollision))
                     return true;
             }
             lastChecked = i + curveIncrement;
@@ -69,7 +69,7 @@ public abstract class CurveGenerator
         potentialColliders = Physics.OverlapCapsule(curve[lastChecked] , curve[curve.Length - 1] +(curve[lastChecked] - curve[curve.Length - 1]).normalized * distanceToObstacle, distanceToObstacle, layermask);
         foreach (Collider coll in potentialColliders)
         {
-            if (IsValidCollider(coll, startObject, goalObject))
+            if (IsValidCollider(coll, startObject, goalObject, checkEndCollision))
                 return true;
         }
 
