@@ -174,9 +174,10 @@ public class LineController : MonoBehaviour
     {
         var view = connectionCurve.GetComponent<PhotonView>();
         view.RequestOwnership();
+        //Curves remove themselfe from the list. This is done here again, so a client doesn't queu a curve multiple times for deletion
         curves.Remove(connectionCurve);
         //If you are not the master client, wait for the ownership
-        while (view.Owner != PhotonNetwork.LocalPlayer && !PhotonNetwork.IsMasterClient)
+        while (view.Owner != PhotonNetwork.LocalPlayer)
         {
             await Task.Yield();
         }
