@@ -8,7 +8,7 @@ using Photon.Pun.UtilityScripts;
 using System.Threading.Tasks;
 
 
-public class LineController : OnJoinedInstantiate
+public class LineController : MonoBehaviour
 {
     public static float stepSize = 1;
     public static int curveSegmentCount = 60;
@@ -21,7 +21,7 @@ public class LineController : OnJoinedInstantiate
     {
         defaultMode,
         connecting,
-        deleting
+        disconnecting
     }
     
     public State currState = State.defaultMode;
@@ -57,8 +57,7 @@ public class LineController : OnJoinedInstantiate
 
     // Update is called once per frame
     void Update()
-    {
-        
+    {     
         switch (currState)
         {
             case State.connecting:
@@ -92,7 +91,7 @@ public class LineController : OnJoinedInstantiate
                 }
                 break;
 
-            case State.deleting:
+            case State.disconnecting:
                 if (mainPointer.ToString() != "null")
                 {
                     //Update Delete Cube transform
@@ -112,7 +111,6 @@ public class LineController : OnJoinedInstantiate
                         {
                             connectionCurve.isMarked = true;
                             view.RPC("SetColor",RpcTarget.All, ColorPhoton(Color.red), ColorPhoton(Color.yellow));
-                            //connectionCurve.lineRenderer.colorGradient = deletColour;
                             if (((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select)
                             {
                                 curvesToDelete.Add(connectionCurve);
@@ -134,7 +132,6 @@ public class LineController : OnJoinedInstantiate
                 {
                     ChangeState(State.defaultMode);
                 }
-
                 break;
         }
     }
@@ -145,10 +142,10 @@ public class LineController : OnJoinedInstantiate
         if (state == currState)
             return;
 
-        //End the efffects from the old state
+        //End the effects from the old state
         switch (currState)
         {
-            case State.deleting:
+            case State.disconnecting:
                 StopDisconnecting();
                 break;
             case State.connecting:
@@ -162,9 +159,9 @@ public class LineController : OnJoinedInstantiate
             case State.defaultMode:
                 currState = State.defaultMode;
                 break;
-            case State.deleting:
+            case State.disconnecting:
                 StartDisconnecting();
-                currState = State.deleting;
+                currState = State.disconnecting;
                 break;
             case State.connecting:
                 StartConnecting(start);
@@ -173,10 +170,16 @@ public class LineController : OnJoinedInstantiate
         }
     }
 
-    void DeleteConnectionCurve(ConnectionCurve connectionCurve)
+    async Task DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
         var view = connectionCurve.GetComponent<PhotonView>();
         view.RequestOwnership();
+        curves.Remove(connectionCurve);
+        //If you are not the master client, wait for the ownership
+        while (view.Owner != PhotonNetwork.LocalPlayer && !PhotonNetwork.IsMasterClient)
+        {
+            await Task.Yield();
+        }
         PhotonNetwork.Destroy(view);
     }
 
@@ -229,9 +232,9 @@ public class LineController : OnJoinedInstantiate
 
     void StartDisconnecting()
     {
-        if (currState != State.deleting)
+        if (currState != State.disconnecting)
         {
-            currState = State.deleting;
+            currState = State.disconnecting;
             RefreshPointer();
             instantiatedDeletCube = Instantiate(DeleteCube); 
         }
@@ -288,11 +291,6 @@ public class LineController : OnJoinedInstantiate
                 }
             }
         }
-    }
-
-    public override void OnLeftRoom()
-    {
-        Debug.Log("Test");
     }
 
     public float[] ColorPhoton(Color color)
