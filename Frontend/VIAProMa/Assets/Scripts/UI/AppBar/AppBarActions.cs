@@ -100,6 +100,6 @@ public class AppBarActions : MonoBehaviour
     public void Disconnect()
     {
         //lineController.SendMessage("StartDisconnecting");
-        lineController.ChangeState(LineController.State.deleting);
+        lineController.ChangeState(LineController.State.disconnecting);
     }
 }
