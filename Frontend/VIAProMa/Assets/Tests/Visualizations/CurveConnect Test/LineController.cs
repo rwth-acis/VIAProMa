@@ -110,7 +110,15 @@ public class LineController : MonoBehaviour
                         if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal, 0b100000000, false, 0.05f))
                         {
                             connectionCurve.isMarked = true;
-                            view.RPC("SetColor",RpcTarget.All, ColorPhoton(Color.red), ColorPhoton(Color.yellow));
+                            if (PhotonNetwork.InRoom)
+                            {
+                                view.RPC("SetColor", RpcTarget.All, ColorPhoton(Color.red), ColorPhoton(Color.yellow));
+                            }
+                            else
+                            {
+                                connectionCurve.SetColor(ColorPhoton(Color.red), ColorPhoton(Color.yellow));
+                            }
+
                             if (((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select)
                             {
                                 curvesToDelete.Add(connectionCurve);
@@ -119,7 +127,14 @@ public class LineController : MonoBehaviour
                         else if(connectionCurve.isMarked)
                         {
                             connectionCurve.isMarked = false;
-                            view.RPC("ResetColor", RpcTarget.All);
+                            if (PhotonNetwork.InRoom)
+                            {
+                                view.RPC("ResetColor", RpcTarget.All);
+                            }
+                            else
+                            {
+                                connectionCurve.ResetColor();
+                            }
                         }
                     }
 
@@ -172,16 +187,22 @@ public class LineController : MonoBehaviour
 
     async Task DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
-        var view = connectionCurve.GetComponent<PhotonView>();
-        view.RequestOwnership();
-        //Curves remove themselfe from the list. This is done here again, so a client doesn't queu a curve multiple times for deletion
-        curves.Remove(connectionCurve);
-        //If you are not the master client, wait for the ownership
-        while (view.Owner != PhotonNetwork.LocalPlayer)
+        if (PhotonNetwork.InRoom)
         {
-            await Task.Yield();
+            var view = connectionCurve.GetComponent<PhotonView>();
+            view.RequestOwnership();
+            //Curves remove them selfe from the list. This is done here again, so a client doesn't queu a curve multiple times for deletion
+            curves.Remove(connectionCurve);
+            while (view.Owner != PhotonNetwork.LocalPlayer)
+            {
+                await Task.Yield();
+            }
+            PhotonNetwork.Destroy(view);
         }
-        PhotonNetwork.Destroy(view);
+        else
+        {
+            Destroy(connectionCurve.gameObject);
+        }
     }
 
     void CreateConnectionCurveScene(GameObject start, GameObject goal)
@@ -195,7 +216,9 @@ public class LineController : MonoBehaviour
         }
         else
         {
-            Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
+            ConnectionCurve curve = Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
+            curve.start = start;
+            curve.goal = goal;
         }
     }
     ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
@@ -211,6 +234,8 @@ public class LineController : MonoBehaviour
         else
         {
             curve = Instantiate(curveConnectPrefab).GetComponent<ConnectionCurve>();
+            curve.start = start;
+            curve.goal = goal;
         }
         return curve;
     }
@@ -218,16 +243,32 @@ public class LineController : MonoBehaviour
     void StartConnecting(GameObject start)
     {
         RefreshPointer();
-        tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
-        tempCurve = CreateConnectionCurveOwn(start,tempGoal);
-        tempCurve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, ColorPhoton(Color.yellow), ColorPhoton(Color.yellow));
+        if (PhotonNetwork.InRoom)
+        {
+            tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
+            tempCurve = CreateConnectionCurveOwn(start, tempGoal);
+            tempCurve.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.All, ColorPhoton(Color.yellow), ColorPhoton(Color.yellow));
+        }
+        else
+        {
+            tempGoal = Instantiate(tempGoalPrefab);
+            tempCurve = CreateConnectionCurveOwn(start, tempGoal);
+            tempCurve.SetColor(ColorPhoton(Color.yellow), ColorPhoton(Color.yellow));
+        }
         clickTimeStamp = DateTime.Now;
     }
 
 
     void StopConnecting()
     {
-        PhotonNetwork.Destroy(tempGoal);
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.Destroy(tempGoal);
+        }
+        else
+        {
+            Destroy(tempGoal);
+        }
         DeleteConnectionCurve(tempCurve);
     }
 
@@ -248,7 +289,14 @@ public class LineController : MonoBehaviour
         {
             if (curve.isMarked)
             {
-                curve.GetComponent<PhotonView>().RPC("ResetColor", RpcTarget.All);
+                if (PhotonNetwork.InRoom)
+                {
+                    curve.GetComponent<PhotonView>().RPC("ResetColor", RpcTarget.All);
+                }
+                else
+                {
+                    curve.ResetColor();
+                }
             }
         }
     }

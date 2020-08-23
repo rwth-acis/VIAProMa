@@ -19,10 +19,13 @@ public class ConnectionCurve : MonoBehaviour
     void Start()
     {
         var view = GetComponent<PhotonView>();
-        int startID = (int)view.InstantiationData[0];
-        int goalID = (int)view.InstantiationData[1];
-        start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
-        goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
+        if (PhotonNetwork.InRoom)
+        {
+            int startID = (int)view.InstantiationData[0];
+            int goalID = (int)view.InstantiationData[1];
+            start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
+            goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject; 
+        }
         lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
         lineRenderer.widthMultiplier = 0.025f;
         defaultColor = lineRenderer.colorGradient;
