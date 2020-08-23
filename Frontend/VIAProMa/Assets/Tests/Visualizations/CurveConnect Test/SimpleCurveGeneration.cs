@@ -128,6 +128,7 @@ public class SimpleCurveGerneration : CurveGenerator
                     SetMinMax(ReScancolliders, ref min, ref max);
                     newObstacles = true;
                 }
+                oldLength = ReScancolliders.Length;
                 i++;
             } while (i <= 100 && newObstacles);
 
@@ -163,6 +164,7 @@ public class SimpleCurveGerneration : CurveGenerator
                     SetMinMax(ReScancolliders,ref min, ref max);
                     newObstacles = true;
                 }
+                oldLength = ReScancolliders.Length;
                 i++;
             }
             while (i <= 100 && newObstacles);
