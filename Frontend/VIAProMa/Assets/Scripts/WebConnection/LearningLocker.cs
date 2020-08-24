@@ -7,6 +7,7 @@ using UnityEngine;
 
 public static class LearningLocker
 {
+    /*
     private Dictionary<string, string> myHeader = new Dictionary<string, string>(){{"Authorization", "Basic MzRiMGFkNDQzZTM1ZjY0ZTZmOWU3YjA2ZGE5NmQzYTVhNGE3MTYyZTpmMjQxNTZmMTZlMTU2YThiY2UyOWJjMzQ1NzBiOWY1ODBjODNiMDlk"}};
     public static async IInformation GetInformation(string name)
     {
@@ -31,5 +32,6 @@ public static class LearningLocker
         return "pipeline=[{\"$match\":{\"statement.verb.id\":\"http://activitystrea.ms/schema/1.0/complete\",\"statement.actor.name\":\"" + name
         +"\"}},{\"$project\":{\"userName\":\"$statement.actor.name\",\"email\":\"$statement.actor.account.name\",\"duration\":\"$metadata.https:\/\/learninglocker&46;net\/result-duration.seconds\",\"grade\":\"$statement.result.score.scaled\"}},{\"$group\":{\"_id\":{\"name\":\"$userName\",\"email\":\"$email\"},\"average_score\":{\"$avg\":\"$grade\"},\"assignments\":{\"$push\":\"$grade\"},\"durations\":{\"$push\":\"$duration\"}}}]";
     }
+    */
 
 }

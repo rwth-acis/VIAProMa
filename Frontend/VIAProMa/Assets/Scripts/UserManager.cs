@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class UserManager : Singleton<UserManager>
 {
-    private UserRoles role = UserRoles.DEVELOPER;
+    private UserRoles role = UserRoles.STUDENT;
     private string defaultName;
 
     public event EventHandler UserRoleChanged;
