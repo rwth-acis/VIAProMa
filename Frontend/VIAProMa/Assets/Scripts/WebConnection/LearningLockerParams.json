@@ -1,0 +1,32 @@
+[{
+    "$match": {
+        "statement.verb.id": "http://activitystrea.ms/schema/1.0/complete",
+        "statement.actor.name": ""
+    }
+},
+{
+    "$project": {
+        "userName": "$statement.actor.name",
+        "email": "$statement.actor.account.name",
+        "duration": "$metadata.https://learninglocker&46;net/result-duration.seconds",
+        "grade": "$statement.result.score.scaled"
+    }
+},
+{
+    "$group": {
+        "_id": {
+            "name": "$userName",
+            "email": "$email"
+        },
+        "average_score": {
+            "$avg": "$grade"
+        },
+        "assignments": {
+            "$push": "$grade"
+        },
+        "durations": {
+            "$push": "$duration"
+        }
+    }
+}
+]
