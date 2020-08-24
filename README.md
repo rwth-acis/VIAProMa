@@ -8,7 +8,9 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
 
 ## Getting Started
 
-### Prerequisites
+### Frontend
+
+#### Prerequisites
 
 - Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2018.3.14f1
 - [Microsoft Mixed Reality Toolkit v2.0.0 RC2.1](https://github.com/microsoft/MixedRealityToolkit-Unity/releases/tag/v2.0.0-RC2.1) (already included in the project)
@@ -21,7 +23,7 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
   - [ARCore SDK](https://github.com/google-ar/arcore-unity-sdk/releases) (tested with ARCore SDK for Unity v1.12.0)
   - Android SDK 7.0 (API Level 24) or later
 
-### Project Setup
+#### Project Setup
 
 1. Install Unity and Visual Studio
 2. Clone the project
@@ -51,11 +53,43 @@ Pull the top most slider next to "3D Icons" down until the icons in the scene ha
 
 For Android development, additional steps can be found in ARCore's [quickstart guide](https://developers.google.com/ar/develop/unity/quickstart-android).
 
-### Tests
+#### Tests
 
 In addition to the working logic, each of the project's features has been isolated into its own scene which contains a minimal working example for the feature.
 This way, the functionality can be tested and new developers can experiment with these features in order to learn how they work.
 The scenes are situated in the folder "Tests".
+
+### Backend
+
+The backend folder contains a [las2peer project](https://github.com/rwth-acis/las2peer-template-project) which realizes a RESTful service.
+
+#### Required Technologies
+
+To install the backend the following technologies are required.
+1. Java 8 (on Windows: make sure that the Java installation is placed in your path variables); if you type java –version in the command line, the output should similar to this:
+   ```
+   java version "1.8.0_231"
+   Java(TM) SE Runtime Environment (build 1.8.0_231-b11)
+   Java HotSpot(TM) 64-Bit Server VM (build 25.231-b11, mixed mode)
+   ```
+2. Apache Ant (on Windows: make sure that the Ant installation is placed in your path variables; if you type ant –version in the command line, you should get an output similar to this:
+   ```
+   Apache Ant(TM) version 1.10.1 compiled on February 2 2017
+   ```
+
+To develop the backend, you should also install an IDE, e.g. IntelliJ.
+
+#### Building the Backend
+
+You first have to fetch the dependencies by running `ant get_deps` in the backend folder where the build.xml is stored.
+
+After that, run `ant all` in the backend folder.
+
+#### Running the Backend
+
+After the build, execute the corresponding “start_network” script in the “bin” folder of the backend.
+It contains two scripts “start_network.bat” and “start_network.sh”. On Windows, execute the “start_network.bat” file. On Linux or Mac, first go back to the backend folder and execute `./bin/start_network.sh` from there.
+
 
 ## Troubleshooting
 
@@ -65,6 +99,7 @@ The scenes are situated in the folder "Tests".
 After that, open the Build Settings Window and change the Target SDK Version and Minimum Platform Version to 10.0.18362.0.
 
 **Problem:** The shared room which was created in one app instance does not appear on the other app instance.
+
 **Solution:** Make sure that both app instances use the same gameVersion which is specified in the launcher script. (Assets/Scripts/Multiplayer/Launcher.cs)
 Also ensure that both app instances use the same Photon PUN version.
 The PUN version can be seen in the Photon server settings.

@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class UserManager : Singleton<UserManager>
 {
-    private UserRoles role = UserRoles.STUDENT;
+    private UserRoles role = UserRoles.DEVELOPER;
+    private string defaultName;
 
     public event EventHandler UserRoleChanged;
 
@@ -19,11 +20,21 @@ public class UserManager : Singleton<UserManager>
             role = value;
             if (PhotonNetwork.IsConnected)
             {
-                Debug.Log("connect");
                 PlayerPropertyUtilities.SetProperty(UserRoleSynchronizer.roleKey, (byte)role);
             }
             UserRoleChanged?.Invoke(this, EventArgs.Empty);
-            Debug.Log("not sure");
+        }
+    }
+
+    public string DefaultName
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(defaultName))
+            {
+                defaultName = "Guest" + UnityEngine.Random.Range(0, 1000);
+            }
+            return defaultName;
         }
     }
 }
