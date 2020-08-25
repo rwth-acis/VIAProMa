@@ -9,8 +9,10 @@ public class GazeShareTester_Evaluation : MonoBehaviour
 {
     [SerializeField] private GameObject issueShelfPrefab;
     [SerializeField] private GameObject visualizationShelfPrefab;
+    [SerializeField] private GameObject timerPrefab;
     private GameObject issueShelf;
     private GameObject visualizationShelf;
+    private GameObject timer;
 
     private void Update()
     {
@@ -36,11 +38,12 @@ public class GazeShareTester_Evaluation : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.T))
         {
-            PhotonNetwork.Instantiate("Progress Bar", new Vector3(-1.726f, 0.51f, -1.229f), Quaternion.Euler(0,60,0), 0);
+            //PhotonNetwork.Instantiate("Progress Bar", new Vector3(-1.726f, 0.51f, -1.229f), Quaternion.Euler(0,60,0), 0);
             //PhotonNetwork.Instantiate("IssueShelf", new Vector3(-1.726f, 0.51f, -1.229f), Quaternion.Euler(0, 60, 0), 0);
-            issueShelf = ResourceManager.Instance.NetworkInstantiate(issueShelfPrefab, new Vector3(-1f, -1f, 2f), Quaternion.identity);
-            visualizationShelf = ResourceManager.Instance.NetworkInstantiate(visualizationShelfPrefab, new Vector3(1f, -1f, 2f), Quaternion.identity);
 
+            //issueShelf = ResourceManager.Instance.NetworkInstantiate(issueShelfPrefab, new Vector3(-1f, -1f, 2f), Quaternion.identity);
+            //visualizationShelf = ResourceManager.Instance.NetworkInstantiate(visualizationShelfPrefab, new Vector3(1f, -1f, 2f), Quaternion.identity);
+            timer = ResourceManager.Instance.NetworkInstantiate(timerPrefab, new Vector3(-1.5f, 0.5f, 3f), Quaternion.identity);
         }   
     }
 }

@@ -19,6 +19,9 @@ public class TimerWindow : MonoBehaviour, IWindow
     private Stopwatch timer;
     private TimeSpan time;
     private string elapsedTime;
+    private bool firstStart;
+    [SerializeField] private GameObject targetPrefab;
+    private GameObject target;
 
     public bool WindowEnabled { get; set; }
 
@@ -44,6 +47,8 @@ public class TimerWindow : MonoBehaviour, IWindow
 
         saveNameInputField.Text = SaveLoadManager.Instance.SaveName;
         icon.GetComponent<SpriteRenderer>().sprite = play;
+
+        firstStart = true;
     }
 
     private void Update()
@@ -77,6 +82,11 @@ public class TimerWindow : MonoBehaviour, IWindow
             timer.Start();
             caption.GetComponent<TextMeshPro>().SetText("Stop");
             icon.GetComponent<SpriteRenderer>().sprite = stop;
+            if (firstStart == true)
+            {
+                target = ResourceManager.Instance.NetworkInstantiate(targetPrefab, new Vector3(0f, 0f, 1.5f), Quaternion.Euler(0, 180, 0));
+                firstStart = false;
+            }
         }
     }
 
