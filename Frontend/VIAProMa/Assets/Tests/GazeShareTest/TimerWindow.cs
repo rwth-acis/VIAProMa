@@ -16,9 +16,9 @@ public class TimerWindow : MonoBehaviour, IWindow
     [SerializeField] private Sprite play;
     [SerializeField] private Sprite stop;
     private bool timerOn;
-    private Stopwatch timer;
+    public static Stopwatch timer { get; private set; }
     private TimeSpan time;
-    private string elapsedTime;
+    public static string elapsedTime { get; private set; }
     private bool firstStart;
     [SerializeField] private GameObject targetPrefab;
     private GameObject target;
@@ -32,10 +32,7 @@ public class TimerWindow : MonoBehaviour, IWindow
 
     public event EventHandler WindowClosed;
 
-    private void Awake()
-    {
-        
-    }
+    private void Awake() {}
 
     private void Start()
     {

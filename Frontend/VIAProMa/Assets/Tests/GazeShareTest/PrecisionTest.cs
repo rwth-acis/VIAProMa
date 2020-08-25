@@ -13,8 +13,8 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         DateTime time = eventData.EventTime;
         IMixedRealityInputSource source = eventData.InputSource;
         Vector3 centerPosition = center.transform.localPosition;
-        //Debug.Log("Center: " + center.transform.localPosition);
-        //Debug.Log("Pointer: " + RaycastVive.pointerHitPosition);
+        Debug.Log("Center: " + center.transform.localPosition);
+        Debug.Log("Pointer: " + RaycastVive.pointerHitPosition);
         float distance = Vector2.Distance(centerPosition, RaycastVive.pointerHitPosition)*100f;
         if(distance < 10)
         {
@@ -22,21 +22,24 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         }
         else if (distance < 20)
         {
-            Debug.Log("White 1! ");
+            Debug.Log("White inner. ");
         }
         else if (distance < 30)
         {
-            Debug.Log("Red 1! ");
+            Debug.Log("Red inner. ");
         }
         else if (distance < 40)
         {
-            Debug.Log("White 2! ");
+            Debug.Log("White outer... ");
         }
         else if (distance <= 50)
         {
-            Debug.Log("Red 2! ");
+            Debug.Log("Red outer... ");
         }
-        Debug.Log("Time: " + time + "; distance: " + distance.ToString("f"));
+        //Debug.Log("Time: " + time + "; distance: " + distance.ToString("f"));
+        Debug.Log("Timer: " + TimerWindow.elapsedTime + "; distance: " + distance.ToString("f"));
+        gameObject.SetActive(false);
+        //TimerWindow.timer.Stop();
     }
 
     public void OnPointerDown(MixedRealityPointerEventData eventData) { }
