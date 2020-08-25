@@ -6,8 +6,12 @@ using Photon.Pun;
 public class ConnectionCurve : MonoBehaviour
 {
 
-    public GameObject start { get; set; }
-    public GameObject goal { get; set; }
+    public GameObject start;
+    public GameObject goal;
+
+    public string startID = "";
+    public string goalID = "";
+
     public bool isTemp { get; set; }
     public LineRenderer lineRenderer;
     LineController lineController;
@@ -19,7 +23,7 @@ public class ConnectionCurve : MonoBehaviour
     void Start()
     {
         var view = GetComponent<PhotonView>();
-        if (PhotonNetwork.InRoom)
+        if (PhotonNetwork.InRoom && view.InstantiationData != null)
         {
             int startID = (int)view.InstantiationData[0];
             int goalID = (int)view.InstantiationData[1];
@@ -27,9 +31,18 @@ public class ConnectionCurve : MonoBehaviour
             goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject; 
         }
         lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
-        lineRenderer.widthMultiplier = 0.025f;
         defaultColor = lineRenderer.colorGradient;
         lineController.curves.Add(this);
+    }
+
+    public void Update()
+    {
+        if (startID != "" && goalID != "")
+        {
+            start = SaveLoadManager.Instance.GetRegisterdGameobject(startID);
+            goal = SaveLoadManager.Instance.GetRegisterdGameobject(goalID);
+        }
+        enabled = false;
     }
 
     [PunRPC]

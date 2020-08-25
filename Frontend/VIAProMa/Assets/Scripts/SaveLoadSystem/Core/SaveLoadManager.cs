@@ -31,6 +31,8 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     /// </summary>
     public List<Serializer> Serializers { get; private set; }
 
+    public Dictionary<string, GameObject> registerdGameObjects;
+
     public string SaveName { get; set; } = "";
 
     public bool AutoSaveActive { get => !string.IsNullOrWhiteSpace(SaveName); }
@@ -42,6 +44,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     {
         base.Awake();
         Serializers = new List<Serializer>();
+        registerdGameObjects = new Dictionary<string, GameObject>();
         trackedIds = new List<string>();
     }
 
@@ -200,7 +203,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     /// </summary>
     /// <param name="id">The id of the serializer</param>
     /// <returns>The serializer with the id or null if it does not exist</returns>
-    private Serializer GetSerializer(string id)
+    public Serializer GetSerializer(string id)
     {
         for (int i=0;i<Serializers.Count;i++)
         {
@@ -220,6 +223,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     public void RegisterSerializer(Serializer serializer)
     {
         Serializers.Add(serializer);
+        registerdGameObjects.Add(serializer.Id,serializer.gameObject);
     }
 
     /// <summary>
@@ -229,6 +233,20 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
     public void UnRegisterSerializer(Serializer serializer)
     {
         Serializers.Remove(serializer);
+        registerdGameObjects.Remove(serializer.Id);
+    }
+
+    public GameObject GetRegisterdGameobject(string id)
+    {
+        if (registerdGameObjects.TryGetValue(id, out GameObject gameObject))
+        {
+            return gameObject;
+        }
+        else
+        {
+            Debug.Log("The gameobject with the id " + id + " does not exist or is not tracked by the SaveLoadManager", gameObject);
+            return null;
+        }
     }
 
     private async void OnApplicationFocus(bool hasFocus)
