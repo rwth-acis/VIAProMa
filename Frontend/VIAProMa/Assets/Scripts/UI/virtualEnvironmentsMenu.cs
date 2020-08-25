@@ -16,12 +16,12 @@ using UnityEngine.UI;
 public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private EnvironmentListView environmentListView;
-
     [SerializeField] private Interactable pageUpButton;
     [SerializeField] private Interactable pageDownButton;
     [SerializeField] private Material[] environmentSkyboxes;
     [SerializeField] private Sprite[] previewImages;
     [SerializeField] private string[] environmentNames;
+    [SerializeField] private GameObject[] environmentPrefabs;
 
     /// <summary>
     /// The number of environment entries which are shown on one page
@@ -32,6 +32,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 
     private int page = 0;
     private bool windowEnabled = true;
+    private GameObject currentEnvironmentInstance;
 
     /// <summary>
     /// States whether the window is enabled
@@ -81,7 +82,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         {
             if (previewImages[i] != null && environmentSkyboxes[i] != null)
             {
-                environments.Add(new EnvironmentData(environmentNames[i], previewImages[i], environmentSkyboxes[i]));
+                environments.Add(new EnvironmentData(environmentNames[i], previewImages[i], environmentSkyboxes[i], environmentPrefabs[i]));
             }
         }
 
@@ -98,9 +99,20 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     /// <param name="e">Arguments about the list view selection event</param>
     private void OnEnvironmentSelected(object sender, ListViewItemSelectedArgs e)
     {
-        if (windowEnabled)
+        if ((environmentListView.SeletedItem != null) && windowEnabled)
         {
-            RenderSettings.skybox = environmentListView.SeletedItem.EnvironmentBackground;
+            if (environmentListView.SeletedItem.EnvironmentBackground != null)
+            {
+                RenderSettings.skybox = environmentListView.SeletedItem.EnvironmentBackground;
+            }
+            if(currentEnvironmentInstance != null)
+            {
+                Destroy(currentEnvironmentInstance);
+            }
+            if (environmentListView.SeletedItem.EnvironmentPrefab != null)
+            {
+                currentEnvironmentInstance = Instantiate(environmentListView.SeletedItem.EnvironmentPrefab, environmentListView.SeletedItem.EnvironmentPrefab.transform.position, Quaternion.identity);
+            }
         }
     }
 
