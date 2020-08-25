@@ -3,6 +3,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 
@@ -14,7 +15,10 @@ public class TimerWindow : MonoBehaviour, IWindow
     [SerializeField] private GameObject caption;
     [SerializeField] private Sprite play;
     [SerializeField] private Sprite stop;
-    public static bool timerOn { get; private set; }
+    private bool timerOn;
+    private Stopwatch timer;
+    private TimeSpan time;
+    private string elapsedTime;
 
     public bool WindowEnabled { get; set; }
 
@@ -33,8 +37,20 @@ public class TimerWindow : MonoBehaviour, IWindow
     private void Start()
     {
         timerOn = false;
+        timer = new Stopwatch();
+        time = timer.Elapsed;
+        elapsedTime = String.Format("{0:00}:{1:00}.{2:00}", time.Minutes, time.Seconds, time.Milliseconds / 10);
+        saveNameInputField.Text = elapsedTime;
+
         saveNameInputField.Text = SaveLoadManager.Instance.SaveName;
         icon.GetComponent<SpriteRenderer>().sprite = play;
+    }
+
+    private void Update()
+    {
+        time = timer.Elapsed;
+        elapsedTime = String.Format("{0:00}:{1:00}.{2:00}", time.Minutes, time.Seconds, time.Milliseconds / 10);
+        saveNameInputField.Text = elapsedTime;
     }
 
     private void OnSaveNameChanged(object sender, EventArgs e)
@@ -49,8 +65,8 @@ public class TimerWindow : MonoBehaviour, IWindow
         {
             //stop the timer
             timerOn = false;
-            saveNameInputField.Text = "00:00";
-            //doneButton.GetComponentInChildren<TextMeshProUGUI>().text = "Start";
+            timer.Stop();
+            timer.Reset();
             caption.GetComponent<TextMeshPro>().SetText("Start");
             icon.GetComponent<SpriteRenderer>().sprite = play;
         }
@@ -58,8 +74,7 @@ public class TimerWindow : MonoBehaviour, IWindow
         {
             //start the timer
             timerOn = true;
-            saveNameInputField.Text = "Timer runs...";
-            //doneButton.GetComponentInChildren<TextMeshProUGUI>().text = "Stop";
+            timer.Start();
             caption.GetComponent<TextMeshPro>().SetText("Stop");
             icon.GetComponent<SpriteRenderer>().sprite = stop;
         }
