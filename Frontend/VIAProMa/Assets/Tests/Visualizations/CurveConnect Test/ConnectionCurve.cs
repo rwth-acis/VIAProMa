@@ -37,12 +37,24 @@ public class ConnectionCurve : MonoBehaviour
 
     public void Update()
     {
+        var view = GetComponent<PhotonView>();
         if (startID != "" && goalID != "")
         {
             start = SaveLoadManager.Instance.GetRegisterdGameobject(startID);
             goal = SaveLoadManager.Instance.GetRegisterdGameobject(goalID);
+            object[] data = new object[2];
+            data[0] = start.GetComponent<PhotonView>().InstantiationId;
+            data[1] = goal.GetComponent<PhotonView>().InstantiationId;
+            view.InstantiationData = data;
         }
-        enabled = false;
+        if (start == null && goal == null)
+        {
+            int startID = (int)view.InstantiationData[0];
+            int goalID = (int)view.InstantiationData[1];
+            start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
+            goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
+        }
+        //enabled = false;
     }
 
     [PunRPC]
