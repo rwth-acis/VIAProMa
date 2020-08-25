@@ -85,7 +85,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
             }
         }
 
-     //   environmentListView.ItemSelected += OnEnvironmentSelected;
+        environmentListView.ItemSelected += OnEnvironmentSelected;
 
         Close();
     }
@@ -96,13 +96,13 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     /// </summary>
     /// <param name="skybox">The selected skybox</param>
     /// <param name="e">Arguments about the list view selection event</param>
-//    private void OnEnvironmentSelected(Material skybox, EnvironmentViewItemSelectedArgs e)
-  //  {
-  //      if (windowEnabled)
-  //      {
-  //          RenderSettings.skybox = skybox;
-  //      }
-  //  }
+    private void OnEnvironmentSelected(object sender, ListViewItemSelectedArgs e)
+    {
+        if (windowEnabled)
+        {
+            RenderSettings.skybox = environmentListView.SeletedItem.EnvironmentBackground;
+        }
+    }
 
     /// <summary>
     /// Called if the user pushes the page up button

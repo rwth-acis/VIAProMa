@@ -5,4 +5,5 @@ using UnityEngine;
 [RequireComponent(typeof(EnvironmentDataDisplay))]
 public class EnvironmentListViewItem : ListViewItem<EnvironmentData>
 {
+
 }
