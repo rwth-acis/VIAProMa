@@ -15,26 +15,8 @@ public class LineSerialiser : MonoBehaviour, ISerializable
 
     public void Deserialize(SerializedObject serializedObject)
     {
-        if (serializedObject.Strings.TryGetValue("start", out string startID) && serializedObject.Strings.TryGetValue("goal", out string goalID))
-        {
-            var serializers = FindObjectsOfType<Serializer>();
-            //foreach (var serializer in serializers)
-            //{
-            //    if (serializer.Id == startID)
-            //    {
-            //        curve.start = serializer.gameObject;
-            //    }
-            //    if (serializer.Id == goalID)
-            //    {
-            //        curve.goal = serializer.gameObject;
-            //    }
-            //}
-            var test = SaveLoadManager.Instance.GetSerializer(startID);
-            //curve.start = SaveLoadManager.Instance.GetSerializer(startID).gameObject;
-            //curve.goal = SaveLoadManager.Instance.GetSerializer(goalID).gameObject;
-            curve.startID = startID;
-            curve.goalID = goalID;
-        }
+        curve.startID = serializedObject.Strings["startID"];
+        curve.goalID = serializedObject.Strings["goalID"];
     }
 
     public SerializedObject Serialize()
@@ -42,8 +24,8 @@ public class LineSerialiser : MonoBehaviour, ISerializable
         SerializedObject serializedObject = new SerializedObject();
         string startID = curve.start.GetComponent<Serializer>().Id;
         string goalID = curve.goal.GetComponent<Serializer>().Id;
-        serializedObject.Strings.Add("start",startID);
-        serializedObject.Strings.Add("goal",goalID);
+        serializedObject.Strings.Add("startID", startID);
+        serializedObject.Strings.Add("goalID",goalID);
         return serializedObject;
     }
 }

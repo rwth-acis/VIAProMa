@@ -160,7 +160,11 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
             }
             else // the object does not yet exist in the scene => instantiate it
             {
+
+
                 GameObject instantiated = ResourceManager.Instance.NetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity);
+
+
                 Serializer serializer = instantiated?.GetComponent<Serializer>();
                 if (serializer == null)
                 {

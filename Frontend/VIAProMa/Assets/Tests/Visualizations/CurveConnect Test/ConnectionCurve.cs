@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System.Threading.Tasks;
 
 public class ConnectionCurve : MonoBehaviour
 {
@@ -17,45 +18,77 @@ public class ConnectionCurve : MonoBehaviour
     LineController lineController;
     public bool isMarked { get; set; }
     Gradient defaultColor;
+
     // Start is called before the first frame update
-
-
     void Start()
     {
-        var view = GetComponent<PhotonView>();
-        if (PhotonNetwork.InRoom && view.InstantiationData != null)
-        {
-            int startID = (int)view.InstantiationData[0];
-            int goalID = (int)view.InstantiationData[1];
-            start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
-            goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject; 
-        }
         lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
-        defaultColor = lineRenderer.colorGradient;
-        lineController.curves.Add(this);
+        if (startID == "" && goalID == "")
+        {
+            var view = GetComponent<PhotonView>();
+            if (PhotonNetwork.InRoom && view.InstantiationData != null)
+            {
+                int startID = (int)view.InstantiationData[0];
+                int goalID = (int)view.InstantiationData[1];
+                start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
+                goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
+            }
+            defaultColor = lineRenderer.colorGradient;
+            lineController.curves.Add(this);
+        }
+        else
+        {
+            ResolveSerializerID();
+        }
     }
 
-    public void Update()
+    private async void ResolveSerializerID()
     {
-        var view = GetComponent<PhotonView>();
-        if (startID != "" && goalID != "")
+        GameObject startObject;
+        GameObject goalObject;
+        bool resolved = false;
+        do
         {
-            start = SaveLoadManager.Instance.GetRegisterdGameobject(startID);
-            goal = SaveLoadManager.Instance.GetRegisterdGameobject(goalID);
-            object[] data = new object[2];
-            data[0] = start.GetComponent<PhotonView>().InstantiationId;
-            data[1] = goal.GetComponent<PhotonView>().InstantiationId;
-            view.InstantiationData = data;
+            startObject = SaveLoadManager.Instance.GetRegisterdGameobject(startID);
+            goalObject = SaveLoadManager.Instance.GetRegisterdGameobject(goalID);
+            if (startObject == null || goalObject == null)
+            {
+                await Task.Yield();
+            }
+            else
+            {
+                resolved = true;
+            }
         }
-        if (start == null && goal == null)
-        {
-            int startID = (int)view.InstantiationData[0];
-            int goalID = (int)view.InstantiationData[1];
-            start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
-            goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
-        }
-        //enabled = false;
-    }
+        while (!resolved);
+        object[] data = new object[2];
+        data[0] = startObject.GetComponent<PhotonView>().ViewID;
+        data[1] = goalObject.GetComponent<PhotonView>().ViewID;
+        ResourceManager.Instance.SceneNetworkInstantiate(lineController.curveConnectPrefab, Vector3.zero, Quaternion.identity, (x) => { }, data);
+        PhotonNetwork.Destroy(GetComponent<PhotonView>());
+    } 
+
+    //public void Update()
+    //{
+    //    var view = GetComponent<PhotonView>();
+    //    if (startID != "" && goalID != "")
+    //    {
+    //        start = SaveLoadManager.Instance.GetRegisterdGameobject(startID);
+    //        goal = SaveLoadManager.Instance.GetRegisterdGameobject(goalID);
+    //        object[] data = new object[2];
+    //        data[0] = start.GetComponent<PhotonView>().InstantiationId;
+    //        data[1] = goal.GetComponent<PhotonView>().InstantiationId;
+    //        view.InstantiationData = data;
+    //    }
+    //    if (start == null && goal == null)
+    //    {
+    //        int startID = (int)view.InstantiationData[0];
+    //        int goalID = (int)view.InstantiationData[1];
+    //        start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
+    //        goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
+    //    }
+    //    //enabled = false;
+    //}
 
     [PunRPC]
     public void SetColor(float[] color1Arr, float[] color2Arr)
