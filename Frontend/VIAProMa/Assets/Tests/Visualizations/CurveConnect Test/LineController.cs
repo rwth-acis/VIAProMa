@@ -74,14 +74,14 @@ public class LineController : MonoBehaviour
                         //tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                         if (tempCurve.goal != newGoal && goalView != null)
                         {
-                            view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
+                            view.RPC("WasSollDerMist", RpcTarget.All, goalView.ViewID);
                         }
                     }
                     else
                     {
                         if (tempCurve.goal != tempCurve)
                         {
-                            view.RPC("SetGoal", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
+                            view.RPC("WasSollDerMist", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
                         }
                         tempGoal.transform.position = mainPointer.Position;
                     }
