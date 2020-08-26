@@ -112,6 +112,10 @@ public class ConnectionCurve : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (lineController == null)
+        {
+            lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
+        }
         lineController.curves.Remove(this);
     }
 }
