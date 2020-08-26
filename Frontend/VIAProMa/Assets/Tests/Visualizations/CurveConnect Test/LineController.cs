@@ -66,14 +66,24 @@ public class LineController : MonoBehaviour
                 //But ToString then returns null.
                 if (mainPointer.ToString() != "null")
                 {
+                    var view = tempCurve.GetComponent<PhotonView>();
                     if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
                     {
-                        tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        GameObject newGoal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        var goalView = newGoal.GetComponent<PhotonView>();
+                        //tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        if (tempCurve.goal != newGoal && goalView != null)
+                        {
+                            view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
+                        }
                     }
                     else
                     {
-                        tempCurve.goal = tempGoal;
-                        tempCurve.goal.transform.position = mainPointer.Position;
+                        if (tempCurve.goal != tempCurve)
+                        {
+                            view.RPC("SetGoal", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
+                        }
+                        tempGoal.transform.position = mainPointer.Position;
                     }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                     if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)

@@ -110,6 +110,12 @@ public class ConnectionCurve : MonoBehaviour
         lineRenderer.colorGradient = defaultColor;
     }
 
+    [PunRPC]
+    public void SetGoal(int viewID)
+    {
+        goal = PhotonNetwork.GetPhotonView(viewID).gameObject;
+    }
+
     private void OnDestroy()
     {
         if (lineController == null)
