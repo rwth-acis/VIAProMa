@@ -61,14 +61,15 @@ public class LineController : MonoBehaviour
         switch (currState)
         {
             case State.connecting:
-                GameObject target = null;
+                GameObject target;
                 //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
                 //But ToString then returns null.
                 if (mainPointer.ToString() != "null")
                 {
-                    if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
+                    target = GetParentWithPhotonView(mainPointer.Result?.CurrentPointerTarget);
+                    if (target != null)
                     {
-                        tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
+                        tempCurve.goal = target;
                     }
                     else
                     {
@@ -78,8 +79,6 @@ public class LineController : MonoBehaviour
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                     if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
                     {
-                        if (mainPointer.Result.CurrentPointerTarget != null)
-                            target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                         if (target != null)
                             CreateConnectionCurveScene(tempCurve.start, target);
                         ChangeState(State.defaultMode);
@@ -350,5 +349,27 @@ public class LineController : MonoBehaviour
         arr[2] = color.b;
         arr[3] = color.a;
         return arr;
+    }
+
+    public static GameObject GetParentWithPhotonView(GameObject gameObject)
+    {
+        if (gameObject == null)
+        {
+            return null;
+        }
+        var view = gameObject.GetComponent<PhotonView>();
+        var parent = gameObject.transform.parent?.gameObject;
+        if (view != null)
+        {
+            return gameObject;
+        }
+        else if (parent != null)
+        {
+            return GetParentWithPhotonView(parent);
+        }
+        else
+        {
+            return null;
+        }
     }
 }
