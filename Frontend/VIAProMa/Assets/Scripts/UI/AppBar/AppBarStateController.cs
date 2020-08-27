@@ -8,6 +8,7 @@ public class AppBarStateController : MonoBehaviour
     [SerializeField] private GameObject collapsedView;
     [SerializeField] private GameObject expandedView;
     [SerializeField] private GameObject adjustmentView;
+    private List<AppBarStateController> appBarsInConnetMode;
 
     private AppBarState state = AppBarState.COLLAPSED;
     private BoundingBoxStateController boundingBoxStateController;
@@ -36,6 +37,7 @@ public class AppBarStateController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(adjustmentView));
         }
+        appBarsInConnetMode = new List<AppBarStateController>();
     }
 
     private void Start()
@@ -54,17 +56,30 @@ public class AppBarStateController : MonoBehaviour
 
     private void UpdateView()
     {
-        collapsedView.SetActive(state == AppBarState.COLLAPSED);
+        collapsedView.SetActive(state == AppBarState.COLLAPSED || state == AppBarState.CONNECTING_INVOKE ||state == AppBarState.CONNECTING);
         expandedView.SetActive(state == AppBarState.EXPANDED);
         adjustmentView.SetActive(state == AppBarState.ADJUSTMENT_VIEW);
+
+        foreach (AppBarStateController appBar in appBarsInConnetMode)
+        {
+            appBar.Collapse();
+        }
+        appBarsInConnetMode = new List<AppBarStateController>();
 
         if (state == AppBarState.ADJUSTMENT_VIEW)
         {
             boundingBoxStateController.BoundingBoxActive = true;
+            boundingBoxStateController.manipulationHandler.enabled = true;
+        }
+        else if (state == AppBarState.CONNECTING)
+        {
+            boundingBoxStateController.BoundingBoxActive = true;
+            boundingBoxStateController.manipulationHandler.enabled = false;
         }
         else
         {
             boundingBoxStateController.BoundingBoxActive = false;
+            boundingBoxStateController.manipulationHandler.enabled = true;
         }
     }
 
@@ -82,9 +97,28 @@ public class AppBarStateController : MonoBehaviour
     {
         State = AppBarState.ADJUSTMENT_VIEW;
     }
+
+    public void InvokeConnect()
+    {
+        State = AppBarState.CONNECTING_INVOKE;
+        var otherappBars = FindObjectsOfType<AppBarStateController>();
+        foreach (var appBar in otherappBars)
+        {
+            if (appBar != this)
+            {
+                appBar.Connect();
+                appBarsInConnetMode.Add(appBar);
+            }
+        }
+    }
+
+    public void Connect()
+    {
+        State = AppBarState.CONNECTING;
+    }
 }
 
 public enum AppBarState
 {
-    COLLAPSED, EXPANDED, ADJUSTMENT_VIEW
+    COLLAPSED, EXPANDED, ADJUSTMENT_VIEW, CONNECTING_INVOKE, CONNECTING
 }

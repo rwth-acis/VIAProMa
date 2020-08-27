@@ -27,6 +27,7 @@ public class LineController : MonoBehaviour
     public State currState = State.defaultMode;
     public GameObject curveConnectPrefab;
     public GameObject tempGoalPrefab;
+    AppBarStateController caller;
 
     //Temp Curve
     ConnectionCurve tempCurve;
@@ -150,7 +151,7 @@ public class LineController : MonoBehaviour
         }
     }
 
-    public void ChangeState(State state , GameObject start = null)
+    public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
     {
         
         if (state == currState)
@@ -178,7 +179,7 @@ public class LineController : MonoBehaviour
                 currState = State.disconnecting;
                 break;
             case State.connecting:
-                StartConnecting(start);
+                StartConnecting(start, caller);
                 currState = State.connecting;
                 break;
         }
@@ -239,9 +240,10 @@ public class LineController : MonoBehaviour
         return curve;
     }
 
-    void StartConnecting(GameObject start)
+    void StartConnecting(GameObject start, AppBarStateController caller)
     {
         RefreshPointer();
+        this.caller = caller;
         if (PhotonNetwork.InRoom)
         {
             tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
@@ -260,6 +262,7 @@ public class LineController : MonoBehaviour
 
     void StopConnecting()
     {
+        caller.Collapse();
         if (PhotonNetwork.InRoom)
         {
             PhotonNetwork.Destroy(tempGoal);
