@@ -8,8 +8,9 @@ using Photon.Pun.UtilityScripts;
 using System.Threading.Tasks;
 
 
-public class LineController : MonoBehaviour
+public class LineController : MonoBehaviourPunCallbacks
 {
+    public bool onlineTestMode;
     public static float stepSize = 1;
     public static int curveSegmentCount = 60;
     public GameObject DeleteCube;
@@ -36,8 +37,8 @@ public class LineController : MonoBehaviour
 
 
     //Test
-    public GameObject startTest;
-    public GameObject goalTest;
+    public List<GameObject> startTest;
+    public List<GameObject> goalTest;
     GameObject tempGoal = null;
 
 
@@ -47,13 +48,27 @@ public class LineController : MonoBehaviour
         curves = new List<ConnectionCurve>();
         curveGenerator = GetComponent<JoinedCurveGeneration>();
 
-        //Test
-        if (startTest != null && goalTest != null)
+
+        if (!onlineTestMode && startTest != null && goalTest != null)
         {
-            CreateConnectionCurveScene(startTest, goalTest);
+            for (int i = 0; i < startTest.Count; i++)
+            {
+                CreateConnectionCurveScene(startTest[i], goalTest[i]);
+            }
         }
 
-        Task test = JoinedCurveGeneration.UpdateAsync(curves,stepSize);
+        Task curveUpdater = JoinedCurveGeneration.UpdateAsync(curves,stepSize);
+    }
+
+    public override void OnJoinedRoom()
+    {
+        if (onlineTestMode && PhotonNetwork.IsMasterClient && startTest != null && goalTest != null)
+        {
+            for (int i = 0; i < startTest.Count; i++)
+            {
+                CreateConnectionCurveScene(startTest[i], goalTest[i]);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -185,7 +200,7 @@ public class LineController : MonoBehaviour
         }
     }
 
-    async Task DeleteConnectionCurve(ConnectionCurve connectionCurve)
+    async void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
         if (PhotonNetwork.InRoom)
         {
@@ -205,7 +220,7 @@ public class LineController : MonoBehaviour
         }
     }
 
-    void CreateConnectionCurveScene(GameObject start, GameObject goal)
+    public void CreateConnectionCurveScene(GameObject start, GameObject goal)
     {
         if (PhotonNetwork.InRoom)
         {
@@ -221,7 +236,7 @@ public class LineController : MonoBehaviour
             curve.goal = goal;
         }
     }
-    ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
+    public ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
     {
         ConnectionCurve curve;
         if (PhotonNetwork.InRoom)
@@ -319,12 +334,21 @@ public class LineController : MonoBehaviour
         
     }
 
+    public void DeleteAllCurves()
+    {
+        var curvesToDelete = new List<ConnectionCurve>(curves);
+        foreach (ConnectionCurve connectionCurve in curvesToDelete)
+        {
+            DeleteConnectionCurve(connectionCurve);
+        }
+    }
+
     public void RefreshPointer()
     {
         foreach (var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
         {
             // Ignore anything that is not a hand because we want articulated hands
-            if (source.SourceType == InputSourceType.Hand)
+            if (source.SourceType == InputSourceType.Controller || source.SourceType == InputSourceType.Hand)
             {
                 foreach (var p in source.Pointers)
                 {
