@@ -6,6 +6,7 @@ using Photon.Pun;
 public class KanbanInstantTester : MonoBehaviourPunCallbacks
 {
     public KanbanBoardColumn kanbanBoardColumn;
+    public string titel;
     //public int numberOfIssues = 10;
     string[] issuDesriptions = 
         {
@@ -28,7 +29,10 @@ public class KanbanInstantTester : MonoBehaviourPunCallbacks
                 provider.Issues.Add(new Issue(DataSource.REQUIREMENTS_BAZAAR, 1, "Issue " + i, issuDesriptions[i], 1, new User(), IssueStatus.OPEN, "", "", new User[0], new User[0]));
             }
             kanbanBoardColumn.ContentProvider = provider;
-            kanbanBoardColumn.Title = "ViaProMa";
+            if (titel != "")
+            {
+                kanbanBoardColumn.Title = titel;
+            }
         }
     }
 }
