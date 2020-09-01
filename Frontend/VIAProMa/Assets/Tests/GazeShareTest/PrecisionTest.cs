@@ -6,17 +6,20 @@ using UnityEngine;
 
 public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
 {
-    [SerializeField] private GameObject center;
+    //[SerializeField] private GameObject center;
+    private float spawnRadius = 10f;
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         DateTime time = eventData.EventTime;
         IMixedRealityInputSource source = eventData.InputSource;
-        Vector3 centerPosition = center.transform.localPosition;
-        Debug.Log("Center: " + center.transform.localPosition);
+        //Vector3 centerPosition = center.transform.localPosition;
+        //Debug.Log("Center: " + center.transform.localPosition);
         Debug.Log("Pointer: " + RaycastVive.pointerHitPosition);
-        float distance = Vector2.Distance(centerPosition, RaycastVive.pointerHitPosition)*100f;
-        if(distance < 10)
+        //float distance = Vector3.Distance(centerPosition, RaycastVive.pointerHitPosition)*100f;
+        float distance = Vector3.Distance(transform.position, RaycastVive.pointerHitPosition) * 100f;
+
+        if (distance < 10)
         {
             Debug.Log("Bullseye! ");
         }
@@ -38,7 +41,13 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         }
         //Debug.Log("Time: " + time + "; distance: " + distance.ToString("f"));
         Debug.Log("Timer: " + TimerWindow.elapsedTime + "; distance: " + distance.ToString("f"));
-        gameObject.SetActive(false);
+
+        //gameObject.SetActive(false);
+        gameObject.transform.position = new Vector3(UnityEngine.Random.Range(0.5f, 3f), UnityEngine.Random.Range(0.5f, 3f), 2.5f);
+        //gameObject.transform.position = UnityEngine.Random.onUnitSphere * spawnRadius;
+        gameObject.transform.rotation = Quaternion.RotateTowards(Camera.main.transform.rotation, transform.rotation, 360);
+        //gameObject.SetActive(true);
+
         //TimerWindow.timer.Stop();
     }
 

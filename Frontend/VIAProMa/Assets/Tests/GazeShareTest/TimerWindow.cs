@@ -81,7 +81,7 @@ public class TimerWindow : MonoBehaviour, IWindow
             icon.GetComponent<SpriteRenderer>().sprite = stop;
             if (firstStart == true)
             {
-                target = ResourceManager.Instance.NetworkInstantiate(targetPrefab, new Vector3(0f, 0f, 1.5f), Quaternion.Euler(0, 180, 0));
+                target = ResourceManager.Instance.NetworkInstantiate(targetPrefab, new Vector3(-1.3f, 0.3f, 2.5f), Quaternion.Euler(0, 180, 0));
                 firstStart = false;
             }
         }
