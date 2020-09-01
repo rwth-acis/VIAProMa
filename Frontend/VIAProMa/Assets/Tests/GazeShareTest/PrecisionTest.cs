@@ -1,4 +1,5 @@
-﻿using Microsoft.MixedReality.Toolkit.Input;
+﻿using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.Input;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,16 +9,22 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
 {
     //[SerializeField] private GameObject center;
     private float spawnRadius = 10f;
+    private Vector3 hitPosition;
+    private Vector3 centerPosition;
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
         DateTime time = eventData.EventTime;
         IMixedRealityInputSource source = eventData.InputSource;
-        //Vector3 centerPosition = center.transform.localPosition;
-        //Debug.Log("Center: " + center.transform.localPosition);
+
+        //centerPosition = center.transform.localPosition;
+        centerPosition = transform.position;
+        hitPosition = RaycastVive.pointerHitPosition.Equals(InstantiateArrows.far) ? MixedRealityToolkit.InputSystem.GazeProvider.HitPosition : RaycastVive.pointerHitPosition;
+        Debug.Log("Center: " + centerPosition);
         Debug.Log("Pointer: " + RaycastVive.pointerHitPosition);
-        //float distance = Vector3.Distance(centerPosition, RaycastVive.pointerHitPosition)*100f;
-        float distance = Vector3.Distance(transform.position, RaycastVive.pointerHitPosition) * 100f;
+        //float distance = Vector3.Distance(centerPosition, RaycastVive.pointerHitPosition) * 100f;
+        //float distance = Vector3.Distance(centerPosition, MixedRealityToolkit.InputSystem.GazeProvider.HitPosition) * 100f;
+        float distance = Vector3.Distance(centerPosition, hitPosition) * 100f;
 
         if (distance < 10)
         {
@@ -60,7 +67,8 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
     // Start is called before the first frame update
     void Start()
     {
-        
+        hitPosition = InstantiateArrows.far;
+        centerPosition = transform.position;
     }
 
     // Update is called once per frame

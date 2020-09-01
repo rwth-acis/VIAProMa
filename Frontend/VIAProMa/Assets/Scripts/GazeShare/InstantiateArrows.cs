@@ -25,7 +25,7 @@ public static class StaticGaze
         bool isUsingVive = false;
         foreach (IMixedRealityController controller in MixedRealityToolkit.InputSystem.DetectedControllers)
         {
-            if (controller.InputSource.SourceType == InputSourceType.Hand)
+            if (controller.InputSource.SourceType == InputSourceType.Controller)
             {
                 isUsingVive = true;
             }
@@ -86,7 +86,7 @@ public class InstantiateArrows : MonoBehaviourPun, IPunObservable
     protected Vector3 targetPosition;
     protected Quaternion targetRotation;
     private Vector3 targetOrigin;
-    protected Vector3 far = new Vector3(0f, -10f, 0f);
+    public static Vector3 far = new Vector3(0f, -10f, 0f);
     protected Quaternion rot = Quaternion.Euler(0f, 0f, 0f);
     private float arrowOpacity = 0.3f;
     protected bool isUsingVive;
