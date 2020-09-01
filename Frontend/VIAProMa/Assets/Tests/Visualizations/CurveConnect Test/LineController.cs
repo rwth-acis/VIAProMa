@@ -29,6 +29,9 @@ public class LineController : MonoBehaviourPunCallbacks
     public GameObject curveConnectPrefab;
     public GameObject tempGoalPrefab;
     AppBarStateController caller;
+    bool lastFrameClicked = false;
+    bool deletedSomething = false;
+    bool startedDeletion = false;
 
     //Temp Curve
     ConnectionCurve tempCurve;
@@ -73,7 +76,8 @@ public class LineController : MonoBehaviourPunCallbacks
 
     // Update is called once per frame
     void Update()
-    {     
+    {
+        bool thisFrameClicked = ((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select;
         switch (currState)
         {
             case State.connecting:
@@ -93,7 +97,7 @@ public class LineController : MonoBehaviourPunCallbacks
                         tempCurve.goal.transform.position = mainPointer.Position;
                     }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
-                    if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
+                    if (thisFrameClicked && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
                     {
                         if (target != null)
                             CreateConnectionCurveScene(tempCurve.start, target);
@@ -125,6 +129,7 @@ public class LineController : MonoBehaviourPunCallbacks
                         if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal, 0b100000000, false, 0.05f))
                         {
                             connectionCurve.isMarked = true;
+                            //TODO is marked is not used properly
                             if (PhotonNetwork.InRoom)
                             {
                                 view.RPC("SetColor", RpcTarget.All, ColorPhoton(Color.red), ColorPhoton(Color.yellow));
@@ -134,7 +139,7 @@ public class LineController : MonoBehaviourPunCallbacks
                                 connectionCurve.SetColor(ColorPhoton(Color.red), ColorPhoton(Color.yellow));
                             }
 
-                            if (((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select)
+                            if (thisFrameClicked)
                             {
                                 curvesToDelete.Add(connectionCurve);
                             }
@@ -156,7 +161,19 @@ public class LineController : MonoBehaviourPunCallbacks
                     foreach (ConnectionCurve connectionCurve in curvesToDelete)
                     {
                         DeleteConnectionCurve(connectionCurve);
+                        deletedSomething = true;
                     }
+
+                    if (lastFrameClicked && !thisFrameClicked && curvesToDelete.Count == 0 && !deletedSomething && !startedDeletion)
+                    {
+                        ChangeState(State.defaultMode);
+                    }
+
+                    if (lastFrameClicked && !thisFrameClicked)
+                    {
+                        deletedSomething = false;
+                    }
+                    startedDeletion = false;
                 }
                 else
                 {
@@ -164,6 +181,7 @@ public class LineController : MonoBehaviourPunCallbacks
                 }
                 break;
         }
+        lastFrameClicked = thisFrameClicked;
     }
 
     public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
@@ -274,7 +292,6 @@ public class LineController : MonoBehaviourPunCallbacks
         clickTimeStamp = DateTime.Now;
     }
 
-
     void StopConnecting()
     {
         caller.Collapse();
@@ -287,6 +304,7 @@ public class LineController : MonoBehaviourPunCallbacks
             Destroy(tempGoal);
         }
         DeleteConnectionCurve(tempCurve);
+        startedDeletion = false;
     }
 
     void StartDisconnecting()
@@ -297,6 +315,7 @@ public class LineController : MonoBehaviourPunCallbacks
             RefreshPointer();
             instantiatedDeletCube = Instantiate(DeleteCube); 
         }
+        startedDeletion = true;
     }
 
     void StopDisconnecting()
@@ -316,6 +335,7 @@ public class LineController : MonoBehaviourPunCallbacks
                 }
             }
         }
+        deletedSomething = false;
     }
     public void DeleteCurves(GameObject startOrEndPoint)
     {
