@@ -31,6 +31,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     private FoldController foldController;
 
+    private bool isLoggedIn = false;
+
     // instances:
     private GameObject issueShelfInstance;
     private GameObject visualizationShelfInstance;
@@ -137,6 +139,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
         loadButton.Enabled = PhotonNetwork.InRoom;
         issueShelfButton.Enabled = PhotonNetwork.InRoom;
         visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
+        loginButton.Enabled = PhotonNetwork.InRoom;
+        Debug.Log("The Avatar button is supposed to be enabled?");
+        Debug.Log(isLoggedIn);
+        avatarConfigurationButton.Enabled = isLoggedIn;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -312,6 +318,12 @@ public class MainMenu : MonoBehaviourPunCallbacks
         {
             SetVisualizationShelfInstance(visualizationShelfId);
         }
+    }
+
+    public void Login()
+    {
+        isLoggedIn = true;
+        CheckButtonStates();
     }
 
     [PunRPC]
