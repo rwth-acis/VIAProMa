@@ -143,7 +143,8 @@ public class MainMenu : MonoBehaviourPunCallbacks
         loadButton.Enabled = PhotonNetwork.InRoom;
         issueShelfButton.Enabled = PhotonNetwork.InRoom;
         visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
-        //advancedSettingsButton.Enabled = System.Windows.Graphics.HolographicDisplay.isOpaque;
+        Debug.Log(UnityEngine.XR.WSA.HolographicSettings.IsDisplayOpaque);
+        advancedSettingsButton.Enabled = UnityEngine.XR.WSA.HolographicSettings.IsDisplayOpaque;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
