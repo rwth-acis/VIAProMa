@@ -8,8 +8,9 @@ using Photon.Pun.UtilityScripts;
 using System.Threading.Tasks;
 
 
-public class LineController : MonoBehaviour
+public class LineController : MonoBehaviourPunCallbacks
 {
+    public bool onlineTestMode;
     public static float stepSize = 1;
     public static int curveSegmentCount = 60;
     public GameObject DeleteCube;
@@ -27,6 +28,10 @@ public class LineController : MonoBehaviour
     public State currState = State.defaultMode;
     public GameObject curveConnectPrefab;
     public GameObject tempGoalPrefab;
+    AppBarStateController caller;
+    bool lastFrameClicked = false;
+    bool deletedSomething = false;
+    bool startedDeletion = false;
 
     //Temp Curve
     ConnectionCurve tempCurve;
@@ -35,8 +40,8 @@ public class LineController : MonoBehaviour
 
 
     //Test
-    public GameObject startTest;
-    public GameObject goalTest;
+    public List<GameObject> startTest;
+    public List<GameObject> goalTest;
     GameObject tempGoal = null;
 
 
@@ -46,36 +51,47 @@ public class LineController : MonoBehaviour
         curves = new List<ConnectionCurve>();
         curveGenerator = GetComponent<JoinedCurveGeneration>();
 
-        //Test
-        if (startTest != null && goalTest != null)
+
+        if (!onlineTestMode && startTest != null && goalTest != null)
         {
-            CreateConnectionCurveScene(startTest, goalTest);
+            for (int i = 0; i < startTest.Count; i++)
+            {
+                CreateConnectionCurveScene(startTest[i], goalTest[i]);
+            }
         }
 
-        Task test = JoinedCurveGeneration.UpdateAsync(curves,stepSize);
+        Task curveUpdater = JoinedCurveGeneration.UpdateAsync(curves,stepSize);
+    }
+
+    public override void OnJoinedRoom()
+    {
+        if (onlineTestMode && PhotonNetwork.IsMasterClient && startTest != null && goalTest != null)
+        {
+            for (int i = 0; i < startTest.Count; i++)
+            {
+                CreateConnectionCurveScene(startTest[i], goalTest[i]);
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
-    {     
+    {
+        bool thisFrameClicked = ((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select;
         switch (currState)
         {
             case State.connecting:
-                GameObject target = null;
+                GameObject target;
                 //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
                 //But ToString then returns null.
                 if (mainPointer.ToString() != "null")
                 {
+                    target = GetParentWithPhotonView(mainPointer.Result?.CurrentPointerTarget);
                     var view = tempCurve.GetComponent<PhotonView>();
-                    if (mainPointer.Result != null && mainPointer.Result.CurrentPointerTarget != null)
+                    if (target != null)
                     {
-                        GameObject newGoal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
-                        var goalView = newGoal.GetComponent<PhotonView>();
-                        //tempCurve.goal = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
-                        if (tempCurve.goal != newGoal && goalView != null)
-                        {
-                            view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
-                        }
+                        var goalView = target.GetComponent<PhotonView>();
+                        view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
                     }
                     else
                     {
@@ -86,10 +102,8 @@ public class LineController : MonoBehaviour
                         tempGoal.transform.position = mainPointer.Position;
                     }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
-                    if (cursor.CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
+                    if (thisFrameClicked && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
                     {
-                        if (mainPointer.Result.CurrentPointerTarget != null)
-                            target = mainPointer.Result.CurrentPointerTarget.transform.root.gameObject;
                         if (target != null)
                             CreateConnectionCurveScene(tempCurve.start, target);
                         ChangeState(State.defaultMode);
@@ -120,6 +134,7 @@ public class LineController : MonoBehaviour
                         if (CurveGenerator.CurveCollsionCheck(curve, connectionCurve.start, connectionCurve.goal, 0b100000000, false, 0.05f))
                         {
                             connectionCurve.isMarked = true;
+                            //TODO is marked is not used properly
                             if (PhotonNetwork.InRoom)
                             {
                                 view.RPC("SetColor", RpcTarget.All, ColorPhoton(Color.red), ColorPhoton(Color.yellow));
@@ -129,7 +144,7 @@ public class LineController : MonoBehaviour
                                 connectionCurve.SetColor(ColorPhoton(Color.red), ColorPhoton(Color.yellow));
                             }
 
-                            if (((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select)
+                            if (thisFrameClicked)
                             {
                                 curvesToDelete.Add(connectionCurve);
                             }
@@ -151,7 +166,19 @@ public class LineController : MonoBehaviour
                     foreach (ConnectionCurve connectionCurve in curvesToDelete)
                     {
                         DeleteConnectionCurve(connectionCurve);
+                        deletedSomething = true;
                     }
+
+                    if (lastFrameClicked && !thisFrameClicked && curvesToDelete.Count == 0 && !deletedSomething && !startedDeletion)
+                    {
+                        ChangeState(State.defaultMode);
+                    }
+
+                    if (lastFrameClicked && !thisFrameClicked)
+                    {
+                        deletedSomething = false;
+                    }
+                    startedDeletion = false;
                 }
                 else
                 {
@@ -159,9 +186,10 @@ public class LineController : MonoBehaviour
                 }
                 break;
         }
+        lastFrameClicked = thisFrameClicked;
     }
 
-    public void ChangeState(State state , GameObject start = null)
+    public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
     {
         
         if (state == currState)
@@ -189,13 +217,13 @@ public class LineController : MonoBehaviour
                 currState = State.disconnecting;
                 break;
             case State.connecting:
-                StartConnecting(start);
+                StartConnecting(start, caller);
                 currState = State.connecting;
                 break;
         }
     }
 
-    async Task DeleteConnectionCurve(ConnectionCurve connectionCurve)
+    async void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
         if (PhotonNetwork.InRoom)
         {
@@ -215,7 +243,7 @@ public class LineController : MonoBehaviour
         }
     }
 
-    void CreateConnectionCurveScene(GameObject start, GameObject goal)
+    public void CreateConnectionCurveScene(GameObject start, GameObject goal)
     {
         if (PhotonNetwork.InRoom)
         {
@@ -231,7 +259,7 @@ public class LineController : MonoBehaviour
             curve.goal = goal;
         }
     }
-    ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
+    public ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
     {
         ConnectionCurve curve;
         if (PhotonNetwork.InRoom)
@@ -250,9 +278,10 @@ public class LineController : MonoBehaviour
         return curve;
     }
 
-    void StartConnecting(GameObject start)
+    void StartConnecting(GameObject start, AppBarStateController caller)
     {
         RefreshPointer();
+        this.caller = caller;
         if (PhotonNetwork.InRoom)
         {
             tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
@@ -268,9 +297,9 @@ public class LineController : MonoBehaviour
         clickTimeStamp = DateTime.Now;
     }
 
-
     void StopConnecting()
     {
+        caller.Collapse();
         if (PhotonNetwork.InRoom)
         {
             PhotonNetwork.Destroy(tempGoal);
@@ -280,6 +309,7 @@ public class LineController : MonoBehaviour
             Destroy(tempGoal);
         }
         DeleteConnectionCurve(tempCurve);
+        startedDeletion = false;
     }
 
     void StartDisconnecting()
@@ -290,6 +320,7 @@ public class LineController : MonoBehaviour
             RefreshPointer();
             instantiatedDeletCube = Instantiate(DeleteCube); 
         }
+        startedDeletion = true;
     }
 
     void StopDisconnecting()
@@ -309,6 +340,7 @@ public class LineController : MonoBehaviour
                 }
             }
         }
+        deletedSomething = false;
     }
     public void DeleteCurves(GameObject startOrEndPoint)
     {
@@ -327,12 +359,21 @@ public class LineController : MonoBehaviour
         
     }
 
+    public void DeleteAllCurves()
+    {
+        var curvesToDelete = new List<ConnectionCurve>(curves);
+        foreach (ConnectionCurve connectionCurve in curvesToDelete)
+        {
+            DeleteConnectionCurve(connectionCurve);
+        }
+    }
+
     public void RefreshPointer()
     {
         foreach (var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
         {
             // Ignore anything that is not a hand because we want articulated hands
-            if (source.SourceType == InputSourceType.Hand)
+            if (source.SourceType == InputSourceType.Controller || source.SourceType == InputSourceType.Hand)
             {
                 foreach (var p in source.Pointers)
                 {
@@ -360,5 +401,27 @@ public class LineController : MonoBehaviour
         arr[2] = color.b;
         arr[3] = color.a;
         return arr;
+    }
+
+    public static GameObject GetParentWithPhotonView(GameObject gameObject)
+    {
+        if (gameObject == null)
+        {
+            return null;
+        }
+        var view = gameObject.GetComponent<PhotonView>();
+        var parent = gameObject.transform.parent?.gameObject;
+        if (view != null)
+        {
+            return gameObject;
+        }
+        else if (parent != null)
+        {
+            return GetParentWithPhotonView(parent);
+        }
+        else
+        {
+            return null;
+        }
     }
 }

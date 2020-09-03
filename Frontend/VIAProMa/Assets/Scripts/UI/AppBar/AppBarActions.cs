@@ -94,7 +94,7 @@ public class AppBarActions : MonoBehaviour
     public void Connect()
     {
         //lineController.SendMessage("StartConnecting", appBarPlacer.TargetBoundingBox.Target);
-        lineController.ChangeState(LineController.State.connecting, appBarPlacer.TargetBoundingBox.Target);
+        lineController.ChangeState(LineController.State.connecting, appBarPlacer.TargetBoundingBox.Target, gameObject.GetComponent<AppBarStateController>());
     }
 
     public void Disconnect()

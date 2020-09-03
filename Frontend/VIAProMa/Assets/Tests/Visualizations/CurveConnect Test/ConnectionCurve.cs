@@ -30,8 +30,8 @@ public class ConnectionCurve : MonoBehaviour
             {
                 int startID = (int)view.InstantiationData[0];
                 int goalID = (int)view.InstantiationData[1];
-                start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
-                goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
+                start = PhotonNetwork.GetPhotonView(startID).transform.gameObject;
+                goal = PhotonNetwork.GetPhotonView(goalID).transform.gameObject;
             }
             defaultColor = lineRenderer.colorGradient;
             lineController.curves.Add(this);
