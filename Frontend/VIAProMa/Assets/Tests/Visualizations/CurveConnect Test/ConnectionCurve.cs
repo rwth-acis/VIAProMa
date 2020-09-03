@@ -111,7 +111,7 @@ public class ConnectionCurve : MonoBehaviour
     }
 
     [PunRPC]
-    public void WasSollDerMist(int viewID)
+    public void SetGoal(int viewID)
     {
         goal = PhotonNetwork.GetPhotonView(viewID).gameObject;
     }
