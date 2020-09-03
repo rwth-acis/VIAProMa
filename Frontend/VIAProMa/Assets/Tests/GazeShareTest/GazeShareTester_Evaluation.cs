@@ -1,26 +1,48 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
 using Photon.Voice.PUN;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class GazeShareTester_Evaluation : MonoBehaviour
 {
     [SerializeField] private GameObject issueShelfPrefab;
     [SerializeField] private GameObject visualizationShelfPrefab;
-    [SerializeField] private GameObject timerPrefab;
+    [SerializeField] private GameObject targetPrefab;
     private GameObject issueShelf;
     private GameObject visualizationShelf;
-    private GameObject timer;
+    private GameObject target;
+    // Timer
+    [SerializeField] private GameObject timerWindowPrefab;
+    private GameObject timerWindow;
+    private bool timerOn;
+    public static Stopwatch timer { get; private set; }
+    private TimeSpan time;
+    public static string elapsedTime { get; private set; }
+
+    private void Start()
+    {
+        // Timer
+        timerOn = false;
+        timer = new Stopwatch();
+        time = timer.Elapsed;
+        elapsedTime = String.Format("{0:00}:{1:00}.{2:00}", time.Minutes, time.Seconds, time.Milliseconds / 10);
+    }
 
     private void Update()
     {
+        // Timer
+        time = timer.Elapsed;
+        elapsedTime = String.Format("{0:00}:{1:00}.{2:00}", time.Minutes, time.Seconds, time.Milliseconds / 10);
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             if (PhotonNetwork.IsConnected)
             {
-                Debug.Log("Connecting to room", gameObject);
+                UnityEngine.Debug.Log("Connecting to room", gameObject);
                 PhotonNetwork.JoinOrCreateRoom("GazeEvaluation", null, null);
             }
         }
@@ -28,7 +50,7 @@ public class GazeShareTester_Evaluation : MonoBehaviour
         {
             if (PhotonNetwork.InRoom)
             {
-                Debug.Log("Toggling voice");
+                UnityEngine.Debug.Log("Toggling voice");
                 PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled = !PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled;
             }
         }
@@ -43,7 +65,14 @@ public class GazeShareTester_Evaluation : MonoBehaviour
 
             //issueShelf = ResourceManager.Instance.NetworkInstantiate(issueShelfPrefab, new Vector3(-1f, -1f, 2f), Quaternion.identity);
             //visualizationShelf = ResourceManager.Instance.NetworkInstantiate(visualizationShelfPrefab, new Vector3(1f, -1f, 2f), Quaternion.identity);
-            timer = ResourceManager.Instance.NetworkInstantiate(timerPrefab, new Vector3(-1.5f, 0.5f, 3f), Quaternion.identity);
+            timerWindow = ResourceManager.Instance.NetworkInstantiate(timerWindowPrefab, new Vector3(-1.5f, 0.5f, 3f), Quaternion.identity);
         }   
+    }
+
+    public void PrecisionTest()
+    {
+        //timerWindow = ResourceManager.Instance.NetworkInstantiate(timerWindowPrefab, new Vector3(-1.5f, 0.5f, 3f), Quaternion.identity);
+        timer.Start();
+        target = ResourceManager.Instance.NetworkInstantiate(targetPrefab, new Vector3(-1.3f, 0.3f, 2.5f), Quaternion.Euler(0, 180, 0));
     }
 }

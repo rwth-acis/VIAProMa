@@ -47,7 +47,7 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
             Debug.Log("Red outer... ");
         }
         //Debug.Log("Time: " + time + "; distance: " + distance.ToString("f"));
-        Debug.Log("Timer: " + TimerWindow.elapsedTime + "; distance: " + distance.ToString("f"));
+        Debug.Log("Timer: " + GazeShareTester_Evaluation.elapsedTime + "; distance: " + distance.ToString("f"));
 
         //gameObject.SetActive(false);
         gameObject.transform.position = new Vector3(UnityEngine.Random.Range(0.5f, 3f), UnityEngine.Random.Range(0.5f, 3f), 2.5f);

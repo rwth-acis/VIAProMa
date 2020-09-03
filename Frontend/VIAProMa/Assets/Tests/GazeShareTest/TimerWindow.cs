@@ -1,9 +1,10 @@
 ﻿using i5.ViaProMa.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using System;
+//using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+//using System.Diagnostics;
 using TMPro;
 using UnityEngine;
 
@@ -15,13 +16,11 @@ public class TimerWindow : MonoBehaviour, IWindow
     [SerializeField] private GameObject caption;
     [SerializeField] private Sprite play;
     [SerializeField] private Sprite stop;
-    private bool timerOn;
-    public static Stopwatch timer { get; private set; }
-    private TimeSpan time;
-    public static string elapsedTime { get; private set; }
-    private bool firstStart;
     [SerializeField] private GameObject targetPrefab;
     private GameObject target;
+
+    //private bool firstStart;
+    //private string elapsedTime;
 
     public bool WindowEnabled { get; set; }
 
@@ -36,23 +35,20 @@ public class TimerWindow : MonoBehaviour, IWindow
 
     private void Start()
     {
-        timerOn = false;
-        timer = new Stopwatch();
-        time = timer.Elapsed;
-        elapsedTime = String.Format("{0:00}:{1:00}.{2:00}", time.Minutes, time.Seconds, time.Milliseconds / 10);
-        saveNameInputField.Text = elapsedTime;
+        //timer = new Stopwatch();
+        //time = timer.Elapsed;
+        //elapsedTime = String.Format("{0:00}:{1:00}.{2:00}", time.Minutes, time.Seconds, time.Milliseconds / 10);
+        saveNameInputField.Text = GazeShareTester_Evaluation.elapsedTime;
 
-        saveNameInputField.Text = SaveLoadManager.Instance.SaveName;
+        //saveNameInputField.Text = SaveLoadManager.Instance.SaveName;
         icon.GetComponent<SpriteRenderer>().sprite = play;
 
-        firstStart = true;
+        //firstStart = true;
     }
 
     private void Update()
     {
-        time = timer.Elapsed;
-        elapsedTime = String.Format("{0:00}:{1:00}.{2:00}", time.Minutes, time.Seconds, time.Milliseconds / 10);
-        saveNameInputField.Text = elapsedTime;
+        saveNameInputField.Text = GazeShareTester_Evaluation.elapsedTime;
     }
 
     private void OnSaveNameChanged(object sender, EventArgs e)
@@ -63,27 +59,25 @@ public class TimerWindow : MonoBehaviour, IWindow
 
     public void ToggleTimer()
     {
-        if (timerOn == true)
+        if (GazeShareTester_Evaluation.timer.IsRunning == true)
         {
             //stop the timer
-            timerOn = false;
-            timer.Stop();
-            timer.Reset();
+            GazeShareTester_Evaluation.timer.Stop();
+            GazeShareTester_Evaluation.timer.Reset();
             caption.GetComponent<TextMeshPro>().SetText("Start");
             icon.GetComponent<SpriteRenderer>().sprite = play;
         }
         else
         {
             //start the timer
-            timerOn = true;
-            timer.Start();
+            GazeShareTester_Evaluation.timer.Start();
             caption.GetComponent<TextMeshPro>().SetText("Stop");
             icon.GetComponent<SpriteRenderer>().sprite = stop;
-            if (firstStart == true)
+            /*if (firstStart == true)
             {
                 target = ResourceManager.Instance.NetworkInstantiate(targetPrefab, new Vector3(-1.3f, 0.3f, 2.5f), Quaternion.Euler(0, 180, 0));
                 firstStart = false;
-            }
+            }*/
         }
     }
 
