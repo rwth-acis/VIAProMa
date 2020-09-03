@@ -97,10 +97,13 @@ public class LineController : MonoBehaviourPunCallbacks
                 {
                     target = GetParentWithPhotonView(mainPointer.Result?.CurrentPointerTarget);
                     var view = tempCurve.GetComponent<PhotonView>();
+                    var goalView = target?.GetComponent<PhotonView>();
                     if (target != null)
                     {
-                        var goalView = target.GetComponent<PhotonView>();
-                        view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
+                        if (tempCurve.goal != target)
+                        {
+                            view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
+                        }
                     }
                     else
                     {
