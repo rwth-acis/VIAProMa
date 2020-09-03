@@ -77,14 +77,23 @@ public class LineController : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        bool thisFrameClicked = ((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select;
+        bool thisFrameClicked = false;
+        bool pointerValid = false;
+        //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null sometimes still yields true, but there content is useless.
+        //But ToString then returns null.
+        if (mainPointer != null)
+        {
+            pointerValid = mainPointer.ToString() != "null";
+        }
+        if (pointerValid)
+        {
+            thisFrameClicked = ((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select;
+        }
         switch (currState)
         {
             case State.connecting:
                 GameObject target;
-                //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null still yields true, but there content is useless.
-                //But ToString then returns null.
-                if (mainPointer.ToString() != "null")
+                if (pointerValid)
                 {
                     target = GetParentWithPhotonView(mainPointer.Result?.CurrentPointerTarget);
                     var view = tempCurve.GetComponent<PhotonView>();
@@ -116,7 +125,7 @@ public class LineController : MonoBehaviourPunCallbacks
                 break;
 
             case State.disconnecting:
-                if (mainPointer.ToString() != "null")
+                if (pointerValid)
                 {
                     //Update Delete Cube transform
                     var ray = mainPointer.Rays[0];
