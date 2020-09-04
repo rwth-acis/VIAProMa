@@ -45,16 +45,8 @@ public class IBCSynchronizer : TransformSynchronizer
     [PunRPC]
     private void BarchartButton(string fname)
     {
-        Debug.Log("ibcsynchronizer: " + fname);
         informationbox.name = fname;
         informationbox.BarchartButtonClick();
-        photonView.RPC("BarchartRef", RpcTarget.All, informationbox.barchartInstance);
-    }
-
-    [PunRPC]
-    private void BarchartRef(GameObject bar)
-    {
-        informationbox.barchartInstance = bar;
     }
 
     public void ScatterButtonOnclick()

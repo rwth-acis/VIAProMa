@@ -8,9 +8,13 @@ using Photon.Realtime;
 [System.Serializable]
 public class Assignment
 {
+    public float score;
+
+    /*
     public int id;
     public string name;
     public float score;
     public string description;
     public string feedback;
+    */
 }

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class InformationBoxConfigurator : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -17,7 +16,6 @@ public class InformationBoxConfigurator : MonoBehaviour
     [SerializeField] private Interactable BarchartButton;
     [SerializeField] private Interactable ScatterplotButton;
     [SerializeField] private Interactable ProgressButton;
-
 
     /*
     [Header("References")]

@@ -20,9 +20,12 @@ public class ScatterVisualizer : MonoBehaviour
     public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
     private GameObject ScatterList;
+    private LearningLocker locker;
     
+
     private void Awake()
     {
+        locker = GetComponent<LearningLocker>();
         diagram = GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
         name = PhotonNetwork.NickName;
 
@@ -38,6 +41,7 @@ public class ScatterVisualizer : MonoBehaviour
         scatter.transform.parent = ScatterList.transform;
     }
 
+/*
     private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
     {
         diagram.Size = size;
@@ -68,6 +72,59 @@ public class ScatterVisualizer : MonoBehaviour
             zValues.Add("second semester");
             colors.Add(UnityEngine.Random.ColorHSV());
         }
+
+        TextDataColumn xColumn = new TextDataColumn(xValues);
+        NumericDataColumn yColumn = new NumericDataColumn(yValues);
+        TextDataColumn zColumn = new TextDataColumn(zValues);
+
+        dataSet.DataColumns.Add(xColumn);
+        dataSet.DataColumns.Add(yColumn);
+        dataSet.DataColumns.Add(zColumn);
+        dataSet.DataPointColors = colors;
+
+        return dataSet;
+    }
+*/
+    private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
+    {
+        diagram.Size = size;
+        IInformation MentorData = await locker.GetInformation(name);
+        i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
+        List<string> xValues = new List<string>();
+        List<float> yValues = new List<float>();
+        List<string> zValues = new List<string>();
+        List<Color> colors = new List<Color>();
+        int item = 0;
+
+        foreach (float score in MentorData.assignments)
+        {
+            item += 1;
+            xValues.Add(item.ToString());
+            yValues.Add(score*10);
+            zValues.Add("first semester");
+            colors.Add(UnityEngine.Random.ColorHSV());
+
+            xValues.Add(item.ToString());
+            yValues.Add(0);
+            zValues.Add("second semester");
+            colors.Add(UnityEngine.Random.ColorHSV());
+        }
+
+        /*
+        foreach (Assignment assignment in MentorData.assignments)
+        {
+            item += 1;
+            xValues.Add(item.ToString());
+            yValues.Add(assignment.score*10);
+            zValues.Add("first semester");
+            colors.Add(UnityEngine.Random.ColorHSV());
+
+            xValues.Add(item.ToString());
+            yValues.Add(0);
+            zValues.Add("second semester");
+            colors.Add(UnityEngine.Random.ColorHSV());
+        }
+        */
 
         TextDataColumn xColumn = new TextDataColumn(xValues);
         NumericDataColumn yColumn = new NumericDataColumn(yValues);
