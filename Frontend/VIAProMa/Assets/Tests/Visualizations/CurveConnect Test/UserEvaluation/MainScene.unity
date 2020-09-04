@@ -5420,7 +5420,7 @@ PrefabInstance:
       propertyPath: m_text
       value: 'This time, there are four visualizations.
 
-        Connect visulalization 0 with 2 and visulalization 1 with 3!
+        Connect visulalization 0 with 3 and visulalization 1 with 2!
 
         When you finished that, try to disconnect them!'
       objectReference: {fileID: 0}
@@ -10439,12 +10439,12 @@ PrefabInstance:
     - target: {fileID: 8246175140109700421, guid: 8231cf347b64d3e4499b64b783604e88,
         type: 3}
       propertyPath: startTest.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 8246175140109700421, guid: 8231cf347b64d3e4499b64b783604e88,
         type: 3}
       propertyPath: goalTest.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 8246175140109700421, guid: 8231cf347b64d3e4499b64b783604e88,
         type: 3}
@@ -10551,6 +10551,16 @@ PrefabInstance:
       propertyPath: goalTest.Array.data[9]
       value: 
       objectReference: {fileID: 1269488156}
+    - target: {fileID: 8246175140109700421, guid: 8231cf347b64d3e4499b64b783604e88,
+        type: 3}
+      propertyPath: startTest.Array.data[10]
+      value: 
+      objectReference: {fileID: 1675005954}
+    - target: {fileID: 8246175140109700421, guid: 8231cf347b64d3e4499b64b783604e88,
+        type: 3}
+      propertyPath: goalTest.Array.data[10]
+      value: 
+      objectReference: {fileID: 445010595}
     - target: {fileID: 3233973695741448572, guid: 8231cf347b64d3e4499b64b783604e88,
         type: 3}
       propertyPath: viewIdField
@@ -17204,6 +17214,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &445010595 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1956943101993171755, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+    type: 3}
+  m_PrefabInstance: {fileID: 1796429033}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &445010596 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+    type: 3}
+  m_PrefabInstance: {fileID: 1796429033}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &445972950
 GameObject:
   m_ObjectHideFlags: 0
@@ -19899,12 +19921,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: Now start the connection process again on the visualization to your right.  But
-        instad of connecting it to something, cancle the process!
+        instead of connecting it to something, cancle the process!
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 137
+      value: 138
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
@@ -29577,7 +29599,7 @@ PrefabInstance:
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_text
-      value: 'Two your right, you can again see two Visualisations, but this time,
+      value: 'Too your right, you can again see two Visualisations, but this time,
         there is an obstancle in between them.
 
         Try to connect them anyway!'
@@ -46119,6 +46141,7 @@ Transform:
   - {fileID: 1269488157}
   - {fileID: 970963621}
   - {fileID: 1922878918}
+  - {fileID: 445010596}
   m_Father: {fileID: 0}
   m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -63742,6 +63765,170 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &1796429033
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1383173937}
+    m_Modifications:
+    - target: {fileID: 1956943101993171755, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_Name
+      value: Kanban Board Column (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.056
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.444
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.361
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943101993171752, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6616129514285831456, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: viewIdField
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943102437688303, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943102437688303, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943102437688303, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943102437688303, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943102437688303, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956943102437688301, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7907106376475519320, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4962589785535520826, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4962589785535520826, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4962589785535520826, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4962589785535520826, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4962589785535520826, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6896194074731966363, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561683464440669945, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561683464440669945, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561683464440669945, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561683464440669945, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8561683464440669945, guid: 5343125dfa7a1584a907cb5c7a5d0e31,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5343125dfa7a1584a907cb5c7a5d0e31, type: 3}
 --- !u!1 &1804556175
 GameObject:
   m_ObjectHideFlags: 0
