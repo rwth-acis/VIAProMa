@@ -10,15 +10,10 @@ public class EvaluationTestscript : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
 
 
-    //private async void ConnectToEvalRoom()
-    //{
-    //    while (!PhotonNetwork.IsConnected || !PhotonNetwork.InLobby)
-    //    {
-    //        await Task.Yield();
-    //    }
-    //    Debug.Log("Connecting to room");
-    //    PhotonNetwork.JoinOrCreateRoom("SebEvalRoom", null, null);
-    //}
+    private void Start()
+    {
+        ConnectionManager.Instance.BackendAddress = "http://cloud17.dbis.rwth-aachen.de";
+    }
 
     override public void OnJoinedLobby()
     {
