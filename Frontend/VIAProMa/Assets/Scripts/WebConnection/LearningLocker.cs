@@ -8,15 +8,11 @@ using UnityEngine;
 [Serializable]
 public class LearningLocker: MonoBehaviour
 {   
-    public TextAsset jsonFile;
+    //public TextAsset jsonFile;
     public async Task<IInformation> GetInformation(string name)
     {
         Debug.Log("get information from learning locker");
-        //string address = "https://lrs.tech4comp.dbis.rwth-aachen.de/api/statements/aggregate?pipeline=[{\"$match\": {\"statement.verb.id\": \"http://activitystrea.ms/schema/1.0/complete\",\"statement.actor.name\": \"" + name + "\"}},{\"$project\": {\"userName\": \"$statement.actor.name\",\"email\": \"$statement.actor.account.name\",\"duration\": \"$metadata.https://learninglocker%2646;net/result-duration.seconds\",\"grade\": \"$statement.result.score.scaled\"}},{\"$group\": {\"_id\": {\"name\": \"$userName\",\"email\": \"$email\"},\"average_score\": {\"$avg\": \"$grade\"},\"assignments\": {\"$push\": \"$grade\"},\"durations\": {\"$push\": \"$duration\"}}}]";
-        //string address = "https://lrs.tech4comp.dbis.rwth-aachen.de/api/statements/aggregate?pipeline=[{\"$match\": {\"statement.verb.id\": \"http://activitystrea.ms/schema/1.0/complete\",\"statement.actor.name\": \"Sylvia Schulze-Achatz\"}},{\"$project\": {\"userName\": \"$statement.actor.name\",\"email\": \"$statement.actor.account.name\",\"duration\": \"$metadata.https://learninglocker%2646;net/result-duration.seconds\",\"grade\": \"$statement.result.score.scaled\"}},{\"$group\": {\"_id\": {\"name\": \"$userName\",\"email\": \"$email\"},\"average_score\": {\"$avg\": \"$grade\"},\"assignments\": {\"$push\": \"$grade\"},\"durations\": {\"$push\": \"$duration\"}}}]";
         var myHeader = new Dictionary<string, string>(){{"Authorization", "Basic MzRiMGFkNDQzZTM1ZjY0ZTZmOWU3YjA2ZGE5NmQzYTVhNGE3MTYyZTpmMjQxNTZmMTZlMTU2YThiY2UyOWJjMzQ1NzBiOWY1ODBjODNiMDlk"}};
-        //Debug.Log(address.Length);
-
         Response resp = await Rest.GetAsync("https://lrs.tech4comp.dbis.rwth-aachen.de/api/statements/aggregate?" + GetPipeline(name), myHeader);
 
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);

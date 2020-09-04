@@ -16,7 +16,7 @@ public class ScatterVisualizer : MonoBehaviour
     private i5.ViaProMa.Visualizations.Common.Diagram diagram;
     public string name {get; set;} = "";
     private Vector3 size = Vector3.one;
-    public TextAsset jsonFile;
+    //public TextAsset jsonFile;
     public TextLabel textLabel;
     public event EventHandler ConfigurationChanged;
     private GameObject ScatterList;
@@ -96,18 +96,38 @@ public class ScatterVisualizer : MonoBehaviour
         List<Color> colors = new List<Color>();
         int item = 0;
 
-        foreach (float score in MentorData.assignments)
+        if (MentorData.assignments.Length > 30)
         {
-            item += 1;
-            xValues.Add(item.ToString());
-            yValues.Add(score*10);
-            zValues.Add("first semester");
-            colors.Add(UnityEngine.Random.ColorHSV());
+            int num = MentorData.assignments.Length;
+            for (int i = num-30; i<num; i++)
+            {
+                item += 1;
+                xValues.Add(item.ToString());
+                yValues.Add(MentorData.assignments[i]*100);
+                zValues.Add("first semester");
+                colors.Add(UnityEngine.Random.ColorHSV());
 
-            xValues.Add(item.ToString());
-            yValues.Add(0);
-            zValues.Add("second semester");
-            colors.Add(UnityEngine.Random.ColorHSV());
+                xValues.Add(item.ToString());
+                yValues.Add(0);
+                zValues.Add("second semester");
+                colors.Add(UnityEngine.Random.ColorHSV());
+            }
+        }
+        else
+        {
+            foreach (float score in MentorData.assignments)
+            {
+                item += 1;
+                xValues.Add(item.ToString());
+                yValues.Add(score*100);
+                zValues.Add("first semester");
+                colors.Add(UnityEngine.Random.ColorHSV());
+
+                xValues.Add(item.ToString());
+                yValues.Add(0);
+                zValues.Add("second semester");
+                colors.Add(UnityEngine.Random.ColorHSV());
+            }
         }
 
         /*
