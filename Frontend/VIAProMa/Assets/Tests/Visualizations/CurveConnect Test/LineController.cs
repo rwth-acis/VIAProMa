@@ -59,7 +59,7 @@ public class LineController : MonoBehaviourPunCallbacks
                 CreateConnectionCurveScene(startTest[i], goalTest[i]);
             }
         }
-
+        clickTimeStamp = DateTime.Now;
         Task curveUpdater = JoinedCurveGeneration.UpdateAsync(curves,stepSize);
     }
 
@@ -87,7 +87,7 @@ public class LineController : MonoBehaviourPunCallbacks
         }
         if (pointerValid)
         {
-            thisFrameClicked = ((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select;
+            thisFrameClicked = ((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30;
         }
         switch (currState)
         {
@@ -114,7 +114,7 @@ public class LineController : MonoBehaviourPunCallbacks
                         tempGoal.transform.position = mainPointer.Position;
                     }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
-                    if (thisFrameClicked && EnoughTimeSinceLastClick())
+                    if (thisFrameClicked)
                     {
                         if (target != null)
                             CreateConnectionCurveScene(tempCurve.start, target);
@@ -133,7 +133,6 @@ public class LineController : MonoBehaviourPunCallbacks
                     //Update Delete Cube transform
                     var ray = mainPointer.Rays[0];
                     instantiatedDeletCube.transform.position = ray.Origin + ray.Direction.normalized * 0.5f;
-                    //instantiatedDeletCube.transform.rotation = Quaternion.LookRotation(ray.Direction.normalized, Vector3.up);
                     instantiatedDeletCube.transform.rotation = mainPointer.Rotation;
 
                     //Necassrary because you shouldn't delete an object from a list, while iterating over it
@@ -184,7 +183,7 @@ public class LineController : MonoBehaviourPunCallbacks
 
                     //When the user clicked and enough time passed since starting the delete mode, then stopped clicking and if that wasn't the click that started the disconnect mode and it 
                     //was nothing disconnected while in disconnect mode, go back to default mode
-                    if (lastFrameClicked && !thisFrameClicked && curvesToDelete.Count == 0 && !deletedSomething && !startedDeletion && EnoughTimeSinceLastClick())
+                    if (lastFrameClicked && !thisFrameClicked && curvesToDelete.Count == 0 && !deletedSomething && !startedDeletion)
                     {
                         ChangeState(State.defaultMode);
                     }
@@ -202,11 +201,6 @@ public class LineController : MonoBehaviourPunCallbacks
                 break;
         }
         lastFrameClicked = thisFrameClicked;
-    }
-
-    private bool EnoughTimeSinceLastClick()
-    {
-        return (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30;
     }
 
     public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
