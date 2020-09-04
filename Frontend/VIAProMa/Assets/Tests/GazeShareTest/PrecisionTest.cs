@@ -5,16 +5,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable] public class PrecisionData
+{
+    public string result;
+    public TimeSpan elapsedTime;
+    public float distance;
+    public Vector3 centerPosition;
+    public Vector3 hitPosition;
+}
+
 public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
 {
     //[SerializeField] private GameObject center;
-    private float spawnRadius = 10f;
+    //private float spawnRadius = 10f;
     private Vector3 hitPosition;
     private Vector3 centerPosition;
+    private string result;
     // Timeout
     private TimeSpan spawnTime;
     private TimeSpan currentTime;
     private TimeSpan timeout;
+
+    private PrecisionData precisionData;
+    private string jsonPrecisionData;
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
@@ -33,26 +46,35 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
 
         if (distance < 10)
         {
-            Debug.Log("Bullseye! ");
+            result = "Bullseye!";
         }
         else if (distance < 20)
         {
-            Debug.Log("White inner. ");
+            result = "White inner.";
         }
         else if (distance < 30)
         {
-            Debug.Log("Red inner. ");
+            result = "Red inner.";
         }
         else if (distance < 40)
         {
-            Debug.Log("White outer... ");
+            result = "White outer...";
         }
         else if (distance <= 50)
         {
-            Debug.Log("Red outer... ");
+            result = "Red outer...";
         }
+
         //Debug.Log("Time: " + time + "; distance: " + distance.ToString("f"));
-        Debug.Log("Timer: " + GazeShareTester_Evaluation.elapsedTime + "; distance: " + distance.ToString("f"));
+        Debug.Log(result + " Timer: " + GazeShareTester_Evaluation.elapsedTime + "; distance: " + distance.ToString("f"));
+
+        precisionData = new PrecisionData();
+        precisionData.result = result;
+        precisionData.elapsedTime = GazeShareTester_Evaluation.timer.Elapsed;
+        precisionData.distance = distance;
+        precisionData.centerPosition = centerPosition;
+        precisionData.hitPosition = hitPosition;
+        jsonPrecisionData = JsonUtility.ToJson(precisionData);
 
         MoveTarget(gameObject);
 
@@ -81,8 +103,10 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         currentTime = GazeShareTester_Evaluation.timer.Elapsed;
         if (currentTime - spawnTime > timeout)
         {
+            precisionData = new PrecisionData();
+
             spawnTime = currentTime;
-            MoveTarget(gameObject);
+            MoveTarget(gameObject); 
         }
     }
 
