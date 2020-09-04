@@ -11,17 +11,22 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
     private float spawnRadius = 10f;
     private Vector3 hitPosition;
     private Vector3 centerPosition;
+    // Timeout
+    private TimeSpan spawnTime;
+    private TimeSpan currentTime;
+    private TimeSpan timeout;
 
     public void OnPointerClicked(MixedRealityPointerEventData eventData)
     {
-        DateTime time = eventData.EventTime;
+        spawnTime = currentTime;
+        //DateTime time = eventData.EventTime;
         IMixedRealityInputSource source = eventData.InputSource;
 
         //centerPosition = center.transform.localPosition;
         centerPosition = transform.position;
         hitPosition = RaycastVive.pointerHitPosition.Equals(InstantiateArrows.far) ? MixedRealityToolkit.InputSystem.GazeProvider.HitPosition : RaycastVive.pointerHitPosition;
         Debug.Log("Center: " + centerPosition);
-        Debug.Log("Pointer: " + RaycastVive.pointerHitPosition);
+        Debug.Log("Pointer: " + hitPosition);
         //float distance = Vector3.Distance(centerPosition, RaycastVive.pointerHitPosition) * 100f;
         //float distance = Vector3.Distance(centerPosition, MixedRealityToolkit.InputSystem.GazeProvider.HitPosition) * 100f;
         float distance = Vector3.Distance(centerPosition, hitPosition) * 100f;
@@ -49,11 +54,7 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         //Debug.Log("Time: " + time + "; distance: " + distance.ToString("f"));
         Debug.Log("Timer: " + GazeShareTester_Evaluation.elapsedTime + "; distance: " + distance.ToString("f"));
 
-        //gameObject.SetActive(false);
-        gameObject.transform.position = new Vector3(UnityEngine.Random.Range(0.5f, 3f), UnityEngine.Random.Range(0.5f, 3f), 2.5f);
-        //gameObject.transform.position = UnityEngine.Random.onUnitSphere * spawnRadius;
-        gameObject.transform.rotation = Quaternion.RotateTowards(Camera.main.transform.rotation, transform.rotation, 360);
-        //gameObject.SetActive(true);
+        MoveTarget(gameObject);
 
         //TimerWindow.timer.Stop();
     }
@@ -69,11 +70,30 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
     {
         hitPosition = InstantiateArrows.far;
         centerPosition = transform.position;
+
+        spawnTime = GazeShareTester_Evaluation.timer.Elapsed;
+        timeout = TimeSpan.FromSeconds(5.0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        currentTime = GazeShareTester_Evaluation.timer.Elapsed;
+        if (currentTime - spawnTime > timeout)
+        {
+            spawnTime = currentTime;
+            MoveTarget(gameObject);
+        }
+    }
+
+    // Moves the target to a new position in the user's field of view and sets its spawn time to current time
+    void MoveTarget(GameObject obj)
+    {
+        //gameObject.SetActive(false);
+        obj.gameObject.transform.position = new Vector3(UnityEngine.Random.Range(0.5f, 3f), UnityEngine.Random.Range(0.5f, 3f), 2.5f);
+        spawnTime = currentTime;
+        //gameObject.transform.position = UnityEngine.Random.onUnitSphere * spawnRadius;
+        //gameObject.transform.rotation = Quaternion.RotateTowards(Camera.main.transform.rotation, transform.rotation, 360);
+        //gameObject.SetActive(true);
     }
 }
