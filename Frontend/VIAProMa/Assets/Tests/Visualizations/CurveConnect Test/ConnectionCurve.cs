@@ -120,8 +120,8 @@ public class ConnectionCurve : MonoBehaviour
     {
         if (lineController == null)
         {
-            lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
+            lineController = GameObject.Find("LineController(Clone)")?.GetComponent<LineController>();
         }
-        lineController.curves.Remove(this);
+        lineController?.curves.Remove(this);
     }
 }
