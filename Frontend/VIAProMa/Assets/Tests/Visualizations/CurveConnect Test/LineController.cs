@@ -114,7 +114,7 @@ public class LineController : MonoBehaviourPunCallbacks
                         tempGoal.transform.position = mainPointer.Position;
                     }
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
-                    if (thisFrameClicked && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30)
+                    if (thisFrameClicked && EnoughTimeSinceLastClick())
                     {
                         if (target != null)
                             CreateConnectionCurveScene(tempCurve.start, target);
@@ -133,7 +133,8 @@ public class LineController : MonoBehaviourPunCallbacks
                     //Update Delete Cube transform
                     var ray = mainPointer.Rays[0];
                     instantiatedDeletCube.transform.position = ray.Origin + ray.Direction.normalized * 0.5f;
-                    instantiatedDeletCube.transform.rotation = Quaternion.LookRotation(ray.Direction.normalized, Vector3.up);
+                    //instantiatedDeletCube.transform.rotation = Quaternion.LookRotation(ray.Direction.normalized, Vector3.up);
+                    instantiatedDeletCube.transform.rotation = mainPointer.Rotation;
 
                     //Necassrary because you shouldn't delete an object from a list, while iterating over it
                     List<ConnectionCurve> curvesToDelete = new List<ConnectionCurve>();
@@ -181,7 +182,9 @@ public class LineController : MonoBehaviourPunCallbacks
                         deletedSomething = true;
                     }
 
-                    if (lastFrameClicked && !thisFrameClicked && curvesToDelete.Count == 0 && !deletedSomething && !startedDeletion)
+                    //When the user clicked and enough time passed since starting the delete mode, then stopped clicking and if that wasn't the click that started the disconnect mode and it 
+                    //was nothing disconnected while in disconnect mode, go back to default mode
+                    if (lastFrameClicked && !thisFrameClicked && curvesToDelete.Count == 0 && !deletedSomething && !startedDeletion && EnoughTimeSinceLastClick())
                     {
                         ChangeState(State.defaultMode);
                     }
@@ -199,6 +202,11 @@ public class LineController : MonoBehaviourPunCallbacks
                 break;
         }
         lastFrameClicked = thisFrameClicked;
+    }
+
+    private bool EnoughTimeSinceLastClick()
+    {
+        return (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30;
     }
 
     public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
@@ -233,6 +241,7 @@ public class LineController : MonoBehaviourPunCallbacks
                 currState = State.connecting;
                 break;
         }
+        clickTimeStamp = DateTime.Now;
     }
 
     async void DeleteConnectionCurve(ConnectionCurve connectionCurve)
@@ -306,7 +315,6 @@ public class LineController : MonoBehaviourPunCallbacks
             tempCurve = CreateConnectionCurveOwn(start, tempGoal);
             tempCurve.SetColor(ColorPhoton(Color.yellow), ColorPhoton(Color.yellow));
         }
-        clickTimeStamp = DateTime.Now;
     }
 
     void StopConnecting()
