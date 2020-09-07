@@ -107,7 +107,7 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         precisionData = new PrecisionData();
         precisionData.elapsedTime = GazeShareTester_Evaluation.elapsedTime;
         precisionData.centerPosition = centerPosition;
-        if (hitArea == "TIMEOUT")
+        if (result == "TIMEOUT")
         {
             precisionData.result = "TIMEOUT";
             precisionData.distance = float.NaN;
