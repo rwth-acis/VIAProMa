@@ -11,7 +11,7 @@ using System.IO;
 {
     public string result;
     public string elapsedTime;
-    public string distance;
+    public float distance;
     public Vector3 centerPosition;
     public Vector3 hitPosition;
 }
@@ -75,7 +75,7 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         precisionData = new PrecisionData();
         precisionData.result = result;
         precisionData.elapsedTime = GazeShareTester_Evaluation.elapsedTime;
-        precisionData.distance = distance.ToString("f");
+        precisionData.distance = distance;
         precisionData.centerPosition = centerPosition;
         precisionData.hitPosition = hitPosition;
 
@@ -116,7 +116,7 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
             precisionData = new PrecisionData();
             precisionData.result = "TIMEOUT";
             precisionData.elapsedTime = GazeShareTester_Evaluation.elapsedTime;
-            precisionData.distance = float.NaN.ToString();
+            precisionData.distance = float.NaN;
             precisionData.centerPosition = centerPosition;
             precisionData.hitPosition = Vector3.positiveInfinity;
 
