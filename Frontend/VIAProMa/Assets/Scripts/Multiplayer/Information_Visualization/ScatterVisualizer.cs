@@ -96,10 +96,10 @@ public class ScatterVisualizer : MonoBehaviour
         List<Color> colors = new List<Color>();
         int item = 0;
 
-        if (MentorData.assignments.Length > 30)
+        if (MentorData.assignments.Length > 10)
         {
             int num = MentorData.assignments.Length;
-            for (int i = num-30; i<num; i++)
+            for (int i = num-10; i<num; i++)
             {
                 item += 1;
                 xValues.Add(item.ToString());
