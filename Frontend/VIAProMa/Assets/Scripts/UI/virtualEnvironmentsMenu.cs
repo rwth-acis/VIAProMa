@@ -111,8 +111,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
             }
             if (environmentListView.SeletedItem.EnvironmentPrefab != null)
             {
-                currentEnvironmentInstance = Instantiate(environmentListView.SeletedItem.EnvironmentPrefab, environmentListView.SeletedItem.EnvironmentPrefab.transform.position, Quaternion.identity);
-            }
+                currentEnvironmentInstance = Instantiate(environmentListView.SeletedItem.EnvironmentPrefab, environmentListView.SeletedItem.EnvironmentPrefab.transform.position, environmentListView.SeletedItem.EnvironmentPrefab.transform.rotation);            }
         }
     }
 
