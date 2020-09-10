@@ -22,10 +22,12 @@ public class ConnectionCurve : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        lineController = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
+        lineController = GameObject.FindObjectOfType<LineController>();
+        //When the IDs are empty, the curve was not instantiated through the SaveLoadManager
         if (startID == "" && goalID == "")
         {
             var view = GetComponent<PhotonView>();
+            //When the client is in a room and the instatiation data is not null, the curve was instantiated with the Photon Instantiation and the instantiation data has to be resolved
             if (PhotonNetwork.InRoom && view.InstantiationData != null)
             {
                 int startID = (int)view.InstantiationData[0];
@@ -68,28 +70,6 @@ public class ConnectionCurve : MonoBehaviour
         PhotonNetwork.Destroy(GetComponent<PhotonView>());
     } 
 
-    //public void Update()
-    //{
-    //    var view = GetComponent<PhotonView>();
-    //    if (startID != "" && goalID != "")
-    //    {
-    //        start = SaveLoadManager.Instance.GetRegisterdGameobject(startID);
-    //        goal = SaveLoadManager.Instance.GetRegisterdGameobject(goalID);
-    //        object[] data = new object[2];
-    //        data[0] = start.GetComponent<PhotonView>().InstantiationId;
-    //        data[1] = goal.GetComponent<PhotonView>().InstantiationId;
-    //        view.InstantiationData = data;
-    //    }
-    //    if (start == null && goal == null)
-    //    {
-    //        int startID = (int)view.InstantiationData[0];
-    //        int goalID = (int)view.InstantiationData[1];
-    //        start = PhotonNetwork.GetPhotonView(startID).transform.root.gameObject;
-    //        goal = PhotonNetwork.GetPhotonView(goalID).transform.root.gameObject;
-    //    }
-    //    //enabled = false;
-    //}
-
     [PunRPC]
     public void SetColor(float[] color1Arr, float[] color2Arr)
     {
@@ -120,7 +100,7 @@ public class ConnectionCurve : MonoBehaviour
     {
         if (lineController == null)
         {
-            lineController = GameObject.Find("LineController(Clone)")?.GetComponent<LineController>();
+            lineController = GameObject.FindObjectOfType<LineController>();
         }
         lineController?.curves.Remove(this);
     }

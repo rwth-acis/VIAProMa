@@ -10,7 +10,7 @@ public class LineSerialiser : MonoBehaviour, ISerializable
     private void Awake()
     {
         curve = GetComponent<ConnectionCurve>();
-        controller = GameObject.Find("LineController(Clone)").GetComponent<LineController>();
+        controller = GameObject.FindObjectOfType<LineController>();
     }
 
     public void Deserialize(SerializedObject serializedObject)
