@@ -111,7 +111,7 @@ public abstract class CurveGenerator
         
     }
 
-    public static int CurveCollsionCount(Vector3[] curve, GameObject startBound, GameObject endBound)
+    public static int CurveCollsionCount(Vector3[] curve, GameObject start, GameObject goal)
     {
         int collisionCount = 0;
         for (int i = 0; i <= curve.Length - 2; i++)
@@ -122,7 +122,7 @@ public abstract class CurveGenerator
 
             Vector3 center = curve[i] + checkDirection * checkLength / 2;
 
-            if (collisonWithObstacle(center, new Vector3(0.2f, 0.2f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), startBound, endBound))
+            if (collisonWithObstacle(center, new Vector3(0.2f, 0.2f, checkLength), Quaternion.LookRotation(checkDirection, new Vector3(0, 1, 0)), start, goal))
             {
                 collisionCount++;
             }

@@ -1,6 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
+
+public class BoundingBoxes
+{
+    public Vector3 minPointAbove;
+    public Vector3 maxPointAbove;
+    public Vector3 minPointSide;
+    public Vector3 maxPointSide;
+}
+
 
 public class SimpleCurveGerneration : CurveGenerator
 {
@@ -21,36 +31,37 @@ public class SimpleCurveGerneration : CurveGenerator
         return CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, height, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, height, 0), goal }, 50);
     }
 
-    public static Vector3[] StartGeneration(GameObject startObject, GameObject goalObject, int curveSegmentCount)
+    public static Vector3[] TryToUseStandartCurve(GameObject startObject, GameObject goalObject, int curveSegmentCount)
+    {
+        //Priority 1: Try to draw the standart curve
+        Vector3 start = startObject.transform.position;
+        Vector3 goal = goalObject.transform.position;
+        Vector3[] standartCurve = StandartCurve(start, goal, curveSegmentCount, 0.5f);
+        if (!CurveCollsionCheck(standartCurve, startObject, goalObject))
+        {
+            return standartCurve;
+        }
+        return null;
+    }
+
+    public static BoundingBoxes CalculateBoundingBoxes(GameObject startObject, GameObject goalObject)
     {
         Vector3 start = startObject.transform.position;
         Vector3 goal = goalObject.transform.position;
 
         //float higherOne = start.y > goal.y ? start.y : goal.y;
-        
+
 
 
         Vector3 direction = goal - start;
         direction.Normalize();
 
-        float distance = Vector3.Distance(start,goal);
+        float distance = Vector3.Distance(start, goal);
 
-        Vector3 center = start + direction * distance/2;
+        Vector3 center = start + direction * distance / 2;
 
         //TODO put in parameter
         float standartHeight = 0.5f;
-
-
-
-
-
-        //Priority 1: Try to draw the standart curve
-        Vector3[] standartCurve = StandartCurve(start,goal, curveSegmentCount, standartHeight);
-        if (!CurveCollsionCheck(standartCurve, startObject, goalObject))
-        {
-            return standartCurve;
-        }
-
 
         //Genenerating the standart curve didn't work due to collsions. Try to set the controllpoints so, that no collisions occure
 
@@ -64,19 +75,19 @@ public class SimpleCurveGerneration : CurveGenerator
                 float correctionOffset = distance * 0.1f;
 
                 if (start.x >= min.x && start.z >= min.z && start.x <= max.x && start.z <= max.z)
-                {                  
+                {
                     Vector3 startGoal = goal - start;
                     Vector2 correction = new Vector2(startGoal.x, startGoal.z);
                     correction.Normalize();
                     if (Mathf.Abs(correction.x) > Mathf.Abs(correction.y))
-                        correction = new Vector2(Mathf.Sign(correction.x),0);
+                        correction = new Vector2(Mathf.Sign(correction.x), 0);
                     else
-                        correction = new Vector2(0,Mathf.Sign(correction.y));
-                    if(correction.x < 0)
+                        correction = new Vector2(0, Mathf.Sign(correction.y));
+                    if (correction.x < 0)
                         max.x = start.x - correctionOffset;
-                    else if(correction.y < 0)
+                    else if (correction.y < 0)
                         max.z = start.z - correctionOffset;
-                    else if(correction.x > 0)
+                    else if (correction.x > 0)
                         min.x = start.x + correctionOffset;
                     else
                         min.z = start.z + correctionOffset;
@@ -108,9 +119,9 @@ public class SimpleCurveGerneration : CurveGenerator
             directionAdjusted.Normalize();
             float distanceAdjusted = (new Vector3(start.x, 0, start.z) - new Vector3(goal.x, 0, goal.z)).magnitude;
             Vector3 centerAdjusted = new Vector3(start.x, lowerY, start.z) + directionAdjusted * distanceAdjusted / 2;
-            Vector3 startBoxHalfExtend = new Vector3(1.1f*distanceToObstacle, (Math.Abs(start.y - goal.y) + standartHeight + distanceToObstacle*3)/2, distance / 2.1f);
+            Vector3 startBoxHalfExtend = new Vector3(1.1f * distanceToObstacle, (Math.Abs(start.y - goal.y) + standartHeight + distanceToObstacle * 3) / 2, distance / 2.1f);
 
-            Collider[] ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0,startBoxHalfExtend.y,0), 
+            Collider[] ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0),
                 startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
             SetMinMax(ReScancolliders, ref min, ref max);
             int oldLength = ReScancolliders.Length;
@@ -119,7 +130,7 @@ public class SimpleCurveGerneration : CurveGenerator
             do
             {
                 newObstacles = false;
-                startBoxHalfExtend.y = (max.y + 3*distanceToObstacle)/2;
+                startBoxHalfExtend.y = (max.y + 3 * distanceToObstacle) / 2;
                 ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0),
                     startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
                 ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0), startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
@@ -158,10 +169,10 @@ public class SimpleCurveGerneration : CurveGenerator
                 halfExtend.y = standartHeight + distanceToObstacle;
                 halfExtend /= 2;
                 boxCenter.y = halfExtend.y;
-                ReScancolliders = GetCollidorsFromObstacles(boxCenter, halfExtend, Quaternion.identity ,startObject, goalObject);
+                ReScancolliders = GetCollidorsFromObstacles(boxCenter, halfExtend, Quaternion.identity, startObject, goalObject);
                 if (ReScancolliders.Length > oldLength)
                 {
-                    SetMinMax(ReScancolliders,ref min, ref max);
+                    SetMinMax(ReScancolliders, ref min, ref max);
                     newObstacles = true;
                 }
                 oldLength = ReScancolliders.Length;
@@ -170,13 +181,13 @@ public class SimpleCurveGerneration : CurveGenerator
             while (i <= 100 && newObstacles);
         }
         //Generate bounding box for above:
-        Vector3 minPoint = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-        Vector3 maxPoint = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+        Vector3 minPointAbove = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        Vector3 maxPointAbove = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-        ScanForObstaclesAbove(ref minPoint, ref maxPoint);
+        ScanForObstaclesAbove(ref minPointAbove, ref maxPointAbove);
         Vector3 extendVector = new Vector3(distanceToObstacle, distanceToObstacle, distanceToObstacle);
-        minPoint -= extendVector;
-        maxPoint += extendVector;
+        minPointAbove -= extendVector;
+        maxPointAbove += extendVector;
 
         //Generate bounding box for the sides:
         Vector3 minPointSide = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
@@ -185,9 +196,20 @@ public class SimpleCurveGerneration : CurveGenerator
         ScanForObstaclesSide(ref minPointSide, ref maxPointSide);
         minPointSide -= extendVector;
         maxPointSide += extendVector;
+        BoundingBoxes result = new BoundingBoxes();
+        result.minPointAbove = minPointAbove;
+        result.maxPointAbove = maxPointAbove;
+        result.minPointSide = minPointSide;
+        result.maxPointSide = maxPointSide;
+        return result;
+    }
 
-        Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal,minPoint,maxPoint);
-        Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, minPointSide, maxPointSide, direction,standartHeight);
+    public static Vector3[] StartGeneration(Vector3 start, Vector3 goal, BoundingBoxes boundingBoxes , int curveSegmentCount)
+    {
+        float standartHeight = 0.5f;
+
+        Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal, boundingBoxes.minPointAbove, boundingBoxes.maxPointAbove);
+        Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, boundingBoxes.minPointSide, boundingBoxes.maxPointSide,standartHeight);
 
 
 
@@ -282,7 +304,7 @@ public class SimpleCurveGerneration : CurveGenerator
 
         return intersectionPointsAbove;
     }
-    static Vector3[] calculateIntersectionSide(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, Vector3 direction, float standartHeight)
+    static Vector3[] calculateIntersectionSide(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, float standartHeight)
     {        
         Vector2 CalculatePlacmentToBoundingbox(Vector3 point, Vector3 min, Vector3 max)
         {
@@ -574,20 +596,6 @@ public class SimpleCurveGerneration : CurveGenerator
         for(int i = 0; i < middlePoints.Length; i++)
             middlePoints[i] = standartToPlane * new Vector4(middlePoints[i].x, middlePoints[i].y, middlePoints[i].z, 1);
 
-        ////Shift the middlepoints away from the obstacle
-        //if (middlePoints.Length == 2)
-        //{
-        //    middlePoints[0] += new Vector3(-distanceToObstacle, distanceToObstacle, 0);
-        //    middlePoints[1] += new Vector3(distanceToObstacle, distanceToObstacle, 0);
-        //}
-        //else
-        //    middlePoints[0] += new Vector3(0,distanceToObstacle,0);
-        /*
-        g0.transform.position = planeToStandart * start;
-        g1.transform.position = planeToStandart * middlePoints[0];
-        g2.transform.position = planeToStandart * middlePoints[1];
-        g3.transform.position = planeToStandart * goal;
-        */
         Vector3[] curve = null;
 
         
@@ -619,13 +627,8 @@ public class SimpleCurveGerneration : CurveGenerator
         else
             p1 = new Vector2(middlePoints[0].x, start.y);
 
-        //g3.transform.position = planeToStandart * new Vector3(p1.x, p1.y, start.z);
         p1 = CalculateCentroid(start, p1, middlePoints[0]);
         controllPointsCurve1[1] = planeToStandart * new Vector3(p1.x, p1.y, start.z);
-
-        //g0.transform.position = controllPointsCurve1[0];
-        //g1.transform.position = controllPointsCurve1[1];
-        //g2.transform.position = controllPointsCurve1[2];
 
         //Curve 3
         controllPointsCurve3[0] = planeToStandart * middlePoints[1];
