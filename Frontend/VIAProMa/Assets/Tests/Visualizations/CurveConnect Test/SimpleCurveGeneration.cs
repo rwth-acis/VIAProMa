@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using Unity.Jobs;
+using Unity.Collections;
 
-public class BoundingBoxes
+public struct BoundingBoxes
 {
     public Vector3 minPointAbove;
     public Vector3 maxPointAbove;
     public Vector3 minPointSide;
     public Vector3 maxPointSide;
+    public int curveIndex;
 }
 
 
@@ -223,7 +226,6 @@ public class SimpleCurveGerneration : CurveGenerator
             return StandartCurve(start,goal,curveSegmentCount,standartHeight);
 
         Vector3[] controllPoints = new Vector3[0];
-
         if (distanceAbove < 1.5 * distanceSide)
         {
             return CalculateJoinedCurve(start, intersectionPointsAbove, goal, curveSegmentCount);
@@ -232,9 +234,10 @@ public class SimpleCurveGerneration : CurveGenerator
         {
             return CalculateJoinedCurve(start, intersectionPointsSide, goal, curveSegmentCount);
         }
+        
     }
 
-    static Vector3[] calculateIntersectionAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint)
+    public static Vector3[] calculateIntersectionAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint)
     {
         Vector3 startOnMaxHeight = new Vector3(start.x, maxPoint.y, start.z);
         Vector3 direction = goal - start;
@@ -304,7 +307,7 @@ public class SimpleCurveGerneration : CurveGenerator
 
         return intersectionPointsAbove;
     }
-    static Vector3[] calculateIntersectionSide(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, float standartHeight)
+    public static Vector3[] calculateIntersectionSide(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, float standartHeight)
     {        
         Vector2 CalculatePlacmentToBoundingbox(Vector3 point, Vector3 min, Vector3 max)
         {
@@ -697,4 +700,348 @@ public class SimpleCurveGerneration : CurveGenerator
         curve3.CopyTo(curve, curve1.Length);
         return curve;
     }
+}
+
+struct SimpleCurveGenerationJob : IJobParallelFor
+{
+    [ReadOnly]
+    public NativeArray<BoundingBoxes> boxes;
+    [ReadOnly]
+    public NativeArray<Vector3> start;
+    [ReadOnly]
+    public NativeArray<Vector3> goal;
+
+    //I am truly sorry for this, but this Unity version doesn't allow any form of sane managment of two dimensional native data. If the unity Version ever gets Updated, this can all be replaced by a single native hashmap
+
+    public NativeArray<Vector3> curvePoint0;
+    public NativeArray<Vector3> curvePoint1;
+    public NativeArray<Vector3> curvePoint2;
+    public NativeArray<Vector3> curvePoint3;
+    public NativeArray<Vector3> curvePoint4;
+    public NativeArray<Vector3> curvePoint5;
+    public NativeArray<Vector3> curvePoint6;
+    public NativeArray<Vector3> curvePoint7;
+    public NativeArray<Vector3> curvePoint8;
+    public NativeArray<Vector3> curvePoint9;
+    public NativeArray<Vector3> curvePoint10;
+    public NativeArray<Vector3> curvePoint11;
+    public NativeArray<Vector3> curvePoint12;
+    public NativeArray<Vector3> curvePoint13;
+    public NativeArray<Vector3> curvePoint14;
+    public NativeArray<Vector3> curvePoint15;
+    public NativeArray<Vector3> curvePoint16;
+    public NativeArray<Vector3> curvePoint17;
+    public NativeArray<Vector3> curvePoint18;
+    public NativeArray<Vector3> curvePoint19;
+    public NativeArray<Vector3> curvePoint20;
+    public NativeArray<Vector3> curvePoint21;
+    public NativeArray<Vector3> curvePoint22;
+    public NativeArray<Vector3> curvePoint23;
+    public NativeArray<Vector3> curvePoint24;
+    public NativeArray<Vector3> curvePoint25;
+    public NativeArray<Vector3> curvePoint26;
+    public NativeArray<Vector3> curvePoint27;
+    public NativeArray<Vector3> curvePoint28;
+    public NativeArray<Vector3> curvePoint29;
+    public NativeArray<Vector3> curvePoint30;
+    public NativeArray<Vector3> curvePoint31;
+    public NativeArray<Vector3> curvePoint32;
+    public NativeArray<Vector3> curvePoint33;
+    public NativeArray<Vector3> curvePoint34;
+    public NativeArray<Vector3> curvePoint35;
+    public NativeArray<Vector3> curvePoint36;
+    public NativeArray<Vector3> curvePoint37;
+    public NativeArray<Vector3> curvePoint38;
+    public NativeArray<Vector3> curvePoint39;
+    public NativeArray<Vector3> curvePoint40;
+    public NativeArray<Vector3> curvePoint41;
+    public NativeArray<Vector3> curvePoint42;
+    public NativeArray<Vector3> curvePoint43;
+    public NativeArray<Vector3> curvePoint44;
+    public NativeArray<Vector3> curvePoint45;
+    public NativeArray<Vector3> curvePoint46;
+    public NativeArray<Vector3> curvePoint47;
+    public NativeArray<Vector3> curvePoint48;
+    public NativeArray<Vector3> curvePoint49;
+    public NativeArray<Vector3> curvePoint50;
+    public NativeArray<Vector3> curvePoint51;
+    public NativeArray<Vector3> curvePoint52;
+    public NativeArray<Vector3> curvePoint53;
+    public NativeArray<Vector3> curvePoint54;
+    public NativeArray<Vector3> curvePoint55;
+    public NativeArray<Vector3> curvePoint56;
+    public NativeArray<Vector3> curvePoint57;
+    public NativeArray<Vector3> curvePoint58;
+    public NativeArray<Vector3> curvePoint59;
+    public NativeArray<Vector3> curvePoint60;
+    public NativeArray<Vector3> curvePoint61;
+    public NativeArray<Vector3> curvePoint62;
+
+    //public NativeArray<Vector3> result;
+    //public TwoDNativeArray<Vector3> result;
+    //public Vector3[,] result;
+
+    public void Execute(int index)
+    {
+        float standartHeight = 0.5f;
+        Vector3[] curve;
+        //int dim2 = dim2Arr[0];
+        //int offset = index * dim2;
+
+        Vector3[] intersectionPointsAbove = SimpleCurveGerneration.calculateIntersectionAbove(start[index], goal[index], boxes[index].minPointAbove, boxes[index].maxPointAbove);
+        Vector3[] intersectionPointsSide = SimpleCurveGerneration.calculateIntersectionSide(start[index], goal[index], boxes[index].minPointSide, boxes[index].maxPointSide, standartHeight);
+
+
+
+        float distanceAbove = CurveGenerator.CurveLength(new Vector3[] { start[index], intersectionPointsAbove[0], intersectionPointsAbove[1], goal[index] });
+        float distanceSide;
+        if (intersectionPointsSide.Length == 1)
+            distanceSide = CurveGenerator.CurveLength(new Vector3[] { start[index], intersectionPointsSide[0], goal[index] });
+        else if (intersectionPointsSide.Length == 2)
+            distanceSide = CurveGenerator.CurveLength(new Vector3[] { start[index], intersectionPointsSide[0], intersectionPointsSide[1], goal[index] });
+        else
+        {
+            curve = SimpleCurveGerneration.StandartCurve(start[index], goal[index], 60, standartHeight);
+            //result[index] = new NativeArray<Vector3>(curve.Length,Allocator.TempJob);
+            //result[index].CopyFrom(curve);
+            //result.SetValue(curve,index);
+            //for (int i = 0; i < dim2; i++)
+            //{
+            //    result.oneDArray[offset + i] = curve[i];
+            //}
+            SetResult(curve, index);
+            return;
+        }
+            
+
+        Vector3[] controllPoints = new Vector3[0];
+        
+        if (distanceAbove < 1.5 * distanceSide)
+        {
+            curve = SimpleCurveGerneration.CalculateJoinedCurve(start[index], intersectionPointsAbove, goal[index], 60);
+            //result[index] = new NativeArray<Vector3>(curve.Length, Allocator.TempJob);
+            //result[index].CopyFrom(curve);
+            //result.SetValue(curve,index);
+            //for (int i = 0; i < dim2; i++)
+            //{
+            //    result.oneDArray[offset + i] = curve[i];
+            //}
+            SetResult(curve, index);
+            return;
+        }
+        else
+        {
+            curve = SimpleCurveGerneration.CalculateJoinedCurve(start[index], intersectionPointsSide, goal[index], 60);
+            //result[index] = new NativeArray<Vector3>(curve.Length, Allocator.TempJob);
+            //result[index].CopyFrom(curve);
+            //result.SetValue(curve, index);
+            //for (int i = 0; i < dim2; i++)
+            //{
+            //    result.oneDArray[offset + i] = curve[i];
+            //}
+            SetResult(curve, index);
+            return;
+        }
+    }
+
+    private void SetResult(Vector3[] curve, int index)
+    {
+        curvePoint0[index] = curve[0];
+        curvePoint1[index] = curve[1];
+        curvePoint2[index] = curve[2];
+        curvePoint3[index] = curve[3];
+        curvePoint4[index] = curve[4];
+        curvePoint5[index] = curve[5];
+        curvePoint6[index] = curve[6];
+        curvePoint7[index] = curve[7];
+        curvePoint8[index] = curve[8];
+        curvePoint9[index] = curve[9];
+        curvePoint10[index] = curve[10];
+        curvePoint11[index] = curve[11];
+        curvePoint12[index] = curve[12];
+        curvePoint13[index] = curve[13];
+        curvePoint14[index] = curve[14];
+        curvePoint15[index] = curve[15];
+        curvePoint16[index] = curve[16];
+        curvePoint17[index] = curve[17];
+        curvePoint18[index] = curve[18];
+        curvePoint19[index] = curve[19];
+        curvePoint20[index] = curve[20];
+        curvePoint21[index] = curve[21];
+        curvePoint22[index] = curve[22];
+        curvePoint23[index] = curve[23];
+        curvePoint24[index] = curve[24];
+        curvePoint25[index] = curve[25];
+        curvePoint26[index] = curve[26];
+        curvePoint27[index] = curve[27];
+        curvePoint28[index] = curve[28];
+        curvePoint29[index] = curve[29];
+        curvePoint30[index] = curve[30];
+        curvePoint31[index] = curve[31];
+        curvePoint32[index] = curve[32];
+        curvePoint33[index] = curve[33];
+        curvePoint34[index] = curve[34];
+        curvePoint35[index] = curve[35];
+        curvePoint36[index] = curve[36];
+        curvePoint37[index] = curve[37];
+        curvePoint38[index] = curve[38];
+        curvePoint39[index] = curve[39];
+        curvePoint40[index] = curve[40];
+        curvePoint41[index] = curve[41];
+        curvePoint42[index] = curve[42];
+        curvePoint43[index] = curve[43];
+        curvePoint44[index] = curve[44];
+        curvePoint45[index] = curve[45];
+        curvePoint46[index] = curve[46];
+        curvePoint47[index] = curve[47];
+        curvePoint48[index] = curve[48];
+        curvePoint49[index] = curve[49];
+        curvePoint50[index] = curve[50];
+        curvePoint51[index] = curve[51];
+        curvePoint52[index] = curve[52];
+        curvePoint53[index] = curve[53];
+        curvePoint54[index] = curve[54];
+        curvePoint55[index] = curve[55];
+        curvePoint56[index] = curve[56];
+        curvePoint57[index] = curve[57];
+        curvePoint58[index] = curve[58];
+        curvePoint59[index] = curve[59];
+        curvePoint60[index] = curve[60];
+        curvePoint61[index] = curve[61];
+        curvePoint62[index] = curve[62];
+
+    }
+
+    public Vector3[] ReadResult(int index)
+    {
+        Vector3[] curve = new Vector3[63];
+        curve[0] = curvePoint0[index];
+        curve[1] = curvePoint1[index];
+        curve[2] = curvePoint2[index];
+        curve[3] = curvePoint3[index];
+        curve[4] = curvePoint4[index];
+        curve[5] = curvePoint5[index];
+        curve[6] = curvePoint6[index];
+        curve[7] = curvePoint7[index];
+        curve[8] = curvePoint8[index];
+        curve[9] = curvePoint9[index];
+        curve[10] = curvePoint10[index];
+        curve[11] = curvePoint11[index];
+        curve[12] = curvePoint12[index];
+        curve[13] = curvePoint13[index];
+        curve[14] = curvePoint14[index];
+        curve[15] = curvePoint15[index];
+        curve[16] = curvePoint16[index];
+        curve[17] = curvePoint17[index];
+        curve[18] = curvePoint18[index];
+        curve[19] = curvePoint19[index];
+        curve[20] = curvePoint20[index];
+        curve[21] = curvePoint21[index];
+        curve[22] = curvePoint22[index];
+        curve[23] = curvePoint23[index];
+        curve[24] = curvePoint24[index];
+        curve[25] = curvePoint25[index];
+        curve[26] = curvePoint26[index];
+        curve[27] = curvePoint27[index];
+        curve[28] = curvePoint28[index];
+        curve[29] = curvePoint29[index];
+        curve[30] = curvePoint30[index];
+        curve[31] = curvePoint31[index];
+        curve[32] = curvePoint32[index];
+        curve[33] = curvePoint33[index];
+        curve[34] = curvePoint34[index];
+        curve[35] = curvePoint35[index];
+        curve[36] = curvePoint36[index];
+        curve[37] = curvePoint37[index];
+        curve[38] = curvePoint38[index];
+        curve[39] = curvePoint39[index];
+        curve[40] = curvePoint40[index];
+        curve[41] = curvePoint41[index];
+        curve[42] = curvePoint42[index];
+        curve[43] = curvePoint43[index];
+        curve[44] = curvePoint44[index];
+        curve[45] = curvePoint45[index];
+        curve[46] = curvePoint46[index];
+        curve[47] = curvePoint47[index];
+        curve[48] = curvePoint48[index];
+        curve[49] = curvePoint49[index];
+        curve[50] = curvePoint50[index];
+        curve[51] = curvePoint51[index];
+        curve[52] = curvePoint52[index];
+        curve[53] = curvePoint53[index];
+        curve[54] = curvePoint54[index];
+        curve[55] = curvePoint55[index];
+        curve[56] = curvePoint56[index];
+        curve[57] = curvePoint57[index];
+        curve[58] = curvePoint58[index];
+        curve[59] = curvePoint59[index];
+        curve[60] = curvePoint60[index];
+        curve[61] = curvePoint61[index];
+        curve[62] = curvePoint62[index];
+        return curve;
+    }
+}
+
+public struct TwoDNativeArray<T> where T:struct
+{
+    public TwoDNativeArray(int dim1, int dim2, Allocator allocator)
+    {
+        oneDArray = new NativeArray<T>(dim1*dim2, allocator);
+        this.dim1 = dim1;
+        this.dim2 = dim2;
+    }
+
+    public void Write(int x, int y, T data)
+    {
+        if (x < dim1)
+        {
+            if (y < dim2)
+            {
+                oneDArray[x * dim2 + y] = data;
+            }
+            else
+            {
+                throw new Exception("TwoDNativeArray dim2 out of bounds");
+            }
+        }
+        else
+        {
+            throw new Exception("TwoDNativeArray dim1 out of bounds");
+        }
+    }
+
+    public T Read(int x, int y)
+    {
+        if (x < dim1)
+        {
+            if (y < dim2)
+            {
+                return oneDArray[x * dim2 + y];
+            }
+            else
+            {
+                throw new Exception("TwoDNativeArray dim2 out of bounds");
+            }
+        }
+        else
+        {
+            throw new Exception("TwoDNativeArray dim1 out of bounds");
+        }
+    }
+
+    public T[] GetArray(int x)
+    {
+        T[] array = new T[dim2];
+        int offset = x * dim2;
+        for (int y = 0; y < dim2; y++)
+        {
+            array[y] = oneDArray[offset + y];
+        }
+        return array;
+    }
+
+    public NativeArray<T> oneDArray;
+    public int dim1;
+    public int dim2;
+    
 }
