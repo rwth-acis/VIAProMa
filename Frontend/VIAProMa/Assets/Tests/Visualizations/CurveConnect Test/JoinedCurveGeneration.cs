@@ -222,7 +222,7 @@ public class JoinedCurveGeneration : MonoBehaviour
                 //Fetch the results
                 for (int i = 0; i < count; i++)
                 {
-                    int curveIndex = boxes[i].curveIndex;
+      
                     //int offset = i * (segmentCount+1);
                     //Vector3[] curve = new Vector3[segmentCount+1];
                     //for (int j = 0; j < (segmentCount + 1); j++)
@@ -239,8 +239,9 @@ public class JoinedCurveGeneration : MonoBehaviour
                     {
                         Vector3[] curve = new Vector3[63];
                         curve = jobData.ReadResult(i);
-                        curves[i].lineRenderer.positionCount = curve.Length;
-                        curves[i].lineRenderer.SetPositions(curve);
+                        int curveIndex = jobData.boxes[i].curveIndex;
+                        curves[curveIndex].lineRenderer.positionCount = curve.Length;
+                        curves[curveIndex].lineRenderer.SetPositions(curve);
                     }
                 }
 
