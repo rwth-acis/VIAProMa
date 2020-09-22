@@ -712,7 +712,7 @@ struct SimpleCurveGenerationJob : IJobParallelFor
     public NativeArray<Vector3> goal;
 
     //I am truly sorry for this, but this Unity version doesn't allow any form of sane managment of two dimensional native data. If the unity Version ever gets Updated, this can all be replaced by a single native hashmap
-
+    
     public NativeArray<Vector3> curvePoint0;
     public NativeArray<Vector3> curvePoint1;
     public NativeArray<Vector3> curvePoint2;
@@ -777,16 +777,10 @@ struct SimpleCurveGenerationJob : IJobParallelFor
     public NativeArray<Vector3> curvePoint61;
     public NativeArray<Vector3> curvePoint62;
 
-    //public NativeArray<Vector3> result;
-    //public TwoDNativeArray<Vector3> result;
-    //public Vector3[,] result;
-
     public void Execute(int index)
     {
         float standartHeight = 0.5f;
         Vector3[] curve;
-        //int dim2 = dim2Arr[0];
-        //int offset = index * dim2;
 
         Vector3[] intersectionPointsAbove = SimpleCurveGerneration.calculateIntersectionAbove(start[index], goal[index], boxes[index].minPointAbove, boxes[index].maxPointAbove);
         Vector3[] intersectionPointsSide = SimpleCurveGerneration.calculateIntersectionSide(start[index], goal[index], boxes[index].minPointSide, boxes[index].maxPointSide, standartHeight);
