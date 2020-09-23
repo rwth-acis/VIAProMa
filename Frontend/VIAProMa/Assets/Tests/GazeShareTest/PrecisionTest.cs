@@ -51,7 +51,7 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         spawnTime = GazeShareTester_Evaluation.timer.Elapsed;
         timeout = TimeSpan.FromSeconds(5.0);
         // Precision data
-        WriteString("PrecisionData", "NEW TEST " + DateTime.Now);
+        WriteString("PrecisionData.JSON", "NEW TEST " + DateTime.Now);
     }
 
     // Update is called once per frame
@@ -60,8 +60,9 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         currentTime = GazeShareTester_Evaluation.timer.Elapsed;
         if (currentTime - spawnTime > timeout)
         {
+            centerPosition = transform.position;
             OutputPrecision("TIMEOUT");
-            MoveTarget(gameObject); 
+            MoveTarget(gameObject);
         }
     }
 
@@ -123,7 +124,7 @@ public class PrecisionTest : MonoBehaviour, IMixedRealityPointerHandler
         jsonPrecisionData = JsonUtility.ToJson(precisionData);
         Debug.Log(jsonPrecisionData);
         jsonPrecisionData = JsonUtility.ToJson(precisionData, true);
-        WriteString("PrecisionData", jsonPrecisionData);
+        WriteString("PrecisionData.JSON", jsonPrecisionData);
     }
 
     // Retrieves the file path for the provided file name
