@@ -6,10 +6,10 @@ public abstract class CurveGenerator
 { 
     public static Vector3[] CalculateBezierCurve(Vector3[] controlPoints, int segmentCount)
     {
-        Vector3[] points = new Vector3[segmentCount + 1];
-        for (int i = 0; i <= segmentCount; i++)
+        Vector3[] points = new Vector3[segmentCount];
+        for (int i = 0; i < segmentCount; i++)
         {
-            float t = (float)i / segmentCount;
+            float t = (float)i / (segmentCount-1);
             points[i] = CalculateBezierPoint(controlPoints,t);
         }
         return points;

@@ -211,9 +211,9 @@ public class JoinedCurveGeneration : MonoBehaviour
                     jobData.curvePoint57 = new NativeArray<Vector3>(count, Allocator.TempJob);
                     jobData.curvePoint58 = new NativeArray<Vector3>(count, Allocator.TempJob);
                     jobData.curvePoint59 = new NativeArray<Vector3>(count, Allocator.TempJob);
-                    jobData.curvePoint60 = new NativeArray<Vector3>(count, Allocator.TempJob);
-                    jobData.curvePoint61 = new NativeArray<Vector3>(count, Allocator.TempJob);
-                    jobData.curvePoint62 = new NativeArray<Vector3>(count, Allocator.TempJob);
+                    //jobData.curvePoint60 = new NativeArray<Vector3>(count, Allocator.TempJob);
+                    //jobData.curvePoint61 = new NativeArray<Vector3>(count, Allocator.TempJob);
+                    //jobData.curvePoint62 = new NativeArray<Vector3>(count, Allocator.TempJob);
                 }
                 //---
 
@@ -313,9 +313,9 @@ public class JoinedCurveGeneration : MonoBehaviour
                     jobData.curvePoint57.Dispose();
                     jobData.curvePoint58.Dispose();
                     jobData.curvePoint59.Dispose();
-                    jobData.curvePoint60.Dispose();
-                    jobData.curvePoint61.Dispose();
-                    jobData.curvePoint62.Dispose();
+                    //jobData.curvePoint60.Dispose();
+                    //jobData.curvePoint61.Dispose();
+                    //jobData.curvePoint62.Dispose();
                 }
                 //---
                 //dim2Arr.Dispose();

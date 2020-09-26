@@ -773,9 +773,9 @@ struct SimpleCurveGenerationJob : IJobParallelFor
     public NativeArray<Vector3> curvePoint57;
     public NativeArray<Vector3> curvePoint58;
     public NativeArray<Vector3> curvePoint59;
-    public NativeArray<Vector3> curvePoint60;
-    public NativeArray<Vector3> curvePoint61;
-    public NativeArray<Vector3> curvePoint62;
+    //public NativeArray<Vector3> curvePoint60;
+    //public NativeArray<Vector3> curvePoint61;
+    //public NativeArray<Vector3> curvePoint62;
 
     public void Execute(int index)
     {
@@ -900,15 +900,15 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curvePoint57[index] = curve[57];
         curvePoint58[index] = curve[58];
         curvePoint59[index] = curve[59];
-        curvePoint60[index] = curve[60];
-        curvePoint61[index] = curve[61];
-        curvePoint62[index] = curve[62];
+        //curvePoint60[index] = curve[60];
+        //curvePoint61[index] = curve[61];
+        //curvePoint62[index] = curve[62];
 
     }
 
     public Vector3[] ReadResult(int index)
     {
-        Vector3[] curve = new Vector3[63];
+        Vector3[] curve = new Vector3[60];
         curve[0] = curvePoint0[index];
         curve[1] = curvePoint1[index];
         curve[2] = curvePoint2[index];
@@ -969,9 +969,9 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curve[57] = curvePoint57[index];
         curve[58] = curvePoint58[index];
         curve[59] = curvePoint59[index];
-        curve[60] = curvePoint60[index];
-        curve[61] = curvePoint61[index];
-        curve[62] = curvePoint62[index];
+        //curve[60] = curvePoint60[index];
+        //curve[61] = curvePoint61[index];
+        //curve[62] = curvePoint62[index];
         return curve;
     }
 }
