@@ -62,23 +62,35 @@ public class JoinedCurveGeneration : MonoBehaviour
                 JobHandle handel = jobData.Schedule(boxes.Length, 1);
                 handel.Complete();
 
+
+                var tasks = new Dictionary<Task<Vector3[]>, ConnectionCurve>();
                 //Fetch the results
                 for (int i = 0; i < count; i++)
                 {
                     if (curves[i] != null)
                     {
-                        Vector3[] curve = new Vector3[63];
-                        curve = jobData.ReadResult(i);
-                        int curveIndex = jobData.boxes[i].curveIndex;
-                        curves[curveIndex].lineRenderer.positionCount = curve.Length;
-                        curves[curveIndex].lineRenderer.SetPositions(curve);
+                        Vector3[] simpleCurve = jobData.ReadResult(i);
+                        ConnectionCurve curve = curves[jobData.boxes[i].curveIndex];
+                        tasks.Add(JoinedCurve(curve,simpleCurve,stepSize), curve);
                     }
                 }
-
                 boxes.Dispose();
                 startArray.Dispose();
                 goalArray.Dispose();
                 jobData.DisposeArrays();
+
+                while (tasks.Count > 0)
+                {
+                    Task<Vector3[]> finishedTask = await Task.WhenAny(tasks.Keys);
+                    ConnectionCurve connectionCurve = tasks[finishedTask];
+                    //connectionCurve can somehow be null here
+                    if (connectionCurve != null)
+                    {
+                        connectionCurve.lineRenderer.positionCount = finishedTask.Result.Length;
+                        connectionCurve.lineRenderer.SetPositions(finishedTask.Result);
+                    }
+                    tasks.Remove(finishedTask);
+                }
 
                 await Task.Yield();
             }
@@ -91,10 +103,16 @@ public class JoinedCurveGeneration : MonoBehaviour
         }
     }
 
-    static async Task<Vector3[]> JoinedCurve(ConnectionCurve connectionCurve, float stepSize, int segmentCount = 60)
+    static async Task<Vector3[]> JoinedCurve(ConnectionCurve connectionCurve, Vector3[] simpleCurve , float stepSize, int segmentCount = 60)
     {
         try
         {
+            //Check, if the simple curve is collision free
+            if (!CurveGenerator.CurveCollsionCheck(simpleCurve, connectionCurve.start, connectionCurve.goal))
+            {
+                return simpleCurve;
+            }
+            //If not, use A* or Greedy
             Vector3[] curve;
             IntTriple startCell = IntTriple.VectorToCell(connectionCurve.start.transform.position, stepSize);
             IntTriple goalCell = IntTriple.VectorToCell(connectionCurve.goal.transform.position, stepSize);
