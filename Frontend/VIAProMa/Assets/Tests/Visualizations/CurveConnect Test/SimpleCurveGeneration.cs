@@ -711,7 +711,7 @@ struct SimpleCurveGenerationJob : IJobParallelFor
     [ReadOnly]
     public NativeArray<Vector3> goal;
 
-    //I am truly sorry for this, but this Unity version doesn't allow any form of sane managment of two dimensional native data. If the unity Version ever gets Updated, this can all be replaced by a single native hashmap
+    //I am truly sorry for this, but Unity 2018.4.13f1 doesn't allow any form of sane managment of two dimensional native data. If the unity Version ever gets Updated, this can all be replaced by a single native hashmap
     
     public NativeArray<Vector3> curvePoint0;
     public NativeArray<Vector3> curvePoint1;
@@ -773,9 +773,6 @@ struct SimpleCurveGenerationJob : IJobParallelFor
     public NativeArray<Vector3> curvePoint57;
     public NativeArray<Vector3> curvePoint58;
     public NativeArray<Vector3> curvePoint59;
-    //public NativeArray<Vector3> curvePoint60;
-    //public NativeArray<Vector3> curvePoint61;
-    //public NativeArray<Vector3> curvePoint62;
 
     public void Execute(int index)
     {
@@ -796,13 +793,6 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         else
         {
             curve = SimpleCurveGerneration.StandartCurve(start[index], goal[index], 60, standartHeight);
-            //result[index] = new NativeArray<Vector3>(curve.Length,Allocator.TempJob);
-            //result[index].CopyFrom(curve);
-            //result.SetValue(curve,index);
-            //for (int i = 0; i < dim2; i++)
-            //{
-            //    result.oneDArray[offset + i] = curve[i];
-            //}
             SetResult(curve, index);
             return;
         }
@@ -813,26 +803,12 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         if (distanceAbove < 1.5 * distanceSide)
         {
             curve = SimpleCurveGerneration.CalculateJoinedCurve(start[index], intersectionPointsAbove, goal[index], 60);
-            //result[index] = new NativeArray<Vector3>(curve.Length, Allocator.TempJob);
-            //result[index].CopyFrom(curve);
-            //result.SetValue(curve,index);
-            //for (int i = 0; i < dim2; i++)
-            //{
-            //    result.oneDArray[offset + i] = curve[i];
-            //}
             SetResult(curve, index);
             return;
         }
         else
         {
             curve = SimpleCurveGerneration.CalculateJoinedCurve(start[index], intersectionPointsSide, goal[index], 60);
-            //result[index] = new NativeArray<Vector3>(curve.Length, Allocator.TempJob);
-            //result[index].CopyFrom(curve);
-            //result.SetValue(curve, index);
-            //for (int i = 0; i < dim2; i++)
-            //{
-            //    result.oneDArray[offset + i] = curve[i];
-            //}
             SetResult(curve, index);
             return;
         }
@@ -900,10 +876,6 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curvePoint57[index] = curve[57];
         curvePoint58[index] = curve[58];
         curvePoint59[index] = curve[59];
-        //curvePoint60[index] = curve[60];
-        //curvePoint61[index] = curve[61];
-        //curvePoint62[index] = curve[62];
-
     }
 
     public Vector3[] ReadResult(int index)
@@ -969,73 +941,134 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curve[57] = curvePoint57[index];
         curve[58] = curvePoint58[index];
         curve[59] = curvePoint59[index];
-        //curve[60] = curvePoint60[index];
-        //curve[61] = curvePoint61[index];
-        //curve[62] = curvePoint62[index];
         return curve;
     }
-}
 
-public struct TwoDNativeArray<T> where T:struct
-{
-    public TwoDNativeArray(int dim1, int dim2, Allocator allocator)
+    public void InitialiseArrays(int length)
     {
-        oneDArray = new NativeArray<T>(dim1*dim2, allocator);
-        this.dim1 = dim1;
-        this.dim2 = dim2;
+        curvePoint0 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint1 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint2 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint3 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint4 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint5 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint6 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint7 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint8 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint9 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint10 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint11 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint12 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint13 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint14 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint15 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint16 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint17 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint18 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint19 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint20 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint21 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint22 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint23 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint24 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint25 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint26 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint27 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint28 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint29 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint30 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint31 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint32 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint33 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint34 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint35 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint36 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint37 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint38 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint39 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint40 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint41 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint42 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint43 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint44 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint45 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint46 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint47 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint48 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint49 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint50 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint51 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint52 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint53 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint54 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint55 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint56 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint57 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint58 = new NativeArray<Vector3>(length, Allocator.TempJob);
+        curvePoint59 = new NativeArray<Vector3>(length, Allocator.TempJob);
     }
 
-    public void Write(int x, int y, T data)
+    public void DisposeArrays()
     {
-        if (x < dim1)
-        {
-            if (y < dim2)
-            {
-                oneDArray[x * dim2 + y] = data;
-            }
-            else
-            {
-                throw new Exception("TwoDNativeArray dim2 out of bounds");
-            }
-        }
-        else
-        {
-            throw new Exception("TwoDNativeArray dim1 out of bounds");
-        }
+        curvePoint0.Dispose();
+        curvePoint1.Dispose();
+        curvePoint2.Dispose();
+        curvePoint3.Dispose();
+        curvePoint4.Dispose();
+        curvePoint5.Dispose();
+        curvePoint6.Dispose();
+        curvePoint7.Dispose();
+        curvePoint8.Dispose();
+        curvePoint9.Dispose();
+        curvePoint10.Dispose();
+        curvePoint11.Dispose();
+        curvePoint12.Dispose();
+        curvePoint13.Dispose();
+        curvePoint14.Dispose();
+        curvePoint15.Dispose();
+        curvePoint16.Dispose();
+        curvePoint17.Dispose();
+        curvePoint18.Dispose();
+        curvePoint19.Dispose();
+        curvePoint20.Dispose();
+        curvePoint21.Dispose();
+        curvePoint22.Dispose();
+        curvePoint23.Dispose();
+        curvePoint24.Dispose();
+        curvePoint25.Dispose();
+        curvePoint26.Dispose();
+        curvePoint27.Dispose();
+        curvePoint28.Dispose();
+        curvePoint29.Dispose();
+        curvePoint30.Dispose();
+        curvePoint31.Dispose();
+        curvePoint32.Dispose();
+        curvePoint33.Dispose();
+        curvePoint34.Dispose();
+        curvePoint35.Dispose();
+        curvePoint36.Dispose();
+        curvePoint37.Dispose();
+        curvePoint38.Dispose();
+        curvePoint39.Dispose();
+        curvePoint40.Dispose();
+        curvePoint41.Dispose();
+        curvePoint42.Dispose();
+        curvePoint43.Dispose();
+        curvePoint44.Dispose();
+        curvePoint45.Dispose();
+        curvePoint46.Dispose();
+        curvePoint47.Dispose();
+        curvePoint48.Dispose();
+        curvePoint49.Dispose();
+        curvePoint50.Dispose();
+        curvePoint51.Dispose();
+        curvePoint52.Dispose();
+        curvePoint53.Dispose();
+        curvePoint54.Dispose();
+        curvePoint55.Dispose();
+        curvePoint56.Dispose();
+        curvePoint57.Dispose();
+        curvePoint58.Dispose();
+        curvePoint59.Dispose();
     }
-
-    public T Read(int x, int y)
-    {
-        if (x < dim1)
-        {
-            if (y < dim2)
-            {
-                return oneDArray[x * dim2 + y];
-            }
-            else
-            {
-                throw new Exception("TwoDNativeArray dim2 out of bounds");
-            }
-        }
-        else
-        {
-            throw new Exception("TwoDNativeArray dim1 out of bounds");
-        }
-    }
-
-    public T[] GetArray(int x)
-    {
-        T[] array = new T[dim2];
-        int offset = x * dim2;
-        for (int y = 0; y < dim2; y++)
-        {
-            array[y] = oneDArray[offset + y];
-        }
-        return array;
-    }
-
-    public NativeArray<T> oneDArray;
-    public int dim1;
-    public int dim2;
-    
 }
