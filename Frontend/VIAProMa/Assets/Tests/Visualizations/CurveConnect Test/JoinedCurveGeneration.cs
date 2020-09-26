@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
+using System.Diagnostics;
 
 public class JoinedCurveGeneration : MonoBehaviour
 {
@@ -12,11 +13,12 @@ public class JoinedCurveGeneration : MonoBehaviour
     public static async void UpdateAsyc(List<ConnectionCurve> curves, float stepSize)
     {
         int segmentCount = 60;
+        Stopwatch watch;
         try
         {
             while (true)
             {
-
+                watch = Stopwatch.StartNew();
                 //Check the standart curve and calculate the boundingboxes on the main thread
                 List<BoundingBoxes> boxList = new List<BoundingBoxes>();
 
@@ -92,12 +94,15 @@ public class JoinedCurveGeneration : MonoBehaviour
                     tasks.Remove(finishedTask);
                 }
 
+                watch.Stop();
+                UnityEngine.Debug.Log("Milliseconds joined curve generation:" + watch.ElapsedMilliseconds);
+
                 await Task.Yield();
             }
         }
         catch (Exception e)
         {
-            Debug.LogError(e.InnerException);
+            UnityEngine.Debug.LogError(e.InnerException);
             //Try to recover
             UpdateAsyc(curves, stepSize);
         }
@@ -140,7 +145,7 @@ public class JoinedCurveGeneration : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError(e.InnerException);
+            UnityEngine.Debug.LogError(e.InnerException);
             return null;
         }
     }
