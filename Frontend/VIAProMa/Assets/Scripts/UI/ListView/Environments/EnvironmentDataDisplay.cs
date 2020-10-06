@@ -8,7 +8,7 @@ public class EnvironmentDataDisplay : DataDisplay<EnvironmentData>
 {
     [SerializeField] private TextMeshPro environmentNameLabel;
     [SerializeField] private SpriteRenderer previewImage;
-
+    [SerializeField] private TextMeshPro environmentCreditField;
 
     private Interactable button;
 
@@ -46,6 +46,10 @@ public class EnvironmentDataDisplay : DataDisplay<EnvironmentData>
             if (content.EnvironmentPreviewImage != null)
             {
                 previewImage.sprite = (Sprite)content.EnvironmentPreviewImage;
+            }
+            if (content.EnvironmentCredit != null)
+            {
+                environmentCreditField.text = content.EnvironmentCredit;
             }
         }
     }

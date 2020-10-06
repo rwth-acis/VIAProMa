@@ -22,6 +22,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     [SerializeField] private Sprite[] previewImages;
     [SerializeField] private string[] environmentNames;
     [SerializeField] private GameObject[] environmentPrefabs;
+    [SerializeField] private string[] environmentCredits;
 
     /// <summary>
     /// The number of environment entries which are shown on one page
@@ -82,7 +83,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         {
             if (previewImages[i] != null && environmentSkyboxes[i] != null)
             {
-                environments.Add(new EnvironmentData(environmentNames[i], previewImages[i], environmentSkyboxes[i], environmentPrefabs[i]));
+                environments.Add(new EnvironmentData(environmentNames[i], previewImages[i], environmentSkyboxes[i], environmentPrefabs[i], environmentCredits[i]));
             }
         }
 
