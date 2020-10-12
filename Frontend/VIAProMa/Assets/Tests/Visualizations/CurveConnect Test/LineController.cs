@@ -61,6 +61,7 @@ public class LineController : MonoBehaviourPunCallbacks
         }
         clickTimeStamp = DateTime.Now;
         JoinedCurveGeneration.UpdateAsyc(curves,stepSize);
+        //JoinedCurveGeneration.test(curves);
     }
 
     public override void OnJoinedRoom()

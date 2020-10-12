@@ -10,6 +10,7 @@ using System.Diagnostics;
 public class JoinedCurveGeneration : MonoBehaviour
 {
     public float standartHeight = 0.2f;
+
     public static async void UpdateAsyc(List<ConnectionCurve> curves, float stepSize)
     {
         int segmentCount = 60;
@@ -105,6 +106,24 @@ public class JoinedCurveGeneration : MonoBehaviour
             UnityEngine.Debug.LogError(e.InnerException);
             //Try to recover
             UpdateAsyc(curves, stepSize);
+        }
+    }
+
+    public static async void test(List<ConnectionCurve> curves)
+    {
+        Stopwatch watch;
+        while (curves.Count == 0)
+        {
+            await Task.Yield();
+        }
+        ConnectionCurve curve = curves[0];
+        while (true)
+        {
+            watch = Stopwatch.StartNew();
+            Vector3[] path = SimpleCurveGerneration.StartGeneration(curve.start.transform.position, curve.goal.transform.position, SimpleCurveGerneration.CalculateBoundingBoxes(curve.start, curve.goal), 60);
+            watch.Stop();
+            UnityEngine.Debug.Log("Time: " + watch.Elapsed.TotalMilliseconds);
+            await Task.Yield();
         }
     }
 
