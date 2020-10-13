@@ -39,9 +39,7 @@ public class LineController : MonoBehaviourPunCallbacks
 
 
 
-    //Test
-    public List<GameObject> startTest;
-    public List<GameObject> goalTest;
+
     GameObject tempGoal = null;
 
 
@@ -50,29 +48,8 @@ public class LineController : MonoBehaviourPunCallbacks
     {
         curves = new List<ConnectionCurve>();
         curveGenerator = GetComponent<JoinedCurveGeneration>();
-
-
-        if (!onlineTestMode && startTest != null && goalTest != null)
-        {
-            for (int i = 0; i < startTest.Count; i++)
-            {
-                CreateConnectionCurveScene(startTest[i], goalTest[i]);
-            }
-        }
         clickTimeStamp = DateTime.Now;
         JoinedCurveGeneration.UpdateAsyc(curves,stepSize);
-        //JoinedCurveGeneration.test(curves);
-    }
-
-    public override void OnJoinedRoom()
-    {
-        if (onlineTestMode && PhotonNetwork.IsMasterClient && startTest != null && goalTest != null)
-        {
-            for (int i = 0; i < startTest.Count; i++)
-            {
-                CreateConnectionCurveScene(startTest[i], goalTest[i]);
-            }
-        }
     }
 
     // Update is called once per frame

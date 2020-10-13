@@ -99,7 +99,7 @@ public class JoinedCurveGeneration : MonoBehaviour
         {
             UnityEngine.Debug.LogError(e.InnerException);
             //Try to recover
-            UpdateAsyc(curves, stepSize);
+            //UpdateAsyc(curves, stepSize);
         }
     }
 
