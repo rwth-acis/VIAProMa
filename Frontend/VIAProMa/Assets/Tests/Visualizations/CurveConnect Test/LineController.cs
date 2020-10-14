@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 public class LineController : MonoBehaviourPunCallbacks
 {
     public bool onlineTestMode;
-    public static float stepSize = 1;
+    static float stepSize = 0.5f;
     public static int curveSegmentCount = 60;
     public GameObject DeleteCube;
     GameObject instantiatedDeletCube;
@@ -76,8 +76,10 @@ public class LineController : MonoBehaviourPunCallbacks
                     target = GetParentWithPhotonView(mainPointer.Result?.CurrentPointerTarget);
                     var view = tempCurve.GetComponent<PhotonView>();
                     var goalView = target?.GetComponent<PhotonView>();
-                    if (target != null)
+                    //Is the coursor pointing on a valid target?
+                    if (target != null && target != tempCurve.start)
                     {
+                        //Set the goal of the temp curve to the temp goal
                         if (tempCurve.goal != target)
                         {
                             view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
@@ -85,6 +87,7 @@ public class LineController : MonoBehaviourPunCallbacks
                     }
                     else
                     {
+                        //Restore the normal temp curve
                         if (tempCurve.goal != tempCurve)
                         {
                             view.RPC("SetGoal", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
@@ -94,7 +97,7 @@ public class LineController : MonoBehaviourPunCallbacks
                     var cursor = (AnimatedCursor)mainPointer.BaseCursor;
                     if (thisFrameClicked)
                     {
-                        if (target != null)
+                        if (target != null && target != tempCurve.start)
                             CreateConnectionCurveScene(tempCurve.start, target);
                         ChangeState(State.defaultMode);
                     }
