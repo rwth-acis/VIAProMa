@@ -17,7 +17,7 @@ public struct BoundingBoxes
 
 public class SimpleCurveGerneration : CurveGenerator
 {
-    public static float distanceToObstacle = 0.5f;
+    public static float distanceToObstacle = 0.2f;
     
 
     public static Vector3[] StandartCurve(Vector3 start, Vector3 goal, int segmentCount, float height)
@@ -800,7 +800,7 @@ struct SimpleCurveGenerationJob : IJobParallelFor
 
         Vector3[] controllPoints = new Vector3[0];
         
-        if (distanceAbove < 1.5 * distanceSide)
+        if (distanceAbove < 1.1*distanceSide)
         {
             curve = SimpleCurveGerneration.CalculateJoinedCurve(start[index], intersectionPointsAbove, goal[index], 60);
             SetResult(curve, index);
