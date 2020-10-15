@@ -18,8 +18,10 @@ public struct BoundingBoxes
 public class SimpleCurveGerneration : CurveGenerator
 {
     public static float distanceToObstacle = 0.2f;
-    
 
+    /// <summary>
+    /// Generates a Bézier curve from start to goal, with two additional controllpoints.
+    /// </summary>
     public static Vector3[] StandartCurve(Vector3 start, Vector3 goal, int segmentCount, float height)
     {
         float higherOne = start.y > goal.y ? start.y : goal.y;
@@ -34,6 +36,9 @@ public class SimpleCurveGerneration : CurveGenerator
         return CalculateBezierCurve(new Vector3[] { start, startAdjusted + direction * distance / 2.5f + new Vector3(0, height, 0), goalAdjusted - direction * distance / 2.5f + new Vector3(0, height, 0), goal }, 50);
     }
 
+    /// <summary>
+    /// Generates a standart curve. If it is collision free, it gets returned. If not, null is returned
+    /// </summary>
     public static Vector3[] TryToUseStandartCurve(GameObject startObject, GameObject goalObject, int curveSegmentCount)
     {
         //Priority 1: Try to draw the standart curve
@@ -47,6 +52,9 @@ public class SimpleCurveGerneration : CurveGenerator
         return null;
     }
 
+    /// <summary>
+    /// Calculates two boundingboxes for a curve from start to goal: one for an curve that goes over the box and one that goes around it
+    /// </summary>
     public static BoundingBoxes CalculateBoundingBoxes(GameObject startObject, GameObject goalObject)
     {
         Vector3 start = startObject.transform.position;
@@ -207,11 +215,14 @@ public class SimpleCurveGerneration : CurveGenerator
         return result;
     }
 
+    /// <summary>
+    /// Calculates a simple curve from start to goal with the given bounding boxes.
+    /// </summary>
     public static Vector3[] StartGeneration(Vector3 start, Vector3 goal, BoundingBoxes boundingBoxes , int curveSegmentCount)
     {
         float standartHeight = 0.5f;
 
-        Vector3[] intersectionPointsAbove = calculateIntersectionAbove(start,goal, boundingBoxes.minPointAbove, boundingBoxes.maxPointAbove);
+        Vector3[] intersectionPointsAbove = calculateControllpointsAbove(start,goal, boundingBoxes.minPointAbove, boundingBoxes.maxPointAbove);
         Vector3[] intersectionPointsSide = calculateIntersectionSide(start,goal, boundingBoxes.minPointSide, boundingBoxes.maxPointSide,standartHeight);
 
 
@@ -228,16 +239,19 @@ public class SimpleCurveGerneration : CurveGenerator
         Vector3[] controllPoints = new Vector3[0];
         if (distanceAbove < 1.5 * distanceSide)
         {
-            return CalculateJoinedCurve(start, intersectionPointsAbove, goal, curveSegmentCount);
+            return CalculateJoinedBezierCurve(start, intersectionPointsAbove, goal, curveSegmentCount);
         }
         else
         {
-            return CalculateJoinedCurve(start, intersectionPointsSide, goal, curveSegmentCount);
+            return CalculateJoinedBezierCurve(start, intersectionPointsSide, goal, curveSegmentCount);
         }
         
     }
 
-    public static Vector3[] calculateIntersectionAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint)
+    /// <summary>
+    /// Calculates the additional control points for a curve that goes from start to goal over the bounding box defined by min and max
+    /// </summary>
+    public static Vector3[] calculateControllpointsAbove(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint)
     {
         Vector3 startOnMaxHeight = new Vector3(start.x, maxPoint.y, start.z);
         Vector3 direction = goal - start;
@@ -307,6 +321,10 @@ public class SimpleCurveGerneration : CurveGenerator
 
         return intersectionPointsAbove;
     }
+
+    /// <summary>
+    /// Calculates the additional control points for a curve that goes from start to goal around the bounding box defined by min and max
+    /// </summary>
     public static Vector3[] calculateIntersectionSide(Vector3 start, Vector3 goal, Vector3 minPoint, Vector3 maxPoint, float standartHeight)
     {        
         Vector2 CalculatePlacmentToBoundingbox(Vector3 point, Vector3 min, Vector3 max)
@@ -485,26 +503,41 @@ public class SimpleCurveGerneration : CurveGenerator
         }
     }
 
+    /// <summary>
+    /// Determines if every element of vec1 is less equal vec2
+    /// </summary>
     static bool VecSmallerEqVec(Vector3 vec1, Vector3 vec2)
     {
         return (vec1.x < vec2.x || FloatEq(vec1.x,vec2.x)) && (vec1.y < vec2.y || FloatEq(vec1.y, vec2.y)) && (vec1.z < vec2.z || FloatEq(vec1.z, vec2.z));
     }
 
+    /// <summary>
+    /// Determines if every element of vec1 is greater equal vec2
+    /// </summary>
     static bool VecGreaterEqVec(Vector3 vec1, Vector3 vec2)
     {
         return (vec1.x > vec2.x || FloatEq(vec1.x, vec2.x)) && (vec1.y > vec2.y || FloatEq(vec1.y, vec2.y)) && (vec1.z > vec2.z || FloatEq(vec1.z, vec2.z));
     }
 
+    /// <summary>
+    /// Checks if two floatsare nearly the same
+    /// </summary>
     static bool FloatEq(float x, float y)
     {
         return Math.Abs(x - y) < 0.1f;
     }
 
+    /// <summary>
+    /// Checks if two vectors are nearly the same
+    /// </summary>
     static bool VecEqVec(Vector3 vec1, Vector3 vec2)
     {
         return FloatEq(vec1.x, vec2.x) && FloatEq(vec1.y, vec2.y) && FloatEq(vec1.z, vec2.z);
     }
 
+    /// <summary>
+    /// calculates the centroid of the triangle formed by p0, p1 and p2
+    /// </summary>
     static Vector2 CalculateCentroid(Vector2 p0, Vector2 p1, Vector2 p2)
     {
         Vector2 p01 = p1 + (p0 - p1) / 2;
@@ -515,6 +548,9 @@ public class SimpleCurveGerneration : CurveGenerator
         return CalculateLineIntersection(p01, d1, p12, d2);
     }
 
+    /// <summary>
+    /// Calculates the interstion point for two lines defined by a start point and a direction vector. Returns (NaN,NaN) when no intersection exists
+    /// </summary>
     static Vector2 CalculateLineIntersection(Vector2 startPoint1, Vector2 direction1, Vector2 startPoint2, Vector2 direction2)
     {
         float r = float.NaN;
@@ -549,7 +585,10 @@ public class SimpleCurveGerneration : CurveGenerator
             return startPoint1 + l * direction1;
     }
 
-    public static Vector3[] CalculateJoinedCurve(Vector3 start, Vector3[] middlePoints, Vector3 goal, int segmentCount, GameObject g0 = null, GameObject g1 = null, GameObject g2 = null, GameObject g3 = null)
+    /// <summary>
+    /// Generates the missing controllpoints for the Bezier curves and joins them to a single one
+    /// </summary>
+    public static Vector3[] CalculateJoinedBezierCurve(Vector3 start, Vector3[] middlePoints, Vector3 goal, int segmentCount)
     {
         if (middlePoints.Length == 0)
         {
@@ -615,6 +654,9 @@ public class SimpleCurveGerneration : CurveGenerator
         return curve;
     }
 
+    /// <summary>
+    /// Generates a Bezier curve consiting out of three curves
+    /// </summary>
     static Vector3[] CurveWithTwoPoints(Vector3 start, Vector3 goal, Matrix4x4 planeToStandart, Vector3[] middlePoints, int segmentCount)
     {
         Vector3[] controllPointsCurve1 = new Vector3[3];
@@ -673,6 +715,9 @@ public class SimpleCurveGerneration : CurveGenerator
         return curve;
     }
 
+    /// <summary>
+    /// Generates a Bezier curve consiting out of two curves
+    /// </summary>
     static Vector3[] CurveWithOnePoint(Vector3 start, Vector3 goal, Matrix4x4 planeToStandart, Vector3 middlePoint, int segmentCount)
     {
         Vector3[] controllPointsCurve1 = new Vector3[3];
@@ -701,6 +746,7 @@ public class SimpleCurveGerneration : CurveGenerator
         return curve;
     }
 }
+
 
 struct SimpleCurveGenerationJob : IJobParallelFor
 {
@@ -779,7 +825,7 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         float standartHeight = 0.5f;
         Vector3[] curve;
 
-        Vector3[] intersectionPointsAbove = SimpleCurveGerneration.calculateIntersectionAbove(start[index], goal[index], boxes[index].minPointAbove, boxes[index].maxPointAbove);
+        Vector3[] intersectionPointsAbove = SimpleCurveGerneration.calculateControllpointsAbove(start[index], goal[index], boxes[index].minPointAbove, boxes[index].maxPointAbove);
         Vector3[] intersectionPointsSide = SimpleCurveGerneration.calculateIntersectionSide(start[index], goal[index], boxes[index].minPointSide, boxes[index].maxPointSide, standartHeight);
 
 
@@ -802,13 +848,13 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         
         if (distanceAbove < 1.1*distanceSide)
         {
-            curve = SimpleCurveGerneration.CalculateJoinedCurve(start[index], intersectionPointsAbove, goal[index], 60);
+            curve = SimpleCurveGerneration.CalculateJoinedBezierCurve(start[index], intersectionPointsAbove, goal[index], 60);
             SetResult(curve, index);
             return;
         }
         else
         {
-            curve = SimpleCurveGerneration.CalculateJoinedCurve(start[index], intersectionPointsSide, goal[index], 60);
+            curve = SimpleCurveGerneration.CalculateJoinedBezierCurve(start[index], intersectionPointsSide, goal[index], 60);
             SetResult(curve, index);
             return;
         }
