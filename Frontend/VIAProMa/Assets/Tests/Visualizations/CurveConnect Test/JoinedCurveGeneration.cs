@@ -7,7 +7,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using System.Diagnostics;
 
-public class JoinedCurveGeneration : MonoBehaviour
+public class JoinedCurveGeneration // : MonoBehaviour
 {
     public float standartHeight = 0.2f;
 

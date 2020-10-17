@@ -6,9 +6,10 @@ using Microsoft.MixedReality.Toolkit.Input;
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using System.Threading.Tasks;
+using HoloToolkit.Unity;
 
 
-public class LineController : MonoBehaviourPunCallbacks
+public class LineController : Singleton<LineController>
 {
     public bool onlineTestMode;
     static float stepSize = 0.5f;
@@ -43,16 +44,13 @@ public class LineController : MonoBehaviourPunCallbacks
     GameObject tempGoal = null;
 
 
-    // Start is called before the first frame update
     void Start()
     {
         curves = new List<ConnectionCurve>();
-        curveGenerator = GetComponent<JoinedCurveGeneration>();
         clickTimeStamp = DateTime.Now;
         JoinedCurveGeneration.UpdateAsyc(curves,stepSize);
     }
 
-    // Update is called once per frame
     void Update()
     {
         bool thisFrameClicked = false;
