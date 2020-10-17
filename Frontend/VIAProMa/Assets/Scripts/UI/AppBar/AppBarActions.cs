@@ -11,8 +11,8 @@ public class AppBarActions : MonoBehaviour
 {
     private AppBarPlacer appBarPlacer;
 
-    public GameObject lineControllerPrefab;
-    private LineController lineController;
+    //public GameObject lineControllerPrefab;
+    //private LineController lineController;
     public GameObject test1;
     public GameObject test2;
 
@@ -35,23 +35,14 @@ public class AppBarActions : MonoBehaviour
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
         }
-
-        GameObject lineObject = GameObject.Find("LineController(Clone)");
-        if (lineObject == null)
-            lineController = Instantiate(lineControllerPrefab).GetComponent<LineController>();
-        else
-            lineController = lineObject.GetComponent<LineController>();
     }
 
     /// <summary>
     /// Destroys the object (either networked or not based on the setting TargetNetworked)
-    /// This also destroys the bounding box and finally the app bar
+    /// This also destroys the bounding box, the connected connection curves and finally the app bar
     /// </summary>
     public void RemoveObject()
     {
-        //Remove the curves connected with the object
-        lineController.DeleteCurves(appBarPlacer.TargetBoundingBox.Target);
-
         if (TargetNetworked)
         {
             PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
@@ -66,6 +57,9 @@ public class AppBarActions : MonoBehaviour
         {
             Destroy(appBarPlacer.TargetBoundingBox.gameObject);
         }
+
+        //Remove the curves connected with the object
+        LineController.Instance.DeleteCurves(appBarPlacer.TargetBoundingBox.Target);
 
         // finally also destroy the app bar
         Destroy(gameObject);
@@ -91,15 +85,19 @@ public class AppBarActions : MonoBehaviour
         appBarPlacer.TargetBoundingBox.Target.transform.localScale = startScale;
     }
 
+    /// <summary>
+    /// Starts the curve connection process for the object, the app bar belongs to
+    /// </summary>
     public void Connect()
     {
-        //lineController.SendMessage("StartConnecting", appBarPlacer.TargetBoundingBox.Target);
-        lineController.ChangeState(LineController.State.connecting, appBarPlacer.TargetBoundingBox.Target, gameObject.GetComponent<AppBarStateController>());
+        LineController.Instance.ChangeState(LineController.State.connecting, appBarPlacer.TargetBoundingBox.Target, gameObject.GetComponent<AppBarStateController>());
     }
 
+    /// <summary>
+    /// Starts the disconnect process. It is complety independent from the app bar it was invoked on.
+    /// </summary>
     public void Disconnect()
     {
-        //lineController.SendMessage("StartDisconnecting");
-        lineController.ChangeState(LineController.State.disconnecting);
+        LineController.Instance.ChangeState(LineController.State.disconnecting);
     }
 }
