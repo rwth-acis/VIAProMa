@@ -37,7 +37,6 @@ public class AppBarStateController : MonoBehaviour
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(adjustmentView));
         }
-        appBarsInConnetMode = new List<AppBarStateController>();
     }
 
     private void Start()
@@ -52,6 +51,7 @@ public class AppBarStateController : MonoBehaviour
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), appBarPlacer?.TargetBoundingBox.gameObject);
         }
+        appBarsInConnetMode = new List<AppBarStateController>();
     }
 
     private void UpdateView()
@@ -71,6 +71,8 @@ public class AppBarStateController : MonoBehaviour
             boundingBoxStateController.BoundingBoxActive = true;
             boundingBoxStateController.manipulationHandler.enabled = true;
         }
+        //This state is only active, when on ANOTHER app bar the connect button was pressed.
+        //It activates the bounding box but disables the manipulation handler to make it easier to hit the corrosponding object with the ray
         else if (state == AppBarState.CONNECTING)
         {
             boundingBoxStateController.BoundingBoxActive = true;
@@ -98,6 +100,9 @@ public class AppBarStateController : MonoBehaviour
         State = AppBarState.ADJUSTMENT_VIEW;
     }
 
+    /// <summary>
+    /// Is executed on the app bar, the connect button was pressed
+    /// </summary>
     public void InvokeConnect()
     {
         State = AppBarState.CONNECTING_INVOKE;
@@ -112,6 +117,9 @@ public class AppBarStateController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Is executed on the app bars, where the connect button were NOT pressed
+    /// </summary>
     public void Connect()
     {
         State = AppBarState.CONNECTING;
