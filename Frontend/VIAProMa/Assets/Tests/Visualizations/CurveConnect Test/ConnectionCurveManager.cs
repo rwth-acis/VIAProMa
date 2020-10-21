@@ -8,7 +8,9 @@ using Photon.Pun.UtilityScripts;
 using System.Threading.Tasks;
 using HoloToolkit.Unity;
 
-
+/// <summary>
+/// Manages the connect and disconnect process of Connection Curves and provides functions to manage curves.
+/// </summary>
 public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
 {
     public bool onlineTestMode;
@@ -55,6 +57,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     {
         bool thisFrameClicked = false;
         bool pointerValid = false;
+        //Check, if there is a valid pointer (the dot at the end of the ray from thte input source) in the scene.
         //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null sometimes still yields true, but there content is useless.
         //But ToString then returns null.
         if (mainPointer != null)
@@ -182,6 +185,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         lastFrameClicked = thisFrameClicked;
     }
 
+    /// <summary>
+    /// Change the state of the Connection Curve Manager. The function automaticly ends all effects from the old state.
+    /// </summary>
     public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
     {
         
@@ -192,10 +198,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         switch (currState)
         {
             case State.disconnecting:
-                StopDisconnecting();
+                StopDisconnect();
                 break;
             case State.connecting:
-                StopConnecting();
+                StopConnect();
                 break;
         }
 
@@ -206,7 +212,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
                 currState = State.defaultMode;
                 break;
             case State.disconnecting:
-                StartDisconnecting();
+                StartDisconnect();
                 currState = State.disconnecting;
                 break;
             case State.connecting:
@@ -217,6 +223,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         clickTimeStamp = DateTime.Now;
     }
 
+    /// <summary>
+    /// Destroys a Connection Curve while resepecting that it can be networked and the the requestimg client may not have the ownership at the moment.
+    /// </summary>
     async void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
         if (PhotonNetwork.InRoom)
@@ -237,6 +246,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         }
     }
 
+    /// <summary>
+    /// Creates a Connection Curve from start to goal. When the user is in a room, the curve is instantiated as photon scene object. Otherwise it is instantiated normally.
+    /// </summary>
     public void CreateConnectionCurveScene(GameObject start, GameObject goal)
     {
         if (PhotonNetwork.InRoom)
@@ -253,6 +265,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
             curve.goal = goal;
         }
     }
+
+    /// <summary>
+    /// Creates a Connection Curve from start to goal. When the user is in a room, the curve is instantiated as photon object, with the creator as owner and creator. Otherwise it is instantiated normally.
+    /// </summary>
     public ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
     {
         ConnectionCurve curve;
@@ -272,6 +288,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         return curve;
     }
 
+    /// <summary>
+    /// Start the connect process.
+    /// </summary>
     void StartConnecting(GameObject start, AppBarStateController caller)
     {
         RefreshPointer();
@@ -290,7 +309,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         }
     }
 
-    void StopConnecting()
+    /// <summary>
+    /// Stop the connect process.
+    /// </summary>
+    void StopConnect()
     {
         caller.Collapse();
         if (PhotonNetwork.InRoom)
@@ -305,7 +327,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         startedDeletion = false;
     }
 
-    void StartDisconnecting()
+    /// <summary>
+    /// Start the disconnect process.
+    /// </summary>
+    void StartDisconnect()
     {
         if (currState != State.disconnecting)
         {
@@ -316,7 +341,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         startedDeletion = true;
     }
 
-    void StopDisconnecting()
+    /// <summary>
+    /// Stop the disconnect process.
+    /// </summary>
+    void StopDisconnect()
     {
         Destroy(instantiatedDeletCube);
         foreach (ConnectionCurve curve in curves)
@@ -335,7 +363,11 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         }
         deletedSomething = false;
     }
-    public void DeleteCurves(GameObject startOrEndPoint)
+
+    /// <summary>
+    /// Delet all Connection Curves connected to a GameObject
+    /// </summary>
+    public void DeleteAllCurvesFromObject(GameObject startOrEndPoint)
     {
         List<ConnectionCurve> curvesToDelete = new List<ConnectionCurve>();
         foreach (ConnectionCurve connectionCurve in curves)
@@ -352,6 +384,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         
     }
 
+    /// <summary>
+    /// Delet all Connection Curves managed by the ConnectionCurveManager
+    /// </summary>
     public void DeleteAllCurves()
     {
         var curvesToDelete = new List<ConnectionCurve>(curves);
@@ -361,6 +396,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         }
     }
 
+    /// <summary>
+    /// Recalculate the MRTK pointer. This is necassary in regular intervalls, because user can connect or disconnect input sources at any time.
+    /// </summary>
     public void RefreshPointer()
     {
         foreach (var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
@@ -396,6 +434,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         return arr;
     }
 
+    /// <summary>
+    /// Return the closest object in the hirachy above the provided gameObject that has a PhotonView. If such an object doesn't exist, null is returned.
+    /// </summary>
     public static GameObject GetParentWithPhotonView(GameObject gameObject)
     {
         if (gameObject == null)
