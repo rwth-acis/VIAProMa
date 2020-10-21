@@ -10,7 +10,7 @@ public class TaskStarter : MonoBehaviour
     // Start is called before the first frame update
     public void StartTask()
     {
-        LineController controller = GameObject.FindObjectOfType<LineController>();
+        ConnectionCurveManager controller = GameObject.FindObjectOfType<ConnectionCurveManager>();
         controller.DeleteAllCurves();
         for (int i = 0; i < startObject.Count; i++)
         {

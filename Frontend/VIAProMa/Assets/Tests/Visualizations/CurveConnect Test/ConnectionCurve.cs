@@ -15,14 +15,14 @@ public class ConnectionCurve : MonoBehaviour
 
     public bool isTemp { get; set; }
     public LineRenderer lineRenderer;
-    LineController lineController;
+    ConnectionCurveManager lineController;
     public bool isMarked { get; set; }
     Gradient defaultColor;
 
     // Start is called before the first frame update
     void Start()
     {
-        lineController = GameObject.FindObjectOfType<LineController>();
+        lineController = GameObject.FindObjectOfType<ConnectionCurveManager>();
         //When the IDs are empty, the curve was not instantiated through the SaveLoadManager
         if (startID == "" && goalID == "")
         {
@@ -100,7 +100,7 @@ public class ConnectionCurve : MonoBehaviour
     {
         if (lineController == null)
         {
-            lineController = GameObject.FindObjectOfType<LineController>();
+            lineController = GameObject.FindObjectOfType<ConnectionCurveManager>();
         }
         lineController?.curves.Remove(this);
     }

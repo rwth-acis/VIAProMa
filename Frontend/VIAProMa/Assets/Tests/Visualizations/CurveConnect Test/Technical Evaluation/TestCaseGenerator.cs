@@ -62,7 +62,7 @@ public class TestCaseGenerator : MonoBehaviour
     {
         try
         {
-            LineController lineController = GameObject.FindObjectOfType<LineController>();
+            ConnectionCurveManager lineController = GameObject.FindObjectOfType<ConnectionCurveManager>();
             //System.IO.StreamWriter time = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\Time.csv");
             //time.WriteLine("Distance;A*;Greedy;GreedyRef;Simple");
             System.IO.StreamWriter distanceDiff = new System.IO.StreamWriter(@"C:\Users\Sebastian\Documents\RWTH\ViaPromaTestLogs\EndEval\DistanceDiff.csv");

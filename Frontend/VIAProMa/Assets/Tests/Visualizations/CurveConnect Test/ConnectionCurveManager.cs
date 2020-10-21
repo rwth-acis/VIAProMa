@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using HoloToolkit.Unity;
 
 
-public class LineController : Singleton<LineController>
+public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
 {
     public bool onlineTestMode;
     static float stepSize = 0.5f;
