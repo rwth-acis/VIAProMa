@@ -2,8 +2,14 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Contains functions for generating and analyzing 3D curves.
+/// </summary>
 public abstract class CurveGenerator
-{ 
+{
+    /// <summary>
+    /// Calculates a 3D Bezier curve with the given control points and segmentCount segments.
+    /// </summary>
     public static Vector3[] CalculateBezierCurve(Vector3[] controlPoints, int segmentCount)
     {
         Vector3[] points = new Vector3[segmentCount];
@@ -15,6 +21,9 @@ public abstract class CurveGenerator
         return points;
     }
 
+    /// <summary>
+    /// Calculates the point at t on a 3D Bezier curve with the given control points and 0 <= t <= 1.
+    /// </summary>
     static Vector3 CalculateBezierPoint(Vector3[] controlPoints, float t)
     {
         Vector3 result = Vector3.zero;
@@ -25,6 +34,9 @@ public abstract class CurveGenerator
         return result;
     }
 
+    /// <summary>
+    /// Calculates the binomoial coefficient.
+    /// </summary>
     public static long BinomCoefficient(long n, long k)
     {
         if (k > n) { return 0; }
@@ -39,6 +51,9 @@ public abstract class CurveGenerator
         return c;
     }
 
+    /// <summary>
+    /// Calculates, if a curve has a collision. The curve gets approimated with up to 60 sphere colliders for that. 
+    /// </summary>
     public static bool CurveCollsionCheck(Vector3[] curve, GameObject startObject, GameObject goalObject, int layermask = 0b1111111, bool checkEndCollision = true , float distanceToObstacle = 0.2f)
     {
         int curveIncrement = (curve.Length - 2) / 60;
@@ -76,41 +91,9 @@ public abstract class CurveGenerator
         return false;
     }
 
-    public static void CollTest(Vector3[] curve)
-    {
-        int curveIncrement = (curve.Length - 2) / 10;
-        if (curveIncrement < 1)
-            curveIncrement = 1;
-
-        //Start to the first one
-        Vector3 checkDirection1 = curve[1] - curve[0];
-        float checkLength1 = checkDirection1.magnitude;
-        checkDirection1.Normalize();
-        GameObject test1 = new GameObject();
-        CapsuleCollider coll1 = test1.AddComponent<CapsuleCollider>();
-        coll1.radius = 0.3f;
-        coll1.height = checkLength1;
-        coll1.transform.rotation = Quaternion.LookRotation(checkDirection1, Vector3.up);
-        coll1.transform.position = curve[0] + checkDirection1 * checkLength1 / 2;
-        coll1.direction = 2;
-        int lastChecked = 0;
-        for (int i = 1; i < curve.Length - 1 - curveIncrement; i+= curveIncrement)
-        {
-            Vector3 checkDirection = curve[i + curveIncrement] - curve[i];
-            float checkLength = checkDirection.magnitude;
-            checkDirection.Normalize();
-            GameObject test = new GameObject();
-            CapsuleCollider coll = test.AddComponent<CapsuleCollider>();
-            coll.radius = 0.3f;
-            coll.height = checkLength+2*coll.radius;
-            coll.transform.rotation = Quaternion.LookRotation(checkDirection, Vector3.up);
-            coll.transform.position = curve[i] + checkDirection * checkLength / 2;
-            coll.direction = 2;
-            lastChecked = i + curveIncrement;
-        }
-        
-    }
-
+    /// <summary>
+    /// Counts the number of collisions a curve has.
+    /// </summary>
     public static int CurveCollsionCount(Vector3[] curve, GameObject start, GameObject goal)
     {
         int collisionCount = 0;
@@ -130,16 +113,9 @@ public abstract class CurveGenerator
         return collisionCount;
     }
 
-    public static float MaximalCurveAngel(Vector3[] curve)
-    {
-        float maximumAngel = float.MinValue;
-        for (int i = 0; i <= curve.Length - 2; i++)
-        {
-            maximumAngel = Mathf.Max(maximumAngel, Vector3.Angle(curve[i],curve[i+1]));    
-        }
-        return maximumAngel;
-    }
-
+    /// <summary>
+    /// Calculates the length of  a curve.
+    /// </summary>
     public static float CurveLength(Vector3[] path)
     {
         float length = 0;
@@ -162,12 +138,17 @@ public abstract class CurveGenerator
         return curve;
     }
 
-    //Only things outside the boundingbox of start and goal are considered obstacles
+    /// <summary>
+    /// Checks, if a box alligned with the world axis collides with an obstacle
+    /// </summary>
     public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, GameObject startObject, GameObject goalObject)
     {
         return collisonWithObstacle(center, halfExtends, Quaternion.identity, startObject, goalObject);
     }
 
+    /// <summary>
+    /// Checks, if a box collides with an obstacle. If check end collision is true, a collision with start or goal doesn't count.
+    /// </summary>
     public static bool collisonWithObstacle(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111, bool checkEndCollision = true)
     {
         Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton, layermask);
@@ -184,8 +165,10 @@ public abstract class CurveGenerator
         return false;
     }
 
-
-    public static Collider[] GetCollidorsFromObstacles(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111, bool checkEndCollision = true)
+    /// <summary>
+    /// Gets all valid colliders in the box defined by its center, halfextend and orientation
+    /// </summary>
+    public static Collider[] GetCollidorsInBox(Vector3 center, Vector3 halfExtends, Quaternion orientaton, GameObject startObject, GameObject goalObject, int layermask = 0b11111111, bool checkEndCollision = true)
     {
         Collider[] potentialColliders = Physics.OverlapBox(center, halfExtends, orientaton, layermask);
         List<Collider> actuallColliders = new List<Collider>();
@@ -201,10 +184,13 @@ public abstract class CurveGenerator
         return actuallColliders.ToArray();
     }
 
+    /// <summary>
+    /// Checks if a collider isn't attached to: start or goal, the app bar or an avatar. If checkEndCollision is true it is also checked if it doesn't collide with the start or goal object.
+    /// </summary>
     static private bool IsValidCollider(Collider collider, GameObject startObject, GameObject goalObject, bool checkEndCollision = true)
     {
-        GameObject parent = collider.transform.root.gameObject;
-        if (parent != startObject.transform.root.gameObject && parent != goalObject.transform.root.gameObject && (parent.name.Length < 8 || parent.name.Substring(0,7) != "App Bar") && (parent.name.Length < 7 || parent.name.Substring(0,6) != "Avatar"))
+        GameObject root = collider.transform.root.gameObject;
+        if (root != startObject.transform.root.gameObject && root != goalObject.transform.root.gameObject && (root.name.Length < 8 || root.name.Substring(0,7) != "App Bar") && (root.name.Length < 7 || root.name.Substring(0,6) != "Avatar"))
         {
             bool collidesWithStart = false;
             bool collidesWithGoal = false;

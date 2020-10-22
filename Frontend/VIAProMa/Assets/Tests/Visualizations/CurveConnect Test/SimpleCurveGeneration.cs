@@ -132,7 +132,7 @@ public class SimpleCurveGerneration : CurveGenerator
             Vector3 centerAdjusted = new Vector3(start.x, lowerY, start.z) + directionAdjusted * distanceAdjusted / 2;
             Vector3 startBoxHalfExtend = new Vector3(1.1f * distanceToObstacle, (Math.Abs(start.y - goal.y) + standartHeight + distanceToObstacle * 3) / 2, distance / 2.1f);
 
-            Collider[] ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0),
+            Collider[] ReScancolliders = GetCollidorsInBox(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0),
                 startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
             SetMinMax(ReScancolliders, ref min, ref max);
             int oldLength = ReScancolliders.Length;
@@ -142,9 +142,9 @@ public class SimpleCurveGerneration : CurveGenerator
             {
                 newObstacles = false;
                 startBoxHalfExtend.y = (max.y + 3 * distanceToObstacle) / 2;
-                ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0),
+                ReScancolliders = GetCollidorsInBox(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0),
                     startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
-                ReScancolliders = GetCollidorsFromObstacles(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0), startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
+                ReScancolliders = GetCollidorsInBox(centerAdjusted + new Vector3(0, startBoxHalfExtend.y, 0), startBoxHalfExtend, Quaternion.LookRotation(directionAdjusted, Vector3.up), startObject, goalObject);
                 if (ReScancolliders.Length > oldLength)
                 {
                     SetMinMax(ReScancolliders, ref min, ref max);
@@ -165,7 +165,7 @@ public class SimpleCurveGerneration : CurveGenerator
             Vector3 startBoxHalfExtend = new Vector3(distanceToObstacle, (standartHeight + distanceToObstacle) / 2, distance / 2.1f);
 
             //Scan with the starting box
-            Collider[] ReScancolliders = GetCollidorsFromObstacles(center + up * startBoxHalfExtend.y, startBoxHalfExtend, Quaternion.LookRotation(direction, up), startObject, goalObject);
+            Collider[] ReScancolliders = GetCollidorsInBox(center + up * startBoxHalfExtend.y, startBoxHalfExtend, Quaternion.LookRotation(direction, up), startObject, goalObject);
             SetMinMax(ReScancolliders, ref min, ref max);
 
             //Rescan as long as new collider show up or the maximal number of scans is reached
@@ -180,7 +180,7 @@ public class SimpleCurveGerneration : CurveGenerator
                 halfExtend.y = standartHeight + distanceToObstacle;
                 halfExtend /= 2;
                 boxCenter.y = halfExtend.y;
-                ReScancolliders = GetCollidorsFromObstacles(boxCenter, halfExtend, Quaternion.identity, startObject, goalObject);
+                ReScancolliders = GetCollidorsInBox(boxCenter, halfExtend, Quaternion.identity, startObject, goalObject);
                 if (ReScancolliders.Length > oldLength)
                 {
                     SetMinMax(ReScancolliders, ref min, ref max);
