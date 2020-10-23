@@ -5,12 +5,10 @@ using UnityEngine;
 public class LineSerialiser : MonoBehaviour, ISerializable
 {
     ConnectionCurve curve;
-    ConnectionCurveManager controller;
 
     private void Awake()
     {
         curve = GetComponent<ConnectionCurve>();
-        controller = GameObject.FindObjectOfType<ConnectionCurveManager>();
     }
 
     public void Deserialize(SerializedObject serializedObject)
