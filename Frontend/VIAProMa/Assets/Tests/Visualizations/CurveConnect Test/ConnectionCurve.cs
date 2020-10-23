@@ -4,22 +4,26 @@ using UnityEngine;
 using Photon.Pun;
 using System.Threading.Tasks;
 
+/// <summary>
+/// An object to display and manage 3D curves.
+/// </summary>
 public class ConnectionCurve : MonoBehaviour
 {
 
     public GameObject start;
     public GameObject goal;
 
+    //Serializer IDs. When the curve was not instatiated through the save laod manager, they are always empty.
     public string startID = "";
     public string goalID = "";
 
-    public bool isTemp { get; set; }
+    //True, when the curve has another color than the default color
+    public bool isMarked { get; set; }
+
     public LineRenderer lineRenderer;
     ConnectionCurveManager lineController;
-    public bool isMarked { get; set; }
     Gradient defaultColor;
 
-    // Start is called before the first frame update
     void Start()
     {
         lineController = GameObject.FindObjectOfType<ConnectionCurveManager>();
@@ -44,11 +48,15 @@ public class ConnectionCurve : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resolves the saved serializer IDs into a start and goal object. It then creates a new curve with the correct objects as instantiation data and then destroyes itself.
+    /// </summary>
     private async void ResolveSerializerID()
     {
         GameObject startObject;
         GameObject goalObject;
         bool resolved = false;
+        //It can take some time, until the save load manager can resolve the IDs
         do
         {
             startObject = SaveLoadManager.Instance.GetRegisterdGameobject(startID);
@@ -70,9 +78,13 @@ public class ConnectionCurve : MonoBehaviour
         PhotonNetwork.Destroy(GetComponent<PhotonView>());
     } 
 
+    /// <summary>
+    /// Sets the color gradient of the line renderer to a gradient from color1Arr to color2Arr. Both need to be provided in the format: (r,g,b,a).
+    /// </summary>
     [PunRPC]
     public void SetColor(float[] color1Arr, float[] color2Arr)
     {
+        //Using the Color class for color1Arr and color2Arr is not possible, because Color is not supported by photon.
         Color color1 = new Color(color1Arr[0], color1Arr[1], color1Arr[2], color1Arr[3]);
         Color color2 = new Color(color2Arr[0], color2Arr[1], color2Arr[2], color2Arr[3]);
         float alpha = 1.0f;
@@ -84,12 +96,18 @@ public class ConnectionCurve : MonoBehaviour
         lineRenderer.colorGradient = gradient;
     }
 
+    /// <summary>
+    /// Sets the color gradient of the line renderer to the default color gradient. The default color gradient is the gradient, the curve was initalised with.
+    /// </summary>
     [PunRPC]
     public void ResetColor()
     {
         lineRenderer.colorGradient = defaultColor;
     }
 
+    /// <summary>
+    /// Sets the goal the object with the Photon ID viewID.
+    /// </summary>
     [PunRPC]
     public void SetGoal(int viewID)
     {
@@ -98,6 +116,7 @@ public class ConnectionCurve : MonoBehaviour
 
     private void OnDestroy()
     {
+        //Curves remove themself from the curve watch list
         if (lineController == null)
         {
             lineController = GameObject.FindObjectOfType<ConnectionCurveManager>();
