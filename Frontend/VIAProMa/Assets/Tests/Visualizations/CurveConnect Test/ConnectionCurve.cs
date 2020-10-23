@@ -21,12 +21,10 @@ public class ConnectionCurve : MonoBehaviour
     public bool isMarked { get; set; }
 
     public LineRenderer lineRenderer;
-    ConnectionCurveManager lineController;
     Gradient defaultColor;
 
     void Start()
     {
-        lineController = GameObject.FindObjectOfType<ConnectionCurveManager>();
         //When the IDs are empty, the curve was not instantiated through the SaveLoadManager
         if (startID == "" && goalID == "")
         {
@@ -40,7 +38,7 @@ public class ConnectionCurve : MonoBehaviour
                 goal = PhotonNetwork.GetPhotonView(goalID).transform.gameObject;
             }
             defaultColor = lineRenderer.colorGradient;
-            lineController.curves.Add(this);
+            ConnectionCurveManager.Instance.curves.Add(this);
         }
         else
         {
@@ -74,7 +72,7 @@ public class ConnectionCurve : MonoBehaviour
         object[] data = new object[2];
         data[0] = startObject.GetComponent<PhotonView>().ViewID;
         data[1] = goalObject.GetComponent<PhotonView>().ViewID;
-        ResourceManager.Instance.SceneNetworkInstantiate(lineController.curveConnectPrefab, Vector3.zero, Quaternion.identity, (x) => { }, data);
+        ResourceManager.Instance.SceneNetworkInstantiate(ConnectionCurveManager.Instance.curveConnectPrefab, Vector3.zero, Quaternion.identity, (x) => { }, data);
         PhotonNetwork.Destroy(GetComponent<PhotonView>());
     } 
 
@@ -117,10 +115,6 @@ public class ConnectionCurve : MonoBehaviour
     private void OnDestroy()
     {
         //Curves remove themself from the curve watch list
-        if (lineController == null)
-        {
-            lineController = GameObject.FindObjectOfType<ConnectionCurveManager>();
-        }
-        lineController?.curves.Remove(this);
+        ConnectionCurveManager.Instance?.curves.Remove(this);
     }
 }
