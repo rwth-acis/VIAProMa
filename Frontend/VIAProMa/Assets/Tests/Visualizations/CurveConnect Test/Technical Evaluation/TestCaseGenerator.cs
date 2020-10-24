@@ -4,6 +4,9 @@ using System;
 using System.Threading.Tasks;
 using static IntTriple;
 
+/// <summary>
+/// For test purposes
+/// </summary>
 public class TestCaseGenerator : MonoBehaviour
 {
     public GameObject startObject;
@@ -14,6 +17,9 @@ public class TestCaseGenerator : MonoBehaviour
         RunTests();
     }
 
+    /// <summary>
+    /// Geneates a random test case. Previous obstacles has to be the last gameobject list, that was returned by this function, in order to properly clean it up.
+    /// </summary>
     public static async Task<List<GameObject>> GenerateTestcase(GameObject start, GameObject goal, float distance, int obstacleCount, List<GameObject> previousObstacles)
     {
         try
@@ -49,6 +55,9 @@ public class TestCaseGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Calculates a radom placement around start in the give distance.
+    /// </summary>
     static Vector3 PlaceRandom(Vector3 start, float distance, System.Random rand)
     {
         Vector3 direction = new Vector3(1, 0, 0);
@@ -58,6 +67,9 @@ public class TestCaseGenerator : MonoBehaviour
         return start + direction * distance;
     }
 
+    /// <summary>
+    /// Generates 240 test scenarios and measures average calculation time, path difference, path smoothnes and collisions.
+    /// </summary>
     async void RunTests()
     {
         try
@@ -128,10 +140,14 @@ public class TestCaseGenerator : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e.Message);
             throw e;
         }      
     }
 
+    /// <summary>
+    /// Wait, until the exact curve was calcualted with the joined curve genration or until 10 frames elapsed.
+    /// </summary>
     async Task WaitForCurve(ConnectionCurve curve)
     {
         try
@@ -143,6 +159,7 @@ public class TestCaseGenerator : MonoBehaviour
         }
         catch (Exception e)
         {
+            Debug.LogError(e.Message);
             throw e;
         }
     }
