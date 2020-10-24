@@ -15,11 +15,10 @@ public class TaskStarter : MonoBehaviour
     /// </summary>
     public void StartTask()
     {
-        ConnectionCurveManager controller = GameObject.FindObjectOfType<ConnectionCurveManager>();
-        controller.DeleteAllCurves();
+        ConnectionCurveManager.Instance.DeleteAllCurves();
         for (int i = 0; i < startObjects.Count; i++)
         {
-            controller.CreateConnectionCurveScene(startObjects[i],goalObjects[i]);
+            ConnectionCurveManager.Instance.CreateConnectionCurveScene(startObjects[i],goalObjects[i]);
         }
     }
 }
