@@ -31,7 +31,7 @@ public class AStar : GridSearch
             {
                 List<T> optimalPath = null;
                 if (calculatePath)
-                    optimalPath = reconstruct_path<T>(cameFrom, current);
+                    optimalPath = ReconstructPath<T>(cameFrom, current);
 
                 return new SearchResult<T>(optimalPath, gScore[current]);
             }
@@ -110,7 +110,7 @@ public class AStar : GridSearch
             {
                 List<T> optimalPath = null;
                 if (calculatePath)
-                    optimalPath = reconstruct_path<T>(cameFrom, current);
+                    optimalPath = ReconstructPath<T>(cameFrom, current);
 
                 return new SearchResult<T>(optimalPath, gScore[current]);
             }
@@ -159,7 +159,7 @@ public class AStar : GridSearch
     /// <summary>
     /// Generates the path from cameFrom dictonary and the last visited node.
     /// </summary>
-    private static List<T> reconstruct_path<T>(Dictionary<T, T> cameFrom, T current)
+    private static List<T> ReconstructPath<T>(Dictionary<T, T> cameFrom, T current)
     {
         List<T> totalPath = new List<T>();
         totalPath.Add(current);
