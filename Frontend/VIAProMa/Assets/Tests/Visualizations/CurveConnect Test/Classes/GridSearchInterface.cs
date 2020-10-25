@@ -3,8 +3,14 @@ using UnityEngine;
 using static IntTriple;
 using System;
 
+/// <summary>
+/// Provides methods for classes that search pathes in the continuous world by using a 3D grid.
+/// </summary>
 public abstract class GridSearch : CurveGenerator
 {
+    /// <summary>
+    /// The result of a grid search operation. Contains the path and the path length.
+    /// </summary>
     public struct GridSearchResult
     {
         public List<Vector3> path { get; set; }
@@ -17,6 +23,9 @@ public abstract class GridSearch : CurveGenerator
         }
     }
 
+    /// <summary>
+    /// The result of a graph search operation. Contains the path and the path length.
+    /// </summary>
     public struct SearchResult<T>
     {
         public List<T> path { get; set; }
@@ -29,15 +38,14 @@ public abstract class GridSearch : CurveGenerator
         }
     }
 
-    //gets the neighbors of a node by projecting a cube with the length stepSize  to every side and then checks for collision.
+    /// <summary>
+    /// Generates a function that only takes a cell and then gets the neighbors of it by projecting a cube with the length stepSize to every side and then checks for collisions.
+    /// </summary>
     public static Func<IntTriple, List<IntTriple>> GetNeighborsGeneratorGrid(float stepSize, GameObject startObject, GameObject goalObject)
     {
         List<IntTriple> GetNeighbors(IntTriple node)
         {
-            //TODO map to the plane between start and goal
             List<IntTriple> neighbors = new List<IntTriple>();
-
-
 
             for (int x = -1; x <= 1; x += 1)
             {
@@ -63,6 +71,9 @@ public abstract class GridSearch : CurveGenerator
         return GetNeighbors;
     }
 
+    /// <summary>
+    /// Generates a heuristic function for the search on a grid with the cell size stepSize.
+    /// </summary>
     public static Func<IntTriple, float> HeuristicGeneratorGrid(Vector3 goal, float stepSize)
     {
         float Heuristic(IntTriple cell)
@@ -72,6 +83,9 @@ public abstract class GridSearch : CurveGenerator
         return Heuristic;
     }
 
+    /// <summary>
+    /// Generates a function that calculates the cost between two adjacent cells.
+    /// </summary>
     public static Func<IntTriple, IntTriple, float> CostsBetweenGeneratorGrid(float stepSize)
     {
         float CostsBetween(IntTriple cell1, IntTriple cell2)
