@@ -118,7 +118,7 @@ public class AppBarStateController : MonoBehaviour
     }
 
     /// <summary>
-    /// Is executed on the app bars, where the connect button were NOT pressed
+    /// Is executed on the app bars, where the connect button was NOT pressed
     /// </summary>
     public void Connect()
     {
