@@ -6,7 +6,7 @@ using Priority_Queue;
 using System.Threading.Tasks;
 
 /// <summary>
-/// A class for AStar search that is independent from the graph iplementation. Contains an implementation specialised for grid search.
+/// A class for AStar search that is independent from the graph implementation. Contains an implementation specialised for grid search.
 /// </summary>
 public class AStar : GridSearch
 {
@@ -157,7 +157,7 @@ public class AStar : GridSearch
     }
 
     /// <summary>
-    /// Generates the path from cameFrom Dictonary and the last visited node.
+    /// Generates the path from cameFrom dictonary and the last visited node.
     /// </summary>
     private static List<T> reconstruct_path<T>(Dictionary<T, T> cameFrom, T current)
     {
