@@ -59,7 +59,7 @@ public class AppBarActions : MonoBehaviour
         }
 
         //Remove the curves connected with the object
-        LineController.Instance.DeleteCurves(appBarPlacer.TargetBoundingBox.Target);
+        ConnectionCurveManager.Instance.DeleteAllCurvesFromObject(appBarPlacer.TargetBoundingBox.Target);
 
         // finally also destroy the app bar
         Destroy(gameObject);
@@ -90,7 +90,7 @@ public class AppBarActions : MonoBehaviour
     /// </summary>
     public void Connect()
     {
-        LineController.Instance.ChangeState(LineController.State.connecting, appBarPlacer.TargetBoundingBox.Target, gameObject.GetComponent<AppBarStateController>());
+        ConnectionCurveManager.Instance.ChangeState(ConnectionCurveManager.State.connecting, appBarPlacer.TargetBoundingBox.Target, gameObject.GetComponent<AppBarStateController>());
     }
 
     /// <summary>
@@ -98,6 +98,6 @@ public class AppBarActions : MonoBehaviour
     /// </summary>
     public void Disconnect()
     {
-        LineController.Instance.ChangeState(LineController.State.disconnecting);
+        ConnectionCurveManager.Instance.ChangeState(ConnectionCurveManager.State.disconnecting);
     }
 }
