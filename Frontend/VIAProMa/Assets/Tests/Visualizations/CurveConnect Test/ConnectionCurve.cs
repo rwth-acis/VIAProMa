@@ -25,12 +25,12 @@ public class ConnectionCurve : MonoBehaviour
 
     void Start()
     {
-        //When the IDs are empty, the curve was not instantiated through the SaveLoadManager
+        //When the IDs are empty, the curve was not instantiated through the SaveLoadManager.
         if (startID == "" && goalID == "")
         {
             var view = GetComponent<PhotonView>();
-            //When the client is in a room and the instatiation data is not null, the curve was instantiated with the Photon Instantiation and the instantiation data has to be resolved
-            if (PhotonNetwork.InRoom && view.InstantiationData != null)
+            //When the client is in a room, the instatiation data is not null and start and goal is not set yet, the curve was instantiated with the Photon Instantiation and the instantiation data has to be resolved
+            if (PhotonNetwork.InRoom && view.InstantiationData != null && start == null && goal == null)
             {
                 int startID = (int)view.InstantiationData[0];
                 int goalID = (int)view.InstantiationData[1];

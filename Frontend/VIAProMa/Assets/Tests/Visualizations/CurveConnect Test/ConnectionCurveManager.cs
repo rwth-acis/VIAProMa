@@ -40,7 +40,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     ConnectionCurve tempCurve;
     DateTime clickTimeStamp;
 
-
+    List<ConnectionCurve> test;
 
 
     GameObject tempGoal = null;
@@ -48,7 +48,6 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
 
     void Start()
     {
-        curves = new List<ConnectionCurve>();
         clickTimeStamp = DateTime.Now;
         JoinedCurveGeneration.UpdateAsyc(curves,stepSize);
     }
