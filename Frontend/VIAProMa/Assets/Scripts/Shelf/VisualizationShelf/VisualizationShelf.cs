@@ -11,6 +11,7 @@ public class VisualizationShelf : Shelf
     public float boardLength = 0.8f;
 
     [SerializeField] private GridObjectCollection shelfGrid;
+    [SerializeField] private GameObject boundingBox;
 
     private List<GameObject> widgetInstances;    
 
@@ -31,6 +32,7 @@ public class VisualizationShelf : Shelf
         }
 
         DisplayWidgets();
+        boundingBox.SetActive(false);
     }
 
     private void DisplayWidgets()
@@ -69,5 +71,18 @@ public class VisualizationShelf : Shelf
     public void Close()
     {
         gameObject.SetActive(false);
+    }
+
+    public void MoveShelf()
+    {
+        bool isActive = boundingBox.activeSelf;
+        if (isActive)
+        {
+            boundingBox.SetActive(false);
+        }
+        else
+        {
+            boundingBox.SetActive(true);
+        }
     }
 }
