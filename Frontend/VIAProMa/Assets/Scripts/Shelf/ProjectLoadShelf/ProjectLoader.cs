@@ -10,6 +10,8 @@ public class ProjectLoader : Shelf, ILoadShelf
 
     [SerializeField] int filesPerBoard = 3;
 
+    [SerializeField] private GameObject boundingBox;
+
     private string[] projects;
     private List<File> files;
     private List<Interactable> interactables;
@@ -32,6 +34,7 @@ public class ProjectLoader : Shelf, ILoadShelf
     private void Start()
     {
         LoadContent();
+        boundingBox.SetActive(false);
     }
 
     public async void LoadContent()
@@ -100,5 +103,18 @@ public class ProjectLoader : Shelf, ILoadShelf
     public void Close()
     {
         gameObject.SetActive(false);
+    }
+
+    public void MoveShelf()
+    {
+        bool isActive = boundingBox.activeSelf;
+        if (isActive)
+        {
+            boundingBox.SetActive(false);
+        }
+        else
+        {
+            boundingBox.SetActive(true);
+        }
     }
 }

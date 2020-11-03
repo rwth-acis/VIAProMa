@@ -10,7 +10,7 @@ public class MainMenuActions : MonoBehaviour
 
     public void ToggleMicrophone()
     {
-        bool microphoneOn = (microphoneButton.GetDimensionIndex() == 1);
+        bool microphoneOn = (microphoneButton.CurrentDimension == 1);
         PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled = microphoneOn;
     }
 }

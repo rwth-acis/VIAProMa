@@ -21,7 +21,12 @@ public static class GitHub
     /// <returns>An array of issues in the repository; contained in an APIResult object</returns>
     public static async Task<ApiResult<Issue[]>> GetIssuesInRepository(string owner, string repositoryName, int page, int itemsPerPage)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues?page=" + page + "&per_page=" + itemsPerPage);
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues?page=" + page + "&per_page=" + itemsPerPage,
+            null,
+            -1,
+            null,
+            true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -53,7 +58,12 @@ public static class GitHub
             return new ApiResult<Issue>(cached);
         }
 
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repositories/" + repositoryId + "/issues/" + issueNumber);
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repositories/" + repositoryId + "/issues/" + issueNumber,
+            null,
+            -1,
+            null,
+            true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {
@@ -70,7 +80,12 @@ public static class GitHub
 
     public static async Task<ApiResult<PunchCardEntry[]>> GetGitHubPunchCard(string owner, string repository)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "githubPunchCard/" + owner + "/" + repository);
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + "githubPunchCard/" + owner + "/" + repository,
+            null,
+            -1,
+            null,
+            true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {

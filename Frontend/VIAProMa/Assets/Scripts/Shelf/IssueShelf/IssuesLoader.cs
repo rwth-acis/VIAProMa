@@ -10,6 +10,7 @@ public class IssuesLoader : Shelf, ILoadShelf
     [Header("References")]
     [SerializeField] private ShelfConfigurationMenu configurationMenu;
     [SerializeField] private IssuesMultiListView issuesMultiListView;
+    [SerializeField] private GameObject boundingBox;
 
     public MessageBadge MessageBadge { get => messageBadge; }
 
@@ -53,6 +54,7 @@ public class IssuesLoader : Shelf, ILoadShelf
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchField));
         }
         upButton.Enabled = false;
+        boundingBox.SetActive(false);
     }
 
     private void OnEnable()
@@ -160,6 +162,19 @@ public class IssuesLoader : Shelf, ILoadShelf
         {
             List<Issue> items = new List<Issue>(apiResult.Value);
             issuesMultiListView.Items = items;
+        }
+    }
+
+    public void MoveShelf()
+    {
+        bool isActive = boundingBox.activeSelf;
+        if (isActive)
+        {
+            boundingBox.SetActive(false);
+        }
+        else
+        {
+            boundingBox.SetActive(true);
         }
     }
 }
