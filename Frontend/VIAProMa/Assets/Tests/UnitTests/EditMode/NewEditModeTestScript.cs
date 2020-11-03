@@ -4,25 +4,35 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
+using System.Threading.Tasks;
+
+
 namespace Tests
 {
     public class NewEditModeTestScript
     {
         // A Test behaves as an ordinary method
         [Test]
-        public void NewEditModeTestScriptSimplePasses()
+        public async void backendConnectorSaveLoadTest()
         {
-            // Use the Assert class to test conditions
-        }
+            // Arrange
+            string saveContent = "Hello, world!";
+            string saveName = "BackendConnectorSaveLoadTest";
+            string expectedString = saveContent;
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator NewEditModeTestScriptWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
+            // Act + Assert
+
+            bool saveResult = await BackendConnector.Save(saveName, saveContent);
+            if (!saveResult)
+            {
+                TestContext.WriteLine("Save error ocurred.");
+                Assert.Fail();
+            }
+            else
+            {
+                ApiResult<string> actualString = await BackendConnector.Load(saveName);
+                Assert.AreEqual(expectedString, actualString);
+            }
         }
     }
 }

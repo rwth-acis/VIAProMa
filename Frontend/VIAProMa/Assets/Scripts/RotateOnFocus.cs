@@ -10,7 +10,7 @@ public class RotateOnFocus : BaseFocusHandler
 
     public float damping = 10;
 
-    private Vector3 targetRotation;
+    public Vector3 targetRotation { get; private set; }
 
     private void Awake()
     {
