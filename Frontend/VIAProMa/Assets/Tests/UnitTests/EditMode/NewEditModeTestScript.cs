@@ -13,7 +13,7 @@ namespace Tests
     {
         // A Test behaves as an ordinary method
         [Test]
-        public async void backendConnectorSaveLoadTest()
+        public async void BackendConnector_Save_Load_test()
         {
             // Arrange
             string saveContent = "Hello, world!";
@@ -33,6 +33,20 @@ namespace Tests
                 ApiResult<string> actualString = await BackendConnector.Load(saveName);
                 Assert.AreEqual(expectedString, actualString);
             }
+        }
+
+        [Test]
+        public async void NetworkedStringManager_StringToId_emptyStringTest()
+        {
+            // Arrange
+            string emptyString = "";
+            short expected = -1;
+
+            // Act
+            short actual = await NetworkedStringManager.StringToId(emptyString);
+            
+            // Assert
+            Assert.AreEqual(expected, actual);
         }
     }
 }
