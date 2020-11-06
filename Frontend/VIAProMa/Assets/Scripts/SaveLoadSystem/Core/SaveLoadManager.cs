@@ -157,18 +157,20 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
             }
             else // the object does not yet exist in the scene => instantiate it
             {
-                GameObject instantiated = ResourceManager.Instance.NetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity);
-                Serializer serializer = instantiated?.GetComponent<Serializer>();
-                if (serializer == null)
+                ResourceManager.Instance.SceneNetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity, (instantiated) => 
                 {
-                    Debug.LogError("Prefab " + serializedObjects[i].PrefabName + " is loaded but does not have a serializer");
-                    PhotonNetwork.Destroy(instantiated);
-                    continue;
-                }
-                else
-                {
-                    serializer.Deserialize(serializedObjects[i]);
-                }
+                    Serializer serializer = instantiated?.GetComponent<Serializer>();
+                    if (serializer == null)
+                    {
+                        Debug.LogError("Prefab " + serializedObjects[i].PrefabName + " is loaded but does not have a serializer");
+                        PhotonNetwork.Destroy(instantiated);
+                    }
+                    else
+                    {
+                        serializer.Deserialize(serializedObjects[i]);
+                    }
+                });
+                
             }
         }
 
