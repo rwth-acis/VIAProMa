@@ -135,6 +135,58 @@ namespace Tests
 
 
 
+
+        enum Season
+        {
+            Spring,
+            [System.ComponentModel.Description("My favorite season!")] Summer,
+            Autumn,
+            Winter
+        }
+
+        [Test]
+        public void EnumExtensions_GetDescription_Text()
+        {
+            // Arrange
+            string expected = "My favorite season!";
+
+            // Act
+            string result = EnumExtensions.GetDescription(Season.Summer);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void EnumExtensions_GetDescription_Empty()
+        {
+            // Arrange
+            string expected = "";
+
+            // Act
+            string result = EnumExtensions.GetDescription(Season.Winter);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
+
+
+
+
+       /*[Test]
+        public void JsonArrayUtility_FromJson_Empty()
+        {
+            // Arrange
+            string json = "";
+            string[] expected = { "" };
+
+            // Act
+            string[] result = JsonArrayUtility.FromJson<string>(json);
+            Debug.Log(result);
+
+            // Assert
+            Assert.AreEqual(expected, result);
+        }*/
         
     }
 }
