@@ -29,7 +29,12 @@ public static class NetworkedStringManager
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Content-Type", "text/plain"); // overwrite the content type
         headers.Add("Accept", "text/plain"); // overwrite the accept type
-        Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint, text, headers);
+        Response resp = await Rest.PostAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint,
+            text,
+            headers,
+            -1,
+            true);
         if (resp.Successful)
         {
             return short.Parse(resp.ResponseBody);
@@ -53,7 +58,12 @@ public static class NetworkedStringManager
             return "";
         }
 
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id);
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id,
+            null,
+            -1,
+            null,
+            true);
         if (resp.Successful)
         {
             return resp.ResponseBody;

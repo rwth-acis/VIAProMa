@@ -34,7 +34,13 @@ public static class BackendConnector
     /// <returns>The save data</returns>
     public static async Task<ApiResult<string>> Load(string saveName)
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName);
+        Response resp = 
+            await Rest.GetAsync(
+                ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName,
+                null,
+                -1,
+                null,
+                true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (resp.Successful)
         {
@@ -76,7 +82,12 @@ public static class BackendConnector
     /// <returns></returns>
     public static async Task<ApiResult<string[]>> GetProjects()
     {
-        Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData");
+        Response resp = await Rest.GetAsync(
+            ConnectionManager.Instance.BackendAPIBaseURL + "saveData",
+            null,
+            -1,
+            null,
+            true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         if (!resp.Successful)
         {

@@ -19,12 +19,12 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
     public GameObject copyObject;
 
     private GameObject copyInstance;
-    private ManipulationHandler handlerOnCopy;
+    private ObjectManipulator handlerOnCopy;
 
     private IssueDataDisplay localDataDisplay;
 
     /// <summary>
-    /// Sets the component oup
+    /// Sets the component up
     /// </summary>
     private void Awake()
     {
@@ -73,13 +73,13 @@ public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
                 (obj) =>
                 {
                     copyInstance = obj;
-                    handlerOnCopy = copyInstance?.GetComponentInChildren<ManipulationHandler>();
+                    handlerOnCopy = copyInstance?.GetComponentInChildren<ObjectManipulator>();
                     IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
                     if (handlerOnCopy == null || remoteDataDisplay == null)
                     {
                         if (handlerOnCopy == null)
                         {
-                            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ManipulationHandler), copyInstance);
+                            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ObjectManipulator), copyInstance);
                         }
                         if (remoteDataDisplay == null)
                         {
