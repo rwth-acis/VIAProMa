@@ -59,10 +59,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         //Check, if there is a valid pointer (the dot at the end of the ray from thte input source) in the scene.
         //For some ungodly reasons objects from the mrtk behave strange when they should be null. They can then still be dereferenced and != null sometimes still yields true, but there content is useless.
         //But ToString then returns null.
-        if (mainPointer != null)
-        {
-            pointerValid = mainPointer.ToString() != "null";
-        }
+        pointerValid = mainPointer != null;
         if (pointerValid)
         {
             thisFrameClicked = ((AnimatedCursor)mainPointer.BaseCursor).CursorState == CursorStateEnum.Select && (DateTime.Now - clickTimeStamp).TotalMilliseconds > 30;
