@@ -28,8 +28,9 @@ public class ScatterOrganizer : MonoBehaviour
 
     public void Newspace()
     {
-        //Vector3 pos = new Vector3(0.78f, 2.3f, -0.5f);
-        Vector3 pos = new Vector3(0f, 1.5f, -0.5f);
+        //Vector3 pos = new Vector3(0f, 1.5f, -0.5f);
+        Vector3 pos = ScatterList.transform.position;
+        pos.y += 0.8f;
         int num = ScatterList.transform.childCount;
         pos.y += num*0.8f;
 
@@ -42,8 +43,8 @@ public class ScatterOrganizer : MonoBehaviour
 
     public void Compress()
     {
-        //Vector3 pos = new Vector3(0.78f, 1.5f, -0.5f);
-        Vector3 pos = new Vector3(0f, 0.7f, -0.5f);
+        //Vector3 pos = new Vector3(0f, 0.7f, -0.5f);
+        Vector3 pos = ScatterList.transform.position;
         int num = ScatterList.transform.childCount;
         pos.y += num*0.8f;
 

@@ -28,8 +28,9 @@ public class BarchartOrganizer : MonoBehaviour
 
     public void Newspace()
     {
-        //Vector3 pos = new Vector3(0.78f, 2.3f, -0.5f);
-        Vector3 pos = new Vector3(0.78f, 1.5f, -0.5f);
+        //Vector3 pos = new Vector3(0.78f, 1.5f, -0.5f);
+        Vector3 pos = BarchartList.transform.position;
+        pos.y += 0.8f;
         int num = BarchartList.transform.childCount;
         pos.y += num*0.8f;
 
@@ -42,8 +43,8 @@ public class BarchartOrganizer : MonoBehaviour
 
     public void Compress()
     {
-        //Vector3 pos = new Vector3(0.78f, 1.5f, -0.5f);
-        Vector3 pos = new Vector3(0.78f, 0.7f, -0.5f);
+        //Vector3 pos = new Vector3(0.78f, 0.7f, -0.5f);
+        Vector3 pos = BarchartList.transform.position;
         int num = BarchartList.transform.childCount;
         pos.y += num*0.8f;
 

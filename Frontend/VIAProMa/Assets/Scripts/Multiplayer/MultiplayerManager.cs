@@ -41,7 +41,8 @@ public class MultiplayerManager : MonoBehaviourPunCallbacks
         {
             Debug.Log("create table");
             Vector3 pos = Vector3.zero;
-            pos.y = 0f;
+            pos.y = -1.5f;
+            pos.z = 5f;
             Table = PhotonNetwork.InstantiateSceneObject("Table", pos, TablePrefab.transform.rotation, 0, null);
             //ResourceManager.Instance.NetworkInstantiate(TablePrefab, pos, TablePrefab.transform.rotation);
         }

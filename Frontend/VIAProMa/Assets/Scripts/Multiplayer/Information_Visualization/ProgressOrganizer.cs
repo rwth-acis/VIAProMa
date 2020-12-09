@@ -28,7 +28,9 @@ public class ProgressOrganizer : MonoBehaviour
 
     public void Newspace()
     {
-        Vector3 pos = new Vector3(-0.78f, 1.5f, -0.5f);
+        //Vector3 pos = new Vector3(-0.78f, 1.5f, -0.5f);
+        Vector3 pos = ProgressList.transform.position;
+        pos.y += 0.8f;
         int num = ProgressList.transform.childCount;
         pos.y += num*0.8f;
 
@@ -41,7 +43,8 @@ public class ProgressOrganizer : MonoBehaviour
 
     public void Compress()
     {
-        Vector3 pos = new Vector3(-0.78f, 0.7f, -0.5f);
+        //Vector3 pos = new Vector3(-0.78f, 0.7f, -0.5f);
+        Vector3 pos = ProgressList.transform.position;
         int num = ProgressList.transform.childCount;
         pos.y += num*0.8f;
 
