@@ -76,12 +76,18 @@ public class AppBarStateController : MonoBehaviour
         else if (state == AppBarState.CONNECTING)
         {
             boundingBoxStateController.BoundingBoxActive = true;
-            boundingBoxStateController.manipulationHandler.enabled = false;
+            if (boundingBoxStateController.manipulationHandler != null)
+            {
+                boundingBoxStateController.manipulationHandler.enabled = false;
+            }
         }
         else
         {
             boundingBoxStateController.BoundingBoxActive = false;
-            boundingBoxStateController.manipulationHandler.enabled = true;
+            if (boundingBoxStateController.manipulationHandler != null)
+            {
+                boundingBoxStateController.manipulationHandler.enabled = true;
+            }
         }
     }
 
