@@ -757,7 +757,7 @@ struct SimpleCurveGenerationJob : IJobParallelFor
     [ReadOnly]
     public NativeArray<Vector3> goal;
 
-    //I am truly sorry for this, but Unity 2018.4.13f1 doesn't allow any form of sane managment of two dimensional native data. If the unity Version ever gets Updated, this can all be replaced by a single native hashmap
+    //I am truly sorry for this, but Unity 2018.4 doesn't allow any form of sane managment of two dimensional native data. If the unity Version ever gets Updated, this can all be replaced by a single native hashmap
     
     public NativeArray<Vector3> curvePoint0;
     public NativeArray<Vector3> curvePoint1;
