@@ -1,13 +1,25 @@
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Net;
 
 [Serializable]
 public class LearningLocker: MonoBehaviour
-{   
+{
+
+    private TextAsset textFile;
+    private string pp;
+
+    private void Awake()
+    {
+        textFile = (TextAsset)Resources.Load("learningRequest");
+        pp = textFile.text;
+    }
+
     //public TextAsset jsonFile;
     public async Task<IInformation> GetInformation(string name)
     {
@@ -23,7 +35,6 @@ public class LearningLocker: MonoBehaviour
         }
         else
         {
-            //Debug.Log(resp.ResponseBody.GetType());
             Debug.Log(resp.ResponseBody);
             string res = JsonArrayUtility.EncapsulateInWrapper(resp.ResponseBody);
 
@@ -35,9 +46,10 @@ public class LearningLocker: MonoBehaviour
 
     private string GetPipeline(string name)
     {
-        string action = "https://w3id.org/xapi/dod-isd/verbs/completed";
-        //string pipeline = $"pipeline=%5B%7B%0A%09%09%22$match%22:%20%7B%0A%09%09%09%22statement.verb.id%22:%20%22http://activitystrea.ms/schema/1.0/complete%22,%0A%09%09%09%22statement.actor.name%22:%20%22{System.Uri.EscapeDataString(name)}%22%0A%09%09%7D%0A%09%7D,%0A%09%7B%0A%09%09%22$project%22:%20%7B%0A%09%09%09%22userName%22:%20%22$statement.actor.name%22,%0A%09%09%09%22email%22:%20%22$statement.actor.account.name%22,%0A%09%09%09%22grade%22:%20%22$statement.result.score.scaled%22%0A%09%09%7D%0A%09%7D,%0A%09%7B%0A%09%09%22$group%22:%20%7B%0A%09%09%09%22_id%22:%20%7B%0A%09%09%09%09%22name%22:%20%22$userName%22,%0A%09%09%09%09%22email%22:%20%22$email%22%0A%09%09%09%7D,%0A%09%09%09%22average_score%22:%20%7B%0A%09%09%09%09%22$avg%22:%20%22$grade%22%0A%09%09%09%7D,%0A%09%09%09%22assignments%22:%20%7B%0A%09%09%09%09%22$push%22:%20%22$grade%22%0A%09%09%09%7D%0A%0A%09%09%7D%0A%09%7D%0A%5D";
-        string pipeline = $"pipeline=%5B%7B%0A%09%09%22$match%22:%20%7B%0A%09%09%09%22statement.verb.id%22:%20%22{System.Uri.EscapeDataString(action)}%22,%0A%09%09%09%22statement.actor.name%22:%20%22{System.Uri.EscapeDataString(name)}%22%0A%09%09%7D%0A%09%7D,%0A%09%7B%0A%09%09%22$project%22:%20%7B%0A%09%09%09%22userName%22:%20%22$statement.actor.name%22,%0A%09%09%09%22email%22:%20%22$statement.actor.account.name%22,%0A%09%09%09%22grade%22:%20%22$statement.result.score.scaled%22%0A%09%09%7D%0A%09%7D,%0A%09%7B%0A%09%09%22$group%22:%20%7B%0A%09%09%09%22_id%22:%20%7B%0A%09%09%09%09%22name%22:%20%22$userName%22,%0A%09%09%09%09%22email%22:%20%22$email%22%0A%09%09%09%7D,%0A%09%09%09%22average_score%22:%20%7B%0A%09%09%09%09%22$avg%22:%20%22$grade%22%0A%09%09%09%7D,%0A%09%09%09%22assignments%22:%20%7B%0A%09%09%09%09%22$push%22:%20%22$grade%22%0A%09%09%09%7D%0A%0A%09%09%7D%0A%09%7D%0A%5D";
+        Debug.Log(pp);
+        pp = pp.Replace("___", name);
+
+        string pipeline = "pipeline=" + WebUtility.UrlEncode(pp);
 
         return pipeline;
     }
