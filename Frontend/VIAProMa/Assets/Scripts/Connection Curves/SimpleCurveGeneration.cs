@@ -820,6 +820,8 @@ struct SimpleCurveGenerationJob : IJobParallelFor
     public NativeArray<Vector3> curvePoint58;
     public NativeArray<Vector3> curvePoint59;
 
+    public NativeArray<byte> isValid;
+
     public void Execute(int index)
     {
         float standartHeight = 0.5f;
@@ -862,70 +864,82 @@ struct SimpleCurveGenerationJob : IJobParallelFor
 
     private void SetResult(Vector3[] curve, int index)
     {
-        curvePoint0[index] = curve[0];
-        curvePoint1[index] = curve[1];
-        curvePoint2[index] = curve[2];
-        curvePoint3[index] = curve[3];
-        curvePoint4[index] = curve[4];
-        curvePoint5[index] = curve[5];
-        curvePoint6[index] = curve[6];
-        curvePoint7[index] = curve[7];
-        curvePoint8[index] = curve[8];
-        curvePoint9[index] = curve[9];
-        curvePoint10[index] = curve[10];
-        curvePoint11[index] = curve[11];
-        curvePoint12[index] = curve[12];
-        curvePoint13[index] = curve[13];
-        curvePoint14[index] = curve[14];
-        curvePoint15[index] = curve[15];
-        curvePoint16[index] = curve[16];
-        curvePoint17[index] = curve[17];
-        curvePoint18[index] = curve[18];
-        curvePoint19[index] = curve[19];
-        curvePoint20[index] = curve[20];
-        curvePoint21[index] = curve[21];
-        curvePoint22[index] = curve[22];
-        curvePoint23[index] = curve[23];
-        curvePoint24[index] = curve[24];
-        curvePoint25[index] = curve[25];
-        curvePoint26[index] = curve[26];
-        curvePoint27[index] = curve[27];
-        curvePoint28[index] = curve[28];
-        curvePoint29[index] = curve[29];
-        curvePoint30[index] = curve[30];
-        curvePoint31[index] = curve[31];
-        curvePoint32[index] = curve[32];
-        curvePoint33[index] = curve[33];
-        curvePoint34[index] = curve[34];
-        curvePoint35[index] = curve[35];
-        curvePoint36[index] = curve[36];
-        curvePoint37[index] = curve[37];
-        curvePoint38[index] = curve[38];
-        curvePoint39[index] = curve[39];
-        curvePoint40[index] = curve[40];
-        curvePoint41[index] = curve[41];
-        curvePoint42[index] = curve[42];
-        curvePoint43[index] = curve[43];
-        curvePoint44[index] = curve[44];
-        curvePoint45[index] = curve[45];
-        curvePoint46[index] = curve[46];
-        curvePoint47[index] = curve[47];
-        curvePoint48[index] = curve[48];
-        curvePoint49[index] = curve[49];
-        curvePoint50[index] = curve[50];
-        curvePoint51[index] = curve[51];
-        curvePoint52[index] = curve[52];
-        curvePoint53[index] = curve[53];
-        curvePoint54[index] = curve[54];
-        curvePoint55[index] = curve[55];
-        curvePoint56[index] = curve[56];
-        curvePoint57[index] = curve[57];
-        curvePoint58[index] = curve[58];
-        curvePoint59[index] = curve[59];
+        if (curve.Length == 60)
+        {
+            isValid[index] = 1;
+            curvePoint0[index] = curve[0];
+            curvePoint1[index] = curve[1];
+            curvePoint2[index] = curve[2];
+            curvePoint3[index] = curve[3];
+            curvePoint4[index] = curve[4];
+            curvePoint5[index] = curve[5];
+            curvePoint6[index] = curve[6];
+            curvePoint7[index] = curve[7];
+            curvePoint8[index] = curve[8];
+            curvePoint9[index] = curve[9];
+            curvePoint10[index] = curve[10];
+            curvePoint11[index] = curve[11];
+            curvePoint12[index] = curve[12];
+            curvePoint13[index] = curve[13];
+            curvePoint14[index] = curve[14];
+            curvePoint15[index] = curve[15];
+            curvePoint16[index] = curve[16];
+            curvePoint17[index] = curve[17];
+            curvePoint18[index] = curve[18];
+            curvePoint19[index] = curve[19];
+            curvePoint20[index] = curve[20];
+            curvePoint21[index] = curve[21];
+            curvePoint22[index] = curve[22];
+            curvePoint23[index] = curve[23];
+            curvePoint24[index] = curve[24];
+            curvePoint25[index] = curve[25];
+            curvePoint26[index] = curve[26];
+            curvePoint27[index] = curve[27];
+            curvePoint28[index] = curve[28];
+            curvePoint29[index] = curve[29];
+            curvePoint30[index] = curve[30];
+            curvePoint31[index] = curve[31];
+            curvePoint32[index] = curve[32];
+            curvePoint33[index] = curve[33];
+            curvePoint34[index] = curve[34];
+            curvePoint35[index] = curve[35];
+            curvePoint36[index] = curve[36];
+            curvePoint37[index] = curve[37];
+            curvePoint38[index] = curve[38];
+            curvePoint39[index] = curve[39];
+            curvePoint40[index] = curve[40];
+            curvePoint41[index] = curve[41];
+            curvePoint42[index] = curve[42];
+            curvePoint43[index] = curve[43];
+            curvePoint44[index] = curve[44];
+            curvePoint45[index] = curve[45];
+            curvePoint46[index] = curve[46];
+            curvePoint47[index] = curve[47];
+            curvePoint48[index] = curve[48];
+            curvePoint49[index] = curve[49];
+            curvePoint50[index] = curve[50];
+            curvePoint51[index] = curve[51];
+            curvePoint52[index] = curve[52];
+            curvePoint53[index] = curve[53];
+            curvePoint54[index] = curve[54];
+            curvePoint55[index] = curve[55];
+            curvePoint56[index] = curve[56];
+            curvePoint57[index] = curve[57];
+            curvePoint58[index] = curve[58];
+            curvePoint59[index] = curve[59];
+        }
+        else
+        {
+            isValid[index] = 0;
+        }
     }
 
     public Vector3[] ReadResult(int index)
     {
+        if ( isValid[index] == 0)
+        {
+            return null;
+        }
         Vector3[] curve = new Vector3[60];
         curve[0] = curvePoint0[index];
         curve[1] = curvePoint1[index];
@@ -1052,6 +1066,8 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curvePoint57 = new NativeArray<Vector3>(length, Allocator.TempJob);
         curvePoint58 = new NativeArray<Vector3>(length, Allocator.TempJob);
         curvePoint59 = new NativeArray<Vector3>(length, Allocator.TempJob);
+
+        isValid = new NativeArray<byte>(length, Allocator.TempJob);
     }
 
     public void DisposeArrays()
@@ -1116,5 +1132,10 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curvePoint57.Dispose();
         curvePoint58.Dispose();
         curvePoint59.Dispose();
+
+        isValid.Dispose();
+        //boxes.Dispose();
+        //start.Dispose();
+        //goal.Dispose();
     }
 }

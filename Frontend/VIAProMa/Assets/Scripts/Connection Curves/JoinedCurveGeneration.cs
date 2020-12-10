@@ -75,9 +75,9 @@ public class JoinedCurveGeneration // : MonoBehaviour
                         tasks.Add(JoinedCurve(curve,simpleCurve,stepSize), curve);
                     }
                 }
-                boxes.Dispose();
                 startArray.Dispose();
                 goalArray.Dispose();
+                boxes.Dispose();
                 jobData.DisposeArrays();
 
                 while (tasks.Count > 0)
@@ -98,8 +98,6 @@ public class JoinedCurveGeneration // : MonoBehaviour
         catch (Exception e)
         {
             UnityEngine.Debug.LogError(e.InnerException);
-            //Try to recover
-            //UpdateAsyc(curves, stepSize);
         }
     }
 
@@ -126,7 +124,7 @@ public class JoinedCurveGeneration // : MonoBehaviour
         try
         {
             //Check, if the simple curve is collision free
-            if (!CurveGenerator.CurveCollsionCheck(simpleCurve, connectionCurve.start, connectionCurve.goal))
+            if (simpleCurve != null && !CurveGenerator.CurveCollsionCheck(simpleCurve, connectionCurve.start, connectionCurve.goal))
             {
                 return simpleCurve;
             }
