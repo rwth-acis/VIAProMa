@@ -7,7 +7,6 @@ using Photon.Pun;
 using Photon.Pun.UtilityScripts;
 using System.Threading.Tasks;
 using HoloToolkit.Unity;
-using Unity.Collections;
 
 /// <summary>
 /// Manages the connect and disconnect process of Connection Curves and provides functions to manage curves.
