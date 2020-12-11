@@ -14,6 +14,18 @@ public class JoinedCurveGeneration // : MonoBehaviour
     public static async void UpdateAsyc(List<ConnectionCurve> curves, float stepSize)
     {
         int segmentCount = 60;
+        SimpleCurveGenerationJob jobData = new SimpleCurveGenerationJob();
+        //These arrays need to be allocated persitent, because allocating and disposing them each frame needs way too long.
+        int curveCountEstimate = 10;
+        NativeArray<Vector3> startArray = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
+        NativeArray<Vector3> goalArray = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
+        NativeArray<BoundingBoxes> boxes = new NativeArray<BoundingBoxes>(curveCountEstimate, Allocator.Persistent);
+
+        jobData.InitialiseArrays(curveCountEstimate);
+        jobData.boxes = boxes;
+        jobData.start = startArray;
+        jobData.goal = goalArray;
+
         try
         {
             while (true)
@@ -40,25 +52,22 @@ public class JoinedCurveGeneration // : MonoBehaviour
                         }
                     }
                 }
-                NativeArray<BoundingBoxes> boxes = new NativeArray<BoundingBoxes>(boxList.Count,Allocator.TempJob);
-                int count = boxes.Length;
-                boxes.CopyFrom(boxList.ToArray());
+                //
+                int count = boxList.Count;
+                //boxes.CopyFrom(boxList.ToArray());
 
                 //Setup the job
-                NativeArray<Vector3> startArray = new NativeArray<Vector3>(count, Allocator.TempJob);
-                NativeArray<Vector3> goalArray = new NativeArray<Vector3>(count, Allocator.TempJob);
+
                 for (int i = 0; i < count; i++)
                 {
-                    int curveIndex = boxes[i].curveIndex;
+                    int curveIndex = boxList[i].curveIndex;
                     startArray[i] = curves[curveIndex].start.transform.position;
                     goalArray[i] = curves[curveIndex].goal.transform.position;
+                    //The normal copy function is not possible, because boxes and boxList may have diffent lenghtes
+                    boxes[i] = boxList[i];
                 }
 
-                SimpleCurveGenerationJob jobData = new SimpleCurveGenerationJob();
-                jobData.boxes = boxes;
-                jobData.start = startArray;
-                jobData.goal = goalArray;
-                jobData.InitialiseArrays(count);
+
               
                 JobHandle handel = jobData.Schedule(boxes.Length, 1);
                 handel.Complete();
@@ -75,10 +84,10 @@ public class JoinedCurveGeneration // : MonoBehaviour
                         tasks.Add(JoinedCurve(curve,simpleCurve,stepSize), curve);
                     }
                 }
-                startArray.Dispose();
-                goalArray.Dispose();
-                boxes.Dispose();
-                jobData.DisposeArrays();
+                //startArray.Dispose();
+                //goalArray.Dispose();
+                //boxes.Dispose();
+                //jobData.DisposeArrays();
 
                 while (tasks.Count > 0)
                 {
@@ -159,5 +168,10 @@ public class JoinedCurveGeneration // : MonoBehaviour
             UnityEngine.Debug.LogError(e.InnerException);
             return null;
         }
+    }
+
+    public void Deconstruct()
+    {
+        UnityEngine.Debug.Log("Deconstruct");
     }
 }
