@@ -9,7 +9,7 @@ public class BoundingBoxStateController : MonoBehaviour
 {
     private BoundingBox boundingBox;
     private BoxCollider boxCollider;
-    private ManipulationHandler manipulationHandler;
+    private ObjectManipulator manipulationHandler;
     private bool boundingBoxActive;
 
     public event EventHandler BoundingBoxStateChanged;
@@ -37,7 +37,7 @@ public class BoundingBoxStateController : MonoBehaviour
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), gameObject);
         }
-        manipulationHandler = GetComponent<ManipulationHandler>();
+        manipulationHandler = GetComponent<ObjectManipulator>();
         // manipulation handler is optional, so no check here
     }
 
