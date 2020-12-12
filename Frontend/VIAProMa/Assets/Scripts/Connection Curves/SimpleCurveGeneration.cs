@@ -1006,6 +1006,7 @@ struct SimpleCurveGenerationJob : IJobParallelFor
 
     public void InitialiseArrays(int length)
     {
+        //These arrays need to be allocated persitent, because allocating and disposing them each frame needs too long.
         curvePoint0 = new NativeArray<Vector3>(length, Allocator.Persistent);
         curvePoint1 = new NativeArray<Vector3>(length, Allocator.Persistent);
         curvePoint2 = new NativeArray<Vector3>(length, Allocator.Persistent);
@@ -1068,6 +1069,9 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curvePoint59 = new NativeArray<Vector3>(length, Allocator.Persistent);
 
         isValid = new NativeArray<byte>(length, Allocator.Persistent);
+        boxes = new NativeArray<BoundingBoxes>(length, Allocator.Persistent);
+        start = new NativeArray<Vector3>(length, Allocator.Persistent);
+        goal = new NativeArray<Vector3>(length, Allocator.Persistent);
     }
 
     public void DisposeArrays()

@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
-using System.Diagnostics;
 using HoloToolkit.Unity;
 
 public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
@@ -20,16 +19,15 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
     /// <param name="curves"></param>
     /// <param name="stepSize"></param>
     public async void UpdateAsyc(List<ConnectionCurve> curves, float stepSize)
-    {   
-        //These arrays need to be allocated persitent, because allocating and disposing them each frame needs way too long.
-        int curveCountEstimate = 10;
+    {
+        //Specifies, for how many curves memory is alllocated (memory of nativ arrrays has to be manged by hand in UnityJobs). 
+        //If more curves are used than memory is allocated for, the number of allocated curves get increased by allocationSteps.
+        //If there are less curves than curveCountEstimate-1.5*allocationSteps, memory for allocationSteps curves gets freed again.
+        int allocationSteps = 5;
+        int curveCountEstimate = allocationSteps;
         jobData = new SimpleCurveGenerationJob();
         jobData.InitialiseArrays(curveCountEstimate);
-        jobData.boxes = new NativeArray<BoundingBoxes>(curveCountEstimate, Allocator.Persistent);
-        jobData.start = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
-        jobData.goal = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
         
-
         try
         {
             while (true)
@@ -59,6 +57,23 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
 
                 int count = boxList.Count;
 
+                //Are there curently more curves than memory was allocated for?
+                if (count > curveCountEstimate)
+                {
+                    jobData.DisposeArrays();
+                    curveCountEstimate += allocationSteps;
+                    jobData.InitialiseArrays(curveCountEstimate);
+                    Debug.Log("Increas array size");
+                }
+                //Are there much less curves than memory was allocated for?
+                else if (count < curveCountEstimate - 1.5 * allocationSteps)
+                {
+                    jobData.DisposeArrays();
+                    curveCountEstimate -= allocationSteps;
+                    jobData.InitialiseArrays(curveCountEstimate);
+                    Debug.Log("Decreas array size");
+                }
+
                 //Setup the job
                 for (int i = 0; i < count; i++)
                 {
@@ -71,7 +86,7 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
 
 
               
-                JobHandle handel = jobData.Schedule(count, 1);
+                JobHandle handel = jobData.Schedule(count, 32);
                 handel.Complete();
 
 
@@ -86,11 +101,8 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
                         tasks.Add(JoinedCurve(curve,simpleCurve,stepSize), curve);
                     }
                 }
-                //startArray.Dispose();
-                //goalArray.Dispose();
-                //boxes.Dispose();
-                //jobData.DisposeArrays();
 
+                //The following actions can't be done in a Unity job, becuase they are not thread safe.
                 while (tasks.Count > 0)
                 {
                     Task<Vector3[]> finishedTask = await Task.WhenAny(tasks.Keys);
@@ -112,23 +124,6 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
         }
     }
 
-    public static async void test(List<ConnectionCurve> curves)
-    {
-        Stopwatch watch;
-        while (curves.Count == 0)
-        {
-            await Task.Yield();
-        }
-        ConnectionCurve curve = curves[0];
-        while (true)
-        {
-            watch = Stopwatch.StartNew();
-            Vector3[] path = SimpleCurveGerneration.StartGeneration(curve.start.transform.position, curve.goal.transform.position, SimpleCurveGerneration.CalculateBoundingBoxes(curve.start, curve.goal), 60);
-            watch.Stop();
-            UnityEngine.Debug.Log("Time: " + watch.Elapsed.TotalMilliseconds);
-            await Task.Yield();
-        }
-    }
 
     static async Task<Vector3[]> JoinedCurve(ConnectionCurve connectionCurve, Vector3[] simpleCurve , float stepSize, int segmentCount = 60)
     {
