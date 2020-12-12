@@ -6,25 +6,29 @@ using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using System.Diagnostics;
+using HoloToolkit.Unity;
 
-public class JoinedCurveGeneration // : MonoBehaviour
+public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
 {
     public float standartHeight = 0.2f;
+    SimpleCurveGenerationJob jobData;
 
-    public static async void UpdateAsyc(List<ConnectionCurve> curves, float stepSize)
-    {
-        int segmentCount = 60;
-        SimpleCurveGenerationJob jobData = new SimpleCurveGenerationJob();
+
+    /// <summary>
+    /// Updates the curves that are provided through the curves list. Can't be a normal update fuction, because it can yield when calculation take too long. Is invoked by the ConnectionCurveManager.
+    /// </summary>
+    /// <param name="curves"></param>
+    /// <param name="stepSize"></param>
+    public async void UpdateAsyc(List<ConnectionCurve> curves, float stepSize)
+    {   
         //These arrays need to be allocated persitent, because allocating and disposing them each frame needs way too long.
         int curveCountEstimate = 10;
-        NativeArray<Vector3> startArray = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
-        NativeArray<Vector3> goalArray = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
-        NativeArray<BoundingBoxes> boxes = new NativeArray<BoundingBoxes>(curveCountEstimate, Allocator.Persistent);
-
+        jobData = new SimpleCurveGenerationJob();
         jobData.InitialiseArrays(curveCountEstimate);
-        jobData.boxes = boxes;
-        jobData.start = startArray;
-        jobData.goal = goalArray;
+        jobData.boxes = new NativeArray<BoundingBoxes>(curveCountEstimate, Allocator.Persistent);
+        jobData.start = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
+        jobData.goal = new NativeArray<Vector3>(curveCountEstimate, Allocator.Persistent);
+        
 
         try
         {
@@ -38,7 +42,7 @@ public class JoinedCurveGeneration // : MonoBehaviour
                     if (curves[i] != null)
                     {
                         //Try to use the standart curve
-                        Vector3[] standartCurve = SimpleCurveGerneration.TryToUseStandartCurve(curves[i].start, curves[i].goal, segmentCount);
+                        Vector3[] standartCurve = SimpleCurveGerneration.TryToUseStandartCurve(curves[i].start, curves[i].goal, 60);
                         if (standartCurve != null)
                         {
                             curves[i].lineRenderer.positionCount = standartCurve.Length;
@@ -52,24 +56,22 @@ public class JoinedCurveGeneration // : MonoBehaviour
                         }
                     }
                 }
-                //
+
                 int count = boxList.Count;
-                //boxes.CopyFrom(boxList.ToArray());
 
                 //Setup the job
-
                 for (int i = 0; i < count; i++)
                 {
                     int curveIndex = boxList[i].curveIndex;
-                    startArray[i] = curves[curveIndex].start.transform.position;
-                    goalArray[i] = curves[curveIndex].goal.transform.position;
+                    jobData.start[i] = curves[curveIndex].start.transform.position;
+                    jobData.goal[i] = curves[curveIndex].goal.transform.position;
                     //The normal copy function is not possible, because boxes and boxList may have diffent lenghtes
-                    boxes[i] = boxList[i];
+                    jobData.boxes[i] = boxList[i];
                 }
 
 
               
-                JobHandle handel = jobData.Schedule(boxes.Length, 1);
+                JobHandle handel = jobData.Schedule(count, 1);
                 handel.Complete();
 
 
@@ -170,8 +172,10 @@ public class JoinedCurveGeneration // : MonoBehaviour
         }
     }
 
-    public void Deconstruct()
+    private void OnApplicationQuit()
     {
-        UnityEngine.Debug.Log("Deconstruct");
+        //Necessary to prevent memory leaks. Native arrays are not cleaned up by the garbage collector.
+        jobData.DisposeArrays();
     }
+
 }

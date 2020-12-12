@@ -1134,8 +1134,8 @@ struct SimpleCurveGenerationJob : IJobParallelFor
         curvePoint59.Dispose();
 
         isValid.Dispose();
-        //boxes.Dispose();
-        //start.Dispose();
-        //goal.Dispose();
+        boxes.Dispose();
+        start.Dispose();
+        goal.Dispose();
     }
 }

@@ -49,7 +49,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     void Start()
     {
         clickTimeStamp = DateTime.Now;
-        JoinedCurveGeneration.UpdateAsyc(curves,stepSize);
+        JoinedCurveGeneration.Instance.UpdateAsyc(curves,stepSize);
     }
 
     void Update()
