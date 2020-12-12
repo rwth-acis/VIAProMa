@@ -70,33 +70,36 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
                 GameObject target;
                 if (pointerValid)
                 {
-                    target = GetParentWithPhotonView(mainPointer.Result?.CurrentPointerTarget);
-                    var view = tempCurve.GetComponent<PhotonView>();
-                    var goalView = target?.GetComponent<PhotonView>();
-                    //Is the coursor pointing on a valid target?
-                    if (target != null && target != tempCurve.start)
+                    if (tempCurve.goal != null && tempCurve.start != null)
                     {
-                        //Set the goal of the temp curve to the temp goal
-                        if (tempCurve.goal != target)
-                        {
-                            view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
-                        }
-                    }
-                    else
-                    {
-                        //Restore the normal temp curve
-                        if (tempCurve.goal != tempCurve)
-                        {
-                            view.RPC("SetGoal", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
-                        }
-                        tempGoal.transform.position = mainPointer.Position;
-                    }
-                    var cursor = (AnimatedCursor)mainPointer.BaseCursor;
-                    if (thisFrameClicked)
-                    {
+                        target = GetParentWithPhotonView(mainPointer.Result?.CurrentPointerTarget);
+                        var view = tempCurve.GetComponent<PhotonView>();
+                        var goalView = target?.GetComponent<PhotonView>();
+                        //Is the coursor pointing on a valid target?
                         if (target != null && target != tempCurve.start)
-                            CreateConnectionCurveScene(tempCurve.start, target);
-                        ChangeState(State.defaultMode);
+                        {
+                            //Set the goal of the temp curve to the temp goal
+                            if (tempCurve.goal != target)
+                            {
+                                view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
+                            }
+                        }
+                        else
+                        {
+                            //Restore the normal temp curve
+                            if (tempCurve.goal != tempCurve)
+                            {
+                                view.RPC("SetGoal", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
+                            }
+                            tempGoal.transform.position = mainPointer.Position;
+                        }
+                        var cursor = (AnimatedCursor)mainPointer.BaseCursor;
+                        if (thisFrameClicked)
+                        {
+                            if (target != null && target != tempCurve.start)
+                                CreateConnectionCurveScene(tempCurve.start, target);
+                            ChangeState(State.defaultMode);
+                        } 
                     }
                 }
                 else
