@@ -9,7 +9,7 @@ public class BoundingBoxStateController : MonoBehaviour
 {
     private BoundingBox boundingBox;
     private BoxCollider boxCollider;
-    private ObjectManipulator manipulationHandler;
+    public ObjectManipulator manipulationHandler { get; private set; }
     private bool boundingBoxActive;
 
     public event EventHandler BoundingBoxStateChanged;
