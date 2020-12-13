@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
-using Unity.Collections;
 using Unity.Jobs;
 using HoloToolkit.Unity;
 
+/// <summary>
+/// Performs the actual calculations for the curves that are managed by the ConnectionCurveManager
+/// </summary>
 public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
 {
     public float standartHeight = 0.2f;
@@ -16,11 +17,11 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
     /// <summary>
     /// Updates the curves that are provided through the curves list. Can't be a normal update fuction, because it can yield when calculation take too long. Is invoked by the ConnectionCurveManager.
     /// </summary>
-    /// <param name="curves"></param>
-    /// <param name="stepSize"></param>
+    /// <param name="curves">The curve list managed by the ConnectionCurveManager</param>
+    /// <param name="stepSize">The size of the cells for the grid for A* and greedy</param>
     public async void UpdateAsyc(List<ConnectionCurve> curves, float stepSize)
     {
-        //Specifies, for how many curves memory is alllocated (memory of nativ arrrays has to be manged by hand in UnityJobs). 
+        //Specifies, for how many curves memory is alllocated (memory for nativ arrrays has to be manged by hand and UnityJobs require nativ arrays). 
         //If more curves are used than memory is allocated for, the number of allocated curves get increased by allocationSteps.
         //If there are less curves than curveCountEstimate-1.5*allocationSteps, memory for allocationSteps curves gets freed again.
         int allocationSteps = 5;
@@ -63,7 +64,6 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
                     jobData.DisposeArrays();
                     curveCountEstimate += allocationSteps;
                     jobData.InitialiseArrays(curveCountEstimate);
-                    Debug.Log("Increas array size");
                 }
                 //Are there much less curves than memory was allocated for?
                 else if (count < curveCountEstimate - 1.5 * allocationSteps)
@@ -71,10 +71,9 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
                     jobData.DisposeArrays();
                     curveCountEstimate -= allocationSteps;
                     jobData.InitialiseArrays(curveCountEstimate);
-                    Debug.Log("Decreas array size");
                 }
 
-                //Setup the job
+                //Setup the job, to perform the simple curve calculation multithreaded
                 for (int i = 0; i < count; i++)
                 {
                     int curveIndex = boxList[i].curveIndex;
@@ -102,7 +101,7 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
                     }
                 }
 
-                //The following actions can't be done in a Unity job, becuase they are not thread safe.
+                //The following actions can't be done in a Unity job, because they are not thread safe.
                 while (tasks.Count > 0)
                 {
                     Task<Vector3[]> finishedTask = await Task.WhenAny(tasks.Keys);
@@ -120,11 +119,18 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
         }
         catch (Exception e)
         {
-            UnityEngine.Debug.LogError(e.InnerException);
+            Debug.LogError(e.InnerException);
         }
     }
 
-
+    /// <summary>
+    /// Calculates a joined curve. 
+    /// </summary>
+    /// <param name="connectionCurve">The curve object for which a curve needs to be calculated</param>
+    /// <param name="simpleCurve">The previosly calculated simple curve</param>
+    /// <param name="stepSize">The size of the cells for the grid for A* and greedy</param>
+    /// <param name="segmentCount">The number of segements for the curve</param>
+    /// <returns></returns>
     static async Task<Vector3[]> JoinedCurve(ConnectionCurve connectionCurve, Vector3[] simpleCurve , float stepSize, int segmentCount = 60)
     {
         try
@@ -139,37 +145,43 @@ public class JoinedCurveGeneration  : Singleton<JoinedCurveGeneration>
             IntTriple startCell = IntTriple.VectorToCell(connectionCurve.start.transform.position, stepSize);
             IntTriple goalCell = IntTriple.VectorToCell(connectionCurve.goal.transform.position, stepSize);
             Task<GridSearch.SearchResult<IntTriple>> astarTask = AStar.AStarGridSearchAsync(startCell, goalCell, stepSize, connectionCurve.start, connectionCurve.goal);
+            //The A* task can yield its execution, if it takes too long
             await astarTask;
-            if (astarTask.Result.path == null)
+            if (astarTask.Result.path != null)
             {
-                Task<GridSearch.SearchResult<IntTriple>> greedyTask = Greedy.GreedyGridSearchAsync(startCell, goalCell, stepSize, connectionCurve.start, connectionCurve.goal);
-                await greedyTask;
-                if (greedyTask.Result.path == null)
-                {
-                    curve = SimpleCurveGerneration.StandartCurve(connectionCurve.start.transform.position, connectionCurve.goal.transform.position, segmentCount, 0.5f);
-                }
-                else
-                {
-                    curve = CurveGenerator.IntTripleArrayToCurve(greedyTask.Result.path, connectionCurve.start.transform.position, connectionCurve.goal.transform.position, stepSize);
-                }
+                //A* was successful
+                curve = CurveGenerator.IntTripleArrayToCurve(astarTask.Result.path, connectionCurve.start.transform.position, connectionCurve.goal.transform.position, stepSize);
             }
             else
             {
-                curve = CurveGenerator.IntTripleArrayToCurve(astarTask.Result.path, connectionCurve.start.transform.position, connectionCurve.goal.transform.position, stepSize);
+                Task<GridSearch.SearchResult<IntTriple>> greedyTask = Greedy.GreedyGridSearchAsync(startCell, goalCell, stepSize, connectionCurve.start, connectionCurve.goal);
+                await greedyTask;
+                if (greedyTask.Result.path != null)
+                {
+                    //Greedy search was successful
+                    curve = CurveGenerator.IntTripleArrayToCurve(greedyTask.Result.path, connectionCurve.start.transform.position, connectionCurve.goal.transform.position, stepSize);                  
+                }
+                else
+                {
+                    //All methods failed. Just connect start and goal with the standart curve and accept that it's going to have collisions.
+                    curve = SimpleCurveGerneration.StandartCurve(connectionCurve.start.transform.position, connectionCurve.goal.transform.position, segmentCount, 0.5f);
+                }
             }
             
             return curve;
         }
         catch (Exception e)
         {
-            UnityEngine.Debug.LogError(e.InnerException);
+            Debug.LogError(e.InnerException);
             return null;
         }
     }
 
+    /// <summary>
+    /// Disposes the native arrays that were used for the UnityJob, to prevent memory leaks. Native arrays are not cleaned up by the garbage collector.
+    /// </summary>
     private void OnApplicationQuit()
     {
-        //Necessary to prevent memory leaks. Native arrays are not cleaned up by the garbage collector.
         jobData.DisposeArrays();
     }
 
