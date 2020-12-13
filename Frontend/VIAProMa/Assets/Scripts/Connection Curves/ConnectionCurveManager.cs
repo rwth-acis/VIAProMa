@@ -45,13 +45,18 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
 
     GameObject tempGoal = null;
 
-
+    /// <summary>
+    /// Starts the JoinedCurveGeneration
+    /// </summary>
     void Start()
     {
         clickTimeStamp = DateTime.Now;
         JoinedCurveGeneration.Instance.UpdateAsyc(curves,stepSize);
     }
 
+    /// <summary>
+    /// Manages connecting and deleting of curves
+    /// </summary>
     void Update()
     {
         bool thisFrameClicked = false;
@@ -187,6 +192,9 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Change the state of the Connection Curve Manager. The function automaticly ends all effects from the old state.
     /// </summary>
+    /// <param name="state">The state the manger should switch to</param>
+    /// <param name="start">Only needed when switching to connecting. Specifies the start object of the connection</param>
+    /// <param name="caller">Only needed when switching to connecting. Specifies the app bar on which the connecting was invoked</param>
     public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
     {
         
@@ -225,6 +233,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Destroys a Connection Curve while resepecting that it can be networked and the the requestimg client may not have the ownership at the moment.
     /// </summary>
+    /// <param name="connectionCurve">The curve that should be destroyed</param>
     async void DeleteConnectionCurve(ConnectionCurve connectionCurve)
     {
         if (PhotonNetwork.InRoom)
@@ -248,6 +257,8 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Creates a Connection Curve from start to goal. When the user is in a room, the curve is instantiated as photon scene object. Otherwise it is instantiated normally.
     /// </summary>
+    /// <param name="start">The start object of the curve</param>
+    /// <param name="goal">The goal object of the curve</param>
     public void CreateConnectionCurveScene(GameObject start, GameObject goal)
     {
         if (PhotonNetwork.InRoom)
@@ -268,6 +279,8 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Creates a Connection Curve from start to goal. When the user is in a room, the curve is instantiated as photon object, with the creator as owner and creator. Otherwise it is instantiated normally.
     /// </summary>
+    /// <param name="start">The start object of the curve</param>
+    /// <param name="goal">The goal object of the curve</param>
     public ConnectionCurve CreateConnectionCurveOwn(GameObject start, GameObject goal)
     {
         ConnectionCurve curve;
@@ -288,8 +301,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     }
 
     /// <summary>
-    /// Start the connect process.
+    /// Starts the connect process.
     /// </summary>
+    /// <param name="start">The start object of the connection</param>
+    /// <param name="caller">The app bar on which the connecting was invoked</param>
     void StartConnecting(GameObject start, AppBarStateController caller)
     {
         RefreshPointer();
@@ -309,7 +324,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     }
 
     /// <summary>
-    /// Stop the connect process.
+    /// Stops the connect process.
     /// </summary>
     void StopConnect()
     {
@@ -366,6 +381,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Delet all Connection Curves connected to a GameObject
     /// </summary>
+    /// <param name="startOrEndPoint">The object from which all curves should be deleted</param>
     public void DeleteAllCurvesFromObject(GameObject startOrEndPoint)
     {
         List<ConnectionCurve> curvesToDelete = new List<ConnectionCurve>();
@@ -423,6 +439,11 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         }
     }
 
+    /// <summary>
+    /// Converts a color object to a RGBA float array, in order to make it possible to tranmit it witch photon.
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
     public float[] ColorPhoton(Color color)
     {
         float[] arr = new float[4];
@@ -436,6 +457,8 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Return the closest object in the hirachy above the provided gameObject that has a PhotonView. If such an object doesn't exist, null is returned.
     /// </summary>
+    /// <param name="gameObject"></param>
+    /// <returns></returns>
     public static GameObject GetParentWithPhotonView(GameObject gameObject)
     {
         if (gameObject == null)

@@ -74,11 +74,13 @@ public class ConnectionCurve : MonoBehaviour
         data[1] = goalObject.GetComponent<PhotonView>().ViewID;
         ResourceManager.Instance.SceneNetworkInstantiate(ConnectionCurveManager.Instance.curveConnectPrefab, Vector3.zero, Quaternion.identity, (x) => { }, data);
         PhotonNetwork.Destroy(GetComponent<PhotonView>());
-    } 
+    }
 
     /// <summary>
     /// Sets the color gradient of the line renderer to a gradient from color1Arr to color2Arr. Both need to be provided in the format: (r,g,b,a).
     /// </summary>
+    /// <param name="color1Arr"> The RGBA values for the first color</param>
+    /// <param name="color2Arr"> The RGBA values for the second color</param>
     [PunRPC]
     public void SetColor(float[] color1Arr, float[] color2Arr)
     {
@@ -106,15 +108,18 @@ public class ConnectionCurve : MonoBehaviour
     /// <summary>
     /// Sets the goal the object with the Photon ID viewID.
     /// </summary>
+    /// <param name="viewID">The Photon ID of the new goal</param>
     [PunRPC]
     public void SetGoal(int viewID)
     {
         goal = PhotonNetwork.GetPhotonView(viewID).gameObject;
     }
 
+    /// <summary>
+    /// Removes the curve from the watchlist
+    /// </summary>
     private void OnDestroy()
     {
-        //Curves remove themself from the curve watch list
         ConnectionCurveManager.Instance?.curves.Remove(this);
     }
 }
