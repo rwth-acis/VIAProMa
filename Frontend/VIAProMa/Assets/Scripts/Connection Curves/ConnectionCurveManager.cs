@@ -86,15 +86,29 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
                             //Set the goal of the temp curve to the temp goal
                             if (tempCurve.goal != target)
                             {
-                                view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
+                                if (PhotonNetwork.InRoom)
+                                {
+                                    view.RPC("SetGoal", RpcTarget.All, goalView.ViewID);
+                                }
+                                else
+                                {
+                                    tempCurve.goal = target;
+                                }
                             }
                         }
                         else
                         {
                             //Restore the normal temp curve
-                            if (tempCurve.goal != tempCurve)
+                            if (tempCurve.goal != tempGoal)
                             {
-                                view.RPC("SetGoal", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
+                                if (PhotonNetwork.InRoom)
+                                {
+                                    view.RPC("SetGoal", RpcTarget.All, tempGoal.GetComponent<PhotonView>().ViewID);
+                                }
+                                else
+                                {
+                                    tempCurve.goal = tempGoal;
+                                }
                             }
                             tempGoal.transform.position = mainPointer.Position;
                         }
