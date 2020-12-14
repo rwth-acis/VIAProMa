@@ -162,7 +162,7 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
             get { return rows; }
             set
             {
-                if (Layout == LayoutOrder.RowThenColumn)
+                if (Layout == LayoutOrder.ColumnThenRow)
                 {
                     Debug.LogError("When using ColumnThenRow layout, assign Columns instead of Rows.");
                     return;

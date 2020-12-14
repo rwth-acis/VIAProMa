@@ -2676,10 +2676,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
 
         void IMixedRealityFocusChangedHandler.OnBeforeFocusChange(FocusEventData eventData) { }
 
-        #endregion Unused Event Handlers
-
-        #region Custom Additions
-
         /// <summary>
         /// Refreshes the bounding box display if the bounds where changed by another script
         /// </summary>
@@ -2689,6 +2685,6 @@ namespace Microsoft.MixedReality.Toolkit.UI
             UpdateRigHandles();
         }
 
-        #endregion
+        #endregion Unused Event Handlers
     }
 }

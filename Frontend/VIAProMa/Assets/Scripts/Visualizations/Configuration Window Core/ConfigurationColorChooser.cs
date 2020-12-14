@@ -58,7 +58,7 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(toggleCollection), colorSquareArray.gameObject);
         }
 
-        toggleCollection.ToggleList = new Interactable[colorConfiguration.Colors.Count];
+        Interactable[] initToggleList = new Interactable[colorConfiguration.Colors.Count];
         for (int i=0;i<colorConfiguration.Colors.Count;i++)
         {
             GameObject instance = Instantiate(colorPreviewSquare, colorSquareArray.transform);
@@ -66,8 +66,9 @@ public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
             square.Color = colorConfiguration.Colors[i];
             square.ColorChooser = this;
             Interactable interactable = instance.GetComponent<Interactable>();
-            toggleCollection.ToggleList[i] = interactable;
+            initToggleList[i] = interactable;
         }
+        toggleCollection.ToggleList = initToggleList;
         toggleCollection.enabled = true;
         colorSquareArray.UpdateCollection();
     }

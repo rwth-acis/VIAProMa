@@ -606,13 +606,11 @@ namespace Microsoft.MixedReality.Toolkit.UI
             targetTransform.Rotation = gripRotation * objectToGripRotation;
 
             constraints.ApplyRotationConstraints(ref targetTransform, true, IsNearManipulation());
-
             RotateInOneHandType rotateInOneHandType = isNearManipulation ? oneHandRotationModeNear : oneHandRotationModeFar;
             MixedRealityPose pointerPose = new MixedRealityPose(pointer.Position, pointer.Rotation);
             targetTransform.Position = moveLogic.Update(pointerPose, targetTransform.Rotation, targetTransform.Scale, rotateInOneHandType != RotateInOneHandType.RotateAboutObjectCenter);
 
             constraints.ApplyTranslationConstraints(ref targetTransform, true, IsNearManipulation());
-
             ApplyTargetTransform(targetTransform);
         }
 
