@@ -62,10 +62,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetObject: {fileID: 1956943101993171755}
   boundsOverride: {fileID: 1841693058782858218}
+  boundsCalculationMethod: 0
   activation: 4
-  scaleMaximum: 2
   scaleMinimum: 0.2
+  scaleMaximum: 2
   flattenAxis: 4
+  flattenAxisDisplayScale: 0
   boxPadding: {x: 0, y: 0, z: 0}
   boxMaterial: {fileID: 2100000, guid: 4a9aae3094118f44593e7f8000e24c31, type: 2}
   boxGrabbedMaterial: {fileID: 2100000, guid: 7e4095c5609075846b657c8917aae797, type: 2}
@@ -81,13 +83,26 @@ MonoBehaviour:
   scaleHandleSlatePrefab: {fileID: 100000, guid: a6473ac7ac982fb488db53a454bf0a3c,
     type: 3}
   scaleHandleSize: 0.04
+  scaleHandleColliderPadding: {x: 0.016, y: 0.016, z: 0.016}
   rotationHandlePrefab: {fileID: 100000, guid: 57c53da2552a8114ab6d68e0cd31b1eb, type: 3}
-  rotationHandleDiameter: 0.05
+  rotationHandleSize: 0.016
+  rotateHandleColliderPadding: {x: 0.016, y: 0.016, z: 0.016}
+  rotationHandlePrefabColliderType: 1
   showScaleHandles: 0
   showRotationHandleForX: 0
   showRotationHandleForY: 1
   showRotationHandleForZ: 0
   drawTetherWhenManipulating: 1
+  proximityEffectActive: 0
+  handleMediumProximity: 0.1
+  handleCloseProximity: 0.03
+  farScale: 0
+  mediumScale: 1
+  closeScale: 1.5
+  farGrowRate: 0.3
+  mediumGrowRate: 0.2
+  closeGrowRate: 0.3
+  handlesIgnoreCollider: {fileID: 0}
   debugText: {fileID: 0}
   hideElementsInInspector: 1
   RotateStarted:
@@ -144,10 +159,11 @@ MonoBehaviour:
   oneHandRotationModeFar: 6
   releaseBehavior: 3
   constraintOnRotation: 0
+  useLocalSpaceForConstraint: 0
   constraintOnMovement: 0
   smoothingActive: 1
   smoothingAmountOneHandManip: 0.001
-  OnManipulationStarted:
+  onManipulationStarted:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2272489888113069527}
@@ -161,7 +177,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnManipulationEnded:
+  onManipulationEnded:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2272489888113069527}
@@ -175,10 +191,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnHoverEntered:
+  onHoverEntered:
     m_PersistentCalls:
       m_Calls: []
-  OnHoverExited:
+  onHoverExited:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &5850401283584920991
@@ -409,6 +425,7 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
+  observableSearch: 0
   Synchronization: 3
   OwnershipTransfer: 2
   ObservedComponents:
@@ -1010,11 +1027,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 2544202224179704831, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_Name
-      value: Button Down
-      objectReference: {fileID: 0}
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1105,6 +1117,11 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 2544202224179704831, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_Name
+      value: Button Down
+      objectReference: {fileID: 0}
     - target: {fileID: 2140738876711381947, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_FlipY
@@ -1162,11 +1179,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Bottom
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1222,6 +1234,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Bottom
+      objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: kanbanBoardController
@@ -1247,16 +1264,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 8774877464969372152, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
-        type: 3}
-      propertyPath: m_Name
-      value: Configuration Window
-      objectReference: {fileID: 0}
-    - target: {fileID: 8774877464969372152, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5490047062781262068, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1310,6 +1317,16 @@ PrefabInstance:
     - target: {fileID: 5490047062781262068, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8774877464969372152, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
+        type: 3}
+      propertyPath: m_Name
+      value: Configuration Window
+      objectReference: {fileID: 0}
+    - target: {fileID: 8774877464969372152, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3292828647361960666, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
@@ -1378,11 +1395,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 2544202224179704831, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_Name
-      value: Button Up
-      objectReference: {fileID: 0}
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1473,6 +1485,11 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 2544202224179704831, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_Name
+      value: Button Up
+      objectReference: {fileID: 0}
     - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_havePropertiesChanged
@@ -1525,11 +1542,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Top
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1585,6 +1597,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Top
+      objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: kanbanBoardController
@@ -1615,11 +1632,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Left
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1675,6 +1687,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Left
+      objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: kanbanBoardController
@@ -1695,11 +1712,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Right
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1754,6 +1766,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Right
       objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}

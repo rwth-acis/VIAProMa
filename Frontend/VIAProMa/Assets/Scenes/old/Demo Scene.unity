@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3606,8 +3606,211 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4727664436279893121, guid: 1fef62a8c3d6b5e4382a058b82fb921a, type: 3}
+    - {fileID: 508823977780279661, guid: 1fef62a8c3d6b5e4382a058b82fb921a, type: 3}
+    - {fileID: 1049329466158844380, guid: 1fef62a8c3d6b5e4382a058b82fb921a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 1fef62a8c3d6b5e4382a058b82fb921a, type: 3}
+--- !u!4 &1482597289 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3502117140769376197, guid: 1fef62a8c3d6b5e4382a058b82fb921a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1482597288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1482597290 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7195475288297353741, guid: 1fef62a8c3d6b5e4382a058b82fb921a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1482597288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1482597291 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3502117140769376196, guid: 1fef62a8c3d6b5e4382a058b82fb921a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1482597288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1482597292 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1456891935038891313, guid: 1fef62a8c3d6b5e4382a058b82fb921a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1482597288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1482597293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482597290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181cd563a8349c34ea8978b0bc8d9c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hostTransform: {fileID: 1482597289}
+  manipulationType: 3
+  twoHandedManipulationType: 7
+  allowFarManipulation: 1
+  oneHandRotationModeNear: 1
+  oneHandRotationModeFar: 1
+  releaseBehavior: 3
+  smoothingActive: 1
+  moveLerpTime: 0.001
+  rotateLerpTime: 0.001
+  scaleLerpTime: 0.001
+  onManipulationStarted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: HighlightWires
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onManipulationEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: UnhighlightWires
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1482597294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482597292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5f249786382754b8635a1375f7b76c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 1482597289}
+  handType: 1
+  proximityType: 3
+  faceAway: 1
+--- !u!114 &1482597295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482597292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181cd563a8349c34ea8978b0bc8d9c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hostTransform: {fileID: 1482597289}
+  manipulationType: 3
+  twoHandedManipulationType: 7
+  allowFarManipulation: 1
+  oneHandRotationModeNear: 1
+  oneHandRotationModeFar: 1
+  releaseBehavior: 3
+  smoothingActive: 1
+  moveLerpTime: 0.001
+  rotateLerpTime: 0.001
+  scaleLerpTime: 0.001
+  onManipulationStarted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1482597290}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  onManipulationEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1482597290}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &1482597296 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 2320655859123027684, guid: 1fef62a8c3d6b5e4382a058b82fb921a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1482597288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1482597297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482597290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8200a044a5affb843ba856b902d9fd3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 1482597291}
+  boundsOverride: {fileID: 1482597296}
+  boundsCalculationMethod: 0
+  activation: 0
+  flattenAxis: 3
+  boxPadding: {x: 0, y: 0, z: 0}
+  boxDisplayConfiguration: {fileID: 11400000, guid: 97f51be526b7f584a89cdfecd2a6f44f,
+    type: 2}
+  linksConfiguration: {fileID: 11400000, guid: c258c22928964b441a0dbbc5331a1bca, type: 2}
+  scaleHandlesConfiguration: {fileID: 11400000, guid: 9a2f4a86aecce074daadeb918c729248,
+    type: 2}
+  rotationHandlesConfiguration: {fileID: 11400000, guid: a793be625075a9b4db52b4ccb4f3672b,
+    type: 2}
+  handleProximityEffectConfiguration: {fileID: 11400000, guid: ad36331ed75b489418545c1ae079529e,
+    type: 2}
+  hideElementsInInspector: 1
+  rotateStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  rotateStopped:
+    m_PersistentCalls:
+      m_Calls: []
+  scaleStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  scaleStopped:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1614929448
 GameObject:
   m_ObjectHideFlags: 0
@@ -3728,6 +3931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf98dd1206224111a38765365e98e207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockCursorWhenFocusLocked: 1
   setCursorInvisibleWhenFocusLocked: 1
   maxGazeCollisionDistance: 10
   raycastLayerMasks:
@@ -3738,7 +3942,6 @@ MonoBehaviour:
   gazeTransform: {fileID: 0}
   minHeadVelocityThreshold: 0.5
   maxHeadVelocityThreshold: 2
-  useEyeTracking: 1
 --- !u!114 &1960962599
 MonoBehaviour:
   m_ObjectHideFlags: 0

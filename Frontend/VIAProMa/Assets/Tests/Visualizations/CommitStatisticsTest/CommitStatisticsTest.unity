@@ -209,6 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf98dd1206224111a38765365e98e207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lockCursorWhenFocusLocked: 1
   setCursorInvisibleWhenFocusLocked: 1
   maxGazeCollisionDistance: 10
   raycastLayerMasks:
@@ -219,7 +220,6 @@ MonoBehaviour:
   gazeTransform: {fileID: 0}
   minHeadVelocityThreshold: 0.5
   maxHeadVelocityThreshold: 2
-  useEyeTracking: 1
 --- !u!114 &258071149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3462,17 +3462,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7207044545912027996, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    - target: {fileID: 9047568318639201239, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+        type: 3}
+      propertyPath: viewIdField
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8024687317759580483, guid: aa10f59180665eb4388d0e7c0ebe46f9,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 1018572104882868295, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    - target: {fileID: 394992559779131992, guid: aa10f59180665eb4388d0e7c0ebe46f9,
         type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1018572104882868295, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    - target: {fileID: 394992559779131992, guid: aa10f59180665eb4388d0e7c0ebe46f9,
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
@@ -3492,27 +3497,24 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8024687317759580483, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    - target: {fileID: 7207044545912027996, guid: aa10f59180665eb4388d0e7c0ebe46f9,
         type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 394992559779131992, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    - target: {fileID: 1018572104882868295, guid: aa10f59180665eb4388d0e7c0ebe46f9,
         type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 394992559779131992, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    - target: {fileID: 1018572104882868295, guid: aa10f59180665eb4388d0e7c0ebe46f9,
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 9047568318639201239, guid: aa10f59180665eb4388d0e7c0ebe46f9,
-        type: 3}
-      propertyPath: viewIdField
-      value: 3
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7517996999169599655, guid: aa10f59180665eb4388d0e7c0ebe46f9, type: 3}
+    - {fileID: 4613758379795634649, guid: aa10f59180665eb4388d0e7c0ebe46f9, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aa10f59180665eb4388d0e7c0ebe46f9, type: 3}
 --- !u!114 &2111512769 stripped
 MonoBehaviour:
@@ -3520,9 +3522,159 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 2111512768}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2111512774}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1be082689c7d3a74e93a0528234c54b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &2111512770 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5080653008957622153, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2111512768}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2111512771 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1195207300105627985, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2111512768}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2111512772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111512771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b3e6359c9750ad4fb8a05c9b8704d7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetTransform: {fileID: 2111512770}
+  handType: 3
+  proximityType: 3
+  constraintOnRotation: 5
+  useLocalSpaceForConstraint: 0
+--- !u!114 &2111512773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111512771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181cd563a8349c34ea8978b0bc8d9c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hostTransform: {fileID: 2111512770}
+  manipulationType: 3
+  twoHandedManipulationType: 7
+  allowFarManipulation: 1
+  oneHandRotationModeNear: 1
+  oneHandRotationModeFar: 1
+  releaseBehavior: 3
+  smoothingActive: 1
+  moveLerpTime: 0.001
+  rotateLerpTime: 0.001
+  scaleLerpTime: 0.001
+  onManipulationStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onManipulationEnded:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &2111512774 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5080653008957622152, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2111512768}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2111512775 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7733796618059412224, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2111512768}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111512774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 889cf250a9686284fa48bde7f9f5fac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &2111512776 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 5812459274358450482, guid: aa10f59180665eb4388d0e7c0ebe46f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 2111512768}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2111512777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111512771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8200a044a5affb843ba856b902d9fd3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 2111512774}
+  boundsOverride: {fileID: 2111512776}
+  boundsCalculationMethod: 0
+  activation: 4
+  flattenAxis: 0
+  boxPadding: {x: 0, y: 0, z: 0}
+  boxDisplayConfiguration: {fileID: 11400000, guid: ca4b7aa0fd005fa4b8ca2f2fb89ed01a,
+    type: 2}
+  linksConfiguration: {fileID: 11400000, guid: b78a33e669505954d8c79d8f1cc34797, type: 2}
+  scaleHandlesConfiguration: {fileID: 11400000, guid: 6e13e03891fb03643829d9a563ab29c3,
+    type: 2}
+  rotationHandlesConfiguration: {fileID: 11400000, guid: c3b57f36f672ad24ba1e7880e4a48d13,
+    type: 2}
+  handleProximityEffectConfiguration: {fileID: 11400000, guid: 2a36c9f17839b8944861bdd04342c04a,
+    type: 2}
+  hideElementsInInspector: 1
+  rotateStarted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2111512775}
+        m_MethodName: EnsureOwnership
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  rotateStopped:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2111512775}
+        m_MethodName: ReleaseOwnershipLock
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  scaleStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  scaleStopped:
+    m_PersistentCalls:
+      m_Calls: []
