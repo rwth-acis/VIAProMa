@@ -35,7 +35,7 @@ public class VisualizationShelf : Shelf
 
     private void DisplayWidgets()
     {
-        shelfGrid.Rows = boards;
+        shelfGrid.Columns = boards;
         shelfGrid.CellWidth = boardLength / objectsPerBoard;
 
         int startIndex = page * boards * objectsPerBoard;
