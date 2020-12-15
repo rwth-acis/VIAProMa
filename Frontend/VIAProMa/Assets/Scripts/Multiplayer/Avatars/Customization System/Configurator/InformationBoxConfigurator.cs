@@ -13,9 +13,13 @@ public class InformationBoxConfigurator : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private GameObject informationBox;
-    [SerializeField] private Interactable BarchartButton;
-    [SerializeField] private Interactable ScatterplotButton;
-    [SerializeField] private Interactable ProgressButton;
+    //[SerializeField] private Interactable BarchartButton;
+    //[SerializeField] private Interactable ScatterplotButton;
+    //[SerializeField] private Interactable ProgressButton;
+
+    [SerializeField] private GameObject BarchartButton;
+    [SerializeField] private GameObject ScatterplotButton;
+    [SerializeField] private GameObject ProgressButton;
 
     /*
     [Header("References")]
@@ -40,21 +44,10 @@ public class InformationBoxConfigurator : MonoBehaviour
     private void Awake()
     {
         //photonView = GetComponent<PhotonView>();
-        BarchartButton.Enabled = true;
-        ScatterplotButton.Enabled = true;
-        ProgressButton.Enabled = true;
+        //BarchartButton.Enabled = true;
+        //ScatterplotButton.Enabled = true;
+        //ProgressButton.Enabled = true;
         informationBox.SetActive(false);
-        /*
-        if (photonView != null)
-        {
-            name = photonView.Owner.NickName;
-        }
-        else
-        {
-            name = "Wendy";
-            Debug.Log("photonview error");
-        }
-        */
     }
 
     // Start is called before the first frame update
@@ -72,8 +65,10 @@ public class InformationBoxConfigurator : MonoBehaviour
         if (UserManager.Instance.UserRole != UserRoles.TUTOR)
         {
             Debug.Log("button false");
-            BarchartButton.Enabled = false;
-            ScatterplotButton.Enabled = false;
+            //BarchartButton.Enabled = false;
+            //ScatterplotButton.Enabled = false;
+            BarchartButton.SetActive(false);
+            ScatterplotButton.SetActive(false);
         }
     }
 
@@ -87,24 +82,7 @@ public class InformationBoxConfigurator : MonoBehaviour
         informationBox.SetActive(false);
     }
 
-    /*
-    private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
-    {
-        Quaternion targetRotation = Quaternion.identity;
 
-        if (instance != null)
-        {
-            instance.SetActive(true);
-            instance.transform.position = targetPosition;
-            instance.transform.rotation = targetRotation;
-        }
-        else
-        {
-            instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
-            instance.transform.parent = table.transform;
-        }
-    }
-    */
     private void InstantiateControl(string prefab, ref GameObject instance, Vector3 targetPosition)
     {
         Quaternion targetRotation = Quaternion.identity;
