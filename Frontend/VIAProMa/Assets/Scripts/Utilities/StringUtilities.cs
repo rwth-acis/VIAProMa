@@ -11,11 +11,11 @@ public static class StringUtilities
     }
 
     /// <summary>
-    /// Determines if the given word contains at least one of the keywords
+    /// Determines if the given word contains at least one of the keywords (case-sensitive)
     /// </summary>
     /// <param name="word">The word to examine</param>
-    /// <param name="keywords">The keywords which the should can contain</param>
-    /// <returns>True if word contains at least one of the keywords</returns>
+    /// <param name="keywords">The keywords which the word should can contain</param>
+    /// <returns>True if word contains at least one of the keywords and the case matches</returns>
     public static bool ContainsAny(string word, string[] keywords)
     {
         foreach(string keyword in keywords)

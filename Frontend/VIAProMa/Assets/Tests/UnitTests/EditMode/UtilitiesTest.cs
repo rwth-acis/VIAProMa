@@ -45,13 +45,12 @@ namespace Tests
             // Arrange
             string word = "Rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz";
             string[] keywords = { "Fleisch" };
-            bool expected = true; // Technically, the keyword is contained, but not in capital
 
             // Act
             bool result = StringUtilities.ContainsAny(word, keywords);
 
             // Assert
-            Assert.AreEqual(expected, result);
+            Assert.IsFalse(result); // Although technically the keyword is contained, the case does not match
         }
 
         [Test]
