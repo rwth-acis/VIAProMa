@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class UtilitiesTest
+    public class UtilitiesEditModeTests
     {
         /// <summary>
         /// Tests the Utility function which removes special characters from strings

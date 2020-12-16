@@ -9,7 +9,7 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class NewTestScript
+    public class UtilitiesPlayModeTests
     {
         private GameObject testObject;
         private ConstantRotation constantRotation;
