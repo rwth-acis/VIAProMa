@@ -54,6 +54,7 @@ namespace Tests
             Assert.AreEqual(expected, result);
         }
 
+        [Test]
         public void StringUtilities_ContainsAny_EmptyKeywordTest()
         {
             // Arrange

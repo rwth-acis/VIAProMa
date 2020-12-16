@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Assigns a random color to the object's material
 /// </summary>
+//[RequireComponent(typeof(Renderer))]
 public class RandomColor : MonoBehaviour
 {
     [SerializeField] private bool updateOnEnable = true;
