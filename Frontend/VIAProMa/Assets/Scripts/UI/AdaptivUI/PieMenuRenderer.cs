@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PieMenuRenderer : MonoBehaviour
 {
-    int numberItems = 15;
+    
     [SerializeField]
     GameObject piemenuPiecePrefab;
     [SerializeField]
@@ -13,12 +13,15 @@ public class PieMenuRenderer : MonoBehaviour
     [SerializeField]
     Color highlightColor;
 
+    List<MenuEntry> menuEntries;
     List<Image> pieceImages;
     Image currentlyHighlighted;
     int test = 0;
     // Start is called before the first frame update
     void Start()
     {
+        menuEntries = new List<MenuEntry>(PieMenuManager.Instance.menuEntries);
+        int numberItems = menuEntries.Count;
         pieceImages = new List<Image>();
         for (int i = 0; i < numberItems; i++)
         {
@@ -34,7 +37,7 @@ public class PieMenuRenderer : MonoBehaviour
 
     float entryNumberToRotation(int number)
     {
-        return ((float)number / numberItems) * 360;
+        return ((float)number / menuEntries.Count) * 360;
     }
 
     void highlightPiece(int i)
@@ -56,19 +59,19 @@ public class PieMenuRenderer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (System.DateTime.Now.Second % 2 == 0 && !alreadyUpdated)
-        {
-            highlightPiece(test);
-            test++;
-            if (test >= numberItems)
-            {
-                test = 0;
-            }
-            alreadyUpdated = true;
-        }
-        else if(System.DateTime.Now.Second % 2 != 0)
-        {
-            alreadyUpdated = false;
-        }
+        //if (System.DateTime.Now.Second % 2 == 0 && !alreadyUpdated)
+        //{
+        //    highlightPiece(test);
+        //    test++;
+        //    if (test >= menuEntries.Count)
+        //    {
+        //        test = 0;
+        //    }
+        //    alreadyUpdated = true;
+        //}
+        //else if(System.DateTime.Now.Second % 2 != 0)
+        //{
+        //    alreadyUpdated = false;
+        //}
     }
 }

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
+using HoloToolkit.Unity;
 
-public class PieMenuManager : MonoBehaviour
+
+
+public class PieMenuManager : Singleton<PieMenuManager>
 {
     [SerializeField]
     GameObject pieMenuPrefab;
@@ -11,13 +14,16 @@ public class PieMenuManager : MonoBehaviour
     GameObject instantiatedPieMenu;
     IMixedRealityPointer pointer;
     IMixedRealityInputSource invokingSource;
-    // Start is called before the first frame update
+
+    [SerializeField]
+    public List<MenuEntry> menuEntries;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         if (instantiatedPieMenu != null)
@@ -34,6 +40,8 @@ public class PieMenuManager : MonoBehaviour
             pointer = eventData.InputSource.Pointers[0];
             invokingSource = eventData.InputSource;
             instantiatedPieMenu = Instantiate(pieMenuPrefab, pointer.Position, pointer.Rotation);
+
+            menuEntries[0].toolAction.Invoke(null);
         }
     }
 
