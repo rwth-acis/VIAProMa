@@ -14,6 +14,12 @@ public class PieMenuManager : Singleton<PieMenuManager>
     GameObject mainCamera;
 
     GameObject instantiatedPieMenu;
+
+    //Variables for the projection process
+    Vector3 transformedPieMenuPosition;
+    Matrix4x4 planeToStandart;
+    Matrix4x4 standartToPlane;
+
     IMixedRealityPointer pointer;
     IMixedRealityInputSource invokingSource;
 
@@ -30,25 +36,29 @@ public class PieMenuManager : Singleton<PieMenuManager>
 
     void Update()
     {
+        //CalculatePieceID(Vector3.up);
         if (instantiatedPieMenu != null)
         {
-            //instantiatedPieMenu.transform.LookAt(mainCamera.transform);
             //Project the pointer on the plane formed by the pie menu
-            Vector3 pieMenuPosition = instantiatedPieMenu.transform.position;
-            Vector3 direction = instantiatedPieMenu.transform.rotation * Vector3.right;
-            Vector3 up = instantiatedPieMenu.transform.rotation * Vector3.up;
-            Vector3 normal = instantiatedPieMenu.transform.rotation * Vector3.forward;
-
-            Matrix4x4 planeToStandart = new Matrix4x4(direction, up, normal, new Vector4(0,0,0,1));
-            Matrix4x4 standartToPlane = planeToStandart.inverse;
-
             Vector3 projectedPoint = pointer.Position;
             projectedPoint = standartToPlane * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
-            projectedPoint.z = (standartToPlane * new Vector4(pieMenuPosition.x, pieMenuPosition.y, pieMenuPosition.z)).z;
-            projectedPoint = planeToStandart * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
+            projectedPoint.z = 0;
 
-            test.transform.position = projectedPoint;
+            test.transform.position = planeToStandart * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
+            int i = CalculatePieceID(projectedPoint);
+            instantiatedPieMenu.SendMessage("highlightPiece", CalculatePieceID(projectedPoint));
         }
+    }
+
+    int CalculatePieceID(Vector2 projectedPointer)
+    {
+        float angle = Vector2.SignedAngle(Vector2.down, projectedPointer);
+        if (angle < 0)
+        {
+            angle = 360 + angle;
+        }
+        int i = (int)(angle / 360 * menuEntries.Count);
+        return i;
     }
 
     public void MenuOpen(BaseInputEventData eventData)
@@ -60,7 +70,15 @@ public class PieMenuManager : Singleton<PieMenuManager>
             invokingSource = eventData.InputSource;
             instantiatedPieMenu = Instantiate(pieMenuPrefab, pointer.Position, Quaternion.identity);
             instantiatedPieMenu.transform.LookAt(mainCamera.transform);
-            menuEntries[0].toolAction.Invoke(null);
+
+            Vector3 pieMenuPosition = instantiatedPieMenu.transform.position;
+            Vector3 direction = instantiatedPieMenu.transform.rotation * Vector3.right;
+            Vector3 up = instantiatedPieMenu.transform.rotation * Vector3.up;
+            Vector3 normal = instantiatedPieMenu.transform.rotation * Vector3.forward;
+
+            planeToStandart = new Matrix4x4(direction, up, normal, new Vector4(pieMenuPosition.x, pieMenuPosition.y, pieMenuPosition.z, 1));
+            standartToPlane = planeToStandart.inverse;
+            transformedPieMenuPosition = standartToPlane * new Vector4(pieMenuPosition.x, pieMenuPosition.y, pieMenuPosition.z);
         }
     }
 

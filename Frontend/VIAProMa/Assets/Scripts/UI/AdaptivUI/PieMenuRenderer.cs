@@ -32,7 +32,7 @@ public class PieMenuRenderer : MonoBehaviour
             piece.transform.Rotate(new Vector3(0,0, entryNumberToRotation(i)),Space.Self);
             pieceImages.Add(pieceImage);
         }
-        highlightPiece(0);
+        //highlightPiece(0);
     }
 
     float entryNumberToRotation(int number)
@@ -40,22 +40,25 @@ public class PieMenuRenderer : MonoBehaviour
         return ((float)number / menuEntries.Count) * 360;
     }
 
-    void highlightPiece(int i)
+    public void highlightPiece(int i)
     {
-        pieceImages[i].color = highlightColor;
-        Transform piece = pieceImages[i].transform.parent.parent;
-        piece.localScale = Vector3.Scale(piece.localScale, new Vector3(1.2f,1.2f,1));
-
-        if (currentlyHighlighted != null)
+        if (pieceImages[i] != currentlyHighlighted)
         {
-            currentlyHighlighted.color = normalColor;
-            piece = currentlyHighlighted.transform.parent.parent;
-            piece.localScale = Vector3.Scale(piece.localScale, new Vector3(1/1.2f, 1/1.2f, 1));
+            pieceImages[i].color = highlightColor;
+            Transform piece = pieceImages[i].transform.parent.parent;
+            piece.localScale = Vector3.Scale(piece.localScale, new Vector3(1.2f, 1.2f, 1));
+
+            if (currentlyHighlighted != null)
+            {
+                currentlyHighlighted.color = normalColor;
+                piece = currentlyHighlighted.transform.parent.parent;
+                piece.localScale = Vector3.Scale(piece.localScale, new Vector3(1 / 1.2f, 1 / 1.2f, 1));
+            }
+            currentlyHighlighted = pieceImages[i]; 
         }
-        currentlyHighlighted = pieceImages[i];
     }
 
-    bool alreadyUpdated = false;
+    //bool alreadyUpdated = false;
     // Update is called once per frame
     void Update()
     {
