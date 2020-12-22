@@ -10,6 +10,8 @@ public class PieMenuManager : Singleton<PieMenuManager>
 {
     [SerializeField]
     GameObject pieMenuPrefab;
+    [SerializeField]
+    GameObject mainCamera;
 
     GameObject instantiatedPieMenu;
     IMixedRealityPointer pointer;
@@ -29,6 +31,7 @@ public class PieMenuManager : Singleton<PieMenuManager>
         if (instantiatedPieMenu != null)
         {
             Debug.Log(pointer.Position);
+            instantiatedPieMenu.transform.LookAt(mainCamera.transform);
         }
     }
 
@@ -39,8 +42,10 @@ public class PieMenuManager : Singleton<PieMenuManager>
         {
             pointer = eventData.InputSource.Pointers[0];
             invokingSource = eventData.InputSource;
-            instantiatedPieMenu = Instantiate(pieMenuPrefab, pointer.Position, pointer.Rotation);
-
+            //Quaternion rotation = new Quaternion();
+            //rotation.eulerAngles.Set(0, pointer.Rotation.eulerAngles.y, 0);
+            instantiatedPieMenu = Instantiate(pieMenuPrefab, pointer.Position, Quaternion.identity);
+            instantiatedPieMenu.transform.LookAt(mainCamera.transform);
             menuEntries[0].toolAction.Invoke(null);
         }
     }
