@@ -42,8 +42,6 @@ public class PieMenuManager : Singleton<PieMenuManager>
         {
             pointer = eventData.InputSource.Pointers[0];
             invokingSource = eventData.InputSource;
-            //Quaternion rotation = new Quaternion();
-            //rotation.eulerAngles.Set(0, pointer.Rotation.eulerAngles.y, 0);
             instantiatedPieMenu = Instantiate(pieMenuPrefab, pointer.Position, Quaternion.identity);
             instantiatedPieMenu.transform.LookAt(mainCamera.transform);
             menuEntries[0].toolAction.Invoke(null);
@@ -53,7 +51,7 @@ public class PieMenuManager : Singleton<PieMenuManager>
     public void MenuClose(BaseInputEventData eventData)
     {
         //Only the input source that opend the menu can close it again
-        if (invokingSource == null || eventData.InputSource == invokingSource)
+        if ((invokingSource == null || eventData.InputSource == invokingSource) && instantiatedPieMenu != null)
         {
             Destroy(instantiatedPieMenu);
             invokingSource = null;
