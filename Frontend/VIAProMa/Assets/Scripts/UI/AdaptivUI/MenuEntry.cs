@@ -18,7 +18,7 @@ using UnityEngine.Events;
 public struct MenuEntry
 {
     [SerializeField]
-    Sprite icon;
+    public Sprite icon;
 
     [SerializeField]
     public MixedRealityInputAction InputAction;
