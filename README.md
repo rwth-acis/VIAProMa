@@ -12,14 +12,14 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
 
 #### Prerequisites
 
-- Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2018.3.14f1
+- Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2018.4.15f1
 - [Microsoft Mixed Reality Toolkit v2.4.0](https://github.com/microsoft/MixedRealityToolkit-Unity/releases/tag/v2.4.0) (already included in the project)
 - [Photon PUN 2](https://assetstore.unity.com/packages/tools/network/pun-2-free-119922) (download through Unity's asset store window in the editor)
 - Visual Studio (tested with VS 2017)
 - For HoloLens Development:
   - Windows 10 development machine
   - Windows 10 SDK ([10.0.18362.0](https://developer.microsoft.com/de-de/windows/downloads/windows-10-sdk))
-  For Android Development:
+- For Android Development:
   - [ARCore SDK](https://github.com/google-ar/arcore-unity-sdk/releases) (tested with ARCore SDK for Unity v1.12.0)
   - Android SDK 7.0 (API Level 24) or later
 
