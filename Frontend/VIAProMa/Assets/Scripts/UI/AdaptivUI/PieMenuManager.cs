@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using HoloToolkit.Unity;
 
@@ -26,17 +27,24 @@ public class PieMenuManager : Singleton<PieMenuManager>
     [SerializeField]
     public List<MenuEntry> menuEntries;
 
-    public GameObject test;
+    int currentlyHighlighted;
+
+    public GameObject menuCursor;
+    GameObject instiatedMenuCursor;
+
+    //Dictionary<IMixedRealityInputSource, VirtualTool> virtualTools;
+    VirtualTool virtualTool;
+    [SerializeField]
+    GameObject virtualToolPrefab;
 
     void Start()
     {
-        
+
     }
 
 
     void Update()
     {
-        //CalculatePieceID(Vector3.up);
         if (instantiatedPieMenu != null)
         {
             //Project the pointer on the plane formed by the pie menu
@@ -44,9 +52,9 @@ public class PieMenuManager : Singleton<PieMenuManager>
             projectedPoint = standartToPlane * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
             projectedPoint.z = 0;
 
-            test.transform.position = planeToStandart * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
-            int i = CalculatePieceID(projectedPoint);
-            instantiatedPieMenu.SendMessage("highlightPiece", CalculatePieceID(projectedPoint));
+            instiatedMenuCursor.transform.position = planeToStandart * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
+            currentlyHighlighted = CalculatePieceID(projectedPoint);
+            instantiatedPieMenu.SendMessage("highlightPiece", currentlyHighlighted);
         }
     }
 
@@ -79,19 +87,32 @@ public class PieMenuManager : Singleton<PieMenuManager>
             planeToStandart = new Matrix4x4(direction, up, normal, new Vector4(pieMenuPosition.x, pieMenuPosition.y, pieMenuPosition.z, 1));
             standartToPlane = planeToStandart.inverse;
             transformedPieMenuPosition = standartToPlane * new Vector4(pieMenuPosition.x, pieMenuPosition.y, pieMenuPosition.z);
+
+            instiatedMenuCursor = Instantiate(menuCursor);
         }
     }
 
     public void MenuClose(BaseInputEventData eventData)
     {
         //Only the input source that opend the menu can close it again
-        if ((invokingSource == null || eventData.InputSource == invokingSource) && instantiatedPieMenu != null)
+        if (eventData.InputSource == invokingSource && instantiatedPieMenu != null)
         {
+            if (virtualTool != null)
+            {
+                Destroy(virtualTool);
+            }
+            virtualTool = Instantiate(virtualToolPrefab).GetComponent<VirtualTool>();
+
+            virtualTool.inputSource = invokingSource;
+            MenuEntry currentEntry = menuEntries[currentlyHighlighted];
+            virtualTool.InputAction = currentEntry.InputAction;
+            virtualTool.OnInputActionStarted = currentEntry.toolActionOnSelectStart;
+            virtualTool.OnInputActionEnded = currentEntry.toolActionOnSelectEnd;
+
             Destroy(instantiatedPieMenu);
             invokingSource = null;
+
+            Destroy(instiatedMenuCursor);
         }
     }
-
-    public void TestAct()
-    { }
 }

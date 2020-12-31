@@ -20,7 +20,11 @@ public struct MenuEntry
     [SerializeField]
     Sprite icon;
 
-    public VirtialToolEvent toolAction;
+    [SerializeField]
+    public MixedRealityInputAction InputAction;
+
+    public InputActionUnityEvent toolActionOnSelectStart;
+    public InputActionUnityEvent toolActionOnSelectEnd;
 }
 
 public class VirtualToolEventData
