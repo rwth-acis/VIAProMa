@@ -1,425 +1,431 @@
-﻿using Photon.Pun;
+﻿using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.Multiplayer.Common;
+using i5.VIAProMa.Utilities;
+using i5.VIAProMa.WebConnection;
+using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-/// <summary>
-/// Class for synchronizing the issue shelf
-/// </summary>
-public class IssueShelfSynchronizer : TransformSynchronizer
+namespace i5.VIAProMa.Shelves.IssueShelf
 {
-    [Tooltip("Reference to the configuration menu")]
-    [SerializeField] private ShelfConfigurationMenu configurationMenu;
-
-    private IssuesLoader issueLoader;
-
-    private int remoteSynchronizations = 0;
-    private bool initialized = false;
-
     /// <summary>
-    /// If true, a remote synchronization is currently taking place
+    /// Class for synchronizing the issue shelf
     /// </summary>
-    private bool RemoteSynchronizationInProgress { get => remoteSynchronizations > 0; }
-
-    /// <summary>
-    /// Initializes the component
-    /// </summary>
-    private void Awake()
+    public class IssueShelfSynchronizer : TransformSynchronizer
     {
-        if (configurationMenu == null)
+        [Tooltip("Reference to the configuration menu")]
+        [SerializeField] private ShelfConfigurationMenu configurationMenu;
+
+        private IssuesLoader issueLoader;
+
+        private int remoteSynchronizations = 0;
+        private bool initialized = false;
+
+        /// <summary>
+        /// If true, a remote synchronization is currently taking place
+        /// </summary>
+        private bool RemoteSynchronizationInProgress { get => remoteSynchronizations > 0; }
+
+        /// <summary>
+        /// Initializes the component
+        /// </summary>
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(configurationMenu));
+            if (configurationMenu == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(configurationMenu));
+            }
+            issueLoader = GetComponent<IssuesLoader>();
         }
-        issueLoader = GetComponent<IssuesLoader>();
-    }
 
-    /// <summary>
-    /// Checks if the component it the master client
-    /// </summary>
-    private async void Start()
-    {
-        if (PhotonNetwork.IsMasterClient)
+        /// <summary>
+        /// Checks if the component it the master client
+        /// </summary>
+        private async void Start()
         {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                initialized = true;
+                await SendInitializationData();
+            }
+        }
+
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            Debug.Log("OnEnable: remotesynchronizations " + remoteSynchronizations + "; initialized: " + initialized);
+            if (!RemoteSynchronizationInProgress && initialized && PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("SetActive", RpcTarget.Others, true);
+            }
+            configurationMenu.SourceChanged += OnSourceChanged;
+            configurationMenu.ReqBazProjectChanged += OnReqBazProjectChanged;
+            configurationMenu.ReqBazCategoryChanged += OnReqBazCategoryChanged;
+            configurationMenu.GitHubOwnerChanged += OnGitHubOwnerChanged;
+            configurationMenu.GitHubProjectChanged += OnGitHubProjectChanged;
+            configurationMenu.WindowOpened += OnConfigWindowOpened;
+            configurationMenu.WindowClosed += OnConfigWindowClosed;
+            issueLoader.PageChanged += OnPageChanged;
+            issueLoader.SearchFieldChanged += OnSearchFieldChanged;
+        }
+
+        public override void OnDisable()
+        {
+            if (!RemoteSynchronizationInProgress && PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("SetActive", RpcTarget.Others, false);
+            }
+            configurationMenu.SourceChanged -= OnSourceChanged;
+            configurationMenu.ReqBazProjectChanged -= OnReqBazProjectChanged;
+            configurationMenu.ReqBazCategoryChanged -= OnReqBazCategoryChanged;
+            configurationMenu.GitHubOwnerChanged -= OnGitHubOwnerChanged;
+            configurationMenu.GitHubProjectChanged -= OnGitHubProjectChanged;
+            configurationMenu.WindowOpened -= OnConfigWindowOpened;
+            configurationMenu.WindowClosed -= OnConfigWindowClosed;
+            issueLoader.PageChanged -= OnPageChanged;
+            issueLoader.SearchFieldChanged -= OnSearchFieldChanged;
+            base.OnDisable();
+        }
+
+        public override async void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
+            {
+                await SendInitializationData();
+            }
+        }
+
+        private async Task SendInitializationData()
+        {
+            if (!PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+            short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
+            short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
+            short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
+
+            // the master client informs the new player about the current status
+            if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+            {
+                ReqBazShelfConfiguration config = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
+                short selectedProjectId;
+                if (config.SelectedProject == null)
+                {
+                    selectedProjectId = -1;
+                }
+                else
+                {
+                    selectedProjectId = (short)config.SelectedProject.id;
+                }
+                short selectedCategoryId;
+                if (config.SelectedCategory == null)
+                {
+                    selectedCategoryId = -1;
+                }
+                else
+                {
+                    selectedCategoryId = (short)config.SelectedCategory.id;
+                }
+
+                photonView.RPC("Initialize", RpcTarget.Others,
+                gameObject.activeSelf,
+                configurationMenu.WindowOpen,
+                (byte)config.SelectedSource,
+                selectedProjectId,
+                selectedCategoryId,
+                gitHubOwnerStringId,
+                gitHubProjectStringId,
+                (short)issueLoader.Page,
+                searchStringId
+                );
+            }
+            else
+            {
+                photonView.RPC("Initialize", RpcTarget.Others,
+                gameObject.activeSelf,
+                configurationMenu.WindowOpen,
+                (byte)configurationMenu.ShelfConfiguration.SelectedSource,
+                (short)-1,
+                (short)-1,
+                gitHubOwnerStringId,
+                gitHubProjectStringId,
+                (short)issueLoader.Page,
+                searchStringId
+                );
+            }
+        }
+
+        [PunRPC]
+        private async void Initialize(
+            bool activeState,
+            bool configWindowOpen,
+            byte sourceId,
+            short reqBazProjectId,
+            short reqBazCategoryId,
+            short gitHubOwnerStringId,
+            short gitHubProjectStringId,
+            short page,
+            short searchStringId
+            )
+        {
+            Debug.Log("RPC: initialize the issue shelf");
+
+            remoteSynchronizations++;
+
+            configurationMenu.ExternallyInitialized = true;
+            await configurationMenu.Initialize();
+
+            // initializes the configuration
+            SetActive(activeState);
+            SetConfigWindow(configWindowOpen);
+            if (reqBazProjectId != -1)
+            {
+                await SetReqBazProject(reqBazProjectId);
+            }
+            if (reqBazCategoryId != -1)
+            {
+                SetReqBazCategory(reqBazCategoryId);
+            }
+            await SetGitHubOwner(gitHubOwnerStringId);
+            await SetGitHubProject(gitHubProjectStringId);
+            SetPage(page);
+            SetSearchField(searchStringId);
+
+            await SetSource(sourceId); // source must be set last because the individual settings for ReqBaz and GitHub also change the source
+
+            remoteSynchronizations--;
             initialized = true;
-            await SendInitializationData();
+            Debug.Log("Client is now initialized.");
         }
-    }
 
-    public override void OnEnable()
-    {
-        base.OnEnable();
-        Debug.Log("OnEnable: remotesynchronizations " + remoteSynchronizations + "; initialized: " + initialized);
-        if (!RemoteSynchronizationInProgress && initialized && PhotonNetwork.IsConnected)
+        [PunRPC]
+        private async void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
         {
-            photonView.RPC("SetActive", RpcTarget.Others, true);
+            remoteSynchronizations++;
+            Debug.Log("RPC: set string ids to " + gitHubOwnerStringId + " and " + gitHubProjectStringId, gameObject);
+            await SetGitHubOwner(gitHubOwnerStringId);
+            await SetGitHubProject(gitHubProjectStringId);
+            remoteSynchronizations--;
         }
-        configurationMenu.SourceChanged += OnSourceChanged;
-        configurationMenu.ReqBazProjectChanged += OnReqBazProjectChanged;
-        configurationMenu.ReqBazCategoryChanged += OnReqBazCategoryChanged;
-        configurationMenu.GitHubOwnerChanged += OnGitHubOwnerChanged;
-        configurationMenu.GitHubProjectChanged += OnGitHubProjectChanged;
-        configurationMenu.WindowOpened += OnConfigWindowOpened;
-        configurationMenu.WindowClosed += OnConfigWindowClosed;
-        issueLoader.PageChanged += OnPageChanged;
-        issueLoader.SearchFieldChanged += OnSearchFieldChanged;
-    }
 
-    public override void OnDisable()
-    {
-        if (!RemoteSynchronizationInProgress && PhotonNetwork.IsConnected)
+        [PunRPC]
+        private void SetActive(bool active)
         {
-            photonView.RPC("SetActive", RpcTarget.Others, false);
+            remoteSynchronizations++;
+            Debug.Log("RPC: set issue shelf active to " + active, gameObject);
+            gameObject.SetActive(active);
+            remoteSynchronizations--;
         }
-        configurationMenu.SourceChanged -= OnSourceChanged;
-        configurationMenu.ReqBazProjectChanged -= OnReqBazProjectChanged;
-        configurationMenu.ReqBazCategoryChanged -= OnReqBazCategoryChanged;
-        configurationMenu.GitHubOwnerChanged -= OnGitHubOwnerChanged;
-        configurationMenu.GitHubProjectChanged -= OnGitHubProjectChanged;
-        configurationMenu.WindowOpened -= OnConfigWindowOpened;
-        configurationMenu.WindowClosed -= OnConfigWindowClosed;
-        issueLoader.PageChanged -= OnPageChanged;
-        issueLoader.SearchFieldChanged -= OnSearchFieldChanged;
-        base.OnDisable();
-    }
 
-    public override async void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
+        [PunRPC]
+        private async Task SetSource(byte sourceId)
         {
-            await SendInitializationData();
+            remoteSynchronizations++;
+            Debug.Log("RPC: set data source to " + sourceId, gameObject);
+            await configurationMenu.SetDataSource((DataSource)sourceId);
+            remoteSynchronizations--;
         }
-    }
 
-    private async Task SendInitializationData()
-    {
-        if (!PhotonNetwork.IsConnected)
+        [PunRPC]
+        private async Task SetReqBazProject(short projectId)
         {
-            return;
-        }
-        short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
-        short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
-        short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
-
-        // the master client informs the new player about the current status
-        if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
-        {
-            ReqBazShelfConfiguration config = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
-            short selectedProjectId;
-            if (config.SelectedProject == null)
+            remoteSynchronizations++;
+            if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
             {
-                selectedProjectId = -1;
+                await configurationMenu.SetReqBazProject(projectId);
             }
             else
             {
-                selectedProjectId = (short)config.SelectedProject.id;
+                Debug.LogError("RPC tried to change Requirements Bazaar project but Requirements Bazaar is not selected as source.", gameObject);
             }
-            short selectedCategoryId;
-            if (config.SelectedCategory == null)
+            remoteSynchronizations--;
+        }
+
+        [PunRPC]
+        private void SetReqBazCategory(short categoryId)
+        {
+            remoteSynchronizations++;
+            if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
             {
-                selectedCategoryId = -1;
+                configurationMenu.SetReqBazCategory(categoryId);
             }
             else
             {
-                selectedCategoryId = (short)config.SelectedCategory.id;
+                Debug.LogError("RPC tried to change Requirements Bazaar project but Requirements Bazaar is not selected as source.", gameObject);
             }
-
-            photonView.RPC("Initialize", RpcTarget.Others,
-            gameObject.activeSelf,
-            configurationMenu.WindowOpen,
-            (byte)config.SelectedSource,
-            selectedProjectId,
-            selectedCategoryId,
-            gitHubOwnerStringId,
-            gitHubProjectStringId,
-            (short)issueLoader.Page,
-            searchStringId
-            );
-        }
-        else
-        {
-            photonView.RPC("Initialize", RpcTarget.Others,
-            gameObject.activeSelf,
-            configurationMenu.WindowOpen,
-            (byte)configurationMenu.ShelfConfiguration.SelectedSource,
-            (short)-1,
-            (short)-1,
-            gitHubOwnerStringId,
-            gitHubProjectStringId,
-            (short)issueLoader.Page,
-            searchStringId
-            );
-        }
-    }
-
-    [PunRPC]
-    private async void Initialize(
-        bool activeState,
-        bool configWindowOpen,
-        byte sourceId,
-        short reqBazProjectId,
-        short reqBazCategoryId,
-        short gitHubOwnerStringId,
-        short gitHubProjectStringId,
-        short page,
-        short searchStringId
-        )
-    {
-        Debug.Log("RPC: initialize the issue shelf");
-
-        remoteSynchronizations++;
-
-        configurationMenu.ExternallyInitialized = true;
-        await configurationMenu.Initialize();
-
-        // initializes the configuration
-        SetActive(activeState);
-        SetConfigWindow(configWindowOpen);
-        if (reqBazProjectId != -1)
-        {
-            await SetReqBazProject(reqBazProjectId);
-        }
-        if (reqBazCategoryId != -1)
-        {
-            SetReqBazCategory(reqBazCategoryId);
-        }
-        await SetGitHubOwner(gitHubOwnerStringId);
-        await SetGitHubProject(gitHubProjectStringId);
-        SetPage(page);
-        SetSearchField(searchStringId);
-
-        await SetSource(sourceId); // source must be set last because the individual settings for ReqBaz and GitHub also change the source
-
-        remoteSynchronizations--;
-        initialized = true;
-        Debug.Log("Client is now initialized.");
-    }
-
-    [PunRPC]
-    private async void SetStringIds(short gitHubOwnerStringId, short gitHubProjectStringId)
-    {
-        remoteSynchronizations++;
-        Debug.Log("RPC: set string ids to " + gitHubOwnerStringId + " and " + gitHubProjectStringId, gameObject);
-        await SetGitHubOwner(gitHubOwnerStringId);
-        await SetGitHubProject(gitHubProjectStringId);
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private void SetActive(bool active)
-    {
-        remoteSynchronizations++;
-        Debug.Log("RPC: set issue shelf active to " + active, gameObject);
-        gameObject.SetActive(active);
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private async Task SetSource(byte sourceId)
-    {
-        remoteSynchronizations++;
-        Debug.Log("RPC: set data source to " + sourceId, gameObject);
-        await configurationMenu.SetDataSource((DataSource)sourceId);
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private async Task SetReqBazProject(short projectId)
-    {
-        remoteSynchronizations++;
-        if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
-        {
-            await configurationMenu.SetReqBazProject(projectId);
-        }
-        else
-        {
-            Debug.LogError("RPC tried to change Requirements Bazaar project but Requirements Bazaar is not selected as source.", gameObject);
-        }
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private void SetReqBazCategory(short categoryId)
-    {
-        remoteSynchronizations++;
-        if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
-        {
-            configurationMenu.SetReqBazCategory(categoryId);
-        }
-        else
-        {
-            Debug.LogError("RPC tried to change Requirements Bazaar project but Requirements Bazaar is not selected as source.", gameObject);
-        }
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private async Task SetGitHubOwner(short gitHubOwnerStringId)
-    {
-        remoteSynchronizations++;
-        string gitHubOwner = await NetworkedStringManager.GetString(gitHubOwnerStringId);
-        Debug.Log("RPC: set GitHubOwner to " + gitHubOwner, gameObject);
-        configurationMenu.SetGitHubOwner(gitHubOwner);
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private async Task SetGitHubProject(short gitHubProjectStringId)
-    {
-        remoteSynchronizations++;
-        string gitHubProject = await NetworkedStringManager.GetString(gitHubProjectStringId);
-        Debug.Log("RPC: set GitHubProject to " + gitHubProject, gameObject);
-        configurationMenu.SetGitHubProject(gitHubProject);
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private void SetConfigWindow(bool open)
-    {
-        remoteSynchronizations++;
-        Debug.Log("RPC: set Configuration Window open to " + open);
-        if (open)
-        {
-            configurationMenu.Open();
-        }
-        else
-        {
-            configurationMenu.Close();
-        }
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private void SetPage(short page)
-    {
-        remoteSynchronizations++;
-        Debug.Log("RPC: set page to " + page);
-        issueLoader.Page = page;
-        remoteSynchronizations--;
-    }
-
-    [PunRPC]
-    private async void SetSearchField(short searchStringId)
-    {
-        remoteSynchronizations++;
-        string searchString = await NetworkedStringManager.GetString(searchStringId);
-        Debug.Log("RPC: set search field to " + searchString);
-        issueLoader.SearchFilter = searchString;
-        remoteSynchronizations--;
-    }
-
-    private void OnSourceChanged(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
-        {
-            return;
-        }
-        photonView.RPC("SetSource", RpcTarget.Others, (byte)configurationMenu.ShelfConfiguration.SelectedSource);
-    }
-
-    private void OnReqBazProjectChanged(object sender, EventArgs e)
-    {
-        Debug.Log("REQ Baz Project changed; remotesync in progress: " + remoteSynchronizations);
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
-        {
-            return;
+            remoteSynchronizations--;
         }
 
-        if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+        [PunRPC]
+        private async Task SetGitHubOwner(short gitHubOwnerStringId)
         {
-            short projectId = (short)((ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration).SelectedProject.id;
-            photonView.RPC("SetReqBazProject", RpcTarget.Others, projectId);
-        }
-        else
-        {
-            Debug.LogError("Tried to send RPC for changed Requirements Bazaar project but Requirements Bazaar is not selected as data source");
-        }
-    }
-
-    private void OnReqBazCategoryChanged(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
-        {
-            return;
+            remoteSynchronizations++;
+            string gitHubOwner = await NetworkedStringManager.GetString(gitHubOwnerStringId);
+            Debug.Log("RPC: set GitHubOwner to " + gitHubOwner, gameObject);
+            configurationMenu.SetGitHubOwner(gitHubOwner);
+            remoteSynchronizations--;
         }
 
-        if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+        [PunRPC]
+        private async Task SetGitHubProject(short gitHubProjectStringId)
         {
-            short categoryId;
-            Category selectedCategory = ((ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration).SelectedCategory;
-            if (selectedCategory == null)
+            remoteSynchronizations++;
+            string gitHubProject = await NetworkedStringManager.GetString(gitHubProjectStringId);
+            Debug.Log("RPC: set GitHubProject to " + gitHubProject, gameObject);
+            configurationMenu.SetGitHubProject(gitHubProject);
+            remoteSynchronizations--;
+        }
+
+        [PunRPC]
+        private void SetConfigWindow(bool open)
+        {
+            remoteSynchronizations++;
+            Debug.Log("RPC: set Configuration Window open to " + open);
+            if (open)
             {
-                categoryId = -1;
+                configurationMenu.Open();
             }
             else
             {
-                categoryId = (short)((ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration).SelectedCategory.id;
+                configurationMenu.Close();
             }
-            photonView.RPC("SetReqBazCategory", RpcTarget.Others, categoryId);
-        }
-        else
-        {
-            Debug.LogError("Tried to send RPC for changed Requirements Bazaar category but Requirements Bazaar is not selected as data source");
-        }
-    }
-
-    private async void OnGitHubOwnerChanged(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
-        {
-            return;
-        }
-        short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
-        photonView.RPC("SetGitHubOwner", RpcTarget.Others, gitHubOwnerStringId);
-    }
-
-    private async void OnGitHubProjectChanged(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
-        {
-            return;
+            remoteSynchronizations--;
         }
 
-        short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
-        photonView.RPC("SetGitHubProject", RpcTarget.Others, gitHubProjectStringId);
-    }
-
-    private void OnConfigWindowOpened(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+        [PunRPC]
+        private void SetPage(short page)
         {
-            return;
+            remoteSynchronizations++;
+            Debug.Log("RPC: set page to " + page);
+            issueLoader.Page = page;
+            remoteSynchronizations--;
         }
-        photonView.RPC("SetConfigWindow", RpcTarget.Others, true);
-    }
 
-    private void OnConfigWindowClosed(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+        [PunRPC]
+        private async void SetSearchField(short searchStringId)
         {
-            return;
+            remoteSynchronizations++;
+            string searchString = await NetworkedStringManager.GetString(searchStringId);
+            Debug.Log("RPC: set search field to " + searchString);
+            issueLoader.SearchFilter = searchString;
+            remoteSynchronizations--;
         }
-        photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
-    }
 
-    private void OnPageChanged(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+        private void OnSourceChanged(object sender, EventArgs e)
         {
-            return;
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+            photonView.RPC("SetSource", RpcTarget.Others, (byte)configurationMenu.ShelfConfiguration.SelectedSource);
         }
-        photonView.RPC("SetPage", RpcTarget.Others, (short)issueLoader.Page);
-    }
 
-    private async void OnSearchFieldChanged(object sender, EventArgs e)
-    {
-        if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+        private void OnReqBazProjectChanged(object sender, EventArgs e)
         {
-            return;
+            Debug.Log("REQ Baz Project changed; remotesync in progress: " + remoteSynchronizations);
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+
+            if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+            {
+                short projectId = (short)((ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration).SelectedProject.id;
+                photonView.RPC("SetReqBazProject", RpcTarget.Others, projectId);
+            }
+            else
+            {
+                Debug.LogError("Tried to send RPC for changed Requirements Bazaar project but Requirements Bazaar is not selected as data source");
+            }
         }
-        short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
-        photonView.RPC("SetSearchField", RpcTarget.Others, searchStringId);
+
+        private void OnReqBazCategoryChanged(object sender, EventArgs e)
+        {
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+
+            if (configurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+            {
+                short categoryId;
+                Category selectedCategory = ((ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration).SelectedCategory;
+                if (selectedCategory == null)
+                {
+                    categoryId = -1;
+                }
+                else
+                {
+                    categoryId = (short)((ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration).SelectedCategory.id;
+                }
+                photonView.RPC("SetReqBazCategory", RpcTarget.Others, categoryId);
+            }
+            else
+            {
+                Debug.LogError("Tried to send RPC for changed Requirements Bazaar category but Requirements Bazaar is not selected as data source");
+            }
+        }
+
+        private async void OnGitHubOwnerChanged(object sender, EventArgs e)
+        {
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+            short gitHubOwnerStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubOwner);
+            photonView.RPC("SetGitHubOwner", RpcTarget.Others, gitHubOwnerStringId);
+        }
+
+        private async void OnGitHubProjectChanged(object sender, EventArgs e)
+        {
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+
+            short gitHubProjectStringId = await NetworkedStringManager.StringToId(configurationMenu.GitHubRepository);
+            photonView.RPC("SetGitHubProject", RpcTarget.Others, gitHubProjectStringId);
+        }
+
+        private void OnConfigWindowOpened(object sender, EventArgs e)
+        {
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+            photonView.RPC("SetConfigWindow", RpcTarget.Others, true);
+        }
+
+        private void OnConfigWindowClosed(object sender, EventArgs e)
+        {
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+            photonView.RPC("SetConfigWindow", RpcTarget.Others, false);
+        }
+
+        private void OnPageChanged(object sender, EventArgs e)
+        {
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+            photonView.RPC("SetPage", RpcTarget.Others, (short)issueLoader.Page);
+        }
+
+        private async void OnSearchFieldChanged(object sender, EventArgs e)
+        {
+            if (RemoteSynchronizationInProgress || !initialized || !PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+            short searchStringId = await NetworkedStringManager.StringToId(issueLoader.SearchFilter);
+            photonView.RPC("SetSearchField", RpcTarget.Others, searchStringId);
+        }
     }
 }

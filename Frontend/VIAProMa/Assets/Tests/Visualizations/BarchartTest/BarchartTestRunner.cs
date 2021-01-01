@@ -1,11 +1,12 @@
-﻿using i5.ViaProMa.Visualizations.Common;
+﻿using i5.VIAProMa.Visualizations.Common;
+using i5.VIAProMa.Visualizations.Common.Data.DataSets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BarchartTestRunner : MonoBehaviour
 {
-    public i5.ViaProMa.Visualizations.Diagrams.Barchart barchart;
+    public i5.VIAProMa.Visualizations.Diagrams.Barchart barchart;
     public Vector3 size = Vector3.one;
 
     private void Start()
@@ -28,7 +29,7 @@ public class BarchartTestRunner : MonoBehaviour
         List<string> days = new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
         List<string> months = new List<string>() { "January", "February", "March", "April" };
 
-        i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
+        DataSet dataSet = new DataSet();
         List<string> xValues = new List<string>();
         List<float> yValues = new List<float>();
         List<string> zValues = new List<string>();

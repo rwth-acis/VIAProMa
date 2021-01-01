@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IShiftableKey
+﻿namespace i5.VIAProMa.UI.KeyboardInput
 {
-    void SetShift(bool shiftActive);
+    public interface IShiftableKey
+    {
+        void SetShift(bool shiftActive);
+    }
 }

@@ -1,83 +1,86 @@
-﻿using i5.ViaProMa.UI;
+﻿using i5.VIAProMa.UI;
+using i5.VIAProMa.UI.InputFields;
+using i5.VIAProMa.Utilities;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CommitStatisticsConfigurationWindow : MonoBehaviour, IWindow
+namespace i5.VIAProMa.Visualizations.CommitStatistics
 {
-    [Header("References")]
-    [SerializeField] private CommitStatisticsVisualizer visualization;
-
-    [Header("UI Elements")]
-    [SerializeField] private InputField ownerInputField;
-    [SerializeField] private InputField repositoryInputField;
-
-    public bool WindowEnabled { get; set; }
-
-    public bool WindowOpen { get; private set; }
-
-    public event EventHandler WindowClosed;
-
-    private void Awake()
+    public class CommitStatisticsConfigurationWindow : MonoBehaviour, IWindow
     {
-        if (visualization == null)
+        [Header("References")]
+        [SerializeField] private CommitStatisticsVisualizer visualization;
+
+        [Header("UI Elements")]
+        [SerializeField] private InputField ownerInputField;
+        [SerializeField] private InputField repositoryInputField;
+
+        public bool WindowEnabled { get; set; }
+
+        public bool WindowOpen { get; private set; }
+
+        public event EventHandler WindowClosed;
+
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualization));
+            if (visualization == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualization));
+            }
+            if (ownerInputField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(ownerInputField));
+            }
+            if (repositoryInputField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(repositoryInputField));
+            }
         }
-        if (ownerInputField == null)
+
+        private void Start()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(ownerInputField));
+            ownerInputField.Text = visualization.Owner;
+            repositoryInputField.Text = visualization.Repository;
+            ownerInputField.TextChanged += OwnerChanged;
+            repositoryInputField.TextChanged += RepositoryChanged;
         }
-        if (repositoryInputField == null)
+
+        private void OwnerChanged(object sender, EventArgs e)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(repositoryInputField));
+            repositoryInputField.Text = "";
+            CheckConfiguration();
         }
-    }
 
-    private void Start()
-    {
-        ownerInputField.Text = visualization.Owner;
-        repositoryInputField.Text = visualization.Repository;
-        ownerInputField.TextChanged += OwnerChanged;
-        repositoryInputField.TextChanged += RepositoryChanged;
-    }
-
-    private void OwnerChanged(object sender, EventArgs e)
-    {
-        repositoryInputField.Text = "";
-        CheckConfiguration();
-    }
-
-    private void RepositoryChanged(object sender, EventArgs e)
-    {
-        CheckConfiguration();
-    }
-
-    private void CheckConfiguration()
-    {
-        visualization.Owner = ownerInputField.Text;
-        visualization.Repository = repositoryInputField.Text;
-        if (!string.IsNullOrWhiteSpace(ownerInputField.Text) && !string.IsNullOrWhiteSpace(repositoryInputField.Text))
+        private void RepositoryChanged(object sender, EventArgs e)
         {
-            visualization.UpdateView();
+            CheckConfiguration();
         }
-    }
 
-    public void Close()
-    {
-        gameObject.SetActive(false);
-    }
+        private void CheckConfiguration()
+        {
+            visualization.Owner = ownerInputField.Text;
+            visualization.Repository = repositoryInputField.Text;
+            if (!string.IsNullOrWhiteSpace(ownerInputField.Text) && !string.IsNullOrWhiteSpace(repositoryInputField.Text))
+            {
+                visualization.UpdateView();
+            }
+        }
 
-    public void Open()
-    {
-        gameObject.SetActive(true);
-    }
+        public void Close()
+        {
+            gameObject.SetActive(false);
+        }
 
-    public void Open(Vector3 position, Vector3 eulerAngles)
-    {
-        Open();
-        transform.localPosition = position;
-        transform.localEulerAngles = eulerAngles;
+        public void Open()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Open(Vector3 position, Vector3 eulerAngles)
+        {
+            Open();
+            transform.localPosition = position;
+            transform.localEulerAngles = eulerAngles;
+        }
     }
 }

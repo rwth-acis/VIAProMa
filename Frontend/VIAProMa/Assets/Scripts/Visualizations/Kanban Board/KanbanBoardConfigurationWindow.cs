@@ -1,37 +1,38 @@
-﻿using i5.ViaProMa.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Visualizations.ColorConfigWindow;
 using UnityEngine;
 
-[RequireComponent(typeof(ConfigurationIssueSelectionUI))]
-public class KanbanBoardConfigurationWindow : ConfigurationWindow
+namespace i5.VIAProMa.Visualizations.KanbanBoard
 {
-    [SerializeField] private ConfigurationColorChooser colorChooser;
-
-    private ConfigurationIssueSelectionUI issueSelection;
-
-    public override bool WindowEnabled
+    [RequireComponent(typeof(ConfigurationIssueSelectionUI))]
+    public class KanbanBoardConfigurationWindow : ConfigurationWindow
     {
-        get => base.WindowEnabled;
-        set
-        {
-            base.WindowEnabled = value;
-            issueSelection.UIEnabled = value;
-            colorChooser.UIEnabled = value;
-        }
-    }
+        [SerializeField] private ConfigurationColorChooser colorChooser;
 
-    protected override void Awake()
-    {
-        base.Awake();
-        if (colorChooser == null)
+        private ConfigurationIssueSelectionUI issueSelection;
+
+        public override bool WindowEnabled
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorChooser));
+            get => base.WindowEnabled;
+            set
+            {
+                base.WindowEnabled = value;
+                issueSelection.UIEnabled = value;
+                colorChooser.UIEnabled = value;
+            }
         }
 
-        colorChooser.Setup(visualization);
-        issueSelection = GetComponent<ConfigurationIssueSelectionUI>();
-        issueSelection.Setup(visualization);
+        protected override void Awake()
+        {
+            base.Awake();
+            if (colorChooser == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorChooser));
+            }
+
+            colorChooser.Setup(visualization);
+            issueSelection = GetComponent<ConfigurationIssueSelectionUI>();
+            issueSelection.Setup(visualization);
+        }
     }
 }

@@ -1,42 +1,44 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class SaveData
+namespace i5.VIAProMa.SaveLoadSystem.Core
 {
-    [SerializeField] private int appVersion;
-    [SerializeField] private List<SerializedObject> data;
-
-    public int AppVersion
+    [Serializable]
+    public class SaveData
     {
-        get
+        [SerializeField] private int appVersion;
+        [SerializeField] private List<SerializedObject> data;
+
+        public int AppVersion
         {
-            return appVersion;
+            get
+            {
+                return appVersion;
+            }
+
+            set
+            {
+                appVersion = value;
+            }
         }
 
-        set
+        public List<SerializedObject> Data
         {
-            appVersion = value;
-        }
-    }
+            get
+            {
+                return data;
+            }
 
-    public List<SerializedObject> Data
-    {
-        get
+            set
+            {
+                data = value;
+            }
+        }
+
+        public SaveData(int appVersion)
         {
-            return data;
+            this.appVersion = appVersion;
         }
-
-        set
-        {
-            data = value;
-        }
-    }
-
-    public SaveData(int appVersion)
-    {
-        this.appVersion = appVersion;
     }
 }

@@ -1,34 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Assigns a random color to the object's material
-/// </summary>
-public class RandomColor : MonoBehaviour
+namespace i5.VIAProMa.Utilities
 {
-    [SerializeField] private bool updateOnEnable = true;
-
-    private Renderer rend;
-
     /// <summary>
-    /// Gets the reference to the renderer and changes the material's color randomly
+    /// Assigns a random color to the object's material
     /// </summary>
-    private void Awake()
+    public class RandomColor : MonoBehaviour
     {
-        rend = GetComponent<Renderer>();
+        [SerializeField] private bool updateOnEnable = true;
 
-        rend.material.color = Random.ColorHSV();
-    }
+        private Renderer rend;
 
-    /// <summary>
-    /// If updateOnEnable is on, the color changed again randomly
-    /// </summary>
-    private void OnEnable()
-    {
-        if (updateOnEnable)
+        /// <summary>
+        /// Gets the reference to the renderer and changes the material's color randomly
+        /// </summary>
+        private void Awake()
         {
+            rend = GetComponent<Renderer>();
+
             rend.material.color = Random.ColorHSV();
+        }
+
+        /// <summary>
+        /// If updateOnEnable is on, the color changed again randomly
+        /// </summary>
+        private void OnEnable()
+        {
+            if (updateOnEnable)
+            {
+                rend.material.color = Random.ColorHSV();
+            }
         }
     }
 }

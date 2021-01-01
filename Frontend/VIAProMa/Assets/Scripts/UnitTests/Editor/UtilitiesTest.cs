@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 
-namespace Tests
+namespace i5.VIAProMa.UnitTests.Editor
 {
     public class UtilitiesTest
     {

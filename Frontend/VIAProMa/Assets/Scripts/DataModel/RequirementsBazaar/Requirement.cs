@@ -1,44 +1,45 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.UI.ListView.Core;
 
-/// <summary>
-/// Represents a requirement in the Requirements Bazaar
-/// </summary>
-public class Requirement : IListViewItemData, IUninitializable
+namespace i5.VIAProMa.DataModel.ReqBaz
 {
-    public int id;
-    public string name;
-    public string description;
-    public string realized; // the date when the requirement was realized
-    public int projectId;
-    public ReqBazUser creator;
-    public Category[] categories;
-    public string creationDate;
-    public string lastUpdatedDate;
-    public int numberOfComments;
-    public int numberOfAttachments;
-    public int numberOfFollowers;
-    public int upVotes;
-    public int downVotes;
-    public string userVoted;
-
-    public bool IsRealized
+    /// <summary>
+    /// Represents a requirement in the Requirements Bazaar
+    /// </summary>
+    public class Requirement : IListViewItemData, IUninitializable
     {
-        get { return !string.IsNullOrEmpty(realized); }
-    }
+        public int id;
+        public string name;
+        public string description;
+        public string realized; // the date when the requirement was realized
+        public int projectId;
+        public ReqBazUser creator;
+        public Category[] categories;
+        public string creationDate;
+        public string lastUpdatedDate;
+        public int numberOfComments;
+        public int numberOfAttachments;
+        public int numberOfFollowers;
+        public int upVotes;
+        public int downVotes;
+        public string userVoted;
 
-    public bool IsUninitialized
-    {
-        get
+        public bool IsRealized
         {
-            if (id == 0 && projectId == 0 && creator.IsUninitialized)
+            get { return !string.IsNullOrEmpty(realized); }
+        }
+
+        public bool IsUninitialized
+        {
+            get
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                if (id == 0 && projectId == 0 && creator.IsUninitialized)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }

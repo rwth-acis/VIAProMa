@@ -1,60 +1,62 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
 using TMPro;
 using UnityEngine;
 
-public class AutocompleteItem : MonoBehaviour
+namespace i5.VIAProMa.UI.KeyboardInput
 {
-    [SerializeField] private TextMeshPro textLabel;
-
-    private string text;
-    private Keyboard keyboard;
-
-    public string Text
+    public class AutocompleteItem : MonoBehaviour
     {
-        get => text;
-        set
-        {
-            text = value;
-            UpdateDisplay();
-        }
-    }
+        [SerializeField] private TextMeshPro textLabel;
 
-    private void Awake()
-    {
-        if (textLabel == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(textLabel));
-        }
-        else
-        {
-            Text = "";
-        }
-    }
+        private string text;
+        private Keyboard keyboard;
 
-    public void Setup(Keyboard keyboard)
-    {
-        this.keyboard = keyboard;
-    }
-
-    public void Select()
-    {
-        if (keyboard != null)
+        public string Text
         {
-            // store the text in a temporary variable: when changing the text of the keyboard, the text of this item will already be changed
-            string tmpText = string.Copy(text);
-            keyboard.Text = tmpText;
-            keyboard.CursorPos = tmpText.Length;
+            get => text;
+            set
+            {
+                text = value;
+                UpdateDisplay();
+            }
         }
-        else
-        {
-            Debug.LogError("User selected auto complete item but it is not yet set up");
-        }
-    }
 
-    private void UpdateDisplay()
-    {
-        textLabel.text = text;
-        gameObject.SetActive(!string.IsNullOrEmpty(text));
+        private void Awake()
+        {
+            if (textLabel == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(textLabel));
+            }
+            else
+            {
+                Text = "";
+            }
+        }
+
+        public void Setup(Keyboard keyboard)
+        {
+            this.keyboard = keyboard;
+        }
+
+        public void Select()
+        {
+            if (keyboard != null)
+            {
+                // store the text in a temporary variable: when changing the text of the keyboard, the text of this item will already be changed
+                string tmpText = string.Copy(text);
+                keyboard.Text = tmpText;
+                keyboard.CursorPos = tmpText.Length;
+            }
+            else
+            {
+                Debug.LogError("User selected auto complete item but it is not yet set up");
+            }
+        }
+
+        private void UpdateDisplay()
+        {
+            textLabel.text = text;
+            gameObject.SetActive(!string.IsNullOrEmpty(text));
+        }
     }
 }

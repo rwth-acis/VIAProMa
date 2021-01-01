@@ -1,7 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.UI.ListView.Core;
 
-public class IssueListView : ListViewController<Issue, IssueListViewItem>
+namespace i5.VIAProMa.UI.ListView.Issues
 {
+    public class IssueListView : ListViewController<Issue, IssueListViewItem>
+    {
+    }
 }

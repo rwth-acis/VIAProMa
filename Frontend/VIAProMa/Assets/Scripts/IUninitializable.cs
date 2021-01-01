@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IUninitializable
+﻿namespace i5.VIAProMa
 {
-    bool IsUninitialized { get; }
+    public interface IUninitializable
+    {
+        bool IsUninitialized { get; }
+    }
 }

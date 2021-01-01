@@ -1,14 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class LeftRightKey : Key
+namespace i5.VIAProMa.UI.KeyboardInput
 {
-    public int direction;
-
-    protected override void KeyPressed()
+    public class LeftRightKey : Key
     {
-        base.KeyPressed();
-        keyboard.CursorPos += (int)Mathf.Sign(direction);
+        public int direction;
+
+        protected override void KeyPressed()
+        {
+            base.KeyPressed();
+            keyboard.CursorPos += (int)Mathf.Sign(direction);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using i5.VIAProMa.Visualizations.CommitStatistics;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,14 +18,14 @@ public class CommitStatisticsTester : MonoBehaviour
     /// </summary>
     public Vector3 size = Vector3.one;
 
-    private i5.ViaProMa.Visualizations.Common.Diagram diagram;
+    private i5.VIAProMa.Visualizations.Common.Diagram diagram;
 
     /// <summary>
     /// Gets the diagram component of the visualization
     /// </summary>
     private void Awake()
     {
-        diagram = visualizer.GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
+        diagram = visualizer.GetComponent<i5.VIAProMa.Visualizations.Common.Diagram>();
     }
 
     /// <summary>

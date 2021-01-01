@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Checkbox : MonoBehaviour
+namespace i5.VIAProMa.UI
 {
-    public event EventHandler OnValueChanged;
-
-    public bool IsChecked { get; private set; }
-
-    public void OnClick()
+    public class Checkbox : MonoBehaviour
     {
-        IsChecked = !IsChecked;
-        OnValueChanged?.Invoke(this, EventArgs.Empty);
+        public event EventHandler OnValueChanged;
+
+        public bool IsChecked { get; private set; }
+
+        public void OnClick()
+        {
+            IsChecked = !IsChecked;
+            OnValueChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

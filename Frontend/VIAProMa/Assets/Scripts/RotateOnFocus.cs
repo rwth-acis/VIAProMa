@@ -1,47 +1,48 @@
 ﻿using Microsoft.MixedReality.Toolkit.Input;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class RotateOnFocus : BaseFocusHandler
+namespace i5.VIAProMa
 {
-    [SerializeField] private Vector3 standardEulerRotation;
-    [SerializeField] private Vector3 focusedEulerRotation;
-
-    public float damping = 10;
-
-    private Vector3 targetRotation;
-
-    private void Awake()
+    public class RotateOnFocus : BaseFocusHandler
     {
-        transform.localEulerAngles = standardEulerRotation;
-        targetRotation = standardEulerRotation;
-    }
+        [SerializeField] private Vector3 standardEulerRotation;
+        [SerializeField] private Vector3 focusedEulerRotation;
 
-    private void Update()
-    {
-        transform.localRotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(targetRotation), Time.deltaTime * damping);
-    }
+        public float damping = 10;
 
-    public override void OnFocusEnter(FocusEventData eventData)
-    {
-        base.OnFocusEnter(eventData);
-        ToFocusedRotation();
-    }
+        private Vector3 targetRotation;
 
-    public override void OnFocusExit(FocusEventData eventData)
-    {
-        base.OnFocusExit(eventData);
-        ToStandardRotation();
-    }
+        private void Awake()
+        {
+            transform.localEulerAngles = standardEulerRotation;
+            targetRotation = standardEulerRotation;
+        }
 
-    public void ToStandardRotation()
-    {
-        targetRotation = standardEulerRotation;
-    }
+        private void Update()
+        {
+            transform.localRotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(targetRotation), Time.deltaTime * damping);
+        }
 
-    public void ToFocusedRotation()
-    {
-        targetRotation = focusedEulerRotation;
+        public override void OnFocusEnter(FocusEventData eventData)
+        {
+            base.OnFocusEnter(eventData);
+            ToFocusedRotation();
+        }
+
+        public override void OnFocusExit(FocusEventData eventData)
+        {
+            base.OnFocusExit(eventData);
+            ToStandardRotation();
+        }
+
+        public void ToStandardRotation()
+        {
+            targetRotation = standardEulerRotation;
+        }
+
+        public void ToFocusedRotation()
+        {
+            targetRotation = focusedEulerRotation;
+        }
     }
 }

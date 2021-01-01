@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IListViewController
+﻿namespace i5.VIAProMa.UI.ListView.Core
 {
-    void OnItemSelected(int index);
+    public interface IListViewController
+    {
+        void OnItemSelected(int index);
+    }
 }

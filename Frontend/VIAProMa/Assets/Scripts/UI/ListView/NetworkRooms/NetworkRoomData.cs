@@ -1,16 +1,17 @@
-﻿using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.UI.ListView.Core;
+using Photon.Realtime;
 
-public class NetworkRoomData : IListViewItemData
+namespace i5.VIAProMa.UI.ListView.NetworkRooms
 {
-    public RoomInfo RoomInfo { get; private set; }
-
-    public bool IsFull { get { return RoomInfo.MaxPlayers != 0 && RoomInfo.PlayerCount == RoomInfo.MaxPlayers; } }
-
-    public NetworkRoomData(RoomInfo roomInfo)
+    public class NetworkRoomData : IListViewItemData
     {
-        RoomInfo = roomInfo;
+        public RoomInfo RoomInfo { get; private set; }
+
+        public bool IsFull { get { return RoomInfo.MaxPlayers != 0 && RoomInfo.PlayerCount == RoomInfo.MaxPlayers; } }
+
+        public NetworkRoomData(RoomInfo roomInfo)
+        {
+            RoomInfo = roomInfo;
+        }
     }
 }

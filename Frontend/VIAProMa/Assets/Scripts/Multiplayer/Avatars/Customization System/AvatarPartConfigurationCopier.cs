@@ -1,54 +1,56 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
+using System;
 using UnityEngine;
 
-public class AvatarPartConfigurationCopier : MonoBehaviour
+namespace i5.VIAProMa.Multiplayer.Avatars.Customization
 {
-    [SerializeField] private GameObject observedPart;
-
-    private IConfigurationController observedPartController;
-
-    private IConfigurationController localPartController;
-
-
-    private void Awake()
+    public class AvatarPartConfigurationCopier : MonoBehaviour
     {
-        localPartController = GetComponent<IConfigurationController>();
+        [SerializeField] private GameObject observedPart;
 
-        if (observedPart == null)
+        private IConfigurationController observedPartController;
+
+        private IConfigurationController localPartController;
+
+
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(observedPart));
-        }
-        else
-        {
-            observedPartController = observedPart.GetComponent<IConfigurationController>();
-            if (observedPartController == null)
+            localPartController = GetComponent<IConfigurationController>();
+
+            if (observedPart == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IConfigurationController), observedPart);
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(observedPart));
             }
             else
             {
-                observedPartController.ConfigurationChanged += OnConfigurationChanged;
+                observedPartController = observedPart.GetComponent<IConfigurationController>();
+                if (observedPartController == null)
+                {
+                    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IConfigurationController), observedPart);
+                }
+                else
+                {
+                    observedPartController.ConfigurationChanged += OnConfigurationChanged;
+                }
             }
         }
-    }
 
-    private void OnDestroy()
-    {
-        if (observedPartController != null)
+        private void OnDestroy()
         {
-            observedPartController.ConfigurationChanged -= OnConfigurationChanged;
+            if (observedPartController != null)
+            {
+                observedPartController.ConfigurationChanged -= OnConfigurationChanged;
+            }
         }
-    }
 
-    private void OnConfigurationChanged(object sender, EventArgs e)
-    {
-        Debug.Log("Observed configuration changed");
-        localPartController.AvatarIndex = observedPartController.AvatarIndex;
-        localPartController.ModelIndex = observedPartController.ModelIndex;
-        localPartController.MaterialIndex = observedPartController.MaterialIndex;
-        localPartController.ColorIndex = observedPartController.ColorIndex;
-        localPartController.ApplyConfiguration();
+        private void OnConfigurationChanged(object sender, EventArgs e)
+        {
+            Debug.Log("Observed configuration changed");
+            localPartController.AvatarIndex = observedPartController.AvatarIndex;
+            localPartController.ModelIndex = observedPartController.ModelIndex;
+            localPartController.MaterialIndex = observedPartController.MaterialIndex;
+            localPartController.ColorIndex = observedPartController.ColorIndex;
+            localPartController.ApplyConfiguration();
+        }
     }
 }

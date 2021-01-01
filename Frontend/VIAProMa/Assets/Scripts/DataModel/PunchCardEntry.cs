@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-/// <summary>
-/// Represents one entry on the GitHub punch card entry statistic
-/// </summary>
-[Serializable]
-public struct PunchCardEntry
+namespace i5.VIAProMa.DataModel
 {
     /// <summary>
-    /// The number of the weekday (for 0 to 6)
+    /// Represents one entry on the GitHub punch card entry statistic
     /// </summary>
-    public int day;
-    /// <summary>
-    /// The hour
-    /// </summary>
-    public int hour;
-    /// <summary>
-    /// The aggregated number of commits at the weekday and hour
-    /// </summary>
-    public int numberOfCommits;
-
-    /// <summary>
-    /// The weekday of this entry
-    /// Converts the day number to a DayOfWeek object
-    /// </summary>
-    public DayOfWeek DayOfWeek
+    [Serializable]
+    public struct PunchCardEntry
     {
-        get { return (DayOfWeek)day; }
+        /// <summary>
+        /// The number of the weekday (for 0 to 6)
+        /// </summary>
+        public int day;
+        /// <summary>
+        /// The hour
+        /// </summary>
+        public int hour;
+        /// <summary>
+        /// The aggregated number of commits at the weekday and hour
+        /// </summary>
+        public int numberOfCommits;
+
+        /// <summary>
+        /// The weekday of this entry
+        /// Converts the day number to a DayOfWeek object
+        /// </summary>
+        public DayOfWeek DayOfWeek
+        {
+            get { return (DayOfWeek)day; }
+        }
     }
 }

@@ -1,17 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.UI.DropdownMenu.Core;
+using i5.VIAProMa.UI.ListView.Categories;
 using UnityEngine;
 
-public class CategoryDropdownMenu : DropdownMenu<Category, CategoryListViewItem>
+namespace i5.VIAProMa.UI.DropdownMenu
 {
-    [SerializeField] private CategoryDataDisplay categorySelectedItemDisplay;
-    [SerializeField] private CategoryListView categoryListViewController;
-
-    protected override void Awake()
+    public class CategoryDropdownMenu : DropdownMenu<Category, CategoryListViewItem>
     {
-        // workarounds because the generic types are not recognized by Unity's inspector
-        selectedItemDisplay = categorySelectedItemDisplay;
-        itemController = categoryListViewController;
-        base.Awake();
+        [SerializeField] private CategoryDataDisplay categorySelectedItemDisplay;
+        [SerializeField] private CategoryListView categoryListViewController;
+
+        protected override void Awake()
+        {
+            // workarounds because the generic types are not recognized by Unity's inspector
+            selectedItemDisplay = categorySelectedItemDisplay;
+            itemController = categoryListViewController;
+            base.Awake();
+        }
     }
 }

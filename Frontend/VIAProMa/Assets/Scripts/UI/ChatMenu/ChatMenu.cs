@@ -1,164 +1,167 @@
-﻿using i5.ViaProMa.UI;
+﻿using i5.VIAProMa.Multiplayer.Chat;
+using i5.VIAProMa.UI.InputFields;
+using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ChatMenu : MonoBehaviour, IWindow
+namespace i5.VIAProMa.UI.Chat
 {
-    [SerializeField] private TextMeshPro chatHistory;
-    [SerializeField] private InputField chatInputField;
-    [SerializeField] private Interactable sendButton;
-    [SerializeField] private Interactable pageUpButton;
-    [SerializeField] private Interactable pageDownButton;
-
-    public bool WindowEnabled // not used
+    public class ChatMenu : MonoBehaviour, IWindow
     {
-        get; set;
-    }
+        [SerializeField] private TextMeshPro chatHistory;
+        [SerializeField] private InputField chatInputField;
+        [SerializeField] private Interactable sendButton;
+        [SerializeField] private Interactable pageUpButton;
+        [SerializeField] private Interactable pageDownButton;
 
-    public bool WindowOpen
-    {
-        get
+        public bool WindowEnabled // not used
         {
-            return gameObject.activeSelf;
+            get; set;
         }
-    }
 
-    public event EventHandler WindowClosed;
-
-    private void Awake()
-    {
-        if (chatHistory == null)
+        public bool WindowOpen
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatHistory));
+            get
+            {
+                return gameObject.activeSelf;
+            }
         }
-        if (chatInputField == null)
+
+        public event EventHandler WindowClosed;
+
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatInputField));
+            if (chatHistory == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatHistory));
+            }
+            if (chatInputField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatInputField));
+            }
+            if (sendButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(sendButton));
+            }
+            if (pageUpButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageUpButton));
+            }
+            if (pageDownButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
+            }
         }
-        if (sendButton == null)
+
+        private void Start()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(sendButton));
+            chatHistory.text = "";
+            ChatManager.Instance.MessageReceived += OnMessageReceived;
+            // catch up with messages which have already been collected
+            foreach (ChatMessageEventArgs msg in ChatManager.Instance.ChatMessages)
+            {
+                chatHistory.text += CreateMessageString(msg);
+            }
+            ChatManager.Instance.ChatMessages.Clear();
+            ChatManager.Instance.RecordMessages = false; // no need to record messages anymore
+            chatInputField.TextChanged += OnMessageTextChanged;
+            sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
+            CheckPageButtons();
         }
-        if (pageUpButton == null)
+
+        private void OnMessageTextChanged(object sender, EventArgs e)
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageUpButton));
+            sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
         }
-        if (pageDownButton == null)
+
+        private void OnDestroy()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
+            if (ChatManager.Instance != null)
+            {
+                ChatManager.Instance.MessageReceived -= OnMessageReceived;
+            }
         }
-    }
 
-    private void Start()
-    {
-        chatHistory.text = "";
-        ChatManager.Instance.MessageReceived += OnMessageReceived;
-        // catch up with messages which have already been collected
-        foreach (ChatMessageEventArgs msg in ChatManager.Instance.ChatMessages)
+        private void OnMessageReceived(object sender, ChatMessageEventArgs e)
         {
-            chatHistory.text += CreateMessageString(msg);
+            chatHistory.text += CreateMessageString(e);
+            chatHistory.ForceMeshUpdate();
+            chatHistory.pageToDisplay = chatHistory.textInfo.pageCount; // go to the last page to show the new text
+            CheckPageButtons();
         }
-        ChatManager.Instance.ChatMessages.Clear();
-        ChatManager.Instance.RecordMessages = false; // no need to record messages anymore
-        chatInputField.TextChanged += OnMessageTextChanged;
-        sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
-        CheckPageButtons();
-    }
 
-    private void OnMessageTextChanged(object sender, EventArgs e)
-    {
-        sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
-    }
-
-    private void OnDestroy()
-    {
-        if (ChatManager.Instance != null)
+        public void Send()
         {
-            ChatManager.Instance.MessageReceived -= OnMessageReceived;
+            if (!string.IsNullOrEmpty(chatInputField.Text))
+            {
+                ChatManager.Instance.SendChatMessage(chatInputField.Text);
+                chatInputField.Text = "";
+            }
         }
-    }
 
-    private void OnMessageReceived(object sender, ChatMessageEventArgs e)
-    {
-        chatHistory.text += CreateMessageString(e);
-        chatHistory.ForceMeshUpdate();
-        chatHistory.pageToDisplay = chatHistory.textInfo.pageCount; // go to the last page to show the new text
-        CheckPageButtons();
-    }
-
-    public void Send()
-    {
-        if (!string.IsNullOrEmpty(chatInputField.Text))
+        public void PageUp()
         {
-            ChatManager.Instance.SendChatMessage(chatInputField.Text);
-            chatInputField.Text = "";
+            chatHistory.pageToDisplay = Mathf.Max(chatHistory.pageToDisplay - 1, 0);
+            CheckPageButtons();
         }
-    }
 
-    public void PageUp()
-    {
-        chatHistory.pageToDisplay = Mathf.Max(chatHistory.pageToDisplay - 1, 0);
-        CheckPageButtons();
-    }
-
-    public void PageDown()
-    {
-        chatHistory.pageToDisplay = Mathf.Min(chatHistory.pageToDisplay + 1, chatHistory.textInfo.pageCount);
-        CheckPageButtons();
-    }
-
-    private void CheckPageButtons()
-    {
-        Debug.Log("Page to display: " + chatHistory.pageToDisplay);
-        Debug.Log("Page count: " + chatHistory.textInfo.pageCount);
-        pageUpButton.Enabled = chatHistory.pageToDisplay > 1;
-        pageDownButton.Enabled = chatHistory.pageToDisplay < chatHistory.textInfo.pageCount;
-    }
-
-    public void Open()
-    {
-        gameObject.SetActive(true);
-        NotificationSystem.Instance.CanShowMessages = false;
-        NotificationSystem.Instance.HideMessage();
-    }
-
-    public void Open(Vector3 position, Vector3 eulerAngles)
-    {
-        Open();
-        transform.position = position;
-        transform.eulerAngles = eulerAngles;
-    }
-
-    public void Close()
-    {
-        gameObject.SetActive(false);
-        if (NotificationSystem.Instance != null)
+        public void PageDown()
         {
-            NotificationSystem.Instance.CanShowMessages = true;
+            chatHistory.pageToDisplay = Mathf.Min(chatHistory.pageToDisplay + 1, chatHistory.textInfo.pageCount);
+            CheckPageButtons();
         }
-        WindowClosed?.Invoke(this, EventArgs.Empty);
-    }
 
-    private string CreateMessageString(ChatMessageEventArgs msg)
-    {
-        string res = "";
-        // go to a new line if there is already content in the chat
-        if (!string.IsNullOrEmpty(chatHistory.text))
+        private void CheckPageButtons()
         {
-            res += "\n";
+            Debug.Log("Page to display: " + chatHistory.pageToDisplay);
+            Debug.Log("Page count: " + chatHistory.textInfo.pageCount);
+            pageUpButton.Enabled = chatHistory.pageToDisplay > 1;
+            pageDownButton.Enabled = chatHistory.pageToDisplay < chatHistory.textInfo.pageCount;
         }
-        if (msg.MessageSender == null) // local message
+
+        public void Open()
         {
-            res += "<i>" + msg.Message + "</i>"; // local messages are in italics
+            gameObject.SetActive(true);
+            NotificationSystem.Instance.CanShowMessages = false;
+            NotificationSystem.Instance.HideMessage();
         }
-        else
+
+        public void Open(Vector3 position, Vector3 eulerAngles)
         {
-            res += "<b>" + msg.MessageSender.NickName + "</b>: " + msg.Message;
+            Open();
+            transform.position = position;
+            transform.eulerAngles = eulerAngles;
         }
-        return res;
+
+        public void Close()
+        {
+            gameObject.SetActive(false);
+            if (NotificationSystem.Instance != null)
+            {
+                NotificationSystem.Instance.CanShowMessages = true;
+            }
+            WindowClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+        private string CreateMessageString(ChatMessageEventArgs msg)
+        {
+            string res = "";
+            // go to a new line if there is already content in the chat
+            if (!string.IsNullOrEmpty(chatHistory.text))
+            {
+                res += "\n";
+            }
+            if (msg.MessageSender == null) // local message
+            {
+                res += "<i>" + msg.Message + "</i>"; // local messages are in italics
+            }
+            else
+            {
+                res += "<b>" + msg.MessageSender.NickName + "</b>: " + msg.Message;
+            }
+            return res;
+        }
     }
 }

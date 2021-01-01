@@ -1,53 +1,55 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
+using System;
 using UnityEngine;
 
-public class ConfigurationPositionController : MonoBehaviour, IConfigurationController
+namespace i5.VIAProMa.Multiplayer.Avatars.Customization
 {
-    [SerializeField] private Vector3[] positionsForAvatars;
-
-    private int avatarIndex;
-
-    public int AvatarIndex
+    public class ConfigurationPositionController : MonoBehaviour, IConfigurationController
     {
-        get => avatarIndex;
-        set
+        [SerializeField] private Vector3[] positionsForAvatars;
+
+        private int avatarIndex;
+
+        public int AvatarIndex
         {
-            bool configChanged = avatarIndex != value;
-            avatarIndex = value;
-            if (configChanged)
+            get => avatarIndex;
+            set
             {
-                ConfigurationChanged?.Invoke(this, EventArgs.Empty);
+                bool configChanged = avatarIndex != value;
+                avatarIndex = value;
+                if (configChanged)
+                {
+                    ConfigurationChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
-    }
-    public int ModelIndex { get; set; }
-    public int MaterialIndex { get; set; }
-    public int ColorIndex { get; set; }
+        public int ModelIndex { get; set; }
+        public int MaterialIndex { get; set; }
+        public int ColorIndex { get; set; }
 
-    public event EventHandler ConfigurationChanged;
+        public event EventHandler ConfigurationChanged;
 
-    private void Awake()
-    {
-        if (positionsForAvatars.Length == 0)
+        private void Awake()
         {
-            SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(positionsForAvatars));
-        }
-    }
-
-    public void ApplyConfiguration()
-    {
-        if (positionsForAvatars.Length == 0)
-        {
-            return;
+            if (positionsForAvatars.Length == 0)
+            {
+                SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(positionsForAvatars));
+            }
         }
 
-        int selectedIndex = AvatarIndex;
-        if (selectedIndex >= positionsForAvatars.Length || selectedIndex < 0)
+        public void ApplyConfiguration()
         {
-            selectedIndex = 0;
+            if (positionsForAvatars.Length == 0)
+            {
+                return;
+            }
+
+            int selectedIndex = AvatarIndex;
+            if (selectedIndex >= positionsForAvatars.Length || selectedIndex < 0)
+            {
+                selectedIndex = 0;
+            }
+            transform.localPosition = positionsForAvatars[selectedIndex];
         }
-        transform.localPosition = positionsForAvatars[selectedIndex];
     }
 }

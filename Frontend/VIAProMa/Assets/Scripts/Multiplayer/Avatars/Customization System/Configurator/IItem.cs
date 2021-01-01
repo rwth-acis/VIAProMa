@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public interface IItem
+namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
 {
-    Sprite Sprite { get; }
+    public interface IItem
+    {
+        Sprite Sprite { get; }
 
-    Color DisplayColor { get; }
+        Color DisplayColor { get; }
+    }
 }
