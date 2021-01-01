@@ -1,26 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class TextFlipper : MonoBehaviour
+namespace i5.VIAProMa.Visualizations.Diagrams.Common.Axes
 {
-    private Transform cameraTransform;
-
-    private void Start()
+    public class TextFlipper : MonoBehaviour
     {
-        cameraTransform = Camera.main.transform;
-    }
+        private Transform cameraTransform;
 
-    private void Update()
-    {
-        Vector3 transformToCam = cameraTransform.position - transform.position;
-        if (Vector3.Dot(transformToCam, transform.forward) < 0)
+        private void Start()
         {
-            transform.localScale = Vector3.one;
+            cameraTransform = Camera.main.transform;
         }
-        else
+
+        private void Update()
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            Vector3 transformToCam = cameraTransform.position - transform.position;
+            if (Vector3.Dot(transformToCam, transform.forward) < 0)
+            {
+                transform.localScale = Vector3.one;
+            }
+            else
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
         }
     }
 }

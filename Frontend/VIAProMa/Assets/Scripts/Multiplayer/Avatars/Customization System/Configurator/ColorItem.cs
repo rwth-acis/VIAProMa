@@ -1,21 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ColorItem : IItem
+namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
 {
-    public ColorItem(Color color)
+    public class ColorItem : IItem
     {
-        DisplayColor = color;
-    }
+        public ColorItem(Color color)
+        {
+            DisplayColor = color;
+        }
 
-    public Sprite Sprite
-    {
-        get => null;
-    }
+        public Sprite Sprite
+        {
+            get => null;
+        }
 
-    public Color DisplayColor
-    {
-        get;private set;
+        public Color DisplayColor
+        {
+            get; private set;
+        }
     }
 }

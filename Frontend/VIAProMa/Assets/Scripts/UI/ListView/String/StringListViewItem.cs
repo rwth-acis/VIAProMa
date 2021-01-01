@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using i5.VIAProMa.UI.ListView.Core;
 using UnityEngine;
 
-[RequireComponent(typeof(StringDataDisplay))]
-public class StringListViewItem : ListViewItem<StringData>
+namespace i5.VIAProMa.UI.ListView.Strings
 {
+    [RequireComponent(typeof(StringDataDisplay))]
+    public class StringListViewItem : ListViewItem<StringData>
+    {
+    }
 }

@@ -1,24 +1,24 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-/// <summary>
-/// Represents a project in the Requirements Bazaar
-/// </summary>
-[Serializable]
-public class Project
+namespace i5.VIAProMa.DataModel.ReqBaz
 {
-    public int id;
-    public string name;
-    public string description;
-    public bool visibility;
-    public int defaultCategoryId;
-    public ReqBazUser leader;
-    public string creationDate;
-    public string lastUpdatedDate;
-    public int numberOfCategories;
-    public int numberOfRequirements;
-    public int numberOfFollowers;
-    public bool isFollower;
+    /// <summary>
+    /// Represents a project in the Requirements Bazaar
+    /// </summary>
+    [Serializable]
+    public class Project
+    {
+        public int id;
+        public string name;
+        public string description;
+        public bool visibility;
+        public int defaultCategoryId;
+        public ReqBazUser leader;
+        public string creationDate;
+        public string lastUpdatedDate;
+        public int numberOfCategories;
+        public int numberOfRequirements;
+        public int numberOfFollowers;
+        public bool isFollower;
+    }
 }

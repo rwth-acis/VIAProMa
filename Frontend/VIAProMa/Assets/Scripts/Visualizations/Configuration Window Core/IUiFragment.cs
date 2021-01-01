@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IUiFragment
+﻿namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 {
-    bool UIEnabled { get; set; }
+    public interface IUiFragment
+    {
+        bool UIEnabled { get; set; }
 
-    void Setup(Visualization visualization);
+        void Setup(Visualization visualization);
+    }
 }

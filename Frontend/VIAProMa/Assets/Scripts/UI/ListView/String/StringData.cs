@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.UI.ListView.Core;
+using System;
 
-[Serializable]
-public class StringData : IListViewItemData
+namespace i5.VIAProMa.UI.ListView.Strings
 {
-    public string text;
-
-    public StringData()
+    [Serializable]
+    public class StringData : IListViewItemData
     {
-    }
+        public string text;
 
-    public StringData(string text)
-    {
-        this.text = text;
+        public StringData()
+        {
+        }
+
+        public StringData(string text)
+        {
+            this.text = text;
+        }
     }
 }

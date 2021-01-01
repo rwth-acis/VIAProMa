@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class BackKey : Key
+﻿namespace i5.VIAProMa.UI.KeyboardInput
 {
-    protected override void KeyPressed()
+    public class BackKey : Key
     {
-        base.KeyPressed();
-        keyboard.Backspace();
+        protected override void KeyPressed()
+        {
+            base.KeyPressed();
+            keyboard.Backspace();
+        }
     }
 }

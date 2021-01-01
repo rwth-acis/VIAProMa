@@ -1,53 +1,56 @@
 ﻿using HoloToolkit.Unity;
+using i5.VIAProMa.WebConnection;
 using Photon.Pun;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PhotonView))]
-public class ChatManager : Singleton<ChatManager>
+namespace i5.VIAProMa.Multiplayer.Chat
 {
-    private PhotonView photonView;
-
-    public event EventHandler<ChatMessageEventArgs> MessageReceived;
-
-    public bool RecordMessages { get; set; } = true;
-
-    public List<ChatMessageEventArgs> ChatMessages { get; private set; }
-
-    protected override void Awake()
+    [RequireComponent(typeof(PhotonView))]
+    public class ChatManager : Singleton<ChatManager>
     {
-        base.Awake();
-        photonView = GetComponent<PhotonView>();
-        ChatMessages = new List<ChatMessageEventArgs>();
-    }
+        private PhotonView photonView;
 
-    public async void SendChatMessage(string text)
-    {
-        short textId = await NetworkedStringManager.StringToId(text);
-        photonView.RPC("ChatMessageReceived", RpcTarget.All, textId);
-    }
+        public event EventHandler<ChatMessageEventArgs> MessageReceived;
 
-    [PunRPC]
-    private async void ChatMessageReceived(short textId, PhotonMessageInfo messageInfo)
-    {
-        string text = await NetworkedStringManager.GetString(textId);
-        ChatMessageEventArgs args = new ChatMessageEventArgs(text, messageInfo.Sender);
-        if (RecordMessages)
+        public bool RecordMessages { get; set; } = true;
+
+        public List<ChatMessageEventArgs> ChatMessages { get; private set; }
+
+        protected override void Awake()
         {
-            ChatMessages.Add(args);
+            base.Awake();
+            photonView = GetComponent<PhotonView>();
+            ChatMessages = new List<ChatMessageEventArgs>();
         }
-        MessageReceived?.Invoke(this, args);
-    }
 
-    public void AddLocalMessage(string text)
-    {
-        ChatMessageEventArgs args = new ChatMessageEventArgs(text, null);
-        if (RecordMessages)
+        public async void SendChatMessage(string text)
         {
-            ChatMessages.Add(args);
+            short textId = await NetworkedStringManager.StringToId(text);
+            photonView.RPC("ChatMessageReceived", RpcTarget.All, textId);
         }
-        MessageReceived?.Invoke(this, args);
+
+        [PunRPC]
+        private async void ChatMessageReceived(short textId, PhotonMessageInfo messageInfo)
+        {
+            string text = await NetworkedStringManager.GetString(textId);
+            ChatMessageEventArgs args = new ChatMessageEventArgs(text, messageInfo.Sender);
+            if (RecordMessages)
+            {
+                ChatMessages.Add(args);
+            }
+            MessageReceived?.Invoke(this, args);
+        }
+
+        public void AddLocalMessage(string text)
+        {
+            ChatMessageEventArgs args = new ChatMessageEventArgs(text, null);
+            if (RecordMessages)
+            {
+                ChatMessages.Add(args);
+            }
+            MessageReceived?.Invoke(this, args);
+        }
     }
 }

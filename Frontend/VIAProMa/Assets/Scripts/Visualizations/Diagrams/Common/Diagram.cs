@@ -1,8 +1,12 @@
-﻿using System.Collections;
+﻿using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Visualizations.Common.Data.DataSets;
+using i5.VIAProMa.Visualizations.Common.Grid;
+using i5.VIAProMa.Visualizations.Diagrams.Common.Axes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace i5.ViaProMa.Visualizations.Common
+namespace i5.VIAProMa.Visualizations.Common
 {
     public class Diagram : MonoBehaviour
     {
@@ -81,7 +85,7 @@ namespace i5.ViaProMa.Visualizations.Common
             contentParent.localPosition = -Size / 2f;
         }
 
-        protected static float FractionInUnitSpace(float numericValue, i5.ViaProMa.Visualizations.Common.AxisController axisController)
+        protected static float FractionInUnitSpace(float numericValue, AxisController axisController)
         {
             if (axisController.NumericAxisMin == axisController.NumericAxisMax)
             {

@@ -1,190 +1,192 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// Controls text label GameObjects
-/// They consist of a background and a number of textLabels with the same content
-/// </summary>
-[ExecuteInEditMode]
-public class TextLabel : MonoBehaviour
+namespace i5.VIAProMa.Visualizations
 {
-    [Header("UI Elements")]
-    [Tooltip("The text labels which should display the content of the text label")]
-    [SerializeField] private TextMeshPro[] textLabels;
-
-    [Tooltip("The background of the text label")]
-    [SerializeField] private Transform background;
-
-    [Header("Values")]
-    [Tooltip("The text content of the text label")]
-    [SerializeField] private string text;
-
-    [Tooltip("Maximum width of the text label; if the text is shorted, the text label may appear smaller")]
-    [SerializeField] private float maxWidth = 1f;
-
-    [Tooltip("Maximum height of the text label; if the text is smaller, the text label may appear smaller")]
-    [SerializeField] private float maxHeight = 0.1f;
-
-    [Tooltip("Padding of the background to all sides")]
-    [SerializeField] private float padding = 0.005f;
-
     /// <summary>
-    /// Checks the setup of the text label and calls UpdateVisuals() for the first time
+    /// Controls text label GameObjects
+    /// They consist of a background and a number of textLabels with the same content
     /// </summary>
-    private void Awake()
+    [ExecuteInEditMode]
+    public class TextLabel : MonoBehaviour
     {
-        if (!Application.isEditor)
-        {
-            // check the text label array
-            if (textLabels.Length == 0)
-            {
-                SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(textLabels));
-            }
+        [Header("UI Elements")]
+        [Tooltip("The text labels which should display the content of the text label")]
+        [SerializeField] private TextMeshPro[] textLabels;
 
-            for (int i = 0; i < textLabels.Length; i++)
+        [Tooltip("The background of the text label")]
+        [SerializeField] private Transform background;
+
+        [Header("Values")]
+        [Tooltip("The text content of the text label")]
+        [SerializeField] private string text;
+
+        [Tooltip("Maximum width of the text label; if the text is shorted, the text label may appear smaller")]
+        [SerializeField] private float maxWidth = 1f;
+
+        [Tooltip("Maximum height of the text label; if the text is smaller, the text label may appear smaller")]
+        [SerializeField] private float maxHeight = 0.1f;
+
+        [Tooltip("Padding of the background to all sides")]
+        [SerializeField] private float padding = 0.005f;
+
+        /// <summary>
+        /// Checks the setup of the text label and calls UpdateVisuals() for the first time
+        /// </summary>
+        private void Awake()
+        {
+            if (!Application.isEditor)
             {
-                if (textLabels[i] == null)
+                // check the text label array
+                if (textLabels.Length == 0)
                 {
-                    SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(textLabels), i);
+                    SpecialDebugMessages.LogArrayInitializedWithSize0Warning(this, nameof(textLabels));
+                }
+
+                for (int i = 0; i < textLabels.Length; i++)
+                {
+                    if (textLabels[i] == null)
+                    {
+                        SpecialDebugMessages.LogArrayMissingReferenceError(this, nameof(textLabels), i);
+                    }
+                }
+                // check the other components
+                if (background == null)
+                {
+                    SpecialDebugMessages.LogMissingReferenceError(this, nameof(background));
                 }
             }
-            // check the other components
-            if (background == null)
+
+            UpdateVisuals();
+        }
+
+        /// <summary>
+        /// Maximum width of the text label
+        /// If the text is shorted, the text label may appear smaller
+        /// </summary>
+        public float MaxWidth
+        {
+            get => maxWidth;
+            set
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(background));
+                maxWidth = value;
+                UpdateVisuals();
             }
         }
 
-        UpdateVisuals();
-    }
-
-    /// <summary>
-    /// Maximum width of the text label
-    /// If the text is shorted, the text label may appear smaller
-    /// </summary>
-    public float MaxWidth
-    {
-        get => maxWidth;
-        set
+        /// <summary>
+        /// Maximum height of the text label
+        /// If the text is smaller, the text label may appear smaller
+        /// </summary>
+        public float MaxHeight
         {
-            maxWidth = value;
-            UpdateVisuals();
+            get => maxHeight;
+            set
+            {
+                maxHeight = value;
+                UpdateVisuals();
+            }
         }
-    }
 
-    /// <summary>
-    /// Maximum height of the text label
-    /// If the text is smaller, the text label may appear smaller
-    /// </summary>
-    public float MaxHeight
-    {
-        get => maxHeight;
-        set
+        /// <summary>
+        /// The actual width of the text label
+        /// </summary>
+        public float Width
         {
-            maxHeight = value;
-            UpdateVisuals();
+            get
+            {
+                if (textLabels.Length > 0)
+                {
+                    return textLabels[0].textBounds.size.x + padding * 2f;
+                }
+                else
+                {
+                    return 0f;
+                }
+            }
         }
-    }
 
-    /// <summary>
-    /// The actual width of the text label
-    /// </summary>
-    public float Width
-    {
-        get
+        /// <summary>
+        /// The actual height of the text label
+        /// </summary>
+        public float Height
         {
+            get
+            {
+                if (textLabels.Length > 0)
+                {
+                    return textLabels[0].textBounds.size.y + padding * 2f;
+                }
+                else
+                {
+                    return 0f;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Padding of the background to all sides
+        /// </summary>
+        public float Padding
+        {
+            get => padding;
+            set
+            {
+                padding = value;
+                UpdateVisuals();
+            }
+        }
+
+        /// <summary>
+        /// The text content of the text label
+        /// </summary>
+        public string Text
+        {
+            get => text;
+            set
+            {
+                text = value;
+                UpdateVisuals();
+            }
+        }
+
+        /// <summary>
+        /// Updates the visuals of the text label based on the set properties
+        /// like Text, Width and Height
+        /// </summary>
+        private void UpdateVisuals()
+        {
+            // only show the text label if there is text to show
+            gameObject.SetActive(!string.IsNullOrEmpty(text));
+
+            // set up all text components
+            for (int i = 0; i < textLabels.Length; i++)
+            {
+                textLabels[i].rectTransform.sizeDelta = new Vector2(maxWidth, maxHeight);
+                textLabels[i].text = text;
+                textLabels[i].ForceMeshUpdate();
+            }
+
             if (textLabels.Length > 0)
             {
-                return textLabels[0].textBounds.size.x + padding * 2f;
-            }
-            else
-            {
-                return 0f;
-            }
-        }
-    }
-
-    /// <summary>
-    /// The actual height of the text label
-    /// </summary>
-    public float Height
-    {
-        get
-        {
-            if (textLabels.Length > 0)
-            {
-                return textLabels[0].textBounds.size.y + padding * 2f;
-            }
-            else
-            {
-                return 0f;
+                // scale the background to fit the acutal text size
+                // assuming that all labels show the same in the same size
+                background.localScale = new Vector3(
+                    textLabels[0].textBounds.size.x + padding * 2f,
+                    textLabels[0].textBounds.size.y + padding * 2f,
+                    background.localScale.z
+                    );
             }
         }
-    }
 
-    /// <summary>
-    /// Padding of the background to all sides
-    /// </summary>
-    public float Padding
-    {
-        get => padding;
-        set
+        /// <summary>
+        /// Called in the Editor if the serialized and public variables are changed
+        /// Updates the visual appearance so that the developer can see how the text label will look during runtime
+        /// </summary>
+        private void OnValidate()
         {
-            padding = value;
             UpdateVisuals();
         }
-    }
-
-    /// <summary>
-    /// The text content of the text label
-    /// </summary>
-    public string Text
-    {
-        get => text;
-        set
-        {
-            text = value;
-            UpdateVisuals();
-        }
-    }
-
-    /// <summary>
-    /// Updates the visuals of the text label based on the set properties
-    /// like Text, Width and Height
-    /// </summary>
-    private void UpdateVisuals()
-    {
-        // only show the text label if there is text to show
-        gameObject.SetActive(!string.IsNullOrEmpty(text));
-
-        // set up all text components
-        for (int i = 0; i < textLabels.Length; i++)
-        {
-            textLabels[i].rectTransform.sizeDelta = new Vector2(maxWidth, maxHeight);
-            textLabels[i].text = text;
-            textLabels[i].ForceMeshUpdate();
-        }
-
-        if (textLabels.Length > 0)
-        {
-            // scale the background to fit the acutal text size
-            // assuming that all labels show the same in the same size
-            background.localScale = new Vector3(
-                textLabels[0].textBounds.size.x + padding * 2f,
-                textLabels[0].textBounds.size.y + padding * 2f,
-                background.localScale.z
-                );
-        }
-    }
-
-    /// <summary>
-    /// Called in the Editor if the serialized and public variables are changed
-    /// Updates the visual appearance so that the developer can see how the text label will look during runtime
-    /// </summary>
-    private void OnValidate()
-    {
-        UpdateVisuals();
     }
 }

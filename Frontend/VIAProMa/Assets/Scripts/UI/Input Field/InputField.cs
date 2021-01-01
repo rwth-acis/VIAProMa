@@ -1,13 +1,14 @@
-﻿using Microsoft.MixedReality.Toolkit.UI;
+﻿using i5.VIAProMa.UI.KeyboardInput;
+using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace i5.ViaProMa.UI
+namespace i5.VIAProMa.UI.InputFields
 {
-
     public class InputField : MonoBehaviour
     {
         [Header("UI Elements")]

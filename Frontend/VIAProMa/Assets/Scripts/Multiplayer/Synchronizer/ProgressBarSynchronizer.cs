@@ -1,41 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using i5.VIAProMa.Multiplayer.Common;
+using i5.VIAProMa.Visualizations.ProgressBars;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 
-[RequireComponent(typeof(ProgressBarController))]
-public class ProgressBarSynchronizer : TransformSynchronizer
+namespace i5.VIAProMa.Multiplayer.Synchronizer
 {
-    private ProgressBarController progressBarController;
-
-    private float targetLength;
-
-    private void Awake()
+    [RequireComponent(typeof(ProgressBarController))]
+    public class ProgressBarSynchronizer : TransformSynchronizer
     {
-        progressBarController = GetComponent<ProgressBarController>();
-    }
+        private ProgressBarController progressBarController;
 
-    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        base.OnPhotonSerializeView(stream, info);
-        if (stream.IsWriting)
+        private float targetLength;
+
+        private void Awake()
         {
-            stream.SendNext(progressBarController.Length);
+            progressBarController = GetComponent<ProgressBarController>();
         }
-        else
-        {
-            targetLength = (float)stream.ReceiveNext();
-        }
-    }
 
-    protected override void Update()
-    {
-        base.Update();
-        if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
+        public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            progressBarController.Length = SmoothFloat(progressBarController.Length, targetLength, lerpSpeed);
+            base.OnPhotonSerializeView(stream, info);
+            if (stream.IsWriting)
+            {
+                stream.SendNext(progressBarController.Length);
+            }
+            else
+            {
+                targetLength = (float)stream.ReceiveNext();
+            }
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+            if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
+            {
+                progressBarController.Length = SmoothFloat(progressBarController.Length, targetLength, lerpSpeed);
+            }
         }
     }
 }

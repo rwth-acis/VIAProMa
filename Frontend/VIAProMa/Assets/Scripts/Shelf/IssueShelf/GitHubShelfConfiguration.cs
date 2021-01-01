@@ -1,38 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.DataModel.API;
 
-public class GitHubShelfConfiguration : IShelfConfiguration
+namespace i5.VIAProMa.Shelves.IssueShelf
 {
-    public DataSource SelectedSource { get; private set; }
-
-    public string Owner { get; set; }
-
-    public string RepositoryName { get; set; }
-
-    /// <summary>
-    /// true if the owner and repository in this configuration are both non-empty
-    /// </summary>
-    public bool IsValidConfiguration
+    public class GitHubShelfConfiguration : IShelfConfiguration
     {
-        get
+        public DataSource SelectedSource { get; private set; }
+
+        public string Owner { get; set; }
+
+        public string RepositoryName { get; set; }
+
+        /// <summary>
+        /// true if the owner and repository in this configuration are both non-empty
+        /// </summary>
+        public bool IsValidConfiguration
         {
-            return !string.IsNullOrEmpty(Owner) && !string.IsNullOrEmpty(RepositoryName);
+            get
+            {
+                return !string.IsNullOrEmpty(Owner) && !string.IsNullOrEmpty(RepositoryName);
+            }
         }
-    }
 
-    public GitHubShelfConfiguration()
-    {
-        SelectedSource = DataSource.GITHUB;
-    }
+        public GitHubShelfConfiguration()
+        {
+            SelectedSource = DataSource.GITHUB;
+        }
 
-    public GitHubShelfConfiguration(string owner) : this()
-    {
-        Owner = owner;
-    }
+        public GitHubShelfConfiguration(string owner) : this()
+        {
+            Owner = owner;
+        }
 
-    public GitHubShelfConfiguration(string owner, string repository) : this(owner)
-    {
-        RepositoryName = repository;
+        public GitHubShelfConfiguration(string owner, string repository) : this(owner)
+        {
+            RepositoryName = repository;
+        }
     }
 }

@@ -1,15 +1,16 @@
 ﻿using Microsoft.MixedReality.Toolkit.Input;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class DummyFocusHandler : MonoBehaviour, IMixedRealityFocusHandler
+namespace i5.VIAProMa.Shelves.Widgets
 {
-    public void OnFocusEnter(FocusEventData eventData)
+    public class DummyFocusHandler : MonoBehaviour, IMixedRealityFocusHandler
     {
-    }
+        public void OnFocusEnter(FocusEventData eventData)
+        {
+        }
 
-    public void OnFocusExit(FocusEventData eventData)
-    {
+        public void OnFocusExit(FocusEventData eventData)
+        {
+        }
     }
 }

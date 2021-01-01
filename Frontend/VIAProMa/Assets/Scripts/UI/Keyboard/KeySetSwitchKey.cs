@@ -1,14 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class KeySetSwitchKey : Key
+namespace i5.VIAProMa.UI.KeyboardInput
 {
-    [SerializeField] private int targetPageIndex;
-
-    protected override void KeyPressed()
+    public class KeySetSwitchKey : Key
     {
-        base.KeyPressed();
-        keyboard.CurrentKeySetPageIndex = targetPageIndex;
+        [SerializeField] private int targetPageIndex;
+
+        protected override void KeyPressed()
+        {
+            base.KeyPressed();
+            keyboard.CurrentKeySetPageIndex = targetPageIndex;
+        }
     }
 }

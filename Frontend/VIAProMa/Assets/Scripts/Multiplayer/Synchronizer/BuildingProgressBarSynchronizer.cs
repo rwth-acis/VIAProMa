@@ -1,28 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Multiplayer.Common;
+using i5.VIAProMa.Visualizations.BuildingProgressBar;
 using Photon.Pun;
 using UnityEngine;
 
-[RequireComponent(typeof(BuildingProgressBarVisuals))]
-public class BuildingProgressBarSynchronizer : TransformSynchronizer
+namespace i5.VIAProMa.Multiplayer.Synchronizer
 {
-    private BuildingProgressBarVisuals barVisuals;
-
-    private void Awake()
+    [RequireComponent(typeof(BuildingProgressBarVisuals))]
+    public class BuildingProgressBarSynchronizer : TransformSynchronizer
     {
-        barVisuals = GetComponent<BuildingProgressBarVisuals>();
-    }
+        private BuildingProgressBarVisuals barVisuals;
 
-    public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        base.OnPhotonSerializeView(stream, info);
-        if (stream.IsWriting)
+        private void Awake()
         {
-            stream.SendNext((short)barVisuals.BuildingModelIndex);
+            barVisuals = GetComponent<BuildingProgressBarVisuals>();
         }
-        else
+
+        public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            barVisuals.BuildingModelIndex = (short)stream.ReceiveNext();
+            base.OnPhotonSerializeView(stream, info);
+            if (stream.IsWriting)
+            {
+                stream.SendNext((short)barVisuals.BuildingModelIndex);
+            }
+            else
+            {
+                barVisuals.BuildingModelIndex = (short)stream.ReceiveNext();
+            }
         }
     }
 }

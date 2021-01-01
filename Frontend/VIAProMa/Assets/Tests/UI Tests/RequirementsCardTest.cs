@@ -1,8 +1,12 @@
-﻿using System.Collections;
+﻿using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.UI.ListView.Issues;
+using i5.VIAProMa.Utilities;
+using i5.VIAProMa.WebConnection;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace i5.ViaProMa.Tests
+namespace i5.VIAProMa.Tests
 {
     /// <summary>
     /// Tests the issue cards

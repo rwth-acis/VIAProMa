@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-namespace i5.ViaProMa.Visualizations.Common
+namespace i5.VIAProMa.Visualizations.Common.Data.DataConverters
 {
     public class DateDataConverter : IDataConverter<DateTime>
     {

@@ -1,32 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
 using UnityEngine;
 
-public class ShiftKey : Key, IShiftableKey
+namespace i5.VIAProMa.UI.KeyboardInput
 {
-    [SerializeField] private GameObject shiftIndicator;
-
-    protected override void Awake()
+    public class ShiftKey : Key, IShiftableKey
     {
-        base.Awake();
-        if (shiftIndicator == null)
+        [SerializeField] private GameObject shiftIndicator;
+
+        protected override void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(shiftIndicator));
-            return;
+            base.Awake();
+            if (shiftIndicator == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(shiftIndicator));
+                return;
+            }
+
+            SetShift(false);
+
         }
 
-        SetShift(false);
+        protected override void KeyPressed()
+        {
+            base.KeyPressed();
+            keyboard.ShiftActive = !keyboard.ShiftActive;
+        }
 
-    }
-
-    protected override void KeyPressed()
-    {
-        base.KeyPressed();
-        keyboard.ShiftActive = !keyboard.ShiftActive;
-    }
-
-    public void SetShift(bool shiftActive)
-    {
-        shiftIndicator.SetActive(shiftActive);
+        public void SetShift(bool shiftActive)
+        {
+            shiftIndicator.SetActive(shiftActive);
+        }
     }
 }

@@ -1,41 +1,42 @@
 ﻿using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Controls the visiblilty of the avatar
-/// </summary>
-public class AdvancedAvatarVisualController : MonoBehaviourPun
+namespace i5.VIAProMa.Multiplayer.Avatars
 {
     /// <summary>
-    /// Initializes the component
-    /// Deactivates the avatar's visual representation if it is the own avatar
-    /// If the avatar represents a remote player, it displays the player's name
+    /// Controls the visiblilty of the avatar
     /// </summary>
-    private void Start()
+    public class AdvancedAvatarVisualController : MonoBehaviourPun
     {
-        if (photonView.IsMine)
+        /// <summary>
+        /// Initializes the component
+        /// Deactivates the avatar's visual representation if it is the own avatar
+        /// If the avatar represents a remote player, it displays the player's name
+        /// </summary>
+        private void Start()
         {
-            SetVisibility(false);
+            if (photonView.IsMine)
+            {
+                SetVisibility(false);
+            }
+            else
+            {
+                SetVisibility(true);
+            }
         }
-        else
-        {
-            SetVisibility(true);
-        }
-    }
 
-    /// <summary>
-    /// Makes sure that all child objects of the avatar are turned on/off
-    /// It is not possible to use gameobject.SetActive because the logic on the gameobject should still be executed
-    /// Therefore, only the children are deactivated if visibility is set to false
-    /// </summary>
-    /// <param name="visibility">States if the avatar should be visible</param>
-    private void SetVisibility(bool visibility)
-    {
-        foreach(Transform child in transform)
+        /// <summary>
+        /// Makes sure that all child objects of the avatar are turned on/off
+        /// It is not possible to use gameobject.SetActive because the logic on the gameobject should still be executed
+        /// Therefore, only the children are deactivated if visibility is set to false
+        /// </summary>
+        /// <param name="visibility">States if the avatar should be visible</param>
+        private void SetVisibility(bool visibility)
         {
-            child.gameObject.SetActive(visibility);
+            foreach (Transform child in transform)
+            {
+                child.gameObject.SetActive(visibility);
+            }
         }
     }
 }

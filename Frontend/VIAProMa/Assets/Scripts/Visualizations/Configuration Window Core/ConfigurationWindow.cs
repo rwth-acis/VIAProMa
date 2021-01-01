@@ -1,107 +1,111 @@
-﻿using i5.ViaProMa.UI;
+﻿using i5.VIAProMa.UI;
+using i5.VIAProMa.UI.AppBar;
+using i5.VIAProMa.UI.InputFields;
+using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ConfigurationWindow : MonoBehaviour, IWindow
+namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 {
-    [Header("References")]
-    [SerializeField] protected AppBarConfigurableSpawner appBarSpawner;
-    [SerializeField] protected Visualization visualization;
-
-    [Header("UI Elements")]
-    [SerializeField] protected Interactable closeButton;
-    [SerializeField] protected InputField progressBarTitleField;
-
-    private bool windowEnabled;
-
-    protected int externalConfiguration = 0;
-
-    public virtual bool WindowEnabled
+    public class ConfigurationWindow : MonoBehaviour, IWindow
     {
-        get => windowEnabled;
-        set
-        {
-            windowEnabled = value;
-            closeButton.Enabled = windowEnabled;
-            progressBarTitleField.Enabled = windowEnabled;
-        }
-    }
+        [Header("References")]
+        [SerializeField] protected AppBarConfigurableSpawner appBarSpawner;
+        [SerializeField] protected Visualization visualization;
 
-    public bool WindowOpen { get; private set; }
+        [Header("UI Elements")]
+        [SerializeField] protected Interactable closeButton;
+        [SerializeField] protected InputField progressBarTitleField;
 
-    public event EventHandler WindowClosed;
+        private bool windowEnabled;
 
-    protected virtual void Awake()
-    {
-        if (appBarSpawner == null)
+        protected int externalConfiguration = 0;
+
+        public virtual bool WindowEnabled
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(appBarSpawner));
+            get => windowEnabled;
+            set
+            {
+                windowEnabled = value;
+                closeButton.Enabled = windowEnabled;
+                progressBarTitleField.Enabled = windowEnabled;
+            }
         }
-        if (visualization == null)
+
+        public bool WindowOpen { get; private set; }
+
+        public event EventHandler WindowClosed;
+
+        protected virtual void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualization));
+            if (appBarSpawner == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(appBarSpawner));
+            }
+            if (visualization == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualization));
+            }
+            if (closeButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(closeButton));
+            }
+            if (progressBarTitleField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBarTitleField));
+            }
+            else
+            {
+                progressBarTitleField.Text = visualization.Title;
+                progressBarTitleField.TextChanged += TitleChanged;
+            }
         }
-        if (closeButton == null)
+
+        protected virtual void OnEnable()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(closeButton));
+            visualization.TitleChanged += TitleExternallyChanged;
         }
-        if (progressBarTitleField == null)
+
+        protected virtual void OnDisable()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBarTitleField));
+            visualization.TitleChanged -= TitleExternallyChanged;
         }
-        else
+
+        public virtual void Close()
         {
+            WindowOpen = false;
+            gameObject.SetActive(false);
+            WindowClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public virtual void Open()
+        {
+            gameObject.SetActive(true);
+            WindowOpen = true;
+        }
+
+        public void Open(Vector3 position, Vector3 eulerAngles)
+        {
+            Open();
+            // do not set the position and eulerAngles since the configuration window should have a fixed position
+        }
+
+        protected virtual void TitleChanged(object sender, EventArgs e)
+        {
+            if (externalConfiguration > 0)
+            {
+                return;
+            }
+
+            visualization.Title = progressBarTitleField.Text;
+        }
+
+        protected virtual void TitleExternallyChanged(object sender, EventArgs e)
+        {
+            externalConfiguration++;
             progressBarTitleField.Text = visualization.Title;
-            progressBarTitleField.TextChanged += TitleChanged;
+            externalConfiguration--;
         }
-    }
-
-    protected virtual void OnEnable()
-    {
-        visualization.TitleChanged += TitleExternallyChanged;
-    }
-
-    protected virtual void OnDisable()
-    {
-        visualization.TitleChanged -= TitleExternallyChanged;
-    }
-
-    public virtual void Close()
-    {
-        WindowOpen = false;
-        gameObject.SetActive(false);
-        WindowClosed?.Invoke(this, EventArgs.Empty);
-    }
-
-    public virtual void Open()
-    {
-        gameObject.SetActive(true);
-        WindowOpen = true;
-    }
-
-    public void Open(Vector3 position, Vector3 eulerAngles)
-    {
-        Open();
-        // do not set the position and eulerAngles since the configuration window should have a fixed position
-    }
-
-    protected virtual void TitleChanged(object sender, EventArgs e)
-    {
-        if (externalConfiguration > 0)
-        {
-            return;
-        }
-
-        visualization.Title = progressBarTitleField.Text;
-    }
-
-    protected virtual void TitleExternallyChanged(object sender, EventArgs e)
-    {
-        externalConfiguration++;
-        progressBarTitleField.Text = visualization.Title;
-        externalConfiguration--;
     }
 }

@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Visualizations.Diagrams.Common.Axes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace i5.ViaProMa.Visualizations.Diagrams
+namespace i5.VIAProMa.Visualizations.Diagrams
 {
-    public class Barchart : i5.ViaProMa.Visualizations.Common.Diagram
+    public class Barchart : i5.VIAProMa.Visualizations.Common.Diagram
     {
         [SerializeField] private GameObject barPrefab;
 
@@ -57,7 +59,7 @@ namespace i5.ViaProMa.Visualizations.Diagrams
             }
         }
 
-        private float CorrectForTicksInCells(float inUnitSpace, Common.AxisController axisController)
+        private float CorrectForTicksInCells(float inUnitSpace, AxisController axisController)
         {
             if (axisController.ticksInCells)
             {

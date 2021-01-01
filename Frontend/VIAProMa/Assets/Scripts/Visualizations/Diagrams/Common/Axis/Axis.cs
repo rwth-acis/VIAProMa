@@ -1,10 +1,8 @@
-﻿using System.Collections;
+﻿using i5.VIAProMa.Visualizations.Common.Data.DataConverters;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace i5.ViaProMa.Visualizations.Common
+namespace i5.VIAProMa.Visualizations.Diagrams.Common.Axes
 {
-
     public class Axis<T> : IAxis
     {
         public string Title

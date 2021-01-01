@@ -1,52 +1,54 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
 using TMPro;
 using UnityEngine;
 
-public class LetterKey : Key, IShiftableKey
+namespace i5.VIAProMa.UI.KeyboardInput
 {
-    [SerializeField] private TextMeshPro letterCaption;
-
-    public char letter;
-
-    private bool shiftActive;
-
-    protected override void Awake()
+    public class LetterKey : Key, IShiftableKey
     {
-        base.Awake();
-        if (letterCaption == null)
+        [SerializeField] private TextMeshPro letterCaption;
+
+        public char letter;
+
+        private bool shiftActive;
+
+        protected override void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(letterCaption));
+            base.Awake();
+            if (letterCaption == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(letterCaption));
+            }
         }
-    }
 
-    public void SetShift(bool shiftActive)
-    {
-        this.shiftActive = shiftActive;
-        UpdateView();
-    }
-
-    protected override void KeyPressed()
-    {
-        base.KeyPressed();
-        char applyToText = char.ToLower(letter);
-        if (shiftActive)
+        public void SetShift(bool shiftActive)
         {
-            applyToText = char.ToUpper(letter);
+            this.shiftActive = shiftActive;
+            UpdateView();
         }
-        keyboard.AddLetter(applyToText);
-    }
 
-    private void UpdateView()
-    {
-        if (letterCaption != null)
+        protected override void KeyPressed()
         {
-            letterCaption.text = shiftActive ? char.ToUpper(letter).ToString() : letter.ToString();
+            base.KeyPressed();
+            char applyToText = char.ToLower(letter);
+            if (shiftActive)
+            {
+                applyToText = char.ToUpper(letter);
+            }
+            keyboard.AddLetter(applyToText);
         }
-    }
 
-    private void OnValidate()
-    {
-        UpdateView();
+        private void UpdateView()
+        {
+            if (letterCaption != null)
+            {
+                letterCaption.text = shiftActive ? char.ToUpper(letter).ToString() : letter.ToString();
+            }
+        }
+
+        private void OnValidate()
+        {
+            UpdateView();
+        }
     }
 }

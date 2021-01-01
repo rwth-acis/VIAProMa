@@ -1,78 +1,79 @@
 ﻿using HoloToolkit.Unity;
-using Microsoft.MixedReality.Toolkit.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using i5.VIAProMa.UI;
+using i5.VIAProMa.Utilities;
 using TMPro;
 using UnityEngine;
 
-public class NotificationSystem : Singleton<NotificationSystem>
+namespace i5.VIAProMa.Multiplayer.Chat
 {
-    [SerializeField] private GameObject notificationWidget;
-    [SerializeField] private TextMeshPro notificationPreviewLabel;
-
-    public bool CanShowMessages { get; set; } = true;
-
-    protected override void Awake()
+    public class NotificationSystem : Singleton<NotificationSystem>
     {
-        base.Awake();
-        if (notificationWidget == null)
+        [SerializeField] private GameObject notificationWidget;
+        [SerializeField] private TextMeshPro notificationPreviewLabel;
+
+        public bool CanShowMessages { get; set; } = true;
+
+        protected override void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(notificationWidget));
+            base.Awake();
+            if (notificationWidget == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(notificationWidget));
+            }
+            if (notificationPreviewLabel == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(notificationPreviewLabel));
+            }
         }
-        if (notificationPreviewLabel == null)
+
+        private void Start()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(notificationPreviewLabel));
+            ChatManager.Instance.MessageReceived += OnMessageReceived;
+            HideMessage();
         }
-    }
 
-    private void Start()
-    {
-        ChatManager.Instance.MessageReceived += OnMessageReceived;
-        HideMessage();
-    }
-
-    protected override void OnDestroy()
-    {
-        if (ChatManager.Instance != null)
+        protected override void OnDestroy()
         {
-            ChatManager.Instance.MessageReceived -= OnMessageReceived;
+            if (ChatManager.Instance != null)
+            {
+                ChatManager.Instance.MessageReceived -= OnMessageReceived;
+            }
+            base.OnDestroy();
         }
-        base.OnDestroy();
-    }
 
-    public void ShowMessage(string text)
-    {
-        if (CanShowMessages)
+        public void ShowMessage(string text)
         {
-            gameObject.SetActive(true);
-            notificationPreviewLabel.text = text;
+            if (CanShowMessages)
+            {
+                gameObject.SetActive(true);
+                notificationPreviewLabel.text = text;
+            }
         }
-    }
 
-    public void HideMessage()
-    {
-        notificationPreviewLabel.text = "";
-        gameObject.SetActive(false);
-    }
-
-    public void OpenChatMenu()
-    {
-        WindowManager.Instance.ChatMenu.Open(
-            transform.position - 0.6f * notificationPreviewLabel.transform.right,
-            notificationPreviewLabel.transform.eulerAngles
-            );
-    }
-
-    private void OnMessageReceived(object sender, ChatMessageEventArgs e)
-    {
-        if (e.MessageSender == null) // local message
+        public void HideMessage()
         {
-            ShowMessage(e.Message);
+            notificationPreviewLabel.text = "";
+            gameObject.SetActive(false);
         }
-        else
+
+        public void OpenChatMenu()
         {
-            ShowMessage(e.MessageSender.NickName + ": " + e.Message);
+            WindowManager.Instance.ChatMenu.Open(
+                transform.position - 0.6f * notificationPreviewLabel.transform.right,
+                notificationPreviewLabel.transform.eulerAngles
+                );
+        }
+
+        private void OnMessageReceived(object sender, ChatMessageEventArgs e)
+        {
+            if (e.MessageSender == null) // local message
+            {
+                ShowMessage(e.Message);
+            }
+            else
+            {
+                ShowMessage(e.MessageSender.NickName + ": " + e.Message);
+            }
         }
     }
 }
