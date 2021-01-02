@@ -35,9 +35,9 @@ public class PieMenuRenderer : MonoBehaviour
         }
     }
 
-    float entryNumberToRotation(float number)
+    float entryNumberToRotation(int number)
     {
-        return (number / menuEntries.Count) * 360;
+        return ((float)number / menuEntries.Count) * 360;
     }
 
     public void highlightPiece(int i)
@@ -64,7 +64,7 @@ public class PieMenuRenderer : MonoBehaviour
         Image icon = pieMenuPieces[entryNumber].transform.Find("CanvasIcon/Icon").GetComponent<Image>();
         icon.sprite = menuEntries[entryNumber].icon;
         float rotation = entryNumberToRotation(entryNumber);
-        icon.rectTransform.localPosition = Quaternion.Euler(0, 0, entryNumberToRotation(0.5f)) * new Vector3(0, 1, 0) * menuRadius / 2;
+        icon.rectTransform.localPosition = Quaternion.Euler(0, 0, 0.5f * entryNumberToRotation(1)) * new Vector3(0, -1, 0) * menuRadius / 2;
     }
 
     //bool alreadyUpdated = false;
