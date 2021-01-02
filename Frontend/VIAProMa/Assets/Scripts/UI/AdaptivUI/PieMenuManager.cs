@@ -77,6 +77,7 @@ public class PieMenuManager : Singleton<PieMenuManager>
             pointer = eventData.InputSource.Pointers[0];
             invokingSource = eventData.InputSource;
             instantiatedPieMenu = Instantiate(pieMenuPrefab, pointer.Position, Quaternion.identity);
+            instantiatedPieMenu.GetComponent<PieMenuRenderer>().constructor();
             instantiatedPieMenu.transform.LookAt(mainCamera.transform);
 
             Vector3 pieMenuPosition = instantiatedPieMenu.transform.position;

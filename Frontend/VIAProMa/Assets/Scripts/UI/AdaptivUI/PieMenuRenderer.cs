@@ -17,8 +17,8 @@ public class PieMenuRenderer : MonoBehaviour
     List<GameObject> pieMenuPieces;
     Image currentlyHighlighted;
     int test = 0;
-    // Start is called before the first frame update
-    void Start()
+
+    public void constructor()
     {
         menuEntries = new List<MenuEntry>(PieMenuManager.Instance.menuEntries);
         int numberItems = menuEntries.Count;
@@ -29,7 +29,7 @@ public class PieMenuRenderer : MonoBehaviour
             Image pieceImage = piece.transform.Find("CanvasPiePiece/PiePiece").GetComponent<Image>();
             pieceImage.fillAmount = 1f / numberItems;
             pieceImage.color = normalColor;
-            piece.transform.Rotate(new Vector3(0,0, entryNumberToRotation(i)),Space.Self);
+            piece.transform.Rotate(new Vector3(0, 0, entryNumberToRotation(i)), Space.Self);
             pieMenuPieces.Add(piece);
             placeIcon(i, 0.5f);
         }
