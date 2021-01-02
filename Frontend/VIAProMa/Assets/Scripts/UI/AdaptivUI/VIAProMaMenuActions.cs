@@ -4,6 +4,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using HoloToolkit.Unity;
+using Photon.Pun;
 public class VIAProMaMenuActions : MonoBehaviour
 {
     public void TestAction(VirtualToolEventData data)
@@ -27,5 +28,47 @@ public class VIAProMaMenuActions : MonoBehaviour
         {
             target.transform.root.localScale /= 2;
         }
+    }
+
+    public void Remove(BaseInputEventData eventData)
+    {
+        GameObject target = GetVisualisationFromInputSource(eventData.InputSource);
+        if (target == null)
+        {
+            return;
+        }
+        if (target.GetComponentInChildren<PhotonView>() != null)
+        {
+            PhotonNetwork.Destroy(target);
+        }
+        else
+        {
+            Destroy(target);
+        }
+    }
+
+    GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source)
+    {
+        foreach (var pointer in source.Pointers)
+        {
+            GameObject target = pointer.Result?.CurrentPointerTarget;
+            if (target != null)
+            {
+                while (target != null && !IsVisualisation(target))
+                {
+                    target = target.transform.parent?.gameObject;
+                }
+                if (target != null && IsVisualisation(target))
+                {
+                    return target;
+                }
+            }
+        }
+        return null;
+    }
+
+    bool IsVisualisation(GameObject gameObject)
+    {
+        return gameObject.GetComponent<Visualization>() != null;
     }
 }
