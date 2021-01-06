@@ -25,6 +25,8 @@ public struct MenuEntry
 
     public InputActionUnityEvent toolActionOnSelectStart;
     public InputActionUnityEvent toolActionOnSelectEnd;
+    public InputActionUnityEvent toolActionOnToolCreated;
+    public InputActionUnityEvent toolActionOnToolDestroyed;
 }
 
 public class VirtualToolEventData

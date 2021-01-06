@@ -29,7 +29,10 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
     /// </summary>
     public InputActionUnityEvent OnInputActionEnded;
 
-    #region InputSystemGlobalHandlerListener Implementation
+
+    public InputActionUnityEvent OnToolCreated;
+
+    public InputActionUnityEvent OnToolDestroyed;
 
     private void OnEnable()
     {
@@ -41,10 +44,20 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputActionHandler>(this);
     }
 
-
-
-
-    #endregion InputSystemGlobalHandlerListener Implementation
+    private void Start()
+    {
+        if (OnToolCreated != null)
+        {
+            OnToolCreated.Invoke(null);
+        }
+    }
+    private void OnDestroy()
+    {
+        if (OnToolDestroyed != null)
+        {
+            OnToolDestroyed.Invoke(null);
+        }
+    }
 
     void IMixedRealityInputActionHandler.OnActionStarted(BaseInputEventData eventData)
     {

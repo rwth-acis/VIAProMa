@@ -70,6 +70,8 @@ public class PieMenuManager : Singleton<PieMenuManager>
             virtualTool.InputAction = currentEntry.InputAction;
             virtualTool.OnInputActionStarted = currentEntry.toolActionOnSelectStart;
             virtualTool.OnInputActionEnded = currentEntry.toolActionOnSelectEnd;
+            virtualTool.OnToolCreated = currentEntry.toolActionOnToolCreated;
+            virtualTool.OnToolDestroyed = currentEntry.toolActionOnToolDestroyed;
 
             Destroy(instantiatedPieMenu);
             invokingSource = null;

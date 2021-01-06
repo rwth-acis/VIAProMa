@@ -7,11 +7,6 @@ using HoloToolkit.Unity;
 using Photon.Pun;
 public class VIAProMaMenuActions : MonoBehaviour
 {
-    public void TestAction(VirtualToolEventData data)
-    {
-        Debug.Log("--------------Jo----------------");
-    }
-
     public void DoubleSize(BaseInputEventData eventData)
     {
         GameObject target = eventData.InputSource.Pointers[0]?.Result?.CurrentPointerTarget;
@@ -47,7 +42,29 @@ public class VIAProMaMenuActions : MonoBehaviour
         }
     }
 
-    GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source)
+    BoundingBoxStateController[] boundingBoxStateControllers;
+
+    public void StartAdjusting()
+    {
+        boundingBoxStateControllers = FindObjectsOfType<BoundingBoxStateController>();
+        foreach (var boundingbox in boundingBoxStateControllers)
+        {
+            boundingbox.BoundingBoxActive = true;
+        }
+    }
+
+    public void StopAdjusting()
+    {
+        foreach (var boundingbox in boundingBoxStateControllers)
+        {
+            if (boundingbox != null)
+            {
+                boundingbox.BoundingBoxActive = false;
+            }
+        }
+    }
+
+    private GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source)
     {
         foreach (var pointer in source.Pointers)
         {

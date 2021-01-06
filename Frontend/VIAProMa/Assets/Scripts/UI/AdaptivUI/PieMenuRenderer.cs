@@ -34,7 +34,8 @@ public class PieMenuRenderer : MonoBehaviour
         currentlyHighlighted = int.MinValue;
 
         //Positioning
-        transform.LookAt(mainCamera.transform);
+        transform.LookAt(mainCamera.transform.position);
+        transform.Rotate(new Vector3(0, 180, 0),Space.Self);
 
         //Generation
         menuEntries = new List<MenuEntry>(PieMenuManager.Instance.menuEntries);
