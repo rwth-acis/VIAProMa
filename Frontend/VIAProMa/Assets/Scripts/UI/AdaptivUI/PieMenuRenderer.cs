@@ -25,12 +25,6 @@ public class PieMenuRenderer : MonoBehaviour
 
     GameObject instiatedMenuCursor;
 
-
-    //Variables for the projection process
-    Vector3 transformedPieMenuPosition;
-    Matrix4x4 planeToStandart;
-    Matrix4x4 standartToPlane;
-
     IMixedRealityPointer pointer;
 
     public void constructor(IMixedRealityPointer pointer, GameObject mainCamera)
@@ -38,6 +32,9 @@ public class PieMenuRenderer : MonoBehaviour
         this.pointer = pointer;
         this.mainCamera = mainCamera;
         currentlyHighlighted = int.MinValue;
+
+        //Positioning
+        transform.LookAt(mainCamera.transform);
 
         //Generation
         menuEntries = new List<MenuEntry>(PieMenuManager.Instance.menuEntries);
@@ -53,18 +50,6 @@ public class PieMenuRenderer : MonoBehaviour
             pieMenuPieces.Add(piece);
             placeIcon(i, 0.5f);
         }
-
-        //Positioning
-        transform.LookAt(mainCamera.transform);
-
-        Vector3 pieMenuPosition = transform.position;
-        Vector3 direction = transform.rotation * Vector3.right;
-        Vector3 up = transform.rotation * Vector3.up;
-        Vector3 normal = transform.rotation * Vector3.forward;
-
-        planeToStandart = new Matrix4x4(direction, up, normal, new Vector4(pieMenuPosition.x, pieMenuPosition.y, pieMenuPosition.z, 1));
-        standartToPlane = planeToStandart.inverse;
-        transformedPieMenuPosition = standartToPlane * new Vector4(pieMenuPosition.x, pieMenuPosition.y, pieMenuPosition.z);
 
         instiatedMenuCursor = Instantiate(menuCursor, transform);
     }
@@ -108,22 +93,19 @@ public class PieMenuRenderer : MonoBehaviour
 
     void placeIcon(int entryNumber, float menuRadius)
     {
+        //Place the icon in the middle of the piece
         Image icon = pieMenuPieces[entryNumber].transform.Find("CanvasIcon/Icon").GetComponent<Image>();
         icon.sprite = menuEntries[entryNumber].icon;
         icon.rectTransform.localPosition = Quaternion.Euler(0, 0, 0.5f * entryNumberToRotation(1)) * new Vector3(0, -1, 0) * menuRadius / 2;
-        //icon.rectTransform.rotation
     }
 
 
 
     void Update()
     {
-        //Project the pointer on the plane formed by the pie menu
-        Vector3 projectedPoint = pointer.Position;
-        projectedPoint = standartToPlane * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
-        projectedPoint.z = 0;
-
-        instiatedMenuCursor.transform.position = planeToStandart * new Vector4(projectedPoint.x, projectedPoint.y, projectedPoint.z, 1);
-        highlightPiece(CalculatePieceID(projectedPoint));
+        instiatedMenuCursor.transform.position = pointer.Position;
+        Vector3 localPosition = instiatedMenuCursor.transform.localPosition;
+        instiatedMenuCursor.transform.localPosition = new Vector3(localPosition.x, localPosition.y, 0);
+        highlightPiece(CalculatePieceID(instiatedMenuCursor.transform.localPosition));
     }
 }
