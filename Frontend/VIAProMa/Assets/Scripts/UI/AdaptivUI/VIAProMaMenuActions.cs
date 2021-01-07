@@ -25,6 +25,11 @@ public class VIAProMaMenuActions : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Main function for tool to remove visualisations.
+    /// </summary>
+    /// <param name="eventData"></param>
     public void Remove(BaseInputEventData eventData)
     {
         GameObject target = GetVisualisationFromInputSource(eventData.InputSource);
@@ -41,6 +46,8 @@ public class VIAProMaMenuActions : MonoBehaviour
             Destroy(target);
         }
     }
+
+    //Adjust Tool
 
     BoundingBoxStateController[] boundingBoxStateControllers;
 
@@ -60,6 +67,19 @@ public class VIAProMaMenuActions : MonoBehaviour
             if (boundingbox != null)
             {
                 boundingbox.BoundingBoxActive = false;
+            }
+        }
+    }
+
+    public void OpenConfigurationWindow(BaseInputEventData eventData)
+    {
+        GameObject target = GetVisualisationFromInputSource(eventData.InputSource);
+        if (target != null)
+        {
+            ConfigurationWindow configurationWindow = target.transform.GetComponentInChildren<ConfigurationWindow>(true);
+            if (configurationWindow != null)
+            {
+                configurationWindow.Open();
             }
         }
     }
