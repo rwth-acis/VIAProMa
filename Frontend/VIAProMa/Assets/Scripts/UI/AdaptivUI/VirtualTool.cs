@@ -51,13 +51,6 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
             OnToolCreated.Invoke(null);
         }
     }
-    private void OnDestroy()
-    {
-        if (OnToolDestroyed != null)
-        {
-            OnToolDestroyed.Invoke(null);
-        }
-    }
 
     void IMixedRealityInputActionHandler.OnActionStarted(BaseInputEventData eventData)
     {

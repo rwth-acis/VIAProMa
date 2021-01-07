@@ -61,8 +61,11 @@ public class PieMenuManager : Singleton<PieMenuManager>
         {
             if (virtualTool != null)
             {
+                //Needs to be invoked here and not in an actual OnDestroy, because otherwise the OnToolCreated Method of the new one can get executed before the OnToolDestroyed of the old one
+                virtualTool.OnToolDestroyed.Invoke(null);
                 Destroy(virtualTool);
             }
+
             virtualTool = Instantiate(virtualToolPrefab).GetComponent<VirtualTool>();
 
             virtualTool.inputSource = invokingSource;
