@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
@@ -73,26 +74,55 @@ public class VIAProMaMenuActions : MonoBehaviour
 
     public void OpenConfigurationWindow(BaseInputEventData eventData)
     {
-        GameObject target = GetVisualisationFromInputSource(eventData.InputSource);
+        GameObject target = GetVisualisationFromInputSource(eventData.InputSource, new Type[] {typeof(ConfigurationWindow)}, true, false);
         if (target != null)
         {
             ConfigurationWindow configurationWindow = target.transform.GetComponentInChildren<ConfigurationWindow>(true);
             if (configurationWindow != null)
             {
                 configurationWindow.Open();
+                configurationWindow.transform.LookAt(Camera.main.transform);
+                //Set the x and y rotation to 0 and flip it around because with LookAt, the prefab faces away from the camera and is tilted strangly
+                Vector3 rotation = configurationWindow.transform.eulerAngles;
+                configurationWindow.transform.SetPositionAndRotation(eventData.InputSource.Pointers[0].Position, Quaternion.Euler(0,180+rotation.y,0));
             }
         }
     }
 
-    private GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source)
+    private GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
     {
         foreach (var pointer in source.Pointers)
         {
             GameObject target = pointer.Result?.CurrentPointerTarget;
+
+            //If wished, check if any of the children of the target is of a type that should be excluded
+            if (typesToExclude != null && checkBelow)
+            {
+                foreach (Type type in typesToExclude)
+                {
+                    if (target.GetComponentInChildren(type,true) != null)
+                    {
+                        return null;
+                    }
+                }
+            }
+
             if (target != null)
             {
                 while (target != null && !IsVisualisation(target))
                 {
+                    //If wished, check if the current object (i.e. a object above in the hirachy of the original target) is of a type that should be excluded
+                    if (typesToExclude != null && checkAbove)
+                    {
+                        foreach (Type type in typesToExclude)
+                        {
+                            if (target.GetComponent(type) != null)
+                            {
+                                return null;
+                            } 
+                        }
+                    }
+
                     target = target.transform.parent?.gameObject;
                 }
                 if (target != null && IsVisualisation(target))
