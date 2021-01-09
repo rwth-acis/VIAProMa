@@ -24,6 +24,11 @@ namespace Tests
 
         private RandomColor randomColor;
 
+        private GameObject arrayObject1;
+        //private GameObject arrayObject2;
+        private HorizontalObjectArray horizontalObjectArray1;
+        //private HorizontalObjectArray horizontalObjectArray2;
+
         [SetUp]
         public void Setup()
         {
@@ -40,6 +45,14 @@ namespace Tests
             followObject = testObject.AddComponent<FollowObject>();
 
             testObject.AddComponent<MeshRenderer>();
+
+            arrayObject1 = GameObject.Instantiate(new GameObject());
+            //arrayObject2 = GameObject.Instantiate(new GameObject());
+            arrayObject1.AddComponent<BoundingBox>();
+            //arrayObject2.AddComponent<BoundingBox>();
+            horizontalObjectArray1 = arrayObject1.AddComponent<HorizontalObjectArray>();
+            //horizontalObjectArray2 = arrayObject2.AddComponent<HorizontalObjectArray>();
+
         }
 
         [UnityTest]
@@ -107,6 +120,35 @@ namespace Tests
             // Use the Assert class to test conditions.
             Assert.AreNotEqual(initialColor, finalColor);
         }
+
+        [UnityTest]
+        public IEnumerator HorizontalObjectArray_SingleObject()
+        {
+            // Arrange
+            Vector3 initialPosition = arrayObject1.transform.position;
+            horizontalObjectArray1.Collection = new GameObject[] { arrayObject1 };
+
+            // Use yield to skip a frame.
+            yield return new WaitForSeconds(Time.deltaTime);
+            Vector3 finalPosition = arrayObject1.transform.position;
+
+            // Use the Assert class to test conditions.
+            //Debug.Log("Expected: " + initialPosition.y + "; actual: " + finalPosition.y);
+            Assert.AreEqual(initialPosition, finalPosition);
+        }
+
+        /* Template
+        [UnityTest]
+        public IEnumerator HorizontalObjectArray_SingleObject()
+        {
+            // Arrange
+
+            // Use yield to skip a frame.
+            yield return new WaitForSeconds(Time.deltaTime);
+
+            // Use the Assert class to test conditions.
+        }
+        */
 
         [TearDown]
         public void TearDown()
