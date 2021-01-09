@@ -45,23 +45,14 @@ namespace Tests
         [UnityTest]
         public IEnumerator ConstantRotation()
         {
-            Vector3 localRotationVector = constantRotation.RotationVector;
-            Vector3 eulerAngles = testObject.transform.localEulerAngles + localRotationVector * Time.fixedDeltaTime;
-            Vector3 expectedRotation = new Vector3(
-                eulerAngles.x % 360,
-                eulerAngles.y % 360,
-                eulerAngles.z % 360
-                );
-
-            // Use yield to skip a frame.
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-            
+            // Arrange
             Vector3 actualRotation = testObject.transform.localEulerAngles;
 
+            // Use yield to skip a frame.
+            yield return new WaitForSeconds(Time.deltaTime);
+
             // Use the Assert class to test conditions.
-            Debug.Log("Expected: " + expectedRotation.y + "; actual: " + actualRotation.y);
-            Assert.AreEqual(expectedRotation, actualRotation);
-            //Assert.IsTrue(expectedRotation.x == actualRotation.x && expectedRotation.y == actualRotation.y && expectedRotation.z == actualRotation.z);
+            Assert.IsTrue(actualRotation.y != 0.0f && actualRotation.x == 0.0f && actualRotation.z == 0.0f); // Check whether a y-axis rotation took place
         }
 
         [UnityTest]
