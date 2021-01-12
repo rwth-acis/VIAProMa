@@ -39,6 +39,8 @@ namespace i5.VIAProMa.Shelves.IssueShelf
         public event EventHandler WindowClosed;
 
         private bool isConfiguring = true;
+        private bool hasAccessGitHub = false;
+        private bool hasAccessReqBaz = false;
 
         public IShelfConfiguration ShelfConfiguration { get; private set; }
 
@@ -416,6 +418,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             gitHubRepositoryInput.Text = project;
         }
 
+
         public void Open()
         {
             gameObject.SetActive(true);
@@ -434,6 +437,28 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             WindowOpen = false;
             gameObject.SetActive(false);
             WindowClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+
+        public void LoginReqBazaar()
+        {
+            SetLoginMenu(DataSource.REQUIREMENTS_BAZAAR);
+        }
+
+        public void LoginGitHub()
+        {
+            SetLoginMenu(DataSource.GITHUB);
+        }
+
+        public void SetLoginMenu(DataSource selectedSource)
+        {
+            switch (selectedSource)
+            {
+                case DataSource.REQUIREMENTS_BAZAAR:
+                    break;
+                case DataSource.GITHUB:
+                    break;
+            }
         }
     }
 }

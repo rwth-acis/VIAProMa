@@ -5,6 +5,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
 {
     public class ReqBazShelfConfiguration : IShelfConfiguration
     {
+
         public bool IsValidConfiguration
         {
             get { return SelectedProject != null; } // the configuration is valid if a project was selected (stays valid if no category was selected)
@@ -30,5 +31,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
         public Project SelectedProject { get; set; }
 
         public Category SelectedCategory { get; set; }
+
+        public bool hasAccess { get; set; }
     }
 }
