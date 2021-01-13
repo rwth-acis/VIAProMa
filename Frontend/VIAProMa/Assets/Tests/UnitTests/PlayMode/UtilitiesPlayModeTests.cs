@@ -35,6 +35,12 @@ namespace Tests
         private HorizontalObjectArray horizontalObjectArray3;
         private HorizontalObjectArray horizontalObjectArray4;
 
+        private ObjectArray objectArray;
+        private GameObject parentObject;
+        private GameObject childObject;
+        private GameObject childObject2;
+        private ObjectArray parentObjectArray;
+
         [SetUp]
         public void Setup()
         {
@@ -67,6 +73,12 @@ namespace Tests
             horizontalObjectArray2 = arrayObject2.AddComponent<HorizontalObjectArray>();
             horizontalObjectArray3 = arrayObject3.AddComponent<HorizontalObjectArray>();
             horizontalObjectArray4 = arrayObject4.AddComponent<HorizontalObjectArray>();
+
+            objectArray = testObject.AddComponent<ObjectArray>();
+            parentObject = GameObject.Instantiate(new GameObject());
+            childObject = GameObject.Instantiate(new GameObject());
+            childObject2 = GameObject.Instantiate(new GameObject());
+            parentObjectArray = parentObject.AddComponent<ObjectArray>();
         }
 
         [UnityTest]
@@ -220,6 +232,89 @@ namespace Tests
             Assert.AreNotEqual(initialPosition4, finalPosition4);
             Assert.AreEqual(finalPosition1.x, -finalPosition4.x);
             Assert.AreEqual(finalPosition2.x, -finalPosition3.x);
+        }
+
+        [UnityTest]
+        public IEnumerator ObjectArray_NoChildren_GetChild() // Manual GetChild position manipulation
+        {
+            // Arrange
+            Vector3 initialObjectPosition = testObject.transform.GetChild(0).localPosition;
+            //Debug.Log("Child count Object: " + testObject.transform.childCount);
+            Vector3 initialArrayPosition = objectArray.transform.GetChild(0).localPosition;
+            //Debug.Log("Child count Array: " + objectArray.transform.childCount);
+            //Debug.Log("Vectors before offset: Object: " + testObject.transform.localPosition.magnitude + " Array: " + objectArray.transform.localPosition.magnitude);
+            objectArray.offset = new Vector3(1, 2, 3);
+            //Debug.Log("Vectors after offset: Object: " + (testObject.transform.GetChild(0).localPosition).magnitude + " Array: " + (objectArray.transform.GetChild(0).localPosition).magnitude);
+
+            // Use yield to skip a frame.
+            yield return new WaitForSeconds(Time.deltaTime);
+            Vector3 finalObjectPosition = testObject.transform.GetChild(0).localPosition;
+            Vector3 finalArrayPosition = objectArray.transform.GetChild(0).localPosition;
+            //Debug.Log("Final vectors after yield: Object: " + testObject.transform.localPosition.magnitude + " Array: " + objectArray.transform.localPosition.magnitude);
+
+            // Use the Assert class to test conditions.
+            Assert.AreEqual(initialObjectPosition, finalObjectPosition);
+            Assert.AreEqual(initialArrayPosition, finalArrayPosition);
+        }
+
+        [UnityTest]
+        public IEnumerator ObjectArray_NoChildren_LocalPosition() // localPosition comparison
+        {
+            // Arrange
+            Vector3 initialObjectPosition = parentObject.transform.localPosition;
+            Vector3 initialArrayPosition = parentObjectArray.transform.localPosition;
+            parentObjectArray.offset = new Vector3(1, 2, 3);
+
+            // Use yield to skip a frame.
+            yield return new WaitForSeconds(Time.deltaTime);
+            Vector3 finalObjectPosition = parentObject.transform.localPosition;
+            Vector3 finalArrayPosition = parentObjectArray.transform.localPosition;
+
+            // Use the Assert class to test conditions.
+            Assert.AreEqual(initialObjectPosition, finalObjectPosition);
+            Assert.AreEqual(initialArrayPosition, finalArrayPosition);
+        }
+
+        [UnityTest]
+        public IEnumerator ObjectArray_NoChildren_Position() // compare position insted of local position
+        {
+            // Arrange
+            parentObjectArray.offset = new Vector3(1, 2, 3);
+            Vector3 initialObjectPosition = parentObject.transform.position;
+            Vector3 initialArrayPosition = parentObjectArray.transform.position;
+
+            // Use yield to skip a frame.
+            yield return new WaitForSeconds(Time.deltaTime);
+            Vector3 finalObjectPosition = parentObject.transform.position;
+            Vector3 finalArrayPosition = parentObjectArray.transform.position;
+
+            // Use the Assert class to test conditions.
+            Assert.AreEqual(initialObjectPosition, finalObjectPosition);
+            Assert.AreEqual(initialArrayPosition, finalArrayPosition);
+        }
+
+        [UnityTest]
+        public IEnumerator ObjectArray_TwoChildren()
+        {
+            // Arrange
+            childObject.transform.parent = parentObject.transform;
+            childObject2.transform.parent = parentObject.transform;
+            parentObjectArray.offset = new Vector3(1, 2, 3); 
+
+            Vector3 initialParentObjectPosition = parentObject.transform.localPosition;
+            Vector3 initialChildObjectPosition = childObject.transform.localPosition;
+            Vector3 initialChildObject2Position = childObject2.transform.localPosition;
+
+            // Use yield to skip a frame.
+            yield return new WaitForSeconds(Time.deltaTime);
+            Vector3 finalParentObjectPosition = parentObject.transform.localPosition;
+            Vector3 finalChildObjectPosition = childObject.transform.localPosition;
+            Vector3 finalChildObject2Position = childObject2.transform.localPosition;
+
+            // Use the Assert class to test conditions.
+            Assert.AreEqual(initialParentObjectPosition, finalParentObjectPosition);
+            Assert.AreEqual(initialChildObjectPosition, finalChildObjectPosition);
+            Assert.AreNotEqual(initialChildObject2Position, finalChildObject2Position);
         }
 
         /* Template
