@@ -6,6 +6,8 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
     <img src="Frontend/Texture%20Source%20Files/Logo/Logo.png" alt="VIAProMa Logo" height="300" />
 </p>
 
+# feature : virtuelle Haftnotizen
+
 ## Getting Started
 
 ### Frontend
