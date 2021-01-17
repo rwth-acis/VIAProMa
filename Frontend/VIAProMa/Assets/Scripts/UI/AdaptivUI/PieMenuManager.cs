@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit;
+using UnityEngine.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using HoloToolkit.Unity;
 
@@ -24,26 +24,9 @@ public class PieMenuManager : Singleton<PieMenuManager>
     [SerializeField]
     GameObject mainCamera;
 
-    //Dictionary<IMixedRealityInputSource, VirtualTool> virtualTools;
-    VirtualTool virtualTool;
-    [SerializeField]
-    GameObject virtualToolPrefab;
-
-    void Start()
-    {
-
-    }
-
-
-    void Update()
-    {
-    }
-
-
-
     public void MenuOpen(BaseInputEventData eventData)
     {
-        //Check, if the Pie Menu was already open by another controller
+        //Check, if the Pie Menu was already opend by another controller
         if (instantiatedPieMenu == null)
         {
             pointer = eventData.InputSource.Pointers[0];
@@ -59,23 +42,10 @@ public class PieMenuManager : Singleton<PieMenuManager>
         //Only the input source that opend the menu can close it again
         if (eventData.InputSource == invokingSource && instantiatedPieMenu != null)
         {
-            if (virtualTool != null)
-            {
-                //Needs to be invoked here and not in an actual OnDestroy, because otherwise the OnToolCreated Method of the new one can get executed before the OnToolDestroyed of the old one
-                virtualTool.OnToolDestroyed.Invoke(null);
-                Destroy(virtualTool);
-            }
-
-            virtualTool = Instantiate(virtualToolPrefab).GetComponent<VirtualTool>();
-
-            virtualTool.inputSource = invokingSource;
+            VirtualTool virtualTool = eventData.InputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<VirtualTool>();
             MenuEntry currentEntry = menuEntries[instantiatedPieMenu.GetComponent<PieMenuRenderer>().currentlyHighlighted];
-            virtualTool.InputAction = currentEntry.InputAction;
-            virtualTool.OnInputActionStarted = currentEntry.toolActionOnSelectStart;
-            virtualTool.OnInputActionEnded = currentEntry.toolActionOnSelectEnd;
-            virtualTool.OnToolCreated = currentEntry.toolActionOnToolCreated;
-            virtualTool.OnToolDestroyed = currentEntry.toolActionOnToolDestroyed;
-
+            virtualTool.SetupTool(currentEntry.toolActionOnSelectStart, currentEntry.toolActionOnSelectEnd, currentEntry.toolActionOnToolCreated,
+                                  currentEntry.toolActionOnToolDestroyed, currentEntry.InputAction, eventData.InputSource, currentEntry.icon);
             Destroy(instantiatedPieMenu);
             invokingSource = null;
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine.UI;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
@@ -11,11 +10,11 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
 
     [SerializeField]
     [Tooltip("Input Action to handle")]
-    public MixedRealityInputAction InputAction = MixedRealityInputAction.None;
+    public MixedRealityInputAction inputAction = MixedRealityInputAction.None;
 
     [SerializeField]
     [Tooltip("Whether input events should be marked as used after handling so other handlers in the same game object ignore them")]
-    private bool MarkEventsAsUsed = false;
+    private bool markEventsAsUsed = false;
 
     /// <summary>
     /// Unity event raised on action start, e.g. button pressed or gesture started. 
@@ -34,6 +33,25 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
 
     public InputActionUnityEvent OnToolDestroyed;
 
+    public void SetupTool(InputActionUnityEvent OnInputActionStarted, InputActionUnityEvent OnInputActionEnded, InputActionUnityEvent OnToolCreated,
+        InputActionUnityEvent OnToolDestroyed, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource, Sprite icon)
+    {
+        if (this.OnToolDestroyed != null)
+        {
+            this.OnToolDestroyed.Invoke(null);
+        }
+
+        this.OnInputActionStarted = OnInputActionStarted;
+        this.OnInputActionEnded = OnInputActionEnded;
+        this.OnToolCreated = OnToolCreated;
+        this.OnToolDestroyed = OnToolDestroyed;
+        this.inputAction = inputAction;
+        this.inputSource = inputSource;
+        GetComponentInChildren<Image>().sprite = icon;
+
+        OnToolCreated.Invoke(null);
+    }
+
     private void OnEnable()
     {
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputActionHandler>(this);
@@ -44,20 +62,12 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputActionHandler>(this);
     }
 
-    private void Start()
-    {
-        if (OnToolCreated != null)
-        {
-            OnToolCreated.Invoke(null);
-        }
-    }
-
     void IMixedRealityInputActionHandler.OnActionStarted(BaseInputEventData eventData)
     {
-        if (eventData.MixedRealityInputAction == InputAction && eventData.InputSource == inputSource && !eventData.used)
+        if (eventData.MixedRealityInputAction == inputAction && eventData.InputSource == inputSource && !eventData.used)
         {
             OnInputActionStarted.Invoke(eventData);
-            if (MarkEventsAsUsed)
+            if (markEventsAsUsed)
             {
                 eventData.Use();
             }
@@ -65,10 +75,10 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
     }
     void IMixedRealityInputActionHandler.OnActionEnded(BaseInputEventData eventData)
     {
-        if (eventData.MixedRealityInputAction == InputAction && eventData.InputSource == inputSource && !eventData.used)
+        if (eventData.MixedRealityInputAction == inputAction && eventData.InputSource == inputSource && !eventData.used)
         {
             OnInputActionEnded.Invoke(eventData);
-            if (MarkEventsAsUsed)
+            if (markEventsAsUsed)
             {
                 eventData.Use();
             }
