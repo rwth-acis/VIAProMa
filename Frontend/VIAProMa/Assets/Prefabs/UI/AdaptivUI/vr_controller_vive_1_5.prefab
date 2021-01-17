@@ -87,7 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1090043531796964651}
   - component: {fileID: 114149108256739128}
-  - component: {fileID: 1919650169149989904}
+  - component: {fileID: 671387883760785308}
   m_Layer: 0
   m_Name: vr_controller_vive_1_5
   m_TagString: Untagged
@@ -130,7 +130,7 @@ MonoBehaviour:
     description: None
     axisConstraint: 0
   handedness: 1
---- !u!114 &1919650169149989904
+--- !u!114 &671387883760785308
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -142,11 +142,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19fdf5ac119430e4f890515538bf18b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InputAction:
-    id: 0
-    description: None
-    axisConstraint: 0
-  MarkEventsAsUsed: 0
+  triggerAction:
+    id: 1
+    description: Select
+    axisConstraint: 2
+  twoAxisInputAction:
+    id: 17
+    description: Touch Pad
+    axisConstraint: 4
+  TouchpadPressAction:
+    id: 18
+    description: Touch Pad Press
+    axisConstraint: 2
   OnInputActionStarted:
     m_PersistentCalls:
       m_Calls: []

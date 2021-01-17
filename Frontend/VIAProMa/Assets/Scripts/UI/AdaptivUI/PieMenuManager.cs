@@ -42,10 +42,10 @@ public class PieMenuManager : Singleton<PieMenuManager>
         //Only the input source that opend the menu can close it again
         if (eventData.InputSource == invokingSource && instantiatedPieMenu != null)
         {
-            VirtualTool virtualTool = eventData.InputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<VirtualTool>();
+            ViveWandVirtualTool virtualTool = eventData.InputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
             MenuEntry currentEntry = menuEntries[instantiatedPieMenu.GetComponent<PieMenuRenderer>().currentlyHighlighted];
             virtualTool.SetupTool(currentEntry.toolActionOnSelectStart, currentEntry.toolActionOnSelectEnd, currentEntry.toolActionOnToolCreated,
-                                  currentEntry.toolActionOnToolDestroyed, currentEntry.InputAction, eventData.InputSource, currentEntry.icon);
+                                  currentEntry.toolActionOnToolDestroyed, currentEntry.InputAction, currentEntry.icon);
             Destroy(instantiatedPieMenu);
             invokingSource = null;
         }

@@ -3,18 +3,19 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
 
-public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
+public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>
 {
-    public IMixedRealityInputSource inputSource;
-
-
     [SerializeField]
     [Tooltip("Input Action to handle")]
-    public MixedRealityInputAction inputAction = MixedRealityInputAction.None;
+    public MixedRealityInputAction triggerAction;
 
     [SerializeField]
-    [Tooltip("Whether input events should be marked as used after handling so other handlers in the same game object ignore them")]
-    private bool markEventsAsUsed = false;
+    [Tooltip("Two Axis Input Action to handle")]
+    public MixedRealityInputAction twoAxisInputAction;
+
+    [SerializeField]
+    [Tooltip("Two Axis Input Action to handle")]
+    public MixedRealityInputAction TouchpadPressAction;
 
     /// <summary>
     /// Unity event raised on action start, e.g. button pressed or gesture started. 
@@ -33,8 +34,10 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
 
     public InputActionUnityEvent OnToolDestroyed;
 
+    Vector2 thumbPosition;
+
     public void SetupTool(InputActionUnityEvent OnInputActionStarted, InputActionUnityEvent OnInputActionEnded, InputActionUnityEvent OnToolCreated,
-        InputActionUnityEvent OnToolDestroyed, MixedRealityInputAction inputAction, IMixedRealityInputSource inputSource, Sprite icon)
+        InputActionUnityEvent OnToolDestroyed, MixedRealityInputAction inputAction, Sprite icon)
     {
         if (this.OnToolDestroyed != null)
         {
@@ -45,8 +48,7 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
         this.OnInputActionEnded = OnInputActionEnded;
         this.OnToolCreated = OnToolCreated;
         this.OnToolDestroyed = OnToolDestroyed;
-        this.inputAction = inputAction;
-        this.inputSource = inputSource;
+        this.triggerAction = inputAction;
         GetComponentInChildren<Image>().sprite = icon;
 
         OnToolCreated.Invoke(null);
@@ -55,33 +57,47 @@ public class VirtualTool : MonoBehaviour, IMixedRealityInputActionHandler
     private void OnEnable()
     {
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputActionHandler>(this);
+        CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler<Vector2>>(this);
     }
 
     private void OnDisable()
     {
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputActionHandler>(this);
+        CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputHandler<Vector2>>(this);
     }
 
     void IMixedRealityInputActionHandler.OnActionStarted(BaseInputEventData eventData)
     {
-        if (eventData.MixedRealityInputAction == inputAction && eventData.InputSource == inputSource && !eventData.used)
+        if (eventData.MixedRealityInputAction == triggerAction && IsInputSourceThis(eventData.InputSource) && !eventData.used)
         {
             OnInputActionStarted.Invoke(eventData);
-            if (markEventsAsUsed)
-            {
-                eventData.Use();
-            }
         }
     }
     void IMixedRealityInputActionHandler.OnActionEnded(BaseInputEventData eventData)
     {
-        if (eventData.MixedRealityInputAction == inputAction && eventData.InputSource == inputSource && !eventData.used)
+        if (IsInputSourceThis(eventData.InputSource))
         {
-            OnInputActionEnded.Invoke(eventData);
-            if (markEventsAsUsed)
+            if (eventData.MixedRealityInputAction == triggerAction)
             {
-                eventData.Use();
+                OnInputActionEnded.Invoke(eventData);
+            }
+            else if (eventData.MixedRealityInputAction == TouchpadPressAction)
+            {
+                Debug.Log(thumbPosition);
             }
         }
+    }
+
+    void IMixedRealityInputHandler<Vector2>.OnInputChanged(InputEventData<Vector2> eventData)
+    {
+        if (eventData.MixedRealityInputAction == twoAxisInputAction)
+        {
+            thumbPosition = eventData.InputData;
+        }
+    }
+
+    bool IsInputSourceThis(IMixedRealityInputSource inputSource)
+    {
+        return this == inputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
     }
 }
