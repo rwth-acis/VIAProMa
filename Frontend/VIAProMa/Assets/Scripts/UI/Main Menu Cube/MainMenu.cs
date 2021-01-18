@@ -20,6 +20,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable loadButton;
         [SerializeField] private Interactable issueShelfButton;
         [SerializeField] private Interactable visualizationShelfButton;
+        [SerializeField] private Interactable noteButton;
         [SerializeField] private Interactable loginButton;
         [SerializeField] private Interactable roomButton;
         [SerializeField] private TextMeshPro roomButtonText;
@@ -29,6 +30,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [Header("References")]
         [SerializeField] private GameObject issueShelfPrefab;
         [SerializeField] private GameObject visualizationShelfPrefab;
+        [SerializeField] private GameObject notePrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
 
@@ -37,6 +39,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         // instances:
         private GameObject issueShelfInstance;
         private GameObject visualizationShelfInstance;
+        private GameObject noteInstance;
         private GameObject loadShelfInstance;
         private GameObject avatarConfiguratorInstance;
 
@@ -65,6 +68,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             if (visualizationShelfButton == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationShelfButton));
+            }
+            if (noteButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(noteButton));
             }
             if (loginButton == null)
             {
@@ -140,6 +147,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             loadButton.Enabled = PhotonNetwork.InRoom;
             issueShelfButton.Enabled = PhotonNetwork.InRoom;
             visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
+            // noteButton.Enabled = PhotonNetwork.InRoom;
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -201,6 +209,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
+            foldController.FoldCube();
+        }
+
+        public void MakeNote()
+        {
+            Vector3 targetPosition = transform.position + 1f * transform.right;
+            targetPosition.y = 0f;
+            InstantiateControl(notePrefab, ref noteInstance, targetPosition);
             foldController.FoldCube();
         }
 
