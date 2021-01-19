@@ -44,8 +44,7 @@ public class PieMenuManager : Singleton<PieMenuManager>
         {
             ViveWandVirtualTool virtualTool = eventData.InputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
             MenuEntry currentEntry = menuEntries[instantiatedPieMenu.GetComponent<PieMenuRenderer>().currentlyHighlighted];
-            virtualTool.SetupTool(currentEntry.toolActionOnSelectStart, currentEntry.toolActionOnSelectEnd, currentEntry.toolActionOnToolCreated,
-                                  currentEntry.toolActionOnToolDestroyed, currentEntry.InputAction, currentEntry.icon);
+            virtualTool.SetupTool(currentEntry);
             Destroy(instantiatedPieMenu);
             invokingSource = null;
         }

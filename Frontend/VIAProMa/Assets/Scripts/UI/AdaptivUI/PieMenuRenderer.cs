@@ -96,7 +96,7 @@ public class PieMenuRenderer : MonoBehaviour
     {
         //Place the icon in the middle of the piece
         Image icon = pieMenuPieces[entryNumber].transform.Find("CanvasIcon/Icon").GetComponent<Image>();
-        icon.sprite = menuEntries[entryNumber].icon;
+        icon.sprite = menuEntries[entryNumber].iconTool;
         icon.rectTransform.localPosition = Quaternion.Euler(0, 0, 0.5f * entryNumberToRotation(1)) * new Vector3(0, -1, 0) * menuRadius / 2;
 
         //The icons are rotate wrong in the worldspace because the pieces they are attached to were rotated in the positioning process. This reverses the unwanted rotation of the icons.

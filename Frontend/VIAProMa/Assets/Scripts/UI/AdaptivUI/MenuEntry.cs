@@ -17,16 +17,23 @@ using UnityEngine.Events;
 [Serializable]
 public struct MenuEntry
 {
-    [SerializeField]
-    public Sprite icon;
+    public Sprite iconTool;
+    public Sprite iconTouchpadRight;
+    public Sprite iconTouchpadUp;
+    public Sprite iconTouchpadLeft;
+    public Sprite iconTouchpadDown;
 
-    [SerializeField]
-    public MixedRealityInputAction InputAction;
+    public InputActionUnityEvent OnInputActionStartedTrigger;
+    public InputActionUnityEvent OnInputActionEndedTrigger;
 
-    public InputActionUnityEvent toolActionOnSelectStart;
-    public InputActionUnityEvent toolActionOnSelectEnd;
-    public InputActionUnityEvent toolActionOnToolCreated;
-    public InputActionUnityEvent toolActionOnToolDestroyed;
+    public InputActionUnityEvent OnInputActionEndedTouchpadRight;
+    public InputActionUnityEvent OnInputActionEndedTouchpadLeft;
+    public InputActionUnityEvent OnInputActionEndedTouchpadUp;
+    public InputActionUnityEvent OnInputActionEndedTouchpadDown;
+
+    //Tool specific events
+    public InputActionUnityEvent OnToolCreated;
+    public InputActionUnityEvent OnToolDestroyed;
 }
 
 public class VirtualToolEventData

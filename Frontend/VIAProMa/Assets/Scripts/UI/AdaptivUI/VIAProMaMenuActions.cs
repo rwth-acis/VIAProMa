@@ -89,6 +89,16 @@ public class VIAProMaMenuActions : MonoBehaviour
         }
     }
 
+    public void UndoToolAction()
+    {
+        Debug.Log("Undo");
+    }
+
+    public void RedoToolAction()
+    {
+        Debug.Log("Redo");
+    }
+
     private GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
     {
         foreach (var pointer in source.Pointers)

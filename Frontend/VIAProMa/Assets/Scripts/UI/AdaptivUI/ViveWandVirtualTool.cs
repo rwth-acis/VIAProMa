@@ -5,59 +5,63 @@ using Microsoft.MixedReality.Toolkit;
 
 public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>
 {
-    [SerializeField]
-    [Tooltip("Input Action to handle")]
-    public MixedRealityInputAction triggerAction;
-
-    [SerializeField]
-    [Tooltip("Two Axis Input Action to handle")]
-    public MixedRealityInputAction twoAxisInputAction;
-
-    [SerializeField]
-    [Tooltip("Two Axis Input Action to handle")]
-    public MixedRealityInputAction TouchpadPressAction;
-
-    /// <summary>
-    /// Unity event raised on action start, e.g. button pressed or gesture started. 
-    /// Includes the input event that triggered the action.
-    /// </summary>
-    public InputActionUnityEvent OnInputActionStarted;
-
-    /// <summary>
-    /// Unity event raised on action end, e.g. button released or gesture completed.
-    /// Includes the input event that triggered the action.
-    /// </summary>
-    public InputActionUnityEvent OnInputActionEnded;
-
-
-    public InputActionUnityEvent OnToolCreated;
-
-    public InputActionUnityEvent OnToolDestroyed;
+    //Events and action for the thrigger
+    public MixedRealityInputAction triggerInputAction;
+    public MixedRealityInputAction touchpadTouchActionAction;
+    public MixedRealityInputAction touchpadPressAction;
 
     Vector2 thumbPosition;
 
-    public void SetupTool(InputActionUnityEvent OnInputActionStarted, InputActionUnityEvent OnInputActionEnded, InputActionUnityEvent OnToolCreated,
-        InputActionUnityEvent OnToolDestroyed, MixedRealityInputAction inputAction, Sprite icon)
+    private MenuEntry currentEntry;
+
+    [SerializeField]
+    MenuEntry defaultEntry;
+
+    public void SetupTool(MenuEntry newEntry)
     {
-        if (this.OnToolDestroyed != null)
+        if (currentEntry.OnToolDestroyed != null)
         {
-            this.OnToolDestroyed.Invoke(null);
+            currentEntry.OnToolDestroyed.Invoke(null);
         }
 
-        this.OnInputActionStarted = OnInputActionStarted;
-        this.OnInputActionEnded = OnInputActionEnded;
-        this.OnToolCreated = OnToolCreated;
-        this.OnToolDestroyed = OnToolDestroyed;
-        this.triggerAction = inputAction;
-        GetComponentInChildren<Image>().sprite = icon;
+        //set the new icons
+        SetIcon("ToolIconCanvas", newEntry.iconTool, defaultEntry.iconTool);
+        SetIcon("TouchpadRightIcon", newEntry.iconTouchpadRight, defaultEntry.iconTouchpadRight);
+        SetIcon("TouchpadUpIcon", newEntry.iconTouchpadUp, defaultEntry.iconTouchpadUp);
+        SetIcon("TouchpadLeftIcon", newEntry.iconTouchpadLeft, defaultEntry.iconTouchpadLeft);
+        SetIcon("TouchpadDownIcon", newEntry.iconTouchpadDown, defaultEntry.iconTouchpadDown);
 
-        OnToolCreated.Invoke(null);
+        if (newEntry.OnToolCreated != null)
+        {
+            newEntry.OnToolCreated.Invoke(null);
+        }
+
+        currentEntry = newEntry;
+    }
+
+    private void SetIcon(string canvasName, Sprite icon, Sprite defaultIcon)
+    {
+        Transform iconCanvas = transform.Find(canvasName);
+        iconCanvas.gameObject.SetActive(true);
+        if (icon != null)
+        {
+            iconCanvas.GetComponentInChildren<Image>().sprite = icon;
+        }
+        else if (defaultIcon != null)
+        {
+            iconCanvas.GetComponentInChildren<Image>().sprite = defaultIcon;
+        }
+        else
+        {
+            iconCanvas.gameObject.SetActive(false);
+        }
     }
 
     private void OnEnable()
     {
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputActionHandler>(this);
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler<Vector2>>(this);
+        SetupTool(defaultEntry);
     }
 
     private void OnDisable()
@@ -66,31 +70,81 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputHandler<Vector2>>(this);
     }
 
+    //Trigger on start
     void IMixedRealityInputActionHandler.OnActionStarted(BaseInputEventData eventData)
     {
-        if (eventData.MixedRealityInputAction == triggerAction && IsInputSourceThis(eventData.InputSource) && !eventData.used)
+        if (eventData.MixedRealityInputAction == triggerInputAction && IsInputSourceThis(eventData.InputSource) && !eventData.used)
         {
-            OnInputActionStarted.Invoke(eventData);
+                currentEntry.OnInputActionStartedTrigger?.Invoke(eventData);
         }
     }
     void IMixedRealityInputActionHandler.OnActionEnded(BaseInputEventData eventData)
     {
         if (IsInputSourceThis(eventData.InputSource))
         {
-            if (eventData.MixedRealityInputAction == triggerAction)
+            if (eventData.MixedRealityInputAction == triggerInputAction)
             {
-                OnInputActionEnded.Invoke(eventData);
+                    currentEntry.OnInputActionEndedTrigger?.Invoke(eventData);
             }
-            else if (eventData.MixedRealityInputAction == TouchpadPressAction)
+            else if (eventData.MixedRealityInputAction == touchpadPressAction)
             {
-                Debug.Log(thumbPosition);
+                float angle = Vector2.SignedAngle(Vector2.right, thumbPosition);
+                if (angle > -45 && angle <= 45)
+                {
+                    //Right press
+                    if (currentEntry.iconTouchpadRight != null)
+                    {
+                        currentEntry.OnInputActionEndedTouchpadRight?.Invoke(eventData);
+                    }
+                    else
+                    {
+                        defaultEntry.OnInputActionEndedTouchpadRight.Invoke(eventData);
+                    }
+                }
+                else if (angle > 45 && angle <= 135)
+                {
+                    //Up press
+                    if (currentEntry.iconTouchpadUp != null)
+                    {
+                        currentEntry.OnInputActionEndedTouchpadUp.Invoke(eventData);
+                    }
+                    else
+                    {
+                        defaultEntry.OnInputActionEndedTouchpadUp.Invoke(eventData);
+                    }
+                }
+                else if ((angle > 135 && angle <= 180) || (angle >= -180 && angle <= -135))
+                {
+                    //Left press
+                    if (currentEntry.iconTouchpadLeft != null)
+                    {
+                        currentEntry.OnInputActionEndedTouchpadLeft?.Invoke(eventData);
+                    }
+                    else
+                    {
+                        defaultEntry.OnInputActionEndedTouchpadLeft.Invoke(eventData);
+                    }
+                }
+                else
+                {
+                    //Down press
+                    if (currentEntry.iconTouchpadDown != null)
+                    {
+                        currentEntry.OnInputActionEndedTouchpadDown?.Invoke(eventData);
+                    }
+                    else
+                    {
+                        defaultEntry.OnInputActionEndedTouchpadDown.Invoke(eventData);
+                    }
+                }
             }
         }
     }
 
+    //Save the last known position of the thumb on the trackpad to use it when the trackpad is pressed
     void IMixedRealityInputHandler<Vector2>.OnInputChanged(InputEventData<Vector2> eventData)
     {
-        if (eventData.MixedRealityInputAction == twoAxisInputAction)
+        if (eventData.MixedRealityInputAction == touchpadTouchActionAction)
         {
             thumbPosition = eventData.InputData;
         }
