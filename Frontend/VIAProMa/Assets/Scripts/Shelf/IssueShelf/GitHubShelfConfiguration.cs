@@ -10,8 +10,6 @@ namespace i5.VIAProMa.Shelves.IssueShelf
 
         public string RepositoryName { get; set; }
 
-        public bool hasAccess { get; set; }
-
         /// <summary>
         /// true if the owner and repository in this configuration are both non-empty
         /// </summary>

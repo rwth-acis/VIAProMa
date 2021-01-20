@@ -12,12 +12,8 @@ namespace i5.Toolkit.Core.Examples.OpenIDConnectClient
         {
             OpenIDConnectService oidc = new OpenIDConnectService();
             oidc.OidcProvider = new LearningLayersOidcProvider();
-            // this example shows how the service can be used on an app for multiple platforms
-#if UNITY_WSA
+
             oidc.RedirectURI = "i5:/";
-#else
-        oidc.RedirectURI = "https://www.google.com";
-#endif
             ServiceManager.RegisterService(oidc);
         }
 

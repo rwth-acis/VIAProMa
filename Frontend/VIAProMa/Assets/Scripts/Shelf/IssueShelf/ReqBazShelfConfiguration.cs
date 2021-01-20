@@ -31,7 +31,5 @@ namespace i5.VIAProMa.Shelves.IssueShelf
         public Project SelectedProject { get; set; }
 
         public Category SelectedCategory { get; set; }
-
-        public bool hasAccess { get; set; }
     }
 }
