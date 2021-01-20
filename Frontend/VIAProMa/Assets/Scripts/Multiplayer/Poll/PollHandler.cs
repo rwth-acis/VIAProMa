@@ -14,10 +14,10 @@ namespace i5.VIAProMa.Multiplayer.Poll{
         public event EventHandler<PollStartEventArgs> PollStarted;
         public event EventHandler<PollRespondEventArgs> PollRespond;
         public event EventHandler<PollEndEventArgs> PollEnded;
-
         public event EventHandler<PollDisplayEventArgs> PollDisplayed;
-        
+        public event EventHandler<PollAcknowledgedEventArgs> PollAcknowledged;
         public const byte PollRespondEventCode = 2;
+        public const byte PollAcknowledgedEventCode = 3;
 
         private void OnEnable(){
             PhotonNetwork.AddCallbackTarget(this);
@@ -32,47 +32,61 @@ namespace i5.VIAProMa.Multiplayer.Poll{
             photonView = GetComponent<PhotonView>();
         }
 
-        public async Task<byte> StartPoll(string question, string[] answers, DateTime end, PollOptions flags){
+        public byte StartPoll(string question, string[] answers, DateTime end, PollOptions flags){
             photonView.RPC("PollStartedReceived", RpcTarget.All, question, answers, end, flags);
             return PhotonNetwork.CurrentRoom.PlayerCount;
         }
 
-        public async void RespondPoll(bool[] selection, Player leader){
+        public void RespondPoll(bool[] selection, Player leader){
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{leader.ActorNumber}};
             PhotonNetwork.RaiseEvent(PollRespondEventCode, selection, raiseEventOptions, SendOptions.SendReliable);
         }
 
-        public async void EndPoll(){
+        public void EndPoll(){
             photonView.RPC("PollEndReceived", RpcTarget.All);
         }
 
-        public async void DisplayPoll(short id, PollDisplayEventArgs.DisplayType type){
+        public void DisplayPoll(short id, PollDisplayEventArgs.DisplayType type){
             photonView.RPC("PollDisplayReceived", RpcTarget.All, id, type);
         }
 
         [PunRPC]
-        private async void PollStartedReceived(string question, string[] answers, DateTime end, PollOptions flags, PhotonMessageInfo messageInfo){
-            PollStartEventArgs  args = new PollStartEventArgs(question, answers, end, messageInfo.Sender, flags);
-            PollStarted?.Invoke(this, args);
+        private void PollStartedReceived(string question, string[] answers, DateTime end, PollOptions flags, PhotonMessageInfo messageInfo){
+            bool state = false;
+            if(PollStarted != null){
+                PollStartEventArgs  args = new PollStartEventArgs(question, answers, end, messageInfo.Sender, flags);
+                PollStarted?.Invoke(this, args);
+                state = true;
+            }
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{messageInfo.Sender.ActorNumber}};
+            PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, state, raiseEventOptions, SendOptions.SendReliable);
         }
 
         [PunRPC]
-        private async void PollEndReceived(PhotonMessageInfo messageInfo){
+        private void PollEndReceived(PhotonMessageInfo messageInfo){
             PollEndEventArgs args = new PollEndEventArgs(messageInfo.Sender);
             PollEnded?.Invoke(this,args);
         }
 
         public void OnEvent(EventData photonEvent)
         {
-            if(photonEvent.Code == PollRespondEventCode){
-                bool[] selection = (bool[])photonEvent.CustomData;
-                PollRespondEventArgs args = new PollRespondEventArgs(selection, PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender));
-                PollRespond?.Invoke(this, args);
+            switch (photonEvent.Code)
+            {
+                case PollRespondEventCode:
+                    bool[] selection = (bool[])photonEvent.CustomData;
+                    PollRespondEventArgs argsResp = new PollRespondEventArgs(selection, PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender));
+                    PollRespond?.Invoke(this, argsResp);
+                    break;
+                case PollAcknowledgedEventCode:
+                    bool state = (bool)photonEvent.CustomData;
+                    PollAcknowledgedEventArgs argsAck = new PollAcknowledgedEventArgs(state, PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender));
+                    PollAcknowledged?.Invoke(this, argsAck);
+                    break;
             }
         }
 
         [PunRPC]
-        private async void PollDisplayReceived(short id, PollDisplayEventArgs.DisplayType type, PhotonMessageInfo messageInfo){
+        private void PollDisplayReceived(short id, PollDisplayEventArgs.DisplayType type, PhotonMessageInfo messageInfo){
             PollDisplayEventArgs args = new PollDisplayEventArgs(id, type);
             PollDisplayed?.Invoke(this,args);
 

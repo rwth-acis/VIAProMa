@@ -16,15 +16,17 @@ namespace i5.VIAProMa.Multiplayer.Poll{
         public PollOptions Flags {get; private set;}
         public DateTime End {get; private set;}
 
-        public List<Tuple<int, bool[]>> Selection
+        public List<Tuple<String, bool[]>> SerializeableSelection
         {
             get {
-                return (selection.Select(t => new Tuple<int, bool[]>(Flags.HasFlag(PollOptions.Public)? t.Key.ActorNumber : -1, t.Value)).ToList());
+                return (selection.Where(t => t.Value != null).Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public)? t.Key.NickName : "Anonymous" , t.Value)).ToList());
             }
         }
         
         private Dictionary<Player, bool[]> selection;
         private byte remainingCount;
+        private const int timeOutInSeconds = 1;  
+
 
         private Timer endTimer;
 
@@ -44,29 +46,36 @@ namespace i5.VIAProMa.Multiplayer.Poll{
                 //TODO assert flag
             }
 
-            Task.Run(startPoll);
+            startPoll();
         }
 
-        private async void startPoll(){
-            remainingCount = await PollHandler.Instance.StartPoll(Question, Answers, End, Flags);
+        private void startPoll(){
+            remainingCount = PollHandler.Instance.StartPoll(Question, Answers, End, Flags);
+            PollHandler.Instance.PollAcknowledged += onAck;
             PollHandler.Instance.PollRespond += onResponse;
         }
 
-        private void onResponse(object sender, PollRespondEventArgs args){
-            if(remainingCount == 0){
+        private void onAck(object sender, PollAcknowledgedEventArgs args){
+            if(selection.ContainsKey(args.MessageSender) || remainingCount == 0){
                 return;
             }
             remainingCount--;
-            if(selection.ContainsKey(args.MessageSender)){
+            if(args.State){
+                selection.Add(args.MessageSender, null);
+            }
+        }
+
+        private void onResponse(object sender, PollRespondEventArgs args){
+            if(!selection.ContainsKey(args.MessageSender)){
                 return;
             }
-            bool[] argSelection = args.Selection;  
-            if(args.Selection.Length != Answers.Length){
-                argSelection = new bool[Answers.Length];
-            }
-            selection.Add(args.MessageSender, args.Selection);
+            // bool[] argSelection = args.Selection;  
+            // if(args.Selection.Length != Answers.Length){
+            //     argSelection = new bool[Answers.Length];
+            // }
+            selection[args.MessageSender] =  args.Selection;
 
-            if(remainingCount == 0){ //Bug: Person joing after poll start but leaving before poll end will decrement the remaining count, resulting in one poll participant beign ignored 
+            if(selection.All(t => t.Value != null)){
                 final();
             }
         }
@@ -78,10 +87,14 @@ namespace i5.VIAProMa.Multiplayer.Poll{
 
             endTimer.Dispose();
             PollHandler.Instance.PollRespond -= onResponse;
+            PollHandler.Instance.PollAcknowledged -= onAck;
         }
 
         public void endPoll(){
             PollHandler.Instance.EndPoll();
+            endTimer = new System.Threading.Timer( x => {
+                final();
+            },null, TimeSpan.FromSeconds(timeOutInSeconds), Timeout.InfiniteTimeSpan);
         }
 
 
