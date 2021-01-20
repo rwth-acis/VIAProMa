@@ -1,4 +1,4 @@
-﻿using ExitGames.Client.Photon;
+using ExitGames.Client.Photon;
 using HoloToolkit.Unity;
 using Photon.Pun;
 using Photon.Realtime;
@@ -33,7 +33,8 @@ namespace i5.VIAProMa.Multiplayer.Poll{
         }
 
         public byte StartPoll(string question, string[] answers, DateTime end, PollOptions flags){
-            photonView.RPC("PollStartedReceived", RpcTarget.All, question, answers, end, flags);
+			int syncedEndTime = PhotonNetwork.ServerTimestamp + (end - DateTime.Now).Milliseconds;
+            photonView.RPC("PollStartedReceived", RpcTarget.All, question, answers, syncedEndTime, flags);
             return PhotonNetwork.CurrentRoom.PlayerCount;
         }
 
@@ -51,10 +52,11 @@ namespace i5.VIAProMa.Multiplayer.Poll{
         }
 
         [PunRPC]
-        private void PollStartedReceived(string question, string[] answers, DateTime end, PollOptions flags, PhotonMessageInfo messageInfo){
+        private void PollStartedReceived(string question, string[] answers, int syncedEndTime, PollOptions flags, PhotonMessageInfo messageInfo){
             bool state = false;
+			int milliseconds = syncedEndTime < PhotonNetwork.ServerTimestamp? (int.MaxValue-PhotonNetwork.ServerTimestamp + syncedEndTime) : (syncedEndTime-PhotonNetwork.ServerTimestamp);
             if(PollStarted != null){
-                PollStartEventArgs  args = new PollStartEventArgs(question, answers, end, messageInfo.Sender, flags);
+                PollStartEventArgs  args = new PollStartEventArgs(question, answers, DateTime.Now.AddMilliseconds(milliseconds), messageInfo.Sender, flags);
                 PollStarted?.Invoke(this, args);
                 state = true;
             }
@@ -98,7 +100,7 @@ namespace i5.VIAProMa.Multiplayer.Poll{
             PollRespondEventArgs args = new PollRespondEventArgs(selection, otherPlayer); //ignoring case of user joining after poll start and leaving before poll end
             PollRespond?.Invoke(this,args);
         }
-        public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps){}	
+        public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps){}
         public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged){}
         public void OnMasterClientSwitched (Player newMasterClient){}
 

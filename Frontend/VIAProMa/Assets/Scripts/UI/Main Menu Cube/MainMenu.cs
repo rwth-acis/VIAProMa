@@ -24,6 +24,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable roomButton;
         [SerializeField] private TextMeshPro roomButtonText;
         [SerializeField] private Interactable chatButton;
+        [SerializeField] private Interactable pollButton;
         [SerializeField] private Interactable microphoneButton;
 
         [Header("References")]
@@ -250,6 +251,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ChatButtonClicked()
         {
             WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            foldController.FoldCube();
+        }
+
+        public void PollButtonClicked()
+        {
+            WindowManager.Instance.PollMenu.Open(pollButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
             foldController.FoldCube();
         }
 
