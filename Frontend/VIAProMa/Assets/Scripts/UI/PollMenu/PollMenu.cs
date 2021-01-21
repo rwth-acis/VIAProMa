@@ -111,9 +111,9 @@ namespace i5.VIAProMa.UI.Poll
         {
             // Update interface
             questionInput.Text = "";
-            for (int i = 0; i < answerButtons.Count; i++)
+            for (int i = 0; i < answerInputs.Count; i++)
                 answerInputs[i].Text = "";
-			timerInputMinutes.Text = "0";
+			timerInputMinutes.Text = "1";
             timerInputSeconds.Text = "0";
             // Show interface
             gameObject.SetActive(true);
@@ -209,8 +209,8 @@ namespace i5.VIAProMa.UI.Poll
          */
         public void OnPollCreate()
         {
-			SendCreationRequest();
 			HidePollInterface();
+			SendCreationRequest();
         }
 
         /**
