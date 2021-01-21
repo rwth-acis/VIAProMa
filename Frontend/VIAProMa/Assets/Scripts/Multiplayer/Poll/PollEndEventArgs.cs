@@ -1,12 +1,14 @@
-﻿using Photon.Realtime;
+using Photon.Realtime;
 using System;
 
-namespace i5.VIAProMa.Multiplayer.Poll{
+namespace i5.VIAProMa.Multiplayer.Poll
+{
     public class PollEndEventArgs : EventArgs
     {
-        public Player MessageSender {get; private set;}
+        public Player MessageSender { get; private set; }
 
-        public PollEndEventArgs(Player messageSender){
+        public PollEndEventArgs(Player messageSender)
+        {
             MessageSender = messageSender;
         }
     }
