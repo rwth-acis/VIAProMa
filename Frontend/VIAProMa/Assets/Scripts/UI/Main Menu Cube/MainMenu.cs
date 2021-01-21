@@ -136,6 +136,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             roomButton.Enabled = PhotonNetwork.IsConnected;
             chatButton.Enabled = PhotonNetwork.InRoom;
+            pollButton.Enabled = PhotonNetwork.InRoom;
             microphoneButton.Enabled = PhotonNetwork.InRoom;
             saveButton.Enabled = PhotonNetwork.InRoom;
             loadButton.Enabled = PhotonNetwork.InRoom;

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using i5.VIAProMa.Multiplayer.Poll;
+using i5.VIAProMa.UI.InputFields;
 
 namespace i5.VIAProMa.UI.Poll
 {
@@ -15,13 +16,13 @@ namespace i5.VIAProMa.UI.Poll
     {
         [Header("Poll Creation UI")]
         [SerializeField] private GameObject pollCreationPanel;
-        [SerializeField] private TextMeshPro questionInput;
-        [SerializeField] private List<TextMeshPro> answerInputs;
+        [SerializeField] private InputField questionInput;
+        [SerializeField] private List<InputField> answerInputs;
 
         [Header("Poll Options UI")]
         [SerializeField] private GameObject pollOptionsPanel;
-        [SerializeField] private TextMeshPro timerInputMinutes;
-        [SerializeField] private TextMeshPro timerInputSeconds;
+        [SerializeField] private InputField timerInputMinutes;
+        [SerializeField] private InputField timerInputSeconds;
 
         [Header("Poll Selection UI")]
         [SerializeField] private GameObject pollSelectionPanel;
@@ -65,17 +66,18 @@ namespace i5.VIAProMa.UI.Poll
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(notificationWidget));
             }
 */
-            pollCreationPanel.SetActive(false);
-            pollSelectionPanel.SetActive(false);
-        }
 
-        private void Start()
-        {
+            started = responded = false;
+
+            pollCreationPanel.SetActive(false);
+            pollOptionsPanel.SetActive(false);
+            pollSelectionPanel.SetActive(false);
+
+			// Setup own watchdog even if disabled
             PollHandler.Instance.PollStarted += OnPollStarted;
             PollHandler.Instance.PollEnded += OnPollEnded;
-            HidePollInterface();
-            started = responded = false;
         }
+	
 
         protected void OnDestroy()
         {
@@ -100,6 +102,7 @@ namespace i5.VIAProMa.UI.Poll
 
         public void Close()
         {
+			PollClear();
             HidePollInterface();
             WindowClosed?.Invoke(this, EventArgs.Empty);
         }
@@ -107,9 +110,11 @@ namespace i5.VIAProMa.UI.Poll
         public void ShowCreationInterface()
         {
             // Update interface
-            questionInput.text = "";
+            questionInput.Text = "";
             for (int i = 0; i < answerButtons.Count; i++)
-                answerInputs[i].text = "";
+                answerInputs[i].Text = "";
+			timerInputMinutes.Text = "0";
+            timerInputSeconds.Text = "0";
             // Show interface
             gameObject.SetActive(true);
             pollCreationPanel.SetActive(true);
@@ -137,30 +142,41 @@ namespace i5.VIAProMa.UI.Poll
 
         public void HidePollInterface()
         {
-            questionLabel.text = "";
             gameObject.SetActive(false);
+            pollCreationPanel.SetActive(false);
+            pollOptionsPanel.SetActive(false);
+            pollSelectionPanel.SetActive(false);
         }
 
         private void SendCreationRequest()
         {
             int minutes, seconds;
-            if (!Int32.TryParse(timerInputMinutes.text, out minutes))
+            if (!Int32.TryParse(timerInputMinutes.Text, out minutes))
             {
                 Debug.LogError("Failed to parse countdown minutes input!");
 				return;
 			}
-            if (!Int32.TryParse(timerInputSeconds.text, out seconds))
+            if (!Int32.TryParse(timerInputSeconds.Text, out seconds))
             {
                 Debug.LogError("Failed to parse countdown seconds input!");
 				return;
 			}
-			createdPoll = new i5.VIAProMa.Multiplayer.Poll.Poll(questionInput.text, answerInputs.Where(i => !String.IsNullOrEmpty(i.text)).Select(i => i.text).ToArray(), PollOptions.None, DateTime.Now.AddMinutes(minutes).AddSeconds(seconds));
+			createdPoll = new i5.VIAProMa.Multiplayer.Poll.Poll(questionInput.Text, answerInputs.Where(i => !String.IsNullOrEmpty(i.Text)).Select(i => i.Text).ToArray(), PollOptions.None, DateTime.Now.AddMinutes(minutes).AddSeconds(seconds));
         }
 
         private void SendResponse()
         {
-            PollHandler.Instance.RespondPoll(curSelection, pollArgs.MessageSender);
+            PollHandler.Instance?.RespondPoll(curSelection, pollArgs.MessageSender);
         }
+
+		private void PollClear()
+		{
+			if (started && !responded)
+				PollHandler.Instance?.SendNAK(pollArgs.MessageSender);
+            started = responded = false;
+			createdPoll = null;
+			pollArgs = null;
+		}
 
         /**
          * Event called from buttons/toggles 
@@ -194,6 +210,7 @@ namespace i5.VIAProMa.UI.Poll
         public void OnPollCreate()
         {
 			SendCreationRequest();
+			HidePollInterface();
         }
 
         /**
@@ -202,8 +219,7 @@ namespace i5.VIAProMa.UI.Poll
         public void OnPollSubmit()
         {
 			SendResponse();
-            pollSelectionPanel.SetActive(false);
-            gameObject.SetActive(false);
+			HidePollInterface();
         }
 
         private void OnPollStarted(object sender, PollStartEventArgs e)
@@ -214,6 +230,7 @@ namespace i5.VIAProMa.UI.Poll
                 Debug.LogError("Crashing my party, aren't ya? Not with me!");
 				return;
             }
+			Debug.Log("Opening Poll!");
             started = true;
             responded = false;
             curSelection = new bool[e.Answers.Length];
@@ -228,10 +245,8 @@ namespace i5.VIAProMa.UI.Poll
                 Debug.LogError("Received Poll End request from somebody other than initiator!");
                 return;
             }
-            createdPoll = null;
-            if (started && !responded)
-                SendResponse();
-            started = responded = false;
+			Debug.Log("Close Poll!");
+            PollClear();
             HidePollInterface();
         }
     }

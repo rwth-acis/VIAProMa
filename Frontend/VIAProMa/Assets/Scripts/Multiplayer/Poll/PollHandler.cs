@@ -50,6 +50,11 @@ namespace i5.VIAProMa.Multiplayer.Poll{
         public void DisplayPoll(short id, PollDisplayEventArgs.DisplayType type){
             photonView.RPC("PollDisplayReceived", RpcTarget.All, id, type);
         }
+        
+        public void SendNAK(Player leader){
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{leader.ActorNumber}};
+            PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, false, raiseEventOptions, SendOptions.SendReliable);
+        }
 
         [PunRPC]
         private void PollStartedReceived(string question, string[] answers, int syncedEndTime, PollOptions flags, PhotonMessageInfo messageInfo){

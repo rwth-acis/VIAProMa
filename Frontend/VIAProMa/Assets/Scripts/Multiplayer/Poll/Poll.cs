@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
@@ -12,22 +12,17 @@ namespace i5.VIAProMa.Multiplayer.Poll{
     {
         public string Question {get; private set;}
         public string[] Answers {get; private set;}
-        
         public PollOptions Flags {get; private set;}
         public DateTime End {get; private set;}
-
         public List<Tuple<String, bool[]>> SerializeableSelection
         {
             get {
                 return (selection.Where(t => t.Value != null).Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public)? t.Key.NickName : "Anonymous" , t.Value)).ToList());
             }
         }
-        
         private Dictionary<Player, bool[]> selection;
         private byte remainingCount;
         private const int timeOutInSeconds = 1;  
-
-
         private Timer endTimer;
 
         public Poll(string question, string[] answers, PollOptions flags, DateTime end){
@@ -43,7 +38,7 @@ namespace i5.VIAProMa.Multiplayer.Poll{
                     this.endPoll();
                 },null,timeToGo,Timeout.InfiniteTimeSpan);
             }else{
-                //TODO assert flag
+                // TODO assert flag
             }
 
             startPoll();
@@ -56,13 +51,25 @@ namespace i5.VIAProMa.Multiplayer.Poll{
         }
 
         private void onAck(object sender, PollAcknowledgedEventArgs args){
-            if(selection.ContainsKey(args.MessageSender) || remainingCount == 0){
+            if(selection.ContainsKey(args.MessageSender)){
+                if(!args.State){
+                    Debug.Log("Received nak during poll from " + args.MessageSender.NickName + "!");
+                    selection.Remove(args.MessageSender);
+                    if(selection.All(t => t.Value != null)){
+                        final();
+                    }
+                }
+                return;
+            }
+            if(remainingCount == 0){
                 return;
             }
             remainingCount--;
             if(args.State){
                 selection.Add(args.MessageSender, null);
+                Debug.Log("Received ack from " + args.MessageSender.NickName + "!");
             }
+            else Debug.Log("Received nak from " + args.MessageSender.NickName + "!");
         }
 
         private void onResponse(object sender, PollRespondEventArgs args){
@@ -81,22 +88,21 @@ namespace i5.VIAProMa.Multiplayer.Poll{
         }
 
         private void final(){
-            // TODO
-            // Visualize and stuff
-
-
+            Debug.Log("Poll ending!");
             endTimer.Dispose();
             PollHandler.Instance.PollRespond -= onResponse;
             PollHandler.Instance.PollAcknowledged -= onAck;
+
+            // TODO
+            // Visualize and stuff
         }
 
         public void endPoll(){
             PollHandler.Instance.EndPoll();
+            endTimer.Dispose();
             endTimer = new System.Threading.Timer( x => {
                 final();
             },null, TimeSpan.FromSeconds(timeOutInSeconds), Timeout.InfiniteTimeSpan);
         }
-
-
     }
 }
