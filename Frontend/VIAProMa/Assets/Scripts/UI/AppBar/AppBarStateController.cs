@@ -83,6 +83,14 @@ namespace i5.VIAProMa.UI.AppBar
                     boundingBoxStateController.manipulationHandler.enabled = false;
                 }
             }
+            else
+            {
+                boundingBoxStateController.BoundingBoxActive = false;
+                if (boundingBoxStateController.manipulationHandler != null)
+                {
+                    boundingBoxStateController.manipulationHandler.enabled = true;
+                }
+            }
         }
 
         public void Collapse()
