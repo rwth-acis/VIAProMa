@@ -4,105 +4,83 @@ using UnityEngine;
 using Photon.Realtime;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
+using System.Timers;
 
-namespace i5.VIAProMa.Multiplayer.Poll{
+namespace i5.VIAProMa.Multiplayer.Poll
+{
+    [Flags]
+    public enum PollOptions
+    {
+        None = 0,
+        Public = 1,
+        MultipleChoice = 2,
+        Countdown = 4
+    }
     public class Poll
     {
         public string Question {get; private set;}
         public string[] Answers {get; private set;}
         public PollOptions Flags {get; private set;}
-        public DateTime End {get; private set;}
         public List<Tuple<String, bool[]>> SerializeableSelection
         {
             get {
-                return (selection.Where(t => t.Value != null).Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public)? t.Key.NickName : "Anonymous" , t.Value)).ToList());
+                return (selection.Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public)? t.Key.NickName : "Anonymous" , t.Value)).ToList());
             }
         }
+        public int[] AccumulatedResults
+        {
+            get {
+                List<Tuple<String, bool[]>> sel = SerializeableSelection;
+                int[] results = new int[Answers.Length];
+                for (int i = 0; i < Answers.Length; i++)
+                {
+                    for (int j = 0; j < sel.Count; j++)
+                    {
+                        results[i] += sel[j].Item2[i]? 1 : 0;
+                    }
+                }
+                return results;
+            }
+        }
+            
         private Dictionary<Player, bool[]> selection;
-        private byte remainingCount;
-        private const int timeOutInSeconds = 1;  
-        private Timer endTimer;
 
-        public Poll(string question, string[] answers, PollOptions flags, DateTime end){
+        public Poll(string question, string[] answers, PollOptions flags){
             Question = question;
             Answers = answers;
             Flags = flags;
-            End = end;
             selection = new Dictionary<Player, bool[]>();
-
-            TimeSpan timeToGo = end - DateTime.Now;
-            if(timeToGo > TimeSpan.Zero){
-                endTimer = new System.Threading.Timer( x => {
-                    this.endPoll();
-                },null,timeToGo,Timeout.InfiniteTimeSpan);
-            }else{
-                // TODO assert flag
-            }
-
-            startPoll();
         }
 
-        private void startPoll(){
-            remainingCount = PollHandler.Instance.StartPoll(Question, Answers, End, Flags);
-            PollHandler.Instance.PollAcknowledged += onAck;
-            PollHandler.Instance.PollRespond += onResponse;
-        }
-
-        private void onAck(object sender, PollAcknowledgedEventArgs args){
-            if(selection.ContainsKey(args.MessageSender)){
-                if(!args.State){
-                    Debug.Log("Received nak during poll from " + args.MessageSender.NickName + "!");
-                    selection.Remove(args.MessageSender);
-                    if(selection.All(t => t.Value != null)){
-                        final();
-                    }
+        public bool OnStatus(Player sender, bool state){
+            if(selection.ContainsKey(sender)){
+                if(!state){
+                    Debug.Log("Received nak during poll from " + sender.NickName + "! Unregistering!");
+                    selection.Remove(sender);
+                    return selection.All(t => t.Value != null);
                 }
-                return;
+				Debug.LogWarning("Received double ack from " + sender.NickName + "! Should not happen!");
+                return false;
             }
-            if(remainingCount == 0){
-                return;
-            }
-            remainingCount--;
-            if(args.State){
-                selection.Add(args.MessageSender, null);
-                Debug.Log("Received ack from " + args.MessageSender.NickName + "!");
-            }
-            else Debug.Log("Received nak from " + args.MessageSender.NickName + "!");
+            else
+			{
+				if(state){
+					selection.Add(sender, null);
+					Debug.Log("Player " + sender.NickName + " participates in poll!");
+				}
+				else Debug.LogWarning("Received nak from unregistered " + sender.NickName + "! Should not happen!");
+				return false;
+			}
         }
 
-        private void onResponse(object sender, PollRespondEventArgs args){
-            if(!selection.ContainsKey(args.MessageSender)){
-                return;
+        public bool OnResponse(Player sender, bool[] answers){
+            if(!selection.ContainsKey(sender)){
+				Debug.Log("Received response from unregistered player " + sender.NickName + "! Should not happen!");
+                return false;
             }
-            // bool[] argSelection = args.Selection;  
-            // if(args.Selection.Length != Answers.Length){
-            //     argSelection = new bool[Answers.Length];
-            // }
-            selection[args.MessageSender] =  args.Selection;
-
-            if(selection.All(t => t.Value != null)){
-                final();
-            }
-        }
-
-        private void final(){
-            Debug.Log("Poll ending!");
-            endTimer.Dispose();
-            PollHandler.Instance.PollRespond -= onResponse;
-            PollHandler.Instance.PollAcknowledged -= onAck;
-
-            // TODO
-            // Visualize and stuff
-        }
-
-        public void endPoll(){
-            PollHandler.Instance.EndPoll();
-            endTimer.Dispose();
-            endTimer = new System.Threading.Timer( x => {
-                final();
-            },null, TimeSpan.FromSeconds(timeOutInSeconds), Timeout.InfiniteTimeSpan);
+            selection[sender] = answers;
+            Debug.Log("Logged response from " + sender.NickName + "!");
+            return selection.All(t => t.Value != null);
         }
     }
 }

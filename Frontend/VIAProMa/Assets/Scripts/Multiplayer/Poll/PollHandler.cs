@@ -5,6 +5,7 @@ using Photon.Realtime;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Collections;
 
 namespace i5.VIAProMa.Multiplayer.Poll{
     [RequireComponent(typeof(PhotonView))]
@@ -12,12 +13,15 @@ namespace i5.VIAProMa.Multiplayer.Poll{
     {
         private PhotonView photonView;
         public event EventHandler<PollStartEventArgs> PollStarted;
-        public event EventHandler<PollRespondEventArgs> PollRespond;
         public event EventHandler<PollEndEventArgs> PollEnded;
         public event EventHandler<PollDisplayEventArgs> PollDisplayed;
-        public event EventHandler<PollAcknowledgedEventArgs> PollAcknowledged;
         public const byte PollRespondEventCode = 2;
         public const byte PollAcknowledgedEventCode = 3;
+
+		public GameObject barChartVisualizationPrefab;
+
+		private Poll currentPoll;
+		private IEnumerator currentCountdown;
 
         private void OnEnable(){
             PhotonNetwork.AddCallbackTarget(this);
@@ -32,10 +36,34 @@ namespace i5.VIAProMa.Multiplayer.Poll{
             photonView = GetComponent<PhotonView>();
         }
 
-        public byte StartPoll(string question, string[] answers, DateTime end, PollOptions flags){
+        private IEnumerator Countdown(int seconds) 
+        {
+            yield return new WaitForSeconds(seconds);
+            PollHandler.Instance.EndPoll();
+            yield return new WaitForSeconds(1);
+            PollHandler.Instance.DisplayPoll();
+        }
+
+		public void StopCountdown() 
+        {
+			StopCoroutine(currentCountdown);
+        }
+
+        public void StartPoll(string question, string[] answers, PollOptions flags, DateTime end){
+			currentPoll = new Poll(question, answers, flags);
+			// Send out poll message
 			int syncedEndTime = PhotonNetwork.ServerTimestamp + (end - DateTime.Now).Milliseconds;
             photonView.RPC("PollStartedReceived", RpcTarget.All, question, answers, syncedEndTime, flags);
-            return PhotonNetwork.CurrentRoom.PlayerCount;
+			// Setup timer on host
+			if(flags.HasFlag(PollOptions.Countdown)){
+                Debug.Log("Starting Countdown!");
+                TimeSpan timeToGo = end - DateTime.Now;
+                if(timeToGo > TimeSpan.Zero){
+                    Debug.Log("Is Valid! Time to go: " + timeToGo.Seconds);
+                    currentCountdown = Countdown(timeToGo.Seconds);
+					StartCoroutine(currentCountdown);
+                }
+            }
         }
 
         public void RespondPoll(bool[] selection, Player leader){
@@ -49,7 +77,19 @@ namespace i5.VIAProMa.Multiplayer.Poll{
 
         public void DisplayPoll(short id, PollDisplayEventArgs.DisplayType type){
             photonView.RPC("PollDisplayReceived", RpcTarget.All, id, type);
+
+			// TODO
         }
+
+		public void DisplayPoll(){
+			if (currentPoll.SerializeableSelection.Count == 0)
+			{
+				Debug.Log("No participants, discarding poll!");
+			}
+			// TODO: Send to database and continue with ID
+			// DisplayPoll(id, DisplayType.Bar)
+            photonView.RPC("PollDisplayReceived", RpcTarget.All, currentPoll.Answers, currentPoll.AccumulatedResults, PollDisplayEventArgs.DisplayType.Bar);
+		}
         
         public void SendNAK(Player leader){
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{leader.ActorNumber}};
@@ -71,45 +111,54 @@ namespace i5.VIAProMa.Multiplayer.Poll{
 
         [PunRPC]
         private void PollEndReceived(PhotonMessageInfo messageInfo){
+			Debug.Log("Poll end requested!!");
             PollEndEventArgs args = new PollEndEventArgs(messageInfo.Sender);
             PollEnded?.Invoke(this,args);
         }
 
         public void OnEvent(EventData photonEvent)
         {
+			bool? finished = false;
             switch (photonEvent.Code)
             {
                 case PollRespondEventCode:
-                    bool[] selection = (bool[])photonEvent.CustomData;
-                    PollRespondEventArgs argsResp = new PollRespondEventArgs(selection, PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender));
-                    PollRespond?.Invoke(this, argsResp);
+					finished = currentPoll?.OnResponse(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender), (bool[])photonEvent.CustomData);
                     break;
                 case PollAcknowledgedEventCode:
-                    bool state = (bool)photonEvent.CustomData;
-                    PollAcknowledgedEventArgs argsAck = new PollAcknowledgedEventArgs(state, PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender));
-                    PollAcknowledged?.Invoke(this, argsAck);
+					finished = currentPoll?.OnStatus(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender), (bool)photonEvent.CustomData);
                     break;
             }
+			if (finished == true)
+			{
+				StopCountdown();
+				DisplayPoll();
+			}
         }
 
-        [PunRPC]
+/*        [PunRPC]
         private void PollDisplayReceived(short id, PollDisplayEventArgs.DisplayType type, PhotonMessageInfo messageInfo){
             PollDisplayEventArgs args = new PollDisplayEventArgs(id, type);
             PollDisplayed?.Invoke(this,args);
 
+			// TODO: Display propery
+        }*/
+
+		[PunRPC]
+        private void PollDisplayReceived(string[] answers, int[] results, PollDisplayEventArgs.DisplayType type, PhotonMessageInfo messageInfo){
+            PollDisplayEventArgs args = new PollDisplayEventArgs(results, type);
+            PollDisplayed?.Invoke(this,args);
+
+			GameObject barChartObj = Instantiate(barChartVisualizationPrefab);
+			PollBarVisiualization pollViz = barChartObj.GetComponent<PollBarVisiualization>();
+			pollViz.Setup(answers, results);
         }
 
         public void OnPlayerEnteredRoom(Player newPlayer){}
         public void OnPlayerLeftRoom(Player otherPlayer){
-            bool[] selection = new bool[0];
-            PollRespondEventArgs args = new PollRespondEventArgs(selection, otherPlayer); //ignoring case of user joining after poll start and leaving before poll end
-            PollRespond?.Invoke(this,args);
+            currentPoll?.OnStatus(otherPlayer, false);
         }
-        public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps){}
-        public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged){}
+        public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps){}
+        public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged){}
         public void OnMasterClientSwitched (Player newMasterClient){}
-
-
-
     }
 }
