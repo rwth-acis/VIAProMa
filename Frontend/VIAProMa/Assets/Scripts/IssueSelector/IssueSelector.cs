@@ -1,191 +1,195 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.UI;
+using i5.VIAProMa.UI.ListView.Issues;
+using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Input;
+using System;
+using UnityEngine;
 
-/// <summary>
-/// Component on the issue card which makes the card selectable
-/// </summary>
-[RequireComponent(typeof(IssueDataDisplay))]
-public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointerHandler
+namespace i5.VIAProMa.IssueSelection
 {
-    [SerializeField] private GameObject selectionIndicator;
-    [SerializeField] private Renderer backgroundRenderer;
-
-    private IssueDataDisplay issueDataDisplay;
-    private bool selected;
-    private Color originalRendererColor;
-
-    public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
-
     /// <summary>
-    /// True if the issue is currently selected
+    /// Component on the issue card which makes the card selectable
     /// </summary>
-    public bool Selected
+    [RequireComponent(typeof(IssueDataDisplay))]
+    public class IssueSelector : MonoBehaviour, IViewContainer, IMixedRealityPointerHandler
     {
-        get => selected;
-        set
-        {
-            selected = value;
-            UpdateView();
-        }
-    }
+        [SerializeField] private GameObject selectionIndicator;
+        [SerializeField] private Renderer backgroundRenderer;
 
-    /// <summary>
-    /// Checks the component's setup and fetches necessary references
-    /// </summary>
-    private void Awake()
-    {
-        if (selectionIndicator == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionIndicator));
-        }
-        issueDataDisplay = GetComponent<IssueDataDisplay>();
-        if (issueDataDisplay == null)
-        {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), gameObject);
-        }
-        if (backgroundRenderer == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(backgroundRenderer));
-        }
-        else
-        {
-            originalRendererColor = backgroundRenderer.material.color;
-        }
-    }
+        private IssueDataDisplay issueDataDisplay;
+        private bool selected;
+        private Color originalRendererColor;
 
-    /// <summary>
-    /// Called if the GameObject is enabled
-    /// Registers for the IssueSelectionManager's events
-    /// </summary>
-    private void OnEnable()
-    {
-        IssueSelectionManager.Instance.SelectionModeChanged += ReactToChangedSelectionMode;
-        IssueSelectionManager.Instance.IssueSelectionChanged += ReactToIssueSelectionChanged;
-    }
+        public Color selectedColor = new Color(0.1698113f, 0.2845136f, 0.6792453f); // blue
 
-    private void Start()
-    {
-        // check selection mode in start => all other components which use awake should now be set up
-        if (IssueSelectionManager.Instance.SelectionModeActive)
+        /// <summary>
+        /// True if the issue is currently selected
+        /// </summary>
+        public bool Selected
         {
-            Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
-            UpdateView();
-        }
-    }
-
-    /// <summary>
-    /// Called if the GameObject is disabled
-    /// De-registers from the IssueSelectionManager's events
-    /// </summary>
-    private void OnDisable()
-    {
-        if (IssueSelectionManager.Instance != null)
-        {
-            IssueSelectionManager.Instance.SelectionModeChanged -= ReactToChangedSelectionMode;
-            IssueSelectionManager.Instance.IssueSelectionChanged -= ReactToIssueSelectionChanged;
-        }
-    }
-
-    /// <summary>
-    /// Called if the issue selection on the IssueSelectionManager is changed
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void ReactToIssueSelectionChanged(object sender, IssueSelectionChangedArgs e)
-    {
-        if (issueDataDisplay != null)
-        {
-            if (e.ChangedIssue.Equals(issueDataDisplay.Content))
+            get => selected;
+            set
             {
-                Selected = e.Selected;
+                selected = value;
+                UpdateView();
             }
         }
-    }
 
-    /// <summary>
-    /// Called if the selection mode on the IssueSelectionManager is changed
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void ReactToChangedSelectionMode(object sender, EventArgs e)
-    {
-        if (IssueSelectionManager.Instance.SelectionModeActive) // selection mode was just activated
+        /// <summary>
+        /// Checks the component's setup and fetches necessary references
+        /// </summary>
+        private void Awake()
         {
-            Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
-        }
-        else // selection mode has ended
-        {
-            selectionIndicator.SetActive(false);
-            backgroundRenderer.material.color = originalRendererColor;
-        }
-    }
-
-    /// <summary>
-    /// Toggles the selection of the issue of this card
-    /// </summary>
-    public void ToggleSelection()
-    {
-        // report selection or deselection to selection manager
-        if (Selected)
-        {
-            IssueSelectionManager.Instance.SetDeselected(issueDataDisplay.Content);
-        }
-        else
-        {
-            IssueSelectionManager.Instance.SetSelected(issueDataDisplay.Content);
-        }
-        // do not update the selection visuals here; they will be updated by the selection manager through its IssueSelectionChanged event
-    }
-
-    /// <summary>
-    /// Updates the visual selection indiciation on the card
-    /// </summary>
-    public void UpdateView()
-    {
-        if (IssueSelectionManager.Instance.SelectionModeActive)
-        {
-            selectionIndicator.SetActive(Selected);
-            if (Selected)
+            if (selectionIndicator == null)
             {
-                backgroundRenderer.material.color = selectedColor;
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionIndicator));
+            }
+            issueDataDisplay = GetComponent<IssueDataDisplay>();
+            if (issueDataDisplay == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueDataDisplay), gameObject);
+            }
+            if (backgroundRenderer == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(backgroundRenderer));
             }
             else
             {
+                originalRendererColor = backgroundRenderer.material.color;
+            }
+        }
+
+        /// <summary>
+        /// Called if the GameObject is enabled
+        /// Registers for the IssueSelectionManager's events
+        /// </summary>
+        private void OnEnable()
+        {
+            IssueSelectionManager.Instance.SelectionModeChanged += ReactToChangedSelectionMode;
+            IssueSelectionManager.Instance.IssueSelectionChanged += ReactToIssueSelectionChanged;
+        }
+
+        private void Start()
+        {
+            // check selection mode in start => all other components which use awake should now be set up
+            if (IssueSelectionManager.Instance.SelectionModeActive)
+            {
+                Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
+                UpdateView();
+            }
+        }
+
+        /// <summary>
+        /// Called if the GameObject is disabled
+        /// De-registers from the IssueSelectionManager's events
+        /// </summary>
+        private void OnDisable()
+        {
+            if (IssueSelectionManager.Instance != null)
+            {
+                IssueSelectionManager.Instance.SelectionModeChanged -= ReactToChangedSelectionMode;
+                IssueSelectionManager.Instance.IssueSelectionChanged -= ReactToIssueSelectionChanged;
+            }
+        }
+
+        /// <summary>
+        /// Called if the issue selection on the IssueSelectionManager is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ReactToIssueSelectionChanged(object sender, IssueSelectionChangedArgs e)
+        {
+            if (issueDataDisplay != null)
+            {
+                if (e.ChangedIssue.Equals(issueDataDisplay.Content))
+                {
+                    Selected = e.Selected;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called if the selection mode on the IssueSelectionManager is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ReactToChangedSelectionMode(object sender, EventArgs e)
+        {
+            if (IssueSelectionManager.Instance.SelectionModeActive) // selection mode was just activated
+            {
+                Selected = IssueSelectionManager.Instance.IsSelected(issueDataDisplay.Content);
+            }
+            else // selection mode has ended
+            {
+                selectionIndicator.SetActive(false);
                 backgroundRenderer.material.color = originalRendererColor;
             }
         }
-        else
+
+        /// <summary>
+        /// Toggles the selection of the issue of this card
+        /// </summary>
+        public void ToggleSelection()
         {
-            selectionIndicator.SetActive(false);
-            backgroundRenderer.material.color = originalRendererColor;
+            // report selection or deselection to selection manager
+            if (Selected)
+            {
+                IssueSelectionManager.Instance.SetDeselected(issueDataDisplay.Content);
+            }
+            else
+            {
+                IssueSelectionManager.Instance.SetSelected(issueDataDisplay.Content);
+            }
+            // do not update the selection visuals here; they will be updated by the selection manager through its IssueSelectionChanged event
         }
-    }
 
-    public void OnPointerDown(MixedRealityPointerEventData eventData)
-    {
-    }
-
-    public void OnPointerDragged(MixedRealityPointerEventData eventData)
-    {
-    }
-
-    public void OnPointerUp(MixedRealityPointerEventData eventData)
-    {
-    }
-
-    /// <summary>
-    /// Called by the Mixed Reality Toolkit if the object was clicked
-    /// </summary>
-    /// <param name="eventData">The event data of the interaction</param>
-    public void OnPointerClicked(MixedRealityPointerEventData eventData)
-    {
-        if (IssueSelectionManager.Instance.SelectionModeActive)
+        /// <summary>
+        /// Updates the visual selection indiciation on the card
+        /// </summary>
+        public void UpdateView()
         {
-            ToggleSelection();
-            eventData.Use();
+            if (IssueSelectionManager.Instance.SelectionModeActive)
+            {
+                selectionIndicator.SetActive(Selected);
+                if (Selected)
+                {
+                    backgroundRenderer.material.color = selectedColor;
+                }
+                else
+                {
+                    backgroundRenderer.material.color = originalRendererColor;
+                }
+            }
+            else
+            {
+                selectionIndicator.SetActive(false);
+                backgroundRenderer.material.color = originalRendererColor;
+            }
+        }
+
+        public void OnPointerDown(MixedRealityPointerEventData eventData)
+        {
+        }
+
+        public void OnPointerDragged(MixedRealityPointerEventData eventData)
+        {
+        }
+
+        public void OnPointerUp(MixedRealityPointerEventData eventData)
+        {
+        }
+
+        /// <summary>
+        /// Called by the Mixed Reality Toolkit if the object was clicked
+        /// </summary>
+        /// <param name="eventData">The event data of the interaction</param>
+        public void OnPointerClicked(MixedRealityPointerEventData eventData)
+        {
+            if (IssueSelectionManager.Instance.SelectionModeActive)
+            {
+                ToggleSelection();
+                eventData.Use();
+            }
         }
     }
 }

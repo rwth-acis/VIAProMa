@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using i5.VIAProMa.Visualizations.Competence;
+using i5.VIAProMa.DataModel.API;
 
 public class CompetencDisplayInstantTester : MonoBehaviourPunCallbacks
 {

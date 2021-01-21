@@ -1,24 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class FloatEffect : MonoBehaviour
+namespace i5.VIAProMa.Utilities
 {
-    [SerializeField] private float height = 0.1f;
-    [SerializeField] private float frequency = 1f;
-
-    public float Height { get => height; set => height = value; }
-    public float Frequency { get => frequency; set => frequency = value; }
-    public Vector3 StartPosition { get; set; }
-
-    private void Awake()
+    public class FloatEffect : MonoBehaviour
     {
-        StartPosition = transform.localPosition;
-    }
+        [SerializeField] private float height = 0.1f;
+        [SerializeField] private float frequency = 1f;
 
-    private void Update()
-    {
-        float offset = height * 0.5f * (1f + Mathf.Sin(2f * Mathf.PI * frequency * Time.time));
-        transform.localPosition = StartPosition + new Vector3(0, offset, 0);
+        public float Height { get => height; set => height = value; }
+        public float Frequency { get => frequency; set => frequency = value; }
+        public Vector3 StartPosition { get; set; }
+
+        private void Awake()
+        {
+            StartPosition = transform.localPosition;
+        }
+
+        private void Update()
+        {
+            float offset = height * 0.5f * (1f + Mathf.Sin(2f * Mathf.PI * frequency * Time.time));
+            transform.localPosition = StartPosition + new Vector3(0, offset, 0);
+        }
     }
 }

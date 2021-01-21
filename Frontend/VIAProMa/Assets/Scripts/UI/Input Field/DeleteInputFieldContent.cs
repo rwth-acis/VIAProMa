@@ -1,16 +1,15 @@
-﻿using i5.ViaProMa.UI;
-using Microsoft.MixedReality.Toolkit.UI;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(InputField))]
-public class DeleteInputFieldContent : MonoBehaviour
+namespace i5.VIAProMa.UI.InputFields
 {
-    private InputField inputField;
-
-    public void DeleteContent()
+    [RequireComponent(typeof(InputField))]
+    public class DeleteInputFieldContent : MonoBehaviour
     {
-        inputField.Text = "";
+        private InputField inputField;
+
+        public void DeleteContent()
+        {
+            inputField.Text = "";
+        }
     }
 }

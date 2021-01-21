@@ -1,46 +1,48 @@
-﻿using Microsoft.MixedReality.Toolkit.UI;
-using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 
-[RequireComponent(typeof(Interactable))]
-public class ColorPreviewSquare : MonoBehaviour
+namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 {
-    [SerializeField] private Renderer previewQuad;
-
-    private Interactable interactable;
-
-    public Color Color
+    [RequireComponent(typeof(Interactable))]
+    public class ColorPreviewSquare : MonoBehaviour
     {
-        get
+        [SerializeField] private Renderer previewQuad;
+
+        private Interactable interactable;
+
+        public Color Color
         {
-            return previewQuad.material.color;
+            get
+            {
+                return previewQuad.material.color;
+            }
+            set
+            {
+                previewQuad.material.color = value;
+            }
         }
-        set
+
+        public ConfigurationColorChooser ColorChooser
         {
-            previewQuad.material.color = value;
+            get; set;
         }
-    }
 
-    public ConfigurationColorChooser ColorChooser
-    {
-        get; set;
-    }
-
-    private void Awake()
-    {
-        if (previewQuad == null)
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(previewQuad));
+            if (previewQuad == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(previewQuad));
+            }
+            interactable = GetComponent<Interactable>();
         }
-        interactable = GetComponent<Interactable>();
-    }
 
-    public void Select()
-    {
-        if (ColorChooser != null)
+        public void Select()
         {
-            ColorChooser.SelectedColor = Color;
+            if (ColorChooser != null)
+            {
+                ColorChooser.SelectedColor = Color;
+            }
         }
     }
 }

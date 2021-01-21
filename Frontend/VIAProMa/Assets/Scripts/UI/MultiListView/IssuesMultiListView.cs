@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.UI.ListView.Core;
+using i5.VIAProMa.UI.ListView.Issues;
+using System;
 using UnityEngine;
 
-public class IssuesMultiListView : MultiListView<Issue, IssueListViewItem>
+namespace i5.VIAProMa.UI.MultiListView.Core
 {
-    [SerializeField] private IssueListView[] issueListViews;
-
-    protected override void Awake()
+    public class IssuesMultiListView : MultiListView<Issue, IssueListViewItem>
     {
-        listViews = Array.ConvertAll(issueListViews, item => (ListViewController<Issue, IssueListViewItem>)item);
-        base.Awake();
+        [SerializeField] private IssueListView[] issueListViews;
+
+        protected override void Awake()
+        {
+            listViews = Array.ConvertAll(issueListViews, item => (ListViewController<Issue, IssueListViewItem>)item);
+            base.Awake();
+        }
     }
 }

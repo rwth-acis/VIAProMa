@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using i5.ViaProMa.Visualizations.Common;
+using i5.VIAProMa.Visualizations.Common;
+using i5.VIAProMa.Utilities;
 
-namespace i5.ViaProMa.Visualizations.Diagrams
+namespace i5.VIAProMa.Visualizations.Diagrams
 {
-    public class Scatterplot : i5.ViaProMa.Visualizations.Common.Diagram
+    public class Scatterplot : i5.VIAProMa.Visualizations.Common.Diagram
     {
         [SerializeField] private GameObject pointPrefab;
         [SerializeField] private float sphereSize = 0.04f;

@@ -1,28 +1,30 @@
-﻿using Microsoft.MixedReality.Toolkit.UI;
-using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 
-[RequireComponent(typeof(Interactable))]
-public class Key : MonoBehaviour
+namespace i5.VIAProMa.UI.KeyboardInput
 {
-    protected string value;
-
-    protected Keyboard keyboard;
-
-    protected virtual void Awake()
+    [RequireComponent(typeof(Interactable))]
+    public class Key : MonoBehaviour
     {
-        Interactable interactable = GetComponent<Interactable>();
-        interactable.OnClick.AddListener(KeyPressed);
+        protected string value;
 
-        keyboard = transform.parent.parent.GetComponent<Keyboard>();
-        if (keyboard == null)
+        protected Keyboard keyboard;
+
+        protected virtual void Awake()
         {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Keyboard), transform.parent.gameObject);
-        }
-    }
+            Interactable interactable = GetComponent<Interactable>();
+            interactable.OnClick.AddListener(KeyPressed);
 
-    protected virtual void KeyPressed()
-    {
+            keyboard = transform.parent.parent.GetComponent<Keyboard>();
+            if (keyboard == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(Keyboard), transform.parent.gameObject);
+            }
+        }
+
+        protected virtual void KeyPressed()
+        {
+        }
     }
 }

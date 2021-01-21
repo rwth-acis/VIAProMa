@@ -1,8 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.DataModel.API;
 using UnityEngine;
 
-public class IssueHierarchy : MonoBehaviour
+namespace i5.VIAProMa.Visualizations.IssueHierarchy
 {
-    private TreeNode<Issue> issueTreeRoot;
+    public class IssueHierarchy : MonoBehaviour
+    {
+        private TreeNode<Issue> issueTreeRoot;
+    }
 }

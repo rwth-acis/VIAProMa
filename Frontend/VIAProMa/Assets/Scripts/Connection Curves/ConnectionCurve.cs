@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
 using System.Threading.Tasks;
+using i5.VIAProMa.SaveLoadSystem.Core;
+using i5.VIAProMa.ResourceManagagement;
 
 /// <summary>
 /// An object to display and manage 3D curves.

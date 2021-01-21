@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class AvatarPartControllerCategory
+namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
 {
-    [SerializeField] private string name;
-    [SerializeField] private Sprite icon;
-    [SerializeField] private AvatarPartConfigurationController configurationController;
+    [Serializable]
+    public class AvatarPartControllerCategory
+    {
+        [SerializeField] private string name;
+        [SerializeField] private Sprite icon;
+        [SerializeField] private AvatarPartConfigurationController configurationController;
 
-    public Sprite Icon { get => icon; }
-    public string Name { get => name; }
-    public AvatarPartConfigurationController ConfigurationController { get => configurationController; }
+        public Sprite Icon { get => icon; }
+        public string Name { get => name; }
+        public AvatarPartConfigurationController ConfigurationController { get => configurationController; }
+    }
 }

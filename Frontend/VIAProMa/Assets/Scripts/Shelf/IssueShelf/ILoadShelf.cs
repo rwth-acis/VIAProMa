@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.UI.MessageBadge;
 
-public interface ILoadShelf
+namespace i5.VIAProMa.Shelves.IssueShelf
 {
-    void LoadContent();
+    public interface ILoadShelf
+    {
+        void LoadContent();
 
-    MessageBadge MessageBadge { get; }
+        MessageBadge MessageBadge { get; }
+    }
 }

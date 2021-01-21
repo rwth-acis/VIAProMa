@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Photon.Pun;
-using Photon.Realtime;
-using System.Threading.Tasks;
+using i5.VIAProMa.WebConnection;
 
 public class EvaluationTestscript : MonoBehaviourPunCallbacks
 {

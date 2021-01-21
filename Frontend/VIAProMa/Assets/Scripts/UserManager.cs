@@ -1,27 +1,29 @@
 ﻿using HoloToolkit.Unity;
+using i5.VIAProMa.Multiplayer;
+using i5.VIAProMa.Multiplayer.Avatars;
 using Photon.Pun;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class UserManager : Singleton<UserManager>
+namespace i5.VIAProMa
 {
-    private UserRoles role = UserRoles.DEVELOPER;
-
-    public event EventHandler UserRoleChanged;
-
-    public UserRoles UserRole
+    public class UserManager : Singleton<UserManager>
     {
-        get => role;
-        set
+        private UserRoles role = UserRoles.DEVELOPER;
+
+        public event EventHandler UserRoleChanged;
+
+        public UserRoles UserRole
         {
-            role = value;
-            if (PhotonNetwork.IsConnected)
+            get => role;
+            set
             {
-                PlayerPropertyUtilities.SetProperty(UserRoleSynchronizer.roleKey, (byte)role);
+                role = value;
+                if (PhotonNetwork.IsConnected)
+                {
+                    PlayerPropertyUtilities.SetProperty(UserRoleSynchronizer.roleKey, (byte)role);
+                }
+                UserRoleChanged?.Invoke(this, EventArgs.Empty);
             }
-            UserRoleChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

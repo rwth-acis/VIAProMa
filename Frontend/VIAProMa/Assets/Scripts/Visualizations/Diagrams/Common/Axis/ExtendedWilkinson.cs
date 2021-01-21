@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace i5.ViaProMa.Visualizations.Common
+namespace i5.VIAProMa.Visualizations.Diagrams.Common.Axes
 {
 
     /// <summary>

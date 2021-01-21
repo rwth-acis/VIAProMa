@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Photon.Pun;
+﻿using Photon.Pun;
+using i5.VIAProMa.Visualizations;
+using i5.VIAProMa.Visualizations.KanbanBoard;
+using i5.VIAProMa.DataModel.API;
 
 public class KanbanInstantTester : MonoBehaviourPunCallbacks
 {

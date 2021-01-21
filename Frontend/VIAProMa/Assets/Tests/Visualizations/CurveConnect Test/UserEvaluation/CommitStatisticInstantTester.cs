@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Threading.Tasks;
+﻿using UnityEngine;
 using Photon.Pun;
+using i5.VIAProMa.Visualizations.CommitStatistics;
+using i5.VIAProMa.Visualizations.Common;
 
 /// <summary>
 /// Test script for the commit statistics visualization
@@ -19,14 +18,14 @@ public class CommitStatisticInstantTester : MonoBehaviourPunCallbacks
     /// </summary>
     public Vector3 size = Vector3.one;
 
-    private i5.ViaProMa.Visualizations.Common.Diagram diagram;
+    private Diagram diagram;
 
     /// <summary>
     /// Gets the diagram component of the visualization
     /// </summary>
     private void Awake()
     {
-        diagram = visualizer.GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
+        diagram = visualizer.GetComponent<Diagram>();
     }
 
     public override void OnJoinedRoom()

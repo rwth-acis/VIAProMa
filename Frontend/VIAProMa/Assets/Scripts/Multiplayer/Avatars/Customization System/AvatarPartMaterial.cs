@@ -1,58 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AvatarPartMaterial", menuName = "Scriptable Objects/Avatar/Avatar Part Material", order = 1)]
-public class AvatarPartMaterial : ScriptableObject, IItem
+namespace i5.VIAProMa.Multiplayer.Avatars.Customization
 {
-    [SerializeField] private Sprite sprite;
-    [SerializeField] private Color displayColor = new Color(0.6132f, 0.6132f, 0.6132f);
-    [SerializeField] private Material material;
-    [SerializeField] private AvatarPartColorVariations colorVariants;
-
-    public Material Material { get => material; }
-
-    public Color[] Colors
+    [CreateAssetMenu(fileName = "AvatarPartMaterial", menuName = "Scriptable Objects/Avatar/Avatar Part Material", order = 1)]
+    public class AvatarPartMaterial : ScriptableObject, IItem
     {
-        get
+        [SerializeField] private Sprite sprite;
+        [SerializeField] private Color displayColor = new Color(0.6132f, 0.6132f, 0.6132f);
+        [SerializeField] private Material material;
+        [SerializeField] private AvatarPartColorVariations colorVariants;
+
+        public Material Material { get => material; }
+
+        public Color[] Colors
         {
-            if (colorVariants == null)
+            get
             {
-                return new Color[0];
-            }
-            else
-            {
-                return colorVariants.Colors;
+                if (colorVariants == null)
+                {
+                    return new Color[0];
+                }
+                else
+                {
+                    return colorVariants.Colors;
+                }
             }
         }
-    }
 
-    public Color GetColor(int index)
-    {
-        return colorVariants.GetColor(index);
-    }
-    public int ColorVariationCount
-    {
-        get
+        public Color GetColor(int index)
         {
-            if (colorVariants == null)
+            return colorVariants.GetColor(index);
+        }
+        public int ColorVariationCount
+        {
+            get
             {
-                return 0;
-            }
-            else
-            {
-                return colorVariants.ColorVariationCount;
+                if (colorVariants == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return colorVariants.ColorVariationCount;
+                }
             }
         }
-    }
 
-    public Sprite Sprite
-    {
-        get => sprite;
-    }
+        public Sprite Sprite
+        {
+            get => sprite;
+        }
 
-    public Color DisplayColor
-    {
-        get => displayColor;
+        public Color DisplayColor
+        {
+            get => displayColor;
+        }
     }
 }

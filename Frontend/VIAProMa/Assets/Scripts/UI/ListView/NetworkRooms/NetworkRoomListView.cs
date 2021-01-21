@@ -1,7 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.UI.ListView.Core;
 
-public class NetworkRoomListView : ListViewController<NetworkRoomData, NetworkRoomListViewItem>
+namespace i5.VIAProMa.UI.ListView.NetworkRooms
 {
+    public class NetworkRoomListView : ListViewController<NetworkRoomData, NetworkRoomListViewItem>
+    {
+    }
 }

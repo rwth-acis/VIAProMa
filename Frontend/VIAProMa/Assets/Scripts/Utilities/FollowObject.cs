@@ -1,22 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Makes the object follow the given target transform (position only)
-/// </summary>
-public class FollowObject : MonoBehaviour
+namespace i5.VIAProMa.Utilities
 {
-    public Transform target;
-
     /// <summary>
-    /// Copies the position of a target transform to this transform
+    /// Makes the object follow the given target transform (position only)
     /// </summary>
-    void Update()
+    public class FollowObject : MonoBehaviour
     {
-        if (target != null)
+        public Transform target;
+
+        /// <summary>
+        /// Copies the position of a target transform to this transform
+        /// </summary>
+        void Update()
         {
-            transform.position = target.position;
+            if (target != null)
+            {
+                transform.position = target.position;
+            }
         }
     }
+
 }

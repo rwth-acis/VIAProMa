@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Utilities;
 using UnityEngine;
 
-namespace i5.ViaProMa.Visualizations.Common
+namespace i5.VIAProMa.Visualizations.Common.Grid
 {
     public class VisualizationGridsController : MonoBehaviour
     {

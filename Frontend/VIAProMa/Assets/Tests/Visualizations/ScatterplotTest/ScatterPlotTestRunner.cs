@@ -1,4 +1,5 @@
-﻿using i5.ViaProMa.Visualizations.Common;
+﻿using i5.VIAProMa.Visualizations.Common;
+using i5.VIAProMa.Visualizations.Common.Data.DataSets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class ScatterPlotTestRunner : MonoBehaviour
     //    gridController.Setup(count, size);
     //}
 
-    public i5.ViaProMa.Visualizations.Common.Diagram diagram;
+    public i5.VIAProMa.Visualizations.Common.Diagram diagram;
     public Vector3 size;
 
     /// <summary>
@@ -29,7 +30,7 @@ public class ScatterPlotTestRunner : MonoBehaviour
     {
         diagram.Size = size;
 
-        i5.ViaProMa.Visualizations.Common.DataSet dataset = new i5.ViaProMa.Visualizations.Common.DataSet();
+        DataSet dataset = new DataSet();
         dataset.DataColumns.Add(new TextDataColumn(new List<string>() { "a", "b", "c", "d", "e" }));
         dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 1, 2, 10, 4, 5 }));
         dataset.DataColumns.Add(new NumericDataColumn(new List<float>() { 0, 1, 2, 3, 4 }));

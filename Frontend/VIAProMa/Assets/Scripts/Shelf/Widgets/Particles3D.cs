@@ -1,69 +1,71 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Script which spawn a number of 3D objects as 3D object particles
-/// Do not use this in huge numbers or with complex objects
-/// </summary>
-public class Particles3D : MonoBehaviour
+namespace i5.VIAProMa.Shelves.Widgets
 {
-    [SerializeField] private GameObject[] objectPrefabs;
-    [SerializeField] private float gapBetweenSpawns = 10f;
-
-    private GameObject[] objects;
-    private IEnumerator spawningCoroutine;
-    private bool spawning;
-
-    public bool Spawning
+    /// <summary>
+    /// Script which spawn a number of 3D objects as 3D object particles
+    /// Do not use this in huge numbers or with complex objects
+    /// </summary>
+    public class Particles3D : MonoBehaviour
     {
-        get
+        [SerializeField] private GameObject[] objectPrefabs;
+        [SerializeField] private float gapBetweenSpawns = 10f;
+
+        private GameObject[] objects;
+        private IEnumerator spawningCoroutine;
+        private bool spawning;
+
+        public bool Spawning
         {
-            return spawning;
-        }
-        set
-        {
-            spawning = value;
-            if (spawning)
+            get
             {
-                spawningCoroutine = Spawn();
-                StartCoroutine(spawningCoroutine);
+                return spawning;
             }
-            else
+            set
             {
-                if (spawningCoroutine != null)
+                spawning = value;
+                if (spawning)
                 {
-                    StopCoroutine(spawningCoroutine);
+                    spawningCoroutine = Spawn();
+                    StartCoroutine(spawningCoroutine);
                 }
-                for (int i = 0; i < objects.Length; i++)
+                else
                 {
-                    objects[i].SetActive(false);
+                    if (spawningCoroutine != null)
+                    {
+                        StopCoroutine(spawningCoroutine);
+                    }
+                    for (int i = 0; i < objects.Length; i++)
+                    {
+                        objects[i].SetActive(false);
+                    }
                 }
             }
         }
-    }
 
-    private void Awake()
-    {
-        objects = new GameObject[objectPrefabs.Length];
-        for (int i = 0; i < objectPrefabs.Length; i++)
+        private void Awake()
         {
-            objects[i] = Instantiate(objectPrefabs[i]);
-            objects[i].SetActive(false);
-            objects[i].transform.position = transform.position;
+            objects = new GameObject[objectPrefabs.Length];
+            for (int i = 0; i < objectPrefabs.Length; i++)
+            {
+                objects[i] = Instantiate(objectPrefabs[i]);
+                objects[i].SetActive(false);
+                objects[i].transform.position = transform.position;
+            }
         }
-    }
 
-    private IEnumerator Spawn()
-    {
-        while (true)
+        private IEnumerator Spawn()
         {
-            int randomIndex = Random.Range(0, objects.Length - 1);
-            objects[randomIndex].transform.position = transform.position;
-            objects[randomIndex].SetActive(true);
-            yield return new WaitForSeconds(gapBetweenSpawns);
+            while (true)
+            {
+                int randomIndex = Random.Range(0, objects.Length - 1);
+                objects[randomIndex].transform.position = transform.position;
+                objects[randomIndex].SetActive(true);
+                yield return new WaitForSeconds(gapBetweenSpawns);
+            }
         }
+
+
     }
-
-
 }

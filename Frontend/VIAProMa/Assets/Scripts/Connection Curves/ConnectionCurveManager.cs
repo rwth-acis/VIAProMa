@@ -4,9 +4,10 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
 using Photon.Pun;
-using Photon.Pun.UtilityScripts;
 using System.Threading.Tasks;
 using HoloToolkit.Unity;
+using i5.VIAProMa.UI.AppBar;
+using i5.VIAProMa.ResourceManagagement;
 
 /// <summary>
 /// Manages the connect and disconnect process of Connection Curves and provides functions to manage curves.

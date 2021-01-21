@@ -1,41 +1,44 @@
-﻿using Microsoft.MixedReality.Toolkit.Input;
+﻿using i5.VIAProMa.ResourceManagagement;
+using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractionTest : MonoBehaviour, IMixedRealityPointerHandler
+namespace i5.VIAProMa
 {
-    [SerializeField] GameObject prefab;
-
-    private ManipulationHandler handler;
-
-    private void Awake()
+    public class InteractionTest : MonoBehaviour, IMixedRealityPointerHandler
     {
-        if (prefab == null)
+        [SerializeField] GameObject prefab;
+
+        private ManipulationHandler handler;
+
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(prefab));
+            if (prefab == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(prefab));
+            }
         }
-    }
 
-    public void OnPointerClicked(MixedRealityPointerEventData eventData)
-    {
-    }
+        public void OnPointerClicked(MixedRealityPointerEventData eventData)
+        {
+        }
 
-    public void OnPointerDown(MixedRealityPointerEventData eventData)
-    {
-        GameObject instance = ResourceManager.Instance.NetworkInstantiate(prefab, transform.position, transform.rotation);
-        handler = instance.GetComponentInChildren<ManipulationHandler>();
-        handler.OnPointerDown(eventData);
-    }
+        public void OnPointerDown(MixedRealityPointerEventData eventData)
+        {
+            GameObject instance = ResourceManager.Instance.NetworkInstantiate(prefab, transform.position, transform.rotation);
+            handler = instance.GetComponentInChildren<ManipulationHandler>();
+            handler.OnPointerDown(eventData);
+        }
 
-    public void OnPointerDragged(MixedRealityPointerEventData eventData)
-    {
-        handler.OnPointerDragged(eventData);
-    }
+        public void OnPointerDragged(MixedRealityPointerEventData eventData)
+        {
+            handler.OnPointerDragged(eventData);
+        }
 
-    public void OnPointerUp(MixedRealityPointerEventData eventData)
-    {
-        handler.OnPointerUp(eventData);
+        public void OnPointerUp(MixedRealityPointerEventData eventData)
+        {
+            handler.OnPointerUp(eventData);
+        }
     }
 }

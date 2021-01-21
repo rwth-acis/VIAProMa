@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IListViewItemData
+﻿namespace i5.VIAProMa.UI.ListView.Core
 {
+    public interface IListViewItemData
+    {
+    }
 }

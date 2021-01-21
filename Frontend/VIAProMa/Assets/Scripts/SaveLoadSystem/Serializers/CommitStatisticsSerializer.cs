@@ -1,58 +1,61 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.SaveLoadSystem.Core;
+using i5.VIAProMa.Visualizations.CommitStatistics;
 using UnityEngine;
 
-/// <summary>
-/// Handles the save-load data for the commit statistics visualization
-/// </summary>
-[RequireComponent(typeof(CommitStatisticsVisualizer))]
-public class CommitStatisticsSerializer : MonoBehaviour, ISerializable
+namespace i5.VIAProMa.SaveLoadSystem.Serializers
 {
-    private CommitStatisticsVisualizer visualizer;
-
-    private const string ownerKey = "commit_stat_owner";
-    private const string repositoryKey = "commit_stat_repository";
-
     /// <summary>
-    /// Gets the visualizer script
+    /// Handles the save-load data for the commit statistics visualization
     /// </summary>
-    private void Awake()
+    [RequireComponent(typeof(CommitStatisticsVisualizer))]
+    public class CommitStatisticsSerializer : MonoBehaviour, ISerializable
     {
-        visualizer = GetComponent<CommitStatisticsVisualizer>();
-    }
+        private CommitStatisticsVisualizer visualizer;
 
-    /// <summary>
-    /// Called to deserialize a given SerializedObject and apply its settings to the component
-    /// </summary>
-    /// <param name="serializedObject">The save data which should be deserialized</param>
-    public void Deserialize(SerializedObject serializedObject)
-    {
-        string owner = SerializedObject.TryGet(ownerKey, serializedObject.Strings, gameObject, out bool foundOwner);
-        if (foundOwner)
+        private const string ownerKey = "commit_stat_owner";
+        private const string repositoryKey = "commit_stat_repository";
+
+        /// <summary>
+        /// Gets the visualizer script
+        /// </summary>
+        private void Awake()
         {
-            visualizer.Owner = owner;
-        }
-        string repository = SerializedObject.TryGet(repositoryKey, serializedObject.Strings, gameObject, out bool foundRepository);
-        if (foundRepository)
-        {
-            visualizer.Repository = repository;
+            visualizer = GetComponent<CommitStatisticsVisualizer>();
         }
 
-        if (foundOwner && foundRepository)
+        /// <summary>
+        /// Called to deserialize a given SerializedObject and apply its settings to the component
+        /// </summary>
+        /// <param name="serializedObject">The save data which should be deserialized</param>
+        public void Deserialize(SerializedObject serializedObject)
         {
-            visualizer.UpdateView();
-        }
-    }
+            string owner = SerializedObject.TryGet(ownerKey, serializedObject.Strings, gameObject, out bool foundOwner);
+            if (foundOwner)
+            {
+                visualizer.Owner = owner;
+            }
+            string repository = SerializedObject.TryGet(repositoryKey, serializedObject.Strings, gameObject, out bool foundRepository);
+            if (foundRepository)
+            {
+                visualizer.Repository = repository;
+            }
 
-    /// <summary>
-    /// Serializes the settings of the CommitStatisticVisualizer
-    /// </summary>
-    /// <returns>The save data for the CommitStatisticVisualizer</returns>
-    public SerializedObject Serialize()
-    {
-        SerializedObject obj = new SerializedObject();
-        obj.Strings.Add(ownerKey, visualizer.Owner);
-        obj.Strings.Add(repositoryKey, visualizer.Repository);
-        return obj;
+            if (foundOwner && foundRepository)
+            {
+                visualizer.UpdateView();
+            }
+        }
+
+        /// <summary>
+        /// Serializes the settings of the CommitStatisticVisualizer
+        /// </summary>
+        /// <returns>The save data for the CommitStatisticVisualizer</returns>
+        public SerializedObject Serialize()
+        {
+            SerializedObject obj = new SerializedObject();
+            obj.Strings.Add(ownerKey, visualizer.Owner);
+            obj.Strings.Add(repositoryKey, visualizer.Repository);
+            return obj;
+        }
     }
 }

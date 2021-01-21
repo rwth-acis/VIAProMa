@@ -1,7 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.UI.ListView.Core;
 
-public class StringListView : ListViewController<StringData, StringListViewItem>
+namespace i5.VIAProMa.UI.ListView.Strings
 {
+    public class StringListView : ListViewController<StringData, StringListViewItem>
+    {
+    }
 }
