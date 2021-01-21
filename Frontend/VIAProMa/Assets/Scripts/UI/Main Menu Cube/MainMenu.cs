@@ -214,8 +214,9 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void MakeNote()
         {
-            Vector3 targetPosition = transform.position + 1f * transform.right;
+            Vector3 targetPosition = transform.position - 0f * transform.right;
             targetPosition.y = 0f;
+            targetPosition.z = 1f;
             InstantiateControl(notePrefab, ref noteInstance, targetPosition);
             foldController.FoldCube();
         }
