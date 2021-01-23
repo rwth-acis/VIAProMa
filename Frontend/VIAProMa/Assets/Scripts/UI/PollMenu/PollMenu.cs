@@ -13,6 +13,9 @@ using Microsoft.MixedReality.Toolkit.UI;
 
 namespace i5.VIAProMa.UI.Poll
 {
+    /**
+     * Local Poll UI menu, listens to Poll events and calls into PollHandler for user interaction
+     */
     public class PollMenu : MonoBehaviour, IWindow
     {
         [Header("Poll Creation UI")]
@@ -199,6 +202,7 @@ namespace i5.VIAProMa.UI.Poll
 
         private void SendResponse()
         {
+            responded = true;
             PollHandler.Instance?.RespondPoll(curSelection, pollArgs.MessageSender);
         }
 

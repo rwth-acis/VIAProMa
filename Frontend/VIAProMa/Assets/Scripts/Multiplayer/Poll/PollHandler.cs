@@ -6,9 +6,13 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections;
+using i5.VIAProMa.Visualizations.Poll;
 
 namespace i5.VIAProMa.Multiplayer.Poll
 {
+    /**
+     * Handles poll networking, poll host state management and local events for UI
+     */
     [RequireComponent(typeof(PhotonView))]
     public class PollHandler : Singleton<PollHandler>, IOnEventCallback, IInRoomCallbacks
     {
@@ -33,6 +37,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             PhotonNetwork.RemoveCallbackTarget(this);
         }
+
         protected override void Awake()
         {
             base.Awake();
@@ -42,16 +47,20 @@ namespace i5.VIAProMa.Multiplayer.Poll
         private IEnumerator Countdown(int seconds) 
         {
             yield return new WaitForSeconds(seconds);
-            PollHandler.Instance.EndPoll();
+            EndPoll();
             yield return new WaitForSeconds(1);
-            PollHandler.Instance.DisplayPoll();
+            DisplayPoll();
+            currentPoll = null;
         }
 
-        public void StopCountdown() 
+        private void StopCountdown() 
         {
             StopCoroutine(currentCountdown);
         }
 
+        /**
+         * Starts a poll with this player as host
+         */
         public void StartPoll(string question, string[] answers, PollOptions flags, DateTime end)
         {
             currentPoll = new Poll(question, answers, flags);
@@ -72,36 +81,49 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
         }
 
-        public void RespondPoll(bool[] selection, Player leader)
+        /**
+         * Responds to poll as user with specified poll host
+         */
+        public void RespondPoll(bool[] selection, Player host)
         {
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{leader.ActorNumber}};
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{host.ActorNumber}};
             PhotonNetwork.RaiseEvent(PollRespondEventCode, selection, raiseEventOptions, SendOptions.SendReliable);
         }
 
+        /**
+         * Force Poll End by poll host
+         */
         public void EndPoll()
         {
+            if (currentPoll == null) return;
+            if (currentPoll.IsEnded) return;
+            currentPoll.IsEnded = true;
             photonView.RPC("PollEndReceived", RpcTarget.All);
         }
 
-        public void DisplayPoll(short id, PollDisplayEventArgs.DisplayType type)
-        {
-            photonView.RPC("PollDisplayReceived", RpcTarget.All, id, type);
-        }
-
+        /**
+         * Initiate Poll Display of the currently hosted poll on all clients
+         */
         public void DisplayPoll()
         {
+            if (currentPoll == null) return;
+            if (currentPoll.IsDisplayed) return;
+            currentPoll.IsDisplayed = true;
             if (currentPoll.SerializeableSelection.Count == 0)
             {
                 Debug.Log("No participants, discarding poll!");
             }
             // TODO: Send to database and continue with ID
-            // DisplayPoll(id, DisplayType.Bar);
+            // photonView.RPC("PollDisplayReceived", RpcTarget.All, id, DisplayType.Bar);
             photonView.RPC("PollDisplayReceived", RpcTarget.All, currentPoll.Answers, currentPoll.AccumulatedResults, PollDisplayEventArgs.DisplayType.Bar);
         }
-        
-        public void SendNAK(Player leader)
+
+        /**
+         * Unregister this client from the current poll hosted by host 
+         */
+        public void SendNAK(Player host)
         {
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{leader.ActorNumber}};
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{host.ActorNumber}};
             PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, false, raiseEventOptions, SendOptions.SendReliable);
         }
 
@@ -128,6 +150,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PollEnded?.Invoke(this,args);
         }
 
+        /**
+         * Handles events from user to poll host
+         */
         public void OnEvent(EventData photonEvent)
         {
             bool? finished = false;
@@ -144,7 +169,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
             {
                 if(!(currentCountdown is null))
                     StopCountdown();
+                EndPoll();
                 DisplayPoll();
+                currentPoll = null;
             }
         }
 
@@ -163,9 +190,14 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PollDisplayed?.Invoke(this,args);
 
             GameObject barChartObj = Instantiate(barChartVisualizationPrefab);
+            barChartObj.transform.position = new Vector3(-2, 0.5f, 2);
             PollBarVisualization pollViz = barChartObj.GetComponent<PollBarVisualization>();
             pollViz.Setup(answers, results);
         }
+
+        /**
+         * Implementations for IInRoomCallbacks
+         */
 
         public void OnPlayerEnteredRoom(Player newPlayer){}
         public void OnPlayerLeftRoom(Player otherPlayer)
