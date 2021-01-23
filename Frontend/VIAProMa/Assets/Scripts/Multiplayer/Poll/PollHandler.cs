@@ -1,4 +1,4 @@
-using ExitGames.Client.Photon;
+﻿using ExitGames.Client.Photon;
 using HoloToolkit.Unity;
 using Photon.Pun;
 using Photon.Realtime;
@@ -142,7 +142,8 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
             if (finished == true)
             {
-                StopCountdown();
+                if(!(currentCountdown is null))
+                    StopCountdown();
                 DisplayPoll();
             }
         }
@@ -162,7 +163,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PollDisplayed?.Invoke(this,args);
 
             GameObject barChartObj = Instantiate(barChartVisualizationPrefab);
-            PollBarVisiualization pollViz = barChartObj.GetComponent<PollBarVisiualization>();
+            PollBarVisualization pollViz = barChartObj.GetComponent<PollBarVisualization>();
             pollViz.Setup(answers, results);
         }
 
