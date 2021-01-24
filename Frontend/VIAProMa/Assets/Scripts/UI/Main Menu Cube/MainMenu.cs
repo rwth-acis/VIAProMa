@@ -147,7 +147,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             loadButton.Enabled = PhotonNetwork.InRoom;
             issueShelfButton.Enabled = PhotonNetwork.InRoom;
             visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
-            // noteButton.Enabled = PhotonNetwork.InRoom;
+            noteButton.Enabled = PhotonNetwork.InRoom;
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
