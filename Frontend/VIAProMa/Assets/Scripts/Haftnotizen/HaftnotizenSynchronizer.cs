@@ -7,13 +7,13 @@ using Photon.Pun;
 [RequireComponent(typeof(HaftnotizenVisualController))]
 public class HaftnotizenSynchronizer : TransformSynchronizer
 {
-        private HaftnotizenVisualController contentText;
+        private HaftnotizenVisualController noteText;
 
         private string targetText;
         
         private void Awake()
         {
-            contentText = GetComponent<HaftnotizenVisualController>();
+            noteText = GetComponent<HaftnotizenVisualController>();
         }
 
         public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -21,7 +21,7 @@ public class HaftnotizenSynchronizer : TransformSynchronizer
             base.OnPhotonSerializeView(stream, info);
             if (stream.IsWriting)
             {
-                stream.SendNext(contentText.Text);
+                stream.SendNext(noteText.Text);
             }
             else
             {
@@ -35,7 +35,7 @@ public class HaftnotizenSynchronizer : TransformSynchronizer
             base.Update();
             if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
             {
-                contentText.Text = targetText;
+                noteText.Text = targetText;
             }
         }
 }
