@@ -17,6 +17,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
         Countdown = 4
     }
 
+    /**
+     * Data and basic logic for Polls
+     */
     public class Poll
     {
         private Dictionary<Player, bool[]> selection;
@@ -24,7 +27,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public string Question { get; private set; }
         public string[] Answers { get; private set; }
         public PollOptions Flags { get; private set; }
+        public bool IsEnded { get; set; }
+        public bool IsDisplayed { get; set; }
         
+        /**
+         * Poll results for each user as it should be saved in accordance with Poll Options
+         */
         public List<Tuple<String, bool[]>> SerializeableSelection
         {
             get
@@ -32,6 +40,10 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 return (selection.Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public)? t.Key.NickName : "Anonymous" , t.Value)).ToList());
             }
         }
+        
+        /**
+         * Accumulated Poll results for each answer
+         */
         public int[] AccumulatedResults
         {
             get
@@ -55,8 +67,13 @@ namespace i5.VIAProMa.Multiplayer.Poll
             Answers = answers;
             Flags = flags;
             selection = new Dictionary<Player, bool[]>();
+            IsEnded = false;
+            IsDisplayed = false;
         }
 
+        /**
+         * Update player participation status
+         */
         public bool OnStatus(Player sender, bool state)
         {
             if (selection.ContainsKey(sender))
@@ -85,6 +102,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
         }
 
+        /**
+         * Set player poll response
+         */
         public bool OnResponse(Player sender, bool[] answers)
         {
             if (!selection.ContainsKey(sender))
