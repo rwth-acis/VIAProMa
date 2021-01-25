@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Input;
-using HoloToolkit.Unity;
 using Photon.Pun;
 public class VIAProMaMenuActions : MonoBehaviour
 {
@@ -33,7 +32,7 @@ public class VIAProMaMenuActions : MonoBehaviour
     /// <param name="eventData"></param>
     public void Remove(BaseInputEventData eventData)
     {
-        GameObject target = GetVisualisationFromInputSource(eventData.InputSource);
+        GameObject target = GetVisualisationFromInputSource(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget);
         if (target == null)
         {
             return;
@@ -74,7 +73,7 @@ public class VIAProMaMenuActions : MonoBehaviour
 
     public void OpenConfigurationWindow(BaseInputEventData eventData)
     {
-        GameObject target = GetVisualisationFromInputSource(eventData.InputSource, new Type[] {typeof(ConfigurationWindow)}, true, false);
+        GameObject target = GetVisualisationFromInputSource(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget, new Type[] {typeof(ConfigurationWindow)}, true, false);
         if (target != null)
         {
             ConfigurationWindow configurationWindow = target.transform.GetComponentInChildren<ConfigurationWindow>(true);
@@ -104,8 +103,11 @@ public class VIAProMaMenuActions : MonoBehaviour
         boundingBoxStateControllers = FindObjectsOfType<BoundingBoxStateController>();
         foreach (var boundingbox in boundingBoxStateControllers)
         {
-            boundingbox.BoundingBoxActive = true;
-            boundingbox.manipulationHandler.enabled = false;
+            if (GetVisualisationFromInputSource(boundingbox.gameObject) != null)
+            {
+                boundingbox.BoundingBoxActive = true;
+                boundingbox.manipulationHandler.enabled = false;
+            }
         }
     }
 
@@ -120,49 +122,68 @@ public class VIAProMaMenuActions : MonoBehaviour
             }
         }
     }
-
-    private GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
+    public Material highlightMaterial;
+    public Material wireframeMaterial;
+    Material previousMaterial;
+    public void HighlightBoudningBox(FocusEventData data)
     {
-        foreach (var pointer in source.Pointers)
+        BoundingBox box = data.NewFocusedObject.GetComponent<BoundingBox>();
+        if (box != null)
         {
-            GameObject target = pointer.Result?.CurrentPointerTarget;
+            previousMaterial = box.BoxMaterial;
+            box.BoxMaterial = highlightMaterial;
+            box.ShowWireFrame = true;
+            box.WireframeMaterial = wireframeMaterial;
+        }
+    }
 
+    public void DeHighlightBoundingBox(FocusEventData data)
+    {
+        BoundingBox box = data.OldFocusedObject.GetComponent<BoundingBox>();
+        if (box != null)
+        {
+            box.BoxMaterial = previousMaterial;
+            box.ShowWireFrame = false;
+        }
+    }
+
+    private GameObject GetVisualisationFromInputSource(GameObject gameObject, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
+    {
             //If wished, check if any of the children of the target is of a type that should be excluded
             if (typesToExclude != null && checkBelow)
             {
                 foreach (Type type in typesToExclude)
                 {
-                    if (target.GetComponentInChildren(type,true) != null)
+                    if (gameObject.GetComponentInChildren(type,true) != null)
                     {
                         return null;
                     }
                 }
             }
 
-            if (target != null)
+            if (gameObject != null)
             {
-                while (target != null && !IsVisualisation(target))
+                while (gameObject != null && !IsVisualisation(gameObject))
                 {
                     //If wished, check if the current object (i.e. a object above in the hirachy of the original target) is of a type that should be excluded
                     if (typesToExclude != null && checkAbove)
                     {
                         foreach (Type type in typesToExclude)
                         {
-                            if (target.GetComponent(type) != null)
+                            if (gameObject.GetComponent(type) != null)
                             {
                                 return null;
                             } 
                         }
                     }
 
-                    target = target.transform.parent?.gameObject;
+                    gameObject = gameObject.transform.parent?.gameObject;
                 }
-                if (target != null && IsVisualisation(target))
+                if (gameObject != null && IsVisualisation(gameObject))
                 {
-                    return target;
+                    return gameObject;
                 }
             }
-        }
         return null;
     }
 
