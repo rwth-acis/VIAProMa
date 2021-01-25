@@ -34,13 +34,10 @@ public struct MenuEntry
     //Tool specific events
     public InputActionUnityEvent OnToolCreated;
     public InputActionUnityEvent OnToolDestroyed;
+    public VirtualToolFocusEvent OnHoverOverTargetStart;
+    public VirtualToolFocusEvent OnHoverOverTargetActive;
+    public VirtualToolFocusEvent OnHoverOverTargetStop;
 }
 
-public class VirtualToolEventData
-{
-    IMixedRealityInputSource invokingSource;
-    GameObject target;
-}
-
-[System.Serializable]
-public class VirtialToolEvent : UnityEvent<VirtualToolEventData> { }
+[Serializable]
+public class VirtualToolFocusEvent : UnityEvent<FocusEventData> { }

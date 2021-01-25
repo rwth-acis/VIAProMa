@@ -12,10 +12,17 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
 
     Vector2 thumbPosition;
 
+    IMixedRealityInputSource ownSource;
+
     private MenuEntry currentEntry;
 
     [SerializeField]
     MenuEntry defaultEntry;
+
+    private bool hoverActive = false;
+
+    //Hover Actions
+    GameObject oldFocusTarget;
 
     public void SetupTool(MenuEntry newEntry)
     {
@@ -57,6 +64,45 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         }
     }
 
+    private void Update()
+    {
+        if (ownSource == null)
+        {
+            //It can take a few frames until this method returns an InputSource, because they first have to register themself in the input system
+            ownSource = GetOwnInputSource();
+        }
+        else
+        {
+
+            FocusEventData data = new FocusEventData(UnityEngine.EventSystems.EventSystem.current);
+            GameObject target = ownSource.Pointers[0].Result?.CurrentPointerTarget;
+            data.Initialize(ownSource.Pointers[0], oldFocusTarget, target);
+
+            if (target != oldFocusTarget)
+            {
+                if (target != null)
+                {
+                    currentEntry.OnHoverOverTargetStart.Invoke(data);
+                    Debug.Log("Hover Start");
+                    currentEntry.OnHoverOverTargetActive.Invoke(data);
+                    Debug.Log("Hover");
+                }
+
+                if (oldFocusTarget != null)
+                {
+                    currentEntry.OnHoverOverTargetStop.Invoke(data);
+                    Debug.Log("Hover Stop");
+                }
+            }
+            else if (target != null)
+            {
+                currentEntry.OnHoverOverTargetActive.Invoke(data);
+                Debug.Log("Hover");
+            }
+            oldFocusTarget = target;
+        }
+    }
+
     private void OnEnable()
     {
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputActionHandler>(this);
@@ -75,7 +121,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
     {
         if (eventData.MixedRealityInputAction == triggerInputAction && IsInputSourceThis(eventData.InputSource) && !eventData.used)
         {
-                currentEntry.OnInputActionStartedTrigger?.Invoke(eventData);
+            currentEntry.OnInputActionStartedTrigger?.Invoke(eventData);
         }
     }
     void IMixedRealityInputActionHandler.OnActionEnded(BaseInputEventData eventData)
@@ -153,5 +199,22 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
     bool IsInputSourceThis(IMixedRealityInputSource inputSource)
     {
         return this == inputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
+    }
+
+    IMixedRealityInputSource GetOwnInputSource()
+    {
+        foreach (var source in CoreServices.InputSystem.DetectedInputSources)
+        {
+            // Ignore anything that is not a hand because we want articulated hands
+            foreach (var pointer in source.Pointers)
+            {
+                if (pointer.Controller?.Visualizer?.GameObjectProxy == gameObject)
+                {
+                    return source;
+                }
+            }
+        }
+        Debug.LogError("Can't find the input source this tool belongs too");
+        return null;
     }
 }
