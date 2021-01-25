@@ -11,11 +11,11 @@ namespace i5.VIAProMa.Visualizations.Poll
      */
     public class PollBarVisualization : MonoBehaviour
     {
-        private Barchart barChart;
+        private Barchart2D barChart;
         
         void Awake()
         {
-            barChart = GetComponent<Barchart>();
+            barChart = GetComponent<Barchart2D>();
         }
 
         public void Setup(string[] answers, int[] results)
@@ -23,7 +23,6 @@ namespace i5.VIAProMa.Visualizations.Poll
             DataSet dataset = new DataSet();
             List<string> answerAxis = new List<string>();
             List<float> resultAxis = new List<float>();
-            List<float> nonceAxis = new List<float>();
             List<Color> colors = new List<Color>();
             Debug.Log("Answers length " + answers.Length + "  results: " + results.Length);
 
@@ -33,8 +32,6 @@ namespace i5.VIAProMa.Visualizations.Poll
                 answerAxis.Add(answers[i]);
                 resultAxis.Add((float)results[i]);
                 resultAxis.Add(0f + i*0.001f);
-                nonceAxis.Add(0f);
-                nonceAxis.Add(1f);
                 Debug.Log("Add data point " + answers[i] + ": " + results[i]);
                 colors.Add(UnityEngine.Random.ColorHSV());
             }
@@ -46,9 +43,6 @@ namespace i5.VIAProMa.Visualizations.Poll
             NumericDataColumn resultColumn = new NumericDataColumn(resultAxis);
             resultColumn.Title = "Results";
             dataset.DataColumns.Add(resultColumn);
-            NumericDataColumn nonceColumn = new NumericDataColumn(nonceAxis);
-            nonceColumn.Title = "Nothing";
-            dataset.DataColumns.Add(nonceColumn);
             dataset.DataPointColors = colors;
 
             barChart.DataSet = dataset;

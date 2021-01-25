@@ -9,7 +9,7 @@ namespace i5.VIAProMa.Visualizations.Diagrams.Common.Axes
     /// </summary>
     public class AxisController : MonoBehaviour
     {
-        [Tooltip("The length of the axids")]
+        [Tooltip("The length of the axis")]
         [SerializeField] private float length = 1f;
         [Tooltip("The label prefab which is used for the axis labels")]
         [SerializeField] private GameObject labelPrefab;
