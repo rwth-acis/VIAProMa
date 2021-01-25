@@ -99,6 +99,28 @@ public class VIAProMaMenuActions : MonoBehaviour
         Debug.Log("Redo");
     }
 
+    public void OpenBoudningBoxWithoutManipulation()
+    {
+        boundingBoxStateControllers = FindObjectsOfType<BoundingBoxStateController>();
+        foreach (var boundingbox in boundingBoxStateControllers)
+        {
+            boundingbox.BoundingBoxActive = true;
+            boundingbox.manipulationHandler.enabled = false;
+        }
+    }
+
+    public void CloseBoudningBoxWithoutManipulation()
+    {
+        foreach (var boundingbox in boundingBoxStateControllers)
+        {
+            if (boundingbox != null)
+            {
+                boundingbox.BoundingBoxActive = false;
+                boundingbox.manipulationHandler.enabled = true;
+            }
+        }
+    }
+
     private GameObject GetVisualisationFromInputSource(IMixedRealityInputSource source, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
     {
         foreach (var pointer in source.Pointers)
