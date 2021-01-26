@@ -5,6 +5,7 @@ using i5.VIAProMa.Utilities;
 using TMPro;
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using i5.VIAProMa.Multiplayer.Poll;
@@ -33,6 +34,7 @@ namespace i5.VIAProMa.UI.Poll
         [Header("Poll Selection UI")]
         [SerializeField] private GameObject pollSelectionPanel;
         [SerializeField] private TextMeshPro questionLabel;
+        [SerializeField] private TextMeshPro countdownLabel;
         [SerializeField] private GameObject multipleChoicePanel;
         [SerializeField] private List<Interactable> answerToggles;
         [SerializeField] private GameObject singleChoicePanel;
@@ -61,6 +63,8 @@ namespace i5.VIAProMa.UI.Poll
         private bool[] curSelection;
         // Currently running created poll
         private bool createdPoll;
+        // Local Countdown
+        private IEnumerator countdown;
 
         protected void Awake()
         {
@@ -159,11 +163,25 @@ namespace i5.VIAProMa.UI.Poll
                 for (int i = 0; i < answerToggles.Count; i++)
                     answerToggles[i].gameObject.SetActive(false);
             }
+
             // Show interface
             gameObject.SetActive(true);
             pollCreationPanel.SetActive(false);
             pollOptionsPanel.SetActive(false);
             pollSelectionPanel.SetActive(true);
+            
+            // Update countdown
+            if (poll.Flags.HasFlag(PollOptions.Countdown))
+            {
+                countdownLabel.enabled = true;
+                countdown = CountdownUpdater();
+                StartCoroutine(countdown);
+            }
+            else
+            {
+                countdownLabel.enabled = false;
+                countdown = null;
+            }
         }
 
         private void HidePollInterface()
@@ -172,6 +190,8 @@ namespace i5.VIAProMa.UI.Poll
             pollCreationPanel.SetActive(false);
             pollOptionsPanel.SetActive(false);
             pollSelectionPanel.SetActive(false);
+            if (!(countdown is null))
+                StopCoroutine(countdown);
         }
 
         private void SendCreationRequest()
@@ -213,6 +233,16 @@ namespace i5.VIAProMa.UI.Poll
             started = responded = false;
             createdPoll = false;
             pollArgs = null;
+        }
+
+        private IEnumerator CountdownUpdater() 
+        {
+            while (pollArgs != null) 
+            {
+                TimeSpan span = pollArgs.End - DateTime.Now;
+                countdownLabel.text = span.Minutes + ":" + 	span.Seconds.ToString("D2");
+                yield return new WaitForSecondsRealtime(span.Milliseconds/1000.0f);
+            }
         }
 
         /**

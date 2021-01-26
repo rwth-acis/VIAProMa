@@ -46,16 +46,17 @@ namespace i5.VIAProMa.Multiplayer.Poll
 
         private IEnumerator Countdown(int seconds) 
         {
-            yield return new WaitForSeconds(seconds);
+            yield return new WaitForSecondsRealtime(seconds);
             EndPoll();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSecondsRealtime(1);
             DisplayPoll();
             currentPoll = null;
         }
 
         private void StopCountdown() 
         {
-            StopCoroutine(currentCountdown);
+             if(!(currentCountdown is null))
+                StopCoroutine(currentCountdown);
         }
 
         /**
@@ -65,7 +66,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             currentPoll = new Poll(question, answers, flags);
             // Send out poll message
-            int syncedEndTime = PhotonNetwork.ServerTimestamp + (end - DateTime.Now).Milliseconds;
+            int syncedEndTime = PhotonNetwork.ServerTimestamp + (int)(end - DateTime.Now).TotalMilliseconds;
             photonView.RPC("PollStartedReceived", RpcTarget.All, question, answers, syncedEndTime, flags);
             // Setup timer on host
             if (flags.HasFlag(PollOptions.Countdown))
@@ -74,8 +75,8 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 TimeSpan timeToGo = end - DateTime.Now;
                 if (timeToGo > TimeSpan.Zero)
                 {
-                    Debug.Log("Is Valid! Time to go: " + timeToGo.Seconds);
-                    currentCountdown = Countdown(timeToGo.Seconds);
+                    Debug.Log("Is Valid! Time to go: " + (int)timeToGo.TotalSeconds);
+                    currentCountdown = Countdown((int)timeToGo.TotalSeconds);
                     StartCoroutine(currentCountdown);
                 }
             }
@@ -167,8 +168,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
             if (finished == true)
             {
-                if(!(currentCountdown is null))
-                    StopCountdown();
+                StopCountdown();
                 EndPoll();
                 DisplayPoll();
                 currentPoll = null;
