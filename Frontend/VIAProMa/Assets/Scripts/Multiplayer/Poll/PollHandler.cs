@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections;
 using i5.VIAProMa.Visualizations.Poll;
+using Microsoft.MixedReality.Toolkit.Utilities;
 
 namespace i5.VIAProMa.Multiplayer.Poll
 {
@@ -27,6 +28,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
 
         private Poll currentPoll;
         private IEnumerator currentCountdown;
+
+        // distance of the position of the Camera and the created visualization
+        [SerializeField] private float barDistance; 
 
         private void OnEnable()
         {
@@ -190,7 +194,11 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PollDisplayed?.Invoke(this,args);
 
             GameObject barChartObj = Instantiate(barChartVisualizationPrefab);
-            barChartObj.transform.position = new Vector3(-2, 0.5f, 2);
+
+            Vector3 position = CameraCache.Main.transform.position;
+            position.y = 0.5f;
+            position += barDistance * new Vector3(CameraCache.Main.transform.forward.x, 0, CameraCache.Main.transform.forward.z).normalized;
+            barChartObj.transform.position = position;
             PollBarVisualization pollViz = barChartObj.GetComponent<PollBarVisualization>();
             pollViz.Setup(answers, results);
         }
