@@ -172,8 +172,14 @@ namespace i5.VIAProMa.Visualizations.Diagrams.Common.Axes
 
             if (axisMin == axisMax)
             {
-                Debug.LogError("Cannot work on same min and max data");
-                return null;
+                Debug.LogWarning("Cannot work on same min and max data");
+				axisMax += 1;
+				List<float> stepSequence = new List<float> () { axisMin, axisMax };
+				// optimize legibility
+				List<IDisplayAxis> possibilities = axis.GeneratePossibleConfigurations(minTextSize, maxTextSize, stepSequence);
+				float legibility;
+				IDisplayAxis localBest = DisplayAxis.FindBestLegibility(possibilities, out legibility, minTextSize, targetTextSize, 0.02f, availableSpace);
+				return localBest;
             }
 
             IDisplayAxis bestOption = null;
