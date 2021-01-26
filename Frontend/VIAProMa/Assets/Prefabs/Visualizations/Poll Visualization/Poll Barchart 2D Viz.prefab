@@ -47,6 +47,21 @@ MonoBehaviour:
   yPos: {fileID: 4319039018912923987}
   yNeg: {fileID: 4319039018092644343}
   size: {x: 1, y: 1, z: 1}
+--- !u!114 &3347681398280454186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181126165358154703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06d72f87ad449724695365a365a4f680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 5365872765286877316, guid: cbf1dc7c99d3ea44dba7eb02f2c08b37, type: 3}
+  destroyWithSpawner: 1
+  targetBoundingBox: {fileID: 2384749045179425607}
 --- !u!1001 &116333914696535951
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -380,6 +395,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 2466545383945992682, guid: 83edb80e35ea8724aa827ef58d4db2fd, type: 3}
     - {fileID: 2738293817654991310, guid: 83edb80e35ea8724aa827ef58d4db2fd, type: 3}
+    - {fileID: 7605929709930346117, guid: 83edb80e35ea8724aa827ef58d4db2fd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 83edb80e35ea8724aa827ef58d4db2fd, type: 3}
 --- !u!1 &2854458270353734934 stripped
 GameObject:
@@ -471,3 +487,21 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 116333914696535951}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8181126165358154703 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8076220712765021248, guid: 83edb80e35ea8724aa827ef58d4db2fd,
+    type: 3}
+  m_PrefabInstance: {fileID: 116333914696535951}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2384749045179425607 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2343307266319346888, guid: 83edb80e35ea8724aa827ef58d4db2fd,
+    type: 3}
+  m_PrefabInstance: {fileID: 116333914696535951}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8181126165358154703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23f9be7a3cb53794ead8b55e784b65aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
