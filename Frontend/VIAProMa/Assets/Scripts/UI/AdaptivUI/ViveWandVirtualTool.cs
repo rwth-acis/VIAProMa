@@ -14,7 +14,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
 
     IMixedRealityInputSource ownSource;
 
-    private MenuEntry currentEntry;
+    public MenuEntry currentEntry {get; private set;}
 
     [SerializeField]
     MenuEntry defaultEntry;

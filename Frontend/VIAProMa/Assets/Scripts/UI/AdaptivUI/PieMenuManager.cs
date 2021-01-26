@@ -21,9 +21,6 @@ public class PieMenuManager : Singleton<PieMenuManager>
     [SerializeField]
     public List<MenuEntry> menuEntries;
 
-    [SerializeField]
-    GameObject mainCamera;
-
     public void MenuOpen(BaseInputEventData eventData)
     {
         //Check, if the Pie Menu was already opend by another controller
@@ -32,7 +29,7 @@ public class PieMenuManager : Singleton<PieMenuManager>
             pointer = eventData.InputSource.Pointers[0];
             invokingSource = eventData.InputSource;
             instantiatedPieMenu = Instantiate(pieMenuPrefab, pointer.Position, Quaternion.identity);
-            instantiatedPieMenu.GetComponent<PieMenuRenderer>().constructor(pointer,mainCamera);
+            instantiatedPieMenu.GetComponent<PieMenuRenderer>().constructor(pointer, Camera.main.gameObject);
             
         }
     }

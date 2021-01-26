@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System;
-using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Input;
@@ -32,7 +32,7 @@ public class VIAProMaMenuActions : MonoBehaviour
     /// <param name="eventData"></param>
     public void Remove(BaseInputEventData eventData)
     {
-        GameObject target = GetVisualisationFromInputSource(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget);
+        GameObject target = GetVisualisationFromGameObject(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget);
         if (target == null)
         {
             return;
@@ -73,19 +73,24 @@ public class VIAProMaMenuActions : MonoBehaviour
 
     public void OpenConfigurationWindow(BaseInputEventData eventData)
     {
-        GameObject target = GetVisualisationFromInputSource(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget, new Type[] {typeof(ConfigurationWindow)}, true, false);
+        GameObject target = GetVisualisationFromGameObject(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget, new Type[] {typeof(ConfigurationWindow)}, true, false);
         if (target != null)
         {
             ConfigurationWindow configurationWindow = target.transform.GetComponentInChildren<ConfigurationWindow>(true);
             if (configurationWindow != null)
             {
                 configurationWindow.Open();
-                configurationWindow.transform.LookAt(Camera.main.transform);
-                //Set the x and y rotation to 0 and flip it around because with LookAt, the prefab faces away from the camera and is tilted strangly
-                Vector3 rotation = configurationWindow.transform.eulerAngles;
-                configurationWindow.transform.SetPositionAndRotation(eventData.InputSource.Pointers[0].Position, Quaternion.Euler(0,180+rotation.y,0));
+                RotateToCameraOnXZPlane(configurationWindow.gameObject, eventData.InputSource.Pointers[0].Position);
             }
         }
+    }
+
+    private void RotateToCameraOnXZPlane(GameObject objectToRotate, Vector3 newPosition)
+    {
+        objectToRotate.transform.LookAt(Camera.main.transform);
+        //Set the x and y rotation to 0 and flip it around because with LookAt, the prefab faces away from the camera and is tilted strangly
+        Vector3 rotation = objectToRotate.transform.eulerAngles;
+        objectToRotate.transform.SetPositionAndRotation(newPosition, Quaternion.Euler(0, 180 + rotation.y, 0));
     }
 
     public void UndoToolAction()
@@ -103,7 +108,7 @@ public class VIAProMaMenuActions : MonoBehaviour
         boundingBoxStateControllers = FindObjectsOfType<BoundingBoxStateController>();
         foreach (var boundingbox in boundingBoxStateControllers)
         {
-            if (GetVisualisationFromInputSource(boundingbox.gameObject) != null)
+            if (GetVisualisationFromGameObject(boundingbox.gameObject) != null)
             {
                 boundingbox.BoundingBoxActive = true;
                 boundingbox.manipulationHandler.enabled = false;
@@ -122,13 +127,14 @@ public class VIAProMaMenuActions : MonoBehaviour
             }
         }
     }
+
     public Material highlightMaterial;
     public Material wireframeMaterial;
     Material previousMaterial;
     public void HighlightBoudningBox(FocusEventData data)
     {
-        BoundingBox box = data.NewFocusedObject.GetComponent<BoundingBox>();
-        if (box != null)
+        BoundingBox box = GetVisualisationFromGameObject(data.NewFocusedObject)?.GetComponentInChildren<BoundingBox>();
+        if (box != null && GetVisualisationFromGameObject(data.NewFocusedObject) != null)
         {
             previousMaterial = box.BoxMaterial;
             box.BoxMaterial = highlightMaterial;
@@ -139,7 +145,7 @@ public class VIAProMaMenuActions : MonoBehaviour
 
     public void DeHighlightBoundingBox(FocusEventData data)
     {
-        BoundingBox box = data.OldFocusedObject.GetComponent<BoundingBox>();
+        BoundingBox box = GetVisualisationFromGameObject(data.OldFocusedObject)?.GetComponentInChildren<BoundingBox>();
         if (box != null)
         {
             box.BoxMaterial = previousMaterial;
@@ -147,7 +153,46 @@ public class VIAProMaMenuActions : MonoBehaviour
         }
     }
 
-    private GameObject GetVisualisationFromInputSource(GameObject gameObject, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
+    public void SpawnCurrentIconOverVisualisation(FocusEventData data)
+    {
+        if (GetVisualisationFromGameObject(data.NewFocusedObject) != null)
+        {
+            if (instantiatedIcon != null)
+            {
+                //This shouldn't happen, but just to be sure
+                Destroy(instantiatedIcon);
+            }
+            instantiatedIcon = Instantiate(highlightSprite);
+            instantiatedIcon.GetComponentInChildren<Image>().sprite = data.Pointer.Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>().currentEntry.iconTool;
+        }
+    }
+
+    public void DestroyCurrentIconOverVisualisation()
+    {
+        Destroy(instantiatedIcon);
+    }
+
+    public GameObject highlightSprite;
+    GameObject instantiatedIcon;
+    public void UpdateCurrentIconOverVisualisation(FocusEventData data)
+    {
+        if (instantiatedIcon != null)
+        {
+            GameObject target = GetVisualisationFromGameObject(data.NewFocusedObject);
+            Collider collider = target.GetComponentInChildren<BoundingBox>()?.GetComponent<Collider>();
+            if (collider != null)
+            {
+                Vector3 maxpoint = collider.bounds.max;
+                Vector3 minpoint = collider.bounds.min;
+                minpoint.y = maxpoint.y;
+                Vector3 topMiddle = minpoint + 0.5f * (maxpoint - minpoint);
+                topMiddle.y += 0.3f;
+                RotateToCameraOnXZPlane(instantiatedIcon, topMiddle);
+            }
+        }
+    }
+
+    private GameObject GetVisualisationFromGameObject(GameObject gameObject, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
     {
             //If wished, check if any of the children of the target is of a type that should be excluded
             if (typesToExclude != null && checkBelow)
