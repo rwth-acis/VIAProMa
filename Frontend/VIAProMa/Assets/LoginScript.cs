@@ -66,6 +66,9 @@ public class LoginScript : MonoBehaviour
             //assign the instance to the xref:i5.Toolkit.Core.OpenIDConnectClient.IOidcProvider> property of the service
             ServiceManager.GetService<OpenIDConnectService>().OidcProvider = oidcProvider;
 
+            //Define Redirect URI for use on UWP builds
+            ServiceManager.GetService<OpenIDConnectService>().RedirectURI = "i5:/";
+
             //To start the login process, call the OpenLoginPage() method of the OpenIDConnectService
             ServiceManager.GetService<OpenIDConnectService>().OpenLoginPage();
         }
