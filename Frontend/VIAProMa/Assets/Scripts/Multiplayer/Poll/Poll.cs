@@ -16,6 +16,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         SaveResults = 8
     }
 
+    [Serializable]
     public class SerializeablePoll
     {
         public string Question;

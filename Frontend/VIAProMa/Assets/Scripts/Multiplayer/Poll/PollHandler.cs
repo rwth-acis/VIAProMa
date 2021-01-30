@@ -70,6 +70,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             {
                 Debug.LogError("couldn't register SerializeablePoll");
             }
+            savedPolls = new List<SerializeablePoll>();
         }
 
         private IEnumerator Countdown(int seconds) 
@@ -296,7 +297,14 @@ namespace i5.VIAProMa.Multiplayer.Poll
          * Implementations for IInRoomCallbacks
          */
 
-        public void OnPlayerEnteredRoom(Player newPlayer){}
+        public void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            if(PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
+            {
+                RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{newPlayer.ActorNumber}};
+                PhotonNetwork.RaiseEvent(PollSyncResponseEventCode, new object[] {false, savedPolls.ToArray()}, raiseEventOptions, SendOptions.SendReliable);
+            }
+        }
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             currentPoll?.OnStatus(otherPlayer, false);

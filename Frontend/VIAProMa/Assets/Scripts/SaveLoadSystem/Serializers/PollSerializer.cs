@@ -11,10 +11,6 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
         private const string pollKey = "poll";
         private const string countKey = "pollCount";
         
-        private void Awake()
-        {
-
-        }
         private static string ConstructKey(string key, int index)
         {
             return key + "#" + index;
