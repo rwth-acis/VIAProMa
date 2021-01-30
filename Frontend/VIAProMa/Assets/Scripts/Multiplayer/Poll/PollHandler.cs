@@ -3,11 +3,16 @@ using HoloToolkit.Unity;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections;
 using i5.VIAProMa.Visualizations.Poll;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace i5.VIAProMa.Multiplayer.Poll
 {
@@ -20,9 +25,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
         private PhotonView photonView;
         public event EventHandler<PollStartEventArgs> PollStarted;
         public event EventHandler<PollEndEventArgs> PollEnded;
-        public event EventHandler<PollDisplayEventArgs> PollDisplayed;
         public const byte PollRespondEventCode = 2;
         public const byte PollAcknowledgedEventCode = 3;
+        public const byte PollSyncResponseEventCode = 4;
 
         public GameObject barChartVisualizationPrefab;
 
@@ -31,6 +36,21 @@ namespace i5.VIAProMa.Multiplayer.Poll
 
         // distance of the position of the Camera and the created visualization
         [SerializeField] private float barDistance; 
+        public List<SerializeablePoll> SavedPolls 
+        {
+            get 
+            {
+                syncSavedPolls();
+                return savedPolls;
+            }
+            set 
+            {
+                savedPolls = value;
+            }
+        }
+        private List<SerializeablePoll> savedPolls;
+        private bool synced;
+        private byte[] savedHash;
 
         private void OnEnable()
         {
@@ -46,6 +66,10 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             base.Awake();
             photonView = GetComponent<PhotonView>();
+            if(!PhotonPeer.RegisterType(typeof(SerializeablePoll), SerializeablePoll.SerializeablePollCode, SerializeablePoll.Serialize, SerializeablePoll.Deserialize))
+            {
+                Debug.LogError("couldn't register SerializeablePoll");
+            }
         }
 
         private IEnumerator Countdown(int seconds) 
@@ -61,6 +85,44 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
              if(!(currentCountdown is null))
                 StopCoroutine(currentCountdown);
+        }
+        private byte[] hashSavedPolls(){
+            var binaryFormatter = new BinaryFormatter();
+            using (var md5 = MD5.Create())
+            using (var stream = new MemoryStream())
+            {
+                binaryFormatter.Serialize(stream, savedPolls);
+                return md5.ComputeHash(stream);
+            }
+        }
+
+        private void PollDisplay(SerializeablePoll poll, PhotonMessageInfo messageInfo)
+        {
+            var results = poll.AccumulatedResult;
+            var answers = poll.Answers;
+
+            GameObject barChartObj = Instantiate(barChartVisualizationPrefab);
+
+            Vector3 position = CameraCache.Main.transform.position;
+            position.y = 0.5f;
+            position += barDistance * new Vector3(CameraCache.Main.transform.forward.x, 0, CameraCache.Main.transform.forward.z).normalized;
+            barChartObj.transform.position = position;
+            PollBarVisualization pollViz = barChartObj.GetComponent<PollBarVisualization>();
+            pollViz.Setup(answers, results);
+        }
+
+        private async void syncSavedPolls()
+        {
+            if(PhotonNetwork.IsMasterClient)
+            {
+                return;
+            }
+            synced = false;
+            // send sync request
+            while(!synced)
+            {
+                await Task.Delay(25);
+            }
         }
 
         /**
@@ -118,9 +180,13 @@ namespace i5.VIAProMa.Multiplayer.Poll
             {
                 Debug.Log("No participants, discarding poll!");
             }
-            // TODO: Send to database and continue with ID
-            // photonView.RPC("PollDisplayReceived", RpcTarget.All, id, DisplayType.Bar);
-            photonView.RPC("PollDisplayReceived", RpcTarget.All, currentPoll.Answers, currentPoll.AccumulatedResults, PollDisplayEventArgs.DisplayType.Bar);
+            SerializeablePoll poll = SerializeablePoll.FromPoll(currentPoll);
+            photonView.RPC("PollDisplayReceived", RpcTarget.All, poll);
+        }
+
+        public void DisplayPoll(int i)
+        {
+            photonView.RPC("PollDisplayByIndexReceived", RpcTarget.All, i);
         }
 
         /**
@@ -130,6 +196,22 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{host.ActorNumber}};
             PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, false, raiseEventOptions, SendOptions.SendReliable);
+        }
+
+        [PunRPC]
+        private void PollSyncRequestReceived(byte[] hash, PhotonMessageInfo messageInfo)
+        {
+            object[] responseObject;
+            if(savedHash.SequenceEqual(hash))
+            {
+                responseObject = new object[] {true};
+                
+            }else
+            {
+                responseObject = new object[] {false, savedPolls.ToArray()};
+            }
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{messageInfo.Sender.ActorNumber}};
+            PhotonNetwork.RaiseEvent(PollSyncResponseEventCode, responseObject, raiseEventOptions, SendOptions.SendReliable);
         }
 
         [PunRPC]
@@ -155,6 +237,27 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PollEnded?.Invoke(this,args);
         }
 
+        [PunRPC]
+        private void PollDisplayReceived(SerializeablePoll poll, PhotonMessageInfo messageInfo)
+        {   
+            if(poll.Flags.HasFlag(PollOptions.SaveResults))
+            {
+                SavedPolls.Add(poll);
+                if(PhotonNetwork.IsMasterClient)
+                {
+                    savedHash = hashSavedPolls();
+                }
+            }
+            PollDisplay(poll, messageInfo);
+        }
+
+        [PunRPC]
+        private void PollDisplayByIndexReceived(int i, PhotonMessageInfo messageInfo)
+        {
+            SerializeablePoll poll = SavedPolls[i];
+            PollDisplay(poll, messageInfo);
+        }
+
         /**
          * Handles events from user to poll host
          */
@@ -169,6 +272,16 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 case PollAcknowledgedEventCode:
                     finished = currentPoll?.OnStatus(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender), (bool)photonEvent.CustomData);
                     break;
+                case PollSyncResponseEventCode:
+                    if(!synced)
+                    {
+                        if(!((bool)((object[]) photonEvent.CustomData)[0]))
+                        {
+                            savedPolls = ((SerializeablePoll[])((object[]) photonEvent.CustomData)[1]).ToList();
+                        }
+                        synced = true;
+                    }
+                    break;
             }
             if (finished == true)
             {
@@ -177,30 +290,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 DisplayPoll();
                 currentPoll = null;
             }
-        }
-
-/*        [PunRPC]
-        private void PollDisplayReceived(short id, PollDisplayEventArgs.DisplayType type, PhotonMessageInfo messageInfo){
-            PollDisplayEventArgs args = new PollDisplayEventArgs(id, type);
-            PollDisplayed?.Invoke(this,args);
-
-            // TODO: Display properly, load from database
-        }*/
-
-        [PunRPC]
-        private void PollDisplayReceived(string[] answers, int[] results, PollDisplayEventArgs.DisplayType type, PhotonMessageInfo messageInfo)
-        {
-            PollDisplayEventArgs args = new PollDisplayEventArgs(results, type);
-            PollDisplayed?.Invoke(this,args);
-
-            GameObject barChartObj = Instantiate(barChartVisualizationPrefab);
-
-            Vector3 position = CameraCache.Main.transform.position;
-            position.y = 0.5f;
-            position += barDistance * new Vector3(CameraCache.Main.transform.forward.x, 0, CameraCache.Main.transform.forward.z).normalized;
-            barChartObj.transform.position = position;
-            PollBarVisualization pollViz = barChartObj.GetComponent<PollBarVisualization>();
-            pollViz.Setup(answers, results);
         }
 
         /**
