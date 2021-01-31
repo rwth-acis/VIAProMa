@@ -20,7 +20,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
      * Handles poll networking, poll host state management and local events for UI
      */
     [RequireComponent(typeof(PhotonView))]
-    public class PollHandler : Singleton<PollHandler>, IOnEventCallback, IInRoomCallbacks
+    public class PollHandler : Singleton<PollHandler>, IOnEventCallback, IInRoomCallbacks, IMatchmakingCallbacks
     {
         private PhotonView photonView;
         public event EventHandler<PollStartEventArgs> PollStarted;
@@ -30,6 +30,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public const byte PollSyncResponseEventCode = 4;
 
         public GameObject barChartVisualizationPrefab;
+        public GameObject PollSerializerPrefab;
 
         private Poll currentPoll;
         private IEnumerator currentCountdown;
@@ -71,6 +72,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 Debug.LogError("couldn't register SerializeablePoll");
             }
             savedPolls = new List<SerializeablePoll>();
+            GameObject pollSerializer = Instantiate(PollSerializerPrefab);
         }
 
         private IEnumerator Countdown(int seconds) 
@@ -312,5 +314,16 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps){}
         public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged){}
         public void OnMasterClientSwitched (Player newMasterClient){}
+        public void OnFriendListUpdate(List<FriendInfo> friendList){}
+        public void OnCreatedRoom(){}
+        public void OnCreateRoomFailed(short returnCode, string message){}
+        public void OnJoinedRoom()
+        {
+            savedPolls = new List<SerializeablePoll>();
+        }
+        public void OnJoinRoomFailed(short returnCode, string message){}
+        public void OnJoinRandomFailed(short returnCode, string message){}
+        public void OnLeftRoom()
+        {}
     }
 }

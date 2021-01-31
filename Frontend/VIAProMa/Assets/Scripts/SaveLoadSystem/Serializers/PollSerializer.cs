@@ -26,8 +26,8 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
                     byte[] serializedPoll = SerializedObject.GetList(ConstructKey(pollKey, i),serializedObject.Integers).Select(v => (byte)v).ToArray();
                     polls.Add((SerializeablePoll)SerializeablePoll.Deserialize(serializedPoll));
                 }
+                PollHandler.Instance.SavedPolls = polls;
             }
-            PollHandler.Instance.SavedPolls = polls;
         }
 
         public SerializedObject Serialize()
