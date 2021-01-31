@@ -17,12 +17,19 @@ namespace i5.VIAProMa.Multiplayer.Poll
     }
 
     [Serializable]
-    public class SerializeablePoll
+    public struct SelectionResult
+    {
+        public string Item1;
+        public bool[] Item2;
+    }
+
+    [Serializable]
+    public class SerializablePoll
     {
         public string Question;
         public string[] Answers;
         public PollOptions Flags;
-        public List<Tuple<string, bool[]>> SerializeableSelection;
+        public List<SelectionResult> SerializeableSelection;
         public static byte SerializeablePollCode = 255;
         public int[] AccumulatedResult
         {
@@ -47,11 +54,11 @@ namespace i5.VIAProMa.Multiplayer.Poll
         /// <returns></returns>
         public static object Deserialize(byte[] data)
         {
-            var result = new SerializeablePoll();
+            var result = new SerializablePoll();
             int offset = 0;
             byte[] questionBytes = new byte[data[0]];
             Array.Copy(data, 1, questionBytes, 0, data[0]);
-            result.Question = System.Text.Encoding.UTF8.GetChars(questionBytes).ToString();
+            result.Question = new string(System.Text.Encoding.UTF8.GetChars(questionBytes));
             offset += 1 + data[0];
             int answersLength = data[offset];
             string[] answers = new string[answersLength];
@@ -60,7 +67,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             {
                 byte[] answerBytes = new byte[data[offset]];
                 Array.Copy(data, offset+1, answerBytes, 0, data[offset]);
-                answers[i] = System.Text.Encoding.UTF8.GetChars(answerBytes).ToString();
+                answers[i] = new string(System.Text.Encoding.UTF8.GetChars(answerBytes));
                 offset += 1+data[offset];
             }
             result.Answers = answers;
@@ -68,15 +75,16 @@ namespace i5.VIAProMa.Multiplayer.Poll
             offset++;
             var selectionLength = data[offset];
             offset++;
-            result.SerializeableSelection = new List<Tuple<string, bool[]>>();
+            result.SerializeableSelection = new List<SelectionResult>();
             for(int i = 0; i<selectionLength; i++)
             {
                 byte[] nameBytes = new byte[data[offset]];
                 Array.Copy(data, offset+1, nameBytes, 0, data[offset]);
-                offset+= 1+data[offset];
+                offset += 1+data[offset];
                 byte[] selBytes = new byte[data[offset]];
                 Array.Copy(data, offset+1, selBytes, 0, data[offset]);
-                result.SerializeableSelection.Add(new Tuple<string, bool[]>(System.Text.Encoding.UTF8.GetChars(nameBytes).ToString(), selBytes.Select(b => Convert.ToBoolean(b)).ToArray()));
+                result.SerializeableSelection.Add(new SelectionResult { Item1 = new string(System.Text.Encoding.UTF8.GetChars(nameBytes)), Item2 = selBytes.Select(b => Convert.ToBoolean(b)).ToArray() });
+                offset += 1+data[offset];
             }
             return result;
         }
@@ -87,7 +95,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         /// <returns></returns>
         public static byte[] Serialize(object serializablePoll)
         {
-            var p = (SerializeablePoll) serializablePoll;
+            var p = (SerializablePoll) serializablePoll;
             List<byte> data = new List<byte>();
             byte[] questionBytes = System.Text.Encoding.UTF8.GetBytes(p.Question);
             data.Add((byte)questionBytes.Length);
@@ -113,12 +121,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
             return data.ToArray();
         }
         
-        public static SerializeablePoll FromPoll(Poll poll){
-            var result = new SerializeablePoll();
+        public static SerializablePoll FromPoll(Poll poll){
+            var result = new SerializablePoll();
             result.Answers = poll.Answers;
             result.Flags = poll.Flags;
             result.Question = poll.Question;
-            result.SerializeableSelection = poll.SerializeableSelection;
+            result.SerializeableSelection = poll.SerializeableSelection.Select(t => new SelectionResult {Item1 = t.Item1, Item2 = t.Item2}).ToList();
             return result;
         }
     }
@@ -134,7 +142,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public string[] Answers { get; private set; }
         public PollOptions Flags { get; private set; }
         public bool IsEnded { get; set; }
-        public bool IsDisplayed { get; set; }
+        public bool IsFinalized { get; set; }
         
         /**
          * Poll results for each user as it should be saved in accordance with Poll Options
@@ -174,7 +182,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             Flags = flags;
             selection = new Dictionary<Player, bool[]>();
             IsEnded = false;
-            IsDisplayed = false;
+            IsFinalized = false;
         }
 
         /**

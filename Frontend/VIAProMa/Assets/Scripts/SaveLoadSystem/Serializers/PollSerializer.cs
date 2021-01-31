@@ -18,22 +18,22 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
 
         public void Deserialize(SerializedObject serializedObject)
         {
-            List<SerializeablePoll> polls = new List<SerializeablePoll>();
+            List<SerializablePoll> polls = new List<SerializablePoll>();
 
             var count = SerializedObject.TryGet(countKey, serializedObject.Integers, gameObject, out bool found);
             if(found){
                 for(int i = 0; i<count; i++){
                     byte[] serializedPoll = SerializedObject.GetList(ConstructKey(pollKey, i),serializedObject.Integers).Select(v => (byte)v).ToArray();
-                    polls.Add((SerializeablePoll)SerializeablePoll.Deserialize(serializedPoll));
+                    polls.Add((SerializablePoll)SerializablePoll.Deserialize(serializedPoll));
                 }
-                PollHandler.Instance.SavedPolls = polls;
+                PollHandler.Instance.savedPolls = polls;
             }
         }
 
         public SerializedObject Serialize()
         {
             SerializedObject serializedObject = new SerializedObject();
-            List<byte[]> serializedPolls = PollHandler.Instance.SavedPolls.Select(p => SerializeablePoll.Serialize(p)).ToList();
+            List<byte[]> serializedPolls = PollHandler.Instance.savedPolls.Select(p => SerializablePoll.Serialize(p)).ToList();
             serializedObject.Integers[countKey] = serializedPolls.Count;
             for(int i = 0; i<serializedPolls.Count; i++){
                 SerializedObject.AddList(ConstructKey(pollKey, i), serializedPolls[i].Select(b => (int) b).ToList(),serializedObject.Integers); //saving bytes into ints...
