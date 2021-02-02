@@ -212,6 +212,16 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, false, raiseEventOptions, SendOptions.SendReliable);
         }
 
+        public void DisplayPollAtIndex(int index)
+        {
+            if(index >= savedPolls.Count)
+            {
+                Debug.LogWarning("tried to display poll out of bounds");
+                return;
+            }
+            photonView.RPC("PollDisplayStoredReceived", RpcTarget.All, index);
+        }
+
         // [PunRPC]
         // private void PollSyncRequestReceived(byte[] hash, PhotonMessageInfo messageInfo)
         // {
