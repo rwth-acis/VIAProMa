@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.DataModel.ReqBaz;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
+using i5.VIAProMa.Shelves.IssueShelf;
 using TMPro;
 
 public class LoginScript : MonoBehaviour
@@ -18,6 +21,7 @@ public class LoginScript : MonoBehaviour
     [SerializeField] private Color loggedOutColor = new Color(188f / 255f, 2f / 255f, 0f); // red
 
     private Renderer statusLedRenderer;
+    private ShelfConfigurationMenu shelfConfigurationMenu;
 
     public IOidcProvider oidcProvider;
     private bool loggedIn = false;
@@ -26,6 +30,7 @@ public class LoginScript : MonoBehaviour
     {
         statusLedRenderer = statusLed?.GetComponent<Renderer>();
         oidcProvider = ServiceManager.GetService<OpenIDConnectService>().OidcProvider;
+        shelfConfigurationMenu = this.transform.parent.parent.GetComponent<ShelfConfigurationMenu>();
     }
 
     private void Start()
@@ -58,6 +63,30 @@ public class LoginScript : MonoBehaviour
     {
         if (!loggedIn)
         {
+            if(shelfConfigurationMenu.ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR)
+            {
+                ServiceManager.RemoveService<OpenIDConnectService>();
+                OpenIDConnectService oidc = new OpenIDConnectService();
+                oidc.OidcProvider = new LearningLayersOidcProvider();
+
+                oidc.RedirectURI = "i5:/";
+                ServiceManager.RegisterService(oidc);
+                Debug.Log("Service switched to Requirements Bazaar");
+            }
+            else if (shelfConfigurationMenu.ShelfConfiguration.SelectedSource == DataSource.GITHUB)
+            {
+                ServiceManager.RemoveService<OpenIDConnectService>();
+                OpenIDConnectService oidc = new OpenIDConnectService();
+                oidc.OidcProvider = new GitHubOidcProvider();
+                
+                oidc.RedirectURI = "https://127.0.0.1:3000";
+                ServiceManager.RegisterService(oidc);
+                Debug.Log("Service switched to Github");
+            }
+            oidcProvider = ServiceManager.GetService<OpenIDConnectService>().OidcProvider;
+            ServiceManager.GetService<OpenIDConnectService>().LoginCompleted += LoginScript_LoginCompleted;
+            ServiceManager.GetService<OpenIDConnectService>().LogoutCompleted += LoginScript_LogoutCompleted;
+
             if (clientDataObject.clientData == null)
                 return;
             //first create an instance of the IOidcProvider that should be used and assign the client credentials
