@@ -39,6 +39,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         // instances:
         private GameObject issueShelfInstance;
         private GameObject visualizationShelfInstance;
+        private GameObject noteInstance;
         private GameObject loadShelfInstance;
         private GameObject avatarConfiguratorInstance;
 
@@ -216,7 +217,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 0f * transform.right;
             targetPosition.y = 0f;
             targetPosition.z = 1f;
-            GameObject noteInstance = ResourceManager.Instance.NetworkInstantiate(notePrefab, targetPosition, transform.rotation);
+            noteInstance = ResourceManager.Instance.NetworkInstantiate(notePrefab, targetPosition, transform.rotation);
             PhotonView view = noteInstance.GetComponent<PhotonView>();
             photonView.RPC("SetNoteInstance", RpcTarget.Others, view.ViewID);
             foldController.FoldCube();
@@ -341,6 +342,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
             PhotonView view = PhotonView.Find(photonId);
             issueShelfInstance = view.gameObject;
             Debug.Log("RPC: setting issue shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+        }
+
+        [PunRPC]
+        private void SetNoteInstance(int photonId)
+        {
+            PhotonView view = PhotonView.Find(photonId);
+            noteInstance = view.gameObject;
+            Debug.Log("RPC: setting note instance to " + noteInstance.name + " (id " + photonId + ")");
         }
 
         [PunRPC]
