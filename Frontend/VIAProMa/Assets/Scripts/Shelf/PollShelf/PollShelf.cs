@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using i5.VIAProMa.Multiplayer.Poll;
 using i5.VIAProMa.Utilities;
@@ -31,6 +32,7 @@ namespace i5.VIAProMa.Shelves.PollShelf
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelfBoards));
             }
+            PageChanged += onPageChange;
         }
 
          void Start()
@@ -45,21 +47,34 @@ namespace i5.VIAProMa.Shelves.PollShelf
             List<SerializablePoll> polls = PollHandler.Instance.savedPolls;
             interactables = new List<Interactable>();
             pollObjects = new List<PollObject>();
-
+            int offset = Page*pollsPerBoard;
             for(int board = 0; board < shelfBoards.Length; board++)
             {
-                int numberOnBoard = Mathf.Max(0, Mathf.Min(pollsPerBoard, polls.Count - board * pollsPerBoard));
+                int numberOnBoard = Mathf.Max(0, Mathf.Min(pollsPerBoard, polls.Count -offset - board * pollsPerBoard));
                 GameObject[] instances = new GameObject[numberOnBoard];
                 for(int i = 0; i <numberOnBoard; i++)
-                {
+                {   
                     instances[i] = Instantiate(pollPrefab, shelfBoards[board].transform);
                     PollObject poll = instances[i].GetComponent<PollObject>();
-                    poll.PollIndex = i;
+                    poll.PollIndex = i+board*pollsPerBoard+offset;
                     pollObjects.Add(poll);
                     interactables.Add(instances[i].GetComponent<Interactable>());
                 }
-                shelfBoards[board].Collection = instances;
+                shelfBoards[shelfBoards.Length - board - 1].Collection = instances;
             }
+        }
+
+        public void onPageChange(object sender, EventArgs e)
+        {
+            for(int boardIndex = 0; boardIndex < shelfBoards.Length; boardIndex++)
+            {
+                var board = shelfBoards[boardIndex].Collection; 
+                for(int i = 0; i < board.Length; i ++)
+                {
+                    Destroy(board[i]);
+                }
+            }
+            InstantiatePollRepresentations();
         }
 
         public void LockInteractables()
@@ -79,7 +94,8 @@ namespace i5.VIAProMa.Shelves.PollShelf
         }
 
         public void Close()
-        {
+        {   
+            PageChanged -= onPageChange;
             gameObject.SetActive(false);
         }
 
