@@ -2,6 +2,7 @@
 using i5.VIAProMa.UI.InputFields;
 using UnityEngine;
 using TMPro;
+using i5.VIAProMa.Visualizations.Haftnotizen;
 
 namespace i5.VIAProMa.SaveLoadSystem.Serializers
 {

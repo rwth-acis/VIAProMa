@@ -39,7 +39,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
         // instances:
         private GameObject issueShelfInstance;
         private GameObject visualizationShelfInstance;
-        private GameObject noteInstance;
         private GameObject loadShelfInstance;
         private GameObject avatarConfiguratorInstance;
 
@@ -217,7 +216,9 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 0f * transform.right;
             targetPosition.y = 0f;
             targetPosition.z = 1f;
-            InstantiateControl(notePrefab, ref noteInstance, targetPosition);
+            GameObject noteInstance = ResourceManager.Instance.NetworkInstantiate(notePrefab, targetPosition, transform.rotation);
+            PhotonView view = noteInstance.GetComponent<PhotonView>();
+            photonView.RPC("SetNoteInstance", RpcTarget.Others, view.ViewID);
             foldController.FoldCube();
         }
 
