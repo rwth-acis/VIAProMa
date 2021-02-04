@@ -29,30 +29,19 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public const byte PollAcknowledgedEventCode = 3;
         public const byte PollSavedPollSyncEventCode = 4;
 
-        public GameObject barChartVisualizationPrefab;
-        public GameObject PollSerializerPrefab;
+        [Header("Poll Visualizations")]
+        [SerializeField] private GameObject barChartVisualizationPrefab;
+        [SerializeField] private GameObject pollShelfPrefab;
+        [SerializeField] private float barDistance;
+        [SerializeField] private float shelfDistance;
 
         private Poll currentPoll;
         private IEnumerator currentCountdown;
-
-        // distance of the position of the Camera and the created visualization
-        [SerializeField] private float barDistance; 
-        // public List<SerializeablePoll> SavedPolls 
-        // {
-        //     get 
-        //     {
-        //         syncSavedPolls();
-        //         return savedPolls;
-        //     }
-        //     set 
-        //     {
-        //         savedPolls = value;
-        //     }
-        // }
-        public List<SerializablePoll> savedPolls;
         private List<int> pollsToDisplay;
-        // private bool synced;
-        // private byte[] savedHash;
+
+        [Header("Project Poll Serialization")]
+        [SerializeField] private GameObject PollSerializerPrefab;
+        public List<SerializablePoll> savedPolls;
 
         private void OnEnable()
         {
@@ -90,15 +79,16 @@ namespace i5.VIAProMa.Multiplayer.Poll
              if(!(currentCountdown is null))
                 StopCoroutine(currentCountdown);
         }
-        // private byte[] hashSavedPolls(){
-        //     var binaryFormatter = new BinaryFormatter();
-        //     using (var md5 = MD5.Create())
-        //     using (var stream = new MemoryStream())
-        //     {
-        //         binaryFormatter.Serialize(stream, savedPolls);
-        //         return md5.ComputeHash(stream);
-        //     }
-        // }
+
+        public void PollShelfDisplay()
+        {
+            GameObject pollShelf = Instantiate(pollShelfPrefab);
+
+			Vector3 position = CameraCache.Main.transform.position;
+            position.y = 0f;
+            position += shelfDistance * new Vector3(CameraCache.Main.transform.forward.x, 0, CameraCache.Main.transform.forward.z).normalized;
+            pollShelf.transform.position = position;
+        }
 
         private void PollDisplay(SerializablePoll poll, PhotonMessageInfo messageInfo)
         {
@@ -114,21 +104,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PollBarVisualization pollViz = barChartObj.GetComponent<PollBarVisualization>();
             pollViz.Setup(answers, results);
         }
-
-        // private async void syncSavedPolls()
-        // {
-        //     if(PhotonNetwork.IsMasterClient)
-        //     {
-        //         return;
-        //     }
-        //     synced = false;
-        //     var hash = hashSavedPolls();
-        //     photonView.RPC("PollSyncRequestReceived", RpcTarget.MasterClient, hash);
-        //     while(!synced)
-        //     {
-        //         await Task.Delay(25);
-        //     }
-        // }
 
         /**
          * Starts a poll with this player as host
@@ -222,22 +197,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
             photonView.RPC("PollDisplayStoredReceived", RpcTarget.All, index);
         }
 
-        // [PunRPC]
-        // private void PollSyncRequestReceived(byte[] hash, PhotonMessageInfo messageInfo)
-        // {
-        //     object[] responseObject;
-        //     if(savedHash.SequenceEqual(hash))
-        //     {
-        //         responseObject = new object[] {true};
-                
-        //     }else
-        //     {
-        //         responseObject = new object[] {false, savedPolls.ToArray()};
-        //     }
-        //     RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{messageInfo.Sender.ActorNumber}};
-        //     PhotonNetwork.RaiseEvent(PollSyncResponseEventCode, responseObject, raiseEventOptions, SendOptions.SendReliable);
-        // }
-
         [PunRPC]
         private void PollStartedReceived(string question, string[] answers, int syncedEndTime, PollOptions flags, PhotonMessageInfo messageInfo)
         {
@@ -301,14 +260,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
         private void PollRealtimeUpdateReceived(SerializablePoll poll, PhotonMessageInfo messageInfo)
         {
             Debug.Log("Poll display by object!");
-            // if(poll.Flags.HasFlag(PollOptions.SaveResults))
-            // {
-            //     SavedPolls.Add(poll);
-            //     if(PhotonNetwork.IsMasterClient)
-            //     {
-            //         savedHash = hashSavedPolls();
-            //     }
-            // }
             PollDisplay(poll, messageInfo);
         }
 

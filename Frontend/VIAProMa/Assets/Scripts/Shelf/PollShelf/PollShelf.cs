@@ -35,7 +35,7 @@ namespace i5.VIAProMa.Shelves.PollShelf
             PageChanged += onPageChange;
         }
 
-         void Start()
+        void Start()
         {
             InstantiatePollRepresentations();
             boundingBox.SetActive(false);
@@ -54,7 +54,7 @@ namespace i5.VIAProMa.Shelves.PollShelf
                 GameObject[] instances = new GameObject[numberOnBoard];
                 for(int i = 0; i <numberOnBoard; i++)
                 {   
-                    instances[i] = Instantiate(pollPrefab, shelfBoards[board].transform);
+                    instances[i] = Instantiate(pollPrefab);
                     PollObject poll = instances[i].GetComponent<PollObject>();
                     poll.PollIndex = i+board*pollsPerBoard+offset;
                     pollObjects.Add(poll);
@@ -94,9 +94,8 @@ namespace i5.VIAProMa.Shelves.PollShelf
         }
 
         public void Close()
-        {   
-            PageChanged -= onPageChange;
-            gameObject.SetActive(false);
+        {
+            Destroy(gameObject);
         }
 
         public void MoveShelf()

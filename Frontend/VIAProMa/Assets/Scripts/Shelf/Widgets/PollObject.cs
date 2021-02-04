@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class PollObject : MonoBehaviour
 {
-    // Start is called before the first frame update
-    [SerializeField] TextMeshPro question;
+    [SerializeField] private TextMeshPro question;
     private int pollIndex;
 
     public int PollIndex

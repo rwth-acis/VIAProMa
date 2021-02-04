@@ -40,8 +40,6 @@ namespace i5.VIAProMa.UI.Poll
         [SerializeField] private List<Interactable> answerToggles;
         [SerializeField] private GameObject singleChoicePanel;
         [SerializeField] private List<Interactable> answerButtons;
-        [Header("Poll Loading Shelf")]
-        [SerializeField] private GameObject pollShelfPrefab;
 
         public bool EnterIncomingPolls { get; set; } = true;
 
@@ -333,7 +331,7 @@ namespace i5.VIAProMa.UI.Poll
 
         public void OnLoadPolls()
         {
-            GameObject pollShelf = Instantiate(pollShelfPrefab);
+            PollHandler.Instance.PollShelfDisplay();
             Close();
         }
     }
