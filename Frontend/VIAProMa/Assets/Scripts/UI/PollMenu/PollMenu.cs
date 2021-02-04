@@ -30,6 +30,7 @@ namespace i5.VIAProMa.UI.Poll
         [SerializeField] private InputField timerInputMinutes;
         [SerializeField] private InputField timerInputSeconds;
         [SerializeField] private Interactable multipleChoiceToggle;
+        [SerializeField] private Interactable saveResultToggle;
 
         [Header("Poll Selection UI")]
         [SerializeField] private GameObject pollSelectionPanel;
@@ -216,6 +217,10 @@ namespace i5.VIAProMa.UI.Poll
             }
             if (multipleChoiceToggle.IsToggled)
                 options |= PollOptions.MultipleChoice;
+            if (saveResultToggle.IsToggled)
+            {
+                options |= PollOptions.SaveResults;
+            }
             PollHandler.Instance?.StartPoll(questionInput.Text, answerInputs.Where(i => !String.IsNullOrEmpty(i.Text)).Select(i => i.Text).ToArray(), options, endTime);
             createdPoll = true;
         }
@@ -322,6 +327,12 @@ namespace i5.VIAProMa.UI.Poll
             Debug.Log("Close Poll!");
             PollClear();
             HidePollInterface();
+        }
+
+        public void OnLoadPolls()
+        {
+            PollHandler.Instance.PollShelfDisplay();
+            Close();
         }
     }
 }
