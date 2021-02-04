@@ -11,21 +11,19 @@ namespace i5.VIAProMa.Visualizations.Poll
      */
     public class PollBarVisualization : MonoBehaviour
     {
-        private Barchart2D barChart2D;
-        private Barchart barChart;
+        private Barchart2DLabeled barChart;
         
         void Awake()
         {
-            barChart2D = GetComponent<Barchart2D>();
-            barChart = GetComponent<Barchart>();
+            barChart = GetComponent<Barchart2DLabeled>();
         }
 
-        public void Setup(string[] answers, int[] results)
+        public void Setup(string[] answers, int[] results, string[] voterLists)
         {
             DataSet dataset = new DataSet();
             List<string> answerAxis = new List<string>();
             List<float> resultAxis = new List<float>();
-            List<float> nonceAxis = new List<float>();
+            List<string> voterAxis = new List<string>();
             List<Color> colors = new List<Color>();
             Debug.Log("Answers length " + answers.Length + "  results: " + results.Length);
 
@@ -33,37 +31,23 @@ namespace i5.VIAProMa.Visualizations.Poll
             {
                 answerAxis.Add(answers[i]);
                 resultAxis.Add((float)results[i]);
-                nonceAxis.Add(0f);
+                if (voterLists != null) voterAxis.Add(voterLists[i]);
                 Debug.Log("Add data point " + answers[i] + ": " + results[i]);
                 colors.Add(UnityEngine.Random.ColorHSV());
             }
 
-
             TextDataColumn answerColumn = new TextDataColumn(answerAxis);
-            answerColumn.Title = "Answers";
+            answerColumn.Title = "";
             dataset.DataColumns.Add(answerColumn);
             NumericDataColumn resultColumn = new NumericDataColumn(resultAxis);
-            resultColumn.Title = "Results";
+            resultColumn.Title = "";
             dataset.DataColumns.Add(resultColumn);
-            
-            NumericDataColumn nonceColumn = new NumericDataColumn(nonceAxis);	
-            nonceColumn.Title = "Nothing";	
-            if (barChart != null)
-                dataset.DataColumns.Add(nonceColumn);
-            
+            TextDataColumn voterColumn = new TextDataColumn(voterAxis);
+            voterColumn.Title = "";
+            if (voterLists != null) dataset.DataColumns.Add(voterColumn);
             dataset.DataPointColors = colors;
-
-            if (barChart != null)
-            {
-                barChart.DataSet = dataset;
-                barChart.UpdateDiagram();
-            }
-            else
-            {
-                barChart2D.DataSet = dataset;
-                barChart2D.UpdateDiagram();
-            }
+			barChart.DataSet = dataset;
+			barChart.UpdateDiagram();
         }
     }
-
 }

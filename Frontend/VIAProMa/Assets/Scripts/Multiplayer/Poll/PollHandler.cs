@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Text;
 
 namespace i5.VIAProMa.Multiplayer.Poll
 {
@@ -102,7 +103,23 @@ namespace i5.VIAProMa.Multiplayer.Poll
             position += barDistance * new Vector3(CameraCache.Main.transform.forward.x, 0, CameraCache.Main.transform.forward.z).normalized;
             barChartObj.transform.position = position;
             PollBarVisualization pollViz = barChartObj.GetComponent<PollBarVisualization>();
-            pollViz.Setup(answers, results);
+
+			string[] voters = new string[results.Length];
+			for (int i = 0; i < voters.Length; i++)
+			{
+				if (poll.Flags.HasFlag(PollOptions.Public))
+				{
+					voters[i] = poll.SerializeableSelection.Aggregate(new StringBuilder(), (sb, cur) => {
+						if (cur.Item2[i]) sb.Append(sb.Length == 0? "" : ", ").Append(cur.Item1);
+						return sb;
+					}).ToString();
+				}
+				else 
+				{
+					voters[i] = "Anonymous";
+				}
+			}
+            pollViz.Setup(answers, results, voters);
         }
 
         /**

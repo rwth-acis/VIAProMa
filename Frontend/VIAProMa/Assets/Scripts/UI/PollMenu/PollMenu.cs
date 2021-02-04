@@ -31,6 +31,7 @@ namespace i5.VIAProMa.UI.Poll
         [SerializeField] private InputField timerInputSeconds;
         [SerializeField] private Interactable multipleChoiceToggle;
         [SerializeField] private Interactable saveResultToggle;
+        [SerializeField] private Interactable publicToggle;
 
         [Header("Poll Selection UI")]
         [SerializeField] private GameObject pollSelectionPanel;
@@ -40,6 +41,8 @@ namespace i5.VIAProMa.UI.Poll
         [SerializeField] private List<Interactable> answerToggles;
         [SerializeField] private GameObject singleChoicePanel;
         [SerializeField] private List<Interactable> answerButtons;
+        [SerializeField] private GameObject publicIcon;
+        [SerializeField] private GameObject saveIcon;
 
         public bool EnterIncomingPolls { get; set; } = true;
 
@@ -134,6 +137,8 @@ namespace i5.VIAProMa.UI.Poll
         {
             // Update interface
             questionLabel.text = poll.Question;
+			publicIcon?.SetActive(poll.Flags.HasFlag(PollOptions.Public));
+			saveIcon?.SetActive(poll.Flags.HasFlag(PollOptions.SaveResults));
             
             if (poll.Flags.HasFlag(PollOptions.MultipleChoice))
             {
@@ -218,9 +223,9 @@ namespace i5.VIAProMa.UI.Poll
             if (multipleChoiceToggle.IsToggled)
                 options |= PollOptions.MultipleChoice;
             if (saveResultToggle.IsToggled)
-            {
                 options |= PollOptions.SaveResults;
-            }
+            if (publicToggle.IsToggled)
+                options |= PollOptions.Public;
             PollHandler.Instance?.StartPoll(questionInput.Text, answerInputs.Where(i => !String.IsNullOrEmpty(i.Text)).Select(i => i.Text).ToArray(), options, endTime);
             createdPoll = true;
         }
