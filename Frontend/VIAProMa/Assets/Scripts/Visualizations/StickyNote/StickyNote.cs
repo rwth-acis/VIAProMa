@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace i5.VIAProMa.Visualizations.Haftnotizen
+namespace i5.VIAProMa.Visualizations.StickyNote
 {
     /// <summary>
     /// Logic of the Kanban Board Column
     /// </summary>
-    [RequireComponent(typeof(HaftnotizenVisualController))]
-    public class Haftnotizen : Visualization
+    [RequireComponent(typeof(StickyNoteVisualController))]
+    public class StickyNote : Visualization
     {
         /// <summary>
         /// Initializes the component
@@ -15,7 +15,7 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
         {
             base.Awake();
 
-            visualController = GetComponent<HaftnotizenVisualController>();
+            visualController = GetComponent<StickyNoteVisualController>();
         }
 
         /// <summary>
@@ -31,7 +31,6 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
         /// </summary>
         public override void UpdateView()
         {
-            //((HaftnotizenVisualController)visualController).Text = ContentProvider.Text;
             base.UpdateView();
         }
     }

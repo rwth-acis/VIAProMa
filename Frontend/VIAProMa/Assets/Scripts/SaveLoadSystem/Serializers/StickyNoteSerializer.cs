@@ -2,21 +2,21 @@
 using i5.VIAProMa.UI.InputFields;
 using UnityEngine;
 using TMPro;
-using i5.VIAProMa.Visualizations.Haftnotizen;
+using i5.VIAProMa.Visualizations.StickyNote;
 
 namespace i5.VIAProMa.SaveLoadSystem.Serializers
 {
-    [RequireComponent(typeof(HaftnotizenVisualController))]
-    public class HaftnotizenSerializer : MonoBehaviour, ISerializable
+    [RequireComponent(typeof(StickyNoteVisualController))]
+    public class StickyNoteSerializer : MonoBehaviour, ISerializable
     {
         private const string textKey = "note_text";
         private const string colorKey = "note_color";
 
-        private HaftnotizenVisualController noteVisual;
+        private StickyNoteVisualController noteVisual;
 
         private void Awake()
         {
-            noteVisual = GetComponent<HaftnotizenVisualController>();
+            noteVisual = GetComponent<StickyNoteVisualController>();
         }
 
         public void Deserialize(SerializedObject serializedObject)

@@ -8,9 +8,9 @@ using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
 
-namespace i5.VIAProMa.Visualizations.Haftnotizen
+namespace i5.VIAProMa.Visualizations.StickyNote
 {
-    public class HaftnotizenVisualController : MonoBehaviour, IVisualizationVisualController
+    public class StickyNoteVisualController : MonoBehaviour, IVisualizationVisualController
     {
         [Header("UI Elements")]
         [SerializeField] private InputField inputField;

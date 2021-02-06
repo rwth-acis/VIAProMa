@@ -1,21 +1,21 @@
 ﻿using i5.VIAProMa.Multiplayer.Common;
-using i5.VIAProMa.Visualizations.Haftnotizen;
+using i5.VIAProMa.Visualizations.StickyNote;
 using UnityEngine;
 using Photon.Pun;
 
 namespace i5.VIAProMa.Multiplayer.Synchronizer
 {
-    [RequireComponent(typeof(HaftnotizenVisualController))]
-    public class HaftnotizenSynchronizer : TransformSynchronizer
+    [RequireComponent(typeof(StickyNoteVisualController))]
+    public class StickyNoteSynchronizer : TransformSynchronizer
     {
-            private HaftnotizenVisualController visualController;
+            private StickyNoteVisualController visualController;
 
             private string targetText;
             private string targetColorName;
             
             private void Awake()
             {
-                visualController = GetComponent<HaftnotizenVisualController>();
+                visualController = GetComponent<StickyNoteVisualController>();
             }
 
             public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
