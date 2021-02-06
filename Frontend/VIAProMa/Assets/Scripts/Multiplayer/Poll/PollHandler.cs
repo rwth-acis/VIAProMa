@@ -1,4 +1,4 @@
-﻿using ExitGames.Client.Photon;
+using ExitGames.Client.Photon;
 using HoloToolkit.Unity;
 using Photon.Pun;
 using Photon.Realtime;
@@ -211,11 +211,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
 
         public SerializablePoll GetPollAtIndex(int index)
         {
-            if (index >= 0)
+            if (index > 0)
             {
-                if (index < savedPolls.Count)
+                int tIndex = index-1;
+                if (tIndex < savedPolls.Count)
                 {
-                    return savedPolls[index];
+                    return savedPolls[tIndex];
                 }
                 else
                 {
@@ -266,7 +267,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             Debug.Log("Poll save request received!");
             if (save)
             {
-                index = savedPolls.Count;
+                index = savedPolls.Count+1;
                 savedPolls.Add(poll);
             }
             else
@@ -295,13 +296,14 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
             else
             {
-                if (savedPolls.Count <= index)
+                int tIndex = index -1;
+                if (savedPolls.Count <= tIndex)
                 { // Make sure we can access index
-                    if (index >= savedPolls.Capacity)
-                        savedPolls.Capacity = index+1;
-                    savedPolls.AddRange(Enumerable.Repeat<SerializablePoll>(null, index-savedPolls.Count+1));
+                    if (tIndex >= savedPolls.Capacity)
+                        savedPolls.Capacity = tIndex+1;
+                    savedPolls.AddRange(Enumerable.Repeat<SerializablePoll>(null, tIndex-savedPolls.Count+1));
                 }
-                savedPolls[index] = poll;
+                savedPolls[tIndex] = poll;
             }
             if (currentPoll != null && currentPoll.Question == poll.Question && currentPoll.IsFinalized) // should be enough
             {

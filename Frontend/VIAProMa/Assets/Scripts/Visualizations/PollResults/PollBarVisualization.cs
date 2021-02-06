@@ -77,6 +77,13 @@ namespace i5.VIAProMa.Visualizations.Poll
 			PollVizUpdated?.Invoke(this, EventArgs.Empty);
 			SetupPoll(id);
 		}
+	
+		public void UpdatePoll(int id)
+        {
+			Debug.Log("Attempting to update Poll with ID " + id);
+			if (pollIndex != id)
+				SetupPoll(id);
+		}
 
 		public void SetupPoll(int id)
         {

@@ -37,7 +37,7 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
             }
             else
             {
-                pollViz.SetupPoll((int)stream.ReceiveNext());
+                pollViz.UpdatePoll((int)stream.ReceiveNext());
             }
         }
 
