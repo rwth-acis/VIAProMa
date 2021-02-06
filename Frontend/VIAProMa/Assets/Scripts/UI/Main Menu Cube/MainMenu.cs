@@ -214,9 +214,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void MakeNote()
         {
-            Vector3 targetPosition = transform.position - 0f * transform.right;
-            targetPosition.y = 0f;
-            targetPosition.z = 1f;
+            Vector3 targetPosition = transform.position - 0.2f * transform.forward;
             noteInstance = ResourceManager.Instance.NetworkInstantiate(notePrefab, targetPosition, transform.rotation);
             PhotonView view = noteInstance.GetComponent<PhotonView>();
             photonView.RPC("SetNoteInstance", RpcTarget.Others, view.ViewID);
