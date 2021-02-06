@@ -4,9 +4,20 @@ using TMPro;
 
 namespace i5.VIAProMa.Visualizations.Diagrams
 {
+    /**
+     * Manages Label above a bar in a bar chart
+     */
     public class LabeledBar : MonoBehaviour
     {
         [SerializeField] private GameObject labelMarker;
+
+        private void Awake()
+        {
+            if (labelMarker == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(labelMarker));
+            }
+        }
 
         private void OnEnable()
         {

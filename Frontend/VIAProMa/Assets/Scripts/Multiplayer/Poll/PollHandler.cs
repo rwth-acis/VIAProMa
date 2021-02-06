@@ -9,11 +9,8 @@ using i5.VIAProMa.Visualizations.Poll;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 using System.Text;
+using i5.VIAProMa.Utilities;
 
 namespace i5.VIAProMa.Multiplayer.Poll
 {
@@ -26,6 +23,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         private PhotonView photonView;
         public event EventHandler<PollStartEventArgs> PollStarted;
         public event EventHandler<PollEndEventArgs> PollEnded;
+        public event EventHandler<Player> PollDiscardByPlayer;
         public const byte PollRespondEventCode = 2;
         public const byte PollAcknowledgedEventCode = 3;
         public const byte PollSavedPollSyncEventCode = 4;
@@ -41,7 +39,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         private List<int> pollsToDisplay;
 
         [Header("Project Poll Serialization")]
-        [SerializeField] private GameObject PollSerializerPrefab;
+        [SerializeField] private GameObject pollSerializerPrefab;
         public List<SerializablePoll> savedPolls;
 
         private void OnEnable()
@@ -57,14 +55,27 @@ namespace i5.VIAProMa.Multiplayer.Poll
         protected override void Awake()
         {
             base.Awake();
+            if (barChartVisualizationPrefab == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(barChartVisualizationPrefab));
+            }
+            if (pollShelfPrefab == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollShelfPrefab));
+            }
+            if (pollSerializerPrefab == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollSerializerPrefab));
+            }
+
             photonView = GetComponent<PhotonView>();
-            if(!PhotonPeer.RegisterType(typeof(SerializablePoll), SerializablePoll.SerializeablePollCode, SerializablePoll.Serialize, SerializablePoll.Deserialize))
+            if (!PhotonPeer.RegisterType(typeof(SerializablePoll), SerializablePoll.SerializeablePollCode, SerializablePoll.Serialize, SerializablePoll.Deserialize))
             {
                 Debug.LogError("couldn't register SerializeablePoll");
             }
             savedPolls = new List<SerializablePoll>();
             pollsToDisplay = new List<int>();
-            GameObject pollSerializer = Instantiate(PollSerializerPrefab);
+            GameObject pollSerializer = Instantiate(pollSerializerPrefab);
         }
 
         private IEnumerator Countdown(int seconds) 
@@ -77,7 +88,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
 
         private void StopCountdown() 
         {
-             if(!(currentCountdown is null))
+             if (!(currentCountdown is null))
                 StopCoroutine(currentCountdown);
         }
 
@@ -198,15 +209,15 @@ namespace i5.VIAProMa.Multiplayer.Poll
         /**
          * Unregister this client from the current poll hosted by host 
          */
-        public void SendNAK(Player host)
+        public void SendStatus(bool ack, Player host)
         {
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{host.ActorNumber}};
-            PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, false, raiseEventOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, ack, raiseEventOptions, SendOptions.SendReliable);
         }
 
         public void DisplayPollAtIndex(int index)
         {
-            if(index >= savedPolls.Count)
+            if (index >= savedPolls.Count)
             {
                 Debug.LogWarning("tried to display poll out of bounds");
                 return;
@@ -217,16 +228,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
         [PunRPC]
         private void PollStartedReceived(string question, string[] answers, int syncedEndTime, PollOptions flags, PhotonMessageInfo messageInfo)
         {
-            bool state = false;
             int milliseconds = syncedEndTime < PhotonNetwork.ServerTimestamp? (int.MaxValue-PhotonNetwork.ServerTimestamp + syncedEndTime) : (syncedEndTime-PhotonNetwork.ServerTimestamp);
             if (PollStarted != null)
             {
-                PollStartEventArgs  args = new PollStartEventArgs(question, answers, DateTime.Now.AddMilliseconds(milliseconds), messageInfo.Sender, flags);
+                PollStartEventArgs args = new PollStartEventArgs(question, answers, DateTime.Now.AddMilliseconds(milliseconds), messageInfo.Sender, flags);
                 PollStarted?.Invoke(this, args);
-                state = true;
             }
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{messageInfo.Sender.ActorNumber}};
-            PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, state, raiseEventOptions, SendOptions.SendReliable);
         }
 
         [PunRPC]
@@ -252,7 +259,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             Debug.Log("Poll update received!");
             if (savedPolls.Count <= index)
             { // Make sure we can access index
-                if(index >= savedPolls.Capacity)
+                if (index >= savedPolls.Capacity)
                     savedPolls.Capacity = index+1;
                 savedPolls.AddRange(Enumerable.Repeat<SerializablePoll>(null, index-savedPolls.Count+1));
             }
@@ -334,7 +341,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
 
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
-            if(PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
+            if (PhotonNetwork.IsMasterClient && newPlayer.UserId != PhotonNetwork.LocalPlayer.UserId)
             {
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions {TargetActors = new int[]{newPlayer.ActorNumber}};
                 PhotonNetwork.RaiseEvent(PollSavedPollSyncEventCode, (object[]) savedPolls.ToArray(), raiseEventOptions, SendOptions.SendReliable);
@@ -343,6 +350,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             currentPoll?.OnStatus(otherPlayer, false);
+			PollDiscardByPlayer?.Invoke(this, otherPlayer);
         }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps){}
         public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged){}
@@ -357,6 +365,10 @@ namespace i5.VIAProMa.Multiplayer.Poll
         }
         public void OnJoinRoomFailed(short returnCode, string message){}
         public void OnJoinRandomFailed(short returnCode, string message){}
-        public void OnLeftRoom(){}
+        public void OnLeftRoom()
+		{
+			if (currentPoll != null)
+				PollDiscardByPlayer?.Invoke(this, PhotonNetwork.LocalPlayer);
+		}
     }
 }

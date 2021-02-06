@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace i5.VIAProMa.Visualizations.Diagrams
 {
+    /**
+     * A 2D Barchart that uses the third data column to label the other two if barPrefab is a LabeledBar
+     */
     public class Barchart2DLabeled : i5.VIAProMa.Visualizations.Common.Diagram2D
     {
         [SerializeField] private GameObject barPrefab;

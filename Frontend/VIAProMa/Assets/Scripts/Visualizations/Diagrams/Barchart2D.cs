@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace i5.VIAProMa.Visualizations.Diagrams
 {
+    /**
+     * A 2D Barchart using only two data columns
+     */
     public class Barchart2D : i5.VIAProMa.Visualizations.Common.Diagram2D
     {
         [SerializeField] private GameObject barPrefab;

@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using HoloToolkit.Unity;
 using i5.VIAProMa.UI;
 using i5.VIAProMa.Utilities;
@@ -19,6 +20,9 @@ namespace i5.VIAProMa.UI.Poll
      */
     public class PollMenu : MonoBehaviour, IWindow
     {
+        [SerializeField] private GameObject pollMasterControlPanel;
+        [SerializeField] private GameObject pollWaitingPanel;
+
         [Header("Poll Creation UI")]
         [SerializeField] private GameObject pollCreationPanel;
         [SerializeField] private InputField questionInput;
@@ -43,8 +47,6 @@ namespace i5.VIAProMa.UI.Poll
         [SerializeField] private List<Interactable> answerButtons;
         [SerializeField] private GameObject publicIcon;
         [SerializeField] private GameObject saveIcon;
-
-        public bool EnterIncomingPolls { get; set; } = true;
 
         public bool WindowEnabled { get; set; }
 
@@ -72,22 +74,36 @@ namespace i5.VIAProMa.UI.Poll
 
         protected void Awake()
         {
-/* TODO
-            if (notificationWidget == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(notificationWidget));
-            }
-*/
+            if (pollMasterControlPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollMasterControlPanel));
+            if (pollWaitingPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollWaitingPanel));
+            if (pollCreationPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollCreationPanel));
+            if (questionInput == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(questionInput));
+            if (answerInputs.Count == 0  || answerInputs.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerInputs));
+            if (pollOptionsPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollOptionsPanel));
+            if (countdownToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(countdownToggle));
+            if (timerInputMinutes == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(timerInputMinutes));
+            if (timerInputSeconds == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(timerInputSeconds));
+            if (multipleChoiceToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(multipleChoiceToggle));
+            if (saveResultToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(saveResultToggle));
+            if (publicToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(publicToggle));
+            if (pollSelectionPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollSelectionPanel));
+            if (questionLabel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(questionLabel));
+            if (countdownLabel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(countdownLabel));
+            if (multipleChoicePanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(multipleChoicePanel));
+            if (answerToggles.Count == 0  || answerToggles.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerToggles));
+            if (singleChoicePanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(singleChoicePanel));
+            if (answerButtons.Count == 0  || answerButtons.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerButtons));
+            if (publicIcon == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(publicIcon));
+            if (saveIcon == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(saveIcon));
 
-            started = responded = false;
+            // Reset interface
+            PollClear();
+            HidePollInterface();
 
-            pollCreationPanel.SetActive(false);
-            pollOptionsPanel.SetActive(false);
-            pollSelectionPanel.SetActive(false);
-
-            // Setup own watchdog even if disabled
+            // Setup watchdog to react to poll events
             PollHandler.Instance.PollStarted += OnPollStarted;
             PollHandler.Instance.PollEnded += OnPollEnded;
+            PollHandler.Instance.PollDiscardByPlayer += OnPollDiscardByPlayer;
         }
 
         protected void OnDestroy()
@@ -96,12 +112,14 @@ namespace i5.VIAProMa.UI.Poll
             {
                 PollHandler.Instance.PollStarted -= OnPollStarted;
                 PollHandler.Instance.PollEnded -= OnPollEnded;
+            	PollHandler.Instance.PollDiscardByPlayer -= OnPollDiscardByPlayer;
             }
         }
 
         public void Open()
         {
-            ShowCreationInterface();
+            if (!started)
+                ShowCreationInterface();
         }
 
         public void Open(Vector3 position, Vector3 eulerAngles)
@@ -113,9 +131,13 @@ namespace i5.VIAProMa.UI.Poll
 
         public void Close()
         {
-            PollClear();
             HidePollInterface();
             WindowClosed?.Invoke(this, EventArgs.Empty);
+            if (started)
+            { // Leave Poll
+                PollHandler.Instance?.SendStatus(false, pollArgs.MessageSender);
+                responded = true;
+            }
         }
 
         private void ShowCreationInterface()
@@ -131,6 +153,7 @@ namespace i5.VIAProMa.UI.Poll
             pollCreationPanel.SetActive(true);
             pollOptionsPanel.SetActive(false);
             pollSelectionPanel.SetActive(false);
+            pollMasterControlPanel.SetActive(false);
         }
 
         private void ShowPollInterface(PollStartEventArgs poll)
@@ -192,11 +215,10 @@ namespace i5.VIAProMa.UI.Poll
 
         private void HidePollInterface()
         {
-            gameObject.SetActive(false);
             pollCreationPanel.SetActive(false);
             pollOptionsPanel.SetActive(false);
             pollSelectionPanel.SetActive(false);
-            if (!(countdown is null))
+            if (countdown != null)
                 StopCoroutine(countdown);
         }
 
@@ -226,8 +248,8 @@ namespace i5.VIAProMa.UI.Poll
                 options |= PollOptions.SaveResults;
             if (publicToggle.IsToggled)
                 options |= PollOptions.Public;
-            PollHandler.Instance?.StartPoll(questionInput.Text, answerInputs.Where(i => !String.IsNullOrEmpty(i.Text)).Select(i => i.Text).ToArray(), options, endTime);
             createdPoll = true;
+            PollHandler.Instance?.StartPoll(questionInput.Text, answerInputs.Where(i => !String.IsNullOrEmpty(i.Text)).Select(i => i.Text).ToArray(), options, endTime);
         }
 
         private void SendResponse()
@@ -239,15 +261,18 @@ namespace i5.VIAProMa.UI.Poll
         private void PollClear()
         {
             if (started && !responded)
-                PollHandler.Instance?.SendNAK(pollArgs.MessageSender);
+                PollHandler.Instance?.SendStatus(false, pollArgs.MessageSender);
             started = responded = false;
             createdPoll = false;
             pollArgs = null;
+            gameObject.SetActive(false);
+            pollMasterControlPanel.SetActive(false);
+            pollWaitingPanel.SetActive(false);
         }
 
         private IEnumerator CountdownUpdater() 
         {
-            while (pollArgs != null) 
+            while (started) 
             {
                 TimeSpan span = pollArgs.End - DateTime.Now;
                 countdownLabel.text = span.Minutes + ":" + 	span.Seconds.ToString("D2");
@@ -265,6 +290,7 @@ namespace i5.VIAProMa.UI.Poll
             curSelection[option] = true;
             SendResponse();
             HidePollInterface();
+            pollWaitingPanel.SetActive(true);
         }
 
         /**
@@ -303,27 +329,52 @@ namespace i5.VIAProMa.UI.Poll
                 curSelection[i] = answerToggles[i].IsToggled;
             SendResponse();
             HidePollInterface();
+            pollWaitingPanel.SetActive(true);
         }
 
         private void OnPollStarted(object sender, PollStartEventArgs e)
         {
-            if (!EnterIncomingPolls) return;
-            if (createdPoll && e.MessageSender != PhotonNetwork.LocalPlayer)
+            if (started)
             {
-                Debug.LogError("Crashing my party, aren't ya? Not with me!");
+                Debug.LogError("Already participating in a poll, not joining new poll!");
                 return;
+            }
+            if (createdPoll)
+            {
+                if (e.MessageSender != PhotonNetwork.LocalPlayer)
+                {
+                    Debug.LogError("Crashing my party, aren't ya? Not with me!");
+                    return;
+                }
+                pollMasterControlPanel.SetActive(true);
             }
             Debug.Log("Opening Poll! Options: " + e.Flags);
             started = true;
             responded = false;
             curSelection = new bool[e.Answers.Length];
             pollArgs = e;
-            // TODO: local countdown closing window and showing remaining time
             ShowPollInterface(e);
+            // Notify poll master we are participating in his poll
+            PollHandler.Instance?.SendStatus(true, pollArgs.MessageSender);
+        }
+
+        public void OnStopButton()
+        {
+            if (createdPoll)
+            {
+                PollHandler.Instance.EndPoll();
+            }
+        }
+
+        public void OnLoadPolls()
+        {
+            PollHandler.Instance.PollShelfDisplay();
+            Close();
         }
 
         private void OnPollEnded(object sender, PollEndEventArgs e)
         {
+            if (!started) return;
             if (e.MessageSender != pollArgs.MessageSender)
             {
                 Debug.LogError("Received Poll End request from somebody other than initiator!");
@@ -334,10 +385,15 @@ namespace i5.VIAProMa.UI.Poll
             HidePollInterface();
         }
 
-        public void OnLoadPolls()
+        private void OnPollDiscardByPlayer(object sender, Player player)
         {
-            PollHandler.Instance.PollShelfDisplay();
-            Close();
+			if (started && pollArgs.MessageSender == player)
+            {
+				Debug.Log("Poll Master left room! Discarding!");
+				started = false;
+				PollClear();
+				HidePollInterface();
+			}
         }
     }
 }

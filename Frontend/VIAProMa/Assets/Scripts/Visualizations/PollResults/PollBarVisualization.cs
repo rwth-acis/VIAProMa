@@ -9,6 +9,7 @@ namespace i5.VIAProMa.Visualizations.Poll
     /**
      * Sets up Barchart Component for Poll visualization
      */
+    [RequireComponent(typeof(Barchart2DLabeled))]
     public class PollBarVisualization : MonoBehaviour
     {
         private Barchart2DLabeled barChart;
