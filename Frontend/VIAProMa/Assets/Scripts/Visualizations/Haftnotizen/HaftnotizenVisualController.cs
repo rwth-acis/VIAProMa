@@ -20,6 +20,7 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
         [SerializeField] private Interactable pinButton;
         [SerializeField] private Interactable clearButton;
         [SerializeField] private Interactable editButton;
+        [SerializeField] private Interactable colorButton;
         [SerializeField] private Renderer colorTag;
         [SerializeField] private ColorCycler colorCycler;
 
@@ -40,7 +41,7 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
             {
             }
         }
-        
+
         public string ColorTag
         {
             get {
@@ -92,6 +93,10 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
                 if (pinButton == null)
                 {
                     SpecialDebugMessages.LogMissingReferenceError(this, nameof(pinButton));
+                }
+                if (pinButton == null)
+                {
+                    SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorButton));
                 }
                 if (clearButton == null)
                 {
