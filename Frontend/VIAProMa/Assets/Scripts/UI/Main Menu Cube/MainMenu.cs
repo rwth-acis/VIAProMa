@@ -214,10 +214,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void MakeNote()
         {
-            Vector3 targetPosition = transform.position - 0f * transform.right;
-            targetPosition.y = 0f;
-            targetPosition.z = 1f;
-            InstantiateControl(notePrefab, ref noteInstance, targetPosition);
+            Vector3 targetPosition = transform.position - 0.2f * transform.forward;
+            noteInstance = ResourceManager.Instance.NetworkInstantiate(notePrefab, targetPosition, transform.rotation);
+            PhotonView view = noteInstance.GetComponent<PhotonView>();
+            photonView.RPC("SetNoteInstance", RpcTarget.Others, view.ViewID);
             foldController.FoldCube();
         }
 
@@ -340,6 +340,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
             PhotonView view = PhotonView.Find(photonId);
             issueShelfInstance = view.gameObject;
             Debug.Log("RPC: setting issue shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+        }
+
+        [PunRPC]
+        private void SetNoteInstance(int photonId)
+        {
+            PhotonView view = PhotonView.Find(photonId);
+            noteInstance = view.gameObject;
+            Debug.Log("RPC: setting note instance to " + noteInstance.name + " (id " + photonId + ")");
         }
 
         [PunRPC]
