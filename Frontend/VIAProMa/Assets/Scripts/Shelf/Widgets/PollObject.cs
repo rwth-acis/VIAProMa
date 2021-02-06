@@ -24,6 +24,6 @@ public class PollObject : MonoBehaviour
 
     public void SelectPoll()
     {
-        PollHandler.Instance.DisplayPollAtIndex(pollIndex);
+        PollHandler.Instance.DisplayPollAtIndex(pollIndex+1);
     }
 }

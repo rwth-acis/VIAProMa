@@ -180,20 +180,14 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
             else
             {
-                photonView.RPC("PollSaveRequestReceived", RpcTarget.MasterClient, SerializablePoll.FromPoll(currentPoll));
-                // if (currentPoll.Flags.HasFlag(PollOptions.SaveResults))
-                // {
-                //     Debug.Log("Sending poll save request!");
-                //     SerializablePoll poll = SerializablePoll.FromPoll(currentPoll);
-                //     photonView.RPC("PollSaveRequestReceived", RpcTarget.MasterClient, poll);
-                //     // This will later broadcast PollDisplayStoredReceived 
-                // }
-                // else
-                // {
-                //     Debug.Log("Sending poll display immediate!");
-                //     photonView.RPC("PollDisplayImmediateReceived", RpcTarget.All, SerializablePoll.FromPoll(currentPoll));
-                //     currentPoll = null;
-                // }
+                if (currentPoll.Flags.HasFlag(PollOptions.RealtimeViz) && realtimeVizIndex != 0)
+				{ // Update existing entry one last time
+					photonView.RPC("PollUpdateRequestReceived", RpcTarget.MasterClient, SerializablePoll.FromPoll(currentPoll), realtimeVizIndex);
+				}
+				else
+				{ // Create final entry
+					photonView.RPC("PollSaveRequestReceived", RpcTarget.MasterClient, SerializablePoll.FromPoll(currentPoll));
+				}
             }
         }
 
