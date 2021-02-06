@@ -78,6 +78,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             savedPolls = new List<SerializablePoll>();
             tempSavedPolls = new List<SerializablePoll>();
             pollsToDisplay = new List<int>();
+			Instantiate(pollSerializerPrefab);
         }
 
         private IEnumerator Countdown(int seconds) 
@@ -111,7 +112,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             position += barDistance * new Vector3(CameraCache.Main.transform.forward.x, 0, CameraCache.Main.transform.forward.z).normalized;
             GameObject barChartObj = ResourceManager.Instance.NetworkInstantiate(barChartVisualizationPrefab, position, new Quaternion(0,0,0,0));
 
-            barChartObj.GetComponent<PollBarVisualization>()?.Setup(pollIndex);
+            barChartObj.GetComponent<PollBarVisualization>()?.SetupPoll(pollIndex);
         }
 
         /**
@@ -210,29 +211,29 @@ namespace i5.VIAProMa.Multiplayer.Poll
 
         public SerializablePoll GetPollAtIndex(int index)
         {
-            if(index >= 0)
+            if (index >= 0)
             {
-                if(index < savedPolls.Count)
+                if (index < savedPolls.Count)
                 {
                     return savedPolls[index];
                 }
                 else
                 {
-                    if(!pollsToDisplay.Contains(index)) 
+                    if (!pollsToDisplay.Contains(index)) 
                         pollsToDisplay.Add(index);
                     return null;
                 }
             }
             else
             {
-                var tIndex = -index-1;
-                if(tIndex < tempSavedPolls.Count)
+                int tIndex = -index-1;
+                if (tIndex < tempSavedPolls.Count)
                 {
                     return tempSavedPolls[tIndex];
                 }
                 else
                 {
-                    if(!pollsToDisplay.Contains(index)) 
+                    if (!pollsToDisplay.Contains(index)) 
                         pollsToDisplay.Add(index);
                     return null;
                 }
@@ -263,7 +264,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             int index = 0;
             Debug.Log("Poll save request received!");
-            if(save)
+            if (save)
             {
                 index = savedPolls.Count;
                 savedPolls.Add(poll);
@@ -282,12 +283,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
             Debug.Log("Poll update received!");
             if(index < 0)
             {
-                var tIndex = -index -1;
+                int tIndex = -index -1;
                 if (tempSavedPolls.Count <= tIndex)
                 {
-                    if(index >= tempSavedPolls.Capacity)
+                    if(tIndex >= tempSavedPolls.Capacity)
                         tempSavedPolls.Capacity = tIndex+1;
-                    savedPolls.AddRange(Enumerable.Repeat<SerializablePoll>(null, tIndex-tempSavedPolls.Count+1));
+                    tempSavedPolls.AddRange(Enumerable.Repeat<SerializablePoll>(null, tIndex-tempSavedPolls.Count+1));
                 }
                 tempSavedPolls[tIndex] = poll;
                 
@@ -295,7 +296,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             else
             {
                 if (savedPolls.Count <= index)
-                 { // Make sure we can access index
+                { // Make sure we can access index
                     if (index >= savedPolls.Capacity)
                         savedPolls.Capacity = index+1;
                     savedPolls.AddRange(Enumerable.Repeat<SerializablePoll>(null, index-savedPolls.Count+1));
@@ -309,7 +310,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 GenerateSynchronizedPollDisplay(index);        
             }
 
-            if(pollsToDisplay.Contains(index))
+            if (pollsToDisplay.Contains(index))
             {
                 PollToDisplayRecieved?.Invoke(this, index);
                 pollsToDisplay.Remove(index);
@@ -331,9 +332,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
                     finished = currentPoll?.OnStatus(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender), (bool)photonEvent.CustomData);
                     break;
                 case PollSavedPollSyncEventCode:
-                    var data = (SerializablePoll[][])photonEvent.CustomData;
-                    savedPolls = data[0].ToList();
-                    tempSavedPolls = data[1].ToList();
+                    object[] data = (object[])photonEvent.CustomData;
+                    savedPolls = ((SerializablePoll[])data[0]).ToList();
+                    tempSavedPolls = ((SerializablePoll[])data[1]).ToList();
                     break;
             }
             if (finished == true)
@@ -365,10 +366,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged){}
         public void OnMasterClientSwitched (Player newMasterClient){}
         public void OnFriendListUpdate(List<FriendInfo> friendList){}
-        public void OnCreatedRoom()
-		{
-            GameObject pollSerializer = ResourceManager.Instance.NetworkInstantiate(pollSerializerPrefab, new Vector3(0,0,0), new Quaternion(0,0,0,0));
-		}
+        public void OnCreatedRoom(){}
         public void OnCreateRoomFailed(short returnCode, string message){}
         public void OnJoinedRoom()
         {

@@ -36,7 +36,6 @@ namespace i5.VIAProMa.Visualizations.Poll
             List<float> resultAxis = new List<float>();
             List<string> voterAxis = new List<string>();
             List<Color> colors = new List<Color>();
-            Debug.Log("Answers length " + answers.Length + "  results: " + results.Length);
 
             for (int i = 0; i < results.Length; i++)
             {
@@ -66,22 +65,32 @@ namespace i5.VIAProMa.Visualizations.Poll
         {
 			if (index == pollIndex)
 			{
+				Debug.Log("Received update on delayed poll " + index);
 				PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
-				Setup(index);
+				SetupPoll(index);
 			}
 		}
 
-		public void Setup(int id)
+		public void ForceUpdatePoll(int id)
         {
-			if (pollIndex != id)
-				PollVizUpdated?.Invoke(this, EventArgs.Empty);
+			Debug.Log("Forcing to update Poll with ID " + id);
+			PollVizUpdated?.Invoke(this, EventArgs.Empty);
+			SetupPoll(id);
+		}
+
+		public void SetupPoll(int id)
+        {
+			Debug.Log("Setup Poll with ID " + id);
 			pollIndex = id;
+			PollHandler.Instance.PollToDisplayRecieved += CheckSetup;
 			SerializablePoll poll = PollHandler.Instance.GetPollAtIndex(pollIndex);
 			if (poll == null)
 			{ // wait for poll to be synchronized
-				PollHandler.Instance.PollToDisplayRecieved += CheckSetup;
+				Debug.Log("Poll is not yet in database " + id);
 				return;
 			}
+			else
+				PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
 
 			string[] voters = new string[poll.Answers.Length];
 			for (int i = 0; i < voters.Length; i++)

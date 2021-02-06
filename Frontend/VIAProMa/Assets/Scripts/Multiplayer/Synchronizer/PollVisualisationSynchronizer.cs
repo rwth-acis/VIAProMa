@@ -37,7 +37,7 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
             }
             else
             {
-                pollViz.Setup((int)stream.ReceiveNext());
+                pollViz.SetupPoll((int)stream.ReceiveNext());
             }
         }
 
@@ -49,7 +49,7 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
         [PunRPC]
         private async void UpdatePoll(int pollIndex)
         {
-			pollViz.Setup(pollIndex);
+			pollViz.SetupPoll(pollIndex);
         }
     }
 }
