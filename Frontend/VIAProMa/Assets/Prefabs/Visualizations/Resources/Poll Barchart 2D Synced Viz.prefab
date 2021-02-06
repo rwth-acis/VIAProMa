@@ -13,6 +13,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questionLabel: {fileID: 6163297974105042471}
+--- !u!114 &2421288594777072075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2854458270353734934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 1
+  ObservedComponents:
+  - {fileID: 5559814728354775322}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &5559814728354775322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2854458270353734934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c66170fb8611094e93cb26541ff0acb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synchronizePosition: 1
+  synchronizeRotation: 1
+  synchronizeScale: 0
+  lerpSpeed: 15
 --- !u!114 &4742819149161392045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +226,7 @@ PrefabInstance:
     - target: {fileID: 2738293818969125529, guid: b99c004d12d19d3429d2c95f6f70667c,
         type: 3}
       propertyPath: m_Name
-      value: Poll Barchart 2D Viz
+      value: Poll Barchart 2D Synced Viz
       objectReference: {fileID: 0}
     - target: {fileID: 2751918753412798479, guid: b99c004d12d19d3429d2c95f6f70667c,
         type: 3}
