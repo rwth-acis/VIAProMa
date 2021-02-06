@@ -15,4 +15,9 @@ public class ColorCycler : MonoBehaviour
 		ColorTag.material.color = newCol;
 		Dashline.material.color = newCol;
 	}
+
+	public void colorSet(Color a){
+		ColorTag.material.color = a;
+		Dashline.material.color = a;
+	}
 }

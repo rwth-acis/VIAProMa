@@ -20,6 +20,8 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
         [SerializeField] private Interactable pinButton;
         [SerializeField] private Interactable clearButton;
         [SerializeField] private Interactable editButton;
+        [SerializeField] private Renderer colorTag;
+        [SerializeField] private ColorCycler colorCycler;
 
 
         public string Text
@@ -37,6 +39,35 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
             set
             {
             }
+        }
+        
+        public string ColorTag
+        {
+            get {
+                if (colorTag.material.color == Color.red) return "red";
+                else if (colorTag.material.color == Color.yellow) return "yellow";
+                else if (colorTag.material.color == Color.green) return "green";
+                else if (colorTag.material.color == Color.cyan) return "cyan";
+                else if (colorTag.material.color == Color.blue) return "blue";
+                else if (colorTag.material.color == Color.magenta) return "magenta";
+                else if (colorTag.material.color == Color.black) return "black";
+                else if (colorTag.material.color == Color.grey) return "grey";
+                else return "white";
+            }
+            set {
+                    if (value == "red") colorCycler.colorSet(Color.red);
+                    else if (value == "yellow") colorCycler.colorSet(Color.yellow);
+                    else if (value == "green") colorCycler.colorSet(Color.green);
+                    else if (value == "cyan") colorCycler.colorSet(Color.cyan);
+                    else if (value == "blue") colorCycler.colorSet(Color.blue);
+
+                    else if (value == "magenta") colorCycler.colorSet(Color.magenta);
+                    else if (value == "black") colorCycler.colorSet(Color.black);
+                    else if (value == "grey") colorCycler.colorSet(Color.grey);
+                    else colorCycler.colorSet(Color.white);
+                    
+            }
+
         }
 
 
@@ -69,6 +100,10 @@ namespace i5.VIAProMa.Visualizations.Haftnotizen
                 if (editButton == null)
                 {
                     SpecialDebugMessages.LogMissingReferenceError(this, nameof(editButton));
+                }
+                if (colorTag == null)
+                {
+                    SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorTag));
                 }
             }
 

@@ -11,6 +11,7 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
             private HaftnotizenVisualController visualController;
 
             private string targetText;
+            private string targetColorName;
             
             private void Awake()
             {
@@ -23,10 +24,12 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
                 if (stream.IsWriting)
                 {
                     stream.SendNext(visualController.Text);
+                    stream.SendNext(visualController.ColorTag);
                 }
                 else
                 {
                     targetText = (string)stream.ReceiveNext();
+                    targetColorName = (string)stream.ReceiveNext();
 
                 }
             }
@@ -37,6 +40,7 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
                 if (TransformSynchronizationInitialized && photonView.Owner != PhotonNetwork.LocalPlayer)
                 {
                     visualController.Text = targetText;
+                    visualController.ColorTag = targetColorName;
                 }
             }
     }

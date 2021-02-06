@@ -10,26 +10,33 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
     public class HaftnotizenSerializer : MonoBehaviour, ISerializable
     {
         private const string textKey = "note_text";
+        private const string colorKey = "note_color";
 
-        private HaftnotizenVisualController noteText;
+        private HaftnotizenVisualController noteVisual;
 
         private void Awake()
         {
-            noteText = GetComponent<HaftnotizenVisualController>();
+            noteVisual = GetComponent<HaftnotizenVisualController>();
         }
 
         public void Deserialize(SerializedObject serializedObject)
         {
             string returnedText = SerializedObject.TryGet(textKey, serializedObject.Strings, gameObject, out bool found);
             if(found){
-                noteText.Text = serializedObject.Strings[textKey];
+                noteVisual.Text = serializedObject.Strings[textKey];
+            }
+
+            string returnedColor = SerializedObject.TryGet(colorKey, serializedObject.Strings, gameObject, out found);
+            if(found){
+                noteVisual.ColorTag = serializedObject.Strings[colorKey];
             }
         }
 
         public SerializedObject Serialize()
         {
             SerializedObject serializedObject = new SerializedObject();
-            serializedObject.Strings.Add(textKey,  noteText.Text);
+            serializedObject.Strings.Add(textKey,  noteVisual.Text);
+            serializedObject.Strings.Add(colorKey,  noteVisual.ColorTag);
             return serializedObject;
         }
     }
