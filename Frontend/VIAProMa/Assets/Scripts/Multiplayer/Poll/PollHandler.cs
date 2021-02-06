@@ -130,7 +130,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
 					voters[i] = "Anonymous";
 				}
 			}
-            pollViz.Setup(answers, results, voters);
+            pollViz.Setup(poll.Question, answers, results, voters);
         }
 
         /**
