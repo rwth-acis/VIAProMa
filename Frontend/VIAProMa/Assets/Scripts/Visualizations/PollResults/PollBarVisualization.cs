@@ -22,11 +22,17 @@ namespace i5.VIAProMa.Visualizations.Poll
         public event EventHandler PollVizUpdated;
 
 		public int pollIndex { get; private set; }
-        
-        void Awake()
+
+        private void Awake()
         {
             barChart = GetComponent<Barchart2DLabeled>();
             if (questionLabel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(questionLabel));
+			PollHandler.Instance.PollToDisplayRecieved += CheckSetup;
+        }
+
+        private void OnDestroy()
+        {
+			PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
         }
 
         private void Setup(string question, string[] answers, int[] results, string[] voterLists)
@@ -63,10 +69,10 @@ namespace i5.VIAProMa.Visualizations.Poll
 
 		private void CheckSetup(object sender, int index)
         {
+			Debug.Log("Received update on delayed poll " + index);
 			if (index == pollIndex)
 			{
-				Debug.Log("Received update on delayed poll " + index);
-				PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
+				Debug.Log("Delayed poll is correct poll " + index);
 				SetupPoll(index);
 			}
 		}
@@ -89,15 +95,12 @@ namespace i5.VIAProMa.Visualizations.Poll
         {
 			Debug.Log("Setup Poll with ID " + id);
 			pollIndex = id;
-			PollHandler.Instance.PollToDisplayRecieved += CheckSetup;
 			SerializablePoll poll = PollHandler.Instance.GetPollAtIndex(pollIndex);
 			if (poll == null)
 			{ // wait for poll to be synchronized
 				Debug.Log("Poll is not yet in database " + id);
 				return;
 			}
-			else
-				PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
 
 			string[] voters = new string[poll.Answers.Length];
 			for (int i = 0; i < voters.Length; i++)
@@ -105,7 +108,7 @@ namespace i5.VIAProMa.Visualizations.Poll
 				if (poll.Flags.HasFlag(PollOptions.Public))
 				{
 					voters[i] = poll.SerializeableSelection.Aggregate(new StringBuilder(), (sb, cur) => {
-						if (cur.Item2[i]) sb.Append(sb.Length == 0? "" : ", ").Append(cur.Item1);
+						if (cur.Item2?[i] ?? false) sb.Append(sb.Length == 0? "" : ", ").Append(cur.Item1);
 						return sb;
 					}).ToString();
 				}

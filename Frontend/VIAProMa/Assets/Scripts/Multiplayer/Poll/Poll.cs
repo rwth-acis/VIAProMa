@@ -13,7 +13,8 @@ namespace i5.VIAProMa.Multiplayer.Poll
         Public = 1,
         MultipleChoice = 2,
         Countdown = 4,
-        SaveResults = 8
+        SaveResults = 8,
+        RealtimeViz = 16
     }
 
     [Serializable]
@@ -46,6 +47,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 return results;
             }
         }
+
         /// <summary>
         /// Deserializes a Poll from a byte[]
         /// Assumes correctly formated input
@@ -81,9 +83,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 byte[] nameBytes = new byte[data[offset]];
                 Array.Copy(data, offset+1, nameBytes, 0, data[offset]);
                 offset += 1+data[offset];
-                byte[] selBytes = new byte[data[offset]];
-                Array.Copy(data, offset+1, selBytes, 0, data[offset]);
-                result.SerializeableSelection.Add(new SelectionResult { Item1 = new string(System.Text.Encoding.UTF8.GetChars(nameBytes)), Item2 = selBytes.Select(b => Convert.ToBoolean(b)).ToArray() });
+                if(data[offset]>0)
+                {
+                    byte[] selBytes = new byte[data[offset]];
+                    Array.Copy(data, offset+1, selBytes, 0, data[offset]);
+                    result.SerializeableSelection.Add(new SelectionResult { Item1 = new string(System.Text.Encoding.UTF8.GetChars(nameBytes)), Item2 = selBytes.Select(b => Convert.ToBoolean(b)).ToArray() });
+				}
                 offset += 1+data[offset];
             }
             return result;
@@ -108,6 +113,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 data.AddRange(answerBytes);
             }
             data.Add((byte)p.Flags); //one byte should be enough for now
+
             data.Add((byte)p.SerializeableSelection.Count);
             for(int i = 0; i < p.SerializeableSelection.Count; i++)
             {
@@ -115,8 +121,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 byte[] nameBytes = System.Text.Encoding.UTF8.GetBytes(tuple.Item1);
                 data.Add((byte)nameBytes.Length);
                 data.AddRange(nameBytes);
-                data.Add((byte)tuple.Item2.Length);
-                data.AddRange(tuple.Item2.Select(b => Convert.ToByte(b)));
+                data.Add((byte)(tuple.Item2?.Length ?? 0));
+                if (tuple.Item2 != null)
+					data.AddRange(tuple.Item2.Select(b => Convert.ToByte(b)));
             }
             return data.ToArray();
         }

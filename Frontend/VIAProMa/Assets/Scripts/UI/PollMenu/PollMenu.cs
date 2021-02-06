@@ -36,6 +36,7 @@ namespace i5.VIAProMa.UI.Poll
         [SerializeField] private Interactable multipleChoiceToggle;
         [SerializeField] private Interactable saveResultToggle;
         [SerializeField] private Interactable publicToggle;
+        [SerializeField] private Interactable realtimeVizToggle;
 
         [Header("Poll Selection UI")]
         [SerializeField] private GameObject pollSelectionPanel;
@@ -86,6 +87,7 @@ namespace i5.VIAProMa.UI.Poll
             if (multipleChoiceToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(multipleChoiceToggle));
             if (saveResultToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(saveResultToggle));
             if (publicToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(publicToggle));
+            if (realtimeVizToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(realtimeVizToggle));
             if (pollSelectionPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollSelectionPanel));
             if (questionLabel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(questionLabel));
             if (countdownLabel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(countdownLabel));
@@ -248,6 +250,8 @@ namespace i5.VIAProMa.UI.Poll
                 options |= PollOptions.SaveResults;
             if (publicToggle.IsToggled)
                 options |= PollOptions.Public;
+            if (realtimeVizToggle.IsToggled)
+                options |= PollOptions.RealtimeViz;
             createdPoll = true;
             PollHandler.Instance?.StartPoll(questionInput.Text, answerInputs.Where(i => !String.IsNullOrEmpty(i.Text)).Select(i => i.Text).ToArray(), options, endTime);
         }
@@ -316,6 +320,8 @@ namespace i5.VIAProMa.UI.Poll
          */
         public void OnPollCreate()
         {
+			if (answerInputs.All(i => String.IsNullOrEmpty(i.Text)))
+				return;
             HidePollInterface();
             SendCreationRequest();
         }
