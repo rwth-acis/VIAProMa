@@ -140,6 +140,7 @@ public class VIAProMaMenuActions : MonoBehaviour
             box.BoxMaterial = highlightMaterial;
             box.ShowWireFrame = true;
             box.WireframeMaterial = wireframeMaterial;
+            Debug.Log("Highlight " + box.ToString());
         }
     }
 
@@ -150,6 +151,11 @@ public class VIAProMaMenuActions : MonoBehaviour
         {
             box.BoxMaterial = previousMaterial;
             box.ShowWireFrame = false;
+            Debug.Log("Dehighlight " + box.ToString());
+        }
+        else
+        {
+            Debug.Log("Dehighlight no box found");
         }
     }
 
@@ -179,7 +185,7 @@ public class VIAProMaMenuActions : MonoBehaviour
         if (instantiatedIcon != null)
         {
             GameObject target = GetVisualisationFromGameObject(data.NewFocusedObject);
-            Collider collider = target.GetComponentInChildren<BoundingBox>()?.GetComponent<Collider>();
+            Collider collider = target?.GetComponentInChildren<BoundingBox>()?.GetComponent<Collider>();
             if (collider != null)
             {
                 Vector3 maxpoint = collider.bounds.max;
