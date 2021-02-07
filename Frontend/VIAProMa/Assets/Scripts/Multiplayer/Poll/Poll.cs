@@ -34,14 +34,14 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public static byte SerializeablePollCode = 255;
         public int[] AccumulatedResult
         {
-            get 
+            get
             {
                 int[] results = new int[Answers.Length];
                 for (int i = 0; i < Answers.Length; i++)
                 {
                     for (int j = 0; j < SerializeableSelection.Count; j++)
                     {
-                        results[i] += SerializeableSelection[j].Item2?[i] == true? 1 : 0;
+                        results[i] += SerializeableSelection[j].Item2?[i] == true ? 1 : 0;
                     }
                 }
                 return results;
@@ -65,31 +65,31 @@ namespace i5.VIAProMa.Multiplayer.Poll
             int answersLength = data[offset];
             string[] answers = new string[answersLength];
             offset++;
-            for(int i = 0; i<answersLength; i++)
+            for (int i = 0; i < answersLength; i++)
             {
                 byte[] answerBytes = new byte[data[offset]];
-                Array.Copy(data, offset+1, answerBytes, 0, data[offset]);
+                Array.Copy(data, offset + 1, answerBytes, 0, data[offset]);
                 answers[i] = new string(System.Text.Encoding.UTF8.GetChars(answerBytes));
-                offset += 1+data[offset];
+                offset += 1 + data[offset];
             }
             result.Answers = answers;
-            result.Flags = (PollOptions) data[offset]; //needs to be changed if PollOptions gets too big
+            result.Flags = (PollOptions)data[offset]; //needs to be changed if PollOptions gets too big
             offset++;
             var selectionLength = data[offset];
             offset++;
             result.SerializeableSelection = new List<SelectionResult>();
-            for(int i = 0; i<selectionLength; i++)
+            for (int i = 0; i < selectionLength; i++)
             {
                 byte[] nameBytes = new byte[data[offset]];
-                Array.Copy(data, offset+1, nameBytes, 0, data[offset]);
-                offset += 1+data[offset];
-                if(data[offset]>0)
+                Array.Copy(data, offset + 1, nameBytes, 0, data[offset]);
+                offset += 1 + data[offset];
+                if (data[offset] > 0)
                 {
                     byte[] selBytes = new byte[data[offset]];
-                    Array.Copy(data, offset+1, selBytes, 0, data[offset]);
+                    Array.Copy(data, offset + 1, selBytes, 0, data[offset]);
                     result.SerializeableSelection.Add(new SelectionResult { Item1 = new string(System.Text.Encoding.UTF8.GetChars(nameBytes)), Item2 = selBytes.Select(b => Convert.ToBoolean(b)).ToArray() });
-				}
-                offset += 1+data[offset];
+                }
+                offset += 1 + data[offset];
             }
             return result;
         }
@@ -100,13 +100,13 @@ namespace i5.VIAProMa.Multiplayer.Poll
         /// <returns></returns>
         public static byte[] Serialize(object serializablePoll)
         {
-            var p = (SerializablePoll) serializablePoll;
+            var p = (SerializablePoll)serializablePoll;
             List<byte> data = new List<byte>();
             byte[] questionBytes = System.Text.Encoding.UTF8.GetBytes(p.Question);
             data.Add((byte)questionBytes.Length);
             data.AddRange(questionBytes);
             data.Add((byte)p.Answers.Length);
-            foreach(String a in p.Answers)
+            foreach (String a in p.Answers)
             {
                 byte[] answerBytes = System.Text.Encoding.UTF8.GetBytes(a);
                 data.Add((byte)answerBytes.Length);
@@ -115,7 +115,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             data.Add((byte)p.Flags); //one byte should be enough for now
 
             data.Add((byte)p.SerializeableSelection.Count);
-            for(int i = 0; i < p.SerializeableSelection.Count; i++)
+            for (int i = 0; i < p.SerializeableSelection.Count; i++)
             {
                 var tuple = p.SerializeableSelection[i];
                 byte[] nameBytes = System.Text.Encoding.UTF8.GetBytes(tuple.Item1);
@@ -123,17 +123,18 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 data.AddRange(nameBytes);
                 data.Add((byte)(tuple.Item2?.Length ?? 0));
                 if (tuple.Item2 != null)
-					data.AddRange(tuple.Item2.Select(b => Convert.ToByte(b)));
+                    data.AddRange(tuple.Item2.Select(b => Convert.ToByte(b)));
             }
             return data.ToArray();
         }
-        
-        public static SerializablePoll FromPoll(Poll poll){
+
+        public static SerializablePoll FromPoll(Poll poll)
+        {
             var result = new SerializablePoll();
             result.Answers = poll.Answers;
             result.Flags = poll.Flags;
             result.Question = poll.Question;
-            result.SerializeableSelection = poll.SerializeableSelection.Select(t => new SelectionResult {Item1 = t.Item1, Item2 = t.Item2}).ToList();
+            result.SerializeableSelection = poll.SerializeableSelection.Select(t => new SelectionResult { Item1 = t.Item1, Item2 = t.Item2 }).ToList();
             return result;
         }
     }
@@ -150,7 +151,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public PollOptions Flags { get; private set; }
         public bool IsEnded { get; set; }
         public bool IsFinalized { get; set; }
-        
+
         /**
          * Poll results for each user as it should be saved in accordance with Poll Options
          */
@@ -158,10 +159,10 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             get
             {
-                return (selection.Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public)? t.Key.NickName : "Anonymous" , t.Value)).ToList());
+                return (selection.Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public) ? t.Key.NickName : "Anonymous", t.Value)).ToList());
             }
         }
-        
+
         /**
          * Accumulated Poll results for each answer
          */
@@ -175,7 +176,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 {
                     for (int j = 0; j < sel.Count; j++)
                     {
-                        results[i] += sel[j].Item2[i]? 1 : 0;
+                        results[i] += sel[j].Item2[i] ? 1 : 0;
                     }
                 }
                 return results;

@@ -17,15 +17,15 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
     {
         private PollBarVisualization pollViz;
 
-		private void Awake()
+        private void Awake()
         {
             pollViz = GetComponent<PollBarVisualization>();
-			pollViz.PollVizUpdated += SendUpdatePollRequest;
+            pollViz.PollVizUpdated += SendUpdatePollRequest;
         }
 
-		private void OnDestroy()
+        private void OnDestroy()
         {
-			pollViz.PollVizUpdated -= SendUpdatePollRequest;
+            pollViz.PollVizUpdated -= SendUpdatePollRequest;
         }
 
         public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -49,7 +49,7 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
         [PunRPC]
         private async void UpdatePoll(int pollIndex)
         {
-			pollViz.SetupPoll(pollIndex);
+            pollViz.SetupPoll(pollIndex);
         }
     }
 }

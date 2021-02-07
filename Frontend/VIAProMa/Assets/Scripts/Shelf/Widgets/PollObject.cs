@@ -11,7 +11,7 @@ public class PollObject : MonoBehaviour
 
     public int PollIndex
     {
-        get 
+        get
         {
             return pollIndex;
         }
@@ -24,6 +24,6 @@ public class PollObject : MonoBehaviour
 
     public void SelectPoll()
     {
-        PollHandler.Instance.GenerateSynchronizedPollDisplay(pollIndex+1);
+        PollHandler.Instance.GenerateSynchronizedPollDisplay(pollIndex + 1);
     }
 }

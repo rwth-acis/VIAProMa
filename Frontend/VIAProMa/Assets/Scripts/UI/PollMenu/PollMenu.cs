@@ -79,7 +79,7 @@ namespace i5.VIAProMa.UI.Poll
             if (pollWaitingPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollWaitingPanel));
             if (pollCreationPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollCreationPanel));
             if (questionInput == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(questionInput));
-            if (answerInputs.Count == 0  || answerInputs.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerInputs));
+            if (answerInputs.Count == 0 || answerInputs.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerInputs));
             if (pollOptionsPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollOptionsPanel));
             if (countdownToggle == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(countdownToggle));
             if (timerInputMinutes == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(timerInputMinutes));
@@ -92,9 +92,9 @@ namespace i5.VIAProMa.UI.Poll
             if (questionLabel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(questionLabel));
             if (countdownLabel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(countdownLabel));
             if (multipleChoicePanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(multipleChoicePanel));
-            if (answerToggles.Count == 0  || answerToggles.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerToggles));
+            if (answerToggles.Count == 0 || answerToggles.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerToggles));
             if (singleChoicePanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(singleChoicePanel));
-            if (answerButtons.Count == 0  || answerButtons.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerButtons));
+            if (answerButtons.Count == 0 || answerButtons.Any(a => a == null)) SpecialDebugMessages.LogMissingReferenceError(this, nameof(answerButtons));
             if (publicIcon == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(publicIcon));
             if (saveIcon == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(saveIcon));
 
@@ -114,7 +114,7 @@ namespace i5.VIAProMa.UI.Poll
             {
                 PollHandler.Instance.PollStarted -= OnPollStarted;
                 PollHandler.Instance.PollEnded -= OnPollEnded;
-            	PollHandler.Instance.PollDiscardByPlayer -= OnPollDiscardByPlayer;
+                PollHandler.Instance.PollDiscardByPlayer -= OnPollDiscardByPlayer;
             }
         }
 
@@ -162,9 +162,9 @@ namespace i5.VIAProMa.UI.Poll
         {
             // Update interface
             questionLabel.text = poll.Question;
-			publicIcon?.SetActive(poll.Flags.HasFlag(PollOptions.Public));
-			saveIcon?.SetActive(poll.Flags.HasFlag(PollOptions.SaveResults));
-            
+            publicIcon?.SetActive(poll.Flags.HasFlag(PollOptions.Public));
+            saveIcon?.SetActive(poll.Flags.HasFlag(PollOptions.SaveResults));
+
             if (poll.Flags.HasFlag(PollOptions.MultipleChoice))
             {
                 multipleChoicePanel.SetActive(true);
@@ -180,7 +180,7 @@ namespace i5.VIAProMa.UI.Poll
                 for (int i = 0; i < answerButtons.Count; i++)
                     answerButtons[i].gameObject.SetActive(false);
             }
-            else 
+            else
             {
                 multipleChoicePanel.SetActive(false);
                 singleChoicePanel.SetActive(true);
@@ -200,7 +200,7 @@ namespace i5.VIAProMa.UI.Poll
             pollCreationPanel.SetActive(false);
             pollOptionsPanel.SetActive(false);
             pollSelectionPanel.SetActive(true);
-            
+
             // Update countdown
             if (poll.Flags.HasFlag(PollOptions.Countdown))
             {
@@ -274,13 +274,13 @@ namespace i5.VIAProMa.UI.Poll
             pollWaitingPanel.SetActive(false);
         }
 
-        private IEnumerator CountdownUpdater() 
+        private IEnumerator CountdownUpdater()
         {
-            while (started) 
+            while (started)
             {
                 TimeSpan span = pollArgs.End - DateTime.Now;
-                countdownLabel.text = span.Minutes + ":" + 	span.Seconds.ToString("D2");
-                yield return new WaitForSecondsRealtime(span.Milliseconds/1000.0f);
+                countdownLabel.text = span.Minutes + ":" + span.Seconds.ToString("D2");
+                yield return new WaitForSecondsRealtime(span.Milliseconds / 1000.0f);
             }
         }
 
@@ -320,8 +320,8 @@ namespace i5.VIAProMa.UI.Poll
          */
         public void OnPollCreate()
         {
-			if (answerInputs.All(i => String.IsNullOrEmpty(i.Text)))
-				return;
+            if (answerInputs.All(i => String.IsNullOrEmpty(i.Text)))
+                return;
             HidePollInterface();
             SendCreationRequest();
         }
@@ -393,13 +393,13 @@ namespace i5.VIAProMa.UI.Poll
 
         private void OnPollDiscardByPlayer(object sender, Player player)
         {
-			if (started && pollArgs.MessageSender == player)
+            if (started && pollArgs.MessageSender == player)
             {
-				Debug.Log("Poll Master left room! Discarding!");
-				started = false;
-				PollClear();
-				HidePollInterface();
-			}
+                Debug.Log("Poll Master left room! Discarding!");
+                started = false;
+                PollClear();
+                HidePollInterface();
+            }
         }
     }
 }
