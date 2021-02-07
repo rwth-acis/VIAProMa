@@ -2,6 +2,9 @@
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
+using System.Timers;
+using System.Collections;
+using TMPro;
 
 public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>
 {
@@ -14,7 +17,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
 
     IMixedRealityInputSource ownSource;
 
-    public MenuEntry currentEntry {get; private set;}
+    public MenuEntry currentEntry { get; private set; }
 
     [SerializeField]
     MenuEntry defaultEntry;
@@ -23,6 +26,9 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
 
     //Hover Actions
     GameObject oldFocusTarget;
+
+    //Has to be global to prevent the garbage collection from collecting it before elapsed
+    Timer timer;
 
     public void SetupTool(MenuEntry newEntry)
     {
@@ -43,7 +49,27 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
             newEntry.OnToolCreated.Invoke(null);
         }
 
+        //Enable the button explain text
+        GameObject menuButton = transform.Find("ButtonDescriptions").gameObject;
+        menuButton.SetActive(true);
+
+        SetText("TouchpadRightText", newEntry.textTouchpadRight, defaultEntry.textTouchpadRight);
+        SetText("TouchpadDownText", newEntry.textTouchpadDown, defaultEntry.textTouchpadDown);
+        SetText("TouchpadLeftText", newEntry.textTouchpadLeft, defaultEntry.textTouchpadLeft);
+        SetText("TouchpadUpText", newEntry.textTouchpadUp, defaultEntry.textTouchpadUp);
+        SetText("TriggerText", newEntry.textTrigger, defaultEntry.textTrigger);
+
+        StopCoroutine("disableText");
+        StartCoroutine("disableText");
+
         currentEntry = newEntry;
+    }
+
+    private IEnumerator disableText()
+    {
+        yield return new WaitForSeconds(3);
+        GameObject menuButton = transform.Find("ButtonDescriptions").gameObject;
+        menuButton.SetActive(false);
     }
 
     private void SetIcon(string canvasName, Sprite icon, Sprite defaultIcon)
@@ -64,8 +90,28 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         }
     }
 
+    private void SetText(string gameobjectName, string text, string defaulText)
+    {
+        GameObject textGameobject = transform.Find("ButtonDescriptions/" + gameobjectName).gameObject;
+        TMP_Text textMesh = textGameobject.GetComponentInChildren<TMP_Text>();
+        textGameobject.SetActive(true);
+        if (text != "")
+        {
+            textMesh.text = text;
+        }
+        else if (defaulText != "")
+        {
+            textMesh.text = defaulText;
+        }
+        else
+        {
+            textGameobject.SetActive(false);
+        }
+    }
+
     private void Update()
     {
+        //Update the hover events
         if (ownSource == null)
         {
             //It can take a few frames until this method returns an InputSource, because they first have to register themself in the input system

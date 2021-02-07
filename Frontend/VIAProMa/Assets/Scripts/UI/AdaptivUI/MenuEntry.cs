@@ -19,9 +19,18 @@ public struct MenuEntry
 {
     public Sprite iconTool;
     public Sprite iconTouchpadRight;
+    public string textTouchpadRight;
+
     public Sprite iconTouchpadUp;
+    public string textTouchpadUp;
+
     public Sprite iconTouchpadLeft;
+    public string textTouchpadLeft;
+
     public Sprite iconTouchpadDown;
+    public string textTouchpadDown;
+
+    public string textTrigger;
 
     public InputActionUnityEvent OnInputActionStartedTrigger;
     public InputActionUnityEvent OnInputActionEndedTrigger;
