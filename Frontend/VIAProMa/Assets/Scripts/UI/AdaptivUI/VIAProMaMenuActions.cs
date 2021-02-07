@@ -169,8 +169,20 @@ public class VIAProMaMenuActions : MonoBehaviour
                 Destroy(instantiatedIcon);
             }
             instantiatedIcon = Instantiate(highlightSprite);
-            instantiatedIcon.GetComponentInChildren<Image>().sprite = data.Pointer.Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>().currentEntry.iconTool;
+            instantiatedIcon.GetComponentInChildren<Image>().sprite = GetVirtualToolFromPointer(data.Pointer).currentEntry.iconTool;
         }
+    }
+
+    public void ActivateDesciptionTexts(BaseInputEventData data)
+    {
+        ViveWandVirtualTool tool = GetVirtualToolFromPointer(data.InputSource.Pointers[0]);
+        tool.transform.Find("ButtonDescriptions").gameObject.SetActive(true);
+    }
+
+    public void DeactivateDesciptionTexts(BaseInputEventData data)
+    {
+        ViveWandVirtualTool tool = GetVirtualToolFromPointer(data.InputSource.Pointers[0]);
+        tool.transform.Find("ButtonDescriptions").gameObject.SetActive(false);
     }
 
     public void DestroyCurrentIconOverVisualisation()
@@ -196,6 +208,11 @@ public class VIAProMaMenuActions : MonoBehaviour
                 RotateToCameraOnXZPlane(instantiatedIcon, topMiddle);
             }
         }
+    }
+
+    private ViveWandVirtualTool GetVirtualToolFromPointer(IMixedRealityPointer pointer)
+    {
+        return pointer.Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
     }
 
     private GameObject GetVisualisationFromGameObject(GameObject gameObject, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)

@@ -488,6 +488,10 @@ MonoBehaviour:
     id: 18
     description: Touch Pad Press
     axisConstraint: 2
+  gripPressAction:
+    id: 3
+    description: Grip Pose
+    axisConstraint: 7
   defaultEntry:
     iconTool: {fileID: 21300012, guid: 20f25674b9512834f88938d45ed495d7, type: 3}
     iconTouchpadRight: {fileID: 21300004, guid: 20f25674b9512834f88938d45ed495d7,
@@ -506,6 +510,34 @@ MonoBehaviour:
     OnInputActionEndedTrigger:
       m_PersistentCalls:
         m_Calls: []
+    OnInputActionStartedGrip:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3297889295211217353}
+          m_MethodName: ActivateDesciptionTexts
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    OnInputActionEndedGrip:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3297889295211217353}
+          m_MethodName: DeactivateDesciptionTexts
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnInputActionEndedTouchpadRight:
       m_PersistentCalls:
         m_Calls:

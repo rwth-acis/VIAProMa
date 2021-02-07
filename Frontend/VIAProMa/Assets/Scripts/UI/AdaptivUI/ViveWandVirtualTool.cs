@@ -2,16 +2,18 @@
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Timers;
 using System.Collections;
 using TMPro;
 
-public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>
+public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>, IMixedRealityInputHandler<float>
 {
     //Events and action for the thrigger
     public MixedRealityInputAction triggerInputAction;
     public MixedRealityInputAction touchpadTouchActionAction;
     public MixedRealityInputAction touchpadPressAction;
+    public MixedRealityInputAction gripPressAction;
 
     Vector2 thumbPosition;
 
@@ -153,6 +155,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
     {
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputActionHandler>(this);
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler<Vector2>>(this);
+        CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler<float>>(this);
         SetupTool(defaultEntry);
     }
 
@@ -160,6 +163,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
     {
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputActionHandler>(this);
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputHandler<Vector2>>(this);
+        CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputHandler<float>>(this);
     }
 
     //Trigger on start
@@ -184,7 +188,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
                 if (angle > -45 && angle <= 45)
                 {
                     //Right press
-                    if (currentEntry.iconTouchpadRight != null)
+                    if (currentEntry.OnInputActionEndedTouchpadRight.GetPersistentEventCount() > 0)
                     {
                         currentEntry.OnInputActionEndedTouchpadRight?.Invoke(eventData);
                     }
@@ -196,7 +200,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
                 else if (angle > 45 && angle <= 135)
                 {
                     //Up press
-                    if (currentEntry.iconTouchpadUp != null)
+                    if (currentEntry.OnInputActionEndedTouchpadUp.GetPersistentEventCount() > 0)
                     {
                         currentEntry.OnInputActionEndedTouchpadUp.Invoke(eventData);
                     }
@@ -208,7 +212,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
                 else if ((angle > 135 && angle <= 180) || (angle >= -180 && angle <= -135))
                 {
                     //Left press
-                    if (currentEntry.iconTouchpadLeft != null)
+                    if (currentEntry.OnInputActionEndedTouchpadLeft.GetPersistentEventCount() > 0)
                     {
                         currentEntry.OnInputActionEndedTouchpadLeft?.Invoke(eventData);
                     }
@@ -220,7 +224,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
                 else
                 {
                     //Down press
-                    if (currentEntry.iconTouchpadDown != null)
+                    if (currentEntry.OnInputActionEndedTouchpadDown.GetPersistentEventCount() > 0)
                     {
                         currentEntry.OnInputActionEndedTouchpadDown?.Invoke(eventData);
                     }
@@ -245,6 +249,36 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
     bool IsInputSourceThis(IMixedRealityInputSource inputSource)
     {
         return this == inputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
+    }
+
+
+    void IMixedRealityInputHandler<float>.OnInputChanged(InputEventData<float> eventData)
+    {
+        if (eventData.MixedRealityInputAction == gripPressAction)
+        {
+            if (eventData.InputData > 0.5)
+            {
+                if (currentEntry.OnInputActionStartedGrip.GetPersistentEventCount() > 0)
+                {
+                    currentEntry.OnInputActionStartedGrip.Invoke(eventData);
+                }
+                else
+                {
+                    defaultEntry.OnInputActionStartedGrip.Invoke(eventData);
+                }
+            }
+            else
+            {
+                if (currentEntry.OnInputActionEndedGrip.GetPersistentEventCount() > 0)
+                {
+                    currentEntry.OnInputActionEndedGrip.Invoke(eventData);
+                }
+                else
+                {
+                    defaultEntry.OnInputActionEndedGrip.Invoke(eventData);
+                }
+            }
+        }
     }
 
     IMixedRealityInputSource GetOwnInputSource()

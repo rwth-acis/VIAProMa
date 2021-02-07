@@ -35,6 +35,9 @@ public struct MenuEntry
     public InputActionUnityEvent OnInputActionStartedTrigger;
     public InputActionUnityEvent OnInputActionEndedTrigger;
 
+    public InputActionUnityEvent OnInputActionStartedGrip;
+    public InputActionUnityEvent OnInputActionEndedGrip;
+
     public InputActionUnityEvent OnInputActionEndedTouchpadRight;
     public InputActionUnityEvent OnInputActionEndedTouchpadLeft;
     public InputActionUnityEvent OnInputActionEndedTouchpadUp;
