@@ -41,7 +41,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 {
                     for (int j = 0; j < SerializeableSelection.Count; j++)
                     {
-                        results[i] += SerializeableSelection[j].Item2[i]? 1 : 0;
+                        results[i] += SerializeableSelection[j].Item2?[i] == true? 1 : 0;
                     }
                 }
                 return results;

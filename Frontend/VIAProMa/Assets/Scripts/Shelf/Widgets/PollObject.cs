@@ -18,12 +18,12 @@ public class PollObject : MonoBehaviour
         set
         {
             pollIndex = value;
-            question.text = PollHandler.Instance.savedPolls[pollIndex].Question;
+            question.text = PollHandler.Instance.savedPolls[pollIndex]?.Question ?? "";
         }
     }
 
     public void SelectPoll()
     {
-        PollHandler.Instance.DisplayPollAtIndex(pollIndex+1);
+        PollHandler.Instance.GenerateSynchronizedPollDisplay(pollIndex+1);
     }
 }
