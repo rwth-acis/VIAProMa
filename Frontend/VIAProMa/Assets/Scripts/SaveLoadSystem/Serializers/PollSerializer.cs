@@ -39,6 +39,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
                     polls.Add((SerializablePoll)SerializablePoll.Deserialize(serializedPoll));
                 }
                 PollHandler.Instance.savedPolls = polls;
+                PollHandler.Instance.UpdatePolls();
             }
         }
 

@@ -222,6 +222,14 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 return -id - 1 < tempSavedPolls.Count ? tempSavedPolls[-id - 1] : null;
         }
 
+        /// <summary>
+        /// Sends update of local savedPolls and tempSavedPolls to other clients
+        /// </summary>
+        public void UpdatePolls()
+        {
+            photonView.RPC("PollSyncRecieved", RpcTarget.Others, savedPolls.ToArray(), tempSavedPolls.ToArray());
+        }
+
         [PunRPC]
         private void PollStartedReceived(string question, string[] answers, int syncedEndTime, PollOptions flags, PhotonMessageInfo messageInfo)
         {
@@ -327,6 +335,18 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
 
             PollToDisplayRecieved?.Invoke(this, index);
+        }
+
+        [PunRPC]
+        private void PollSyncRecieved(SerializablePoll[] saved, SerializablePoll[] temp, PhotonMessageInfo messageInfo)
+        {
+            if(!messageInfo.Sender.IsMasterClient)
+            {
+                Debug.LogError("Non masterclient tried to overwrite polls, should never happen");
+                return;
+            }
+            savedPolls = saved.ToList();
+            tempSavedPolls = temp.ToList();
         }
 
         /// <summary>
