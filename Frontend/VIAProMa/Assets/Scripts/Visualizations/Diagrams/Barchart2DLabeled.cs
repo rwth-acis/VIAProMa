@@ -1,13 +1,16 @@
-﻿using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Visualizations.Diagrams.Common.Axes;
+using i5.VIAProMa.Visualizations.Common.Data.DataSets;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace i5.VIAProMa.Visualizations.Diagrams
 {
     /**
-     * A 2D Barchart using only two data columns
+     * A 2D Barchart that uses the third data column to label the other two if barPrefab is a LabeledBar
      */
-    public class Barchart2D : i5.VIAProMa.Visualizations.Common.Diagram2D
+    public class Barchart2DLabeled : i5.VIAProMa.Visualizations.Common.Diagram2D
     {
         [SerializeField] private GameObject barPrefab;
 
@@ -50,6 +53,12 @@ namespace i5.VIAProMa.Visualizations.Diagrams
                 float barThicknessZ = 0.4f;
 
                 barObj.transform.localScale = Vector3.Scale(Size, new Vector3(barThicknessX, Mathf.Max(yInUnitSpace, 0.001f), barThicknessZ));
+
+                if (DataSet.DataColumns.Count > 2 && DataSet.DataColumns[2] is TextDataColumn && DataSet.DataColumns[2].ValueCount > i)
+                { // Set label if separate label column is supplied
+                    LabeledBar label = barObj.GetComponent<LabeledBar>();
+                    if (label) label.SetLabel((DataSet.DataColumns[2] as TextDataColumn).Values[i]);
+                }
 
                 if (i < DataSet.DataPointColors.Count)
                 {
