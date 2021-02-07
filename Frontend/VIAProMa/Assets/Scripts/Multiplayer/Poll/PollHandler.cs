@@ -248,7 +248,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
         [PunRPC]
         private void PollUpdateRequestReceived(SerializablePoll poll, int i, PhotonMessageInfo messageInfo)
         {
-            if (i > 0)
+            if (i == 0)
+            {
+                Debug.LogError("This should not happen. Index == 0!");
+                PollSaveRequestReceived(poll, messageInfo);
+            }
+            else if (i > 0)
             {
                 int index = i - 1;
                 if (index >= savedPolls.Count)
@@ -327,7 +332,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
             {
                 case PollRespondEventCode:
                     finished = currentPoll?.OnResponse(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender), (bool[])photonEvent.CustomData);
-                    if (finished == false)
+                    if (finished == false && currentPoll.Flags.HasFlag(PollOptions.RealtimeViz))
                         photonView.RPC("PollUpdateRequestReceived", RpcTarget.MasterClient, SerializablePoll.FromPoll(currentPoll), realtimeVizIndex);
                     break;
                 case PollAcknowledgedEventCode:
