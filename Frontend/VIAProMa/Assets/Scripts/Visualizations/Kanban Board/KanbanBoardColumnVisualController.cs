@@ -1,4 +1,4 @@
-﻿using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -285,7 +285,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                 );
 
             boundingboxCollider.size = 1.01f * background.localScale;
-            boundingBox.Refresh();
+            //boundingBox.Refresh();
 
             DetermineGridSize();
             UpdateVisuals();

@@ -1,4 +1,4 @@
-﻿using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using UnityEngine;
 
@@ -58,7 +58,7 @@ namespace i5.VIAProMa.Utilities
             boundingBox.Active = boundingBoxActive;
             if (boundingBoxActive)
             {
-                boundingBox.Refresh();
+                //boundingBox.Refresh();
             }
             if (manipulationHandler != null)
             {

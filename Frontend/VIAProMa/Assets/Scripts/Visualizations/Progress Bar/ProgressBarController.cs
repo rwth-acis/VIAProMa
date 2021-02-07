@@ -1,4 +1,4 @@
-﻿using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 
@@ -66,7 +66,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                     value + 0.05f, // add 0.05f to encapsulate the end caps
                     boundingBoxCollider.size.y,
                     boundingBoxCollider.size.z);
-                boundingBox.Refresh();
+                //boundingBox.Refresh();
 
                 UpdateTextLabelPositioning(value);
             }
@@ -208,7 +208,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                 newLength + 0.05f, // add 0.05f to encapsulate the end caps
                 boundingBoxCollider.size.y,
                 boundingBoxCollider.size.z);
-            boundingBox.Refresh();
+            //boundingBox.Refresh();
 
             UpdateTextLabelPositioning(newLength);
         }

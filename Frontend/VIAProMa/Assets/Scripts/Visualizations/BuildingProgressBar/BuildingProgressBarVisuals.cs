@@ -1,4 +1,4 @@
-﻿using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Visualizations.ProgressBars;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
@@ -163,7 +163,7 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
             Bounds bounds = buildingSizeData.GetBounds();
             boundingBoxCollider.center = bounds.center;
             boundingBoxCollider.size = bounds.size;
-            boundingBox.Refresh();
+            //boundingBox.Refresh();
 
             titleLabel.MaxWidth = Mathf.Min(bounds.size.x, bounds.size.z);
         }
