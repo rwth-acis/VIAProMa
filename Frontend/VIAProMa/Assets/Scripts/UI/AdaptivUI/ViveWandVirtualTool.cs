@@ -83,21 +83,21 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
                 if (oldFocusTarget != null)
                 {
                     currentEntry.OnHoverOverTargetStop.Invoke(data);
-                    Debug.Log("Hover Stop");
+                    //Debug.Log("Hover Stop");
                 }
 
                 if (target != null)
                 {
                     currentEntry.OnHoverOverTargetStart.Invoke(data);
-                    Debug.Log("Hover Start");
+                    //Debug.Log("Hover Start");
                     currentEntry.OnHoverOverTargetActive.Invoke(data);
-                    Debug.Log("Hover");
+                    //Debug.Log("Hover");
                 }
             }
             else if (target != null)
             {
                 currentEntry.OnHoverOverTargetActive.Invoke(data);
-                Debug.Log("Hover");
+                //Debug.Log("Hover");
             }
             oldFocusTarget = target;
         }
