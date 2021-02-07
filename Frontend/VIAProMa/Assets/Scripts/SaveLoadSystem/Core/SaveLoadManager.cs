@@ -160,7 +160,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 }
                 else // the object does not yet exist in the scene => instantiate it
                 {
-                    if (serializedObjects[i].Bools.ContainsKey("ROOM") && serializedObjects[i].Bools["Room"])
+                    if (serializedObjects[i].Bools.ContainsKey("ROOM") && serializedObjects[i].Bools["ROOM"])
                     {
                         ResourceManager.Instance.SceneNetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity, obj => DeserializeGameObject(obj, serializedObjects[i]));
                     }
