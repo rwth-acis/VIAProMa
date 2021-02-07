@@ -11,8 +11,8 @@ using i5.VIAProMa.Multiplayer.Poll;
 namespace i5.VIAProMa.Visualizations.Poll
 {
     /// <summary>
-	/// Interface to set up Barchart2DLabeled for Poll visualization
-	/// </summary>
+    /// Interface to set up Barchart2DLabeled for Poll visualization
+    /// </summary>
     [RequireComponent(typeof(Barchart2DLabeled))]
     public class PollBarVisualization : MonoBehaviour
     {
@@ -39,7 +39,8 @@ namespace i5.VIAProMa.Visualizations.Poll
 
         private void OnDestroy()
         {
-            PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
+            if (PollHandler.Instance != null)
+                PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
         }
 
         private void CheckSetup(object sender, int id)
@@ -113,6 +114,7 @@ namespace i5.VIAProMa.Visualizations.Poll
             List<string> voterAxis = new List<string>();
             List<Color> colors = new List<Color>();
 
+            UnityEngine.Random.InitState(pollID); // For consistent coloring
             for (int i = 0; i < results.Length; i++)
             {
                 answerAxis.Add(answers[i]);
