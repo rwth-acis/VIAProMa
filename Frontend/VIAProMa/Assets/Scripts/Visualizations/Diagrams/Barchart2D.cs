@@ -1,7 +1,5 @@
 ﻿using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Visualizations.Diagrams.Common.Axes;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace i5.VIAProMa.Visualizations.Diagrams

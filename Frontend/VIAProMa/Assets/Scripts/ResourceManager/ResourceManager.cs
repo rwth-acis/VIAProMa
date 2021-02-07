@@ -98,7 +98,31 @@ namespace i5.VIAProMa.ResourceManagagement
             }
             else
             {
-                CallMasterForInstantiation(obj, position, rotation, resultCallback, data);
+                CallMasterForInstantiation(obj.name, position, rotation, resultCallback, data);
+            }
+        }
+
+        /// <summary>
+        /// Instantiates the GameObject with the given name as a scene object whose lifetime is coupled with the room and scene
+        /// This way, the GameObject will still exist if the creator left the room
+        /// The GameObject must exist in the resources and have a photon view
+        /// </summary>
+        /// <param name="name">The name of the GameObjects</param>
+        /// <param name="position">The position where the object should be instantiated</param>
+        /// <param name="rotation">The rotatoin with which the object should be instantiated</param>
+        /// <param name="data">Instantiation data which can be added to the object</param>
+        /// <returns></returns>
+        public void SceneNetworkInstantiate(string name, Vector3 position, Quaternion rotation, Action<GameObject> resultCallback, object[] data = null)
+        {
+            // only the master client can instantiate new scene objects
+            if (PhotonNetwork.IsMasterClient)
+            {
+                GameObject result = resourcePrefabCollection.NetworkInstantiate(name, position, rotation, true, data);
+                resultCallback?.Invoke(result);
+            }
+            else
+            {
+                CallMasterForInstantiation(name, position, rotation, resultCallback, data);
             }
         }
 
@@ -116,14 +140,14 @@ namespace i5.VIAProMa.ResourceManagagement
             }
         }
 
-        private async void CallMasterForInstantiation(GameObject obj, Vector3 position, Quaternion rotation, Action<GameObject> resultCallback, object[] data = null)
+        private async void CallMasterForInstantiation(string name, Vector3 position, Quaternion rotation, Action<GameObject> resultCallback, object[] data = null)
         {
             // create a remote instantiation job
             short jobId = instantiationJobId;
             instanatiationJobCallbacks.Add(jobId, resultCallback);
             instantiationJobId++;
 
-            short objNameStringId = await NetworkedStringManager.StringToId(obj.name);
+            short objNameStringId = await NetworkedStringManager.StringToId(name);
 
             photonView.RPC("RemoteInstantiate", RpcTarget.MasterClient, // consider sending to all clients in order to account for master client switches
                 jobId,

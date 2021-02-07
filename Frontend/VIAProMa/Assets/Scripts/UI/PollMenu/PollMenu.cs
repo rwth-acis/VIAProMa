@@ -15,9 +15,10 @@ using Microsoft.MixedReality.Toolkit.UI;
 
 namespace i5.VIAProMa.UI.Poll
 {
-    /**
-     * Local Poll UI menu, listens to Poll events and calls into PollHandler for user interaction
-     */
+    /// <summary>
+	/// Local Poll UI menu, listens to Poll events and calls into PollHandler for user interaction
+    /// Stores the state of the currently running poll as well as whether it has been started by this user   
+	/// </summary>
     public class PollMenu : MonoBehaviour, IWindow
     {
         [SerializeField] private GameObject pollMasterControlPanel;
@@ -49,31 +50,27 @@ namespace i5.VIAProMa.UI.Poll
         [SerializeField] private GameObject publicIcon;
         [SerializeField] private GameObject saveIcon;
 
-        public bool WindowEnabled { get; set; }
-
-        public bool WindowOpen
-        {
-            get
-            {
-                return gameObject.activeSelf;
-            }
-        }
-
+        // IWindow implementation
+        public bool WindowEnabled { get; set; } // not used here
+        public bool WindowOpen { get { return gameObject.activeSelf; }}
         public event EventHandler WindowClosed;
 
-        // State
+        /* State */
+
+        // Retains whether a poll is currently active
         private bool started = false;
+        // Retains whether the active poll has been responded (either with a NAK, e.g. not participating, or an actual response)
         private bool responded = false;
-        // Currently running poll
+        // Stores the circumstances by which the active poll has been started
         private PollStartEventArgs pollArgs;
         // Current selection from UI
         private bool[] curSelection;
-        // Currently running created poll
+        // Retains whether a poll has been created (might be on before the active poll has been set)
         private bool createdPoll;
-        // Local Countdown
+        // Local Countdown for the active poll, just to update UI, not to end the poll
         private IEnumerator countdown;
 
-        protected void Awake()
+        private void Awake()
         {
             if (pollMasterControlPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollMasterControlPanel));
             if (pollWaitingPanel == null) SpecialDebugMessages.LogMissingReferenceError(this, nameof(pollWaitingPanel));
@@ -108,7 +105,7 @@ namespace i5.VIAProMa.UI.Poll
             PollHandler.Instance.PollDiscardByPlayer += OnPollDiscardByPlayer;
         }
 
-        protected void OnDestroy()
+        private void OnDestroy()
         {
             if (PollHandler.Instance != null)
             {
@@ -118,12 +115,18 @@ namespace i5.VIAProMa.UI.Poll
             }
         }
 
+        /// <summary>
+        /// Open the Poll window for Poll creation
+        /// </summary>
         public void Open()
         {
             if (!started)
                 ShowCreationInterface();
         }
 
+        /// <summary>
+        /// Open the Poll window for Poll creation with the specified transform
+        /// </summary>
         public void Open(Vector3 position, Vector3 eulerAngles)
         {
             Open();
@@ -131,11 +134,14 @@ namespace i5.VIAProMa.UI.Poll
             transform.eulerAngles = eulerAngles;
         }
 
+        /// <summary>
+        /// Close the Poll window and stops participating in the active poll if no response has been send yet
+        /// </summary>
         public void Close()
         {
             HidePollInterface();
             WindowClosed?.Invoke(this, EventArgs.Empty);
-            if (started)
+            if (started && !responded)
             { // Leave Poll
                 PollHandler.Instance?.SendStatus(false, pollArgs.MessageSender);
                 responded = true;
@@ -158,24 +164,25 @@ namespace i5.VIAProMa.UI.Poll
             pollMasterControlPanel.SetActive(false);
         }
 
-        private void ShowPollInterface(PollStartEventArgs poll)
+        private void ShowPollInterface()
         {
             // Update interface
-            questionLabel.text = poll.Question;
-            publicIcon?.SetActive(poll.Flags.HasFlag(PollOptions.Public));
-            saveIcon?.SetActive(poll.Flags.HasFlag(PollOptions.SaveResults));
+            questionLabel.text = pollArgs.Question;
+            publicIcon?.SetActive(pollArgs.Flags.HasFlag(PollOptions.Public));
+            saveIcon?.SetActive(pollArgs.Flags.HasFlag(PollOptions.SaveResults));
 
-            if (poll.Flags.HasFlag(PollOptions.MultipleChoice))
+            // Set up answers
+            if (pollArgs.Flags.HasFlag(PollOptions.MultipleChoice))
             {
                 multipleChoicePanel.SetActive(true);
                 singleChoicePanel.SetActive(false);
-                for (int i = 0; i < answerToggles.Count && i < poll.Answers.Length; i++)
+                for (int i = 0; i < answerToggles.Count && i < pollArgs.Answers.Length; i++)
                 { // Setup answers
                     answerToggles[i].gameObject.SetActive(true);
-                    answerToggles[i].GetComponentInChildren<TextMesh>().text = poll.Answers[i]; // Don't mind the GetComponent there
+                    answerToggles[i].GetComponentInChildren<TextMesh>().text = pollArgs.Answers[i]; // Don't mind the GetComponent there
                     answerToggles[i].IsToggled = false;
                 }
-                for (int i = poll.Answers.Length; i < answerToggles.Count; i++)
+                for (int i = pollArgs.Answers.Length; i < answerToggles.Count; i++)
                     answerToggles[i].gameObject.SetActive(false);
                 for (int i = 0; i < answerButtons.Count; i++)
                     answerButtons[i].gameObject.SetActive(false);
@@ -184,12 +191,12 @@ namespace i5.VIAProMa.UI.Poll
             {
                 multipleChoicePanel.SetActive(false);
                 singleChoicePanel.SetActive(true);
-                for (int i = 0; i < answerButtons.Count && i < poll.Answers.Length; i++)
+                for (int i = 0; i < answerButtons.Count && i < pollArgs.Answers.Length; i++)
                 { // Setup answers
                     answerButtons[i].gameObject.SetActive(true);
-                    answerButtons[i].GetComponentInChildren<TextMesh>().text = poll.Answers[i]; // Don't mind the GetComponent there
+                    answerButtons[i].GetComponentInChildren<TextMesh>().text = pollArgs.Answers[i]; // Don't mind the GetComponent there
                 }
-                for (int i = poll.Answers.Length; i < answerButtons.Count; i++)
+                for (int i = pollArgs.Answers.Length; i < answerButtons.Count; i++)
                     answerButtons[i].gameObject.SetActive(false);
                 for (int i = 0; i < answerToggles.Count; i++)
                     answerToggles[i].gameObject.SetActive(false);
@@ -201,8 +208,8 @@ namespace i5.VIAProMa.UI.Poll
             pollOptionsPanel.SetActive(false);
             pollSelectionPanel.SetActive(true);
 
-            // Update countdown
-            if (poll.Flags.HasFlag(PollOptions.Countdown))
+            // Update countdown (after gameObject.SetActive to allow Coroutine)
+            if (pollArgs.Flags.HasFlag(PollOptions.Countdown))
             {
                 countdownLabel.enabled = true;
                 countdown = CountdownUpdater();
@@ -225,7 +232,7 @@ namespace i5.VIAProMa.UI.Poll
         }
 
         private void SendCreationRequest()
-        {
+        { // Reads current creation UI state and requests for poll to be created
             PollOptions options = PollOptions.None;
             DateTime endTime = DateTime.Now;
             if (countdownToggle.IsToggled)
@@ -257,15 +264,13 @@ namespace i5.VIAProMa.UI.Poll
         }
 
         private void SendResponse()
-        {
+        { // Sends the current selection
             responded = true;
             PollHandler.Instance?.RespondPoll(curSelection, pollArgs.MessageSender);
         }
 
         private void PollClear()
-        {
-            if (started && !responded)
-                PollHandler.Instance?.SendStatus(false, pollArgs.MessageSender);
+        { // Reset active Poll state
             started = responded = false;
             createdPoll = false;
             pollArgs = null;
@@ -275,7 +280,7 @@ namespace i5.VIAProMa.UI.Poll
         }
 
         private IEnumerator CountdownUpdater()
-        {
+        { // Update countdown of the current poll
             while (started)
             {
                 TimeSpan span = pollArgs.End - DateTime.Now;
@@ -284,9 +289,39 @@ namespace i5.VIAProMa.UI.Poll
             }
         }
 
-        /**
-         * Event called from buttons/toggles 
-         */
+        /// <summary>
+        /// Event called from poll creation to advance to poll options
+        /// </summary>
+        public void OnPollNext()
+        {
+            pollCreationPanel.SetActive(false);
+            pollOptionsPanel.SetActive(true);
+        }
+
+        /// <summary>
+        /// Event called from poll options to return to poll creation
+        /// </summary>
+        public void OnPollPrevious()
+        {
+            pollCreationPanel.SetActive(true);
+            pollOptionsPanel.SetActive(false);
+        }
+
+        /// <summary>
+        /// Event called from menu to create the new poll
+        /// </summary>
+        public void OnPollCreate()
+        {
+            if (answerInputs.All(i => String.IsNullOrEmpty(i.Text)))
+                return; // No answers written
+            HidePollInterface();
+            SendCreationRequest();
+        }
+
+        /// <summary>
+        /// Event called when an answer button has been selected (Single-Choice only)
+        /// </summary>
+        /// <param name="option">Index of answer that has been selected</param>
         public void OnSelectOption(int option)
         {
             for (int i = 0; i < curSelection.Length; i++)
@@ -297,38 +332,9 @@ namespace i5.VIAProMa.UI.Poll
             pollWaitingPanel.SetActive(true);
         }
 
-        /**
-         * Event called from poll creation to advance to poll options
-         */
-        public void OnPollNext()
-        {
-            pollCreationPanel.SetActive(false);
-            pollOptionsPanel.SetActive(true);
-        }
-
-        /**
-         * Event called from poll options to return to poll creation
-         */
-        public void OnPollPrevious()
-        {
-            pollCreationPanel.SetActive(true);
-            pollOptionsPanel.SetActive(false);
-        }
-
-        /**
-         * Event called from menu to create the new poll
-         */
-        public void OnPollCreate()
-        {
-            if (answerInputs.All(i => String.IsNullOrEmpty(i.Text)))
-                return;
-            HidePollInterface();
-            SendCreationRequest();
-        }
-
-        /**
-         * Event called from menu to submit the poll selection
-         */
+        /// <summary>
+        /// Event called from menu to submit the poll selection (Multi-Choice only)
+        /// </summary>
         public void OnPollSubmit()
         {
             for (int i = 0; i < curSelection.Length && i < answerToggles.Count; i++)
@@ -338,55 +344,68 @@ namespace i5.VIAProMa.UI.Poll
             pollWaitingPanel.SetActive(true);
         }
 
-        private void OnPollStarted(object sender, PollStartEventArgs e)
-        {
-            if (started)
-            {
-                Debug.LogError("Already participating in a poll, not joining new poll!");
-                return;
-            }
-            if (createdPoll)
-            {
-                if (e.MessageSender != PhotonNetwork.LocalPlayer)
-                {
-                    Debug.LogError("Crashing my party, aren't ya? Not with me!");
-                    return;
-                }
-                pollMasterControlPanel.SetActive(true);
-            }
-            Debug.Log("Opening Poll! Options: " + e.Flags);
-            started = true;
-            responded = false;
-            curSelection = new bool[e.Answers.Length];
-            pollArgs = e;
-            ShowPollInterface(e);
-            // Notify poll master we are participating in his poll
-            PollHandler.Instance?.SendStatus(true, pollArgs.MessageSender);
-        }
-
+        /// <summary>
+        /// Event called from master control panel to stop the poll prematurely
+        /// </summary>
         public void OnStopButton()
         {
             if (createdPoll)
-            {
+            { // Just double check, but on the receiving end clients check anyway if the host is correct
                 PollHandler.Instance.EndPoll();
             }
         }
 
+        /// <summary>
+        /// Event called from creation panel to load shelf with stored polls
+        /// </summary>
         public void OnLoadPolls()
         {
             PollHandler.Instance.PollShelfDisplay();
             Close();
         }
 
-        private void OnPollEnded(object sender, PollEndEventArgs e)
-        {
-            if (!started) return;
-            if (e.MessageSender != pollArgs.MessageSender)
-            {
-                Debug.LogError("Received Poll End request from somebody other than initiator!");
+        private void OnPollStarted(object sender, PollStartEventArgs e)
+        { // Event from PollHandler to set up a new poll
+            if (started)
+            { // Can happen when two polls are started within margin of ping
+                Debug.LogError("Already participating in a poll, not joining new poll!");
                 return;
             }
-            Debug.Log("Close Poll!");
+            if (createdPoll)
+            {
+                if (e.MessageSender != PhotonNetwork.LocalPlayer)
+                { // Can happen when two polls are started within margin of ping, but should already be filtered out above
+                    Debug.LogError("Crashing my party, aren't ya? Not with me!");
+                    return;
+                }
+                // This interface created that poll
+                pollMasterControlPanel.SetActive(true);
+            }
+
+            // Init state
+            started = true;
+            responded = false;
+            curSelection = new bool[e.Answers.Length];
+            pollArgs = e;
+            // Show interface
+            ShowPollInterface();
+            // Notify poll master we are participating in his poll
+            PollHandler.Instance?.SendStatus(true, pollArgs.MessageSender);
+        }
+
+        private void OnPollEnded(object sender, PollEndEventArgs e)
+        { // Somebody sent a poll ended event
+            if (!started)
+                return; // Should only happen if we never received the poll start or we received two and second was ignored
+            if (e.MessageSender != pollArgs.MessageSender)
+            { // Should only happen in case we had two polls simulatenously, when both got started within margin of ping
+                Debug.LogWarning("Received Poll End request from somebody other than initiator!");
+                return;
+            }
+            // If not responded, send a NAK
+            if (started && !responded)
+                PollHandler.Instance?.SendStatus(false, pollArgs.MessageSender);
+            // Clear local state
             PollClear();
             HidePollInterface();
         }
@@ -394,9 +413,7 @@ namespace i5.VIAProMa.UI.Poll
         private void OnPollDiscardByPlayer(object sender, Player player)
         {
             if (started && pollArgs.MessageSender == player)
-            {
-                Debug.Log("Poll Master left room! Discarding!");
-                started = false;
+            { // Poll host left room or discarded poll, clear local state
                 PollClear();
                 HidePollInterface();
             }

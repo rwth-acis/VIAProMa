@@ -1,16 +1,13 @@
 ﻿using i5.VIAProMa.Multiplayer.Common;
-using i5.VIAProMa.WebConnection;
 using Photon.Pun;
-using Photon.Realtime;
 using System;
 using UnityEngine;
 using i5.VIAProMa.Visualizations.Poll;
-using i5.VIAProMa.Multiplayer.Poll;
 
 namespace i5.VIAProMa.Multiplayer.Synchronizer
 {
     /// <summary>
-    /// Synchronizes the poll visualization
+    /// Synchronizes the PollBarVisualization
     /// </summary>
     [RequireComponent(typeof(PollBarVisualization))]
     public class PollVisualisationSynchronizer : TransformSynchronizer
@@ -20,12 +17,12 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
         private void Awake()
         {
             pollViz = GetComponent<PollBarVisualization>();
-            pollViz.PollVizUpdated += SendUpdatePollRequest;
+            pollViz.PollVizUpdatedForced += SendUpdatePollRequest;
         }
 
         private void OnDestroy()
         {
-            pollViz.PollVizUpdated -= SendUpdatePollRequest;
+            pollViz.PollVizUpdatedForced -= SendUpdatePollRequest;
         }
 
         public override void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -33,7 +30,7 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
             base.OnPhotonSerializeView(stream, info);
             if (stream.IsWriting)
             {
-                stream.SendNext(pollViz.pollIndex);
+                stream.SendNext(pollViz.pollID);
             }
             else
             {
@@ -42,14 +39,14 @@ namespace i5.VIAProMa.Multiplayer.Synchronizer
         }
 
         private void SendUpdatePollRequest(object sender, EventArgs args)
-        {
-            photonView.RPC("UpdatePoll", RpcTarget.Others, pollViz.pollIndex);
+        { // Local visualization has been forcefully updated (keeping ID same, but content changed)
+            photonView.RPC("UpdatePoll", RpcTarget.Others, pollViz.pollID);
         }
 
         [PunRPC]
-        private async void UpdatePoll(int pollIndex)
-        {
-            pollViz.SetupPoll(pollIndex);
+        private void UpdatePoll(int pollID)
+        { // Force update poll visualization (from synchronized poll database), potentially this has not been updated before
+            pollViz.SetupPoll(pollID);
         }
     }
 }

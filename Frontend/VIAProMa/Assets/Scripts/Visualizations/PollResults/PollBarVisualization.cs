@@ -10,18 +10,25 @@ using i5.VIAProMa.Multiplayer.Poll;
 
 namespace i5.VIAProMa.Visualizations.Poll
 {
-    /**
-     * Sets up Barchart Component for Poll visualization
-     */
+    /// <summary>
+	/// Interface to set up Barchart2DLabeled for Poll visualization
+	/// </summary>
     [RequireComponent(typeof(Barchart2DLabeled))]
     public class PollBarVisualization : MonoBehaviour
     {
         [SerializeField] private TextLabel questionLabel;
         private Barchart2DLabeled barChart;
 
-        public event EventHandler PollVizUpdated;
+        /// <summary>
+        /// Event triggered when a update has been forced
+        /// </summary>
+        public event EventHandler PollVizUpdatedForced;
 
-        public int pollIndex { get; private set; }
+        /// <summary>
+        /// ID of the currently displayed Poll
+        /// </summary>
+        /// <value></value>
+        public int pollID { get; private set; }
 
         private void Awake()
         {
@@ -35,8 +42,71 @@ namespace i5.VIAProMa.Visualizations.Poll
             PollHandler.Instance.PollToDisplayRecieved -= CheckSetup;
         }
 
-        private void Setup(string question, string[] answers, int[] results, string[] voterLists)
+        private void CheckSetup(object sender, int id)
         {
+            if (id == pollID)
+            { // PollHandler notifies us that our observed poll ID has been updated
+                // (either newly synchronized or updated with new resulst)
+                SetupPoll(id);
+            }
+        }
+
+        /// <summary>
+        /// Force update the poll visualizations, making sure all observers are notified of the change
+        /// Used when poll entry changes without ID change         
+        /// </summary>
+        /// <param name="id">ID of the Poll to visualize</param>
+        public void ForceUpdatePoll(int id)
+        {
+            SetupPoll(id);
+            PollVizUpdatedForced?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Update poll visualization with new ID incase it is different
+        /// </summary>
+        /// <param name="id">ID of the Poll to visualize</param>
+        public void UpdatePoll(int id)
+        {
+            if (pollID != id)
+                SetupPoll(id);
+        }
+
+        /// <summary>
+        /// Setup poll visualization with poll, updating even when the poll is already set up once
+        /// </summary>
+        /// <param name="id">ID of the Poll to visualize</param>
+        public void SetupPoll(int id)
+        {
+            pollID = id;
+            SerializablePoll poll = PollHandler.Instance.GetPollByID(pollID);
+            if (poll == null)
+            { // Wait for poll to be synchronized (CheckSetup event)
+                return;
+            }
+
+            string[] voters = new string[poll.Answers.Length];
+            for (int i = 0; i < voters.Length; i++)
+            {
+                if (poll.Flags.HasFlag(PollOptions.Public))
+                {
+                    voters[i] = poll.SerializeableSelection.Aggregate(new StringBuilder(), (sb, cur) =>
+                    {
+                        if (cur.Item2[i])
+                            sb.Append(sb.Length == 0 ? "" : ", ").Append(cur.Item1);
+                        return sb;
+                    }).ToString();
+                }
+                else
+                {
+                    voters[i] = "Anonymous";
+                }
+            }
+            SetupBarChart(poll.Question, poll.Answers, poll.AccumulatedResult, voters);
+        }
+
+        private void SetupBarChart(string question, string[] answers, int[] results, string[] voterLists)
+        { // Setup barchart component
             DataSet dataset = new DataSet();
             List<string> answerAxis = new List<string>();
             List<float> resultAxis = new List<float>();
@@ -47,8 +117,7 @@ namespace i5.VIAProMa.Visualizations.Poll
             {
                 answerAxis.Add(answers[i]);
                 resultAxis.Add((float)results[i]);
-                if (voterLists != null) voterAxis.Add(voterLists[i]);
-                Debug.Log("Add data point " + answers[i] + ": " + results[i]);
+                voterAxis.Add(voterLists[i]);
                 colors.Add(UnityEngine.Random.ColorHSV());
             }
 
@@ -60,65 +129,11 @@ namespace i5.VIAProMa.Visualizations.Poll
             dataset.DataColumns.Add(resultColumn);
             TextDataColumn voterColumn = new TextDataColumn(voterAxis);
             voterColumn.Title = "";
-            if (voterLists != null) dataset.DataColumns.Add(voterColumn);
+            dataset.DataColumns.Add(voterColumn);
             dataset.DataPointColors = colors;
             barChart.DataSet = dataset;
             barChart.UpdateDiagram();
             questionLabel.Text = question;
-        }
-
-        private void CheckSetup(object sender, int index)
-        {
-            Debug.Log("Received update on delayed poll " + index);
-            if (index == pollIndex)
-            {
-                Debug.Log("Delayed poll is correct poll " + index);
-                SetupPoll(index);
-            }
-        }
-
-        public void ForceUpdatePoll(int id)
-        {
-            Debug.Log("Forcing to update Poll with ID " + id);
-            PollVizUpdated?.Invoke(this, EventArgs.Empty);
-            SetupPoll(id);
-        }
-
-        public void UpdatePoll(int id)
-        {
-            Debug.Log("Attempting to update Poll with ID " + id);
-            if (pollIndex != id)
-                SetupPoll(id);
-        }
-
-        public void SetupPoll(int id)
-        {
-            Debug.Log("Setup Poll with ID " + id);
-            pollIndex = id;
-            SerializablePoll poll = PollHandler.Instance.GetPollAtIndex(pollIndex);
-            if (poll == null)
-            { // wait for poll to be synchronized
-                Debug.Log("Poll is not yet in database " + id);
-                return;
-            }
-
-            string[] voters = new string[poll.Answers.Length];
-            for (int i = 0; i < voters.Length; i++)
-            {
-                if (poll.Flags.HasFlag(PollOptions.Public))
-                {
-                    voters[i] = poll.SerializeableSelection.Aggregate(new StringBuilder(), (sb, cur) =>
-                    {
-                        if (cur.Item2?[i] ?? false) sb.Append(sb.Length == 0 ? "" : ", ").Append(cur.Item1);
-                        return sb;
-                    }).ToString();
-                }
-                else
-                {
-                    voters[i] = "Anonymous";
-                }
-            }
-            Setup(poll.Question, poll.Answers, poll.AccumulatedResult, voters);
         }
     }
 }

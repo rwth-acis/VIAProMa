@@ -6,6 +6,12 @@ using i5.VIAProMa.Multiplayer.Poll;
 
 namespace i5.VIAProMa.SaveLoadSystem.Serializers
 {
+    /// <summary>
+    /// Serializes and Deserializes PollHandler.Instance.savedPolls to save on the Backend
+    /// </summary>
+    /// <remarks>
+    /// This is a dirty hack and should not be looked at too closely   
+    /// </remarks>
     public class PollSerializer : MonoBehaviour, ISerializable 
     {
         private const string pollKey = "poll";
@@ -16,6 +22,10 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
             return key + "#" + index;
         }
 
+        /// <summary>
+        /// Deserialize the serialized poll data into the polls stored in this project
+        /// </summary>
+        /// <param name="serializedObject">The serialized poll data from the project save.</param>
         public void Deserialize(SerializedObject serializedObject)
         {
             List<SerializablePoll> polls = new List<SerializablePoll>();
@@ -32,6 +42,10 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
             }
         }
 
+        /// <summary>
+        /// Serializes the polls currently stored in the scene into the serialized poll data
+        /// </summary>
+        /// <returns>Serialized poll data to be stored with the project</returns>
         public SerializedObject Serialize()
         {
             SerializedObject serializedObject = new SerializedObject();
@@ -41,6 +55,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
             {
                 SerializedObject.AddList(ConstructKey(pollKey, i), serializedPolls[i].Select(b => (int)b).ToList(),serializedObject.Integers); //saving bytes into ints...
             }
+            serializedObject.Bools["ROOM"] = true; // handle this as a Room Object
             return serializedObject;
         }
     }

@@ -1,13 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using i5.VIAProMa.Multiplayer.Poll;
+using i5.VIAProMa.Shelves.Widgets;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 
 namespace i5.VIAProMa.Shelves.PollShelf
 {
+    /// <summary>
+    /// Shelf for loading saved polls
+    /// </summary>
     public class PollShelf : Shelf
     
     {
@@ -17,7 +20,6 @@ namespace i5.VIAProMa.Shelves.PollShelf
         [SerializeField] int pollsPerBoard = 3;
 
         [SerializeField] private GameObject boundingBox;
-        // private List<PollObject> polls;
         private List<Interactable> interactables;
         private List<PollObject> pollObjects;
 
@@ -60,7 +62,7 @@ namespace i5.VIAProMa.Shelves.PollShelf
                     pollObjects.Add(poll);
                     interactables.Add(instances[i].GetComponent<Interactable>());
                 }
-                shelfBoards[shelfBoards.Length - board - 1].Collection = instances;
+                shelfBoards[shelfBoards.Length - board - 1].Collection = instances; // populate shelf top to bottom
             }
         }
 

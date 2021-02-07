@@ -160,17 +160,14 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 }
                 else // the object does not yet exist in the scene => instantiate it
                 {
-                    GameObject instantiated = ResourceManager.Instance.NetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity);
-                    Serializer serializer = instantiated?.GetComponent<Serializer>();
-                    if (serializer == null)
+                    if (serializedObjects[i].Bools.ContainsKey("ROOM") && serializedObjects[i].Bools["Room"])
                     {
-                        Debug.LogError("Prefab " + serializedObjects[i].PrefabName + " is loaded but does not have a serializer");
-                        PhotonNetwork.Destroy(instantiated);
-                        continue;
+                        ResourceManager.Instance.SceneNetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity, obj => DeserializeGameObject(obj, serializedObjects[i]));
                     }
                     else
                     {
-                        serializer.Deserialize(serializedObjects[i]);
+                        GameObject instantiated = ResourceManager.Instance.NetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity);
+                        DeserializeGameObject(instantiated, serializedObjects[i]);
                     }
                 }
             }
@@ -274,6 +271,20 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 Debug.Log("Prevented quitting to save");
             }
             return savedOnQuit;
+        }
+
+        private static void DeserializeGameObject(GameObject gameObject, SerializedObject serializedObject)
+        {
+            Serializer serializer = gameObject?.GetComponent<Serializer>();
+            if (serializer == null)
+            {
+                Debug.LogError("Prefab " + serializedObject.PrefabName + " is loaded but does not have a serializer");
+                PhotonNetwork.Destroy(gameObject);
+            }
+            else
+            {
+                serializer.Deserialize(serializedObject);
+            }
         }
     }
 }

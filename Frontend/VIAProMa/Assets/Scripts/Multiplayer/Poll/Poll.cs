@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace i5.VIAProMa.Multiplayer.Poll
 {
+    /// <summary>
+	/// Boolean options for Polls
+	/// </summary>
     [Flags]
     public enum PollOptions : byte
     {
@@ -17,20 +20,16 @@ namespace i5.VIAProMa.Multiplayer.Poll
         RealtimeViz = 16
     }
 
-    [Serializable]
-    public struct SelectionResult
-    {
-        public string Item1;
-        public bool[] Item2;
-    }
-
+    /// <summary>
+	/// A stored completed poll or a frozen state of a poll
+	/// </summary>
     [Serializable]
     public class SerializablePoll
     {
         public string Question;
         public string[] Answers;
         public PollOptions Flags;
-        public List<SelectionResult> SerializeableSelection;
+        public List<Tuple<string,bool[]>> SerializeableSelection;
         public static byte SerializeablePollCode = 255;
         public int[] AccumulatedResult
         {
@@ -41,7 +40,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 {
                     for (int j = 0; j < SerializeableSelection.Count; j++)
                     {
-                        results[i] += SerializeableSelection[j].Item2?[i] == true ? 1 : 0;
+                        results[i] += SerializeableSelection[j].Item2[i]? 1 : 0;
                     }
                 }
                 return results;
@@ -77,22 +76,20 @@ namespace i5.VIAProMa.Multiplayer.Poll
             offset++;
             var selectionLength = data[offset];
             offset++;
-            result.SerializeableSelection = new List<SelectionResult>();
+            result.SerializeableSelection = new List<Tuple<string,bool[]>>();
             for (int i = 0; i < selectionLength; i++)
             {
                 byte[] nameBytes = new byte[data[offset]];
                 Array.Copy(data, offset + 1, nameBytes, 0, data[offset]);
                 offset += 1 + data[offset];
-                if (data[offset] > 0)
-                {
-                    byte[] selBytes = new byte[data[offset]];
-                    Array.Copy(data, offset + 1, selBytes, 0, data[offset]);
-                    result.SerializeableSelection.Add(new SelectionResult { Item1 = new string(System.Text.Encoding.UTF8.GetChars(nameBytes)), Item2 = selBytes.Select(b => Convert.ToBoolean(b)).ToArray() });
-                }
+                byte[] selBytes = new byte[data[offset]];
+                Array.Copy(data, offset + 1, selBytes, 0, data[offset]);
+                result.SerializeableSelection.Add(new Tuple<string,bool[]> (new string(System.Text.Encoding.UTF8.GetChars(nameBytes)), selBytes.Select(b => Convert.ToBoolean(b)).ToArray()));
                 offset += 1 + data[offset];
             }
             return result;
         }
+
         /// <summary>
         /// Serializes a poll into a byte[] for sending via photon
         /// </summary>
@@ -103,27 +100,32 @@ namespace i5.VIAProMa.Multiplayer.Poll
             var p = (SerializablePoll)serializablePoll;
             List<byte> data = new List<byte>();
             byte[] questionBytes = System.Text.Encoding.UTF8.GetBytes(p.Question);
+            // Store length and content of question
             data.Add((byte)questionBytes.Length);
             data.AddRange(questionBytes);
+            // Store number of answers
             data.Add((byte)p.Answers.Length);
             foreach (String a in p.Answers)
             {
+                // Store length and content of answer
                 byte[] answerBytes = System.Text.Encoding.UTF8.GetBytes(a);
                 data.Add((byte)answerBytes.Length);
                 data.AddRange(answerBytes);
             }
+            // Store flags
             data.Add((byte)p.Flags); //one byte should be enough for now
-
+            // Store number of responses
             data.Add((byte)p.SerializeableSelection.Count);
             for (int i = 0; i < p.SerializeableSelection.Count; i++)
             {
                 var tuple = p.SerializeableSelection[i];
+                // Store length and content of name
                 byte[] nameBytes = System.Text.Encoding.UTF8.GetBytes(tuple.Item1);
                 data.Add((byte)nameBytes.Length);
                 data.AddRange(nameBytes);
-                data.Add((byte)(tuple.Item2?.Length ?? 0));
-                if (tuple.Item2 != null)
-                    data.AddRange(tuple.Item2.Select(b => Convert.ToByte(b)));
+                // store length and content of selection
+                data.Add((byte)(tuple.Item2.Length));
+                data.AddRange(tuple.Item2.Select(b => Convert.ToByte(b)));
             }
             return data.ToArray();
         }
@@ -134,14 +136,14 @@ namespace i5.VIAProMa.Multiplayer.Poll
             result.Answers = poll.Answers;
             result.Flags = poll.Flags;
             result.Question = poll.Question;
-            result.SerializeableSelection = poll.SerializeableSelection.Select(t => new SelectionResult { Item1 = t.Item1, Item2 = t.Item2 }).ToList();
+            result.SerializeableSelection = poll.Selection;
             return result;
         }
     }
 
-    /**
-     * Data and basic logic for Polls
-     */
+    /// <summary>
+	/// A representation of an active poll, with logic and current state
+	/// </summary>
     public class Poll
     {
         private Dictionary<Player, bool[]> selection;
@@ -151,62 +153,73 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public PollOptions Flags { get; private set; }
         public bool IsEnded { get; set; }
         public bool IsFinalized { get; set; }
+        public int SyncedEndTime { get; set; }
 
-        /**
-         * Poll results for each user as it should be saved in accordance with Poll Options
-         */
-        public List<Tuple<String, bool[]>> SerializeableSelection
+        /// <summary>
+        /// Current poll responses as it should be saved in accordance with Poll Options
+        /// </summary>
+        public List<Tuple<string, bool[]>> Selection
         {
             get
             {
-                return (selection.Select(t => new Tuple<String, bool[]>(Flags.HasFlag(PollOptions.Public) ? t.Key.NickName : "Anonymous", t.Value)).ToList());
+                return selection.Where(t => t.Value != null).Select(t => new Tuple<string,bool[]> (Flags.HasFlag(PollOptions.Public) ? t.Key.NickName : "Anonymous", t.Value )).ToList();
             }
         }
 
-        /**
-         * Accumulated Poll results for each answer
-         */
-        public int[] AccumulatedResults
+        /// <summary>
+        /// Number of participants currently registered in the poll
+        /// </summary>
+        public int ParticipantCount
         {
             get
             {
-                List<Tuple<String, bool[]>> sel = SerializeableSelection;
-                int[] results = new int[Answers.Length];
-                for (int i = 0; i < Answers.Length; i++)
-                {
-                    for (int j = 0; j < sel.Count; j++)
-                    {
-                        results[i] += sel[j].Item2[i] ? 1 : 0;
-                    }
-                }
-                return results;
+                return selection.Count();
             }
         }
 
-        public Poll(string question, string[] answers, PollOptions flags)
+        /// <summary>
+        /// Number of responses currently logged in the poll
+        /// </summary>
+        public int ResponseCount
+        {
+            get
+            {
+                return selection.Where(t => t.Value != null).Count();
+            }
+        }
+
+        /// <summary>
+        /// Creates a new Poll with the given setup
+        /// </summary>
+        /// <param name="question">Question text</param>
+        /// <param name="answers">Array of answer options</param>
+        /// <param name="flags">Boolean options for this poll</param>
+        public Poll(string question, string[] answers, PollOptions flags, int synedEndTime)
         {
             Question = question;
             Answers = answers;
             Flags = flags;
+            SyncedEndTime = synedEndTime;
             selection = new Dictionary<Player, bool[]>();
             IsEnded = false;
             IsFinalized = false;
         }
 
-        /**
-         * Update player participation status
-         */
-        public bool OnStatus(Player sender, bool state)
+        /// <summary>
+        /// Updates the participation status of the given player
+        /// </summary>
+        /// <param name="sender">The player to update the status of</param>
+        /// <param name="state">If true, player participates in poll, else he is unregistered</param>
+        /// <returns>True if all registered poll participants have send a response, false if more are expected</returns>
+         public bool OnStatus(Player sender, bool state)
         {
             if (selection.ContainsKey(sender))
             {
                 if (!state)
                 {
-                    Debug.Log("Received nak during poll from " + sender.NickName + "! Unregistering!");
                     selection.Remove(sender);
                     return selection.All(t => t.Value != null);
                 }
-                Debug.LogWarning("Received double ack from " + sender.NickName + "! Should not happen!");
                 return false;
             }
             else
@@ -214,11 +227,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 if (state)
                 {
                     selection.Add(sender, null);
-                    Debug.Log("Player " + sender.NickName + " participates in poll!");
-                }
-                else
-                {
-                    Debug.LogWarning("Received nak from unregistered " + sender.NickName + "! Should not happen!");
                 }
                 return false;
             }
@@ -231,11 +239,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             if (!selection.ContainsKey(sender))
             {
-                Debug.Log("Received response from unregistered player " + sender.NickName + "! Should not happen!");
                 return false;
             }
             selection[sender] = answers;
-            Debug.Log("Logged response from " + sender.NickName + "!");
             return selection.All(t => t.Value != null);
         }
     }

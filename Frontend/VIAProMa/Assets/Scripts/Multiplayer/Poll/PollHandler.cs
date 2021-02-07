@@ -14,10 +14,10 @@ using i5.VIAProMa.Utilities;
 
 namespace i5.VIAProMa.Multiplayer.Poll
 {
-    /**
-     * Handles poll networking, poll host state management and local events for UI
-     */
     [RequireComponent(typeof(PhotonView))]
+    /// <summary>
+    /// Handles poll networking, poll host state manageement and local events for UI
+    /// </summary>
     public class PollHandler : Singleton<PollHandler>, IOnEventCallback, IInRoomCallbacks, IMatchmakingCallbacks
     {
         private PhotonView photonView;
@@ -28,6 +28,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public const byte PollRespondEventCode = 2;
         public const byte PollAcknowledgedEventCode = 3;
         public const byte PollSavedPollSyncEventCode = 4;
+        public const byte PollJoinSyncEventCode = 5;
 
         [Header("Poll Visualizations")]
         [SerializeField] private GameObject barChartVisualizationPrefab;
@@ -74,11 +75,10 @@ namespace i5.VIAProMa.Multiplayer.Poll
             photonView = GetComponent<PhotonView>();
             if (!PhotonPeer.RegisterType(typeof(SerializablePoll), SerializablePoll.SerializeablePollCode, SerializablePoll.Serialize, SerializablePoll.Deserialize))
             {
-                Debug.LogError("couldn't register SerializeablePoll");
+                Debug.LogError($"Couldn't register SerializeablePoll, is there another Serializer registered at {SerializablePoll.SerializeablePollCode}?");
             }
             savedPolls = new List<SerializablePoll>();
             tempSavedPolls = new List<SerializablePoll>();
-            Instantiate(pollSerializerPrefab);
         }
 
         private IEnumerator Countdown(int seconds)
@@ -95,6 +95,9 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 StopCoroutine(currentCountdown);
         }
 
+        /// <summary>
+        /// Instatiates Poll Shelf
+        /// </summary>
         public void PollShelfDisplay()
         {
             GameObject pollShelf = Instantiate(pollShelfPrefab);
@@ -105,6 +108,11 @@ namespace i5.VIAProMa.Multiplayer.Poll
             pollShelf.transform.position = position;
         }
 
+        /// <summary>
+        /// Instaniates Result Visualization
+        /// </summary>
+        /// <param name="pollIndex">Index of the poll data &gt 0 for permantly saved polls &lt 0 for temporary polls</param>
+        /// <returns>PollBarVisualization component of the instantiated object</returns>
         public PollBarVisualization GenerateSynchronizedPollDisplay(int pollIndex)
         {
             Vector3 position = CameraCache.Main.transform.position;
@@ -117,23 +125,25 @@ namespace i5.VIAProMa.Multiplayer.Poll
             return viz;
         }
 
-        /**
-         * Starts a poll with this player as host
-         */
+        /// <summary>
+        /// Creates and starts a poll
+        /// </summary>
+        /// <param name="question"></param>
+        /// <param name="answers"></param>
+        /// <param name="flags"></param>
+        /// <param name="end"></param>
         public void StartPoll(string question, string[] answers, PollOptions flags, DateTime end)
         {
-            currentPoll = new Poll(question, answers, flags);
             // Send out poll message
             int syncedEndTime = PhotonNetwork.ServerTimestamp + (int)(end - DateTime.Now).TotalMilliseconds;
+            currentPoll = new Poll(question, answers, flags, syncedEndTime);
             photonView.RPC("PollStartedReceived", RpcTarget.All, question, answers, syncedEndTime, flags);
             // Setup timer on host
             if (flags.HasFlag(PollOptions.Countdown))
             {
-                Debug.Log("Starting Countdown!");
                 TimeSpan timeToGo = end - DateTime.Now;
                 if (timeToGo > TimeSpan.Zero)
                 {
-                    Debug.Log("Is Valid! Time to go: " + (int)timeToGo.TotalSeconds);
                     currentCountdown = Countdown((int)timeToGo.TotalSeconds);
                     StartCoroutine(currentCountdown);
                 }
@@ -141,23 +151,24 @@ namespace i5.VIAProMa.Multiplayer.Poll
             // Setup timer on host
             if (flags.HasFlag(PollOptions.RealtimeViz))
             {
-                Debug.Log("Realtime Viz!");
                 photonView.RPC("PollSaveRequestReceived", RpcTarget.MasterClient, SerializablePoll.FromPoll(currentPoll));
             }
         }
 
-        /**
-         * Responds to poll as user with specified poll host
-         */
+        /// <summary>
+        /// Responds to poll as user
+        /// </summary>
+        /// <param name="selection"></param>
+        /// <param name="host">the creator of the poll</param>
         public void RespondPoll(bool[] selection, Player host)
         {
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { TargetActors = new int[] { host.ActorNumber } };
             PhotonNetwork.RaiseEvent(PollRespondEventCode, selection, raiseEventOptions, SendOptions.SendReliable);
         }
 
-        /**
-         * Force Poll End by poll host
-         */
+        /// <summary>
+        /// Force Poll End by poll host
+        /// </summary>
         public void EndPoll()
         {
             if (currentPoll == null) return;
@@ -166,16 +177,12 @@ namespace i5.VIAProMa.Multiplayer.Poll
             photonView.RPC("PollEndReceived", RpcTarget.All);
         }
 
-        /**
-         * Finalize ended poll, save and display if desired
-         */
-        public void FinalizePoll()
+        private void FinalizePoll()
         {
             if (currentPoll.IsFinalized) return;
             currentPoll.IsFinalized = true;
-            if (currentPoll.SerializeableSelection.Count == 0)
+            if (currentPoll.ResponseCount == 0)
             {
-                Debug.Log("No participants, discarding poll!");
                 currentPoll = null;
             }
             else
@@ -191,38 +198,41 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
         }
 
-        /**
-         * Unregister this client from the current poll hosted by host 
-         */
+        /// <summary>
+        /// Register and unregister from poll
+        /// </summary>
+        /// <param name="ack"></param>
+        /// <param name="host">the creator of the poll</param>
         public void SendStatus(bool ack, Player host)
         {
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { TargetActors = new int[] { host.ActorNumber } };
             PhotonNetwork.RaiseEvent(PollAcknowledgedEventCode, ack, raiseEventOptions, SendOptions.SendReliable);
         }
 
-        public SerializablePoll GetPollAtIndex(int index)
+        /// <summary>
+        /// Looks up the saved or temporary poll with the given ID
+        /// </summary>
+        /// <param name="id">ID of the poll data &gt 0 for permantly saved polls &lt 0 for temporary polls</param>
+        /// <returns></returns>
+        public SerializablePoll GetPollByID(int id)
         {
-            if (index > 0)
-                return index - 1 < savedPolls.Count ? savedPolls[index - 1] : null;
+            if (id > 0)
+                return id - 1 < savedPolls.Count ? savedPolls[id - 1] : null;
             else
-                return -index - 1 < tempSavedPolls.Count ? tempSavedPolls[-index - 1] : null;
+                return -id - 1 < tempSavedPolls.Count ? tempSavedPolls[-id - 1] : null;
         }
 
         [PunRPC]
         private void PollStartedReceived(string question, string[] answers, int syncedEndTime, PollOptions flags, PhotonMessageInfo messageInfo)
         {
             int milliseconds = syncedEndTime < PhotonNetwork.ServerTimestamp ? (int.MaxValue - PhotonNetwork.ServerTimestamp + syncedEndTime) : (syncedEndTime - PhotonNetwork.ServerTimestamp);
-            if (PollStarted != null)
-            {
-                PollStartEventArgs args = new PollStartEventArgs(question, answers, DateTime.Now.AddMilliseconds(milliseconds), messageInfo.Sender, flags);
-                PollStarted?.Invoke(this, args);
-            }
+            PollStartEventArgs args = new PollStartEventArgs(question, answers, DateTime.Now.AddMilliseconds(milliseconds), messageInfo.Sender, flags);
+            PollStarted?.Invoke(this, args);
         }
 
         [PunRPC]
         private void PollEndReceived(PhotonMessageInfo messageInfo)
         {
-            Debug.Log("Poll end requested!!");
             PollEndEventArgs args = new PollEndEventArgs(messageInfo.Sender);
             PollEnded?.Invoke(this, args);
         }
@@ -231,7 +241,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
         private void PollSaveRequestReceived(SerializablePoll poll, PhotonMessageInfo messageInfo)
         {
             int index = 0;
-            Debug.Log("Poll save request received!");
             if (poll.Flags.HasFlag(PollOptions.SaveResults))
             {
                 index = savedPolls.Count + 1;
@@ -250,7 +259,7 @@ namespace i5.VIAProMa.Multiplayer.Poll
         {
             if (i == 0)
             {
-                Debug.LogError("This should not happen. Index == 0!");
+                Debug.LogWarning("Poll Update Index == 0! This should not happen, but is not an error.");
                 PollSaveRequestReceived(poll, messageInfo);
             }
             else if (i > 0)
@@ -273,7 +282,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
         [PunRPC]
         private void PollUpdateReceived(int index, SerializablePoll poll, PhotonMessageInfo messageInfo)
         {
-            Debug.Log("Poll update received!");
             if (index < 0)
             {
                 int tIndex = -index - 1;
@@ -299,7 +307,6 @@ namespace i5.VIAProMa.Multiplayer.Poll
             }
             if (currentPoll != null && currentPoll.Question == poll.Question) // should be enough
             {
-                Debug.Log("Poll display stored send!");
                 if (currentPoll.Flags.HasFlag(PollOptions.RealtimeViz))
                 {
                     if (realtimeViz == null)
@@ -322,9 +329,10 @@ namespace i5.VIAProMa.Multiplayer.Poll
             PollToDisplayRecieved?.Invoke(this, index);
         }
 
-        /**
-         * Handles events from user to poll host
-         */
+        /// <summary>
+        /// Handles PUN events
+        /// </summary>
+        /// <param name="photonEvent"></param>
         public void OnEvent(EventData photonEvent)
         {
             bool? finished = false;
@@ -347,6 +355,16 @@ namespace i5.VIAProMa.Multiplayer.Poll
                     for (int i = 0; i < tempSavedPolls.Count; i++)
                         PollToDisplayRecieved?.Invoke(this, -i - 1);
                     break;
+                case PollJoinSyncEventCode:
+                    data = (object[])photonEvent.CustomData;
+                    string question = (string)data[0];
+                    string[] answers = (string[])data[1];
+                    int syncedEndTime = (int)data[2];
+                    PollOptions flags = (PollOptions)data[3];
+                    int milliseconds = syncedEndTime < PhotonNetwork.ServerTimestamp ? (int.MaxValue - PhotonNetwork.ServerTimestamp + syncedEndTime) : (syncedEndTime - PhotonNetwork.ServerTimestamp);
+                    PollStartEventArgs args = new PollStartEventArgs(question, answers, DateTime.Now.AddMilliseconds(milliseconds), PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender), flags);
+                    PollStarted?.Invoke(this, args);
+                    break;
             }
             if (finished == true)
             {
@@ -367,6 +385,11 @@ namespace i5.VIAProMa.Multiplayer.Poll
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions { TargetActors = new int[] { newPlayer.ActorNumber } };
                 PhotonNetwork.RaiseEvent(PollSavedPollSyncEventCode, new object[] { savedPolls.ToArray(), tempSavedPolls.ToArray() }, raiseEventOptions, SendOptions.SendReliable);
             }
+            if (currentPoll != null && !currentPoll.IsEnded)
+            {
+                RaiseEventOptions raiseEventOptions = new RaiseEventOptions { TargetActors = new int[] { newPlayer.ActorNumber } };
+                PhotonNetwork.RaiseEvent(PollJoinSyncEventCode, new object[] { currentPoll.Question, currentPoll.Answers, currentPoll.SyncedEndTime, currentPoll.Flags}, raiseEventOptions, SendOptions.SendReliable);                
+            }
         }
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
@@ -377,7 +400,10 @@ namespace i5.VIAProMa.Multiplayer.Poll
         public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged) { }
         public void OnMasterClientSwitched(Player newMasterClient) { }
         public void OnFriendListUpdate(List<FriendInfo> friendList) { }
-        public void OnCreatedRoom() { }
+        public void OnCreatedRoom()
+        {
+            ResourceManager.Instance.SceneNetworkInstantiate(pollSerializerPrefab, Vector3.zero, Quaternion.identity, obj => {});
+        }
         public void OnCreateRoomFailed(short returnCode, string message) { }
         public void OnJoinedRoom()
         {
