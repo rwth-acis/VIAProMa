@@ -7,6 +7,15 @@ using Microsoft.MixedReality.Toolkit.Input;
 using Photon.Pun;
 public class VIAProMaMenuActions : MonoBehaviour
 {
+    public Stack undoActionStack;
+    public Stack redoActionStack;
+
+    private void OnEnable()
+    {
+        undoActionStack = new Stack();
+        redoActionStack = new Stack();
+    }
+
     public void DoubleSize(BaseInputEventData eventData)
     {
         GameObject target = eventData.InputSource.Pointers[0]?.Result?.CurrentPointerTarget;
@@ -33,17 +42,28 @@ public class VIAProMaMenuActions : MonoBehaviour
     public void Remove(BaseInputEventData eventData)
     {
         GameObject target = GetVisualisationFromGameObject(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget);
+        VIAProMaMenuActions actionsFromTool = GetVirtualToolFromPointer(eventData.InputSource.Pointers[0]).GetComponentInChildren<VIAProMaMenuActions>();
         if (target == null)
         {
             return;
         }
         if (target.GetComponentInChildren<PhotonView>() != null)
         {
-            PhotonNetwork.Destroy(target);
+            //PhotonNetwork.Destroy(target);
+            target.SetActive(false);
+            ToolLog log = new ToolLog();
+            log.changedObject = target;
+            log.toolActionType = ToolAction.Delete;
+            actionsFromTool.undoActionStack.Push(log);
         }
         else
         {
-            Destroy(target);
+            //Destroy(target);
+            target.SetActive(false);
+            ToolLog log = new ToolLog();
+            log.changedObject = target;
+            log.toolActionType = ToolAction.Delete;
+            actionsFromTool.undoActionStack.Push(log);
         }
     }
 
@@ -71,6 +91,22 @@ public class VIAProMaMenuActions : MonoBehaviour
         }
     }
 
+
+    public void RecordPosition(BaseInputEventData eventData)
+    {
+        GameObject target = GetVisualisationFromGameObject(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget);
+        if (target != null)
+        {
+            VIAProMaMenuActions actionsFromTool = GetVirtualToolFromPointer(eventData.InputSource.Pointers[0]).GetComponentInChildren<VIAProMaMenuActions>();
+            ToolLog logEntry = new ToolLog();
+            logEntry.changedObject = target;
+            logEntry.toolActionType = ToolAction.Move;
+            logEntry.position = target.transform.position;
+            logEntry.rotation = target.transform.rotation;
+            actionsFromTool.undoActionStack.Push(logEntry);
+        }
+    }
+
     public void OpenConfigurationWindow(BaseInputEventData eventData)
     {
         GameObject target = GetVisualisationFromGameObject(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget, new Type[] {typeof(ConfigurationWindow)}, true, false);
@@ -93,14 +129,52 @@ public class VIAProMaMenuActions : MonoBehaviour
         objectToRotate.transform.SetPositionAndRotation(newPosition, Quaternion.Euler(0, 180 + rotation.y, 0));
     }
 
-    public void UndoToolAction()
+    public void UndoToolAction(BaseInputEventData eventData)
     {
-        Debug.Log("Undo");
+        VIAProMaMenuActions actionsFromTool = GetVirtualToolFromPointer(eventData.InputSource.Pointers[0]).GetComponentInChildren<VIAProMaMenuActions>();
+        ToolLog toolAction = (ToolLog)actionsFromTool.undoActionStack.Pop();
+        if (toolAction != null)
+        {
+            switch (toolAction.toolActionType)
+            {
+                case ToolAction.Delete:
+                    toolAction.changedObject.SetActive(true);
+                    actionsFromTool.redoActionStack.Push(toolAction);
+                    break;
+                case ToolAction.Move:
+                    Vector3 position = toolAction.changedObject.transform.position;
+                    Quaternion rotation = toolAction.changedObject.transform.rotation;
+                    toolAction.changedObject.transform.SetPositionAndRotation(toolAction.position,toolAction.rotation);
+                    toolAction.position = position;
+                    toolAction.rotation = rotation;
+                    actionsFromTool.redoActionStack.Push(toolAction);
+                    break;
+            }
+        }
     }
 
-    public void RedoToolAction()
+    public void RedoToolAction(BaseInputEventData eventData)
     {
-        Debug.Log("Redo");
+        VIAProMaMenuActions actionsFromTool = GetVirtualToolFromPointer(eventData.InputSource.Pointers[0]).GetComponentInChildren<VIAProMaMenuActions>();
+        ToolLog toolAction = (ToolLog)actionsFromTool.redoActionStack.Pop();
+        if (toolAction != null)
+        {
+            switch (toolAction.toolActionType)
+            {
+                case ToolAction.Delete:
+                    toolAction.changedObject.SetActive(false);
+                    actionsFromTool.undoActionStack.Push(toolAction);
+                    break;
+                case ToolAction.Move:
+                    Vector3 position = toolAction.changedObject.transform.position;
+                    Quaternion rotation = toolAction.changedObject.transform.rotation;
+                    toolAction.changedObject.transform.SetPositionAndRotation(toolAction.position, toolAction.rotation);
+                    toolAction.position = position;
+                    toolAction.rotation = rotation;
+                    actionsFromTool.undoActionStack.Push(toolAction);
+                    break;
+            }
+        }
     }
 
     public void OpenBoudningBoxWithoutManipulation()
