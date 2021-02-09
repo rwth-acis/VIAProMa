@@ -45,7 +45,7 @@ public class LoginScript : MonoBehaviour
         loggedIn = true;
         loginCaption.text = "Logout:";
         statusCaption.text = "You are logged in!";
-        Debug.Log("Successful Login (Learning Layers)");
+        Debug.Log("Successful Login");
         SetLED(true);
     }
 
@@ -54,7 +54,7 @@ public class LoginScript : MonoBehaviour
         loggedIn = false;
         loginCaption.text = "Login:";
         statusCaption.text = "You are not logged in yet.";
-        Debug.Log("Successful Logout (Learning Layers)");
+        Debug.Log("Successful Logout");
         SetLED(false);
     }
 
@@ -79,7 +79,7 @@ public class LoginScript : MonoBehaviour
                 OpenIDConnectService oidc = new OpenIDConnectService();
                 oidc.OidcProvider = new GitHubOidcProvider();
                 
-                oidc.RedirectURI = "https://127.0.0.1:3000";
+                oidc.RedirectURI = "i5:/";
                 ServiceManager.RegisterService(oidc);
                 Debug.Log("Service switched to Github");
             }
@@ -89,6 +89,7 @@ public class LoginScript : MonoBehaviour
 
             if (clientDataObject.clientData == null)
                 return;
+
             //first create an instance of the IOidcProvider that should be used and assign the client credentials
             oidcProvider.ClientData = clientDataObject.clientData;
 
