@@ -18,29 +18,30 @@ using UnityEngine.Events;
 public struct MenuEntry
 {
     public Sprite iconTool;
-    public Sprite iconTouchpadRight;
-    public string textTouchpadRight;
-
-    public Sprite iconTouchpadUp;
-    public string textTouchpadUp;
-
-    public Sprite iconTouchpadLeft;
-    public string textTouchpadLeft;
-
-    public Sprite iconTouchpadDown;
-    public string textTouchpadDown;
-
+   
     public string textTrigger;
-
     public InputActionUnityEvent OnInputActionStartedTrigger;
     public InputActionUnityEvent OnInputActionEndedTrigger;
 
+    public string textGrip;
     public InputActionUnityEvent OnInputActionStartedGrip;
     public InputActionUnityEvent OnInputActionEndedGrip;
 
+    //Touchpad Parameters
+    public string textTouchpadRight;
+    public Sprite iconTouchpadRight;
     public InputActionUnityEvent OnInputActionEndedTouchpadRight;
+
+    public string textTouchpadLeft;
+    public Sprite iconTouchpadLeft;
     public InputActionUnityEvent OnInputActionEndedTouchpadLeft;
+
+    public string textTouchpadUp;
+    public Sprite iconTouchpadUp;
     public InputActionUnityEvent OnInputActionEndedTouchpadUp;
+
+    public string textTouchpadDown;
+    public Sprite iconTouchpadDown;
     public InputActionUnityEvent OnInputActionEndedTouchpadDown;
 
     //Tool specific events

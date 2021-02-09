@@ -7,7 +7,7 @@ using System.Timers;
 using System.Collections;
 using TMPro;
 
-public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>, IMixedRealityInputHandler<float>
+public class ViveWandTeleporter : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>, IMixedRealityInputHandler<float>
 {
     //Events and action for the thrigger
     public MixedRealityInputAction triggerInputAction;

@@ -140,7 +140,7 @@ public class VIAProMaMenuActions : MonoBehaviour
             box.BoxMaterial = highlightMaterial;
             box.ShowWireFrame = true;
             box.WireframeMaterial = wireframeMaterial;
-            Debug.Log("Highlight " + box.ToString());
+            //Debug.Log("Highlight " + box.ToString());
         }
     }
 
@@ -151,11 +151,11 @@ public class VIAProMaMenuActions : MonoBehaviour
         {
             box.BoxMaterial = previousMaterial;
             box.ShowWireFrame = false;
-            Debug.Log("Dehighlight " + box.ToString());
+            //Debug.Log("Dehighlight " + box.ToString());
         }
         else
         {
-            Debug.Log("Dehighlight no box found");
+            //Debug.Log("Dehighlight no box found");
         }
     }
 
