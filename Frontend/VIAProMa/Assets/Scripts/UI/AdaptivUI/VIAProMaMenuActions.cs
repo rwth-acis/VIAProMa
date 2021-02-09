@@ -175,14 +175,16 @@ public class VIAProMaMenuActions : MonoBehaviour
 
     public void ActivateDesciptionTexts(BaseInputEventData data)
     {
-        ViveWandVirtualTool tool = GetVirtualToolFromPointer(data.InputSource.Pointers[0]);
-        tool.transform.Find("ButtonDescriptions").gameObject.SetActive(true);
+        GameObject tool = data.InputSource.Pointers[0].Controller.Visualizer.GameObjectProxy;
+        GameObject buttonDescriptons = tool.transform.Find("ButtonDescriptions")?.gameObject;
+        buttonDescriptons.SetActive(true);
     }
 
     public void DeactivateDesciptionTexts(BaseInputEventData data)
     {
-        ViveWandVirtualTool tool = GetVirtualToolFromPointer(data.InputSource.Pointers[0]);
-        tool.transform.Find("ButtonDescriptions").gameObject.SetActive(false);
+        GameObject tool = data.InputSource.Pointers[0].Controller.Visualizer.GameObjectProxy;
+        GameObject buttonDescriptons = tool.transform.Find("ButtonDescriptions")?.gameObject;
+        buttonDescriptons.SetActive(false);
     }
 
     public void DestroyCurrentIconOverVisualisation()
