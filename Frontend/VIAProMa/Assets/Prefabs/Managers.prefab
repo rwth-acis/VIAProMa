@@ -601,6 +601,7 @@ Transform:
   - {fileID: 7550514611414572532}
   - {fileID: 8835965036498097119}
   - {fileID: 8844604523583547557}
+  - {fileID: 5984547723842491074}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -841,6 +842,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pieMenuPrefab: {fileID: 7545145203548608985, guid: b7e4659a8535b6b47a2ce302473d5c95,
     type: 3}
+  menuEntries: []
 --- !u!1 &6670949426813630297
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,3 +913,46 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 2
   isRuntimeInstantiated: 0
+--- !u!1 &7757548829821208578
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5984547723842491074}
+  - component: {fileID: 4483926860868278503}
+  m_Layer: 0
+  m_Name: ToolActionHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5984547723842491074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7757548829821208578}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3215894185288659648}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4483926860868278503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7757548829821208578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed066bdc8ad069648bf282fa4f202190, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
