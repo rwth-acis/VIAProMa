@@ -14,12 +14,12 @@ namespace i5.Toolkit.Core.Examples.OpenIDConnectClient
             oidc.OidcProvider = new GitHubOidcProvider();
 
             oidc.RedirectURI = "i5:/";
-            ServiceManager.RegisterService(oidc);
+            ServiceManager.RegisterProvider(oidc, ServiceManager.Provider.GitHub);
         }
 
         protected override void UnRegisterServices()
         {
-            ServiceManager.RemoveService<OpenIDConnectService>();
+            ServiceManager.RemoveProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub);
         }
     }
 }
