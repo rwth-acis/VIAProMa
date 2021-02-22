@@ -7,33 +7,29 @@ using System.Timers;
 using System.Collections;
 using TMPro;
 
-public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>, IMixedRealityInputHandler<float>
+public class ViveWandVirtualTool : ViveWand, IMixedRealityInputActionHandler, IMixedRealityInputHandler<Vector2>, IMixedRealityInputHandler<float>
 {
     //Events and action for the thrigger
     public MixedRealityInputAction triggerInputAction;
     public MixedRealityInputAction touchpadTouchActionAction;
     public MixedRealityInputAction touchpadPressAction;
     public MixedRealityInputAction gripPressAction;
-    public float descriptionShowTime = 3;
+
     [SerializeField]
     MenuEntry defaultEntry;
 
+    //The last recorded position on the touchpad
     Vector2 thumbPosition;
 
-    IMixedRealityInputSource ownSource;
-
     public MenuEntry currentEntry { get; private set; }
-
-
-
-    private bool hoverActive = false;
 
     //Hover Actions
     GameObject oldFocusTarget;
 
-    //Has to be global to prevent the garbage collection from collecting it before elapsed
-    Timer timer;
-
+    /// <summary>
+    /// Set the new event handler, icons and desriciption texts for the new entry. Also activates the description texts for descriptionShowTime seconds.
+    /// </summary>
+    /// <param name="newEntry"></param> The new entry
     public void SetupTool(MenuEntry newEntry)
     {
         if (currentEntry.OnToolDestroyed != null)
@@ -64,20 +60,19 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         SetText("TriggerText", newEntry.textTrigger, defaultEntry.textTrigger);
         SetText("GripText", newEntry.textGrip, defaultEntry.textGrip);
 
-        StopCoroutine("disableDescriptions");
+        StopCoroutine("DisableDescriptions");
         //Waits descriptionShowTime befor disabling the descriptions
-        StartCoroutine("disableDescriptions");
+        StartCoroutine("DisableDescriptions");
 
         currentEntry = newEntry;
     }
 
-    private IEnumerator disableDescriptions()
-    {
-        yield return new WaitForSeconds(descriptionShowTime);
-        GameObject menuButton = transform.Find("ButtonDescriptions").gameObject;
-        menuButton.SetActive(false);
-    }
-
+    /// <summary>
+    /// Sets the icon on the coresponding canvas on the tool.
+    /// </summary>
+    /// <param name="canvasName"></param> The name of the canvas, on which the icon shoould be set
+    /// <param name="icon"></param> The new Icon. If null, the defaut icon is used
+    /// <param name="defaultIcon"></param> Only used, if icon is null
     private void SetIcon(string canvasName, Sprite icon, Sprite defaultIcon)
     {
         Transform iconCanvas = transform.Find(canvasName);
@@ -96,32 +91,13 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         }
     }
 
-    private void SetText(string gameobjectName, string text, string defaulText)
-    {
-        GameObject textGameobject = transform.Find("ButtonDescriptions/" + gameobjectName).gameObject;
-        TMP_Text textMesh = textGameobject.GetComponentInChildren<TMP_Text>();
-        textGameobject.SetActive(true);
-        if (text != "")
-        {
-            textMesh.text = text;
-        }
-        else if (defaulText != "")
-        {
-            textMesh.text = defaulText;
-        }
-        else
-        {
-            textGameobject.SetActive(false);
-        }
-    }
-
     private void Update()
     {
         //Update the hover events
         if (ownSource == null)
         {
             //It can take a few frames until this method returns an InputSource, because they first have to register themself in the input system
-            ownSource = GetOwnInputSource();
+            //ownSource = GetOwnInputSource();
         }
         else
         {
@@ -135,34 +111,37 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
                 if (oldFocusTarget != null)
                 {
                     currentEntry.OnHoverOverTargetStop.Invoke(data);
-                    //Debug.Log("Hover Stop");
                 }
 
                 if (target != null)
                 {
                     currentEntry.OnHoverOverTargetStart.Invoke(data);
-                    //Debug.Log("Hover Start");
                     currentEntry.OnHoverOverTargetActive.Invoke(data);
-                    //Debug.Log("Hover");
                 }
             }
             else if (target != null)
             {
                 currentEntry.OnHoverOverTargetActive.Invoke(data);
-                //Debug.Log("Hover");
             }
             oldFocusTarget = target;
         }
     }
 
+    /// <summary>
+    /// Registers the handlers in the input system. Otherwise, they will recive events only when a pointer has this object in focus.
+    /// </summary>
     private void OnEnable()
     {
+        StartCoroutine("SetOwnSource");
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputActionHandler>(this);
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler<Vector2>>(this);
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler<float>>(this);
         SetupTool(defaultEntry);
     }
 
+    /// <summary>
+    /// Deregisters all handlers, otherwise it will recive events even after deactivcation.
+    /// </summary>
     private void OnDisable()
     {
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputActionHandler>(this);
@@ -170,14 +149,21 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputHandler<float>>(this);
     }
 
-    //Trigger on start
+    /// <summary>
+    /// Triggerd when an input action starts
+    /// </summary>
     void IMixedRealityInputActionHandler.OnActionStarted(BaseInputEventData eventData)
     {
         if (eventData.MixedRealityInputAction == triggerInputAction && IsInputSourceThis(eventData.InputSource) && !eventData.used)
         {
+            //On Trigger event
             currentEntry.OnInputActionStartedTrigger?.Invoke(eventData);
         }
     }
+    /// <summary>
+    /// Triggerd when an input action ends. Used for the trigger and the touchpad.
+    /// </summary>
+    /// <param name="eventData"></param>
     void IMixedRealityInputActionHandler.OnActionEnded(BaseInputEventData eventData)
     {
         if (IsInputSourceThis(eventData.InputSource))
@@ -188,6 +174,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
             }
             else if (eventData.MixedRealityInputAction == touchpadPressAction)
             {
+                //Touchad
                 float angle = Vector2.SignedAngle(Vector2.right, thumbPosition);
                 if (angle > -45 && angle <= 45)
                 {
@@ -241,7 +228,9 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         }
     }
 
-    //Save the last known position of the thumb on the trackpad to use it when the trackpad is pressed
+    /// <summary>
+    /// Save the last known position of the thumb on the trackpad to use it when the trackpad is pressed.
+    /// </summary>
     void IMixedRealityInputHandler<Vector2>.OnInputChanged(InputEventData<Vector2> eventData)
     {
         if (eventData.MixedRealityInputAction == touchpadTouchActionAction)
@@ -250,15 +239,13 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
         }
     }
 
-    bool IsInputSourceThis(IMixedRealityInputSource inputSource)
-    {
-        return this == inputSource.Pointers[0]?.Controller?.Visualizer?.GameObjectProxy?.GetComponentInChildren<ViveWandVirtualTool>();
-    }
-
-
+    /// <summary>
+    /// Triggerd when an input action of type float changes its value. Used for the grip button.
+    /// </summary>
+    /// <param name="eventData"></param>
     void IMixedRealityInputHandler<float>.OnInputChanged(InputEventData<float> eventData)
     {
-        if (eventData.MixedRealityInputAction == gripPressAction)
+        if (IsInputSourceThis(eventData.InputSource) && eventData.MixedRealityInputAction == gripPressAction)
         {
             if (eventData.InputData > 0.5)
             {
@@ -283,22 +270,5 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
                 }
             }
         }
-    }
-
-    IMixedRealityInputSource GetOwnInputSource()
-    {
-        foreach (var source in CoreServices.InputSystem.DetectedInputSources)
-        {
-            // Ignore anything that is not a hand because we want articulated hands
-            foreach (var pointer in source.Pointers)
-            {
-                if (pointer.Controller?.Visualizer?.GameObjectProxy == gameObject)
-                {
-                    return source;
-                }
-            }
-        }
-        Debug.LogError("Can't find the input source this tool belongs too");
-        return null;
     }
 }

@@ -6,19 +6,18 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections;
 using TMPro;
 
-public class ViveWandTeleporter : MonoBehaviour, IMixedRealityInputHandler<float>
+public class ViveWandTeleporter : ViveWand, IMixedRealityInputHandler<float>
 {
     //Events and action for the thrigger
     public MixedRealityInputAction gripPressAction;
-    public float descriptionShowTime = 3;
-
-
-    IMixedRealityInputSource ownSource;
 
     public string textGrip;
     public InputActionUnityEvent OnInputActionStartedGrip;
     public InputActionUnityEvent OnInputActionEndedGrip;
 
+    /// <summary>
+    /// Activates the description texts for descriptionShowTime seconds.
+    /// </summary>
     public void SetupTool()
     {
         //Enable the button explain text
@@ -27,58 +26,37 @@ public class ViveWandTeleporter : MonoBehaviour, IMixedRealityInputHandler<float
 
         SetText("GripText", "", textGrip);
 
-        StopCoroutine("disableDescriptions");
+        StopCoroutine("DisableDescriptions");
         //Waits descriptionShowTime befor disabling the descriptions
-        StartCoroutine("disableDescriptions");
+        StartCoroutine("DisableDescriptions");
 
     }
 
-    private IEnumerator disableDescriptions()
-    {
-        yield return new WaitForSeconds(descriptionShowTime);
-        GameObject menuButton = transform.Find("ButtonDescriptions").gameObject;
-        menuButton.SetActive(false);
-    }
-
-    private void SetText(string gameobjectName, string text, string defaulText)
-    {
-        GameObject textGameobject = transform.Find("ButtonDescriptions/" + gameobjectName).gameObject;
-        TMP_Text textMesh = textGameobject.GetComponentInChildren<TMP_Text>();
-        textGameobject.SetActive(true);
-        if (text != "")
-        {
-            textMesh.text = text;
-        }
-        else if (defaulText != "")
-        {
-            textMesh.text = defaulText;
-        }
-        else
-        {
-            textGameobject.SetActive(false);
-        }
-    }
-
+    /// <summary>
+    /// Registers the handlers in the input system. Otherwise, they will recive events only when a pointer has this object in focus.
+    /// </summary>
     private void OnEnable()
     {
+        StartCoroutine("SetOwnSource");
         CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler<float>>(this);
         SetupTool();
     }
 
+    /// <summary>
+    /// Deregisters all handlers, otherwise it will recive events even after deactivcation.
+    /// </summary>
     private void OnDisable()
     {
         CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputHandler<float>>(this);
     }
 
-    bool IsInputSourceThis(IMixedRealityInputSource inputSource)
-    {
-        return this == inputSource.Pointers[0]?.Controller?.Visualizer?.GameObjectProxy?.GetComponentInChildren<ViveWandVirtualTool>();
-    }
-
-
+    /// <summary>
+    /// Triggerd when an input action of type float changes its value. Used for the grip button.
+    /// </summary>
+    /// <param name="eventData"></param>
     void IMixedRealityInputHandler<float>.OnInputChanged(InputEventData<float> eventData)
     {
-        if (eventData.MixedRealityInputAction == gripPressAction)
+        if (IsInputSourceThis(eventData.InputSource) && eventData.MixedRealityInputAction == gripPressAction)
         {
             if (eventData.InputData > 0.5)
             {
@@ -89,22 +67,5 @@ public class ViveWandTeleporter : MonoBehaviour, IMixedRealityInputHandler<float
                 OnInputActionEndedGrip.Invoke(eventData);
             }
         }
-    }
-
-    IMixedRealityInputSource GetOwnInputSource()
-    {
-        foreach (var source in CoreServices.InputSystem.DetectedInputSources)
-        {
-            // Ignore anything that is not a hand because we want articulated hands
-            foreach (var pointer in source.Pointers)
-            {
-                if (pointer.Controller?.Visualizer?.GameObjectProxy == gameObject)
-                {
-                    return source;
-                }
-            }
-        }
-        Debug.LogError("Can't find the input source this tool belongs too");
-        return null;
     }
 }
