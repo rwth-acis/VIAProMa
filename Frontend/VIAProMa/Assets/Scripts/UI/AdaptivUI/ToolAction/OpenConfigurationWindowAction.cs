@@ -4,8 +4,15 @@ using System;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 
+/// <summary>
+/// The methods for the OpenConfigurationWindow tool
+/// </summary>
 public class OpenConfigurationWindowAction : ActionHelperFunctions
 {
+    /// <summary>
+    /// Opens the configuration window for the visualisation the tool currently points on and sets it at the tip of the tool
+    /// </summary>
+    /// <param name="eventData"></param> The data from the corresponding input event
     public void OpenConfigurationWindow(BaseInputEventData eventData)
     {
         GameObject target = GetVisualisationFromGameObject(eventData.InputSource.Pointers[0].Result.CurrentPointerTarget, new Type[] { typeof(ConfigurationWindow) }, true, false);

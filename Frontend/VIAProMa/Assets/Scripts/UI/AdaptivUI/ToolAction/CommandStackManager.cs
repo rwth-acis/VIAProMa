@@ -4,6 +4,9 @@ using UnityEngine;
 using HoloToolkit.Unity;
 using Microsoft.MixedReality.Toolkit.Input;
 
+/// <summary>
+/// Manages the undo and redo stack for the tool actions
+/// </summary>
 public class CommandStackManager : Singleton<CommandStackManager>
 {
     public Stack undoActionStack;
@@ -13,25 +16,5 @@ public class CommandStackManager : Singleton<CommandStackManager>
     {
         undoActionStack = new Stack();
         redoActionStack = new Stack();
-    }
-
-    public void UndoToolAction()
-    {
-        IToolAction action = (IToolAction)undoActionStack.Pop();
-        if (action != null)
-        {
-            action.UndoAction();
-            redoActionStack.Push(action);
-        }
-    }
-
-    public void RedoToolAction()
-    {
-        IToolAction action = (IToolAction)redoActionStack.Pop();
-        if (action != null)
-        {
-            action.DoAction();
-            undoActionStack.Push(action);
-        }
     }
 }

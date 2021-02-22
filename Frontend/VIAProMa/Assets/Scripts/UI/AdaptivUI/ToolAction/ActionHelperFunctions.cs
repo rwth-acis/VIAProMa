@@ -3,10 +3,19 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 
-
+/// <summary>
+/// A collection of helper functions for virtual tool actions
+/// </summary>
 public class ActionHelperFunctions : MonoBehaviour
 {
-
+    /// <summary>
+    /// Iterates upwards in the hirachy of gameObject and returns the first GameObject that has the Visualization script attached. Returns null if nothing is found.
+    /// </summary>
+    /// <param name="gameObject"></param> The gameObject on which the search should start
+    /// <param name="typesToExclude"></param> Can be used as a filter. A GameObject can be ignored if it has a object contianed in typesToExclude above or below it
+    /// <param name="checkAbove"></param> Check above in the hirachy for filterd types
+    /// <param name="checkBelow"></param>Check below in the hirachy for filterd types
+    /// <returns></returns>
     public static GameObject GetVisualisationFromGameObject(GameObject gameObject, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
     {
         //If wished, check if any of the children of the target is of a type that should be excluded
@@ -47,16 +56,32 @@ public class ActionHelperFunctions : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Is the gameObject a visualistaion?
+    /// </summary>
+    /// <param name="gameObject"></param> The object to be checked
+    /// <returns></returns>
     public static bool IsVisualisation(GameObject gameObject)
     {
         return gameObject.GetComponent<Visualization>() != null;
     }
 
+
+    /// <summary>
+    /// Get the virtual tool that is attached to the pointer
+    /// </summary>
+    /// <param name="pointer"></param>
+    /// <returns></returns>
     public static ViveWandVirtualTool GetVirtualToolFromPointer(IMixedRealityPointer pointer)
     {
         return pointer.Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
     }
 
+    /// <summary>
+    /// Rotates the object on the XZ plane towards the main camera and sets it to new position
+    /// </summary>
+    /// <param name="objectToRotate"></param> The object to move and rotate
+    /// <param name="newPosition"></param> The new position
     public void RotateToCameraOnXZPlane(GameObject objectToRotate, Vector3 newPosition)
     {
         objectToRotate.transform.LookAt(Camera.main.transform);

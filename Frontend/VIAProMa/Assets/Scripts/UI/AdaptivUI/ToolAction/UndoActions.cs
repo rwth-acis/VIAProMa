@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The undo and redo action
+/// </summary>
 public class UndoActions : MonoBehaviour
 {
+    /// <summary>
+    /// Undo the last action and put it on the redo stack
+    /// </summary>
     public void UndoToolAction()
-    {
-        
+    { 
         if (CommandStackManager.Instance.undoActionStack.Count > 0)
         {
             IToolAction action = (IToolAction)CommandStackManager.Instance.undoActionStack.Pop();
@@ -15,6 +20,9 @@ public class UndoActions : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Redo the last action and put in on the undo stack
+    /// </summary>
     public void RedoToolAction()
     {
         

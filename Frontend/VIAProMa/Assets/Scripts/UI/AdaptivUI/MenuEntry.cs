@@ -5,15 +5,9 @@ using System;
 using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine.Events;
 
-//public class MenuEntry : MonoBehaviour
-//{
-//    [SerializeField]
-//    Sprite icon;
-
-//    [SerializeField]
-//    Func<GameObject, IMixedRealityInputSource, int> toolAction;
-//}
-
+/// <summary>
+/// Contains everything needed to define a virtual tool
+/// </summary>
 [Serializable]
 public struct MenuEntry
 {

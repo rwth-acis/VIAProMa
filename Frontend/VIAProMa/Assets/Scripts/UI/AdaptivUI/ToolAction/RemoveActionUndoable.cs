@@ -1,14 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Input;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 using Photon.Pun;
 
+/// <summary>
+/// The implementation of the IToolAction interface for the remove tool
+/// </summary>
 public class RemoveActionUndoable : IToolAction
 {
     public GameObject target;
 
+    /// <summary>
+    /// Deactivate the target
+    /// </summary>
     void IToolAction.DoAction()
     {
         if (target.GetComponentInChildren<PhotonView>() != null)
@@ -23,6 +25,9 @@ public class RemoveActionUndoable : IToolAction
         }
     }
 
+    /// <summary>
+    /// Activate the target
+    /// </summary>
     void IToolAction.UndoAction()
     {
         target.SetActive(true);
