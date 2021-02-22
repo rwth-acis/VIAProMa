@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System;
 using UnityEngine;
+using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Input;
+
 
 public class ActionHelperFunctions : MonoBehaviour
 {
@@ -56,4 +56,48 @@ public class ActionHelperFunctions : MonoBehaviour
     {
         return pointer.Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
     }
+
+    public void RotateToCameraOnXZPlane(GameObject objectToRotate, Vector3 newPosition)
+    {
+        objectToRotate.transform.LookAt(Camera.main.transform);
+        //Set the x and y rotation to 0 and flip it around because with LookAt, the prefab faces away from the camera and is tilted strangly
+        Vector3 rotation = objectToRotate.transform.eulerAngles;
+        objectToRotate.transform.SetPositionAndRotation(newPosition, Quaternion.Euler(0, 180 + rotation.y, 0));
+    }
+
+
+
+    //public Material highlightMaterial;
+    //public Material wireframeMaterial;
+    //Material previousMaterial;
+    //public void HighlightBoudningBox(FocusEventData data)
+    //{
+    //    BoundingBox box = GetVisualisationFromGameObject(data.NewFocusedObject)?.GetComponentInChildren<BoundingBox>();
+    //    if (box != null && GetVisualisationFromGameObject(data.NewFocusedObject) != null)
+    //    {
+    //        previousMaterial = box.BoxMaterial;
+    //        box.BoxMaterial = highlightMaterial;
+    //        box.ShowWireFrame = true;
+    //        box.WireframeMaterial = wireframeMaterial;
+    //        //Debug.Log("Highlight " + box.ToString());
+    //    }
+    //}
+
+    //public void DeHighlightBoundingBox(FocusEventData data)
+    //{
+    //    BoundingBox box = GetVisualisationFromGameObject(data.OldFocusedObject)?.GetComponentInChildren<BoundingBox>();
+    //    if (box != null)
+    //    {
+    //        box.BoxMaterial = previousMaterial;
+    //        box.ShowWireFrame = false;
+    //        //Debug.Log("Dehighlight " + box.ToString());
+    //    }
+    //    else
+    //    {
+    //        //Debug.Log("Dehighlight no box found");
+    //    }
+    //}
+
+    
+
 }

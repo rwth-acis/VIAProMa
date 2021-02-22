@@ -6,9 +6,10 @@ public class UndoActions : MonoBehaviour
 {
     public void UndoToolAction()
     {
-        IToolAction action = (IToolAction)CommandStackManager.Instance.undoActionStack.Pop();
-        if (action != null)
+        
+        if (CommandStackManager.Instance.undoActionStack.Count > 0)
         {
+            IToolAction action = (IToolAction)CommandStackManager.Instance.undoActionStack.Pop();
             action.UndoAction();
             CommandStackManager.Instance.redoActionStack.Push(action);
         }
@@ -16,9 +17,10 @@ public class UndoActions : MonoBehaviour
 
     public void RedoToolAction()
     {
-        IToolAction action = (IToolAction)CommandStackManager.Instance.redoActionStack.Pop();
-        if (action != null)
+        
+        if (CommandStackManager.Instance.redoActionStack.Count > 0)
         {
+            IToolAction action = (IToolAction)CommandStackManager.Instance.redoActionStack.Pop();
             action.DoAction();
             CommandStackManager.Instance.undoActionStack.Push(action);
         }

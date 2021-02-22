@@ -72,7 +72,7 @@ public class ViveWandTeleporter : MonoBehaviour, IMixedRealityInputHandler<float
 
     bool IsInputSourceThis(IMixedRealityInputSource inputSource)
     {
-        return this == inputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
+        return this == inputSource.Pointers[0]?.Controller?.Visualizer?.GameObjectProxy?.GetComponentInChildren<ViveWandVirtualTool>();
     }
 
 

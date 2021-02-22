@@ -252,7 +252,7 @@ public class ViveWandVirtualTool : MonoBehaviour, IMixedRealityInputActionHandle
 
     bool IsInputSourceThis(IMixedRealityInputSource inputSource)
     {
-        return this == inputSource.Pointers[0].Controller.Visualizer.GameObjectProxy.GetComponentInChildren<ViveWandVirtualTool>();
+        return this == inputSource.Pointers[0]?.Controller?.Visualizer?.GameObjectProxy?.GetComponentInChildren<ViveWandVirtualTool>();
     }
 
 
