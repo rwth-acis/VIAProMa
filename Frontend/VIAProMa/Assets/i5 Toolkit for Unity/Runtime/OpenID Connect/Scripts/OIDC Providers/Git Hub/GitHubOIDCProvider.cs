@@ -74,9 +74,11 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
                 return "";
             }
 
-            string uri = tokenEndpoint + $"?code={code}&client_id={ClientData.ClientId}" +
-                $"&client_secret={ClientData.ClientSecret}&redirect_uri={redirectUri}&grant_type=authorization_code";
+            string uri = tokenEndpoint + $"?client_id={ClientData.ClientId}" +
+                $"&redirect_uri={redirectUri}&client_secret={ClientData.ClientSecret}&code={code}&grant_type=authorization_code";
             WebResponse<string> response = await RestConnector.PostAsync(uri, "");
+
+ 
             if (response.Successful)
             {
                 GitHubAuthorizationFlowAnswer answer =
@@ -165,8 +167,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
 
             string responseType = AuthorizationFlow == AuthorizationFlow.AUTHORIZATION_CODE ? "code" : "token";
             string uriScopes = UriUtils.WordArrayToSpaceEscapedString(scopes);
-            string uri = authorizationEndpoint + $"?response_type={responseType}&scope={uriScopes}" +
-                $"&client_id={ClientData.ClientId}&redirect_uri={redirectUri}";
+            string uri = authorizationEndpoint + $"?client_id={ClientData.ClientId}&redirect_uri={redirectUri}" + $"response_type={responseType}&scope={uriScopes}";
             Browser.OpenURL(uri);
         }
 
