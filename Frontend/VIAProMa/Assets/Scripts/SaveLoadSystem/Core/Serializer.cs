@@ -37,7 +37,7 @@ public class Serializer : MonoBehaviour
     /// <summary>
     /// Registers this serializer script at the save load manager
     /// </summary>
-    private void Start()
+    private void OnEnable()
     {
         SaveLoadManager.Instance.RegisterSerializer(this);
     }
@@ -46,7 +46,7 @@ public class Serializer : MonoBehaviour
     /// Called if the GameObject is destroyed
     /// Un-registers this serializer instance from the save load manager
     /// </summary>
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (SaveLoadManager.Instance != null)
         {
