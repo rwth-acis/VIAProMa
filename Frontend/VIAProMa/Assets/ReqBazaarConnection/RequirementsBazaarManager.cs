@@ -43,10 +43,10 @@ namespace Org.Requirements_Bazaar.API
         /// Retrieves the categories of a project
         /// </summary>
         /// <param name="projectId">The id of the project which contains the categories</param>
-        /// <param name="page">The page number of the requirements list</param>
+        /// <param name="page">The page number of the categories list</param>
         /// <param name="per_page">The number of categories on one page</param>
         /// <param name="searchFilter">A search query string</param>
-        /// <param name="sortingMode">How the requirements should be sorteds</param>
+        /// <param name="sortingMode">How the categories should be sorteds</param>
         /// <returns></returns>
         public static async Task<Category[]> GetProjectCategories (int projectId, int page = 0, int per_page = 10, string searchFilter = "", ProjectSortingMode sortingMode = ProjectSortingMode.DEFAULT)
         {
@@ -73,6 +73,49 @@ namespace Org.Requirements_Bazaar.API
                 string json = JsonHelper.EncapsulateInWrapper(response.ResponseBody);
                 Category[] categoryList = JsonHelper.FromJson<Category>(json);
                 return categoryList;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves the requirements of a project
+        /// </summary>
+        /// <param name="projectId">The id of the project which contains the requirements</param>
+        /// <param name="page">The page number of the requirements list</param>
+        /// <param name="per_page">The number of requirements on one page</param>
+        /// <param name="searchFilter">A search query string</param>
+        /// <param name="sortingMode">How the requirements should be sorteds</param>
+        /// <returns></returns>
+        public static async Task<Requirement[]> GetProjectRequirements (int projectId, int page = 0, int per_page = 10, string search = "", RequirementState filterState = RequirementState.ALL, RequirementsSortingMode sortMode = RequirementsSortingMode.DEFAULT)
+        {
+            string url = baseUrl + "projects/" + projectId.ToString() + "/requirements";
+            url += "?state=" + filterState.ToString().ToLower();
+            url += "&per_page=" + per_page.ToString();
+
+            if (page > 0)
+            {
+                url += "&page=" + page.ToString();
+            }
+            if (search != "")
+            {
+                search = CleanString(search);
+                url += "&search=" + search;
+            }
+            if (sortMode != RequirementsSortingMode.DEFAULT)
+            {
+                url += "&sort=" + sortMode.ToString().ToLower();
+            }
+
+            Response response = await Rest.GetAsync(url);
+            if (!response.Successful)
+            {
+                Debug.LogError(response.ResponseBody);
+                return null;
+            }
+            else
+            {
+                string json = JsonHelper.EncapsulateInWrapper(response.ResponseBody);
+                Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
+                return requirements;
             }
         }
 
@@ -109,6 +152,45 @@ namespace Org.Requirements_Bazaar.API
             string url = baseUrl + "requirements/" + requirementId.ToString();
             Response resp = await Rest.DeleteAsync(url);
             if(!resp.Successful)
+            {
+                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                return null;
+            }
+            else
+            {
+                Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
+                return requirement;
+            }
+        }
+
+        /// <summary>
+        /// Deletes a specific requirement by its id
+        /// </summary>
+        /// <param name="requirementName">The name of the requirement which should be deleted</param>
+        /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
+        /// <returns>The deleted requirement</returns>
+        public static async Task<Requirement> DeleteRequirement(string requirementName, int projectId)
+        {
+            Requirement[] projectRequirements = await GetProjectRequirements(projectId);
+            int requirementId = 0;
+            for (int i = 0; i < projectRequirements.Length; i++)
+            {
+                if (projectRequirements[i].Name == requirementName)
+                {
+                    requirementId = projectRequirements[i].Id;
+                    break;
+                }
+
+            }
+            if(requirementId==0)
+            {
+                Debug.LogError("Requirement not found");
+                return null;
+            }
+
+            string url = baseUrl + "requirements/" + requirementId.ToString();
+            Response resp = await Rest.DeleteAsync(url);
+            if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
                 return null;
