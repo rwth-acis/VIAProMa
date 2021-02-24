@@ -28,7 +28,6 @@ public abstract class ViveWand : MonoBehaviour
             ownSource = GetOwnInputSource();
             yield return null;
         }
-        Debug.Log("Jo");
     }
 
     /// <summary>
@@ -68,14 +67,13 @@ public abstract class ViveWand : MonoBehaviour
     }
 
     /// <summary>
-    /// Get the input source, this object belongs to
+    /// Get the input source, this object belongs to. Can return null, when the input source isn't registerd yet.
     /// </summary>
     /// <returns></returns>
     protected IMixedRealityInputSource GetOwnInputSource()
     {
         foreach (var source in CoreServices.InputSystem.DetectedInputSources)
         {
-            // Ignore anything that is not a hand because we want articulated hands
             foreach (var pointer in source.Pointers)
             {
                 if (pointer.Controller?.Visualizer?.GameObjectProxy == gameObject)
@@ -84,7 +82,6 @@ public abstract class ViveWand : MonoBehaviour
                 }
             }
         }
-        Debug.LogError("Can't find the input source this tool belongs too");
         return null;
     }
 }
