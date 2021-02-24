@@ -93,6 +93,7 @@ public class SaveLoadManager : Singleton<SaveLoadManager>
             if (res.Successful)
             {
                 DeserializeSaveGame(res.Value);
+                CommandStackManager.Instance?.CleanUp();
                 return true;
             }
         }
