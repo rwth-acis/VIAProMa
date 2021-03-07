@@ -7,22 +7,15 @@ using Photon.Pun;
 public class RemoveActionUndoable : IToolAction
 {
     public GameObject target;
+    SerializedObject data;
 
     /// <summary>
     /// Deactivate the target
     /// </summary>
     void IToolAction.DoAction()
     {
-        if (target.GetComponentInChildren<PhotonView>() != null)
-        {
-            //PhotonNetwork.Destroy(target);
-            target.SetActive(false);
-        }
-        else
-        {
-            //Destroy(target);
-            target.SetActive(false);
-        }
+        data = target.GetComponentInChildren<Serializer>()?.Serialize();
+        PhotonNetwork.Destroy(target);
     }
 
     /// <summary>
@@ -30,6 +23,7 @@ public class RemoveActionUndoable : IToolAction
     /// </summary>
     void IToolAction.UndoAction()
     {
-        target.SetActive(true);
+        target = ResourceManager.Instance.NetworkInstantiate(data.PrefabName, Vector3.zero, Quaternion.identity);
+        target.GetComponentInChildren<Serializer>()?.Deserialize(data);
     }
 }
