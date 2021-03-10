@@ -22,15 +22,16 @@ public class EditButtonsScript : MonoBehaviour
     public async void DeleteIssue()
     {
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
-        
-        Debug.LogError("requirementname:" + requirementName.text);
 
         await RequirementsBazaarManager.DeleteRequirement(requirementName.text, reqBazShelfConfiguration.SelectedProject.id);
+        Destroy(this.transform.parent.gameObject);
     }
 
     // Called when the edit button on the issue bar is pressed
-    void EditIssue()
+    public async void EditIssue()
     {
-        
+        ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
+
+        await RequirementsBazaarManager.EditRequirement(requirementName.text, reqBazShelfConfiguration.SelectedProject.id);
     }
 }

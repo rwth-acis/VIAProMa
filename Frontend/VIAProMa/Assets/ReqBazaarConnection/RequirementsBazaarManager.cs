@@ -26,7 +26,7 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "projects/" + projectId.ToString();
 
-            Response response = await Rest.GetAsync(url);
+            Response response = await Rest.GetAsync(url, null, -1, null, true);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseBody);
@@ -62,7 +62,7 @@ namespace Org.Requirements_Bazaar.API
                 url += "&search=" + searchFilter;
             }
 
-            Response response = await Rest.GetAsync(url);
+            Response response = await Rest.GetAsync(url, null, -1, null, true);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseBody);
@@ -105,7 +105,7 @@ namespace Org.Requirements_Bazaar.API
                 url += "&sort=" + sortMode.ToString().ToLower();
             }
 
-            Response response = await Rest.GetAsync(url);
+            Response response = await Rest.GetAsync(url, null, -1, null, true);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseBody);
@@ -128,7 +128,7 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "categories/" + categoryId.ToString();
 
-            Response response = await Rest.GetAsync(url);
+            Response response = await Rest.GetAsync(url, null, -1, null, true);
 
             if (!response.Successful)
             {
@@ -150,7 +150,7 @@ namespace Org.Requirements_Bazaar.API
         public static async Task<Requirement> DeleteRequirement (int requirementId)
         {
             string url = baseUrl + "requirements/" + requirementId.ToString();
-            Response resp = await Rest.DeleteAsync(url);
+            Response resp = await Rest.DeleteAsync(url, null, -1, true);
             if(!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
@@ -187,9 +187,9 @@ namespace Org.Requirements_Bazaar.API
                 Debug.LogError("Requirement not found");
                 return null;
             }
-
+            Debug.Log(requirementId);
             string url = baseUrl + "requirements/" + requirementId.ToString();
-            Response resp = await Rest.DeleteAsync(url);
+            Response resp = await Rest.DeleteAsync(url, null,-1, true);
             if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
@@ -227,7 +227,7 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(toCreate);
 
-            Response resp = await Rest.PostAsync(url, json);
+            Response resp = await Rest.PostAsync(url, json, null, -1, true);
             if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
@@ -237,6 +237,56 @@ namespace Org.Requirements_Bazaar.API
             {
                 Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
                 return requirement;
+            }
+        }
+
+        /// <summary>
+        /// Edits a specific requirement by its id
+        /// </summary>
+        /// <param name="requirementName">The name of the requirement which should be deleted</param>
+        /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
+        /// <returns>The deleted requirement</returns>
+        public static async Task<Requirement> EditRequirement(string requirementName, int projectId)
+        {
+            Requirement[] projectRequirements = await GetProjectRequirements(projectId);
+            Requirement requirement = null;
+            for (int i = 0; i < projectRequirements.Length; i++)
+            {
+                if (projectRequirements[i].Name == requirementName)
+                {
+                    requirement = projectRequirements[i];
+                    break;
+                }
+
+            }
+            if (requirement == null)
+            {
+                Debug.LogError("Requirement not found");
+                return null;
+            }
+            Debug.Log(requirement.Id);
+
+            //Editing the requirement
+            requirement.Name = "Updated Requirement";
+
+
+            string url = baseUrl + "requirements/" + requirement.Id;
+
+            // convert the requirement to a uploadable format (the statistic fields of the requirement are not recognized as input by the service)
+            UploadableRequirement uploadableRequirement = requirement.ToUploadFormat();
+
+            string json = JsonUtility.ToJson(uploadableRequirement);
+
+            Response response = await Rest.PutAsync(url, json, null, -1, true);
+            if (!response.Successful)
+            {
+                Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
+                return null;
+            }
+            else
+            {
+                Requirement updatedRequirement = JsonUtility.FromJson<Requirement>(response.ResponseBody);
+                return updatedRequirement;
             }
         }
 
@@ -255,7 +305,7 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(uploadableRequirement);
 
-            Response response = await Rest.PutAsync(url, json);
+            Response response = await Rest.PutAsync(url, json, null, -1, true);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
