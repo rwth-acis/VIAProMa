@@ -20,8 +20,8 @@ public class GitHubLogin : ProviderLogin
 
     public override void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub).LoginCompleted += LoginScript_LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub).LogoutCompleted += LoginScript_LogoutCompleted;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LoginCompleted += LoginScript_LoginCompleted;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LogoutCompleted += LoginScript_LogoutCompleted;
         SetLED(false);
     }
 
@@ -29,7 +29,7 @@ public class GitHubLogin : ProviderLogin
     public override void Awake()
     {
         statusLedRenderer = statusLed?.GetComponent<Renderer>();
-        oidcProvider = ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub).OidcProvider;
+        oidcProvider = ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).OidcProvider;
     }
 
     /// <summary>
@@ -75,17 +75,17 @@ public class GitHubLogin : ProviderLogin
             oidcProvider.ClientData = clientDataObject.clientData;
 
             //assign the instance to the xref:i5.Toolkit.Core.OpenIDConnectClient.IOidcProvider> property of the service
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub).OidcProvider = oidcProvider;
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).OidcProvider = oidcProvider;
 
             //Define Redirect URI for use on UWP builds
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub).RedirectURI = "i5:/";
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).RedirectURI = "i5:/";
 
             //To start the login process, call the OpenLoginPage() method of the OpenIDConnectService
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub).OpenLoginPage();
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).OpenLoginPage();
         }
         else
         {
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.GitHub).Logout();
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).Logout();
         }
     }
 
