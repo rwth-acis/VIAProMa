@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GitHubLabel {
-    private int id;
+    private long id;
     private String nodeId;
     private String name;
     private String description;
     private String color;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
