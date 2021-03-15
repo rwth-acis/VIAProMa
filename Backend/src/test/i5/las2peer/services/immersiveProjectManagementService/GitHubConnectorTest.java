@@ -87,6 +87,7 @@ public class GitHubConnectorTest {
         APIResult<GitHubIssue[]> result = GitHubConnector.getIssuesInRepository("microsoft", "MixedRealityToolkit-Unity", 0, 10);
         if (result.hasError())
         {
+            System.out.println("Result has error");
             System.out.println(result.getErrorMessage());
         }
         Assert.assertTrue(result.successful());
