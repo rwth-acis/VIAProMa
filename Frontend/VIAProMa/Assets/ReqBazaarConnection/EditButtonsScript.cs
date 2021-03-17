@@ -24,7 +24,7 @@ public class EditButtonsScript : MonoBehaviour
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
 
         await RequirementsBazaarManager.DeleteRequirement(requirementName.text, reqBazShelfConfiguration.SelectedProject.id);
-        Destroy(this.transform.parent.gameObject);
+        Destroy(transform.parent.gameObject);
     }
 
     // Called when the edit button on the issue bar is pressed

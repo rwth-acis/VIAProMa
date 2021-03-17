@@ -16,6 +16,13 @@ public class CardSideBarHandler : MonoBehaviour, IMixedRealityFocusHandler
 
     void IMixedRealityFocusHandler.OnFocusExit(FocusEventData eventData)
     {
+        StartCoroutine(Wait());
+        
+    }
+
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(3f);
         deleteButton.SetActive(false);
         editButton.SetActive(false);
     }
