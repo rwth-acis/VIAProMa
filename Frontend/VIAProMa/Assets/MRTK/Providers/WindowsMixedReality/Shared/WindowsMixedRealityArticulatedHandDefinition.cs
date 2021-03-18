@@ -23,10 +23,10 @@ namespace Microsoft.MixedReality.Toolkit.WindowsMixedReality
         public WindowsMixedRealityArticulatedHandDefinition(IMixedRealityInputSource source, Handedness handedness) : base(source, handedness) { }
 
 #if WINDOWS_UWP
-        private HandMeshObserver handMeshObserver = null;
+        private Windows.Perception.People.HandMeshObserver handMeshObserver = null;
 
         private ushort[] handMeshTriangleIndices = null;
-        private HandMeshVertex[] vertexAndNormals = null;
+        private Windows.Perception.People.HandMeshVertex[] vertexAndNormals = null;
 
         private Vector3[] handMeshVerticesUnity = null;
         private Vector3[] handMeshNormalsUnity = null;
