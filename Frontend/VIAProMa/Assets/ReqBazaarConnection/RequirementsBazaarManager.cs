@@ -237,7 +237,13 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(toCreate);
 
-            Response resp = await Rest.PostAsync(url, json, null, -1, true);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            if (ServiceManager.GetService<OpenIDConnectService>() != null)
+            {
+                Debug.Log("Service not null");
+            }
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<OpenIDConnectService>().AccessToken);
+            Response resp = await Rest.PostAsync(url, json, headers, -1, true);
             if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
