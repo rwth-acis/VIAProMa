@@ -25,12 +25,12 @@ If applicable, add screenshots to help explain your problem.
 
 **Bug Observed on the Following Devices**
 Check applicable devices and platform by putting an x in-between the square brackets.
-[ ] - Unity editor
-[ ] - HoloLens 1
-[ ] - HoloLens 2
-[ ] - HTC VIVE
-[ ] - Smartphone
-[ ] - Other: 
+- [ ] Unity editor
+- [ ] HoloLens 1
+- [ ] HoloLens 2
+- [ ] HTC VIVE
+- [ ] Smartphone
+- [ ] Other: 
 
 **Additional context**
 Add any other context about the problem here.
