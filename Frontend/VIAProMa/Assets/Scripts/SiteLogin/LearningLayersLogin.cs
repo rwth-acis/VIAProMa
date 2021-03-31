@@ -20,8 +20,8 @@ public class LearningLayersLogin : ProviderLogin
 
     public override void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers).LoginCompleted += LoginScript_LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers).LogoutCompleted += LoginScript_LogoutCompleted;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginScript_LoginCompleted;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LoginScript_LogoutCompleted;
         SetLED(false);
     }
 
@@ -29,7 +29,7 @@ public class LearningLayersLogin : ProviderLogin
     public override void Awake()
     {
         statusLedRenderer = statusLed?.GetComponent<Renderer>();
-        oidcProvider = ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers).OidcProvider;
+        oidcProvider = ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).OidcProvider;
     }
 
     /// <summary>
@@ -75,17 +75,17 @@ public class LearningLayersLogin : ProviderLogin
             oidcProvider.ClientData = clientDataObject.clientData;
 
             //assign the instance to the xref:i5.Toolkit.Core.OpenIDConnectClient.IOidcProvider> property of the service
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers).OidcProvider = oidcProvider;
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).OidcProvider = oidcProvider;
 
             //Define Redirect URI for use on UWP builds
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers).RedirectURI = "i5:/";
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).RedirectURI = "i5:/";
 
             //To start the login process, call the OpenLoginPage() method of the OpenIDConnectService
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers).OpenLoginPage();
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).OpenLoginPage();
         }
         else
         {
-            ServiceManager.GetProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers).Logout();
+            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).Logout();
         }
     }
 

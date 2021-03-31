@@ -11,16 +11,15 @@ namespace i5.Toolkit.Core.Examples.OpenIDConnectClient
         protected override void RegisterServices()
         {
             OpenIDConnectService oidc = new OpenIDConnectService();
-            ServiceManager.RegisterService<OpenIDConnectService>(oidc);
             oidc.OidcProvider = new LearningLayersOidcProvider();
 
             oidc.RedirectURI = "i5:/";
-            ServiceManager.RegisterProvider(oidc, ServiceManager.Provider.LearningLayers);
+            ServiceManager.RegisterProvider(oidc, ProviderTypes.LearningLayers);
         }
 
         protected override void UnRegisterServices()
         {
-            ServiceManager.RemoveProvider<OpenIDConnectService>(ServiceManager.Provider.LearningLayers);
+            ServiceManager.RemoveProvider<OpenIDConnectService>(ProviderTypes.LearningLayers);
         }
     }
 }

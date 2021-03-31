@@ -153,7 +153,7 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "requirements/" + requirementId.ToString();
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<OpenIDConnectService>().AccessToken);
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
             Response resp = await Rest.DeleteAsync(url, headers, -1, true);
             if(!resp.Successful)
             {
@@ -194,11 +194,11 @@ namespace Org.Requirements_Bazaar.API
             Debug.Log(requirementId);
             string url = baseUrl + "requirements/" + requirementId.ToString();
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if(ServiceManager.GetService<OpenIDConnectService>()!= null)
+            if(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers) != null)
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<OpenIDConnectService>().AccessToken);
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
             Response resp = await Rest.DeleteAsync(url, headers,-1, true);
             if (!resp.Successful)
             {
@@ -238,11 +238,11 @@ namespace Org.Requirements_Bazaar.API
             string json = JsonUtility.ToJson(toCreate);
 
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if (ServiceManager.GetService<OpenIDConnectService>() != null)
+            if (ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers) != null)
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<OpenIDConnectService>().AccessToken);
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
             Response resp = await Rest.PostAsync(url, json, headers, -1, true);
             if (!resp.Successful)
             {
