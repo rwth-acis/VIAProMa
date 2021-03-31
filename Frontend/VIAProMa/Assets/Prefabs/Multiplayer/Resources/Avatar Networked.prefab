@@ -27,12 +27,12 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  observableSearch: 0
   Synchronization: 3
   OwnershipTransfer: 0
+  observableSearch: 0
   ObservedComponents:
   - {fileID: 8645489339138977450}
-  viewIdField: 0
+  sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &6929443080308724567
@@ -407,7 +407,11 @@ MonoBehaviour:
   logLevel: 1
   ignoreGlobalLogLevel: 0
   playbackOnlyWhenEnabled: 0
-  playDelayMs: 200
+  playDelayMs: -1
+  playbackDelaySettings:
+    MinDelaySoft: 200
+    MaxDelaySoft: 400
+    MaxDelayHard: 1000
 --- !u!1001 &6523064825053795340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -427,8 +431,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4655830316593286807, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
-      propertyPath: m_Mesh
-      value: 
+      propertyPath: m_Name
+      value: Avatar Networked
       objectReference: {fileID: 0}
     - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
@@ -485,6 +489,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3149242691866375767, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3310419911003119975, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655830316593286807, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7619380334928439537, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
       propertyPath: m_RootOrder
@@ -498,12 +517,7 @@ PrefabInstance:
     - target: {fileID: 7619380334928439543, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
       propertyPath: m_RootOrder
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7619380334928737535, guid: fddad501a37828346aa422a968ca8973,
-        type: 3}
-      propertyPath: m_Name
-      value: Avatar Networked
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fddad501a37828346aa422a968ca8973, type: 3}
