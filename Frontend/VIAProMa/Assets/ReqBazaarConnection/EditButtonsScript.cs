@@ -23,7 +23,7 @@ public class EditButtonsScript : MonoBehaviour
     {
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
 
-        await RequirementsBazaarManager.DeleteRequirement(requirementName.text, reqBazShelfConfiguration.SelectedProject.id);
+        //await RequirementsBazaarManager.DeleteRequirement(requirementName.text, reqBazShelfConfiguration.SelectedProject.id);
         Destroy(transform.parent.gameObject);
     }
 
@@ -32,6 +32,6 @@ public class EditButtonsScript : MonoBehaviour
     {
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
 
-        await RequirementsBazaarManager.EditRequirement(requirementName.text, reqBazShelfConfiguration.SelectedProject.id);
+        //await RequirementsBazaarManager.EditRequirement(requirementName.text, reqBazShelfConfiguration.SelectedProject.id);
     }
 }
