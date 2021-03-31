@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-using i5.Toolkit.Core.OpenIDConnectClient;
-using i5.Toolkit.Core.ServiceCore;
 
 namespace Org.Requirements_Bazaar.API
 {
@@ -28,7 +26,7 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "projects/" + projectId.ToString();
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
+            Response response = await Rest.GetAsync(url);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseBody);
@@ -45,10 +43,10 @@ namespace Org.Requirements_Bazaar.API
         /// Retrieves the categories of a project
         /// </summary>
         /// <param name="projectId">The id of the project which contains the categories</param>
-        /// <param name="page">The page number of the categories list</param>
+        /// <param name="page">The page number of the requirements list</param>
         /// <param name="per_page">The number of categories on one page</param>
         /// <param name="searchFilter">A search query string</param>
-        /// <param name="sortingMode">How the categories should be sorteds</param>
+        /// <param name="sortingMode">How the requirements should be sorteds</param>
         /// <returns></returns>
         public static async Task<Category[]> GetProjectCategories (int projectId, int page = 0, int per_page = 10, string searchFilter = "", ProjectSortingMode sortingMode = ProjectSortingMode.DEFAULT)
         {
@@ -64,7 +62,7 @@ namespace Org.Requirements_Bazaar.API
                 url += "&search=" + searchFilter;
             }
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
+            Response response = await Rest.GetAsync(url);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseBody);
@@ -79,49 +77,6 @@ namespace Org.Requirements_Bazaar.API
         }
 
         /// <summary>
-        /// Retrieves the requirements of a project
-        /// </summary>
-        /// <param name="projectId">The id of the project which contains the requirements</param>
-        /// <param name="page">The page number of the requirements list</param>
-        /// <param name="per_page">The number of requirements on one page</param>
-        /// <param name="searchFilter">A search query string</param>
-        /// <param name="sortingMode">How the requirements should be sorteds</param>
-        /// <returns></returns>
-        public static async Task<Requirement[]> GetProjectRequirements (int projectId, int page = 0, int per_page = 10, string search = "", RequirementState filterState = RequirementState.ALL, RequirementsSortingMode sortMode = RequirementsSortingMode.DEFAULT)
-        {
-            string url = baseUrl + "projects/" + projectId.ToString() + "/requirements";
-            url += "?state=" + filterState.ToString().ToLower();
-            url += "&per_page=" + per_page.ToString();
-
-            if (page > 0)
-            {
-                url += "&page=" + page.ToString();
-            }
-            if (search != "")
-            {
-                search = CleanString(search);
-                url += "&search=" + search;
-            }
-            if (sortMode != RequirementsSortingMode.DEFAULT)
-            {
-                url += "&sort=" + sortMode.ToString().ToLower();
-            }
-
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
-            if (!response.Successful)
-            {
-                Debug.LogError(response.ResponseBody);
-                return null;
-            }
-            else
-            {
-                string json = JsonHelper.EncapsulateInWrapper(response.ResponseBody);
-                Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
-                return requirements;
-            }
-        }
-
-        /// <summary>
         /// Gets a category by its ID
         /// </summary>
         /// <param name="categoryId">The ID of the category</param>
@@ -130,7 +85,7 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "categories/" + categoryId.ToString();
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
+            Response response = await Rest.GetAsync(url);
 
             if (!response.Successful)
             {
@@ -152,55 +107,8 @@ namespace Org.Requirements_Bazaar.API
         public static async Task<Requirement> DeleteRequirement (int requirementId)
         {
             string url = baseUrl + "requirements/" + requirementId.ToString();
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<OpenIDConnectService>().AccessToken);
-            Response resp = await Rest.DeleteAsync(url, headers, -1, true);
+            Response resp = await Rest.DeleteAsync(url);
             if(!resp.Successful)
-            {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return null;
-            }
-            else
-            {
-                Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
-                return requirement;
-            }
-        }
-
-        /// <summary>
-        /// Deletes a specific requirement by its id
-        /// </summary>
-        /// <param name="requirementName">The name of the requirement which should be deleted</param>
-        /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
-        /// <returns>The deleted requirement</returns>
-        public static async Task<Requirement> DeleteRequirement(string requirementName, int projectId)
-        {
-            Requirement[] projectRequirements = await GetProjectRequirements(projectId);
-            int requirementId = 0;
-            for (int i = 0; i < projectRequirements.Length; i++)
-            {
-                if (projectRequirements[i].Name == requirementName)
-                {
-                    requirementId = projectRequirements[i].Id;
-                    break;
-                }
-
-            }
-            if(requirementId==0)
-            {
-                Debug.LogError("Requirement not found");
-                return null;
-            }
-            Debug.Log(requirementId);
-            string url = baseUrl + "requirements/" + requirementId.ToString();
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            if(ServiceManager.GetService<OpenIDConnectService>()!= null)
-            {
-                Debug.Log("Service not null");
-            }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<OpenIDConnectService>().AccessToken);
-            Response resp = await Rest.DeleteAsync(url, headers,-1, true);
-            if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
                 return null;
@@ -237,13 +145,7 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(toCreate);
 
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            if (ServiceManager.GetService<OpenIDConnectService>() != null)
-            {
-                Debug.Log("Service not null");
-            }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<OpenIDConnectService>().AccessToken);
-            Response resp = await Rest.PostAsync(url, json, headers, -1, true);
+            Response resp = await Rest.PostAsync(url, json);
             if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
@@ -253,56 +155,6 @@ namespace Org.Requirements_Bazaar.API
             {
                 Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
                 return requirement;
-            }
-        }
-
-        /// <summary>
-        /// Edits a specific requirement by its id
-        /// </summary>
-        /// <param name="requirementName">The name of the requirement which should be deleted</param>
-        /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
-        /// <returns>The deleted requirement</returns>
-        public static async Task<Requirement> EditRequirement(string requirementName, int projectId)
-        {
-            Requirement[] projectRequirements = await GetProjectRequirements(projectId);
-            Requirement requirement = null;
-            for (int i = 0; i < projectRequirements.Length; i++)
-            {
-                if (projectRequirements[i].Name == requirementName)
-                {
-                    requirement = projectRequirements[i];
-                    break;
-                }
-
-            }
-            if (requirement == null)
-            {
-                Debug.LogError("Requirement not found");
-                return null;
-            }
-            Debug.Log(requirement.Id);
-
-            //Editing the requirement
-            requirement.Name = "Updated Requirement";
-
-
-            string url = baseUrl + "requirements/" + requirement.Id;
-
-            // convert the requirement to a uploadable format (the statistic fields of the requirement are not recognized as input by the service)
-            UploadableRequirement uploadableRequirement = requirement.ToUploadFormat();
-
-            string json = JsonUtility.ToJson(uploadableRequirement);
-
-            Response response = await Rest.PutAsync(url, json, null, -1, true);
-            if (!response.Successful)
-            {
-                Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
-                return null;
-            }
-            else
-            {
-                Requirement updatedRequirement = JsonUtility.FromJson<Requirement>(response.ResponseBody);
-                return updatedRequirement;
             }
         }
 
@@ -321,7 +173,7 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(uploadableRequirement);
 
-            Response response = await Rest.PutAsync(url, json, null, -1, true);
+            Response response = await Rest.PutAsync(url, json);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
