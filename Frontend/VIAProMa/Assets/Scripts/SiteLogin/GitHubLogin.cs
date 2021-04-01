@@ -56,7 +56,7 @@ public class GitHubLogin : ProviderLogin
         loggedIn = false;
         loginCaption.text = "Login:";
         statusCaption.text = "You are not logged in yet.";
-        Debug.Log("Successful Logout from GitHub");
+        Debug.Log("Successful Logout from GitHub.");
         SetLED(false);
     }
 

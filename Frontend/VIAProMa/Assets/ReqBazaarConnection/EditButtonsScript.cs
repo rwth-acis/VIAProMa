@@ -10,7 +10,7 @@ using TMPro;
 
 public class EditButtonsScript : MonoBehaviour
 {
-    [SerializeField] private ShelfConfigurationMenu configurationMenu;
+    private ShelfConfigurationMenu configurationMenu;
     [SerializeField] private TextMeshPro requirementName;
 
     public void Start()

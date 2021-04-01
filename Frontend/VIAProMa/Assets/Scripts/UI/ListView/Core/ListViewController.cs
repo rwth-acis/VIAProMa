@@ -7,7 +7,7 @@ namespace i5.VIAProMa.UI.ListView.Core
 {
     /// <summary>
     /// Main controller of the list view
-    /// Takes items of an DataType and transforms them to GameObject instances.
+    /// Takes items of a DataType and transforms them to GameObject instances.
     /// The ItemType is a class which can apply the DataType to the GameObject's representation, e.g. fill the text meshes
     /// </summary>
     /// <typeparam name="DataType">The DataType of the list</typeparam>

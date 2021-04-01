@@ -56,7 +56,7 @@ public class LearningLayersLogin : ProviderLogin
         loggedIn = false;
         loginCaption.text = "Login:";
         statusCaption.text = "You are not logged in yet.";
-        Debug.Log("Successful Logout from Learning Layers");
+        Debug.Log("Successful Logout from Learning Layers.");
         SetLED(false);
     }
 
@@ -70,7 +70,6 @@ public class LearningLayersLogin : ProviderLogin
             if (clientDataObject.clientData == null)
                 return;
 
-            Debug.Log("Im here!");
             //first create an instance of the IOidcProvider that should be used and assign the client credentials
             oidcProvider.ClientData = clientDataObject.clientData;
 
