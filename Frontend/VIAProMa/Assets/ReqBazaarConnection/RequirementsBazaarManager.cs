@@ -134,8 +134,9 @@ namespace Org.Requirements_Bazaar.API
 
             if (!response.Successful)
             {
-                Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
-                return null;
+                //Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
+                return await GetCategory(0);
+               // return null;
             }
             else
             {

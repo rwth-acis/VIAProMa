@@ -101,7 +101,8 @@ public class LearningLayersLogin : ProviderLogin
         }
         else
         {
-            statusLedRenderer.material.SetColor("_EmissiveColor", loggedOutColor);
+            if(statusLedRenderer !=  null)
+                statusLedRenderer.material.SetColor("_EmissiveColor", loggedOutColor);
         }
     }
 }
