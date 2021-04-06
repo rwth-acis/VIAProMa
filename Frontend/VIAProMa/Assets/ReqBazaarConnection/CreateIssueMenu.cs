@@ -19,7 +19,7 @@ public class CreateIssueMenu : MonoBehaviour
         issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
     }
 
-    // Called when the createIssue button on the createIssue menu is pressed
+    // Called when the CreateIssue button on theCreateIssue Window is pressed
     public async void CreateIssue()
     {
         ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;

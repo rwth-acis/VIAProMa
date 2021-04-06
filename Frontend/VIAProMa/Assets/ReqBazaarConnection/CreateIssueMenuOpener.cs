@@ -2,19 +2,17 @@
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using Microsoft.MixedReality.Toolkit.UI;
-using TMPro;
-using Org.Requirements_Bazaar.API;
 using i5.VIAProMa.Shelves.IssueShelf;
-using i5.VIAProMa.DataModel.ReqBaz;
 using System.Collections;
 
 public class CreateIssueMenuOpener : MonoBehaviour
 {
+    [Header("UI Elements")]
     [SerializeField] CreateIssueMenu createIssueMenu;
-    [SerializeField] GameObject infoText;
     [SerializeField] GameObject backPlate;
     [SerializeField] GameObject notification;
 
+    [Header("ActivationCriteria")]
     bool isOpen = false;
     bool isProjectLoaded = false;
     bool categorySelected = false;
@@ -25,18 +23,35 @@ public class CreateIssueMenuOpener : MonoBehaviour
 
     public void Start()
     {
+        //Disable the Create Button and enable the back plate
         gameObject.GetComponent<Interactable>().IsEnabled = false;
-        backPlate.SetActive(true);
-        infoText.GetComponent<TextMeshPro>().text = "Login or load a project.";
+        if(backPlate != null)
+        {
+            backPlate.SetActive(true);
+        }
+    }
+
+
+    //Subscribe to Login and Project events
+    public void OnEnable()
+    {
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged;
-        reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
+    }
+
+    //Unsubscribe to Login and Project events
+    public void OnDisable()
+    {
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted -= LoginCompleted;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted -= LogoutCompleted;
+        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged -= ProjectChanged;
+        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged -= CategoryChanged;
     }
 
     /// <summary>
-    /// Sets Project state
+    /// Sets Project state and enables the button accordingly
     /// </summary>
     /// <param name="sender">Sender of event</param>. 
     /// <param name="e">Event arguments</param>
@@ -44,7 +59,7 @@ public class CreateIssueMenuOpener : MonoBehaviour
     {
         reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
         isProjectLoaded = reqBazShelfConfiguration.IsValidConfiguration;
-        Debug.Log(isProjectLoaded);
+
         if (isloggedIn && isProjectLoaded && categorySelected)
             EnableButton();
         else
@@ -52,15 +67,15 @@ public class CreateIssueMenuOpener : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets Category state
+    /// Sets Category state and enables the button accordingly
     /// </summary>
     /// <param name="sender">Sender of event</param>. 
     /// <param name="e">Event arguments</param>
     public void CategoryChanged(object sender, System.EventArgs e)
     {
         reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
-        categorySelected = reqBazShelfConfiguration.SelectedCategory != new Category(-1,"No Category");
-        Debug.Log(categorySelected);
+        categorySelected = reqBazShelfConfiguration.SelectedCategory != null;
+
         if (isloggedIn && isProjectLoaded && categorySelected)
             EnableButton();
         else
@@ -76,7 +91,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
     {
         isloggedIn = true;
         if (isloggedIn && isProjectLoaded && categorySelected)
+        {
             EnableButton();
+        }
     }
 
     /// <summary>
@@ -90,47 +107,75 @@ public class CreateIssueMenuOpener : MonoBehaviour
         DisableButton();
     }
 
+
+    //Close the CreateIssue Window
     public void CloseMenu()
     {
-        createIssueMenu.gameObject.SetActive(false);
+        if(createIssueMenu != null)
+        {
+            createIssueMenu.gameObject.SetActive(false);
+        }
         isOpen = false;
     }
 
+    //Open the CreateIssue Window if the configuration of project and category is valid, otherwise enable the notification
     public void OpenMenu()
     {
         reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
-        if (!isloggedIn || !reqBazShelfConfiguration.IsValidConfiguration || reqBazShelfConfiguration.SelectedCategory == new Category(-1, "No Category"))
+        if (!isloggedIn || !reqBazShelfConfiguration.IsValidConfiguration || reqBazShelfConfiguration.SelectedCategory == null)
         {
-            notification.SetActive(true);
-            StartCoroutine(WaitUntilDeactivate());
+            EnableNotification();
         }
         else
         {
-            createIssueMenu.gameObject.SetActive(true);
+            if (createIssueMenu != null)
+            {
+                createIssueMenu.gameObject.SetActive(true);
+            }
             isOpen = true;
         }
+    }
+
+    //Set the notification to enabled for 3 seconds
+    public void EnableNotification()
+    {
+        if (notification != null)
+        {
+            notification.SetActive(true);
+        }
+        StartCoroutine(WaitUntilDeactivate());
     }
 
     IEnumerator WaitUntilDeactivate()
     {
         yield return new WaitForSeconds(3f);
-        notification.SetActive(false);
+        if (notification != null)
+        {
+            notification.SetActive(false);
+        }
     }
 
+    //Disable the Create Issue Button
     public void DisableButton()
     {
         gameObject.GetComponent<Interactable>().IsEnabled = false;
-        backPlate.SetActive(true);
-        infoText.GetComponent<TextMeshPro>().text = "Login or load a project.";
+        if (backPlate != null)
+        {
+            backPlate.SetActive(true);
+        }
     }
 
+    //Enable the Create Issue Button
     public void EnableButton()
     {
         gameObject.GetComponent<Interactable>().IsEnabled = true;
-        backPlate.SetActive(false);
-        infoText.GetComponent<TextMeshPro>().text = "Create Issue";
+        if (backPlate != null)
+        {
+            backPlate.SetActive(false);
+        }
     }
 
+    //Either open or close the Create Issue Window depending on the current state
     public void OpenCreateIssueMenu()
     {
         if(createIssueMenu != null)
