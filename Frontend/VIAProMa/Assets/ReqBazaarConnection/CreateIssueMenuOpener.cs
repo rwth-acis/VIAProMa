@@ -29,26 +29,13 @@ public class CreateIssueMenuOpener : MonoBehaviour
         {
             backPlate.SetActive(true);
         }
-    }
-
-
-    //Subscribe to Login and Project events
-    public void OnEnable()
-    {
+        //Subscribe to Login and Project events
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged;
     }
 
-    //Unsubscribe to Login and Project events
-    public void OnDisable()
-    {
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted -= LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted -= LogoutCompleted;
-        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged -= ProjectChanged;
-        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged -= CategoryChanged;
-    }
 
     /// <summary>
     /// Sets Project state and enables the button accordingly
