@@ -147,8 +147,10 @@ public class CreateIssueMenuOpener : MonoBehaviour
     //Disable the Create Issue Button
     public void DisableButton()
     {
-        if(gameObject != null)
+        if(gameObject != null || gameObject.GetComponent<Interactable>() != null)
+        {
             gameObject.GetComponent<Interactable>().IsEnabled = false;
+        }
         if (backPlate != null)
         {
             backPlate.SetActive(true);

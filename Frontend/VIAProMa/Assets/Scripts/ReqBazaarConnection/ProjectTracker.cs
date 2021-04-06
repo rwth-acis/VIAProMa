@@ -1,17 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using i5.VIAProMa.Shelves.IssueShelf;
-using Org.Requirements_Bazaar.API;
 using i5.VIAProMa.DataModel.ReqBaz;
 
 public class ProjectTracker : MonoBehaviour
 {
+    [Header("References")]
     private ShelfConfigurationMenu configurationMenu;
     private ReqBazShelfConfiguration reqBazShelfConfiguration;
+
+    [Header("Tracked Parameters")]
     public int currentProjectID = 0;
     public Category currentCategory = null;
 
+    // Subscribe to events of project configuration
     public void Start()
     {
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged;
@@ -19,14 +20,23 @@ public class ProjectTracker : MonoBehaviour
     }
 
 
-        public void ProjectChanged(object sender, System.EventArgs e)
+    /// <summary>
+    /// Stores the current project ID
+    /// </summary>
+    /// <param name="sender">Sender of event</param>. 
+    /// <param name="e">Event arguments</param>
+    public void ProjectChanged(object sender, System.EventArgs e)
     {
         configurationMenu = GameObject.FindObjectOfType<ShelfConfigurationMenu>();
         reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
         currentProjectID = reqBazShelfConfiguration.SelectedProject.id;
     }
 
-
+    /// <summary>
+    /// Stores the current category
+    /// </summary>
+    /// <param name="sender">Sender of event</param>. 
+    /// <param name="e">Event arguments</param>
     public void CategoryChanged(object sender, System.EventArgs e)
     {
         configurationMenu = GameObject.FindObjectOfType<ShelfConfigurationMenu>();

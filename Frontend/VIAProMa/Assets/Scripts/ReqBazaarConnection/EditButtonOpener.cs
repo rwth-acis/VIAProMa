@@ -1,19 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
+using TMPro;
 
-public class DeleteButtonOpener : MonoBehaviour
+public class EditButtonOpener : MonoBehaviour
 {
 
-    [SerializeField] private GameObject deleteButtonPrefab;
+    [SerializeField] private GameObject editButtonPrefab;
     [SerializeField] private TextMeshPro requirementName;
+    [SerializeField] private TextMeshPro requirementDescription;
 
     private GameObject buttonInstance;
 
-    // Start is called before the first frame update
+    // Subscribe to Login and Logout Events
     private void Start()
     {
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
@@ -22,15 +23,18 @@ public class DeleteButtonOpener : MonoBehaviour
 
     private void Update()
     {
-        if(buttonInstance == null)
+        if (buttonInstance == null)
         {
-            buttonInstance = Instantiate(deleteButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
-            buttonInstance.GetComponent<DeleteButton>().requirementName = requirementName;
+            //Instantiate Button next to the Issue Card and pass on the requirement name, the button is activated if the user is logged in
+            buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.025f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
+            buttonInstance.GetComponent<EditButton>().requirementName = requirementName;
+            buttonInstance.GetComponent<EditButton>().requirementDescription = requirementDescription;
             buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).IsLoggedIn);
         }
-        if(buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)
+        //Check if the placement of the button is indeed correct and next to the position
+        if (buttonInstance.transform.position.x > this.transform.position.x + 0.025f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)
         {
-            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
+            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.025f, this.transform.position.y + 0.1f, this.transform.position.z);
         }
     }
 
@@ -41,7 +45,7 @@ public class DeleteButtonOpener : MonoBehaviour
     /// <param name="e">Event arguments</param>
     public void LoginCompleted(object sender, System.EventArgs e)
     {
-        if(buttonInstance != null)
+        if (buttonInstance != null)
             buttonInstance.SetActive(true);
     }
 
@@ -56,7 +60,7 @@ public class DeleteButtonOpener : MonoBehaviour
             buttonInstance.SetActive(false);
     }
 
-
+    //Destroy button along with this object
     public void OnDestroy()
     {
         Destroy(buttonInstance);

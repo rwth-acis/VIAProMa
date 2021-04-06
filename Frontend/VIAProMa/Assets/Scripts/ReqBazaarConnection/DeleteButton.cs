@@ -2,16 +2,17 @@
 using UnityEngine;
 using i5.VIAProMa.Shelves.IssueShelf;
 using Org.Requirements_Bazaar.API;
-using System.Collections;
-using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 
 public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
 {
     [SerializeField] GameObject indicator;
+
     private ProjectTracker projectTracker;
     private IssuesLoader issueLoader;
     [HideInInspector] public TextMeshPro requirementName;
+
+    // Timer parameters
     bool holding = false;
     float timer = 0;
     float timeUntilHold = 1f;
@@ -22,6 +23,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
         projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
     }
 
+    // On Input, start timer until the issue is deleted or the input has stopped, size of indicator is adjusted to delta time
     public void Update()
     {
         if (holding)
@@ -43,7 +45,6 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
         await RequirementsBazaarManager.DeleteRequirement(requirementName.text,projectTracker.currentProjectID);
         issueLoader.LoadContent();
     }
-
 
     public void OnInputUp(InputEventData eventData)
     {

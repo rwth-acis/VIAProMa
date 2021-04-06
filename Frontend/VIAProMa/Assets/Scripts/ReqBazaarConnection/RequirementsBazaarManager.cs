@@ -263,7 +263,7 @@ namespace Org.Requirements_Bazaar.API
         /// <param name="requirementName">The name of the requirement which should be deleted</param>
         /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
         /// <returns>The deleted requirement</returns>
-        public static async Task<Requirement> EditRequirement(string requirementName, int projectId)
+        public static async Task<Requirement> EditRequirement(string requirementName, int projectId, string newName, string newDescription)
         {
             Requirement[] projectRequirements = await GetProjectRequirements(projectId);
             Requirement requirement = null;
@@ -284,7 +284,8 @@ namespace Org.Requirements_Bazaar.API
             Debug.Log(requirement.Id);
 
             //Editing the requirement
-            requirement.Name = "Updated Requirement";
+            requirement.Name = newName;
+            requirement.Description = newDescription;
 
 
             string url = baseUrl + "requirements/" + requirement.Id;
@@ -294,7 +295,14 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(uploadableRequirement);
 
-            Response response = await Rest.PutAsync(url, json, null, -1, true);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            if (ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers) != null)
+            {
+                Debug.Log("Service not null");
+            }
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
+
+            Response response = await Rest.PutAsync(url, json, headers, -1, true);
             if (!response.Successful)
             {
                 Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
