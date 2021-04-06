@@ -19,6 +19,7 @@ public class CreateIssueMenuOpener : MonoBehaviour
     bool isloggedIn = false;
 
     ReqBazShelfConfiguration reqBazShelfConfiguration;
+    private ProjectTracker projectTracker;
 
 
     public void Start()
@@ -34,6 +35,8 @@ public class CreateIssueMenuOpener : MonoBehaviour
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged;
+
+        projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
     }
 
 
@@ -108,19 +111,18 @@ public class CreateIssueMenuOpener : MonoBehaviour
     //Open the CreateIssue Window if the configuration of project and category is valid, otherwise enable the notification
     public void OpenMenu()
     {
-        reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
-        if (!isloggedIn || !reqBazShelfConfiguration.IsValidConfiguration || reqBazShelfConfiguration.SelectedCategory == null)
-        {
-            EnableNotification();
-        }
-        else
-        {
-            if (createIssueMenu != null)
+        if (!isloggedIn || projectTracker.currentProjectID == 0 || projectTracker.currentCategory == null)
             {
-                createIssueMenu.gameObject.SetActive(true);
+                EnableNotification();
+            }   
+        else
+            {
+                if (createIssueMenu != null)
+                {
+                    createIssueMenu.gameObject.SetActive(true);
+                }
+                isOpen = true;
             }
-            isOpen = true;
-        }
     }
 
     //Set the notification to enabled for 3 seconds
@@ -145,7 +147,8 @@ public class CreateIssueMenuOpener : MonoBehaviour
     //Disable the Create Issue Button
     public void DisableButton()
     {
-        gameObject.GetComponent<Interactable>().IsEnabled = false;
+        if(gameObject != null)
+            gameObject.GetComponent<Interactable>().IsEnabled = false;
         if (backPlate != null)
         {
             backPlate.SetActive(true);
