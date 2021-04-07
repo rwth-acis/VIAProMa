@@ -4,6 +4,7 @@ using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
+using i5.Toolkit.Core.Utilities;
 
 public class LearningLayersLogin : ProviderLogin
 {
@@ -67,8 +68,11 @@ public class LearningLayersLogin : ProviderLogin
     {
         if (!loggedIn)
         {
-            if (clientDataObject.clientData == null)
+            if (clientDataObject == null)
+            {
+                i5Debug.LogWarning("Learning Layers login is not set up. Please, add client credentials and assign them to the learning layers login object.", this);
                 return;
+            }
 
             Debug.Log("Im here!");
             //first create an instance of the IOidcProvider that should be used and assign the client credentials

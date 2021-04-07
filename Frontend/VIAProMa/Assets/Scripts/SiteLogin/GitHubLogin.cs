@@ -4,6 +4,7 @@ using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
+using i5.Toolkit.Core.Utilities;
 
 public class GitHubLogin : ProviderLogin
 {
@@ -69,7 +70,10 @@ public class GitHubLogin : ProviderLogin
         {
 
             if (clientDataObject.clientData == null)
+            {
+                i5Debug.LogWarning("GitHub login is not set up. Please, add client credentials and assign them to the GitHub login object.", this);
                 return;
+            }
 
             //first create an instance of the IOidcProvider that should be used and assign the client credentials
             oidcProvider.ClientData = clientDataObject.clientData;
