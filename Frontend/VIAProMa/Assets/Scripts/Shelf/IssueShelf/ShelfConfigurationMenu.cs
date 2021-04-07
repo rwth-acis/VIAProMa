@@ -416,6 +416,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             gitHubRepositoryInput.Text = project;
         }
 
+
         public void Open()
         {
             gameObject.SetActive(true);

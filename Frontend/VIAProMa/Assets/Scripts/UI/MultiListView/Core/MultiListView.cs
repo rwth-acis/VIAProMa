@@ -33,13 +33,26 @@ namespace i5.VIAProMa.UI.MultiListView.Core
                     items = value;
                     for (int listViewIndex = 0; listViewIndex < listViews.Length; listViewIndex++)
                     {
-                        List<DataType> subItems = new List<DataType>();
-                        int startIndex = listViewIndex * numberOfItemsPerListView;
-                        for (int itemIndex = startIndex; itemIndex < Mathf.Min(items.Count, startIndex + numberOfItemsPerListView); itemIndex++)
+                        if (listViewIndex == 0)
                         {
-                            subItems.Add(items[itemIndex]);
+                            List<DataType> subItems = new List<DataType>();
+                            int startIndex = listViewIndex * numberOfItemsPerListView;
+                            for (int itemIndex = startIndex; itemIndex < Mathf.Min(items.Count, startIndex + numberOfItemsPerListView-1); itemIndex++)
+                            {
+                                subItems.Add(items[itemIndex]);
+                            }
+                            listViews[listViewIndex].Items = subItems;
                         }
-                        listViews[listViewIndex].Items = subItems;
+                        else
+                        {
+                            List<DataType> subItems = new List<DataType>();
+                            int startIndex = listViewIndex * numberOfItemsPerListView-1;
+                            for (int itemIndex = startIndex; itemIndex < Mathf.Min(items.Count, startIndex + numberOfItemsPerListView); itemIndex++)
+                            {
+                                subItems.Add(items[itemIndex]);
+                            }
+                            listViews[listViewIndex].Items = subItems;
+                        }
                     }
                 }
             }

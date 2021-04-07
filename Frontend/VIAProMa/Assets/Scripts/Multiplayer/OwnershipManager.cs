@@ -62,5 +62,9 @@ namespace i5.VIAProMa.Multiplayer
         public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
         {
         }
+
+        public void OnOwnershipTransferFailed(PhotonView targetView, Player previousOwner)
+        {
+        }
     }
 }
