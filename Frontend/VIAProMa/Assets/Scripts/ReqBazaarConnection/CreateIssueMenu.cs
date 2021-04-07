@@ -28,7 +28,6 @@ public class CreateIssueMenu : MonoBehaviour
         Category[] categoryarray = new Category[1];
         categoryarray[0] = category;
 
-
         await RequirementsBazaarManager.CreateRequirement(projectTracker.currentProjectID, issueName.text, issueDescription.text, categoryarray);
 
         issueLoader.LoadContent();

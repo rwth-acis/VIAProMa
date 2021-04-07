@@ -2,25 +2,30 @@
 using TMPro;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
+using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.DataDisplays;
 
 public class DeleteButtonOpener : MonoBehaviour
 {
 
     [SerializeField] private GameObject deleteButtonPrefab;
     [SerializeField] private TextMeshPro requirementName;
+    [SerializeField] private SourceDisplay source;
 
     private GameObject buttonInstance;
+    private DataSource dataSource;
 
     // Subscribe to Login and Logout Events
     private void Start()
     {
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
+        dataSource = source.Content.Source;
     }
 
     private void Update()
     {
-        if(buttonInstance == null)
+        if(buttonInstance == null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
         {
             //Instantiate Button next to the Issue Card and pass on the requirement name, the button is activated if the user is logged in
             buttonInstance = Instantiate(deleteButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);

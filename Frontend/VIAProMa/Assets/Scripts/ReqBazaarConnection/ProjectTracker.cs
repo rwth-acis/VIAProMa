@@ -11,10 +11,13 @@ public class ProjectTracker : MonoBehaviour
     [Header("Tracked Parameters")]
     public int currentProjectID = 0;
     public Category currentCategory = null;
+    public EditIssueMenu editIssueMenu = null;
 
     // Subscribe to events of project configuration
     public void Start()
     {
+        editIssueMenu = GameObject.FindObjectOfType<EditIssueMenu>();
+        editIssueMenu.gameObject.SetActive(false);
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged;
     }
