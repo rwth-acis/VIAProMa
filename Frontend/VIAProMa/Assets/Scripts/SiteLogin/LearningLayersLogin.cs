@@ -4,6 +4,7 @@ using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
+using i5.VIAProMa.Login;
 
 public class LearningLayersLogin : ProviderLogin
 {
@@ -20,8 +21,8 @@ public class LearningLayersLogin : ProviderLogin
 
     public override void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginScript_LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LoginScript_LogoutCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginScript_LoginCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LoginScript_LogoutCompleted;
         SetLED(false);
     }
 
@@ -29,7 +30,7 @@ public class LearningLayersLogin : ProviderLogin
     public override void Awake()
     {
         statusLedRenderer = statusLed?.GetComponent<Renderer>();
-        oidcProvider = ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).OidcProvider;
+        oidcProvider = ServiceManager.GetService<LearningLayersOidcService>().OidcProvider;
     }
 
     /// <summary>
@@ -67,24 +68,17 @@ public class LearningLayersLogin : ProviderLogin
     {
         if (!loggedIn)
         {
-            if (clientDataObject.clientData == null)
+            if (clientDataObject == null)
+            {
                 return;
-
-            //first create an instance of the IOidcProvider that should be used and assign the client credentials
-            oidcProvider.ClientData = clientDataObject.clientData;
-
-            //assign the instance to the xref:i5.Toolkit.Core.OpenIDConnectClient.IOidcProvider> property of the service
-            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).OidcProvider = oidcProvider;
-
-            //Define Redirect URI for use on UWP builds
-            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).RedirectURI = "i5:/";
+            }
 
             //To start the login process, call the OpenLoginPage() method of the OpenIDConnectService
-            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).OpenLoginPage();
+            ServiceManager.GetService<LearningLayersOidcService>().OpenLoginPage();
         }
         else
         {
-            ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).Logout();
+            ServiceManager.GetService<LearningLayersOidcService>().Logout();
         }
     }
 

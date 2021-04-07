@@ -4,6 +4,7 @@ using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.DataDisplays;
+using i5.VIAProMa.Login;
 
 public class DeleteButtonOpener : MonoBehaviour
 {
@@ -18,8 +19,8 @@ public class DeleteButtonOpener : MonoBehaviour
     // Subscribe to Login and Logout Events
     private void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted;
         dataSource = source.Content.Source;
     }
 
@@ -30,7 +31,7 @@ public class DeleteButtonOpener : MonoBehaviour
             //Instantiate Button next to the Issue Card and pass on the requirement name, the button is activated if the user is logged in
             buttonInstance = Instantiate(deleteButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
             buttonInstance.GetComponent<DeleteButton>().requirementName = requirementName;
-            buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).IsLoggedIn);
+            buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
         }
         //Check if the placement of the button is indeed correct and next to the position
         if(buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)

@@ -6,6 +6,7 @@ using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.DataDisplays;
+using i5.VIAProMa.Login;
 
 public class EditButtonOpener : MonoBehaviour
 {
@@ -21,8 +22,8 @@ public class EditButtonOpener : MonoBehaviour
     // Subscribe to Login and Logout Events
     private void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted;
         dataSource = source.Content.Source;
 
     }
@@ -35,7 +36,7 @@ public class EditButtonOpener : MonoBehaviour
             buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.025f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
             buttonInstance.GetComponent<EditButton>().requirementName = requirementName;
             buttonInstance.GetComponent<EditButton>().requirementDescription = requirementDescription;
-            buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).IsLoggedIn);
+            buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
         }
         //Check if the placement of the button is indeed correct and next to the position
         if (buttonInstance.transform.position.x > this.transform.position.x + 0.025f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)

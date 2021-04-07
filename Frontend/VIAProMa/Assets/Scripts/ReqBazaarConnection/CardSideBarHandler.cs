@@ -5,6 +5,7 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Input;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
+using i5.VIAProMa.Login;
 
 public class CardSideBarHandler : MonoBehaviour, IMixedRealityFocusHandler
 {
@@ -15,8 +16,8 @@ public class CardSideBarHandler : MonoBehaviour, IMixedRealityFocusHandler
 
     public void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted;
         isAuthenticated = false;
     }
 

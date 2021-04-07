@@ -5,6 +5,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 using i5.VIAProMa.Shelves.IssueShelf;
 using System.Collections;
 using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.Login;
 
 public class CreateIssueMenuOpener : MonoBehaviour
 {
@@ -33,8 +34,8 @@ public class CreateIssueMenuOpener : MonoBehaviour
             backPlate.SetActive(true);
         }
         //Subscribe to Login and Project events
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().SourceChanged += SourceChanged;

@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
+using i5.VIAProMa.Login;
 
 namespace Org.Requirements_Bazaar.API
 {
@@ -154,7 +155,7 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "requirements/" + requirementId.ToString();
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
             Response resp = await Rest.DeleteAsync(url, headers, -1, true);
             if(!resp.Successful)
             {
@@ -195,11 +196,11 @@ namespace Org.Requirements_Bazaar.API
             Debug.Log(requirementId);
             string url = baseUrl + "requirements/" + requirementId.ToString();
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers) != null)
+            if(ServiceManager.GetService<LearningLayersOidcService>() != null)
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
             Response resp = await Rest.DeleteAsync(url, headers,-1, true);
             if (!resp.Successful)
             {
@@ -239,11 +240,11 @@ namespace Org.Requirements_Bazaar.API
             string json = JsonUtility.ToJson(toCreate);
 
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if (ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers) != null)
+            if (ServiceManager.GetService<LearningLayersOidcService>() != null)
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
             Response resp = await Rest.PostAsync(url, json, headers, -1, true);
             if (!resp.Successful)
             {
@@ -296,11 +297,11 @@ namespace Org.Requirements_Bazaar.API
             string json = JsonUtility.ToJson(uploadableRequirement);
 
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if (ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers) != null)
+            if (ServiceManager.GetService<LearningLayersOidcService>() != null)
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
+            headers.Add("Authorization", "Bearer " + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
             Response response = await Rest.PutAsync(url, json, headers, -1, true);
             if (!response.Successful)
