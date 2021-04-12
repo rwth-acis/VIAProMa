@@ -31,7 +31,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
             timer += Time.deltaTime;
             if(timer > timeUntilHold)
             {
-                DeleteIssue();
+                DeleteRequirement();
                 timer = 0;
                 indicator.transform.localScale = new Vector3(4.5f, 4.5f, 0);     
             }
@@ -40,7 +40,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
     }
 
     // Called when the delete button on the issue bar is pressed
-    public async void DeleteIssue()
+    public async void DeleteRequirement()
     {
         await RequirementsBazaarManager.DeleteRequirement(requirementName.text,projectTracker.currentProjectID);
         issueLoader.LoadContent();
