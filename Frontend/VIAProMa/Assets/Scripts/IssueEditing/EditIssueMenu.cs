@@ -9,6 +9,7 @@ public class EditIssueMenu : MonoBehaviour
     [SerializeField] private TextMeshPro requirement_description;
     [SerializeField] private TextMeshPro issue_title;
     [SerializeField] private TextMeshPro issue_description;
+    [SerializeField] private int issue_id;
 
     [SerializeField] public GameObject requirementBazaar_UI;
     [SerializeField] public GameObject gitHub_UI;
@@ -59,7 +60,7 @@ public class EditIssueMenu : MonoBehaviour
     public async void EditIssue()
     {
         //TODO Implement GitHubManager and EditIssue method
-        //await GitHubManager.EditIssue(issueName.text, projectTracker.currentProjectID, issue_title.text, issue_description.text);
+        //await GitHubManager.EditIssue(projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);
         issueLoader.LoadContent();
         Close();
     }
