@@ -244,6 +244,7 @@ namespace Org.Requirements_Bazaar.API
                 Debug.Log("Service not null");
             }
             headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).AccessToken);
+            Debug.Log(url);
             Response resp = await Rest.PostAsync(url, json, headers, -1, true);
             if (!resp.Successful)
             {

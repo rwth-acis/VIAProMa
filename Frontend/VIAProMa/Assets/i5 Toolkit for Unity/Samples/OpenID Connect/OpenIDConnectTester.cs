@@ -35,6 +35,7 @@ namespace i5.Toolkit.Core.Examples.OpenIDConnectClient
         {
             i5Debug.Log("Login completed", this);
             i5Debug.Log(ServiceManager.GetService<OpenIDConnectService>().AccessToken, this);
+            Debug.Log(ServiceManager.GetService<OpenIDConnectService>().AccessToken);
             ServiceManager.GetService<OpenIDConnectService>().LoginCompleted -= OpenIDConnectTester_LoginCompleted;
             isSubscribedToOidc = false;
 

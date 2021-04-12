@@ -143,9 +143,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
     {
         if (isGitHubOpen)
         {
-            GitHubCheck();
             gitHubShelfConfiguration = (GitHubShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
-            isProjectLoaded_GitHub = reqBazShelfConfiguration.IsValidConfiguration;
+            isProjectLoaded_GitHub = gitHubShelfConfiguration.IsValidConfiguration;
+            GitHubCheck();
         }
     }
 

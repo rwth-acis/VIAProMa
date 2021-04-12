@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Org.Git_Hub.API;
 using Org.Requirements_Bazaar.API;
 using Org.Requirements_Bazaar.DataModel;
 using i5.VIAProMa.Shelves.IssueShelf;
@@ -35,8 +36,7 @@ public class CreateIssueMenu : MonoBehaviour
                 await RequirementsBazaarManager.CreateRequirement(projectTracker.currentProjectID, issueName.text, issueDescription.text, categoryarray);
                 break;
             case DataSource.GITHUB:
-                //TODO Implement GitHubManager and CreateIssue method
-                //await GitHubManager.CreateIssue(projectTracker.currentProjectID, issueName.text, issueDescription.text);
+                await GitHubManager.CreateIssue(projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issueName.text, issueDescription.text);
                 break;
         }
         issueLoader.LoadContent();

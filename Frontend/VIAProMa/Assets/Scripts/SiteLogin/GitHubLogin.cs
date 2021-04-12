@@ -44,6 +44,7 @@ public class GitHubLogin : ProviderLogin
         statusCaption.text = "You are logged in!";
         Debug.Log("Successful Login to GitHub");
         SetLED(true);
+        Debug.Log(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
     }
 
     /// <summary>
