@@ -13,14 +13,21 @@ public class CreateIssueMenuOpener : MonoBehaviour
     [SerializeField] GameObject backPlate;
     [SerializeField] GameObject notification;
 
-    [Header("ActivationCriteria")]
     bool isOpen = false;
-    bool isProjectLoaded = false;
-    bool categorySelected = false;
-    bool isloggedIn = false;
-    bool isReqBazOpen = true;
+
+    [Header("ActivationCriteria_RequirementBazaar")]
+    bool isProjectLoaded_RequirementBazaar = false;
+    bool categorySelected_RequirementBazaar = false;
+    bool isloggedIn_RequirementBazaar = false;
+    bool isRequirementBazaarOpen = true;
+
+    [Header("ActivationCriteria_GitHub")]
+    bool isProjectLoaded_GitHub = false;
+    bool isloggedIn_GitHub = false;
+    bool isGitHubOpen = false;
 
     ReqBazShelfConfiguration reqBazShelfConfiguration;
+    GitHubShelfConfiguration gitHubShelfConfiguration;
     private ProjectTracker projectTracker;
 
 
@@ -33,10 +40,15 @@ public class CreateIssueMenuOpener : MonoBehaviour
             backPlate.SetActive(true);
         }
         //Subscribe to Login and Project events
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
-        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged;
-        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted_RequirementBazaar;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted_RequirementBazaar;
+        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged_RequirementBazaar;
+        GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged_RequirementBazaar;
+
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LoginCompleted += LoginCompleted_GitHub;
+        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LogoutCompleted += LogoutCompleted_GitHub;
+        GameObject.FindObjectOfType<ShelfConfigurationMenu>().GitHubProjectChanged += ProjectChanged_GitHub;
+
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().SourceChanged += SourceChanged;
 
         projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
@@ -49,28 +61,32 @@ public class CreateIssueMenuOpener : MonoBehaviour
     /// <param name="e">Event arguments</param>
     public void SourceChanged(object sender, System.EventArgs e)
     {
-        isReqBazOpen = GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR;
+        isRequirementBazaarOpen = GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration.SelectedSource == DataSource.REQUIREMENTS_BAZAAR;
+        isGitHubOpen = GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration.SelectedSource == DataSource.GITHUB;
 
-        if (isloggedIn && isProjectLoaded && categorySelected && isReqBazOpen)
-            EnableButton();
-        else
-            DisableButton();
+        if (isRequirementBazaarOpen)
+        {
+            RequirementBazaarCheck();
+        }
+        if (isGitHubOpen)
+        {
+            GitHubCheck();
+        }
     }
 
     /// <summary>
-    /// Sets Project state and enables the button accordingly
+    /// Sets RequirementBazaar Project state and enables the button accordingly
     /// </summary>
     /// <param name="sender">Sender of event</param>. 
     /// <param name="e">Event arguments</param>
-    public void ProjectChanged(object sender, System.EventArgs e)
+    public void ProjectChanged_RequirementBazaar(object sender, System.EventArgs e)
     {
-        reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
-        isProjectLoaded = reqBazShelfConfiguration.IsValidConfiguration;
-
-        if (isloggedIn && isProjectLoaded && categorySelected && isReqBazOpen)
-            EnableButton();
-        else
-            DisableButton();
+        if (isRequirementBazaarOpen)
+        {
+            reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
+            isProjectLoaded_RequirementBazaar = reqBazShelfConfiguration.IsValidConfiguration;
+            RequirementBazaarCheck();
+        }
     }
 
     /// <summary>
@@ -78,42 +94,91 @@ public class CreateIssueMenuOpener : MonoBehaviour
     /// </summary>
     /// <param name="sender">Sender of event</param>. 
     /// <param name="e">Event arguments</param>
-    public void CategoryChanged(object sender, System.EventArgs e)
+    public void CategoryChanged_RequirementBazaar(object sender, System.EventArgs e)
     {
-        reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
-        categorySelected = reqBazShelfConfiguration.SelectedCategory != null;
-
-        if (isloggedIn && isProjectLoaded && categorySelected && isReqBazOpen)
-            EnableButton();
-        else
-            DisableButton();
-    }
-
-    /// <summary>
-    /// Adjusts the status of the button according to being logged in
-    /// </summary>
-    /// <param name="sender">Sender of event</param>. 
-    /// <param name="e">Event arguments</param>
-    public void LoginCompleted(object sender, System.EventArgs e)
-    {
-        isloggedIn = true;
-        if (isloggedIn && isProjectLoaded && categorySelected && isReqBazOpen)
+        if (isRequirementBazaarOpen)
         {
-            EnableButton();
+            reqBazShelfConfiguration = (ReqBazShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
+            categorySelected_RequirementBazaar = reqBazShelfConfiguration.SelectedCategory != null;
+            RequirementBazaarCheck();
         }
     }
 
     /// <summary>
-    /// Adjusts the status of the button according to being logged out
+    /// Adjusts the status of the button according to being logged in to LearningLayers
+    /// </summary>
+    /// <param name="sender">Sender of event</param>. 
+    /// <param name="e">Event arguments</param>
+    public void LoginCompleted_RequirementBazaar(object sender, System.EventArgs e)
+    {
+        isloggedIn_RequirementBazaar = true;
+
+        if (isRequirementBazaarOpen)
+        {
+            RequirementBazaarCheck();
+        }
+    }
+
+    /// <summary>
+    /// Adjusts the status of the button according to being logged out from LearningLayers
     /// </summary>
     /// <param name="sender">Sender of event</param>
     /// <param name="e">Event arguments</param>
-    public void LogoutCompleted(object sender, System.EventArgs e)
+    public void LogoutCompleted_RequirementBazaar(object sender, System.EventArgs e)
     {
-        isloggedIn = false;
-        DisableButton();
+        isloggedIn_RequirementBazaar = false;
+
+        if (isRequirementBazaarOpen)
+        {
+            DisableButton();
+        }
     }
 
+    /// <summary>
+    /// Sets GitHub Project state and enables the button accordingly
+    /// </summary>
+    /// <param name="sender">Sender of event</param>. 
+    /// <param name="e">Event arguments</param>
+    public void ProjectChanged_GitHub(object sender, System.EventArgs e)
+    {
+        if (isGitHubOpen)
+        {
+            GitHubCheck();
+            gitHubShelfConfiguration = (GitHubShelfConfiguration)GameObject.FindObjectOfType<ShelfConfigurationMenu>().ShelfConfiguration;
+            isProjectLoaded_GitHub = reqBazShelfConfiguration.IsValidConfiguration;
+        }
+    }
+
+
+        /// <summary>
+        /// Adjusts the status of the button according to being logged in to GitHub
+        /// </summary>
+        /// <param name="sender">Sender of event</param>. 
+        /// <param name="e">Event arguments</param>
+        public void LoginCompleted_GitHub(object sender, System.EventArgs e)
+    {
+        isloggedIn_GitHub = true;
+
+        if (isGitHubOpen)
+        {
+            GitHubCheck();
+        }
+    }
+
+    /// <summary>
+    /// Adjusts the status of the button according to being logged out from GitHub
+    /// </summary>
+    /// <param name="sender">Sender of event</param>
+    /// <param name="e">Event arguments</param>
+    public void LogoutCompleted_GitHub(object sender, System.EventArgs e)
+    {
+        isloggedIn_GitHub = false;
+
+        if (isGitHubOpen)
+        {
+            DisableButton();
+        }
+    }
 
     //Close the CreateIssue Window
     public void CloseMenu()
@@ -194,5 +259,23 @@ public class CreateIssueMenuOpener : MonoBehaviour
                 OpenMenu();
             }
         }
+    }
+
+    //Checks if the Button should be Enabled if a RequirementBazaar Configuration is enabled
+    private void RequirementBazaarCheck()
+    {
+        if (isloggedIn_RequirementBazaar && isProjectLoaded_RequirementBazaar && categorySelected_RequirementBazaar)
+            EnableButton();
+        else
+            DisableButton();
+    }
+
+    //Checks if the Button should be Enabled if a GitHub Configuration is enabled
+    private void GitHubCheck()
+    {
+        if (isloggedIn_GitHub && isProjectLoaded_GitHub)
+            EnableButton();
+        else
+            DisableButton();
     }
 }
