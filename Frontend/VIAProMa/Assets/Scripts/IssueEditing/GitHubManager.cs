@@ -58,7 +58,7 @@ namespace Org.Git_Hub.API
         /// <param name="newName">The new name of the issue after editing</param>
         /// <param name="newDescription">The new description of the issue after editing</param>
         /// <returns>The edited issue</returns>
-        public static async void EditIssue(string issueName, string owner, string repositoryName, string newName, string newDescription)
+        public static async Task<Issue[]> EditIssue(string issueName, string owner, string repositoryName, string newName, string newDescription)
         {
             //Retrieving the IssueID
             Issue[] repositoryIssues = await GetIssuesFromRepository(owner, repositoryName);
@@ -75,7 +75,7 @@ namespace Org.Git_Hub.API
             if (issueID == 0)
             {
                Debug.LogError("Issue not found");
-                return;
+                return null;
             }
             Debug.Log(issueID);
 
@@ -86,21 +86,21 @@ namespace Org.Git_Hub.API
             }
             headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
 
-            //Response response = await Rest.PatchAsync(
-            //         "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/"+issueID+"?title=" + name + "&body=" + description,
-            //         headers,
-            //        -1,
-            //       true);
-            //    if (!response.Successful)
-            //    {
-            //        Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
-            //        return;
-            //    }
+            Response response = await Rest.PostAsync(
+                     "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/"+issueID+"?title=" + newName + "&body=" + newDescription,
+                     headers,
+                    -1,
+                   true);
+            if (!response.Successful)
+            {
+                 Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
+                 return null ;
+            }
+            else
+            {
+                 Issue issue = JsonUtility.FromJson<Issue>(response.ResponseBody);
+                 return repositoryIssues;
+            }
         }
 
         /// Gets the issues of a GitHub repository on the given page
