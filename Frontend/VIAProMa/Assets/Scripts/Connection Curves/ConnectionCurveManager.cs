@@ -209,7 +209,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <param name="state">The state the manger should switch to</param>
     /// <param name="start">Only needed when switching to connecting. Specifies the start object of the connection</param>
     /// <param name="caller">Only needed when switching to connecting. Specifies the app bar on which the connecting was invoked</param>
-    public void ChangeState(State state , GameObject start = null, AppBarStateController caller = null)
+    public void ChangeState(State state , GameObject caller = null, GameObject start = null)
     {
         
         if (state == currState)
@@ -233,7 +233,7 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
                 currState = State.defaultMode;
                 break;
             case State.disconnecting:
-                StartDisconnect();
+                StartDisconnect(caller);
                 currState = State.disconnecting;
                 break;
             case State.connecting:
@@ -319,10 +319,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// </summary>
     /// <param name="start">The start object of the connection</param>
     /// <param name="caller">The app bar on which the connecting was invoked</param>
-    void StartConnecting(GameObject start, AppBarStateController caller)
+    void StartConnecting(GameObject start, GameObject caller)
     {
-        RefreshPointer();
-        this.caller = caller;
+        RefreshPointer(caller.gameObject);
+        this.caller = caller.GetComponent<AppBarStateController>();
         if (PhotonNetwork.InRoom)
         {
             tempGoal = PhotonNetwork.Instantiate("Temp Goal", mainPointer.Position, Quaternion.identity);
@@ -358,12 +358,12 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Start the disconnect process.
     /// </summary>
-    void StartDisconnect()
+    void StartDisconnect(GameObject caller)
     {
         if (currState != State.disconnecting)
         {
             currState = State.disconnecting;
-            RefreshPointer();
+            RefreshPointer(caller);
             instantiatedDeletCube = Instantiate(DeleteCube); 
         }
         startedDeletion = true;
@@ -428,13 +428,10 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
     /// <summary>
     /// Recalculate the MRTK pointer. This is necassary in regular intervalls, because user can connect or disconnect input sources at any time.
     /// </summary>
-    public void RefreshPointer()
+    public void RefreshPointer(GameObject caller)
     {
-        foreach (var source in MixedRealityToolkit.InputSystem.DetectedInputSources)
+        foreach (var source in CoreServices.InputSystem.DetectedInputSources)
         {
-            // Ignore anything that is not a hand because we want articulated hands
-            if (source.SourceType == InputSourceType.Controller || source.SourceType == InputSourceType.Hand)
-            {
                 foreach (var p in source.Pointers)
                 {
                     if (p is IMixedRealityNearPointer)
@@ -442,14 +439,17 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
                         // Ignore near pointers, we only want the rays
                         continue;
                     }
-                    if (p.Result != null)
+                    if (p.Result?.CurrentPointerTarget != null)
                     {
-                        mainPointer = p;
-                        return;
+                        GameObject target = GetGameobjectOfTypeFromHirachy(p.Result.CurrentPointerTarget, typeof(AppBarStateController), null, true);
+                        if (target == caller)
+                        {
+                            mainPointer = p;
+                            return;
+                        }
                     }
 
                 }
-            }
         }
     }
 
@@ -493,5 +493,53 @@ public class ConnectionCurveManager : Singleton<ConnectionCurveManager>
         {
             return null;
         }
+    }
+
+    /// <summary>
+    /// Iterates upwards in the hirachy of gameObject and returns the first GameObject that has the Visualization script attached. Returns null if nothing is found.
+    /// </summary>
+    /// <param name="gameObject"></param> The gameObject on which the search should start
+    /// <param name="typesToExclude"></param> Can be used as a filter. A GameObject can be ignored if it has a object contianed in typesToExclude above or below it
+    /// <param name="checkAbove"></param> Check above in the hirachy for filterd types
+    /// <param name="checkBelow"></param>Check below in the hirachy for filterd types
+    /// <returns></returns>
+    public static GameObject GetGameobjectOfTypeFromHirachy(GameObject gameObject, Type typeToSearch, Type[] typesToExclude = null, bool checkAbove = false, bool checkBelow = false)
+    {
+        //If wished, check if any of the children of the target is of a type that should be excluded
+        if (typesToExclude != null && checkBelow)
+        {
+            foreach (Type type in typesToExclude)
+            {
+                if (gameObject.GetComponentInChildren(type, true) != null)
+                {
+                    return null;
+                }
+            }
+        }
+
+        if (gameObject != null)
+        {
+            while (gameObject != null && gameObject.GetComponent(typeToSearch) == null)
+            {
+                //If wished, check if the current object (i.e. a object above in the hirachy of the original target) is of a type that should be excluded
+                if (typesToExclude != null && checkAbove)
+                {
+                    foreach (Type type in typesToExclude)
+                    {
+                        if (gameObject.GetComponent(type) != null)
+                        {
+                            return null;
+                        }
+                    }
+                }
+
+                gameObject = gameObject.transform.parent?.gameObject;
+            }
+            if (gameObject != null && gameObject.GetComponent(typeToSearch) != null)
+            {
+                return gameObject;
+            }
+        }
+        return null;
     }
 }

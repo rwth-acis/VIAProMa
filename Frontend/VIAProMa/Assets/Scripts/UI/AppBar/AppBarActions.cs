@@ -88,7 +88,7 @@ namespace i5.VIAProMa.UI.AppBar
         /// </summary>
         public void Connect()
         {
-            ConnectionCurveManager.Instance.ChangeState(ConnectionCurveManager.State.connecting, appBarPlacer.TargetBoundingBox.Target, gameObject.GetComponent<AppBarStateController>());
+            ConnectionCurveManager.Instance.ChangeState(ConnectionCurveManager.State.connecting, gameObject, appBarPlacer.TargetBoundingBox.Target);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace i5.VIAProMa.UI.AppBar
         /// </summary>
         public void Disconnect()
         {
-            ConnectionCurveManager.Instance.ChangeState(ConnectionCurveManager.State.disconnecting);
+            ConnectionCurveManager.Instance.ChangeState(ConnectionCurveManager.State.disconnecting, gameObject);
         }
     }
 }
