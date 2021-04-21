@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 using i5.VIAProMa.WebConnection;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Utilities;
-using Org.Requirements_Bazaar.DataModel;
+using System.Net.Http;
 
 namespace Org.Git_Hub.API
 {
@@ -87,10 +87,10 @@ namespace Org.Git_Hub.API
             headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
 
             Response response = await Rest.PostAsync(
-                     "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/"+issueID+"?title=" + newName + "&body=" + newDescription,
+                     "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/" + issueID + "?title=" + newName + "&body=" + newDescription,
                      headers,
-                    -1,
-                   true);
+                     -1,
+                     true);
             if (!response.Successful)
             {
                  Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
@@ -98,7 +98,6 @@ namespace Org.Git_Hub.API
             }
             else
             {
-                 Issue issue = JsonUtility.FromJson<Issue>(response.ResponseBody);
                  return repositoryIssues;
             }
         }

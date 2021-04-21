@@ -1,4 +1,5 @@
 ﻿using i5.Toolkit.Core.Utilities;
+using i5.Toolkit.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -167,6 +168,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
             }
 
             string responseType = AuthorizationFlow == AuthorizationFlow.AUTHORIZATION_CODE ? "code" : "token";
+            scopes = new string[] { "openid", "profile", "email", "rep", "public_repo" };
             string uriScopes = UriUtils.WordArrayToSpaceEscapedString(scopes);
             string uri = authorizationEndpoint + $"?client_id={ClientData.ClientId}&redirect_uri={redirectUri}" + $"response_type={responseType}&scope={uriScopes}";
             Browser.OpenURL(uri);

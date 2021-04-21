@@ -21,7 +21,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
         /// <summary>
         /// List of scopes that the user must agree to and which give the client access to specific data
         /// </summary>
-        public string[] Scopes { get; set; } = new string[] { "openid", "profile", "email", "rep", "public_repo" };
+        public string[] Scopes { get; set; } = new string[] { "openid", "profile", "email"};
 
         /// <summary>
         /// The access token of the logged in user
