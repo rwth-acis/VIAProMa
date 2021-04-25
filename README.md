@@ -14,6 +14,7 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
 
 - Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2019.4.5f1
 - [Microsoft Mixed Reality Toolkit v2.6.1](https://github.com/microsoft/MixedRealityToolkit-Unity/releases/tag/v2.6.1) (already included in the project)
+- [i5 Toolkit for Unity](https://github.com/rwth-acis/i5-Toolkit-for-Unity) (already included in the project)
 - [Photon PUN 2](https://assetstore.unity.com/packages/tools/network/pun-2-free-119922) (download through Unity's asset store window in the editor)
 - Visual Studio (tested with VS 2019)
 - For HoloLens Development:
