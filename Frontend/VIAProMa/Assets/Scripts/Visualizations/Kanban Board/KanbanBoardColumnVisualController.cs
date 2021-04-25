@@ -285,7 +285,6 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                 );
 
             boundingboxCollider.size = 1.01f * background.localScale;
-            boundingBox.Refresh();
 
             DetermineGridSize();
             UpdateVisuals();
