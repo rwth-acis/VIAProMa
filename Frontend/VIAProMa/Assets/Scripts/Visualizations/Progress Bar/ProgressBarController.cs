@@ -1,6 +1,7 @@
 ﻿using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace i5.VIAProMa.Visualizations.ProgressBars
 {
@@ -43,6 +44,13 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         private float percentageInProgress;
 
         private BoxCollider boundingBoxCollider;
+
+        [System.NonSerialized]
+        public Vector3 lastPointerPosPos = Vector3.negativeInfinity;
+        [System.NonSerialized]
+        public Vector3 lastPointerPosNeg = Vector3.negativeInfinity;
+
+        private bool wasResized = false;
 
         /// <summary>
         /// Gets the length of the progress bar (at overall scale 1)
@@ -173,42 +181,51 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             innerBarInProgress.localScale = new Vector3(inProgressBarScale, 1f, 1f);
         }
 
-        public void SetLength(bool manipulationOnPosCap, float newLength)
+        public void LateUpdate()
         {
-            // make sure that the minLength in positive
-            // the minLength may never be 0 because otherwise we cannot scale up again
-            if (minLength <= 0)
+            if (wasResized)
             {
-                minLength = 0.001f;
+                AdjustLengthToHandels();
+                wasResized = false;
             }
+        }
 
-            // ensure that the newLength is between minLength and maxLength
-            newLength = Mathf.Clamp(newLength, minLength, maxLength);
+        public void SetHandles(Vector3 PointerPos, bool pos)
+        {
 
-            // move the object so that scaling operation has its pivot at one of the caps
-            float relativeScale = newLength / Length;
-            Vector3 objectPosRelativeToPivot = new Vector3(transform.localScale.x * Length / 2f, 0, 0);
-            if (!manipulationOnPosCap)
+            if (pos)
             {
-                objectPosRelativeToPivot *= -1f;
+                capPos.localPosition = new Vector3(capPos.localPosition.x - CalculateHandlePosition(lastPointerPosPos, PointerPos), 0, 0);
+                lastPointerPosPos = PointerPos;
             }
+            else
+            {
+                capNeg.localPosition = new Vector3(capNeg.localPosition.x - CalculateHandlePosition(lastPointerPosNeg, PointerPos), 0, 0);
+                lastPointerPosNeg = PointerPos;
+            }
+            wasResized = true;
+        }
 
-            Vector3 pivotPosition = transform.localPosition - transform.localRotation * objectPosRelativeToPivot;
+        private float CalculateHandlePosition(Vector3 lastPosition, Vector3 position)
+        {
+            Vector3 delta = lastPosition - position;
+            return Vector3.Dot(transform.right, delta);
+        }
 
-            transform.localPosition = (relativeScale * (transform.localRotation * objectPosRelativeToPivot)) + pivotPosition;
-
-            // scale the tubes to the new length and update the caps' position
+        private void AdjustLengthToHandels()
+        {
+            //Adjust the tube
+            float newLength = Vector3.Distance(capPos.position,capNeg.position);
             tubes.localScale = new Vector3(newLength, 1f, 1f);
-            capPos.localPosition = new Vector3(newLength / 2f, 0f, 0f);
-            capNeg.localPosition = new Vector3(-newLength / 2f, 0f, 0f);
 
-            // also update box colliders and bounding box
-            tubeCollider.height = newLength + 0.1f; // add 0.1 so that the cylindrical part covers the full length (otherwise it is too short because of the rounded caps)
-            boundingBoxCollider.size = new Vector3(
-                newLength + 0.05f, // add 0.05f to encapsulate the end caps
-                boundingBoxCollider.size.y,
-                boundingBoxCollider.size.z);
-            boundingBox.Refresh();
+            //Adjust the parent
+            Vector3 capPosPosition = capPos.position;
+            Vector3 capNegPosition = capNeg.position;
+
+            transform.position = 0.5f * (capPos.position - capNeg.position) + capNeg.position;
+
+            capPos.position = capPosPosition;
+            capNeg.position = capNegPosition;
 
             UpdateTextLabelPositioning(newLength);
         }

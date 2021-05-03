@@ -11,8 +11,9 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         public bool handleOnPositiveCap;
 
         private IMixedRealityPointer activePointer;
-        private Vector3 startPosition;
-        private float startLength;
+        //private Vector3 startPosition;
+        //private float startLength;
+        //private Vector3 lastPosition;
 
         private void Awake()
         {
@@ -31,8 +32,15 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             if (activePointer == null && !eventData.used)
             {
                 activePointer = eventData.Pointer;
-                startPosition = activePointer.Position;
-                startLength = progressBar.Length;
+
+                if (handleOnPositiveCap)
+                {
+                    progressBar.lastPointerPosPos = activePointer.Position;
+                }
+                else
+                {
+                    progressBar.lastPointerPosNeg = activePointer.Position;
+                }
 
                 // Mark pointer data as used
                 eventData.Use();
@@ -43,17 +51,9 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         {
             if (eventData.Pointer == activePointer && !eventData.used)
             {
-                Vector3 delta = activePointer.Position - startPosition;
-                float handDelta = Vector3.Dot(progressBar.transform.right, delta);
-                if (handleOnPositiveCap)
-                {
-                    handDelta *= -1f;
-                }
-                progressBar.SetLength(handleOnPositiveCap, startLength - handDelta);
-
-                // mark pointer data as used
+                progressBar.SetHandles(activePointer.Position, handleOnPositiveCap);
                 eventData.Use();
-            }
+            }     
         }
 
         public void OnPointerUp(MixedRealityPointerEventData eventData)
