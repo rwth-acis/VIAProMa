@@ -191,7 +191,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                 lastPointerPosNeg = PointerPos;
             }
 
-            newHandlePosition = transform.localToWorldMatrix * new Vector4(newHandlePosition.x, 0, 0, 1);
+            //newHandlePosition = transform.localToWorldMatrix * new Vector4(newHandlePosition.x, 0, 0, 1);
             AdjustLengthToHandels(newHandlePosition,pos);
         }
 
@@ -208,11 +208,11 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             if (posCap)
             {
                 newHandlePositionPositive = handlePosition;
-                newHandlePositionNegative = capNeg.position;
+                newHandlePositionNegative = capNeg.localPosition;
             }
             else
             {
-                newHandlePositionPositive = capPos.position;
+                newHandlePositionPositive = capPos.localPosition;
                 newHandlePositionNegative = handlePosition;
             }
 
@@ -223,13 +223,15 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                 tubes.localScale = new Vector3(newLength, 1f, 1f);
 
                 //Adjust the parent
-                transform.position = newHandlePositionNegative + 0.5f * (newHandlePositionPositive - newHandlePositionNegative);
+                Vector3 newHandlePositionPositiveWorld = transform.localToWorldMatrix * new Vector4(newHandlePositionPositive.x,0,0,1);
+                Vector3 newHandlePositionNegativWorld = transform.localToWorldMatrix * new Vector4(newHandlePositionNegative.x, 0, 0, 1);
+                transform.position = newHandlePositionNegativWorld + 0.5f * (newHandlePositionPositiveWorld - newHandlePositionNegativWorld);
 
                 //The position of the caps is set at the end, so they arent affected by the translation of there parent
-                capPos.position = newHandlePositionPositive;
-                capNeg.position = newHandlePositionNegative;
+                capPos.position = newHandlePositionPositiveWorld;
+                capNeg.position = newHandlePositionNegativWorld;
 
-                UpdateTextLabelPositioning(newLength);
+                
 
 
                 // also update box colliders and bounding box
@@ -239,6 +241,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                     boundingBoxCollider.size.y,
                     boundingBoxCollider.size.z);
                 boundingBox.Refresh();
+                UpdateTextLabelPositioning(newLength);
             }
         }
 
