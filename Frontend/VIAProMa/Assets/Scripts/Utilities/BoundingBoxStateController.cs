@@ -56,10 +56,6 @@ namespace i5.VIAProMa.Utilities
                 boxCollider.enabled = boundingBoxActive;
             }
             boundingBox.Active = boundingBoxActive;
-            if (boundingBoxActive)
-            {
-                boundingBox.Refresh();
-            }
             if (manipulationHandler != null)
             {
                 manipulationHandler.enabled = boundingBoxActive;
