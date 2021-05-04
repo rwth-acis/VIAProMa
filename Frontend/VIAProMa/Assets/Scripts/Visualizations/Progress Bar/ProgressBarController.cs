@@ -45,17 +45,8 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         private BoxCollider boundingBoxCollider;
 
-
-        [System.NonSerialized]
-        public Vector3 lastPointerPosPos = Vector3.negativeInfinity;
-        [System.NonSerialized]
-        public Vector3 lastPointerPosNeg = Vector3.negativeInfinity;
-
-        private Vector3 newHandlePositionPositive;
-        private bool handlePositvWasModified;
-
-        private Vector3 newHandlePositionNegative;
-        private bool handleNegativWasModified;
+        private Vector3 lastPointerPosPos;
+        private Vector3 lastPointerPosNeg;
 
         /// <summary>
         /// Gets the length of the progress bar (at overall scale 1)
@@ -186,35 +177,22 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             innerBarInProgress.localScale = new Vector3(inProgressBarScale, 1f, 1f);
         }
 
-        public void LateUpdate()
-        {
-            //if (handlePositvWasModified || handleNegativWasModified)
-            //{
-            //    AdjustLengthToHandels();
-            //    handlePositvWasModified = false;
-            //    handleNegativWasModified = false;
-            //}
-        }
-
         public void SetHandles(Vector3 PointerPos, bool pos)
         {
-
+            Vector3 newHandlePosition;
             if (pos)
             {
-                newHandlePositionPositive = new Vector3(capPos.localPosition.x - CalculateHandlePosition(lastPointerPosPos, PointerPos), 0, 0);
-                newHandlePositionPositive = transform.localToWorldMatrix * new Vector4(newHandlePositionPositive.x, 0,0,1);
+                newHandlePosition = new Vector3(capPos.localPosition.x - CalculateHandlePosition(lastPointerPosPos, PointerPos), 0, 0);
                 lastPointerPosPos = PointerPos;
-                handlePositvWasModified = true;
             }
             else
             {
-                newHandlePositionNegative = new Vector3(capNeg.localPosition.x - CalculateHandlePosition(lastPointerPosNeg, PointerPos), 0, 0);
-                newHandlePositionNegative = transform.localToWorldMatrix * new Vector4(newHandlePositionNegative.x, 0, 0, 1);
+                newHandlePosition = new Vector3(capNeg.localPosition.x - CalculateHandlePosition(lastPointerPosNeg, PointerPos), 0, 0);
                 lastPointerPosNeg = PointerPos;
-                handleNegativWasModified = true;
             }
 
-            AdjustLengthToHandels();
+            newHandlePosition = transform.localToWorldMatrix * new Vector4(newHandlePosition.x, 0, 0, 1);
+            AdjustLengthToHandels(newHandlePosition,pos);
         }
 
         private float CalculateHandlePosition(Vector3 lastPosition, Vector3 position)
@@ -223,16 +201,19 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             return Vector3.Dot(transform.right, delta);
         }
 
-        private void AdjustLengthToHandels()
+        private void AdjustLengthToHandels(Vector3 handlePosition, bool posCap)
         {
-            
-            if (!handlePositvWasModified)
+            Vector3 newHandlePositionPositive;
+            Vector3 newHandlePositionNegative;
+            if (posCap)
+            {
+                newHandlePositionPositive = handlePosition;
+                newHandlePositionNegative = capNeg.position;
+            }
+            else
             {
                 newHandlePositionPositive = capPos.position;
-            }
-            if (!handleNegativWasModified)
-            {
-                newHandlePositionNegative = capNeg.position;
+                newHandlePositionNegative = handlePosition;
             }
 
             //Adjust the tube
@@ -261,18 +242,16 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             }
         }
 
-        public void StopResizing(bool pos)
+        public void StartResizing(bool handleOnPositiveCap, Vector3 pointerPosition)
         {
-            if (pos)
+            if (handleOnPositiveCap)
             {
-                newHandlePositionPositive = Vector3.negativeInfinity;
-                handlePositvWasModified = false;
+                lastPointerPosPos = pointerPosition;
             }
             else
             {
-                newHandlePositionNegative = Vector3.negativeInfinity;
-                handleNegativWasModified = false;
-            }         
+                lastPointerPosNeg = pointerPosition;
+            }
         }
 
         private void UpdateTextLabelPositioning(float progressBarLength)
