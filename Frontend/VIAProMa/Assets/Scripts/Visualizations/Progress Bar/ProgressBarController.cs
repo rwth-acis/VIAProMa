@@ -177,75 +177,14 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             innerBarInProgress.localScale = new Vector3(inProgressBarScale, 1f, 1f);
         }
 
-        public void SetHandles(Vector3 PointerPos, bool pos)
-        {
-            Vector3 newHandlePosition;
-            if (pos)
-            {
-                newHandlePosition = new Vector3(capPos.localPosition.x - CalculateHandlePosition(lastPointerPosPos, PointerPos), 0, 0);
-                lastPointerPosPos = PointerPos;
-            }
-            else
-            {
-                newHandlePosition = new Vector3(capNeg.localPosition.x - CalculateHandlePosition(lastPointerPosNeg, PointerPos), 0, 0);
-                lastPointerPosNeg = PointerPos;
-            }
+        #region Resizing through the handels
 
-            //newHandlePosition = transform.localToWorldMatrix * new Vector4(newHandlePosition.x, 0, 0, 1);
-            AdjustLengthToHandels(newHandlePosition,pos);
-        }
-
-        private float CalculateHandlePosition(Vector3 lastPosition, Vector3 position)
-        {
-            Vector3 delta = lastPosition - position;
-            return Vector3.Dot(transform.right, delta);
-        }
-
-        private void AdjustLengthToHandels(Vector3 handlePosition, bool posCap)
-        {
-            Vector3 newHandlePositionPositive;
-            Vector3 newHandlePositionNegative;
-            if (posCap)
-            {
-                newHandlePositionPositive = handlePosition;
-                newHandlePositionNegative = capNeg.localPosition;
-            }
-            else
-            {
-                newHandlePositionPositive = capPos.localPosition;
-                newHandlePositionNegative = handlePosition;
-            }
-
-            //Adjust the tube
-            float newLength = Vector3.Distance(newHandlePositionPositive, newHandlePositionNegative);
-            if (newLength >= minLength && newLength <= maxLength)
-            {
-                tubes.localScale = new Vector3(newLength, 1f, 1f);
-
-                //Adjust the parent
-                Vector3 newHandlePositionPositiveWorld = transform.localToWorldMatrix * new Vector4(newHandlePositionPositive.x,0,0,1);
-                Vector3 newHandlePositionNegativWorld = transform.localToWorldMatrix * new Vector4(newHandlePositionNegative.x, 0, 0, 1);
-                transform.position = newHandlePositionNegativWorld + 0.5f * (newHandlePositionPositiveWorld - newHandlePositionNegativWorld);
-
-                //The position of the caps is set at the end, so they arent affected by the translation of there parent
-                capPos.position = newHandlePositionPositiveWorld;
-                capNeg.position = newHandlePositionNegativWorld;
-
-                
-
-
-                // also update box colliders and bounding box
-                tubeCollider.height = newLength + 0.1f; // add 0.1 so that the cylindrical part covers the full length (otherwise it is too short because of the rounded caps)
-                boundingBoxCollider.size = new Vector3(
-                    newLength + 0.05f, // add 0.05f to encapsulate the end caps
-                    boundingBoxCollider.size.y,
-                    boundingBoxCollider.size.z);
-                boundingBox.Refresh();
-                UpdateTextLabelPositioning(newLength);
-            }
-        }
-
-        public void StartResizing(bool handleOnPositiveCap, Vector3 pointerPosition)
+        /// <summary>
+        /// Needs to be called before starting the resize process.
+        /// </summary>
+        /// <param name="handleOnPositiveCap"></param>
+        /// <param name="pointerPosition"></param>
+        public void StartResizing(Vector3 pointerPosition, bool handleOnPositiveCap)
         {
             if (handleOnPositiveCap)
             {
@@ -256,6 +195,88 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                 lastPointerPosNeg = pointerPosition;
             }
         }
+
+        /// <summary>
+        /// Sets the positv or negativ handel to the right position according to the new pointer position. Then lengths and positions of the other components are adjusted accordingly.
+        /// </summary>
+        /// <param name="PointerPosition"></param> 
+        /// <param name="handleOnPositiveCap"></param>
+        public void SetHandles(Vector3 PointerPosition, bool handleOnPositiveCap)
+        {
+            Vector3 newHandlePosition;
+            if (handleOnPositiveCap)
+            {
+                newHandlePosition = new Vector3(capPos.localPosition.x - ProjectOnRight(lastPointerPosPos, PointerPosition), 0, 0);
+                lastPointerPosPos = PointerPosition;
+            }
+            else
+            {
+                newHandlePosition = new Vector3(capNeg.localPosition.x - ProjectOnRight(lastPointerPosNeg, PointerPosition), 0, 0);
+                lastPointerPosNeg = PointerPosition;
+            }
+
+            AdjustLengthToHandels(newHandlePosition,handleOnPositiveCap);
+        }
+
+        /// <summary>
+        /// Projects the vector on the right vector of the tranform component.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private float ProjectOnRight(Vector3 vector, Vector3 position)
+        {
+            Vector3 delta = vector - position;
+            return Vector3.Dot(transform.right, delta);
+        }
+
+        /// <summary>
+        /// Adjust the components to the new handle position, if the new length is between max and min length.
+        /// </summary>
+        /// <param name="handlePosition"></param>
+        /// <param name="handleOnPositiveCap"></param>
+        private void AdjustLengthToHandels(Vector3 handlePosition, bool handleOnPositiveCap)
+        {
+            Vector3 newHandlePositionPositive;
+            Vector3 newHandlePositionNegative;
+            if (handleOnPositiveCap)
+            {
+                newHandlePositionPositive = handlePosition;
+                newHandlePositionNegative = capNeg.localPosition;
+            }
+            else
+            {
+                newHandlePositionPositive = capPos.localPosition;
+                newHandlePositionNegative = handlePosition;
+            }
+
+            float newLength = Vector3.Distance(newHandlePositionPositive, newHandlePositionNegative);
+            if (newLength >= minLength && newLength <= maxLength)
+            {
+                //Update the tubes
+                tubes.localScale = new Vector3(newLength, 1f, 1f);
+
+                //Update the parent
+                Vector3 newHandlePositionPositiveWorld = transform.localToWorldMatrix * new Vector4(newHandlePositionPositive.x,0,0,1);
+                Vector3 newHandlePositionNegativWorld = transform.localToWorldMatrix * new Vector4(newHandlePositionNegative.x, 0, 0, 1);
+                transform.position = newHandlePositionNegativWorld + 0.5f * (newHandlePositionPositiveWorld - newHandlePositionNegativWorld);
+
+                //Update positions of the caps
+                capPos.position = newHandlePositionPositiveWorld;
+                capNeg.position = newHandlePositionNegativWorld;
+
+                //Update box colliders and bounding box
+                tubeCollider.height = newLength + 0.1f; // add 0.1 so that the cylindrical part covers the full length (otherwise it is too short because of the rounded caps)
+                boundingBoxCollider.size = new Vector3(
+                    newLength + 0.05f, // add 0.05f to encapsulate the end caps
+                    boundingBoxCollider.size.y,
+                    boundingBoxCollider.size.z);
+                boundingBox.Refresh();
+
+                UpdateTextLabelPositioning(newLength);
+            }
+        }
+        #endregion
 
         private void UpdateTextLabelPositioning(float progressBarLength)
         {
