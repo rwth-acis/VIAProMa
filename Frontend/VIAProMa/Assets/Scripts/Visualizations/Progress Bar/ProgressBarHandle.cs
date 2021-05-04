@@ -61,6 +61,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 activePointer = null;
+                progressBar.StopResizing(handleOnPositiveCap);
                 eventData.Use();
             }
         }

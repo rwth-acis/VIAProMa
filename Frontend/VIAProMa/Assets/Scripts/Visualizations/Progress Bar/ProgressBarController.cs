@@ -45,12 +45,17 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         private BoxCollider boundingBoxCollider;
 
+
         [System.NonSerialized]
         public Vector3 lastPointerPosPos = Vector3.negativeInfinity;
         [System.NonSerialized]
         public Vector3 lastPointerPosNeg = Vector3.negativeInfinity;
 
-        private bool wasResized = false;
+        private Vector3 newHandlePositionPositive;
+        private bool handlePositvWasModified;
+
+        private Vector3 newHandlePositionNegative;
+        private bool handleNegativWasModified;
 
         /// <summary>
         /// Gets the length of the progress bar (at overall scale 1)
@@ -183,10 +188,11 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void LateUpdate()
         {
-            if (wasResized)
+            if (handlePositvWasModified || handleNegativWasModified)
             {
                 AdjustLengthToHandels();
-                wasResized = false;
+                handlePositvWasModified = false;
+                handleNegativWasModified = false;
             }
         }
 
@@ -195,15 +201,18 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
             if (pos)
             {
-                capPos.localPosition = new Vector3(capPos.localPosition.x - CalculateHandlePosition(lastPointerPosPos, PointerPos), 0, 0);
+                newHandlePositionPositive = new Vector3(capPos.localPosition.x - CalculateHandlePosition(lastPointerPosPos, PointerPos), 0, 0);
+                newHandlePositionPositive = transform.localToWorldMatrix * new Vector4(newHandlePositionPositive.x, 0,0,1);
                 lastPointerPosPos = PointerPos;
+                handlePositvWasModified = true;
             }
             else
             {
-                capNeg.localPosition = new Vector3(capNeg.localPosition.x - CalculateHandlePosition(lastPointerPosNeg, PointerPos), 0, 0);
+                newHandlePositionNegative = new Vector3(capNeg.localPosition.x - CalculateHandlePosition(lastPointerPosNeg, PointerPos), 0, 0);
+                newHandlePositionNegative = transform.localToWorldMatrix * new Vector4(newHandlePositionNegative.x, 0, 0, 1);
                 lastPointerPosNeg = PointerPos;
+                handleNegativWasModified = true;
             }
-            wasResized = true;
         }
 
         private float CalculateHandlePosition(Vector3 lastPosition, Vector3 position)
@@ -214,20 +223,52 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         private void AdjustLengthToHandels()
         {
+            
+            if (!handlePositvWasModified)
+            {
+                newHandlePositionPositive = capPos.position;
+            }
+            if (!handleNegativWasModified)
+            {
+                newHandlePositionNegative = capNeg.position;
+            }
+
             //Adjust the tube
-            float newLength = Vector3.Distance(capPos.position,capNeg.position);
-            tubes.localScale = new Vector3(newLength, 1f, 1f);
+            float newLength = Vector3.Distance(newHandlePositionPositive, newHandlePositionNegative);
+            if (newLength >= minLength && newLength <= maxLength)
+            {
+                tubes.localScale = new Vector3(newLength, 1f, 1f);
 
-            //Adjust the parent
-            Vector3 capPosPosition = capPos.position;
-            Vector3 capNegPosition = capNeg.position;
+                //Adjust the parent
+                transform.position = newHandlePositionNegative + 0.5f * (newHandlePositionPositive - newHandlePositionNegative);
 
-            transform.position = 0.5f * (capPos.position - capNeg.position) + capNeg.position;
+                //The position of the caps is set at the end, so they arent affected by the translation of there parent
+                capPos.position = newHandlePositionPositive;
+                capNeg.position = newHandlePositionNegative;
 
-            capPos.position = capPosPosition;
-            capNeg.position = capNegPosition;
+                UpdateTextLabelPositioning(newLength);
 
-            UpdateTextLabelPositioning(newLength);
+
+                // also update box colliders and bounding box
+                tubeCollider.height = newLength + 0.1f; // add 0.1 so that the cylindrical part covers the full length (otherwise it is too short because of the rounded caps)
+                boundingBoxCollider.size = new Vector3(
+                    newLength + 0.05f, // add 0.05f to encapsulate the end caps
+                    boundingBoxCollider.size.y,
+                    boundingBoxCollider.size.z);
+                boundingBox.Refresh();
+            }
+        }
+
+        public void StopResizing(bool pos)
+        {
+            if (pos)
+            {
+                newHandlePositionPositive = Vector3.negativeInfinity;
+            }
+            else
+            {
+                newHandlePositionNegative = Vector3.negativeInfinity;
+            }
         }
 
         private void UpdateTextLabelPositioning(float progressBarLength)
