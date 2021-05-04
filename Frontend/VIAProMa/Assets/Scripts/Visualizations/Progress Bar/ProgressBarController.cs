@@ -188,12 +188,12 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void LateUpdate()
         {
-            if (handlePositvWasModified || handleNegativWasModified)
-            {
-                AdjustLengthToHandels();
-                handlePositvWasModified = false;
-                handleNegativWasModified = false;
-            }
+            //if (handlePositvWasModified || handleNegativWasModified)
+            //{
+            //    AdjustLengthToHandels();
+            //    handlePositvWasModified = false;
+            //    handleNegativWasModified = false;
+            //}
         }
 
         public void SetHandles(Vector3 PointerPos, bool pos)
@@ -213,6 +213,8 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                 lastPointerPosNeg = PointerPos;
                 handleNegativWasModified = true;
             }
+
+            AdjustLengthToHandels();
         }
 
         private float CalculateHandlePosition(Vector3 lastPosition, Vector3 position)
@@ -264,11 +266,13 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             if (pos)
             {
                 newHandlePositionPositive = Vector3.negativeInfinity;
+                handlePositvWasModified = false;
             }
             else
             {
                 newHandlePositionNegative = Vector3.negativeInfinity;
-            }
+                handleNegativWasModified = false;
+            }         
         }
 
         private void UpdateTextLabelPositioning(float progressBarLength)
