@@ -61,7 +61,7 @@ public class EditIssueMenu : MonoBehaviour
     public async void EditIssue()
     {
         //TODO Implement GitHubManager and EditIssue method
-        await GitHubManager.EditIssue(issue_title.text, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issueName.text, issue_description.text);
+        await GitHubManager.EditIssue(issueName.text, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);
         issueLoader.LoadContent();
         Close();
     }

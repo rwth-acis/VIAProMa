@@ -33,10 +33,14 @@ namespace Org.Git_Hub.API
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
+            headers.Add("Authorization", "token " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
+            headers.Add("Accept", "application/vnd.github.v3+json");
+            string json = "{ \"title\": \"" + name + "\", \"body\": \"" + description + "\" }";
+
             Debug.Log(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues?title=" + name + "&body=" + description);
             Response resp = await Rest.PostAsync(
-                /*"https://api.github.com/"*/ConnectionManager.Instance.BackendAPIBaseURL + "repos/" + owner + "/" + repositoryName + "/issues?title=" + name + "&body=" + description,
+                "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues",
+                json,
                 headers,
                 -1,
                 true);
@@ -61,7 +65,12 @@ namespace Org.Git_Hub.API
         public static async Task<Issue[]> EditIssue(string issueName, string owner, string repositoryName, string newName, string newDescription)
         {
             //Retrieving the IssueID
-            Issue[] repositoryIssues = await GetIssuesFromRepository(owner, repositoryName);
+            ApiResult<Issue[]> repositoryIssuesApiResult = await GitHub.GetIssuesInRepository(owner, repositoryName, 1, 100);
+            Issue[] repositoryIssues = repositoryIssuesApiResult.Value;
+            if (repositoryIssues == null || repositoryIssues.Length == 0)
+            {
+                Debug.LogError("RepositoryIssues not found");
+            }
             int issueID = 0;
             for (int i = 0; i < repositoryIssues.Length; i++)
             {
@@ -84,10 +93,13 @@ namespace Org.Git_Hub.API
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "Bearer " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
+            headers.Add("Authorization", "token " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
+            headers.Add("Accept", "application/vnd.github.v3+json");
+            string json = "{ \"title\": \"" + newName + "\", \"body\": \"" + newDescription + "\" }";
 
-            Response response = await Rest.PostAsync(
-                     "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/" + issueID + "?title=" + newName + "&body=" + newDescription,
+            Response response = await Rest.PatchAsync(
+                     "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/" + issueID,
+                     json,
                      headers,
                      -1,
                      true);
@@ -98,7 +110,8 @@ namespace Org.Git_Hub.API
             }
             else
             {
-                 return repositoryIssues;
+                //Issue[] repositoryIssues = await GetIssuesFromRepository(owner, repositoryName);
+                return repositoryIssues;
             }
         }
 
@@ -106,13 +119,11 @@ namespace Org.Git_Hub.API
         /// </summary>
         /// <param name="owner">The owner of the repository</param>
         /// <param name="repositoryName">The name of the repository</param>
-        /// <param name="page">The page of the content</param>
-        /// <param name="itemsPerPage">States how many issues should be displayed on one page</param>
-        /// <returns>An array of issues in the repository; contained in an APIResult object</returns>
+        /// <returns>An array of issues in the repository</returns>
         public static async Task<Issue[]> GetIssuesFromRepository(string owner, string repositoryName)
         {
             Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues",
+                "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues",
                 null,
                 -1,
                 null,
@@ -125,7 +136,13 @@ namespace Org.Git_Hub.API
             }
             else
             {
-                Issue[] issues = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+                String json = "{ \"data\": " + resp.ResponseBody + " }";
+                Debug.Log(json);
+                Issue[] issues = JsonArrayUtility.FromJson<Issue>(json);
+                if (issues == null || issues.Length == 0)
+                {
+                    Debug.Log("Array empty!");
+                }
                 foreach (Issue issue in issues)
                 {
                     IssueCache.AddIssue(issue);

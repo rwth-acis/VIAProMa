@@ -212,6 +212,29 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
 
         #endregion DELETE
 
+        #region PATCH
+
+        /// <summary>
+        /// Rest PUT.
+        /// </summary>
+        /// <param name="query">Finalized Endpoint Query with parameters.</param>
+        /// <param name="jsonData">Data to be submitted.</param>
+        /// <param name="headers">Optional header information for the request.</param>
+        /// <param name="timeout">Optional time in seconds before request expires.</param>
+        /// <param name="readResponseData">Optional bool. If its true, response data will be read from web request download handler.</param>
+        /// <returns>The response data.</returns>
+        public static async Task<Response> PatchAsync(string query, string jsonData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false)
+        {
+            using (var webRequest = UnityWebRequest.Put(query, jsonData))
+            {
+                webRequest.method = "PATCH";
+                webRequest.SetRequestHeader("Content-Type", "application/json");
+                return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData);
+            }
+        }
+
+        #endregion PATCH
+
         private static async Task<Response> ProcessRequestAsync(UnityWebRequest webRequest, int timeout, Dictionary<string, string> headers = null, bool readResponseData = false)
         {
             if (timeout > 0)
