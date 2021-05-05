@@ -5,12 +5,9 @@ using UnityEngine;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
 using System;
-using System.Collections;
-using UnityEngine.Networking;
 using i5.VIAProMa.WebConnection;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Utilities;
-using System.Net.Http;
 
 namespace Org.Git_Hub.API
 {
@@ -37,7 +34,6 @@ namespace Org.Git_Hub.API
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + name + "\", \"body\": \"" + description + "\" }";
 
-            Debug.Log(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues?title=" + name + "&body=" + description);
             Response resp = await Rest.PostAsync(
                 "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues",
                 json,
@@ -86,7 +82,6 @@ namespace Org.Git_Hub.API
                Debug.LogError("Issue not found");
                 return null;
             }
-            Debug.Log(issueID);
 
             Dictionary<string, string> headers = new Dictionary<string, string>();
             if (ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub) != null)
@@ -110,7 +105,6 @@ namespace Org.Git_Hub.API
             }
             else
             {
-                //Issue[] repositoryIssues = await GetIssuesFromRepository(owner, repositoryName);
                 return repositoryIssues;
             }
         }

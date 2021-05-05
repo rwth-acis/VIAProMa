@@ -3,6 +3,7 @@ using Org.Requirements_Bazaar.API;
 using i5.VIAProMa.Shelves.IssueShelf;
 using TMPro;
 using Org.Git_Hub.API;
+using i5.VIAProMa.UI.InputFields;
 
 public class EditIssueMenu : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class EditIssueMenu : MonoBehaviour
 
     [HideInInspector] public TextMeshPro issueName;
     [HideInInspector] public TextMeshPro issueDescription;
+    public InputField inputField_Title_GitHub;
+    public InputField inputField_Description_GitHub;
+    public InputField inputField_Title_ReqBaz;
+    public InputField inputField_Description_ReqBaz;
 
     //Set references
     public void Start()
@@ -34,6 +39,8 @@ public class EditIssueMenu : MonoBehaviour
     {
         requirement_title.text = issueName.text;
         requirement_description.text = issueDescription.text;
+        inputField_Title_ReqBaz.Text = issueName.text;
+        inputField_Description_ReqBaz.Text = issueDescription.text;
     }
 
     //Sets the default text to the current requirement information of the Requirement Bazaar UI
@@ -41,6 +48,8 @@ public class EditIssueMenu : MonoBehaviour
     {
         issue_title.text = issueName.text;
         issue_description.text = issueDescription.text;
+        inputField_Title_GitHub.Text = issueName.text;
+        inputField_Description_GitHub.Text = issueDescription.text;
     }
 
     //Closes the issue edit window
@@ -60,7 +69,6 @@ public class EditIssueMenu : MonoBehaviour
     // Called when the confirm button on the issue edit window is pressed - GitHub UI
     public async void EditIssue()
     {
-        //TODO Implement GitHubManager and EditIssue method
         await GitHubManager.EditIssue(issueName.text, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);
         issueLoader.LoadContent();
         Close();
