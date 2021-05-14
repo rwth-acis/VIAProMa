@@ -16,7 +16,7 @@ public class ProjectTracker : MonoBehaviour
     public string currentRepositoryName;
     public Category currentCategory = null;
     public EditIssueMenu editIssueMenu = null;
-    public DataSource currentSource = DataSource.REQUIREMENTS_BAZAAR; 
+    public DataSource currentSource = DataSource.REQUIREMENTS_BAZAAR;
 
     // Subscribe to events of project configuration
     public void Start()

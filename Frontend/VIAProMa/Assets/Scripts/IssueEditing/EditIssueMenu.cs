@@ -4,6 +4,7 @@ using i5.VIAProMa.Shelves.IssueShelf;
 using TMPro;
 using Org.Git_Hub.API;
 using i5.VIAProMa.UI.InputFields;
+using System;
 
 public class EditIssueMenu : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class EditIssueMenu : MonoBehaviour
     [SerializeField] private TextMeshPro requirement_description;
     [SerializeField] private TextMeshPro issue_title;
     [SerializeField] private TextMeshPro issue_description;
-    [SerializeField] private int issue_id;
 
     [SerializeField] public GameObject requirementBazaar_UI;
     [SerializeField] public GameObject gitHub_UI;
@@ -26,6 +26,11 @@ public class EditIssueMenu : MonoBehaviour
     public InputField inputField_Description_GitHub;
     public InputField inputField_Title_ReqBaz;
     public InputField inputField_Description_ReqBaz;
+
+    /// <summary>
+    /// Event which is invoked if the selection mode is changed, i.e. if the selection mode is started or ended
+    /// </summary>
+    public event EventHandler<IssueEditedArgs> IssueEdited;
 
     //Set references
     public void Start()
@@ -63,6 +68,8 @@ public class EditIssueMenu : MonoBehaviour
     {
         await RequirementsBazaarManager.EditRequirement(issueName.text, projectTracker.currentProjectID, requirement_title.text, requirement_description.text);
         issueLoader.LoadContent();
+        IssueEditedArgs args = new IssueEditedArgs(issueName.text, requirement_title.text, requirement_description.text);
+        IssueEdited?.Invoke(this, args);
         Close();
     }
 
@@ -71,6 +78,8 @@ public class EditIssueMenu : MonoBehaviour
     {
         await GitHubManager.EditIssue(issueName.text, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);
         issueLoader.LoadContent();
+        IssueEditedArgs args = new IssueEditedArgs(issueName.text, issue_title.text, issue_description.text);
+        IssueEdited?.Invoke(this, args);
         Close();
     }
 }

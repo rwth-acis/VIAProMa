@@ -292,12 +292,12 @@ GameObject:
   - component: {fileID: 856870973186031643}
   - component: {fileID: 3785598325374987269}
   - component: {fileID: 3048067281419414495}
-  - component: {fileID: 4917314478081236675}
   - component: {fileID: 5541018402544852038}
   - component: {fileID: 5929660014016528741}
   - component: {fileID: 7674482897862418506}
   - component: {fileID: 7960372795685758636}
   - component: {fileID: 8857679644684685307}
+  - component: {fileID: 3729376361193462860}
   m_Layer: 0
   m_Name: Card In Scene
   m_TagString: Untagged
@@ -324,7 +324,6 @@ Transform:
   - {fileID: 6607187418284078679}
   - {fileID: 692061462000232331}
   - {fileID: 7092569771786069753}
-  - {fileID: 7466333603445710762}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -372,27 +371,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 343d9e23d00aed44b973569fa9d99104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4917314478081236675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 856870972359737783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e205fd4b385f4e4438a9b63248f27aac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  requirement_title: {fileID: 0}
-  requirement_description: {fileID: 0}
-  issue_title: {fileID: 0}
-  issue_description: {fileID: 0}
-  issue_id: 0
-  requirementBazaar_UI: {fileID: 0}
-  gitHub_UI: {fileID: 0}
-  issueName: {fileID: 0}
-  issueDescription: {fileID: 0}
 --- !u!114 &5541018402544852038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,12 +386,12 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
+  observableSearch: 0
   Synchronization: 3
   OwnershipTransfer: 2
-  observableSearch: 0
   ObservedComponents:
   - {fileID: 5929660014016528741}
-  sceneViewId: 0
+  viewIdField: 0
   InstantiationId: 1
   isRuntimeInstantiated: 0
 --- !u!114 &5929660014016528741
@@ -466,6 +444,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0a09596fd3f25c47b2f3d7bbfd6c024, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3729376361193462860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856870972359737783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4534129e72d98a4b9547b9cb30dcedd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &856870972376199349
@@ -1965,64 +1955,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   profileImageRenderer: {fileID: 173300850093514634}
   userNameLabel: {fileID: 856870972607805465}
---- !u!1 &8460371067700403971
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7466333603445710762}
-  - component: {fileID: 1307472782571779918}
-  - component: {fileID: 4064087098636583255}
-  m_Layer: 0
-  m_Name: EditSideBar
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7466333603445710762
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8460371067700403971}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 856870972359737782}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1307472782571779918
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8460371067700403971}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.3169708, y: 0.26233625, z: 0.016299335}
-  m_Center: {x: -0.0015145987, y: -0.0011681318, z: 0.0016881833}
---- !u!114 &4064087098636583255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8460371067700403971}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f0b054d25b2f6b4b9092aedf6fb8b38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  editButton: {fileID: 0}
 --- !u!1 &8466726778041815642
 GameObject:
   m_ObjectHideFlags: 0
