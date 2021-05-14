@@ -51,13 +51,17 @@ public class IssueUpdater : MonoBehaviour
     }
 
     /// <summary>
-    /// Called if the issue has been deleted from the issue shelf
+    /// Called if the issue has been edited from the issue shelf
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    //private void OnIssueDeleted(object sender, IssueDeletedArgs e)
-    //{
-    //}
+    private void OnIssueDeleted(object sender, IssueDeletedArgs e)
+    {
+        if(e.IssueName == issueDataDisplay.Content.Name && e.ProjectID == issueDataDisplay.Content.ProjectId)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     /// <summary>
     /// Called if the issue has been edited from the issue shelf

@@ -2,6 +2,7 @@
 using i5.VIAProMa.Shelves.IssueShelf;
 using i5.VIAProMa.DataModel.ReqBaz;
 using i5.VIAProMa.DataModel.API;
+using System;
 
 public class ProjectTracker : MonoBehaviour
 {
@@ -18,6 +19,11 @@ public class ProjectTracker : MonoBehaviour
     public EditIssueMenu editIssueMenu = null;
     public DataSource currentSource = DataSource.REQUIREMENTS_BAZAAR;
 
+    /// <summary>
+    /// Event which is invoked if an issue has been deleted
+    /// </summary>
+    public event EventHandler<IssueDeletedArgs> IssueDeleted;
+
     // Subscribe to events of project configuration
     public void Start()
     {
@@ -29,7 +35,11 @@ public class ProjectTracker : MonoBehaviour
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().GitHubOwnerChanged += OwnerChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().GitHubProjectChanged += ProjectChanged_GitHub;
     }
-
+    public void OnlastDeletedChanged(string name, int projectID)
+    {
+        IssueDeletedArgs args = new IssueDeletedArgs(name, projectID);
+        IssueDeleted?.Invoke(this, args);
+    }
     /// <summary>
     /// Stores the current source
     /// </summary>

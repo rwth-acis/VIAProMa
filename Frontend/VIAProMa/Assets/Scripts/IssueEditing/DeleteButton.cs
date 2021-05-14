@@ -45,6 +45,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
     public async void DeleteRequirement()
     {
         await RequirementsBazaarManager.DeleteRequirement(requirementName.text,projectTracker.currentProjectID);
+        projectTracker.OnlastDeletedChanged(requirementName.text, projectTracker.currentProjectID);
         issueLoader.LoadContent();
     }
 

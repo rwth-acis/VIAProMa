@@ -235,6 +235,11 @@ public class CreateIssueMenuOpener : MonoBehaviour
         }
     }
 
+    public void OnDestroy()
+    {
+        DisableButton();
+    }
+
     //Enable the Create Issue Button
     public void EnableButton()
     {

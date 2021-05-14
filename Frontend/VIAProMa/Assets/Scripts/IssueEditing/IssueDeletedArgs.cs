@@ -4,17 +4,23 @@ using System;
 public class IssueDeletedArgs : EventArgs
 {
     /// <summary>
-    /// Creates the issue selection changed arguments
+    /// Creates the issue deleted arguments
     /// </summary>
-    /// <param name="issue">The issue which was selected or deselected</param>
-    /// <param name="selected">True if the issue was selected, false if deselected</param>
-    public IssueDeletedArgs(String issueName)
+    /// <param name="issueName">The previous name of the issue that was deleted</param>
+    /// <param name="projectID">Id if the project the issue belongs to</param>
+    public IssueDeletedArgs(String issueName, int projectID)
     {
         IssueName = issueName;
+        ProjectID = projectID;
     }
 
     /// <summary>
     /// The name of the issue that has been deleted
     /// </summary>
     public String IssueName { get; private set; }
+
+    /// <summary>
+    /// the projectID of the issue that has been deleted
+    /// </summary>
+    public int ProjectID { get; private set; }
 }

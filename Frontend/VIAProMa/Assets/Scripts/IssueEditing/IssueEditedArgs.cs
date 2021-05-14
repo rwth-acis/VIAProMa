@@ -4,10 +4,12 @@ using System;
 public class IssueEditedArgs : EventArgs
 {
     /// <summary>
-    /// Creates the issue selection changed arguments
+    /// Creates the issue edited arguments
     /// </summary>
-    /// <param name="issue">The issue which was selected or deselected</param>
-    /// <param name="selected">True if the issue was selected, false if deselected</param>
+    /// <param name="issueName">The previous name of the issue that was edited</param>
+    /// <param name="projectID">Id if the project the issue belongs to</param>
+    /// <param name="newName">The edited name</param>
+    /// <param name="newDescription">The edited description</param>
     public IssueEditedArgs(String issueName, String newName, String newDescription)
     {
         IssueName = issueName;

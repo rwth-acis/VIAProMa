@@ -28,7 +28,7 @@ public class EditIssueMenu : MonoBehaviour
     public InputField inputField_Description_ReqBaz;
 
     /// <summary>
-    /// Event which is invoked if the selection mode is changed, i.e. if the selection mode is started or ended
+    /// Event which is invoked if an issue has been edited
     /// </summary>
     public event EventHandler<IssueEditedArgs> IssueEdited;
 
