@@ -35,7 +35,7 @@ public class DeleteButtonOpener : MonoBehaviour
         //Check if the placement of the button is indeed correct and next to the position
         if(buttonInstance != null)
         {
-            if (buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)
+            if (buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f)
             {
                 buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
             }

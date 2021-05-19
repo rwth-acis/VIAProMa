@@ -32,8 +32,11 @@ public class IssueUpdater : MonoBehaviour
         editMenu = projectTracker.editIssueMenu;
         if (editMenu != null)
         {
-            //EditButton.IssueDeleted += OnIssueDeleted;
             editMenu.IssueEdited += OnIssueEdited;
+        }
+        if (projectTracker != null)
+        {
+            projectTracker.IssueDeleted += OnIssueDeleted;
         }
     }
 
@@ -45,8 +48,11 @@ public class IssueUpdater : MonoBehaviour
     {
         if (editMenu != null)
         {
-            //EditButton.IssueDeleted += OnIssueDeleted;
             editMenu.IssueEdited -= OnIssueEdited;
+        }
+        if (projectTracker != null)
+        {
+            projectTracker.IssueDeleted -= OnIssueDeleted;
         }
     }
 

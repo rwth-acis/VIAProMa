@@ -34,7 +34,7 @@ public class EditButtonOpener : MonoBehaviour
             //Instantiate Button next to the Issue Card and pass on the issue card name and description, the button is activated if the user is logged in
             if (dataSource == DataSource.REQUIREMENTS_BAZAAR)
             {
-                buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.025f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
+                buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
                 buttonInstance.GetComponent<EditButton>().issueName = issueName;
                 buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
                 buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).IsLoggedIn);
@@ -50,12 +50,12 @@ public class EditButtonOpener : MonoBehaviour
             }
         }
         //Check if the placement of the button is indeed correct and next to the position
-        if (dataSource == DataSource.REQUIREMENTS_BAZAAR && buttonInstance.transform.position.x > this.transform.position.x + 0.025f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)
+        if (dataSource == DataSource.REQUIREMENTS_BAZAAR && (buttonInstance.transform.position.x > this.transform.position.x + 0.02f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f))
         {
-            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.025f, this.transform.position.y + 0.1f, this.transform.position.z);
+            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z);
         }
 
-        if (dataSource == DataSource.GITHUB && buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)
+        if (dataSource == DataSource.GITHUB && (buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f))
         {
             buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
         }

@@ -44,8 +44,8 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
     // Called when the delete button on the issue bar is pressed
     public async void DeleteRequirement()
     {
-        await RequirementsBazaarManager.DeleteRequirement(requirementName.text,projectTracker.currentProjectID);
         projectTracker.OnlastDeletedChanged(requirementName.text, projectTracker.currentProjectID);
+        await RequirementsBazaarManager.DeleteRequirement(requirementName.text,projectTracker.currentProjectID);
         issueLoader.LoadContent();
     }
 
