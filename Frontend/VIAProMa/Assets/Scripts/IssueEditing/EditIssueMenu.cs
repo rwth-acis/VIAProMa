@@ -22,6 +22,7 @@ public class EditIssueMenu : MonoBehaviour
 
     [HideInInspector] public TextMeshPro issueName;
     [HideInInspector] public TextMeshPro issueDescription;
+    [HideInInspector] public int issueID;
     public InputField inputField_Title_GitHub;
     public InputField inputField_Description_GitHub;
     public InputField inputField_Title_ReqBaz;
@@ -66,9 +67,9 @@ public class EditIssueMenu : MonoBehaviour
     // Called when the confirm button on the issue edit window is pressed - Requirement Bazaar UI
     public async void EditRequirement()
     {
-        await RequirementsBazaarManager.EditRequirement(issueName.text, projectTracker.currentProjectID, requirement_title.text, requirement_description.text);
+        await RequirementsBazaarManager.EditRequirement(issueID, projectTracker.currentProjectID, requirement_title.text, requirement_description.text);
         issueLoader.LoadContent();
-        IssueEditedArgs args = new IssueEditedArgs(issueName.text, requirement_title.text, requirement_description.text);
+        IssueEditedArgs args = new IssueEditedArgs(issueID, requirement_title.text, requirement_description.text);
         IssueEdited?.Invoke(this, args);
         Close();
     }
@@ -76,9 +77,9 @@ public class EditIssueMenu : MonoBehaviour
     // Called when the confirm button on the issue edit window is pressed - GitHub UI
     public async void EditIssue()
     {
-        await GitHubManager.EditIssue(issueName.text, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);
+        await GitHubManager.EditIssue(issueID, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);
         issueLoader.LoadContent();
-        IssueEditedArgs args = new IssueEditedArgs(issueName.text, issue_title.text, issue_description.text);
+        IssueEditedArgs args = new IssueEditedArgs(issueID, issue_title.text, issue_description.text);
         IssueEdited?.Invoke(this, args);
         Close();
     }

@@ -35,9 +35,9 @@ public class ProjectTracker : MonoBehaviour
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().GitHubOwnerChanged += OwnerChanged;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().GitHubProjectChanged += ProjectChanged_GitHub;
     }
-    public void OnlastDeletedChanged(string name, int projectID)
+    public void OnlastDeletedChanged(int issueID)
     {
-        IssueDeletedArgs args = new IssueDeletedArgs(name, projectID);
+        IssueDeletedArgs args = new IssueDeletedArgs(issueID);
         IssueDeleted?.Invoke(this, args);
     }
     /// <summary>

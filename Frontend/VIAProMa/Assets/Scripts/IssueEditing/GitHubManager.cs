@@ -51,36 +51,22 @@ namespace Org.Git_Hub.API
         /// <summary>
         /// Edits a specific issue by its id
         /// </summary>
-        /// <param name="issueName">The name of the issue which should be edited</param>
+        /// <param name="issueID">The ID of the issue which should be edited</param>
         /// <param name="projectID">The ID of the project which the issue is part of</param>
         /// <param name="owner">The owner of the repository to which the issue belongs that should be edited</param>
         /// <param name="repositoryName">The name of the repository to which the issue belongs that should be edited</param>
         /// <param name="newName">The new name of the issue after editing</param>
         /// <param name="newDescription">The new description of the issue after editing</param>
         /// <returns>The edited issue</returns>
-        public static async Task<Issue[]> EditIssue(string issueName, string owner, string repositoryName, string newName, string newDescription)
+        public static async Task<Issue[]> EditIssue(int issueID, string owner, string repositoryName, string newName, string newDescription)
         {
-            //Retrieving the IssueID
+
+            // Check for repository
             ApiResult<Issue[]> repositoryIssuesApiResult = await GitHub.GetIssuesInRepository(owner, repositoryName, 1, 100);
             Issue[] repositoryIssues = repositoryIssuesApiResult.Value;
             if (repositoryIssues == null || repositoryIssues.Length == 0)
             {
                 Debug.LogError("RepositoryIssues not found");
-            }
-            int issueID = 0;
-            for (int i = 0; i < repositoryIssues.Length; i++)
-            {
-                if (repositoryIssues[i].Name == issueName)
-                {
-                    issueID = repositoryIssues[i].Id;
-                    break;
-                }
-            
-            }
-            if (issueID == 0)
-            {
-               Debug.LogError("Issue not found");
-                return null;
             }
 
             Dictionary<string, string> headers = new Dictionary<string, string>();

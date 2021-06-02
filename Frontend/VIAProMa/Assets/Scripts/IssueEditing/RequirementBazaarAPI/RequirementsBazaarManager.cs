@@ -169,7 +169,7 @@ namespace Org.Requirements_Bazaar.API
         }
 
         /// <summary>
-        /// Deletes a specific requirement by its id
+        /// Deletes a specific requirement by its name
         /// </summary>
         /// <param name="requirementName">The name of the requirement which should be deleted</param>
         /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
@@ -264,13 +264,13 @@ namespace Org.Requirements_Bazaar.API
         /// <param name="requirementName">The name of the requirement which should be deleted</param>
         /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
         /// <returns>The deleted requirement</returns>
-        public static async Task<Requirement> EditRequirement(string requirementName, int projectId, string newName, string newDescription)
+        public static async Task<Requirement> EditRequirement(int requirementId, int projectId, string newName, string newDescription)
         {
             Requirement[] projectRequirements = await GetProjectRequirements(projectId);
             Requirement requirement = null;
             for (int i = 0; i < projectRequirements.Length; i++)
             {
-                if (projectRequirements[i].Name == requirementName)
+                if (projectRequirements[i].Id == requirementId)
                 {
                     requirement = projectRequirements[i];
                     break;
@@ -282,7 +282,6 @@ namespace Org.Requirements_Bazaar.API
                 Debug.LogError("Requirement not found");
                 return null;
             }
-            Debug.Log(requirement.Id);
 
             //Editing the requirement
             requirement.Name = newName;

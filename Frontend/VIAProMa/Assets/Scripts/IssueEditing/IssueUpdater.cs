@@ -63,7 +63,7 @@ public class IssueUpdater : MonoBehaviour
     /// <param name="e"></param>
     private void OnIssueDeleted(object sender, IssueDeletedArgs e)
     {
-        if(e.IssueName == issueDataDisplay.Content.Name && e.ProjectID == issueDataDisplay.Content.ProjectId)
+        if(e.IssueID == issueDataDisplay.Content.Id)
         {
             Destroy(this.gameObject);
         }
@@ -76,7 +76,7 @@ public class IssueUpdater : MonoBehaviour
     /// <param name="e"></param>
     private void OnIssueEdited(object sender, IssueEditedArgs e)
     {
-        if(e.IssueName == issueDataDisplay.Content.Name)
+        if(e.IssueID == issueDataDisplay.Content.Id)
         {
             Issue newIssue = new Issue(issueDataDisplay.Content.Source, issueDataDisplay.Content.Id, e.NewName, e.NewDescription, issueDataDisplay.Content.ProjectId, issueDataDisplay.Content.Creator, issueDataDisplay.Content.Status, issueDataDisplay.Content.CreationDateString, issueDataDisplay.Content.ClosedDateString, issueDataDisplay.Content.Developers, issueDataDisplay.Content.Commenters);
             issueDataDisplay.Setup(newIssue);

@@ -12,7 +12,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
 
     private ProjectTracker projectTracker;
     private IssuesLoader issueLoader;
-    [HideInInspector] public TextMeshPro requirementName;
+    [HideInInspector] public int requirementID;
 
     // Timer parameters
     bool holding = false;
@@ -44,8 +44,8 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
     // Called when the delete button on the issue bar is pressed
     public async void DeleteRequirement()
     {
-        projectTracker.OnlastDeletedChanged(requirementName.text, projectTracker.currentProjectID);
-        await RequirementsBazaarManager.DeleteRequirement(requirementName.text,projectTracker.currentProjectID);
+        projectTracker.OnlastDeletedChanged(requirementID);
+        await RequirementsBazaarManager.DeleteRequirement(requirementID);
         issueLoader.LoadContent();
     }
 

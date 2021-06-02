@@ -13,6 +13,7 @@ public class EditButtonOpener : MonoBehaviour
     [SerializeField] private TextMeshPro issueDescription;
     [SerializeField] private SourceDisplay source;
 
+    [HideInInspector] public int issueID;
     private GameObject buttonInstance;
     private DataSource dataSource;
 
@@ -24,6 +25,7 @@ public class EditButtonOpener : MonoBehaviour
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LoginCompleted += LoginCompleted_GitHub;
         ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LogoutCompleted += LogoutCompleted_GitHub;
         dataSource = source.Content.Source;
+        issueID = source.Content.Id;
 
     }
 
@@ -37,6 +39,7 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
                 buttonInstance.GetComponent<EditButton>().issueName = issueName;
                 buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
+                buttonInstance.GetComponent<EditButton>().issueID= issueID;
                 buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.REQUIREMENTS_BAZAAR;
             }
@@ -45,6 +48,7 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
                 buttonInstance.GetComponent<EditButton>().issueName = issueName;
                 buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
+                buttonInstance.GetComponent<EditButton>().issueID = issueID;
                 buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.GITHUB;
             }

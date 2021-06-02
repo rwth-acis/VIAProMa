@@ -6,21 +6,21 @@ public class IssueEditedArgs : EventArgs
     /// <summary>
     /// Creates the issue edited arguments
     /// </summary>
-    /// <param name="issueName">The previous name of the issue that was edited</param>
-    /// <param name="projectID">Id if the project the issue belongs to</param>
+    /// <param name="issueID">The ID of the issue that was edited</param>
+    /// <param name="projectID">ID if the project the issue belongs to</param>
     /// <param name="newName">The edited name</param>
     /// <param name="newDescription">The edited description</param>
-    public IssueEditedArgs(String issueName, String newName, String newDescription)
+    public IssueEditedArgs(int issueID, String newName, String newDescription)
     {
-        IssueName = issueName;
+        IssueID = issueID;
         NewName = newName;
         NewDescription = newDescription;
     }
 
     /// <summary>
-    /// The name of the issue that has been edited
+    /// The ID of the issue that has been edited
     /// </summary>
-    public String IssueName { get; private set; }
+    public int IssueID { get; private set; }
 
     /// <summary>
     /// Give the new name of the issue

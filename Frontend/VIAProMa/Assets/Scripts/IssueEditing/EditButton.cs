@@ -8,6 +8,7 @@ public class EditButton : MonoBehaviour
     [HideInInspector] public TextMeshPro issueName;
     [HideInInspector] public TextMeshPro issueDescription;
     [HideInInspector] public DataSource source;
+    [HideInInspector] public int issueID;
 
     private EditIssueMenu editMenu;
     private GameObject requirementBazaar_UI;
@@ -47,6 +48,7 @@ public class EditButton : MonoBehaviour
                 editMenu.gameObject.SetActive(true);
                 editMenu.issueName = issueName;
                 editMenu.issueDescription = issueDescription;
+                editMenu.issueID = issueID;
                 if (source == DataSource.REQUIREMENTS_BAZAAR)
                 {
                     editMenu.SetText_RequirementBazaar();
