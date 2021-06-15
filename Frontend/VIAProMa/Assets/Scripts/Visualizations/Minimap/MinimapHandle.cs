@@ -10,6 +10,8 @@ namespace i5.VIAProMa.Visualizations.Minimap
 {
     public class MinimapHandle : MonoBehaviour, IMixedRealityPointerHandler
     {
+        [SerializeField] private MinimapController minimap;
+
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
             throw new NotImplementedException();

@@ -13,6 +13,27 @@ namespace i5.VIAProMa.Visualizations.Minimap
     /// </summary>
     public class MinimapConfiguration : ConfigurationWindow
     {
+        [Tooltip("The UI which handles the minimap")]
+        [SerializeField] private ConfigurationIssueSelectionUI issueSelectionUI;
 
+        public override bool WindowEnabled
+        {
+            get => base.WindowEnabled;
+            set
+            {
+                base.WindowEnabled = value;
+                issueSelectionUI.UIEnabled = value;
+            }
+        }
+
+        protected override void Awake()
+        {
+
+        }
+
+        public override void Open()
+        {
+
+        }
     }
 }
