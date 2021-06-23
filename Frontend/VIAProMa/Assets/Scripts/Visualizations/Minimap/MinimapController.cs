@@ -22,8 +22,10 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         [Header("UI Elements")]
         [Tooltip("Reference to the title of the minimap")] [SerializeField]
-        private Transform header;
+        private Transform header; // Contains both the title and the background
         [SerializeField] private TextMeshPro headerTitle;
+        [SerializeField] private Transform headerBackground;
+
         [SerializeField] private Transform handleLeft;
         [SerializeField] private Transform handleRight;
         [SerializeField] private Transform handleTop;
@@ -149,7 +151,10 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         private void UpdateSize()
         {
-
+            minimapSurface.localScale = new Vector3(
+                size.x,
+                size.y,
+                header.localScale.z);
         }
     }
 }
