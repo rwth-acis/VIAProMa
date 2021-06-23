@@ -176,7 +176,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             innerBarInProgress.localScale = new Vector3(inProgressBarScale, 1f, 1f);
         }
 
-        #region Resizing through the handels
+        #region Resizing through the handles
 
         /// <summary>
         /// Needs to be called before starting the resize process.
@@ -196,7 +196,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         }
 
         /// <summary>
-        /// Sets the positv or negativ handel to the right position according to the new pointer position. Then lengths and positions of the other components are adjusted accordingly.
+        /// Sets the positve or negative handle to the right position according to the new pointer position. Then lengths and positions of the other components are adjusted accordingly.
         /// </summary>
         /// <param name="PointerPosition"></param> 
         /// <param name="handleOnPositiveCap"></param>
@@ -214,7 +214,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
                 lastPointerPosNeg = PointerPosition;
             }
 
-            AdjustLengthToHandels(newHandlePosition,handleOnPositiveCap);
+            AdjustLengthToHandles(newHandlePosition,handleOnPositiveCap);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         /// </summary>
         /// <param name="handlePosition"></param>
         /// <param name="handleOnPositiveCap"></param>
-        private void AdjustLengthToHandels(Vector3 handlePosition, bool handleOnPositiveCap)
+        private void AdjustLengthToHandles(Vector3 handlePosition, bool handleOnPositiveCap)
         {
             Vector3 newHandlePositionPositive;
             Vector3 newHandlePositionNegative;
