@@ -4,19 +4,20 @@ using UnityEngine;
 using Photon;
 using Photon.Pun;
 using Microsoft.MixedReality.Toolkit.UI;
+using TMPro;
 
 public class InstantiateButton : MonoBehaviour
 {
     [SerializeField] MockupEditorList list;
     [SerializeField] int index;
-    [SerializeField] ButtonConfigHelper buttonConfig;
+    [SerializeField] TMP_Text label;
 
     MockupEditorItem item;
 
     private void Start()
     {
         item = list.items[index];
-        buttonConfig.MainLabelText = item.name;
+        label.text = item.name;
     }
 
     public void OnClickButton()
