@@ -10,7 +10,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
     /// Implementation of the OpenID Connect Learning Layers Provider
     /// More information can be found here: https://api.learning-layers.eu/auth/
     /// </summary>
-    public class LearningLayersOidcProvider : IOidcProvider
+    public class LearningLayersOidcProvider// : IOidcProvider
     {
         /// <summary>
         /// The endpoint for the log in

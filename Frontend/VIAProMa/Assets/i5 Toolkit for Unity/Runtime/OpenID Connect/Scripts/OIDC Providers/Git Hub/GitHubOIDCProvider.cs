@@ -10,7 +10,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
     /// <summary>
     /// Implementation of the OpenID Connect GitHub Provider
     /// </summary>
-    public class GitHubOidcProvider : IOidcProvider
+    public class GitHubOidcProvider// : IOidcProvider
     {
         /// <summary>
         /// The endpoint for the log in
