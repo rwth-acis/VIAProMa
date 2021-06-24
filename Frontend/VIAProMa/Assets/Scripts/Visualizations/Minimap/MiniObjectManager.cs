@@ -27,6 +27,7 @@ public class MiniObjectManager : MonoBehaviour
         foreach (GameObject g in trackedObjects) {
             miniObjects[i].transform.localPosition = TranslateIntoLocalCoordinates(g.transform.position);
             miniObjects[i].transform.localScale = g.transform.lossyScale * currentScale;
+            miniObjects[i].transform.localRotation = g.transform.rotation;
             i++;
         }
     }
