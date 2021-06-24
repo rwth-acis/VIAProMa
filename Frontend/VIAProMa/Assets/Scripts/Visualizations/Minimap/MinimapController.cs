@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,21 +9,21 @@ using i5.VIAProMa.Visualizations.Minimap;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace i5.VIAProMa.Visualizations.Minimap
 {
     public class MinimapController : MonoBehaviour, IVisualizationVisualController
     {
-
-        [Tooltip("All of the minimap items sit on this surface")]
-        [SerializeField] private Transform minimapSurface;
+        [Tooltip("All of the minimap items sit on this surface")] [SerializeField]
+        private Transform minimapSurface;
 
         private Vector3 lastPointerPosPos;
         private Vector3 lastPointerPosNeg;
 
-        [Header("UI Elements")]
-        [Tooltip("Reference to the title of the minimap")] [SerializeField]
+        [Header("UI Elements")] [Tooltip("Reference to the title of the minimap")] [SerializeField]
         private Transform header; // Contains both the title and the background
+
         [SerializeField] private TextMeshPro headerTitle;
         [SerializeField] private Transform headerBackground;
 
@@ -32,10 +33,11 @@ namespace i5.VIAProMa.Visualizations.Minimap
         [SerializeField] private Transform handleBottom;
         [SerializeField] private ObjectGrid grid;
 
-        [Tooltip("Reference to the bounding box of the minimap")]
-        [SerializeField] private BoundingBox boundingBox;
+        [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
+        private BoundingBox boundingBox;
 
         [Header("Values")] private List<GameObject> items;
+        // Used to resize the minimap from the handles
         private Vector2 size;
         private Renderer backgroundRenderer;
         private Renderer headerBackgroundRenderer;
@@ -53,11 +55,39 @@ namespace i5.VIAProMa.Visualizations.Minimap
             }
         }
 
+        public float Width
+        {
+            get => minimapSurface.localScale.x;
+            set
+            {
+                size.x = value;
+                UpdateSize();
+            }
+        }
+
+        public float Height
+        {
+            get => minimapSurface.localScale.y;
+            set
+            {
+                size.y = value;
+                UpdateSize();
+            }
+        }
+
+        public Color Color
+        {
+            get => backgroundRenderer.material.color;
+            set => backgroundRenderer.material.color = value;
+        }
 
 
         private void Awake()
         {
             // TODO
+            items = new List<GameObject>();
+            backgroundRenderer = minimapSurface.gameObject.GetComponent<Renderer>();
+            headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
         }
 
         public void StartResizing(Vector3 pointerPosition, bool handleOnPositiveCap)
@@ -146,7 +176,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         private void UpdateVisuals()
         {
-
         }
 
         private void UpdateSize()
@@ -155,6 +184,37 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 size.x,
                 size.y,
                 header.localScale.z);
+
+            headerBackground.localScale = new Vector3(
+                size.x,
+                headerBackground.localScale.y,
+                headerBackground.localScale.z);
+
+            handleLeft.localPosition = new Vector3(
+                -size.x / 2f,
+                0f,
+                0.01f
+            );
+            handleRight.localPosition = new Vector3(
+                size.x / 2f,
+                0f,
+                0.01f
+            );
+            handleTop.localPosition = new Vector3(
+                0f,
+                size.y / 2f,
+                0.01f
+            );
+
+            handleBottom.localPosition = new Vector3(
+                0f,
+                -size.y / 2f,
+                0.01f
+            );
+
+            boundingBoxCollider.size = 1.01f * minimapSurface.localScale;
+
+            UpdateVisuals();
         }
     }
 }
