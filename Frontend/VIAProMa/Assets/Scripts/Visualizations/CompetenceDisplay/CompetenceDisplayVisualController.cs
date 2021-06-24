@@ -116,7 +116,6 @@ namespace i5.VIAProMa.Visualizations.Competence
                     );
             }
             boundingBox.transform.localPosition = new Vector3(0, 0, 0.5f);
-            boundingBox.Refresh();
 
             titleLabel.MaxWidth = targetRadius * 0.8f;
             titleLabel.MaxHeight = targetRadius * 0.8f;

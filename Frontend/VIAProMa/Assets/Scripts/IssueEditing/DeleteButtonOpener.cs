@@ -7,6 +7,8 @@ using i5.VIAProMa.DataDisplays;
 using i5.VIAProMa.UI.ListView.Issues;
 using i5.Toolkit.Core.Utilities;
 
+using i5.VIAProMa.Login;
+
 public class DeleteButtonOpener : MonoBehaviour
 {
 
@@ -20,8 +22,8 @@ public class DeleteButtonOpener : MonoBehaviour
     // Subscribe to Login and Logout Events
     private void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted;
         dataSource = source.Content.Source;
         requirementID = source.Content.Id;
     }
