@@ -31,6 +31,8 @@ public class MiniObjectManager : MonoBehaviour
         }
     }
 
+
+    //Calculates the GlobalCenter as the middle of the Axis Aligned Bounding Cuboid(AABC) of the tracked objects, and the current scale As the ratio between the local scale length of the cube spaned by the reference corners and the largest dimension of the AABC. Then saves these values in the according variables. Called Every Frame
     void CalculateLocalTransform() {
         float localXLength = maxCorner.transform.localPosition.x - minCorner.transform.localPosition.x;
         float globalMaxX = float.MinValue;
@@ -66,7 +68,7 @@ public class MiniObjectManager : MonoBehaviour
         }
 
         globalCenter = new Vector3((globalMaxX+globalMinX)/2, (globalMaxY + globalMinY) / 2, (globalMaxZ + globalMinZ) / 2);
-        float largestDimension = Mathf.Max(globalMaxX - globalMinX, globalMaxY - globalMinY);
+        float largestDimension = Mathf.Max(globalMaxX - globalMinX, globalMaxZ - globalMinZ);
         if (largestDimension == 0)
         {
             currentScale = maxScale;
@@ -83,7 +85,8 @@ public class MiniObjectManager : MonoBehaviour
             currentScale = localXLength/2 / largestDimension;
         }
     }
-
+    
+    //Gets the global position of a tracked object and returns the  corresponding local position of the corresponding mini-object in the coordinate system of the minimap
     private Vector3 TranslateIntoLocalCoordinates(Vector3 globalPos) {
         Vector3 localPos = globalPos - globalCenter;
         localPos = localPos * currentScale;
