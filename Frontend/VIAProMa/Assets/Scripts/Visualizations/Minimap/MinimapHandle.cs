@@ -18,8 +18,11 @@ namespace i5.VIAProMa.Visualizations.Minimap
         private Vector3 minimapStartPos;
         private float startLength;
 
-        [Tooltip("Check this for handles that extend over the X-axis (else Y-axis is assumed)")]
-        public bool xAxis;
+        [Tooltip("Check this for handles that extend over the X-axis (else Z-axis is assumed)")]
+        [SerializeField] 
+        private bool xAxis;
+        [SerializeField]
+        private bool positiveEnd;
 
         private void Awake()
         {
@@ -65,19 +68,31 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 {
                     handleDelta = Vector3.Dot(minimap.transform.right, delta);
                 }
+                // z axis => transform top/bottom
                 else
                 {
-                    handleDelta = Vector3.Dot(minimap.transform.up, delta);
+                    handleDelta = Vector3.Dot(minimap.transform.forward, delta);
+                }
+
+                if (!positiveEnd)
+                {
+                    handleDelta *= -1f;
                 }
 
                 float newLength = startLength + handleDelta;
                 if (xAxis)
                 {
                     float previousWidth = minimap.Width;
+                    minimap.Width = newLength;
 
                     if (minimap.Width != previousWidth)
                     {
                         Vector3 pivotCorrection = new Vector3(handleDelta / 2f, 0, 0);
+                        if (positiveEnd)
+                        {
+                            pivotCorrection *= -1;
+                        }
+
                         minimap.transform.localPosition =
                             minimapStartPos - minimap.transform.localRotation * pivotCorrection;
                     }
@@ -85,11 +100,18 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 else
                 {
                     float previousHeight = minimap.Height;
+                    minimap.Height = newLength;
+
                     if (minimap.Height != previousHeight)
                     {
-                        Vector3 pivotCorrection = new Vector3(0f, handleDelta / 2f, 0f);
-                        minimap.transform.localScale =
-                            minimapStartPos - minimap.transform.localRotation * pivotCorrection;
+                        Vector3 pivotCorrection = new Vector3(0f, 0f, handleDelta / 2f);
+                        if (positiveEnd)
+                        {
+                            pivotCorrection *= -1;
+                        }
+
+                        //minimap.transform.localScale =
+                        //    minimapStartPos; // - minimap.transform.localRotation * pivotCorrection;
                     }
                 }
 

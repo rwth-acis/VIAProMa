@@ -24,7 +24,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
             //}
 
             ContentProvider = new SingleIssuesProvider();
-            Title = "";
+            Title = "Sample Minimap";
         }
     }
 }

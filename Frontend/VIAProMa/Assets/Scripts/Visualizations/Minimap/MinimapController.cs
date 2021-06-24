@@ -37,12 +37,16 @@ namespace i5.VIAProMa.Visualizations.Minimap
         private BoundingBox boundingBox;
 
         [Header("Values")] private List<GameObject> items;
+
         // Used to resize the minimap from the handles
+        // The Y-component here actually refers to the Z-axis because the minimap is placed laying down on the Z-axis
         private Vector2 size;
         private Renderer backgroundRenderer;
         private Renderer headerBackgroundRenderer;
 
         private BoxCollider boundingBoxCollider;
+        private BoundingBoxStateController boundingBoxStateController;
+
         public Visualization[] HighlightedItems { get; set; }
 
         public string Title
@@ -67,7 +71,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         public float Height
         {
-            get => minimapSurface.localScale.y;
+            get => minimapSurface.localScale.z;
             set
             {
                 size.y = value;
@@ -86,8 +90,25 @@ namespace i5.VIAProMa.Visualizations.Minimap
         {
             // TODO
             items = new List<GameObject>();
+
             backgroundRenderer = minimapSurface.gameObject.GetComponent<Renderer>();
             headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
+
+            boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
+            if (boundingBoxCollider is null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox?.gameObject);
+            }
+
+            boundingBoxStateController = boundingBox?.gameObject.GetComponent<BoundingBoxStateController>();
+            if (boundingBoxStateController == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController),
+                    boundingBox?.gameObject);
+            }
+
+            size = new Vector2(minimapSurface.localScale.x, minimapSurface.localScale.z);
+            UpdateSize();
         }
 
         public void StartResizing(Vector3 pointerPosition, bool handleOnPositiveCap)
@@ -102,72 +123,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
             }
         }
 
-        public void SetHandles(Vector3 PointerPosition, bool handleOnPositiveCap)
-        {
-            //Vector3 newHandlePosition;
-            //if (handleOnPositiveCap)
-            //{
-            //    newHandlePosition =
-            //        new Vector3(capPos.localPosition.x - ProjectOnRight(lastPointerPosPos, PointerPosition), 0, 0);
-            //    lastPointerPosPos = PointerPosition;
-            //}
-            //else
-            //{
-            //    newHandlePosition =
-            //        new Vector3(capNeg.localPosition.x - ProjectOnRight(lastPointerPosNeg, PointerPosition), 0, 0);
-            //    lastPointerPosNeg = PointerPosition;
-            //}
-
-            //AdjustLengthToHandles(newHandlePosition, handleOnPositiveCap);
-        }
-
-        private void AdjustLengthToHandles(Vector3 handlePosition, bool handleOnPositiveCap)
-        {
-            //Vector3 newHandlePositionPositive;
-            //Vector3 newHandlePositionNegative;
-            //if (handleOnPositiveCap)
-            //{
-            //    newHandlePositionPositive = handlePosition;
-            //    newHandlePositionNegative = capNeg.localPosition;
-            //}
-            //else
-            //{
-            //    newHandlePositionPositive = capPos.localPosition;
-            //    newHandlePositionNegative = handlePosition;
-            //}
-
-            //float newLength = Vector3.Distance(newHandlePositionPositive, newHandlePositionNegative);
-            //if (newLength >= minLength && newLength <= maxLength)
-            //{
-            //    //Update the tubes
-            //    tubes.localScale = new Vector3(newLength, 1f, 1f);
-
-            //    //Update the parent
-            //    Vector3 newHandlePositionPositiveWorld =
-            //        transform.localToWorldMatrix * new Vector4(newHandlePositionPositive.x, 0, 0, 1);
-            //    Vector3 newHandlePositionNegativWorld =
-            //        transform.localToWorldMatrix * new Vector4(newHandlePositionNegative.x, 0, 0, 1);
-            //    transform.position = newHandlePositionNegativWorld +
-            //                         0.5f * (newHandlePositionPositiveWorld - newHandlePositionNegativWorld);
-
-            //    //Update positions of the caps
-            //    capPos.position = newHandlePositionPositiveWorld;
-            //    capNeg.position = newHandlePositionNegativWorld;
-
-            //    //Update box colliders and bounding box
-            //    tubeCollider.height =
-            //        newLength +
-            //        0.1f; // add 0.1 so that the cylindrical part covers the full length (otherwise it is too short because of the rounded caps)
-            //    boundingBoxCollider.size = new Vector3(
-            //        newLength + 0.05f, // add 0.05f to encapsulate the end caps
-            //        boundingBoxCollider.size.y,
-            //        boundingBoxCollider.size.z);
-
-            //    UpdateTextLabelPositioning(newLength);
-            //}
-        }
-
-
         private float ProjectOnRight(Vector3 vector, Vector3 position)
         {
             Vector3 delta = vector - position;
@@ -178,41 +133,61 @@ namespace i5.VIAProMa.Visualizations.Minimap
         {
         }
 
+        private void OnBoundingBoxStateChanged(object sender, EventArgs e)
+        {
+            handleLeft.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
+            handleRight.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
+            handleTop.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
+            handleBottom.gameObject.SetActive(!boundingBoxStateController.BoundingBoxActive);
+        }
+
+
         private void UpdateSize()
         {
             minimapSurface.localScale = new Vector3(
                 size.x,
-                size.y,
-                header.localScale.z);
+                minimapSurface.localScale.y,
+                size.y);
 
+            // Stay at top and adjust to width + height
             headerBackground.localScale = new Vector3(
                 size.x,
                 headerBackground.localScale.y,
                 headerBackground.localScale.z);
 
+            header.localPosition = new Vector3(
+                header.localPosition.x,
+                header.localPosition.y,
+                header.localPosition.z); // position at top
+
+
+            headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
+
             handleLeft.localPosition = new Vector3(
                 -size.x / 2f,
                 0f,
-                0.01f
+                0f
             );
+
             handleRight.localPosition = new Vector3(
                 size.x / 2f,
                 0f,
-                0.01f
+                0f
             );
+
             handleTop.localPosition = new Vector3(
                 0f,
-                size.y / 2f,
-                0.01f
+                0f,
+                size.y / 2f
             );
 
             handleBottom.localPosition = new Vector3(
                 0f,
-                -size.y / 2f,
-                0.01f
+                0f,
+                -size.y / 2f
             );
 
-            boundingBoxCollider.size = 1.01f * minimapSurface.localScale;
+            //boundingBoxCollider.size = 1.01f * minimapSurface.localScale;
 
             UpdateVisuals();
         }
