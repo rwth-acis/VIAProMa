@@ -6,6 +6,9 @@ using Photon.Pun;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 
+/// <summary>
+/// a component for a button. Instantiate a mockup item from the list.
+/// </summary>
 public class InstantiateButton : MonoBehaviour
 {
     [SerializeField] MockupEditorList list;
@@ -20,17 +23,25 @@ public class InstantiateButton : MonoBehaviour
         label.text = item.name;
     }
 
+    /// <summary>
+    /// called by the OnClick method of the button
+    /// </summary>
     public void OnClickButton()
     {
-        Debug.Log("Instantiate Prefab");
         Spawn();
     }
 
+    /// <summary>
+    /// spawns the gameobject
+    /// </summary>
     void Spawn()
     {
+        //the base GO which is instantiated every time and "holds" the visual object inside, has the important components (e.g. ownership, network,...)
         GameObject baseGO = Instantiate(list.PrefabBase, gameObject.transform.position, Quaternion.identity);
+        //the skin GO which visualizes the object
         GameObject skinGO = Instantiate(item.Prefab, baseGO.transform);
 
+        //if the skinGO has an interactable component, it should be disabled so that it cannot be pressed
         Interactable interactable;
         if (skinGO.TryGetComponent<Interactable>(out interactable)) interactable.enabled = false;
     }
