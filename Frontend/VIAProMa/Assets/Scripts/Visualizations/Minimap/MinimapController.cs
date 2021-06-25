@@ -82,7 +82,11 @@ namespace i5.VIAProMa.Visualizations.Minimap
         public Color Color
         {
             get => backgroundRenderer.material.color;
-            set => backgroundRenderer.material.color = value;
+            set
+            {
+                Debug.Log("Setting color");
+                backgroundRenderer.material.color = value;
+            }
         }
 
 
