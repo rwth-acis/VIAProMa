@@ -152,13 +152,20 @@ namespace i5.VIAProMa.Visualizations.Minimap
             // Stay at top and adjust to width + height
             headerBackground.localScale = new Vector3(
                 size.x,
-                headerBackground.localScale.y,
-                headerBackground.localScale.z);
+                size.y,
+                0);
 
-            header.localPosition = new Vector3(
-                header.localPosition.x,
-                header.localPosition.y,
-                header.localPosition.z); // position at top
+            //header.localPosition = new Vector3(
+            //    -15.1462f,
+            //    1.025f,
+            //    3.738f);
+
+            //header.localPosition = new Vector3(
+            //    size.x / 2f - header.localScale.x / 2f,
+            //    1.025f,
+            //    size.y / 2f - header.localScale.z / 2f);
+
+            header.localPosition = new Vector3(0f, 0f, 0f);
 
 
             headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
@@ -187,7 +194,10 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 -size.y / 2f
             );
 
-            //boundingBoxCollider.size = 1.01f * minimapSurface.localScale;
+            //boundingBoxCollider.size = new Vector3(
+            //    size.x,
+            //    minimapSurface.localPosition.y,
+            //    size.y);
 
             UpdateVisuals();
         }
