@@ -33,6 +33,9 @@ namespace i5.VIAProMa.Visualizations.Minimap
         [SerializeField] private Transform handleBottom;
         [SerializeField] private ObjectGrid grid;
 
+        [SerializeField] private GameObject minCorner;
+        [SerializeField] private GameObject maxCorner;
+
         [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
         private BoundingBox boundingBox;
 
@@ -202,6 +205,17 @@ namespace i5.VIAProMa.Visualizations.Minimap
             //    size.x,
             //    minimapSurface.localPosition.y,
             //    size.y);
+
+            minCorner.transform.localPosition = new Vector3(
+                -size.y / 2f,
+                0f,
+                -size.y / 2f);
+
+
+            maxCorner.transform.localPosition = new Vector3(
+                size.y / 2f,
+                0f,
+                size.y / 2f);
 
             UpdateVisuals();
         }
