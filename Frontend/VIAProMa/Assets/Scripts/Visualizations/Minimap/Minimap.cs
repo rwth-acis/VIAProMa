@@ -17,14 +17,14 @@ namespace i5.VIAProMa.Visualizations.Minimap
         protected override void Awake()
         {
             base.Awake();
-            minimapVisuals = GetComponent<MinimapVisuals>();
-            if (minimapVisuals is null)
-            {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MinimapVisuals), gameObject);
-            }
+            //minimapVisuals = GetComponent<MinimapVisuals>();
+            //if (minimapVisuals is null)
+            //{
+            //    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MinimapVisuals), gameObject);
+            //}
 
             ContentProvider = new SingleIssuesProvider();
-            Title = "";
+            Title = "Sample Minimap";
         }
     }
 }

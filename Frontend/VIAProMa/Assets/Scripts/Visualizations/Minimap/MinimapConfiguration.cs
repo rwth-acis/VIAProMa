@@ -15,7 +15,8 @@ namespace i5.VIAProMa.Visualizations.Minimap
     public class MinimapConfiguration : ConfigurationWindow
     {
         [Tooltip("The UI which handles the minimap")]
-        [SerializeField] private ConfigurationIssueSelectionUI issueSelectionUI;
+        //private ConfigurationIssueSelectionUI issueSelectionUI;
+        [SerializeField] private ConfigurationColorChooser colorChooser;
 
         public override bool WindowEnabled
         {
@@ -23,21 +24,17 @@ namespace i5.VIAProMa.Visualizations.Minimap
             set
             {
                 base.WindowEnabled = value;
-                issueSelectionUI.UIEnabled = value;
+                //issueSelectionUI.UIEnabled = value;
+                colorChooser.UIEnabled = value;
             }
         }
 
         protected override void Awake()
         {
             base.Awake();
-            if (issueSelectionUI is null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueSelectionUI));
-            }
-            else
-            {
-                issueSelectionUI.Setup(visualization);
-            }
+            colorChooser.Setup(visualization);
+            //issueSelectionUI.GetComponent<ConfigurationIssueSelectionUI>();
+            //issueSelectionUI.Setup(visualization);
         }
 
         public override void Open()

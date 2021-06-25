@@ -240,6 +240,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                 headerBackground.localScale.y,
                 headerBackground.localScale.z
                 );
+
             header.localPosition = new Vector3(
                 0,
                 size.y / 2f - headerBackground.localScale.y / 2f, // position at top
