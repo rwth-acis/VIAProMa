@@ -8,6 +8,7 @@ public class MiniObjectManager : MonoBehaviour
     [SerializeField] private GameObject maxCorner;
     [SerializeField] private float minScale;
     [SerializeField] private float maxScale;
+    [SerializeField] private float yOffset;
     [SerializeField] private List<GameObject> trackedObjects;
     [SerializeField] private List<GameObject> miniObjects;
     private float currentScale;
@@ -91,6 +92,7 @@ public class MiniObjectManager : MonoBehaviour
     private Vector3 TranslateIntoLocalCoordinates(Vector3 globalPos) {
         Vector3 localPos = globalPos - globalCenter;
         localPos = localPos * currentScale;
+        localPos.y += yOffset;
         return localPos;
     }
 }
