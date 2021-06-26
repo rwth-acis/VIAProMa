@@ -23,18 +23,10 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     private GameObject mockUpWindowInstance;
     private GameObject descriptionInstance;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //myLoadedAssetBundle = AssetBundle.LoadFromFile("Assets/Tests/MockUpEditor");
-    }
-
-    public void openNewScene()
-    {
-        SceneManager.LoadScene("MockUpTest", LoadSceneMode.Single);
-    }
-
-    public void showMockUpWindow()
+    /// <summary>
+    /// Opens a window where the user can select between different objects
+    /// </summary>
+    public void ShowMockUpWindow()
     {
         InstantiateControl(
                     mockUpWindowPrefab,
@@ -42,6 +34,12 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
                     transform.position - 0.15f * transform.right);
     }
 
+    /// <summary>
+    /// Instantiates the given prefab
+    /// </summary>
+    /// <param name="prefab"></param>
+    /// <param name="instance"></param>
+    /// <param name="targetPosition"></param>
     private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
     {
         Quaternion targetRotation = transform.rotation;
@@ -58,16 +56,23 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
         }
     }
 
+    /// <summary>
+    /// Closes the window
+    /// </summary>
     public void Close()
     {
         Destroy(transform.parent.gameObject);
     }
 
-    public void showDescription()
+    /// <summary>
+    /// Opens a window with additional information about the editor
+    /// </summary>
+    public void ShowDescription()
     {
         InstantiateControl(
                     descriptionPrefab,
                     ref descriptionInstance,
                     transform.position + 0.2565f * transform.right - 0.0886f * transform.up);
+        descriptionInstance.GetComponent<DescriptionHelper>().UpdateLabel("Ich mach mal einfach testweise. Bewusst auch mehr Text. Außerdem auch \n neue Zeile");
     }
 }
