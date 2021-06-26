@@ -18,6 +18,7 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject mockUpWindowPrefab;
     [SerializeField] private GameObject descriptionPrefab;
     [SerializeField] private TextMeshPro descriptionText;
+    string desc = "The Mockup Editor can be used to instatiate game objects in realtime. Just click on the buttons to get objects like cubes, spheres and other UI elements from MRTK.";
 
     // instances:
     private GameObject mockUpWindowInstance;
@@ -73,6 +74,6 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
                     descriptionPrefab,
                     ref descriptionInstance,
                     transform.position + 0.2565f * transform.right - 0.0886f * transform.up);
-        descriptionInstance.GetComponent<DescriptionHelper>().UpdateLabel("Ich mach mal einfach testweise. Bewusst auch mehr Text. Außerdem auch \n neue Zeile");
+        descriptionInstance.GetComponent<DescriptionHelper>().UpdateLabel(desc);
     }
 }
