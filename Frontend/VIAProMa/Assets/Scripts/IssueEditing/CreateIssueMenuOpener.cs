@@ -5,6 +5,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 using i5.VIAProMa.Shelves.IssueShelf;
 using System.Collections;
 using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.Login;
 
 public class CreateIssueMenuOpener : MonoBehaviour
 {
@@ -40,13 +41,13 @@ public class CreateIssueMenuOpener : MonoBehaviour
             backPlate.SetActive(true);
         }
         //Subscribe to Login and Project events
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted_RequirementBazaar;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted_RequirementBazaar;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted_RequirementBazaar;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted_RequirementBazaar;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazProjectChanged += ProjectChanged_RequirementBazaar;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().ReqBazCategoryChanged += CategoryChanged_RequirementBazaar;
 
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LoginCompleted += LoginCompleted_GitHub;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LogoutCompleted += LogoutCompleted_GitHub;
+        ServiceManager.GetService<GitHubOidcService>().LoginCompleted += LoginCompleted_GitHub;
+        ServiceManager.GetService<GitHubOidcService>().LogoutCompleted += LogoutCompleted_GitHub;
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().GitHubProjectChanged += ProjectChanged_GitHub;
 
         GameObject.FindObjectOfType<ShelfConfigurationMenu>().SourceChanged += SourceChanged;

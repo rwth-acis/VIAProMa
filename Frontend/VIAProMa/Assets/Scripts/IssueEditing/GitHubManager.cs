@@ -8,6 +8,7 @@ using System;
 using i5.VIAProMa.WebConnection;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Login;
 
 namespace Org.Git_Hub.API
 {
@@ -26,11 +27,11 @@ namespace Org.Git_Hub.API
         public static async Task<Issue> CreateIssue(string owner, string repositoryName, string name, string description)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if (ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub) != null)
+            if (ServiceManager.GetService<GitHubOidcService>() != null)
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "token " + ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).AccessToken);
+            headers.Add("Authorization", "token " + ServiceManager.GetService<GitHubOidcService>().AccessToken);
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + name + "\", \"body\": \"" + description + "\" }";
 
@@ -70,11 +71,11 @@ namespace Org.Git_Hub.API
             }
 
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if (ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub) != null)
+            if (ServiceManager.GetService<GitHubOidcService>() != null)
             {
                 Debug.Log("Service not null");
             }
-            headers.Add("Authorization", "token " + ServiceManager.GetService<GitHubOidcProvider>().AccessToken);
+            headers.Add("Authorization", "token " + ServiceManager.GetService<GitHubOidcService>().AccessToken);
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + newName + "\", \"body\": \"" + newDescription + "\" }";
 

@@ -35,7 +35,7 @@ public class DeleteButtonOpener : MonoBehaviour
             //Instantiate Button next to the Issue Card and pass on the requirement name, the button is activated if the user is logged in
             buttonInstance = Instantiate(deleteButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
             buttonInstance.GetComponent<DeleteButton>().requirementID = requirementID;
-            buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).IsLoggedIn);
+            buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
         }
         //Check if the placement of the button is indeed correct and next to the position
         if(buttonInstance != null)

@@ -4,6 +4,7 @@ using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.DataDisplays;
+using i5.VIAProMa.Login;
 
 public class EditButtonOpener : MonoBehaviour
 {
@@ -20,10 +21,10 @@ public class EditButtonOpener : MonoBehaviour
     // Subscribe to Login and Logout Events
     private void Start()
     {
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LoginCompleted += LoginCompleted_LearningLayers;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).LogoutCompleted += LogoutCompleted_LearningLayers;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LoginCompleted += LoginCompleted_GitHub;
-        ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).LogoutCompleted += LogoutCompleted_GitHub;
+        ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted_LearningLayers;
+        ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted_LearningLayers;
+        ServiceManager.GetService<GitHubOidcService>().LoginCompleted += LoginCompleted_GitHub;
+        ServiceManager.GetService<GitHubOidcService>().LogoutCompleted += LogoutCompleted_GitHub;
         dataSource = source.Content.Source;
         issueID = source.Content.Id;
 
@@ -40,7 +41,7 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance.GetComponent<EditButton>().issueName = issueName;
                 buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
                 buttonInstance.GetComponent<EditButton>().issueID= issueID;
-                buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.LearningLayers).IsLoggedIn);
+                buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.REQUIREMENTS_BAZAAR;
             }
             else if(dataSource == DataSource.GITHUB)
@@ -49,7 +50,7 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance.GetComponent<EditButton>().issueName = issueName;
                 buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
                 buttonInstance.GetComponent<EditButton>().issueID = issueID;
-                buttonInstance.SetActive(ServiceManager.GetProvider<OpenIDConnectService>(ProviderTypes.GitHub).IsLoggedIn);
+                buttonInstance.SetActive(ServiceManager.GetService<GitHubOidcService>().IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.GITHUB;
             }
         }
