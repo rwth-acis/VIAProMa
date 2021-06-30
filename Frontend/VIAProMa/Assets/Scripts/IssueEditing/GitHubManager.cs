@@ -76,6 +76,7 @@ namespace Org.Git_Hub.API
                 Debug.Log("Service not null");
             }
             headers.Add("Authorization", "token " + ServiceManager.GetService<GitHubOidcService>().AccessToken);
+            Debug.Log(ServiceManager.GetService<GitHubOidcService>().AccessToken);
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + newName + "\", \"body\": \"" + newDescription + "\" }";
 
