@@ -9,6 +9,8 @@ using i5.VIAProMa.WebConnection;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Login;
+using UnityEngine.Networking;
+using System.Linq;
 
 namespace Org.Git_Hub.API
 {
@@ -80,7 +82,7 @@ namespace Org.Git_Hub.API
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + newName + "\", \"body\": \"" + newDescription + "\" }";
 
-            Response response = await Rest.PatchAsync(
+            Response response = await PatchAsync(
                      "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/" + issueID,
                      json,
                      headers,
@@ -130,6 +132,88 @@ namespace Org.Git_Hub.API
                     IssueCache.AddIssue(issue);
                 }
                 return issues;
+            }
+        }
+
+        #region PATCH
+
+        /// <summary>
+        /// Rest PUT.
+        /// </summary>
+        /// <param name="query">Finalized Endpoint Query with parameters.</param>
+        /// <param name="jsonData">Data to be submitted.</param>
+        /// <param name="headers">Optional header information for the request.</param>
+        /// <param name="timeout">Optional time in seconds before request expires.</param>
+        /// <param name="readResponseData">Optional bool. If its true, response data will be read from web request download handler.</param>
+        /// <returns>The response data.</returns>
+        public static async Task<Response> PatchAsync(string query, string jsonData, Dictionary<string, string> headers = null, int timeout = -1, bool readResponseData = false)
+        {
+            using (var webRequest = UnityWebRequest.Put(query, jsonData))
+            {
+                webRequest.method = "PATCH";
+                webRequest.SetRequestHeader("Content-Type", "application/json");
+                return await ProcessRequestAsync(webRequest, timeout, headers, readResponseData);
+            }
+        }
+
+        #endregion PATCH
+
+        private static async Task<Response> ProcessRequestAsync(UnityWebRequest webRequest, int timeout, Dictionary<string, string> headers = null, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
+        {
+            if (timeout > 0)
+            {
+                webRequest.timeout = timeout;
+            }
+
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    webRequest.SetRequestHeader(header.Key, header.Value);
+                }
+            }
+
+            // HACK: Workaround for extra quotes around boundary.
+            if (webRequest.method == UnityWebRequest.kHttpVerbPOST ||
+                webRequest.method == UnityWebRequest.kHttpVerbPUT)
+            {
+                string contentType = webRequest.GetRequestHeader("Content-Type");
+                if (contentType != null)
+                {
+                    contentType = contentType.Replace("\"", "");
+                    webRequest.SetRequestHeader("Content-Type", contentType);
+                }
+            }
+
+            webRequest.certificateHandler = certificateHandler;
+            webRequest.disposeCertificateHandlerOnDispose = disposeCertificateHandlerOnDispose;
+            await webRequest.SendWebRequest();
+
+#if UNITY_2020_1_OR_NEWER
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+#else
+            if (webRequest.isNetworkError || webRequest.isHttpError)
+#endif // UNITY_2020_1_OR_NEWER
+            {
+                if (webRequest.responseCode == 401) { return new Response(false, "Invalid Credentials", null, webRequest.responseCode); }
+
+                if (webRequest.GetResponseHeaders() == null)
+                {
+                    return new Response(false, "Device Unavailable", null, webRequest.responseCode);
+                }
+
+                string responseHeaders = webRequest.GetResponseHeaders().Aggregate(string.Empty, (current, header) => $"\n{header.Key}: {header.Value}");
+                string downloadHandlerText = webRequest.downloadHandler?.text;
+                Debug.LogError($"REST Error: {webRequest.responseCode}\n{downloadHandlerText}{responseHeaders}");
+                return new Response(false, $"{responseHeaders}\n{downloadHandlerText}", webRequest.downloadHandler?.data, webRequest.responseCode);
+            }
+            if (readResponseData)
+            {
+                return new Response(true, webRequest.downloadHandler?.text, webRequest.downloadHandler?.data, webRequest.responseCode);
+            }
+            else // This option can be used only if action will be triggered in the same scope as the webrequest
+            {
+                return new Response(true, () => webRequest.downloadHandler?.text, () => webRequest.downloadHandler?.data, webRequest.responseCode);
             }
         }
     }
