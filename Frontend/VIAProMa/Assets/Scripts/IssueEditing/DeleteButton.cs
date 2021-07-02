@@ -3,6 +3,8 @@ using UnityEngine;
 using i5.VIAProMa.Shelves.IssueShelf;
 using Org.Requirements_Bazaar.API;
 using Microsoft.MixedReality.Toolkit.Input;
+using System;
+
 
 public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
 {
@@ -10,7 +12,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
 
     private ProjectTracker projectTracker;
     private IssuesLoader issueLoader;
-    [HideInInspector] public TextMeshPro requirementName;
+    [HideInInspector] public int requirementID;
 
     // Timer parameters
     bool holding = false;
@@ -31,7 +33,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
             timer += Time.deltaTime;
             if(timer > timeUntilHold)
             {
-                DeleteIssue();
+                DeleteRequirement();
                 timer = 0;
                 indicator.transform.localScale = new Vector3(4.5f, 4.5f, 0);     
             }
@@ -40,9 +42,10 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
     }
 
     // Called when the delete button on the issue bar is pressed
-    public async void DeleteIssue()
+    public async void DeleteRequirement()
     {
-        await RequirementsBazaarManager.DeleteRequirement(requirementName.text,projectTracker.currentProjectID);
+        projectTracker.OnlastDeletedChanged(requirementID);
+        await RequirementsBazaarManager.DeleteRequirement(requirementID);
         issueLoader.LoadContent();
     }
 

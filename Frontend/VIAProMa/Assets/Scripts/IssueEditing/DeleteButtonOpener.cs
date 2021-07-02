@@ -1,21 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using TMPro;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
-using TMPro;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.DataDisplays;
+using i5.VIAProMa.UI.ListView.Issues;
+using i5.Toolkit.Core.Utilities;
+
 using i5.VIAProMa.Login;
 
-public class EditButtonOpener : MonoBehaviour
+public class DeleteButtonOpener : MonoBehaviour
 {
 
-    [SerializeField] private GameObject editButtonPrefab;
-    [SerializeField] private TextMeshPro requirementName;
-    [SerializeField] private TextMeshPro requirementDescription;
+    [SerializeField] private GameObject deleteButtonPrefab;
     [SerializeField] private SourceDisplay source;
 
+    [HideInInspector] public int requirementID;
     private GameObject buttonInstance;
     private DataSource dataSource;
 
@@ -25,23 +25,25 @@ public class EditButtonOpener : MonoBehaviour
         ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginCompleted;
         ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LogoutCompleted;
         dataSource = source.Content.Source;
-
+        requirementID = source.Content.Id;
     }
 
     private void Update()
     {
-        if (buttonInstance == null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
+        if(buttonInstance == null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
         {
             //Instantiate Button next to the Issue Card and pass on the requirement name, the button is activated if the user is logged in
-            buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.025f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
-            buttonInstance.GetComponent<EditButton>().requirementName = requirementName;
-            buttonInstance.GetComponent<EditButton>().requirementDescription = requirementDescription;
+            buttonInstance = Instantiate(deleteButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
+            buttonInstance.GetComponent<DeleteButton>().requirementID = requirementID;
             buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
         }
         //Check if the placement of the button is indeed correct and next to the position
-        if (buttonInstance.transform.position.x > this.transform.position.x + 0.025f || buttonInstance.transform.position.y > this.transform.position.x + 0.1f)
+        if(buttonInstance != null)
         {
-            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.025f, this.transform.position.y + 0.1f, this.transform.position.z);
+            if (buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f)
+            {
+                buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
+            }
         }
     }
 
@@ -52,7 +54,7 @@ public class EditButtonOpener : MonoBehaviour
     /// <param name="e">Event arguments</param>
     public void LoginCompleted(object sender, System.EventArgs e)
     {
-        if (buttonInstance != null)
+        if(buttonInstance != null)
             buttonInstance.SetActive(true);
     }
 
@@ -70,7 +72,6 @@ public class EditButtonOpener : MonoBehaviour
     //Destroy button along with this object
     public void OnDestroy()
     {
-        if (buttonInstance != null)
-            Destroy(buttonInstance);
+        Destroy(buttonInstance);
     }
 }
