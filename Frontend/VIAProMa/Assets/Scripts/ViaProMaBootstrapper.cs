@@ -12,6 +12,7 @@ namespace i5.VIAProMa
     {
         [SerializeField] private ClientDataObject learningLayersClientData;
         [SerializeField] private ClientDataObject gitHubClientData;
+        [SerializeField] private ClientDataObject slackClientData;
 
         protected override void RegisterServices()
         {
@@ -34,12 +35,23 @@ namespace i5.VIAProMa
             githubOidcService.RedirectURI = "i5:/";
 #endif
             ServiceManager.RegisterService(githubOidcService);
+
+            SlackOidcService slackOidcService = new SlackOidcService()
+            {
+                OidcProvider = new SlackOidcProvider()
+            };
+            slackOidcService.OidcProvider.ClientData = slackClientData.clientData;
+#if !UNITY_EDITOR
+            slackOidcService.RedirectURI = "i5:/";
+#endif
+            ServiceManager.RegisterService(slackOidcService);
         }
 
         protected override void UnRegisterServices()
         {
             ServiceManager.RemoveService<LearningLayersOidcService>();
             ServiceManager.RemoveService<GitHubOidcService>();
+            ServiceManager.RemoveService<SlackOidcService>();
         }
     }
 }

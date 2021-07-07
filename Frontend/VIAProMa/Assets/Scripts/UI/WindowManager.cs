@@ -10,6 +10,8 @@ namespace i5.VIAProMa.UI
         [SerializeField] private GameObject roomMenuPrefab;
         [SerializeField] private GameObject serverStatusMenuPrefab;
         [SerializeField] private GameObject chatMenuPrefab;
+        [SerializeField] private GameObject botMenuPrefab;
+        [SerializeField] private GameObject playerListPrefab;
         [SerializeField] private GameObject saveProjectMenuPrefab;
         [SerializeField] private GameObject loginMenuPrefab;
 
@@ -18,6 +20,8 @@ namespace i5.VIAProMa.UI
             RoomMenu = (RoomMenu)InstantiateWindow(roomMenuPrefab);
             ServerStatusMenu = (ServerStatusMenu)InstantiateWindow(serverStatusMenuPrefab);
             ChatMenu = (ChatMenu)InstantiateWindow(chatMenuPrefab);
+            BotMenu = (BotMenu)InstantiateWindow(botMenuPrefab);
+            PlayerList = (PlayerList)InstantiateWindow(playerListPrefab);
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
         }
@@ -41,6 +45,10 @@ namespace i5.VIAProMa.UI
         public ServerStatusMenu ServerStatusMenu { get; private set; }
 
         public ChatMenu ChatMenu { get; private set; }
+
+        public BotMenu BotMenu { get; private set; }
+
+        public PlayerList PlayerList { get; private set; }
 
         public SaveProjectWindow SaveProjectWindow { get; private set; }
 

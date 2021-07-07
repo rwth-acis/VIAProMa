@@ -58,6 +58,7 @@ namespace i5.VIAProMa.Multiplayer.Chat
 
         public void OpenChatMenu()
         {
+
             WindowManager.Instance.ChatMenu.Open(
                 transform.position - 0.6f * notificationPreviewLabel.transform.right,
                 notificationPreviewLabel.transform.eulerAngles

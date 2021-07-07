@@ -1,10 +1,19 @@
 package i5.las2peer.services.immersiveProjectManagementService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+
 import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
 import i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.GitHubPunchCardHour;
 import io.swagger.annotations.*;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Client;
@@ -13,6 +22,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -51,6 +62,7 @@ public class ImmersiveProjectManagementService extends RESTService {
 		getResourceConfig().register(GitHubResource.class);
 		getResourceConfig().register(NetworkedStringResource.class);
 		getResourceConfig().register(SaveLoadResource.class);
+		getResourceConfig().register(GetWeatherMainClass.class);
 	}
 
 
@@ -163,6 +175,8 @@ public class ImmersiveProjectManagementService extends RESTService {
 		public Response ping() {
 			return Response.ok().entity("pong").build();
 		}
+		
+		
 	}
 
 }

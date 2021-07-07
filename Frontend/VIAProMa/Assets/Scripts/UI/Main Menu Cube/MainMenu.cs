@@ -24,6 +24,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable roomButton;
         [SerializeField] private TextMeshPro roomButtonText;
         [SerializeField] private Interactable chatButton;
+        [SerializeField] private Interactable uniBotButton;
         [SerializeField] private Interactable microphoneButton;
 
         [Header("References")]
@@ -82,6 +83,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(chatButton));
             }
+            if (uniBotButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(uniBotButton));
+            }
             if (microphoneButton == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
@@ -135,6 +140,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             roomButton.Enabled = PhotonNetwork.IsConnected;
             chatButton.Enabled = PhotonNetwork.InRoom;
+            uniBotButton.Enabled = PhotonNetwork.InRoom;
             microphoneButton.Enabled = PhotonNetwork.InRoom;
             saveButton.Enabled = PhotonNetwork.InRoom;
             loadButton.Enabled = PhotonNetwork.InRoom;
@@ -253,6 +259,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
             foldController.FoldCube();
         }
 
+        // Lead to SlackSignIn button
+        public void UniBotButtonClicked()
+        {
+            WindowManager.Instance.BotMenu.Open(uniBotButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            foldController.FoldCube();
+        }
         private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
         {
             Quaternion targetRotation = transform.rotation;
