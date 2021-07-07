@@ -8,7 +8,7 @@ namespace i5.VIAProMa
 {
     public class UserManager : Singleton<UserManager>
     {
-        private UserRoles role = UserRoles.DEVELOPER;
+        private UserRoles role = UserRoles.STUDENT;
 
         public event EventHandler UserRoleChanged;
 

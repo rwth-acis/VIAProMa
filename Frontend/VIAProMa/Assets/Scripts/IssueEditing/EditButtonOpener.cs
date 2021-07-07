@@ -43,6 +43,7 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance.GetComponent<EditButton>().issueID= issueID;
                 buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.REQUIREMENTS_BAZAAR;
+                buttonInstance.transform.parent = this.transform;
             }
             else if(dataSource == DataSource.GITHUB)
             {
@@ -52,17 +53,9 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance.GetComponent<EditButton>().issueID = issueID;
                 buttonInstance.SetActive(ServiceManager.GetService<GitHubOidcService>().IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.GITHUB;
+                buttonInstance.transform.parent = this.transform;
             }
-        }
-        //Check if the placement of the button is indeed correct and next to the position
-        if (dataSource == DataSource.REQUIREMENTS_BAZAAR && (buttonInstance.transform.position.x > this.transform.position.x + 0.02f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f))
-        {
-            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z);
-        }
 
-        if (dataSource == DataSource.GITHUB && (buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f))
-        {
-            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
         }
     }
 

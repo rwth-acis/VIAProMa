@@ -27,6 +27,8 @@ namespace i5.VIAProMa.Multiplayer.Avatars
         [SerializeField] private Color scrumMasterColor;
         [SerializeField] private Color developerColor;
         [SerializeField] private Color StakeHolderColor;
+        [SerializeField] private Color tutorColor;
+        [SerializeField] private Color studentColor;
 
         private PhotonView photonView;
         private UserRoles userRole;
@@ -53,9 +55,16 @@ namespace i5.VIAProMa.Multiplayer.Avatars
                     case UserRoles.STAKEHOLDER:
                         roleBackground.material.color = StakeHolderColor;
                         break;
+                    case UserRoles.TUTOR:
+                        roleBackground.material.color = tutorColor;
+                        break;
+                    case UserRoles.STUDENT:
+                        roleBackground.material.color = studentColor;
+                        break;
                 }
             }
         }
+
 
         /// <summary>
         /// Checks the component's setup and initializes it
