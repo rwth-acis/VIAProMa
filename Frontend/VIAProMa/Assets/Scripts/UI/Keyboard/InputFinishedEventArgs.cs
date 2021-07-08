@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class InputFinishedEventArgs : EventArgs
+namespace i5.VIAProMa.UI.KeyboardInput
 {
-    public bool Aborted { get; set; }
-    public string Text { get; set; }
-}
+    public class InputFinishedEventArgs : EventArgs
+    {
+        public bool Aborted { get; set; }
+        public string Text { get; set; }
+    }
 
-public delegate void InputFinishedEventHandler(object sender, InputFinishedEventArgs e);
+    public delegate void InputFinishedEventHandler(object sender, InputFinishedEventArgs e);
+}

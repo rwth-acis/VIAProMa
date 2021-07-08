@@ -1,25 +1,29 @@
-﻿using System;
+﻿using i5.VIAProMa.UI.ListView.Core;
+using System;
 
-[Serializable]
-public class Contributors : IListViewItemData, IUninitializable
+namespace i5.VIAProMa.DataModel.ReqBaz
 {
-    public ReqBazUser creator;
-    public ReqBazUser leadDeveloper;
-    public ReqBazUser[] developers;
-    public ReqBazUser[] commentCreator;
-    public ReqBazUser[] attachmentCreator;
-
-    public bool IsUninitialized
+    [Serializable]
+    public class Contributors : IListViewItemData, IUninitializable
     {
-        get
+        public ReqBazUser creator;
+        public ReqBazUser leadDeveloper;
+        public ReqBazUser[] developers;
+        public ReqBazUser[] commentCreator;
+        public ReqBazUser[] attachmentCreator;
+
+        public bool IsUninitialized
         {
-            if (creator.IsUninitialized && leadDeveloper.IsUninitialized && developers.Length == 0 && commentCreator.Length == 0 && attachmentCreator.Length == 0)
+            get
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                if (creator.IsUninitialized && leadDeveloper.IsUninitialized && developers.Length == 0 && commentCreator.Length == 0 && attachmentCreator.Length == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }

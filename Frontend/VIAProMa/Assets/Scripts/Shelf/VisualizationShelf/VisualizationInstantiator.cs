@@ -1,52 +1,54 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.ResourceManagagement;
+using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Input;
-using Photon.Pun;
 using Microsoft.MixedReality.Toolkit.UI;
+using UnityEngine;
 
-public class VisualizationInstantiator : MonoBehaviour, IMixedRealityPointerHandler
+namespace i5.VIAProMa.Shelves.Visualizations
 {
-    [SerializeField] private GameObject visualizationPrefab;
-
-    private BoundingBoxStateController boxStateController;
-    private ManipulationHandler handler;
-
-    private void Awake()
+    public class VisualizationInstantiator : MonoBehaviour, IMixedRealityPointerHandler
     {
-        if (visualizationPrefab == null)
+        [SerializeField] private GameObject visualizationPrefab;
+
+        private BoundingBoxStateController boxStateController;
+        private ObjectManipulator handler;
+
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationPrefab));
-        }
-    }
-
-    public void OnPointerClicked(MixedRealityPointerEventData eventData)
-    {
-    }
-
-    public void OnPointerDown(MixedRealityPointerEventData eventData)
-    {
-        ResourceManager.Instance.SceneNetworkInstantiate(visualizationPrefab, transform.position, transform.rotation, (instance) =>
-        {
-            boxStateController = instance.GetComponentInChildren<BoundingBoxStateController>();
-            if (boxStateController == null)
+            if (visualizationPrefab == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationPrefab));
             }
-            boxStateController.BoundingBoxActive = true;
-            handler = instance.GetComponentInChildren<ManipulationHandler>();
-            handler.OnPointerDown(eventData);
-        });
-    }
+        }
 
-    public void OnPointerDragged(MixedRealityPointerEventData eventData)
-    {
-        handler.OnPointerDragged(eventData);
-    }
+        public void OnPointerClicked(MixedRealityPointerEventData eventData)
+        {
+        }
 
-    public void OnPointerUp(MixedRealityPointerEventData eventData)
-    {
-        handler.OnPointerUp(eventData);
-        boxStateController.BoundingBoxActive = false;
+        public void OnPointerDown(MixedRealityPointerEventData eventData)
+        {
+            ResourceManager.Instance.SceneNetworkInstantiate(visualizationPrefab, transform.position, transform.rotation, (instance) =>
+            {
+                boxStateController = instance.GetComponentInChildren<BoundingBoxStateController>();
+                if (boxStateController == null)
+                {
+                    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
+                }
+                boxStateController.BoundingBoxActive = true;
+                handler = instance.GetComponentInChildren<ObjectManipulator>();
+                handler.OnPointerDown(eventData);
+            });
+        }
+
+        public void OnPointerDragged(MixedRealityPointerEventData eventData)
+        {
+            handler.OnPointerDragged(eventData);
+        }
+
+        public void OnPointerUp(MixedRealityPointerEventData eventData)
+        {
+            handler.OnPointerUp(eventData);
+            boxStateController.BoundingBoxActive = false;
+        }
     }
 }

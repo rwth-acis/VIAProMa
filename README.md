@@ -12,14 +12,15 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
 
 #### Prerequisites
 
-- Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2018.3.14f1
-- [Microsoft Mixed Reality Toolkit v2.0.0 RC2.1](https://github.com/microsoft/MixedRealityToolkit-Unity/releases/tag/v2.0.0-RC2.1) (already included in the project)
+- Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2019.4.5f1
+- [Microsoft Mixed Reality Toolkit v2.6.1](https://github.com/microsoft/MixedRealityToolkit-Unity/releases/tag/v2.6.1) (already included in the project)
+- [i5 Toolkit for Unity](https://github.com/rwth-acis/i5-Toolkit-for-Unity) (already included in the project)
 - [Photon PUN 2](https://assetstore.unity.com/packages/tools/network/pun-2-free-119922) (download through Unity's asset store window in the editor)
-- Visual Studio (tested with VS 2017)
+- Visual Studio (tested with VS 2019)
 - For HoloLens Development:
   - Windows 10 development machine
   - Windows 10 SDK ([10.0.18362.0](https://developer.microsoft.com/de-de/windows/downloads/windows-10-sdk))
-  For Android Development:
+- For Android Development:
   - [ARCore SDK](https://github.com/google-ar/arcore-unity-sdk/releases) (tested with ARCore SDK for Unity v1.12.0)
   - Android SDK 7.0 (API Level 24) or later
 
@@ -66,13 +67,13 @@ The backend folder contains a [las2peer project](https://github.com/rwth-acis/la
 #### Required Technologies
 
 To install the backend the following technologies are required.
-1. Java 8 (on Windows: make sure that the Java installation is placed in your path variables); if you type java ñversion in the command line, the output should similar to this:
+1. Java 8 (on Windows: make sure that the Java installation is placed in your path variables); if you type java ‚Äìversion in the command line, the output should similar to this:
    ```
    java version "1.8.0_231"
    Java(TM) SE Runtime Environment (build 1.8.0_231-b11)
    Java HotSpot(TM) 64-Bit Server VM (build 25.231-b11, mixed mode)
    ```
-2. Apache Ant (on Windows: make sure that the Ant installation is placed in your path variables; if you type ant ñversion in the command line, you should get an output similar to this:
+2. Apache Ant (on Windows: make sure that the Ant installation is placed in your path variables; if you type ant ‚Äìversion in the command line, you should get an output similar to this:
    ```
    Apache Ant(TM) version 1.10.1 compiled on February 2 2017
    ```
@@ -87,8 +88,8 @@ After that, run `ant all` in the backend folder.
 
 #### Running the Backend
 
-After the build, execute the corresponding ìstart_networkî script in the ìbinî folder of the backend.
-It contains two scripts ìstart_network.batî and ìstart_network.shî. On Windows, execute the ìstart_network.batî file. On Linux or Mac, first go back to the backend folder and execute `./bin/start_network.sh` from there.
+After the build, execute the corresponding ‚Äústart_network‚Äù script in the ‚Äúbin‚Äù folder of the backend.
+It contains two scripts ‚Äústart_network.bat‚Äù and ‚Äústart_network.sh‚Äù. On Windows, execute the ‚Äústart_network.bat‚Äù file. On Linux or Mac, first go back to the backend folder and execute `./bin/start_network.sh` from there.
 
 
 ## Troubleshooting

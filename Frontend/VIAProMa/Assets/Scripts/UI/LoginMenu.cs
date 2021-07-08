@@ -2,6 +2,9 @@
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
 using i5.ViaProMa.UI;
+using i5.VIAProMa.Multiplayer;
+using i5.VIAProMa.UI.InputFields;
+using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -12,10 +15,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// UI controller and actions for the login menu
-/// </summary>
-public class LoginMenu : MonoBehaviour, IWindow
+namespace i5.VIAProMa.UI
 {
     [SerializeField] private TextMeshPro nameLabel;
     [SerializeField] private Interactable learningLayersLoginButton;
@@ -55,9 +55,11 @@ public class LoginMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(logoutButton));
         }
-        if (roleToggles == null)
+
+        public void Open()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(roleToggles));
+            gameObject.SetActive(true);
+            Initialize();
         }
     }
 
@@ -103,12 +105,17 @@ public class LoginMenu : MonoBehaviour, IWindow
         roleToggles.CurrentIndex = (int)UserManager.Instance.UserRole;
         for (int i = 0; i < roleToggles.ToggleList.Length; i++)
         {
-            int dimension = 0;
-            if (i == roleToggles.CurrentIndex)
+            nameInputField.Text = PhotonNetwork.NickName;
+            roleToggles.CurrentIndex = (int)UserManager.Instance.UserRole;
+            for (int i = 0; i < roleToggles.ToggleList.Length; i++)
             {
-                dimension = 1;
+                int dimension = 0;
+                if (i == roleToggles.CurrentIndex)
+                {
+                    dimension = 1;
+                }
+                roleToggles.ToggleList[i].SetDimensionIndex(dimension);
             }
-            roleToggles.ToggleList[i].SetDimensionIndex(dimension);
         }
         SetButtonStates();
     }
@@ -235,13 +242,15 @@ public class LoginMenu : MonoBehaviour, IWindow
     {
         if (PhotonNetwork.IsConnected)
         {
-            byte eventCode = 1;
-            byte content = 0;
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-            SendOptions sendOptions = new SendOptions { Reliability = true };
-            PhotonNetwork.RaiseEvent(eventCode, content, raiseEventOptions, sendOptions);
+            if (PhotonNetwork.IsConnected)
+            {
+                byte eventCode = 1;
+                byte content = 0;
+                RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                SendOptions sendOptions = new SendOptions { Reliability = true };
+                PhotonNetwork.RaiseEvent(eventCode, content, raiseEventOptions, sendOptions);
+            }
         }
-    }
 
     /// <summary>
     /// Called by the radio buttons if the user role is changed

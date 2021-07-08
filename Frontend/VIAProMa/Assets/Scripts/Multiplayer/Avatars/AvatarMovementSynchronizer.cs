@@ -1,34 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(AvatarSpineController))]
-public class AvatarMovementSynchronizer : BasicAvatarMovementSynchronizer
+namespace i5.VIAProMa.Multiplayer.Avatars
 {
-    private AvatarSpineController spineController;
-
-    protected override void Awake()
+    [RequireComponent(typeof(AvatarSpineController))]
+    public class AvatarMovementSynchronizer : BasicAvatarMovementSynchronizer
     {
-        base.Awake();
-        spineController = GetComponent<AvatarSpineController>();
-        spineController.targetRotation = Quaternion.identity;
-    }
+        private AvatarSpineController spineController;
 
-    protected override void Update()
-    {
-        if (photonView.IsMine)
+        protected override void Awake()
         {
-            // set the position based on the camera
-            transform.position = mainCamera.transform.position;
-            transform.rotation = Quaternion.LookRotation(- mainCamera.transform.forward, mainCamera.transform.up);
-            timeSinceLastSearch += Time.deltaTime;
+            base.Awake();
+            spineController = GetComponent<AvatarSpineController>();
+            spineController.targetRotation = Quaternion.identity;
         }
-        else
+
+        protected override void Update()
         {
-            spineController.position = Vector3.Lerp(spineController.position, targetPosition, lerpSpeed * Time.deltaTime);
-            spineController.targetRotation = Quaternion.Slerp(spineController.targetRotation, targetRotation, lerpSpeed * Time.deltaTime);
-            MoveAvatarHand(avatarLeftHand, leftHandTargetPosition, leftHandTargetRotation);
-            MoveAvatarHand(avatarRightHand, rightHandTargetPosition, rightHandTargetRotation);
+            if (photonView.IsMine)
+            {
+                // set the position based on the camera
+                transform.position = mainCamera.transform.position;
+                transform.rotation = Quaternion.LookRotation(-mainCamera.transform.forward, mainCamera.transform.up);
+                timeSinceLastSearch += Time.deltaTime;
+            }
+            else
+            {
+                spineController.position = Vector3.Lerp(spineController.position, targetPosition, lerpSpeed * Time.deltaTime);
+                spineController.targetRotation = Quaternion.Slerp(spineController.targetRotation, targetRotation, lerpSpeed * Time.deltaTime);
+                MoveAvatarHand(avatarLeftHand, leftHandTargetPosition, leftHandTargetRotation);
+                MoveAvatarHand(avatarRightHand, rightHandTargetPosition, rightHandTargetRotation);
+            }
         }
     }
 }

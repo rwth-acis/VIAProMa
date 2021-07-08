@@ -1,15 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.UI.ListView.Core;
 using TMPro;
 using UnityEngine;
 
-public class StringDataDisplay : DataDisplay<StringData>
+namespace i5.VIAProMa.UI.ListView.Strings
 {
-    [SerializeField] private TextMeshPro label;
-
-    public override void UpdateView()
+    public class StringDataDisplay : DataDisplay<StringData>
     {
-        base.UpdateView();
-        label.text = content.text;
+        [SerializeField] private TextMeshPro label;
+
+        public override void UpdateView()
+        {
+            base.UpdateView();
+            label.text = content.text;
+        }
     }
 }

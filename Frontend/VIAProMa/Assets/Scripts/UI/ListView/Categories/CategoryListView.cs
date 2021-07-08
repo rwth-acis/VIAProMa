@@ -1,8 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.UI.ListView.Core;
 
-public class CategoryListView : ListViewController<Category, CategoryListViewItem>
+namespace i5.VIAProMa.UI.ListView.Categories
 {
+    public class CategoryListView : ListViewController<Category, CategoryListViewItem>
+    {
 
+    }
 }

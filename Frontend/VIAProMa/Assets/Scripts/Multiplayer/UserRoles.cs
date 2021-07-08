@@ -1,12 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using UnityEngine;
+﻿using System.ComponentModel;
 
-public enum UserRoles
+namespace i5.VIAProMa.Multiplayer
 {
-    [Description("Tutor")]
-    TUTOR = 0,
-    [Description("Student")]
-    STUDENT = 1
+    public enum UserRoles
+    {
+        [Description("Product Owner")]
+        PRODUCT_OWNER = 0,
+        [Description("Scrum Master")]
+        SCRUM_MASTER = 1,
+        [Description("Developer")]
+        DEVELOPER = 2,
+        [Description("Stakeholder")]
+        STAKEHOLDER = 3
+    }
 }

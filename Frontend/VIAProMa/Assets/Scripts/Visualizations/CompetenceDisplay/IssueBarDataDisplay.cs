@@ -1,18 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class IssueBarDataDisplay : MonoBehaviour
+namespace i5.VIAProMa.Visualizations.Competence
 {
-    // Start is called before the first frame update
-    void Start()
+    public class IssueBarDataDisplay : MonoBehaviour
     {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }

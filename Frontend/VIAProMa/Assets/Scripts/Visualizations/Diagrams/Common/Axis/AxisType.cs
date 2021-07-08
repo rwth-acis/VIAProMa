@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace i5.ViaProMa.Visualizations.Common
+﻿namespace i5.VIAProMa.Visualizations.Diagrams.Common.Axes
 {
     public enum AxisType
     {

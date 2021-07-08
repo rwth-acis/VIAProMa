@@ -1,46 +1,49 @@
 ﻿using HoloToolkit.Unity;
-using System.Collections;
-using System.Collections.Generic;
+using i5.VIAProMa.Multiplayer;
+using i5.VIAProMa.UI.Chat;
 using UnityEngine;
 
-public class WindowManager : Singleton<WindowManager>
+namespace i5.VIAProMa.UI
 {
-    [SerializeField] private GameObject roomMenuPrefab;
-    [SerializeField] private GameObject serverStatusMenuPrefab;
-    [SerializeField] private GameObject chatMenuPrefab;
-    [SerializeField] private GameObject saveProjectMenuPrefab;
-    [SerializeField] private GameObject loginMenuPrefab;
-
-    private void Start()
+    public class WindowManager : Singleton<WindowManager>
     {
-        RoomMenu = (RoomMenu)InstantiateWindow(roomMenuPrefab);
-        ServerStatusMenu = (ServerStatusMenu)InstantiateWindow(serverStatusMenuPrefab);
-        ChatMenu = (ChatMenu)InstantiateWindow(chatMenuPrefab);
-        SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
-        LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
-    }
+        [SerializeField] private GameObject roomMenuPrefab;
+        [SerializeField] private GameObject serverStatusMenuPrefab;
+        [SerializeField] private GameObject chatMenuPrefab;
+        [SerializeField] private GameObject saveProjectMenuPrefab;
+        [SerializeField] private GameObject loginMenuPrefab;
 
-    private IWindow InstantiateWindow(GameObject prefab)
-    {
-        GameObject windowInstance = Instantiate(prefab, transform);
-        IWindow window = windowInstance.GetComponentInChildren<IWindow>();
-        if (window == null)
+        private void Start()
         {
-            Destroy(windowInstance);
-            Debug.LogError("Window Manager tried to create a prefab without a window component.\nAdd the window component to the prefab " + prefab.name);
-            return null;
+            RoomMenu = (RoomMenu)InstantiateWindow(roomMenuPrefab);
+            ServerStatusMenu = (ServerStatusMenu)InstantiateWindow(serverStatusMenuPrefab);
+            ChatMenu = (ChatMenu)InstantiateWindow(chatMenuPrefab);
+            SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
+            LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
         }
-        window.Close();
-        return window;
+
+        private IWindow InstantiateWindow(GameObject prefab)
+        {
+            GameObject windowInstance = Instantiate(prefab, transform);
+            IWindow window = windowInstance.GetComponentInChildren<IWindow>();
+            if (window == null)
+            {
+                Destroy(windowInstance);
+                Debug.LogError("Window Manager tried to create a prefab without a window component.\nAdd the window component to the prefab " + prefab.name);
+                return null;
+            }
+            window.Close();
+            return window;
+        }
+
+        public RoomMenu RoomMenu { get; private set; }
+
+        public ServerStatusMenu ServerStatusMenu { get; private set; }
+
+        public ChatMenu ChatMenu { get; private set; }
+
+        public SaveProjectWindow SaveProjectWindow { get; private set; }
+
+        public LoginMenu LoginMenu { get; private set; }
     }
-
-    public RoomMenu RoomMenu { get; private set; }
-
-    public ServerStatusMenu ServerStatusMenu { get; private set; }
-
-    public ChatMenu ChatMenu { get; private set; }
-
-    public SaveProjectWindow SaveProjectWindow { get; private set; }
-
-    public LoginMenu LoginMenu { get; private set; }
 }

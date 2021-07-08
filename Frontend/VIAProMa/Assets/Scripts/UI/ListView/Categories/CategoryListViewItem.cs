@@ -1,8 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.UI.ListView.Core;
 using UnityEngine;
 
-[RequireComponent(typeof(CategoryDataDisplay))]
-public class CategoryListViewItem : ListViewItem<Category>
+namespace i5.VIAProMa.UI.ListView.Categories
 {
+    [RequireComponent(typeof(CategoryDataDisplay))]
+    public class CategoryListViewItem : ListViewItem<Category>
+    {
+    }
 }

@@ -1,32 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.SaveLoadSystem.Core;
+using i5.VIAProMa.Visualizations.ProgressBars;
 using UnityEngine;
 
-[RequireComponent(typeof(ProgressBarController))]
-public class ProgressBarSerializer : MonoBehaviour, ISerializable
+namespace i5.VIAProMa.SaveLoadSystem.Serializers
 {
-    private const string lengthKey = "prgBar_length";
-
-    private ProgressBarController controller;
-
-    private void Awake()
+    [RequireComponent(typeof(ProgressBarController))]
+    public class ProgressBarSerializer : MonoBehaviour, ISerializable
     {
-        controller = GetComponent<ProgressBarController>();
-    }
+        private const string lengthKey = "prgBar_length";
 
-    public void Deserialize(SerializedObject serializedObject)
-    {
-        float length = SerializedObject.TryGet(lengthKey, serializedObject.Integers, gameObject, out bool found);
-        if (found)
+        private ProgressBarController controller;
+
+        private void Awake()
         {
-            controller.Length = length;
+            controller = GetComponent<ProgressBarController>();
         }
-    }
 
-    public SerializedObject Serialize()
-    {
-        SerializedObject serializedObject = new SerializedObject();
-        serializedObject.Floats.Add(lengthKey, controller.Length);
-        return serializedObject;
+        public void Deserialize(SerializedObject serializedObject)
+        {
+            float length = SerializedObject.TryGet(lengthKey, serializedObject.Integers, gameObject, out bool found);
+            if (found)
+            {
+                controller.Length = length;
+            }
+        }
+
+        public SerializedObject Serialize()
+        {
+            SerializedObject serializedObject = new SerializedObject();
+            serializedObject.Floats.Add(lengthKey, controller.Length);
+            return serializedObject;
+        }
     }
 }

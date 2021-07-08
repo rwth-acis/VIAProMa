@@ -1,4 +1,5 @@
-﻿using i5.ViaProMa.Visualizations.Common;
+﻿using i5.VIAProMa.Visualizations.Common;
+using i5.VIAProMa.Visualizations.Common.Data.DataSets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class SurfaceplotTestRunner : MonoBehaviour
     private void UpdateDiagram()
     {
         surfaceplot.Size = size;
-        i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
+        DataSet dataSet = new DataSet();
         //dataSet.DataColumns.Add(new TextDataColumn(new List<string>() { "a", "b", "c", "d" }));
         //dataSet.DataColumns.Add(new NumericDataColumn(new List<float>() { 0, 1, 2, 3 }));
         //dataSet.DataColumns.Add(new TextDataColumn(new List<string>() { "Monday", "Tuesday", "Wednesday", "Thursday" }));

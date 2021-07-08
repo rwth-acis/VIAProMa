@@ -1,15 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.UI.ListView.Core;
 using TMPro;
 using UnityEngine;
 
-public class CategoryDataDisplay : DataDisplay<Category>
+namespace i5.VIAProMa.UI.ListView.Categories
 {
-    [SerializeField] private TextMeshPro label;
-
-    public override void UpdateView()
+    public class CategoryDataDisplay : DataDisplay<Category>
     {
-        base.UpdateView();
-        label.text = content.name;
+        [SerializeField] private TextMeshPro label;
+
+        public override void UpdateView()
+        {
+            base.UpdateView();
+            label.text = content.name;
+        }
     }
 }

@@ -1,48 +1,50 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Shelves.ProjectLoadShelf;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// Adapter class which maps project information to the file GameObject
-/// </summary>
-public class File : MonoBehaviour
+namespace i5.VIAProMa.Shelves.Widgets
 {
     /// <summary>
-    /// text mesh of the title on the back of the file
+    /// Adapter class which maps project information to the file GameObject
     /// </summary>
-    [SerializeField] TextMeshPro titleOnBack;
-    /// <summary>
-    /// text mesh on the top of the file
-    /// </summary>
-    [SerializeField] TextMeshPro titleOnTop;
-
-    private string projectTitle;
-
-    /// <summary>
-    /// The title of the project's title how it is displayed on the text labels of the file
-    /// </summary>
-    public string ProjectTitle
+    public class File : MonoBehaviour
     {
-        get
+        /// <summary>
+        /// text mesh of the title on the back of the file
+        /// </summary>
+        [SerializeField] TextMeshPro titleOnBack;
+        /// <summary>
+        /// text mesh on the top of the file
+        /// </summary>
+        [SerializeField] TextMeshPro titleOnTop;
+
+        private string projectTitle;
+
+        /// <summary>
+        /// The title of the project's title how it is displayed on the text labels of the file
+        /// </summary>
+        public string ProjectTitle
         {
-            return projectTitle;
+            get
+            {
+                return projectTitle;
+            }
+            set
+            {
+                projectTitle = value;
+                titleOnBack.text = projectTitle;
+                titleOnTop.text = projectTitle;
+            }
         }
-        set
+
+        public ProjectLoader ProjectLoader
         {
-            projectTitle = value;
-            titleOnBack.text = projectTitle;
-            titleOnTop.text = projectTitle;
+            get; set;
         }
-    }
 
-    public ProjectLoader ProjectLoader
-    {
-        get;set;
-    }
-
-    public void SelectFile()
-    {
-        ProjectLoader.LoadProject(ProjectTitle);
+        public void SelectFile()
+        {
+            ProjectLoader.LoadProject(ProjectTitle);
+        }
     }
 }

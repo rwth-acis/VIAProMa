@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.Visualizations.Competence;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

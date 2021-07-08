@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1648960147793869280}
   - component: {fileID: 1841693058782858218}
   - component: {fileID: 187755442642109148}
-  - component: {fileID: 4280631089227951748}
   - component: {fileID: 5850401283584920991}
   - component: {fileID: 7160585720535439144}
+  - component: {fileID: 1725412688112087272}
   m_Layer: 0
   m_Name: Bounding Box
   m_TagString: Untagged
@@ -62,10 +62,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetObject: {fileID: 1956943101993171755}
   boundsOverride: {fileID: 1841693058782858218}
+  boundsCalculationMethod: 0
   activation: 4
-  scaleMaximum: 2
   scaleMinimum: 0.2
+  scaleMaximum: 2
   flattenAxis: 4
+  flattenAxisDisplayScale: 0
   boxPadding: {x: 0, y: 0, z: 0}
   boxMaterial: {fileID: 2100000, guid: 4a9aae3094118f44593e7f8000e24c31, type: 2}
   boxGrabbedMaterial: {fileID: 2100000, guid: 7e4095c5609075846b657c8917aae797, type: 2}
@@ -81,13 +83,26 @@ MonoBehaviour:
   scaleHandleSlatePrefab: {fileID: 100000, guid: a6473ac7ac982fb488db53a454bf0a3c,
     type: 3}
   scaleHandleSize: 0.04
+  scaleHandleColliderPadding: {x: 0.016, y: 0.016, z: 0.016}
   rotationHandlePrefab: {fileID: 100000, guid: 57c53da2552a8114ab6d68e0cd31b1eb, type: 3}
-  rotationHandleDiameter: 0.05
+  rotationHandleSize: 0.016
+  rotateHandleColliderPadding: {x: 0.016, y: 0.016, z: 0.016}
+  rotationHandlePrefabColliderType: 1
   showScaleHandles: 0
   showRotationHandleForX: 0
   showRotationHandleForY: 1
   showRotationHandleForZ: 0
   drawTetherWhenManipulating: 1
+  proximityEffectActive: 0
+  handleMediumProximity: 0.1
+  handleCloseProximity: 0.03
+  farScale: 0
+  mediumScale: 1
+  closeScale: 1.5
+  farGrowRate: 0.3
+  mediumGrowRate: 0.2
+  closeGrowRate: 0.3
+  handlesIgnoreCollider: {fileID: 0}
   debugText: {fileID: 0}
   hideElementsInInspector: 1
   RotateStarted:
@@ -104,8 +119,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   RotateStopped:
     m_PersistentCalls:
       m_Calls:
@@ -120,83 +133,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   ScaleStarted:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   ScaleStopped:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
---- !u!114 &4280631089227951748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 311550789262575307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03daa81ea5f685f4ebf6e32038d058ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hostTransform: {fileID: 1956943101993171752}
-  manipulationType: 2
-  twoHandedManipulationType: 3
-  allowFarManipulation: 1
-  oneHandRotationModeNear: 6
-  oneHandRotationModeFar: 6
-  releaseBehavior: 3
-  constraintOnRotation: 0
-  constraintOnMovement: 0
-  smoothingActive: 1
-  smoothingAmountOneHandManip: 0.001
-  OnManipulationStarted:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2272489888113069527}
-        m_MethodName: EnsureOwnership
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnManipulationEnded:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2272489888113069527}
-        m_MethodName: ReleaseOwnershipLock
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Microsoft.MixedReality.Toolkit.UI.ManipulationEvent, Microsoft.MixedReality.Toolkit.SDK,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &5850401283584920991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,6 +167,63 @@ MonoBehaviour:
   destroyWithSpawner: 1
   targetBoundingBox: {fileID: 187755442642109148}
   configurationWindow: {fileID: 6028368674919524567}
+--- !u!114 &1725412688112087272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311550789262575307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181cd563a8349c34ea8978b0bc8d9c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hostTransform: {fileID: 1956943101993171752}
+  manipulationType: 3
+  twoHandedManipulationType: 3
+  allowFarManipulation: 1
+  oneHandRotationModeNear: 1
+  oneHandRotationModeFar: 1
+  releaseBehavior: 3
+  smoothingActive: 1
+  moveLerpTime: 0.001
+  rotateLerpTime: 0.001
+  scaleLerpTime: 0.001
+  onManipulationStarted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2272489888113069527}
+        m_MethodName: EnsureOwnership
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onManipulationEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2272489888113069527}
+        m_MethodName: ReleaseOwnershipLock
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1956943101993171755
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,6 +329,7 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
+  observableSearch: 0
   Synchronization: 3
   OwnershipTransfer: 2
   ObservedComponents:
@@ -627,8 +627,6 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Sample text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
@@ -666,7 +664,6 @@ MonoBehaviour:
   m_fontSizeMax: 1
   m_fontStyle: 0
   m_textAlignment: 514
-  m_isAlignmentEnumConverted: 1
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -693,26 +690,24 @@ MonoBehaviour:
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_VertexBufferAutoSizeReduction: 1
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1956943102437688303}
-    characterCount: 11
+    characterCount: 0
     spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
+    spaceCount: 0
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
-  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
-  m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 1956943102437688290}
   m_subTextObjects:
@@ -899,6 +894,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
+    - target: {fileID: 2140738876711381947, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_FlipY
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2544202224179704831, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_Name
@@ -959,6 +959,51 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_text
+      value: Say "Down"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920071861106669717, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -994,36 +1039,6 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    - target: {fileID: 2140738876711381947, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_FlipY
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_text
-      value: Say "Down"
-      objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7920071861106669717, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a565e6c3bee3c4b49a6b762cfd4504f6, type: 3}
 --- !u!4 &3190941845890935465 stripped
@@ -1051,11 +1066,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Bottom
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1111,6 +1121,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Bottom
+      objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: kanbanBoardController
@@ -1136,11 +1151,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 8774877464969372152, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
+    - target: {fileID: 3292828647361960666, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
         type: 3}
-      propertyPath: m_Name
-      value: Configuration Window
-      objectReference: {fileID: 0}
+      propertyPath: appBarSpawner
+      value: 
+      objectReference: {fileID: 7160585720535439144}
+    - target: {fileID: 3292828647361960666, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
+        type: 3}
+      propertyPath: visualization
+      value: 
+      objectReference: {fileID: 1956943101993171758}
     - target: {fileID: 5490047062781262068, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1196,16 +1216,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3292828647361960666, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
+    - target: {fileID: 8774877464969372152, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
         type: 3}
-      propertyPath: appBarSpawner
-      value: 
-      objectReference: {fileID: 7160585720535439144}
-    - target: {fileID: 3292828647361960666, guid: 11d995b8e11de854ea727ee6c2b7a2dd,
-        type: 3}
-      propertyPath: visualization
-      value: 
-      objectReference: {fileID: 1956943101993171758}
+      propertyPath: m_Name
+      value: Configuration Window
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
 --- !u!1 &6028368674919524567 stripped
@@ -1287,6 +1302,51 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_text
+      value: Say "Up"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7920071861106669717, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -1322,31 +1382,6 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_text
-      value: Say "Up"
-      objectReference: {fileID: 0}
-    - target: {fileID: 4939526454834328055, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7920071861106669717, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a565e6c3bee3c4b49a6b762cfd4504f6, type: 3}
 --- !u!4 &2181743407763025002 stripped
@@ -1374,11 +1409,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Top
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1434,6 +1464,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Top
+      objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: kanbanBoardController
@@ -1464,11 +1499,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Left
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1524,6 +1554,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Left
+      objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: kanbanBoardController
@@ -1544,11 +1579,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1956943101993171752}
     m_Modifications:
-    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
-        type: 3}
-      propertyPath: m_Name
-      value: Handle Right
-      objectReference: {fileID: 0}
     - target: {fileID: 1692006749377343335, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1603,6 +1633,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1692006749377442631, guid: a6f149a2e097403449e4df3abf718cab,
+        type: 3}
+      propertyPath: m_Name
+      value: Handle Right
       objectReference: {fileID: 0}
     - target: {fileID: 4259211149287515302, guid: a6f149a2e097403449e4df3abf718cab,
         type: 3}

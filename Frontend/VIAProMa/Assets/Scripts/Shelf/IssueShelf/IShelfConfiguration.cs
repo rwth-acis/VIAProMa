@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using i5.VIAProMa.DataModel.API;
 
-public interface IShelfConfiguration
+namespace i5.VIAProMa.Shelves.IssueShelf
 {
-    bool IsValidConfiguration { get; }
+    public interface IShelfConfiguration
+    {
+        bool IsValidConfiguration { get; }
 
-    DataSource SelectedSource { get; }
+        DataSource SelectedSource { get; }
+    }
 }

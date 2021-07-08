@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Visualizations.ProgressBars;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

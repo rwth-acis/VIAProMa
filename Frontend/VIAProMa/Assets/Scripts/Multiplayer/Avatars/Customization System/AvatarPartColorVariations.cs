@@ -1,21 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "AvatarPartColorVariation", menuName = "Scriptable Objects/Avatar/Avatar Part Color Variations", order = 1)]
-public class AvatarPartColorVariations : ScriptableObject
+namespace i5.VIAProMa.Multiplayer.Avatars.Customization
 {
-    [SerializeField] private Color[] colors;
-
-    public Color[] Colors { get => colors; }
-
-    public Color GetColor(int index)
+    [CreateAssetMenu(fileName = "AvatarPartColorVariation", menuName = "Scriptable Objects/Avatar/Avatar Part Color Variations", order = 1)]
+    public class AvatarPartColorVariations : ScriptableObject
     {
-        return colors[index];
-    }
+        [SerializeField] private Color[] colors;
 
-    public int ColorVariationCount
-    {
-        get => colors.Length;
+        public Color[] Colors { get => colors; }
+
+        public Color GetColor(int index)
+        {
+            return colors[index];
+        }
+
+        public int ColorVariationCount
+        {
+            get => colors.Length;
+        }
     }
 }

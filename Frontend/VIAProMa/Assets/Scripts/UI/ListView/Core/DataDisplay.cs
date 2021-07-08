@@ -1,33 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DataDisplay<DataType> : MonoBehaviour, IViewContainer
+namespace i5.VIAProMa.UI.ListView.Core
+{
+    public class DataDisplay<DataType> : MonoBehaviour, IViewContainer
     where DataType : IListViewItemData
-{
-    protected DataType content;
-
-    public DataType Content
     {
-        get => content;
+        protected DataType content;
+
+        public DataType Content
+        {
+            get => content;
+        }
+
+        public virtual void Setup(DataType content)
+        {
+            this.content = content;
+            UpdateView();
+        }
+
+        public virtual void UpdateView()
+        {
+        }
     }
 
-    public virtual void Setup(DataType content)
-    {
-        this.content = content;
-        UpdateView();
-    }
-
-    public virtual void UpdateView()
+    public class DataDisplay : DataDisplay<DataDisplayInspectorData>
     {
     }
-}
 
-public class DataDisplay : DataDisplay<DataDisplayInspectorData>
-{
-}
-
-[System.Serializable]
-public class DataDisplayInspectorData : IListViewItemData
-{
+    [System.Serializable]
+    public class DataDisplayInspectorData : IListViewItemData
+    {
+    }
 }

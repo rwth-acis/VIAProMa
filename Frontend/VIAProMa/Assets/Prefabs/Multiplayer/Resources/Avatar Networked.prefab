@@ -137,6 +137,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -148,6 +149,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -228,6 +230,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -239,6 +242,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -415,10 +419,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7619380334928737535, guid: fddad501a37828346aa422a968ca8973,
+    - target: {fileID: 3149242691866375767, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
-      propertyPath: m_Name
-      value: Avatar Networked
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3310419911003119975, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4655830316593286807, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
@@ -437,6 +456,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
@@ -452,16 +476,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7619380334928439519, guid: fddad501a37828346aa422a968ca8973,
-        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -474,11 +488,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7619380334928439543, guid: fddad501a37828346aa422a968ca8973,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7619380334928439537, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
@@ -520,10 +529,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 3149242691866375767, guid: fddad501a37828346aa422a968ca8973,
+    - target: {fileID: 7619380334928737535, guid: fddad501a37828346aa422a968ca8973,
         type: 3}
-      propertyPath: m_Mesh
-      value: 
+      propertyPath: m_Name
+      value: Avatar Networked
       objectReference: {fileID: 0}
     - target: {fileID: 3719234919713494935, guid: fddad501a37828346aa422a968ca8973,
         type: 3}

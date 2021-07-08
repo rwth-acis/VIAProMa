@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using i5.VIAProMa.Multiplayer.Avatars.Customization;
 using UnityEngine;
 
 /// <summary>

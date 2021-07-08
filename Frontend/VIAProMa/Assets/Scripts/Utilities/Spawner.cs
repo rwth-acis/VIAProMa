@@ -1,33 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Spawner : MonoBehaviour
+namespace i5.VIAProMa.Utilities
 {
-    [SerializeField] protected GameObject prefab;
-    [SerializeField] private bool destroyWithSpawner = true;
-
-    protected GameObject instance;
-
-    public GameObject SpawnedInstance { get => instance; }
-
-    public bool DestoryWithSpawner { get => destroyWithSpawner; set => destroyWithSpawner = value; }
-
-    protected virtual void Awake()
+    public class Spawner : MonoBehaviour
     {
-        instance = Instantiate(prefab);
-        Setup();
-    }
+        [SerializeField] protected GameObject prefab;
+        [SerializeField] private bool destroyWithSpawner = true;
 
-    protected virtual void Setup()
-    {
-    }
+        protected GameObject instance;
 
-    protected virtual void OnDestroy()
-    {
-        if (destroyWithSpawner && SpawnedInstance != null)
+        public GameObject SpawnedInstance { get => instance; }
+
+        public bool DestoryWithSpawner { get => destroyWithSpawner; set => destroyWithSpawner = value; }
+
+        protected virtual void Awake()
         {
-            Destroy(SpawnedInstance);
+            instance = Instantiate(prefab);
+            Setup();
+        }
+
+        protected virtual void Setup()
+        {
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (destroyWithSpawner && SpawnedInstance != null)
+            {
+                Destroy(SpawnedInstance);
+            }
         }
     }
 }

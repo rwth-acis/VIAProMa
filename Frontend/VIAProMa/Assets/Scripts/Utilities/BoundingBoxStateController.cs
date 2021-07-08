@@ -1,68 +1,65 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoundingBox))]
-public class BoundingBoxStateController : MonoBehaviour
+namespace i5.VIAProMa.Utilities
 {
-    private BoundingBox boundingBox;
-    private BoxCollider boxCollider;
-    private ManipulationHandler manipulationHandler;
-    private bool boundingBoxActive;
-
-    public event EventHandler BoundingBoxStateChanged;
-
-    public bool BoundingBoxActive
+    [RequireComponent(typeof(BoundingBox))]
+    public class BoundingBoxStateController : MonoBehaviour
     {
-        get => boundingBoxActive;
-        set
-        {
-            boundingBoxActive = value;
-            SetBoundingBoxState();
-            BoundingBoxStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
+        private BoundingBox boundingBox;
+        private BoxCollider boxCollider;
+        private ObjectManipulator manipulationHandler;
+        private bool boundingBoxActive;
 
-    private void Awake()
-    {
-        boundingBox = GetComponent<BoundingBox>();
-        if (boundingBox == null)
-        {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBox), gameObject);
-        }
-        boxCollider = GetComponent<BoxCollider>();
-        if(boxCollider == null)
-        {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), gameObject);
-        }
-        manipulationHandler = GetComponent<ManipulationHandler>();
-        // manipulation handler is optional, so no check here
-    }
+        public event EventHandler BoundingBoxStateChanged;
 
-    private void Start()
-    {
-        if (boundingBoxActive == false) // if the variable is already true, this means that another script set the property
+        public bool BoundingBoxActive
         {
-            BoundingBoxActive = false;
+            get => boundingBoxActive;
+            set
+            {
+                boundingBoxActive = value;
+                SetBoundingBoxState();
+                BoundingBoxStateChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
-    }
 
-    private void SetBoundingBoxState()
-    {
-        if (boxCollider != null)
+        private void Awake()
         {
-            boxCollider.enabled = boundingBoxActive;
+            boundingBox = GetComponent<BoundingBox>();
+            if (boundingBox == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBox), gameObject);
+            }
+            boxCollider = GetComponent<BoxCollider>();
+            if (boxCollider == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), gameObject);
+            }
+            manipulationHandler = GetComponent<ObjectManipulator>();
+            // manipulation handler is optional, so no check here
         }
-        boundingBox.Active = boundingBoxActive;
-        if (boundingBoxActive)
+
+        private void Start()
         {
-            boundingBox.Refresh();
+            if (boundingBoxActive == false) // if the variable is already true, this means that another script set the property
+            {
+                BoundingBoxActive = false;
+            }
         }
-        if (manipulationHandler != null)
+
+        private void SetBoundingBoxState()
         {
-            manipulationHandler.enabled = boundingBoxActive;
+            if (boxCollider != null)
+            {
+                boxCollider.enabled = boundingBoxActive;
+            }
+            boundingBox.Active = boundingBoxActive;
+            if (manipulationHandler != null)
+            {
+                manipulationHandler.enabled = boundingBoxActive;
+            }
         }
     }
 }

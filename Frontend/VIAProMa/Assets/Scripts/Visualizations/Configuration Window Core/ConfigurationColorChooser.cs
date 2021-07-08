@@ -1,79 +1,82 @@
-﻿using Microsoft.MixedReality.Toolkit.UI;
+﻿using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
+namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 {
-    [SerializeField] private GameObject colorPreviewSquare;
-    [SerializeField] private GridObjectCollection colorSquareArray;
-
-    public ColorConfiguration colorConfiguration;
-
-    private Visualization visualization;
-    private InteractableToggleCollection toggleCollection;
-
-    private bool uiEnabled = true;
-    private Color selectedColor;
-
-    public bool UIEnabled
+    public class ConfigurationColorChooser : MonoBehaviour, IUiFragment
     {
-        get => uiEnabled;
-        set
+        [SerializeField] private GameObject colorPreviewSquare;
+        [SerializeField] private GridObjectCollection colorSquareArray;
+
+        public ColorConfiguration colorConfiguration;
+
+        private Visualization visualization;
+        private InteractableToggleCollection toggleCollection;
+
+        private bool uiEnabled = true;
+        private Color selectedColor;
+
+        public bool UIEnabled
         {
-            uiEnabled = value;
-            for (int i=0;i<toggleCollection.ToggleList.Length;i++)
+            get => uiEnabled;
+            set
             {
-                toggleCollection.ToggleList[i].Enabled = value;
+                uiEnabled = value;
+                for (int i = 0; i < toggleCollection.ToggleList.Length; i++)
+                {
+                    toggleCollection.ToggleList[i].Enabled = value;
+                }
             }
         }
-    }
 
-    public Color SelectedColor
-    {
-        get => selectedColor;
-        set
+        public Color SelectedColor
         {
-            selectedColor = value;
-            visualization.Color = selectedColor;
+            get => selectedColor;
+            set
+            {
+                selectedColor = value;
+                visualization.Color = selectedColor;
+            }
+
         }
 
-    }
-
-    private void Awake()
-    {
-        if (colorPreviewSquare == null)
+        private void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorPreviewSquare));
-        }
-        if (colorSquareArray == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorSquareArray));
+            if (colorPreviewSquare == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorPreviewSquare));
+            }
+            if (colorSquareArray == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorSquareArray));
+            }
+
+            toggleCollection = colorSquareArray.GetComponent<InteractableToggleCollection>();
+            if (toggleCollection == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(toggleCollection), colorSquareArray.gameObject);
+            }
+
+            Interactable[] initToggleList = new Interactable[colorConfiguration.Colors.Count];
+            for (int i = 0; i < colorConfiguration.Colors.Count; i++)
+            {
+                GameObject instance = Instantiate(colorPreviewSquare, colorSquareArray.transform);
+                ColorPreviewSquare square = instance.GetComponent<ColorPreviewSquare>();
+                square.Color = colorConfiguration.Colors[i];
+                square.ColorChooser = this;
+                Interactable interactable = instance.GetComponent<Interactable>();
+                initToggleList[i] = interactable;
+            }
+            toggleCollection.ToggleList = initToggleList;
+            toggleCollection.enabled = true;
+            colorSquareArray.UpdateCollection();
         }
 
-        toggleCollection = colorSquareArray.GetComponent<InteractableToggleCollection>();
-        if (toggleCollection == null)
+        public void Setup(Visualization visualization)
         {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(toggleCollection), colorSquareArray.gameObject);
+            this.visualization = visualization;
         }
-
-        toggleCollection.ToggleList = new Interactable[colorConfiguration.Colors.Count];
-        for (int i=0;i<colorConfiguration.Colors.Count;i++)
-        {
-            GameObject instance = Instantiate(colorPreviewSquare, colorSquareArray.transform);
-            ColorPreviewSquare square = instance.GetComponent<ColorPreviewSquare>();
-            square.Color = colorConfiguration.Colors[i];
-            square.ColorChooser = this;
-            Interactable interactable = instance.GetComponent<Interactable>();
-            toggleCollection.ToggleList[i] = interactable;
-        }
-        toggleCollection.enabled = true;
-        colorSquareArray.UpdateCollection();
-    }
-
-    public void Setup(Visualization visualization)
-    {
-        this.visualization = visualization;
     }
 }

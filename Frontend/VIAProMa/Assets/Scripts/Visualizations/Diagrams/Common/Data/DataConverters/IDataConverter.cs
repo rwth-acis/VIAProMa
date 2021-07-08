@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface IDataConverter<T>
+﻿namespace i5.VIAProMa.Visualizations.Common.Data.DataConverters
 {
-    T FloatToValue(float f);
+    public interface IDataConverter<T>
+    {
+        T FloatToValue(float f);
 
-    float ValueToFloat(T value);
+        float ValueToFloat(T value);
 
-    string ValueToString(T value);
+        string ValueToString(T value);
+    }
 }

@@ -1,42 +1,44 @@
-﻿using Microsoft.MixedReality.Toolkit.UI;
+﻿using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Spawns an app bar
-/// </summary>
-public class AppBarSpanwer : Spawner
+namespace i5.VIAProMa.UI.AppBar
 {
-    [Tooltip("The target bounding box to which the app bar should be attached")]
-    [SerializeField] protected BoundingBox targetBoundingBox;
-
-    protected override void Awake()
+    /// <summary>
+    /// Spawns an app bar
+    /// </summary>
+    public class AppBarSpanwer : Spawner
     {
-        if (targetBoundingBox == null)
+        [Tooltip("The target bounding box to which the app bar should be attached")]
+        [SerializeField] protected BoundingBox targetBoundingBox;
+
+        protected override void Awake()
         {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(targetBoundingBox));
+            if (targetBoundingBox == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(targetBoundingBox));
+            }
+
+            base.Awake();
         }
 
-        base.Awake();
-    }
-
-    protected override void Setup()
-    {
-        base.Setup();
-        AppBarPlacer placer = instance.GetComponent<AppBarPlacer>();
-        if (placer == null)
+        protected override void Setup()
         {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), instance);
+            base.Setup();
+            AppBarPlacer placer = instance.GetComponent<AppBarPlacer>();
+            if (placer == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), instance);
+            }
+            placer.TargetBoundingBox = targetBoundingBox;
+            AppBarActions actions = instance.GetComponent<AppBarActions>();
+            if (actions == null)
+            {
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarActions), instance);
+            }
+            PhotonView photonView = targetBoundingBox.Target.GetComponent<PhotonView>();
+            actions.TargetNetworked = (photonView != null);
         }
-        placer.TargetBoundingBox = targetBoundingBox;
-        AppBarActions actions = instance.GetComponent<AppBarActions>();
-        if (actions == null)
-        {
-            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarActions), instance);
-        }
-        PhotonView photonView = targetBoundingBox.Target.GetComponent<PhotonView>();
-        actions.TargetNetworked = (photonView != null);
     }
 }

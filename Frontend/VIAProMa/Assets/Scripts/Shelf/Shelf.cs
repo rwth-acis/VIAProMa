@@ -1,70 +1,73 @@
-﻿using Microsoft.MixedReality.Toolkit.UI;
+﻿using i5.VIAProMa.UI.MessageBadge;
+using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Shelf : MonoBehaviour
+namespace i5.VIAProMa.Shelves
 {
-    [Header("UI Elements")]
-    [SerializeField] protected MessageBadge messageBadge;
-    [SerializeField] protected Interactable upButton;
-    [SerializeField] protected Interactable downButton;
-
-    protected int page;
-
-    public event EventHandler PageChanged;
-
-    public virtual int Page
+    public class Shelf : MonoBehaviour
     {
-        get => page;
-        set
-        {
-            page = Mathf.Max(0, value);
-            PageChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
+        [Header("UI Elements")]
+        [SerializeField] protected MessageBadge messageBadge;
+        [SerializeField] protected Interactable upButton;
+        [SerializeField] protected Interactable downButton;
 
-    protected virtual void Awake()
-    {
-        if (messageBadge == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(messageBadge));
-        }
-        if (upButton == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(upButton));
-        }
-        if (downButton == null)
-        {
-            SpecialDebugMessages.LogMissingReferenceError(this, nameof(downButton));
-        }
-    }
+        protected int page;
 
-    protected virtual void CheckControls()
-    {
-        if (page <= 0)
+        public event EventHandler PageChanged;
+
+        public virtual int Page
         {
-            upButton.Enabled = false;
+            get => page;
+            set
+            {
+                page = Mathf.Max(0, value);
+                PageChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
-        else
+
+        protected virtual void Awake()
         {
-            upButton.Enabled = true;
+            if (messageBadge == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(messageBadge));
+            }
+            if (upButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(upButton));
+            }
+            if (downButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(downButton));
+            }
         }
-    }
 
-    public void ResetPage()
-    {
-        Page = 0;
-    }
+        protected virtual void CheckControls()
+        {
+            if (page <= 0)
+            {
+                upButton.Enabled = false;
+            }
+            else
+            {
+                upButton.Enabled = true;
+            }
+        }
 
-    public virtual void ScrollUp()
-    {
-        Page--;
-    }
+        public void ResetPage()
+        {
+            Page = 0;
+        }
 
-    public virtual void ScrollDown()
-    {
-        Page++;
+        public virtual void ScrollUp()
+        {
+            Page--;
+        }
+
+        public virtual void ScrollDown()
+        {
+            Page++;
+        }
     }
 }

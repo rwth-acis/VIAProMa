@@ -1,14 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Interface for objects where the color can be changed
-/// </summary>
-public interface IColorChangeable
+namespace i5.VIAProMa.Visualizations
 {
     /// <summary>
-    /// The main color which can be changed on the accompanying GameObject
+    /// Interface for objects where the color can be changed
     /// </summary>
-    Color Color { get; set; }
+    public interface IColorChangeable
+    {
+        /// <summary>
+        /// The main color which can be changed on the accompanying GameObject
+        /// </summary>
+        Color Color { get; set; }
+    }
 }
