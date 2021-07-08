@@ -3,11 +3,9 @@ using MenuPlacement;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ApplicationObjectMenu : MonoBehaviour
+public class ApplicationObjectMenu : MenuBase
 {
 
     
@@ -27,17 +25,7 @@ public class ApplicationObjectMenu : MonoBehaviour
     }
 
     private void OnDisable() {
-        targetObject = GetComponent<MenuHandler>().targetObject;
-        manipulator = targetObject.GetComponent<ObjectManipulator>();
-        targetObject.GetComponent<PointerHandler>().enabled = true;
-        initialZ = targetObject.transform.position.z;
-        slider.GetComponent<PinchSlider>().SliderValue = 0;
-        slider.SetActive(false);
-        targetObject.GetComponent<MinMaxScaleConstraint>().enabled = true;
-        targetObject.GetComponent<MoveAxisConstraint>().enabled = true;
-        targetObject.GetComponent<RotationAxisConstraint>().enabled = true;
-        manipulator.ManipulationType = 0;
-        manipulator.TwoHandedManipulationType = 0;
+
     }
 
     public void MoveWithSlider() {
@@ -45,8 +33,6 @@ public class ApplicationObjectMenu : MonoBehaviour
     }
 
     public void AllowMoveOperation() {
-        targetObject = GetComponent<MenuHandler>().targetObject;
-        manipulator = targetObject.GetComponent<ObjectManipulator>();
         if (targetObject.GetComponent<MoveAxisConstraint>().enabled == true) {
             initialZ = targetObject.transform.position.z;
             slider.SetActive(true);
@@ -61,8 +47,6 @@ public class ApplicationObjectMenu : MonoBehaviour
 
 
     public void AllowRotateOperation() {
-        targetObject = GetComponent<MenuHandler>().targetObject;
-        manipulator = targetObject.GetComponent<ObjectManipulator>();
         if (targetObject.GetComponent<RotationAxisConstraint>().enabled == true) {
             initialZ = targetObject.transform.position.z;
             slider.SetActive(false);
@@ -76,9 +60,7 @@ public class ApplicationObjectMenu : MonoBehaviour
         }
     }
 
-    public void AllowScaleOperation() {
-        targetObject = GetComponent<MenuHandler>().targetObject;
-        manipulator = targetObject.GetComponent<ObjectManipulator>();
+    public void AllowScaleOperation() {        
         if (targetObject.GetComponent<MinMaxScaleConstraint>().enabled == true) {
             initialZ = targetObject.transform.position.z;
             slider.SetActive(false);
@@ -91,15 +73,23 @@ public class ApplicationObjectMenu : MonoBehaviour
 
     }
 
-    public void OnClose() {
 
+    public override void Initialize() {
+        targetObject = GetComponent<MenuHandler>().TargetObject;
+        manipulator = targetObject.GetComponent<ObjectManipulator>();
     }
 
-    public void OnOpen(GameObject targetObject) {
-/*        this.targetObject = targetObject;
-        Debug.Log(targetObject);
-        initialZ = this.targetObject.transform.position.z;
-        manipulator = this.targetObject.GetComponent<ObjectManipulator>();*/
-        
+    public override void OnClose() {
+        targetObject = GetComponent<MenuHandler>().TargetObject;
+        manipulator = targetObject.GetComponent<ObjectManipulator>();
+        targetObject.GetComponent<PointerHandler>().enabled = true;
+        initialZ = targetObject.transform.position.z;
+        slider.GetComponent<PinchSlider>().SliderValue = 0;
+        slider.SetActive(false);
+        targetObject.GetComponent<MinMaxScaleConstraint>().enabled = true;
+        targetObject.GetComponent<MoveAxisConstraint>().enabled = true;
+        targetObject.GetComponent<RotationAxisConstraint>().enabled = true;
+        manipulator.ManipulationType = 0;
+        manipulator.TwoHandedManipulationType = 0;
     }
 }

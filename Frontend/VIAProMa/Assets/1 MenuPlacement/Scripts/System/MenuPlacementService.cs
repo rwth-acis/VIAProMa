@@ -1,5 +1,6 @@
 ﻿using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.Utilities;
+using i5.VIAProMa.UI.AppBar;
 using Microsoft.MixedReality.Toolkit.Boundary;
 using Microsoft.MixedReality.Toolkit.OpenVR.Headers;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -19,15 +20,45 @@ namespace MenuPlacement {
     [CreateAssetMenu(menuName = "Scriptable Objects/Menu Placement Service ")]
     public class MenuPlacementService : ScriptableObject, IService {
 
+        public enum MenuPlacementServiceMode {
+            Automatic,
+            Manual,
+            Adjustment
+        }
+
         //Use to switch between the floating and campact version
         [Header("Menus")]
         [Tooltip("Drag the menu objects here. If you don't want to use one type of them, just leave it.")]
         [SerializeField] private MenuVariants mainMenu;
         [Tooltip("Drag the menu objects here. If you don't want to use one type of them, just leave it.")]
         [SerializeField] private List<MenuVariants> objectMenus;
-        [Space(20)]
+        [Header("User Interface Components")]
         [Tooltip("The Menu Controller enables the manipulation of created menus and interaction with the system.")]
         [SerializeField] private GameObject menuController;
+        [SerializeField] private GameObject appBar;
+        [Tooltip("The dialog prefab for suggestions in manual mode")]
+        [SerializeField] private GameObject suggestionPanel;
+        [Tooltip("The default placement mode")]
+        [SerializeField] private MenuPlacementServiceMode placementMode = MenuPlacementServiceMode.Automatic;
+
+        public MenuPlacementServiceMode PlacementMode
+        {
+            get => placementMode;
+            set
+            {
+                placementMode = value;
+            }
+        }
+
+        public GameObject AppBar
+        {
+            get => appBar;
+        }
+
+        public GameObject SuggestionPanel
+        {
+            get => suggestionPanel;
+        }
 
         private Bounds floatingMainMenuBoundingBoxOnClose;
         private Bounds compactMainMenuBoundingBoxOnClose;
@@ -44,6 +75,11 @@ namespace MenuPlacement {
         private Dictionary<int, int> compactObjectMenuPoolIDs = new Dictionary<int, int>();
         private GameObject inBetweenTarget;
 
+        public bool SuggestionPanelOn { get; set; }
+        public MenuPlacementServiceMode PreviousMode { get; set; }
+
+
+
         public void Initialize(IServiceManager owner) {
             //make a pool for each MenuVariants and assign the index of the pool to the corresponding variable. Ignore the not assigned menu.
             if (mainMenu.floatingMenu != null) {
@@ -56,29 +92,54 @@ namespace MenuPlacement {
             foreach (MenuVariants m in objectMenus) {
                 if (m.floatingMenu != null) { 
                     floatingObjectMenuPoolIDs.Add(m.floatingMenu.GetComponent<MenuHandler>().menuID, ObjectPool<GameObject>.CreateNewPool(5));
-                    Debug.Log(floatingObjectMenuPoolIDs[m.floatingMenu.GetComponent<MenuHandler>().menuID]);
                 }
                 if (m.compactMenu != null) {
                     compactObjectMenuPoolIDs.Add(m.compactMenu.GetComponent<MenuHandler>().menuID, ObjectPool<GameObject>.CreateNewPool(5));
                 }
             }
+            SuggestionPanelOn = false;
             CreateInBetweenTarget();
             CreateMenuController();
         }
 
         public void Cleanup() {
-            
+            placementMode = MenuPlacementServiceMode.Automatic;
         }
+        
 
-        public void UpdatePlacement() {
-
-        }
-
+        #region Public Methods
         public GameObject GetInBetweenTarget() {
             return inBetweenTarget;
         }
 
-        #region Public Methods
+        /// <summary>
+        /// Switch between automatic and manual mode
+        /// </summary>
+        public void SwitchMode() {
+            if(placementMode == MenuPlacementServiceMode.Automatic) {
+                placementMode = MenuPlacementServiceMode.Manual;
+            }
+            else {
+                placementMode = MenuPlacementServiceMode.Automatic;
+            }
+        }
+        
+        public void EnterManualMode() {
+            placementMode = MenuPlacementServiceMode.Manual;
+        }
+
+        public void EnterAutomaticMode() {
+            placementMode = MenuPlacementServiceMode.Automatic;
+        }
+
+        public void EnterAdjustmentMode() {
+            PreviousMode = placementMode;
+            placementMode = MenuPlacementServiceMode.Adjustment;
+        }
+
+        public void ExitAdjustmentMode() {
+            placementMode = PreviousMode;
+        }
 
         /// <summary>
         /// Fetch a menu object from the ObjectPool of the origin menu
@@ -94,15 +155,12 @@ namespace MenuPlacement {
                 }
             }
             else {
-                Debug.Log(handler.menuID);
                 if (handler.isCompact) {
                     return ObjectPool<GameObject>.RequestResource(compactObjectMenuPoolIDs[handler.menuID], () => { return Instantiate(GetObjectMenuWithID(handler.menuID)); });
                 }
                 else {
                     return ObjectPool<GameObject>.RequestResource(floatingObjectMenuPoolIDs[handler.menuID], () => { return Instantiate(GetObjectMenuWithID(handler.menuID)); });
-                }
-                   
-                
+                }  
             }
         }
 
@@ -132,26 +190,26 @@ namespace MenuPlacement {
         }
 
         public void UpdatePlacement(PlacementMessage message, GameObject menu) {
-            GameObject newMenu = menu;
             switch (message.switchType) {
                 case PlacementMessage.SwitchType.FloatingToCompact:
-                    Debug.Log("The menu is floating" + menu.GetComponent<MenuHandler>().isCompact);
+                    Debug.Log("The menu is floating: " + !menu.GetComponent<MenuHandler>().isCompact);
                     if (!menu.GetComponent<MenuHandler>().isCompact) {
-                        newMenu = SwitchToCompact(menu);
+                        if (SwitchToCompact(menu) != menu) {
+                            menu.GetComponent<MenuHandler>().Close();
+                            SwitchToCompact(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
+                        }
                     }
                     break;
                 case PlacementMessage.SwitchType.CompactToFloating:
-                    Debug.Log("The menu is compact"+menu.GetComponent<MenuHandler>().isCompact);
+                    Debug.Log("The menu is compact: " + menu.GetComponent<MenuHandler>().isCompact);
                     if (menu.GetComponent<MenuHandler>().isCompact) {
-                        newMenu = SwitchToFloating(menu);
+                        if (SwitchToFloating(menu) != menu) {
+                            menu.GetComponent<MenuHandler>().Close();
+                            SwitchToFloating(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
+                        }
                     }
                     break;
             }
-            if (newMenu != menu) {
-                menu.GetComponent<MenuHandler>().Close();
-                newMenu.GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().targetObject);
-            }
-            
         }
 
         public Bounds GetStoredBoundingBoxOnCloseOppositeType(GameObject menu) {
@@ -239,12 +297,14 @@ namespace MenuPlacement {
             }
         }
 
+
+
         #endregion Public Methods
 
         #region Private Methods
 
         private void CreateMenuController() {
-
+            Instantiate(menuController);
         }
 
         /// <summary>

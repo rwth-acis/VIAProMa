@@ -2441,6 +2441,12 @@ GameObject:
   - component: {fileID: 3520590987059963661}
   - component: {fileID: -7051134842400074086}
   - component: {fileID: 3520590987059963658}
+  - component: {fileID: -1562586782083791721}
+  - component: {fileID: 844089136279584444}
+  - component: {fileID: 2464987619664826641}
+  - component: {fileID: 6122197789049621358}
+  - component: {fileID: 7135561757590489369}
+  - component: {fileID: 5673338932406396092}
   m_Layer: 8
   m_Name: Object Menu
   m_TagString: Untagged
@@ -2456,7 +2462,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3520590987059963660}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.212, y: 0.25630733, z: 1.5946}
+  m_LocalPosition: {x: -0.16523705, y: 0.036971167, z: 1.4012958}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 8676196562523115334}
@@ -2486,6 +2492,12 @@ MonoBehaviour:
   menuID: 1
   boudingBoxType: 0
   menuOrientationType: 0
+  updateTimeInterval: 0.1
+  inactivityTimeThreshold: 5
+  suggestionTimeInterval: 5
+  inactivityDetectionEnabled: 0
+  manipulationEnabled: 1
+  retrieveBufferSize: 5
   maxFloatingDistance: 0.6
   minFloatingDistance: 0.3
   orbitalOffset: {x: 0.2, y: 0, z: 0}
@@ -2503,6 +2515,122 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 8676196562523115339}
+--- !u!114 &-1562586782083791721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3520590987059963660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55691ad5b034fe6966763a6e23818d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackedTargetType: 7
+  trackedHandness: 3
+  trackedHandJoint: 2
+  transformOverride: {fileID: 0}
+  additionalOffset: {x: 0, y: 0, z: 0}
+  additionalRotation: {x: 0, y: 0, z: 0}
+  updateSolvers: 1
+--- !u!114 &844089136279584444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3520590987059963660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14c3d8a4208d4b649529822e217623d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateLinkedTransform: 1
+  moveLerpTime: 0.1
+  rotateLerpTime: 0.1
+  scaleLerpTime: 0
+  maintainScaleOnInitialization: 1
+  smoothing: 1
+  lifetime: 0
+  orientationType: 3
+  localOffset: {x: 0, y: 0, z: 0}
+  worldOffset: {x: 0, y: 0, z: 0}
+  useAngleStepping: 0
+  tetherAngleSteps: 6
+--- !u!114 &2464987619664826641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3520590987059963660}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de9b118fbc66f114cac64e9b05576a1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateLinkedTransform: 1
+  moveLerpTime: 0.1
+  rotateLerpTime: 0.1
+  scaleLerpTime: 0
+  maintainScaleOnInitialization: 1
+  smoothing: 1
+  lifetime: 0
+  partwayOffset: 0
+  secondTrackedObjectType: 7
+  secondTransformOverride: {fileID: 0}
+--- !u!114 &6122197789049621358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3520590987059963660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 298e18eee1b4c4547abdd35e9d6f2338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateLinkedTransform: 0
+  moveLerpTime: 0.1
+  rotateLerpTime: 0.1
+  scaleLerpTime: 0
+  maintainScaleOnInitialization: 1
+  smoothing: 1
+  lifetime: 0
+  orbitalOffset: {x: 0.2, y: 0, z: 0}
+--- !u!114 &7135561757590489369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3520590987059963660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98de877dee5fc341b4eb59dfdab266c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoConstraintSelection: 1
+  selectedConstraints: []
+--- !u!114 &5673338932406396092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3520590987059963660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 820f94d57893bf843a0cd6d93313fe6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handType: 3
+  proximityType: 3
+  scaleMinimum: 0.2
+  scaleMaximum: 2
+  relativeToInitialState: 1
 --- !u!1 &3520590987365226264
 GameObject:
   m_ObjectHideFlags: 0
@@ -4744,7 +4872,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8676196562386123839}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.125, y: 0.000000014901161, z: -0.000000078231096}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8676196563693704845}
@@ -6254,3 +6382,67 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &-4982434416136819432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: ScaleHandlesConfiguration
+  m_EditorClassIdentifier: Microsoft.MixedReality.Toolkit.SDK:Microsoft.MixedReality.Toolkit.UI.BoundsControl:ScaleHandlesConfiguration
+--- !u!114 &-4504292966180833852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: ProximityEffectConfiguration
+  m_EditorClassIdentifier: Microsoft.MixedReality.Toolkit.SDK:Microsoft.MixedReality.Toolkit.UI.BoundsControl:ProximityEffectConfiguration
+--- !u!114 &5150630873261742549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80d41f9007c4b948b0808690195e77c, type: 3}
+  m_Name: LinksConfiguration
+  m_EditorClassIdentifier: 
+  wireframeMaterial: {fileID: 0}
+  wireframeEdgeRadius: 0.001
+  wireframeShape: 0
+  showWireframe: 1
+--- !u!114 &5203488640780548024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: BoxDisplayConfiguration
+  m_EditorClassIdentifier: Microsoft.MixedReality.Toolkit.SDK:Microsoft.MixedReality.Toolkit.UI.BoundsControl:BoxDisplayConfiguration
+--- !u!114 &5998018656024512816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: RotationHandlesConfiguration
+  m_EditorClassIdentifier: Microsoft.MixedReality.Toolkit.SDK:Microsoft.MixedReality.Toolkit.UI.BoundsControl:RotationHandlesConfiguration

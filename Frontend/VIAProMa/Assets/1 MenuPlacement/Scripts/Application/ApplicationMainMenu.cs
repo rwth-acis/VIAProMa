@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using i5.VIAProMa.ResourceManagagement;
-using i5.VIAProMa.UI;
-using i5.VIAProMa.UI.MainMenuCube;
+﻿using i5.VIAProMa.UI.MainMenuCube;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
-
-public class ApplicationMainMenu : MonoBehaviour
+using MenuPlacement;
+public class ApplicationMainMenu : MenuBase
 {
     
     [Header("UI Elements")]
@@ -52,4 +48,11 @@ public class ApplicationMainMenu : MonoBehaviour
         notification.SetActive(false);
     }
 
+    public override void Initialize() {
+        
+    }
+
+    public override void OnClose() {
+        
+    }
 }
