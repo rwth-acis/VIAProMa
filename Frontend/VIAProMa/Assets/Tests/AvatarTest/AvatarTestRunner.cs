@@ -1,5 +1,4 @@
-﻿using i5.VIAProMa.Multiplayer.Avatars.Customization;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Test runner for the avatar system

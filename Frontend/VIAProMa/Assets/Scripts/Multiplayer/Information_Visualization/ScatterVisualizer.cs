@@ -1,4 +1,4 @@
-﻿using i5.ViaProMa.Visualizations.Common;
+﻿using i5.VIAProMa.Visualizations.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,14 +6,18 @@ using UnityEngine;
 using System.Threading.Tasks;
 using Photon.Pun;
 using Photon.Realtime;
-
+using i5.VIAProMa.Visualizations;
+using i5.VIAProMa;
+using System.Data;
+using i5.VIAProMa.Visualizations.Common.Data.DataSets;
+using DataSet = i5.VIAProMa.Visualizations.Common.Data.DataSets.DataSet;
 /// <summary>
 /// Test script which controls the scatter plot and fills it with test data
 /// </summary>
 public class ScatterVisualizer : MonoBehaviour
 {
     public GameObject scatter;
-    private i5.ViaProMa.Visualizations.Common.Diagram diagram;
+    private Diagram diagram;
     public string name {get; set;} = "";
     private Vector3 size = Vector3.one;
     //public TextAsset jsonFile;
@@ -26,7 +30,7 @@ public class ScatterVisualizer : MonoBehaviour
     private void Awake()
     {
         locker = GetComponent<LearningLocker>();
-        diagram = GetComponent<i5.ViaProMa.Visualizations.Common.Diagram>();
+        diagram = GetComponent<Diagram>();
         name = PhotonNetwork.NickName;
 
         if (UserManager.Instance.UserRole != UserRoles.TUTOR)
@@ -85,11 +89,11 @@ public class ScatterVisualizer : MonoBehaviour
         return dataSet;
     }
 */
-    private async Task<i5.ViaProMa.Visualizations.Common.DataSet> JsonFileToDataSet()
+    private async Task<DataSet> JsonFileToDataSet()
     {
         diagram.Size = size;
         IInformation MentorData = await locker.GetInformation(name);
-        i5.ViaProMa.Visualizations.Common.DataSet dataSet = new i5.ViaProMa.Visualizations.Common.DataSet();
+        DataSet dataSet = new DataSet();
         List<string> xValues = new List<string>();
         List<float> yValues = new List<float>();
         List<string> zValues = new List<string>();
@@ -160,7 +164,7 @@ public class ScatterVisualizer : MonoBehaviour
 
     public async void UpdateView()
     {
-        i5.ViaProMa.Visualizations.Common.DataSet dataset = await JsonFileToDataSet();
+        DataSet dataset = await JsonFileToDataSet();
         
         if (name == PhotonNetwork.NickName)
         {

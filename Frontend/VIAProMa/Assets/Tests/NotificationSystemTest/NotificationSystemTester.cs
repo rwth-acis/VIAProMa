@@ -1,5 +1,4 @@
-﻿using i5.VIAProMa.Multiplayer.Chat;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 

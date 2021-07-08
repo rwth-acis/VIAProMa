@@ -1,5 +1,4 @@
-﻿using i5.VIAProMa.Multiplayer.Chat;
-using i5.VIAProMa.UI.InputFields;
+﻿using i5.VIAProMa.UI.InputFields;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using System;

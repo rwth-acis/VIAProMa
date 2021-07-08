@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace i5.VIAProMa.Multiplayer.Avatars.Customization
+[Serializable]
+public class AvatarPartCollection
 {
-    [Serializable]
-    public class AvatarPartCollection
-    {
-        public string name;
-        public AvatarPart[] avatarParts;
-    }
+    public string name;
+    public AvatarPart[] avatarParts;
 }

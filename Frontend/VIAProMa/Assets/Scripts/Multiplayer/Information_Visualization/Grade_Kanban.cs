@@ -1,3 +1,6 @@
+using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.Visualizations;
+using i5.VIAProMa.Visualizations.KanbanBoard;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

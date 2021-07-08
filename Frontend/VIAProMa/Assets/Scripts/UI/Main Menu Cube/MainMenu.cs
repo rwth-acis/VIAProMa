@@ -1,5 +1,4 @@
-﻿using i5.VIAProMa.Multiplayer;
-using i5.VIAProMa.ResourceManagagement;
+﻿using i5.VIAProMa.ResourceManagagement;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
@@ -226,43 +225,11 @@ namespace i5.VIAProMa.UI.MainMenuCube
             foldController.FoldCube();
         }
 
-        foldController = gameObject.GetComponent<FoldController>();
-    }
-
-    public override void OnEnable()
-    {
-        base.OnEnable();
-        LobbyManager.Instance.LobbyJoinStatusChanged += OnLobbyStatusChanged;
-        Launcher.Instance.ConnectionStatusChanged += OnConnectionStatusChanged;
-    }
-
-    public override void OnDisable()
-    {
-        LobbyManager.Instance.LobbyJoinStatusChanged -= OnLobbyStatusChanged;
-        Launcher.Instance.ConnectionStatusChanged -= OnConnectionStatusChanged;
-        base.OnDisable();
-    }
-
-    private void Start()
-    {
-        CheckButtonStates();
-    }
-
-    private void OnConnectionStatusChanged(object sender, EventArgs e)
-    {
-        CheckButtonStates();
-    }
-
-    private void CheckButtonStates()
-    {
-        //roomButton.Enabled = PhotonNetwork.IsConnected;
-        chatButton.Enabled = PhotonNetwork.InRoom;
-        microphoneButton.Enabled = PhotonNetwork.InRoom;
-        saveButton.Enabled = PhotonNetwork.InRoom;
-        loadButton.Enabled = PhotonNetwork.InRoom;
-        issueShelfButton.Enabled = PhotonNetwork.InRoom;
-        visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
-    }
+        public void ShowServerStatusMenu()
+        {
+            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
+            foldController.FoldCube();
+        }
 
         public void RoomButtonClicked()
         {
@@ -279,56 +246,15 @@ namespace i5.VIAProMa.UI.MainMenuCube
             foldController.FoldCube();
         }
 
-    private void OnLobbyStatusChanged(object sender, EventArgs e)
-    {
-        if (PhotonNetwork.InLobby)
+        public void ChatButtonClicked()
         {
-            Debug.Log("inlobby");
-            roomButtonText.text = "Group Space";
-        }
-        else
-        {
-            Debug.Log("inspace");
-            roomButtonText.text = "Leave Space";
+            WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            foldController.FoldCube();
         }
 
-    public void ShowAvatarConfiguration()
-    {
-        InstantiateControl(
-            avatarConfiguratorPrefab,
-            ref avatarConfiguratorInstance,
-            transform.position - 1f * transform.right);
-        foldController.FoldCube();
-    }
-
-    public void ShowServerStatusMenu()
-    {
-        WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
-        foldController.FoldCube();
-    }
-
-    public void RoomButtonClicked()
-    {
-        Debug.Log("button");
-        // if in lobby: show room menu
-        // otherwise: leave the current room
-        if (PhotonNetwork.InLobby)
+        private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
         {
-            WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-        }
-        else
-        {
-            Debug.Log("leave");
-            PhotonNetwork.LeaveRoom();
-        }
-        foldController.FoldCube();
-    }
-
-    public void ChatButtonClicked()
-    {
-        WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-        foldController.FoldCube();
-    }
+            Quaternion targetRotation = transform.rotation;
 
             if (instance != null)
             {

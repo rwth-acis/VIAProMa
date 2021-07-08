@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace i5.VIAProMa.Multiplayer.Avatars.Customization
+public interface IConfigurationController
 {
-    public interface IConfigurationController
-    {
-        int AvatarIndex { get; set; }
-        int ModelIndex { get; set; }
-        int MaterialIndex { get; set; }
-        int ColorIndex { get; set; }
+    int AvatarIndex { get; set; }
+    int ModelIndex { get; set; }
+    int MaterialIndex { get; set; }
+    int ColorIndex { get; set; }
 
-        event EventHandler ConfigurationChanged;
+    event EventHandler ConfigurationChanged;
 
-        void ApplyConfiguration();
-    }
+    void ApplyConfiguration();
 }

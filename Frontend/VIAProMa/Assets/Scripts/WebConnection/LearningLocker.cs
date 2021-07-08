@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using System.Net;
+using i5.VIAProMa.WebConnection;
+using i5.Toolkit.Core.Utilities;
 
 [Serializable]
 public class LearningLocker: MonoBehaviour

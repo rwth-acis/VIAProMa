@@ -1,20 +1,19 @@
 ﻿using Photon.Voice.PUN;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace i5.VIAProMa.Multiplayer
+/// <summary>
+/// Manages the voice transmission
+/// </summary>
+public class VoiceRecorderManager : MonoBehaviour
 {
     /// <summary>
-    /// Manages the voice transmission
+    /// Initializes the primary voice recorder
     /// </summary>
-    public class VoiceRecorderManager : MonoBehaviour
+    private void Start()
     {
-        /// <summary>
-        /// Initializes the primary voice recorder
-        /// </summary>
-        private void Start()
-        {
-            PhotonVoiceNetwork.Instance.PrimaryRecorder.Init(PhotonVoiceNetwork.Instance);
-            Debug.Log("Voice Recorder initialized");
-        }
+        PhotonVoiceNetwork.Instance.PrimaryRecorder.Init(PhotonVoiceNetwork.Instance.VoiceClient);
+        Debug.Log("Voice Recorder initialized");
     }
 }

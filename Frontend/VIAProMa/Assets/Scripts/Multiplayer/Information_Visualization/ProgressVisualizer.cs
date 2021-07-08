@@ -1,4 +1,3 @@
-using i5.ViaProMa.Visualizations.Common;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,6 +5,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using Photon.Pun;
 using Photon.Realtime;
+using i5.VIAProMa.Visualizations.ProgressBars;
 
 [RequireComponent(typeof(LearningLocker))]
 public class ProgressVisualizer : MonoBehaviour

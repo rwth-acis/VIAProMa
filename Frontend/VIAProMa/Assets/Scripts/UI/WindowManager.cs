@@ -1,5 +1,4 @@
 ﻿using HoloToolkit.Unity;
-using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI.Chat;
 using UnityEngine;
 
