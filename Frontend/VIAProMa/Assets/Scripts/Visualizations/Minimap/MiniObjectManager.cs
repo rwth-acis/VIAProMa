@@ -6,6 +6,7 @@ public class MiniObjectManager : MonoBehaviour
 {
     [SerializeField] private GameObject minCorner;
     [SerializeField] private GameObject maxCorner;
+    [SerializeField] private GameObject scaleIndicatorObject;
     [SerializeField] private float minScale;
     [SerializeField] private float maxScale;
     [SerializeField] private float yOffset;
@@ -24,6 +25,7 @@ public class MiniObjectManager : MonoBehaviour
     void Update()
     {
         CalculateLocalTransform();
+        scaleIndicatorObject.transform.localScale = (new Vector3(1,1,1)) *currentScale;
         int i = 0;
         foreach (GameObject g in trackedObjects) {
             miniObjects[i].transform.localPosition = TranslateIntoLocalCoordinates(g.transform.position);
