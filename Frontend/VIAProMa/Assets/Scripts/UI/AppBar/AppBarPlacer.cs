@@ -1,4 +1,5 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +15,8 @@ namespace i5.VIAProMa.UI.AppBar
 
         [Header("Target Bounding Box")]
         [SerializeField]
-        private BoundingBox boundingBox;
+        private BoundsControl boundsControl;
+        BoundsControl test;
 
         [Header("Scale & Position Options")]
 
@@ -31,10 +33,10 @@ namespace i5.VIAProMa.UI.AppBar
         /// <summary>
         /// The target bounding box to which the app bar is attached
         /// </summary>
-        public BoundingBox TargetBoundingBox
+        public BoundsControl TargetBoundingBox
         {
-            get => boundingBox;
-            set => boundingBox = value;
+            get => boundsControl;
+            set => boundsControl = value;
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace i5.VIAProMa.UI.AppBar
         /// <param name="smooth">If true, the app bar is interpolated smoothly from its current position to the target position; otherwise it will immediately jump to the target position</param>
         private void FollowBoundingBox(bool smooth)
         {
-            if (boundingBox == null)
+            if (boundsControl == null)
                 return;
 
             //calculate best follow position for AppBar
@@ -68,8 +70,8 @@ namespace i5.VIAProMa.UI.AppBar
             Vector3 headPosition = Camera.main.transform.position;
             boundsPoints.Clear();
 
-            helper.GetRawBBCorners(boundingBox);
-            helper.UpdateNonAABoundingBoxCornerPositions(boundingBox, boundsPoints);
+            helper.UpdateNonAABoundsCornerPositions(boundsControl.TargetBounds, boundsPoints);
+
             int followingFaceIndex = helper.GetIndexOfForwardFace(headPosition);
             Vector3 faceNormal = helper.GetFaceNormal(followingFaceIndex);
 
@@ -80,7 +82,7 @@ namespace i5.VIAProMa.UI.AppBar
             transform.position = smooth ? Vector3.Lerp(transform.position, finalPosition, Time.deltaTime * backgroundBarMoveSpeed) : finalPosition;
 
             // Rotate on the y axis
-            Vector3 direction = (boundingBox.TargetBounds.bounds.center - finalPosition).normalized;
+            Vector3 direction = (boundsControl.TargetBounds.bounds.center - finalPosition).normalized;
             if (direction != Vector3.zero)
             {
                 Vector3 eulerAngles = Quaternion.LookRotation(direction, Vector3.up).eulerAngles;
