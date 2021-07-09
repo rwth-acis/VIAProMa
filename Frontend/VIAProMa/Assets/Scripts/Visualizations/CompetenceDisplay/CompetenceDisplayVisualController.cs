@@ -1,5 +1,6 @@
 ﻿using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace i5.VIAProMa.Visualizations.Competence
         [SerializeField] private TextLabel titleLabel;
         [SerializeField] private GameObject userBadgePrefab;
         [SerializeField] private GridObjectCollection gridObjectCollection;
-        [SerializeField] private BoundingBox boundingBox;
+        [SerializeField] private BoundsControl boundsControl;
         [Header("Values")]
         [SerializeField] private float maxSize = 1f;
 
@@ -62,11 +63,11 @@ namespace i5.VIAProMa.Visualizations.Competence
                 //gridObjectCollection.CellWidth = maxSize;
                 //gridObjectCollection.CellHeight = maxSize;
             }
-            if (boundingBox == null)
+            if (boundsControl == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundsControl));
             }
-            boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>(); // must exist since BoundingBox requires a BoxCollider
+            boundingBoxCollider = boundsControl?.gameObject.GetComponent<BoxCollider>(); // must exist since BoundingBox requires a BoxCollider
         }
 
         public void DisplayCompetences()
@@ -115,7 +116,7 @@ namespace i5.VIAProMa.Visualizations.Competence
                     1f
                     );
             }
-            boundingBox.transform.localPosition = new Vector3(0, 0, 0.5f);
+            boundsControl.transform.localPosition = new Vector3(0, 0, 0.5f);
 
             titleLabel.MaxWidth = targetRadius * 0.8f;
             titleLabel.MaxHeight = targetRadius * 0.8f;
