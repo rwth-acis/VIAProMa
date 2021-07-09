@@ -1,5 +1,5 @@
 ﻿using i5.VIAProMa.Utilities;
-using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using UnityEngine;
 using System.Threading.Tasks;
 
@@ -26,8 +26,8 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         [SerializeField] private CapsuleCollider tubeCollider;
 
         [Header("References")]
-        [Tooltip("Reference to the bounding box of the progress bar")]
-        [SerializeField] private BoundingBox boundingBox;
+        [Tooltip("Reference to the bounds control of the progress bar")]
+        [SerializeField] private BoundsControl boundsControl;
         [Tooltip("Reference to the title label of the progress bar")]
         [SerializeField] private TextLabel textLabel;
 
@@ -130,14 +130,14 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(tubeCollider));
             }
-            if (boundingBox == null)
+            if (boundsControl == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundsControl));
             }
-            boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
-            if (boundingBox == null)
+            boundingBoxCollider = boundsControl?.gameObject.GetComponent<BoxCollider>();
+            if (boundsControl == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBox), boundingBoxCollider?.gameObject);
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundsControl), boundingBoxCollider?.gameObject);
             }
 
             if (textLabel == null)
