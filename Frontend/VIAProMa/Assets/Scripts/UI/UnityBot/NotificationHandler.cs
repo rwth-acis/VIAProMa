@@ -14,7 +14,10 @@ public class NotificationHandler : MonoBehaviourPunCallbacks
     private void Awake()
     {
         gameObject.SetActive(false);
-        SendInvitation(PlayerListItem.playerName);   
+        if (photonView.IsMine)
+        {
+            SendInvitation(PlayerListItem.playerName);
+        }
     }
 
     public void NotificationClick()

@@ -1,4 +1,4 @@
-using i5.VIAProMa.UI.Chat;
+﻿using i5.VIAProMa.UI.Chat;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
