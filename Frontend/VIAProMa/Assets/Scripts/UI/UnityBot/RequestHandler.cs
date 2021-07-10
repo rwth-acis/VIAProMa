@@ -49,7 +49,8 @@ public class RequestHandler : MonoBehaviourPunCallbacks
         if (string.Equals(playerName, PhotonNetwork.LocalPlayer.NickName))
         {
             gameObject.SetActive(true);
-            notifiLabel.text = "User " + reqOwner + " wants to see the Unity Bot. Click here to accept! The notification will disappear in 20s.";
+            notifiLabel.text = "User " + photonView.Owner.NickName 
+                + " wants to see the Unity Bot. Click here to accept! The notification will disappear in 20s.";
             Destroy(gameObject, 20);
         }
         else
