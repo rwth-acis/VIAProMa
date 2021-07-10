@@ -41,6 +41,7 @@ public class InstantiateButton : MonoBehaviour
     /// </summary>
     void Spawn()
     {
+        GetComponentInParent<MockUpEditorWindow>().ClearSpawnPlace();
         Vector3 spawnPosition = GetComponentInParent<MockUpEditorWindow>().spawnPlace.position;
         //the base GO which is instantiated every time and "holds" the visual object inside, has the important components (e.g. ownership, network,...)
         GameObject baseGO = Instantiate(list.PrefabBase, spawnPosition, Quaternion.identity);

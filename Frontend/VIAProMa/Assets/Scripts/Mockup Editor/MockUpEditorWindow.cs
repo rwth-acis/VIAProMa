@@ -25,4 +25,9 @@ public class MockUpEditorWindow : MonoBehaviour
             }
         }
     }
+
+    public void ClearSpawnPlace()
+    {
+
+    }
 }
