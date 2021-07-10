@@ -71,7 +71,6 @@ namespace i5.VIAProMa.UI.Chat
 
         public void OpenUniBot()
         {
-            //WindowManager.Instance.BotMenu.Close();
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f;
             PhotonNetwork.Instantiate(botPrefab, targetPosition, Quaternion.identity, 0);
