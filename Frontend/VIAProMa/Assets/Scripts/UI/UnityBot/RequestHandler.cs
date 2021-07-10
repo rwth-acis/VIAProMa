@@ -5,19 +5,25 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+
 
 [RequireComponent(typeof(PhotonView))]
 public class RequestHandler : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject gameObject;
+    [SerializeField] private TMP_Text notifiLabel;
     public static string reqOwner = "";
-    
+
     private void Awake()
     {
         gameObject.SetActive(false);
-        Debug.Log("Photon view owner of request: " + photonView.Owner.NickName);
-        SendRequest(UnityBotSynchronizer.botOwner);
+        if (photonView.IsMine)
+        {
+            Debug.Log("Photon view owner of request: " + photonView.Owner.NickName);
+            SendRequest(UnityBotSynchronizer.botOwner);
+        }
     }
 
     public void NotificationClick()
@@ -38,11 +44,12 @@ public class RequestHandler : MonoBehaviourPunCallbacks
     [PunRPC]
     private void SendRequestToOwner(string playerName)
     {
-        Debug.Log("SendRequestToOwner: " + playerName + PhotonNetwork.LocalPlayer.NickName);
+        Debug.Log("SendRequestToOwner: " + playerName + PhotonNetwork.NickName);
 
         if (string.Equals(playerName, PhotonNetwork.LocalPlayer.NickName))
         {
             gameObject.SetActive(true);
+            notifiLabel.text = "User " + reqOwner + " wants to see the Unity Bot. Click here to accept! The notification will disappear in 20s.";
             Destroy(gameObject, 20);
         }
         else
