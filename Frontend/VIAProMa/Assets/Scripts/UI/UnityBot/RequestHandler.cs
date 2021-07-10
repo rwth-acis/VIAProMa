@@ -1,4 +1,4 @@
-﻿using i5.VIAProMa.UI.Chat;
+using i5.VIAProMa.UI.Chat;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -12,20 +12,17 @@ public class RequestHandler : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject gameObject;
     public static string reqOwner = "";
+    
     private void Awake()
     {
-        if (photonView.IsMine)
-        {
-            gameObject.SetActive(false);
-            Debug.Log("Photon view owner of request: " + photonView.Owner.NickName);
-            SendRequest(UnityBotSynchronizer.botOwner);
-        }
-
+        gameObject.SetActive(false);
+        Debug.Log("Photon view owner of request: " + photonView.Owner.NickName);
+        SendRequest(UnityBotSynchronizer.botOwner);
     }
 
     public void NotificationClick()
     {
-        //UnityBotSynchronizer.isReq = true;
+        UnityBotSynchronizer.isReq = true;
         reqOwner = photonView.Owner.NickName;
         Debug.Log("NotificationClick: " + reqOwner);
         Destroy(gameObject);
