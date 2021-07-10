@@ -11,13 +11,18 @@ using TMPro;
 /// </summary>
 public class InstantiateButton : MonoBehaviour
 {
-    [SerializeField] MockupEditorList list;
+    public MockupEditorList list;
     [SerializeField] int index;
     [SerializeField] TMP_Text label;
 
     MockupEditorItem item;
 
     private void Start()
+    {
+        UpdateButton();
+    }
+
+    public void UpdateButton()
     {
         item = list.items[index];
         label.text = item.name;
