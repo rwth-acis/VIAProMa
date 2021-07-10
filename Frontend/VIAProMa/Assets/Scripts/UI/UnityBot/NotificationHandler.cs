@@ -4,12 +4,14 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(PhotonView))]
 public class NotificationHandler : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject gameObject;
+    [SerializeField] private TMP_Text notifiLabel;
     public static string clName = "";
     private void Awake()
     {
@@ -43,6 +45,8 @@ public class NotificationHandler : MonoBehaviourPunCallbacks
         if (string.Equals(playerName, PhotonNetwork.LocalPlayer.NickName))
         {
             gameObject.SetActive(true);
+            notifiLabel.text = "You got an Invitation from " + photonView.Owner.NickName
+                + " to see the Unity Bot. Click here to accept! The notification will disappear in 20s.";
             Destroy(gameObject, 20);
         }
         else
