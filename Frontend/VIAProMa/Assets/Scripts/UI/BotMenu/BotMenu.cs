@@ -1,4 +1,4 @@
-﻿using i5.Toolkit.Core.ServiceCore;
+using i5.Toolkit.Core.ServiceCore;
 using i5.VIAProMa.Multiplayer.Chat;
 using i5.VIAProMa.Utilities;
 using i5.Toolkit.Core.OpenIDConnectClient;
@@ -44,8 +44,6 @@ namespace i5.VIAProMa.UI.Chat
         public void Open()
         {
             gameObject.SetActive(true);
-            //NotificationSystem.Instance.CanShowMessages = false;
-            //NotificationSystem.Instance.HideMessage();
         }
 
         public void Open(Vector3 position, Vector3 eulerAngles)
@@ -58,10 +56,6 @@ namespace i5.VIAProMa.UI.Chat
         public void Close()
         {
             gameObject.SetActive(false);
-            /*if (NotificationSystem.Instance != null)
-            {
-                NotificationSystem.Instance.CanShowMessages = true;
-            }*/
             WindowClosed?.Invoke(this, EventArgs.Empty);
         }
 
@@ -69,16 +63,18 @@ namespace i5.VIAProMa.UI.Chat
         {
             if (!isSubscribedToOidc)
             {
-                //ServiceManager.GetService<OpenIDConnectService>().LoginCompleted += OpenIDConnectTester_LoginCompleted;
                 ServiceManager.GetService<SlackOidcService>().LoginCompleted += LoginScript_LoginCompleted;
                 isSubscribedToOidc = true;
             }
             ServiceManager.GetService<SlackOidcService>().OpenLoginPage();
         }
 
-        public void CloseBotMenu()
+        public void OpenUniBot()
         {
-            WindowManager.Instance.BotMenu.Close();
+            //WindowManager.Instance.BotMenu.Close();
+            Vector3 targetPosition = transform.position - 1f * transform.right;
+            targetPosition.y = 0f;
+            PhotonNetwork.Instantiate(botPrefab, targetPosition, Quaternion.identity, 0);
         }
 
         private void LoginScript_LoginCompleted(object sender, System.EventArgs e)
@@ -86,11 +82,9 @@ namespace i5.VIAProMa.UI.Chat
             Debug.Log("Login completed", this);
             Debug.Log(ServiceManager.GetService<SlackOidcService>().AccessToken, this);
             // Hide Button
-            CloseBotMenu();
+            Close();
             // Show Bot
-            Vector3 targetPosition = transform.position - 1f * transform.right;
-            targetPosition.y = 0f;
-            PhotonNetwork.Instantiate(botPrefab, targetPosition, Quaternion.identity, 0);
+            OpenUniBot();
             ServiceManager.GetService<SlackOidcService>().LoginCompleted -= LoginScript_LoginCompleted;
             isSubscribedToOidc = false;
             //IUserInfo userInfo = await ServiceManager.GetService<SlackOidcService>().GetUserDataAsync();
@@ -98,4 +92,3 @@ namespace i5.VIAProMa.UI.Chat
     }
 
 }
-
