@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Photon.Pun;
 using i5.VIAProMa.Multiplayer.Avatars;
 using System;
@@ -27,7 +27,7 @@ public class UnityBotSynchronizer : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             Debug.Log(photonView.Owner.NickName);
-            botOwner = photonView.Owner.NickName;
+            //botOwner = photonView.Owner.NickName;
         }
         else
         {
@@ -55,11 +55,9 @@ public class UnityBotSynchronizer : MonoBehaviourPunCallbacks
 
         if (isReq == true)
         {
-            if (string.Equals(RequestHandler.reqOwner, PhotonNetwork.LocalPlayer.NickName))
-            {
-                Debug.Log("isReq true " + RequestHandler.reqOwner + " " + PhotonNetwork.LocalPlayer.NickName);
-                ShareBot(RequestHandler.reqOwner);
-            }
+            Debug.Log("isReq true " + RequestHandler.reqOwner + " " + PhotonNetwork.NickName);
+            ShareBot(RequestHandler.reqOwner);
+            isReq = false;
         }
         
     }
@@ -78,7 +76,6 @@ public class UnityBotSynchronizer : MonoBehaviourPunCallbacks
         if (string.Equals(playerName, PhotonNetwork.LocalPlayer.NickName))
         {
             Share();
-            isReq = false;
         }
         
     }
@@ -91,8 +88,6 @@ public class UnityBotSynchronizer : MonoBehaviourPunCallbacks
         Vector3 targetPosition = transform.position - 1f * transform.right;
         targetPosition.y = 0f;
         PhotonNetwork.Instantiate(requestPrefab, targetPosition, Quaternion.identity, 0);
-        isReq = true; 
-        Debug.Log(isReq);
     }
 
     public void ShowPlayerList()
