@@ -207,14 +207,14 @@ namespace i5.VIAProMa.Visualizations.Minimap
             //    size.y);
 
             minCorner.transform.localPosition = new Vector3(
-                -size.y / 2f,
+                -size.x / 2f,
                 0f,
                 -size.y / 2f);
 
 
             maxCorner.transform.localPosition = new Vector3(
-                size.y / 2f,
-                0f,
+                size.x / 2f,
+                0.4f,
                 size.y / 2f);
 
             UpdateVisuals();
