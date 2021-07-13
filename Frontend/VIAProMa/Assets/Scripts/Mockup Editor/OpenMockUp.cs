@@ -66,6 +66,15 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     }
 
     /// <summary>
+    /// Closes the main window and all sub windows
+    /// </summary>
+    public void MainWindowClose()
+    {
+        Destroy(descriptionInstance);
+        Close();
+    }
+
+    /// <summary>
     /// Opens a window with additional information about the editor
     /// </summary>
     public void ShowDescription()
