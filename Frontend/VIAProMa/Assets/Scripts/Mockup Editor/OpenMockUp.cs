@@ -23,6 +23,7 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     // instances:
     private GameObject mockUpWindowInstance;
     private GameObject descriptionInstance;
+    private GameObject descriptionObject;
 
     /// <summary>
     /// Opens a window where the user can select between different objects
@@ -58,6 +59,18 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     }
 
     /// <summary>
+    /// Opens a window with additional information about the editor
+    /// </summary>
+    public void ShowDescription()
+    {
+        InstantiateControl(
+                    descriptionPrefab,
+                    ref descriptionInstance,
+                    transform.position + 0.2565f * transform.right - 0.0886f * transform.up);
+        descriptionInstance.GetComponent<DescriptionHelper>().UpdateLabel(desc);
+    }
+
+    /// <summary>
     /// Closes the window
     /// </summary>
     public void Close()
@@ -70,19 +83,7 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     /// </summary>
     public void MainWindowClose()
     {
-        Destroy(descriptionInstance);
+        Destroy(GameObject.FindWithTag("descriptionWindow"));
         Close();
-    }
-
-    /// <summary>
-    /// Opens a window with additional information about the editor
-    /// </summary>
-    public void ShowDescription()
-    {
-        InstantiateControl(
-                    descriptionPrefab,
-                    ref descriptionInstance,
-                    transform.position + 0.2565f * transform.right - 0.0886f * transform.up);
-        descriptionInstance.GetComponent<DescriptionHelper>().UpdateLabel(desc);
     }
 }
