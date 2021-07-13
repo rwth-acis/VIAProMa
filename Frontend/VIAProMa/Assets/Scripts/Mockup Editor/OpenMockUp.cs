@@ -66,7 +66,7 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
         InstantiateControl(
                     descriptionPrefab,
                     ref descriptionInstance,
-                    transform.position + 0.2565f * transform.right - 0.0886f * transform.up);
+                    transform.position + 0.28f * transform.right - 0.0886f * transform.up);
         descriptionInstance.GetComponent<DescriptionHelper>().UpdateLabel(desc);
     }
 
