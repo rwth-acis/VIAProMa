@@ -5,6 +5,7 @@ using Photon;
 using Photon.Pun;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
+using UnityEditor;
 
 /// <summary>
 /// a component for a button. Instantiate a mockup item from the list.
@@ -49,6 +50,7 @@ public class InstantiateButton : MonoBehaviour
         Vector3 spawnPosition = GetComponentInParent<MockUpEditorWindow>().spawnPlace.position;
         //the base GO which is instantiated every time and "holds" the visual object inside, has the important components (e.g. ownership, network,...)
         GameObject baseGO = Instantiate(list.PrefabBase, spawnPosition, Quaternion.identity);
+        baseGO.GetComponent<MockupEdiorGameObject>().SetData(AssetDatabase.GetAssetPath(list), index);
         //the skin GO which visualizes the object
         GameObject skinGO = Instantiate(item.Prefab, baseGO.transform);
 
