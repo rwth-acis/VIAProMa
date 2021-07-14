@@ -22,6 +22,9 @@ public class InstantiateButton : MonoBehaviour
         UpdateButton();
     }
 
+    /// <summary>
+    /// updates the button so that the label and the corresponding item is up to date
+    /// </summary>
     public void UpdateButton()
     {
         item = list.items[index];
@@ -42,6 +45,7 @@ public class InstantiateButton : MonoBehaviour
     void Spawn()
     {
         GetComponentInParent<MockUpEditorWindow>().ClearSpawnPlace();
+
         Vector3 spawnPosition = GetComponentInParent<MockUpEditorWindow>().spawnPlace.position;
         //the base GO which is instantiated every time and "holds" the visual object inside, has the important components (e.g. ownership, network,...)
         GameObject baseGO = Instantiate(list.PrefabBase, spawnPosition, Quaternion.identity);

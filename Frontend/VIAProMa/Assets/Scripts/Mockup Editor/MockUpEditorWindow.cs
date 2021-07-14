@@ -9,6 +9,10 @@ public class MockUpEditorWindow : MonoBehaviour
     [SerializeField] List<InstantiateButton> buttons;
     [SerializeField] List<MockupEditorList> categories;
 
+    /// <summary>
+    /// Called whenever a new category is selected, called from Toggle Collection
+    /// </summary>
+    /// <param name="collection">the toggle collection that calls this function</param>
     public void OnCategorySelected(InteractableToggleCollection collection)
     {
         MockupEditorList currentList = categories[collection.CurrentIndex];
@@ -26,8 +30,20 @@ public class MockUpEditorWindow : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// clears the spawn place before a new objects spawns on it
+    /// </summary>
     public void ClearSpawnPlace()
     {
-
+        GameObject[] mockupItems = GameObject.FindGameObjectsWithTag("MockupItem");
+        for(int i = 0; i < mockupItems.Length; i++)
+        {
+            if(Vector3.Distance(spawnPlace.position, mockupItems[i].transform.position) < 0.06f)
+            {
+                Destroy(mockupItems[i]);
+            }
+        }
     }
+
+
 }
