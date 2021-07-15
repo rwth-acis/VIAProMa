@@ -118,7 +118,7 @@ public class MiniObjectManager : MonoBehaviour
     }
 
     public int GetMiniObjectTypeIndex(GameObject objectToTrack) {
-        if (objectToTrack.GetComponents(typeof(ProgressBar)).Length == 0) {
+        if (!(objectToTrack.GetComponents(typeof(ProgressBar)).Length == 0)) {
             return 1;
         }
         return 0;
