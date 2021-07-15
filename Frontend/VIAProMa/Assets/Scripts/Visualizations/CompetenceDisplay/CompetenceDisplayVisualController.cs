@@ -120,6 +120,14 @@ namespace i5.VIAProMa.Visualizations.Competence
 
             titleLabel.MaxWidth = targetRadius * 0.8f;
             titleLabel.MaxHeight = targetRadius * 0.8f;
+
+            //Move pivot into the middle
+            Vector3 oldPosition = transform.position;
+            transform.position = boundsControl.transform.position;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).position += oldPosition - transform.position;
+            }
         }
     }
 }
