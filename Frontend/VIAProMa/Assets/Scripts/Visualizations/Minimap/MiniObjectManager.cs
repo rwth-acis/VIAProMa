@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using i5.VIAProMa.Visualizations.ProgressBars;
 
 public class MiniObjectManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class MiniObjectManager : MonoBehaviour
     [SerializeField] private float yOffset;
     [SerializeField] private List<GameObject> trackedObjects;
     [SerializeField] private List<GameObject> miniObjects;
+    [SerializeField] private List<GameObject> miniObjectPrefabs;
+    [SerializeField] private GameObject miniObjectParent;
     private float currentScale;
     private Vector3 globalCenter;
 
@@ -104,5 +107,20 @@ public class MiniObjectManager : MonoBehaviour
         localPos = localPos * currentScale;
         localPos.y += yOffset;
         return localPos;
+    }
+
+    public void AddTrackedObject(GameObject objectToTrack) {
+        trackedObjects.Add(objectToTrack);
+        int miniObjectTypeIndex = GetMiniObjectTypeIndex(objectToTrack);
+        GameObject newMiniobject = Instantiate(miniObjectPrefabs[miniObjectTypeIndex]);
+        newMiniobject.transform.parent = miniObjectParent.transform;
+        miniObjects.Add(newMiniobject);
+    }
+
+    public int GetMiniObjectTypeIndex(GameObject objectToTrack) {
+        if (objectToTrack.GetComponents(typeof(ProgressBar)).Length == 0) {
+            return 1;
+        }
+        return 0;
     }
 }
