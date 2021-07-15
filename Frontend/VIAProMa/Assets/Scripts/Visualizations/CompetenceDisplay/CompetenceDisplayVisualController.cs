@@ -99,6 +99,9 @@ namespace i5.VIAProMa.Visualizations.Competence
             DetermineSizes();
 
             gridObjectCollection.UpdateCollection();
+
+            MoveChildrenToMiddle();
+            boundsControl.transform.localPosition = new Vector3(0, 0, 0);
         }
 
         private void DetermineSizes()
@@ -116,17 +119,17 @@ namespace i5.VIAProMa.Visualizations.Competence
                     1f
                     );
             }
-            boundsControl.transform.localPosition = new Vector3(0, 0, 0.5f);
+            //boundsControl.transform.localPosition = new Vector3(0, 0, 0.5f);
 
             titleLabel.MaxWidth = targetRadius * 0.8f;
             titleLabel.MaxHeight = targetRadius * 0.8f;
+        }
 
-            //Move pivot into the middle
-            Vector3 oldPosition = transform.position;
-            transform.position = boundsControl.transform.position;
-            for (int i = 0; i < transform.childCount; i++)
+        public void MoveChildrenToMiddle()
+        {
+            foreach (Transform child in transform)
             {
-                transform.GetChild(i).position += oldPosition - transform.position;
+                child.transform.localPosition = new Vector3(0, 0, -0.5f);
             }
         }
     }
