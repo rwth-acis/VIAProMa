@@ -21,12 +21,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
         private Vector3 lastPointerPosPos;
         private Vector3 lastPointerPosNeg;
 
-        [Header("UI Elements")] [Tooltip("Reference to the title of the minimap")] [SerializeField]
-        private Transform header; // Contains both the title and the background
-
-        [SerializeField] private TextMeshPro headerTitle;
-        [SerializeField] private Transform headerBackground;
-
+        [Header("UI Elements")] [Tooltip("Reference to the title of the minimap")]
         [SerializeField] private Transform handleLeft;
         [SerializeField] private Transform handleRight;
         [SerializeField] private Transform handleTop;
@@ -39,6 +34,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
         [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
         private BoundingBox boundingBox;
 
+        private string title = "Not Impl";
 
         // Used to resize the minimap from the handles
         // The Y-component here actually refers to the Z-axis because the minimap is placed laying down on the Z-axis
@@ -51,15 +47,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         public Visualization[] HighlightedItems { get; set; }
 
-        public string Title
-        {
-            get => headerTitle.text;
-            set
-            {
-                headerTitle.text = value;
-                headerTitle.gameObject.SetActive(!string.IsNullOrEmpty(value));
-            }
-        }
 
         public float Width
         {
@@ -81,6 +68,15 @@ namespace i5.VIAProMa.Visualizations.Minimap
             }
         }
 
+        public string Title
+        {
+            get => title;
+            set
+            {
+                title = value;
+            }
+        }
+
         public Color Color
         {
             get => backgroundRenderer.material.color;
@@ -96,7 +92,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
         {
 
             backgroundRenderer = minimapSurface.gameObject.GetComponent<Renderer>();
-            headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
 
             boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
             if (boundingBoxCollider is null)

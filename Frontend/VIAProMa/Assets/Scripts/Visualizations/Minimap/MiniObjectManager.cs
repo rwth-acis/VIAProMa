@@ -21,8 +21,6 @@ public class MiniObjectManager : MonoBehaviour
     [SerializeField] private float maxScale;
     [SerializeField] private float yOffset;
 
-    // List of objects already tracked
-    private HashSet<GameObject> trackedObjects;
 
     // List of mini objects already spawned
     //private List<GameObject> miniObjects;
@@ -48,8 +46,6 @@ public class MiniObjectManager : MonoBehaviour
     {
         // newly spawned game objects will be automatically added to the list
         ResourceManager.Instance.RegisterGameObjectSpawnedCallback(AddTrackedObject);
-        //trackedObjects = new HashSet<GameObject>();
-        //miniObjects = new List<GameObject>();
         miniObjDict = new Dictionary<GameObject, GameObject>();
         currentScale = 0.5f;
     }
@@ -63,7 +59,7 @@ public class MiniObjectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // an OnDestroy() would be better but we can't change all Visualizations
+        // an OnDestroy() callback would be better but we can't change all Visualizations
         var badKeys = miniObjDict.Where(pair => pair.Value == null)
             .Select(pair => pair.Key)
             .ToList();
@@ -74,7 +70,7 @@ public class MiniObjectManager : MonoBehaviour
         }
 
         CalculateLocalTransform();
-        //scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * 0.5f;
+        scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * currentScale;
 
         foreach (var g in miniObjDict)
         {
@@ -86,14 +82,6 @@ public class MiniObjectManager : MonoBehaviour
             mini.transform.localRotation = maxi.transform.rotation;
         }
 
-        //int i = 0;
-        //foreach (GameObject g in trackedObjects)
-        //{
-        //    miniObjects[i].transform.localPosition = TranslateIntoLocalCoordinates(g.transform.position);
-        //    miniObjects[i].transform.localScale = g.transform.lossyScale * currentScale;
-        //    miniObjects[i].transform.localRotation = g.transform.rotation;
-        //    i++;
-        //}
     }
 
 
@@ -110,6 +98,7 @@ public class MiniObjectManager : MonoBehaviour
         float globalMinY = float.MaxValue;
         float globalMaxZ = float.MinValue;
         float globalMinZ = float.MaxValue;
+
         if (miniObjDict.Count > 0)
         {
             foreach (GameObject g in miniObjDict.Values)
