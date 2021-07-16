@@ -113,7 +113,7 @@ namespace i5.VIAProMa.ResourceManagagement
                 // notify additional listeners
                 foreach (var c in gameObjSpawnedCallbacks)
                 {
-                    c?.Invoke(result); 
+                    c.Invoke(result); 
                 }
             }
             else

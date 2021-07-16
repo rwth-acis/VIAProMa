@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using i5.VIAProMa.ResourceManagagement;
 using UnityEngine;
 using i5.VIAProMa.Visualizations.BuildingProgressBar;
@@ -47,7 +48,7 @@ public class MiniObjectManager : MonoBehaviour
     {
         // newly spawned game objects will be automatically added to the list
         ResourceManager.Instance.RegisterGameObjectSpawnedCallback(AddTrackedObject);
-        trackedObjects = new HashSet<GameObject>();
+        //trackedObjects = new HashSet<GameObject>();
         //miniObjects = new List<GameObject>();
         miniObjDict = new Dictionary<GameObject, GameObject>();
         currentScale = 0.5f;
@@ -62,19 +63,23 @@ public class MiniObjectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // an OnDestroy() would be better but we can't change all Visualizations
+        var badKeys = miniObjDict.Where(pair => pair.Value == null)
+            .Select(pair => pair.Key)
+            .ToList();
+        foreach (var badKey in badKeys)
+        {
+            miniObjDict.Remove(badKey);
+            Destroy(badKey);
+        }
+
         CalculateLocalTransform();
         //scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * 0.5f;
 
         foreach (var g in miniObjDict)
         {
-            var maxi = g.Key;
-            var mini = g.Value;
-
-            if (maxi is null)
-            {
-                miniObjDict.Remove(maxi);
-                continue;
-            }
+            var maxi = g.Value;
+            var mini = g.Key;
 
             mini.transform.localPosition = TranslateIntoLocalCoordinates(maxi.transform.position);
             mini.transform.localScale = maxi.transform.lossyScale * currentScale;
@@ -98,19 +103,23 @@ public class MiniObjectManager : MonoBehaviour
         float localXLength = maxCorner.transform.localPosition.x - minCorner.transform.localPosition.x;
         float localYLength = maxCorner.transform.localPosition.y - minCorner.transform.localPosition.y;
         float localZLength = maxCorner.transform.localPosition.z - minCorner.transform.localPosition.z;
-        //print("X:" + localXLength);
-        //print("Y:" + localYLength);
-        //print("Z:" + localZLength);
+
         float globalMaxX = float.MinValue;
         float globalMinX = float.MaxValue;
         float globalMaxY = float.MinValue;
         float globalMinY = float.MaxValue;
         float globalMaxZ = float.MinValue;
         float globalMinZ = float.MaxValue;
-        if (trackedObjects.Count > 0)
+        if (miniObjDict.Count > 0)
         {
-            foreach (GameObject g in trackedObjects)
+            foreach (GameObject g in miniObjDict.Values)
             {
+                // possible to get a null game object if we haven't done a fresh Update()
+                if (g == null)
+                {
+                    continue;
+                }
+
                 if (g.transform.position.x > globalMaxX)
                 {
                     globalMaxX = g.transform.position.x;
@@ -178,53 +187,51 @@ public class MiniObjectManager : MonoBehaviour
 
     public void AddTrackedObject(GameObject objectToTrack)
     {
-        if (trackedObjects.Contains(objectToTrack))
+        if (miniObjDict.ContainsValue(objectToTrack))
         {
             return;
         }
 
         // Add newly spawned (big) object to list
-        trackedObjects.Add(objectToTrack);
+        //trackedObjects.Add(objectToTrack);
         // Create new mini object for the minimap
         //int miniObjectTypeIndex = GetMiniObjectTypeIndex(objectToTrack);
-        GameObject newMiniobject = InstantiateMiniObject(objectToTrack.GetType());
+        GameObject newMiniobject = InstantiateMiniObject(objectToTrack);
         newMiniobject.transform.parent = miniObjectParent.transform;
         //miniObjects.Add(newMiniobject);
 
-        miniObjDict.Add(objectToTrack, newMiniobject);
+        miniObjDict.Add(newMiniobject, objectToTrack);
     }
 
-    // TODO: Use this instead once Unity supports C# 8!
-    //private GameObject InstantiateMiniObject<T>(T miniObjType) => miniObjType switch
-    //{
-    //    CommitStatisticsVisualizer => Instantiate(miniCommitStats),
-    //    CompetenceDisplay => Instantiate(miniCompetence),
-    //    KanbanBoardColumn => Instantiate(miniKanban),
-    //    Minimap => Instantiate(miniMinimap),
-    //    ProgressBar => Instantiate(miniProgressBar),
-    //    _ => Instantiate(miniDefaultObject)
-    //};
-
     // Helper function to instantiate a new mini objetc of the correct type
-    private GameObject InstantiateMiniObject<T>(T miniObject)
+    private GameObject InstantiateMiniObject(GameObject miniObject)
     {
-        if (miniObject is CommitStatisticsVisualizer)
+        if (miniObject.GetComponent<BuildingProgressBarVisuals>())
+        {
+            return InstantiateMiniObject(miniBuilding);
+        }
+
+        if (miniObject.GetComponent<CommitStatisticsVisualizer>())
         {
             return Instantiate(miniCommitStats);
         }
-        if (miniObject is CompetenceDisplay)
+
+        if (miniObject.GetComponent<CompetenceDisplay>())
         {
             return Instantiate(miniCompetence);
         }
-        if (miniObject is KanbanBoardColumn)
+
+        if (miniObject.GetComponent<KanbanBoardColumn>())
         {
             return Instantiate(miniKanban);
         }
-        if (miniObject is Minimap)
+
+        if (miniObject.GetComponent<Minimap>())
         {
             return Instantiate(miniMinimap);
         }
-        if (miniObject is ProgressBar)
+
+        if (miniObject.GetComponent<ProgressBar>())
         {
             return Instantiate(miniProgressBar);
         }
