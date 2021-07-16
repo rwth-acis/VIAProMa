@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using i5.VIAProMa.ResourceManagagement;
 using UnityEngine;
 using i5.VIAProMa.Visualizations.ProgressBars;
 
@@ -11,12 +12,22 @@ public class MiniObjectManager : MonoBehaviour
     [SerializeField] private float minScale;
     [SerializeField] private float maxScale;
     [SerializeField] private float yOffset;
-    [SerializeField] private List<GameObject> trackedObjects;
+    // List of objects already tracked
+    [SerializeField] private HashSet<GameObject> trackedObjects;
+
     [SerializeField] private List<GameObject> miniObjects;
+    // Mini objects have their own prefab, which is spawned to represent the max object on the minimap
     [SerializeField] private List<GameObject> miniObjectPrefabs;
     [SerializeField] private GameObject miniObjectParent;
     private float currentScale;
     private Vector3 globalCenter;
+
+    public void Awake()
+    {
+        // newly spawned game objects will be automatically added to the list
+        ResourceManager.Instance.RegisterGameObjectSpawnedCallback(AddTrackedObject);
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +38,8 @@ public class MiniObjectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GameObject[] objs = FindObjectsOfType<GameObject>();
+
         CalculateLocalTransform();
         scaleIndicatorObject.transform.localScale = (new Vector3(1,1,1)) *currentScale;
         int i = 0;
@@ -110,6 +123,11 @@ public class MiniObjectManager : MonoBehaviour
     }
 
     public void AddTrackedObject(GameObject objectToTrack) {
+        if (trackedObjects.Contains(objectToTrack))
+        {
+            return;
+        }
+
         trackedObjects.Add(objectToTrack);
         int miniObjectTypeIndex = GetMiniObjectTypeIndex(objectToTrack);
         GameObject newMiniobject = Instantiate(miniObjectPrefabs[miniObjectTypeIndex]);
