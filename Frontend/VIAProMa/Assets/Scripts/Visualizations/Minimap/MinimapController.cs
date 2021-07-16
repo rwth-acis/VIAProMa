@@ -39,7 +39,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
         [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
         private BoundingBox boundingBox;
 
-        [Header("Values")] private List<GameObject> items;
 
         // Used to resize the minimap from the handles
         // The Y-component here actually refers to the Z-axis because the minimap is placed laying down on the Z-axis
@@ -95,8 +94,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         private void Awake()
         {
-            // TODO
-            items = new List<GameObject>();
 
             backgroundRenderer = minimapSurface.gameObject.GetComponent<Renderer>();
             headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
@@ -157,10 +154,10 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 size.y);
 
             // Stay at top and adjust to width + height
-            headerBackground.localScale = new Vector3(
-                size.x,
-                size.y,
-                0);
+            //headerBackground.localScale = new Vector3(
+            //    size.x,
+            //    size.y,
+            //    0);
 
             //header.localPosition = new Vector3(
             //    -15.1462f,
@@ -172,10 +169,10 @@ namespace i5.VIAProMa.Visualizations.Minimap
             //    1.025f,
             //    size.y / 2f - header.localScale.z / 2f);
 
-            header.localPosition = new Vector3(0f, 0f, 0f);
+            //header.localPosition = new Vector3(0f, 0f, 0f);
 
 
-            headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
+            //headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
 
             handleLeft.localPosition = new Vector3(
                 -size.x / 2f,

@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 8423982627442852718}
   - component: {fileID: 7387253088170902392}
   - component: {fileID: 1301313019100410100}
+  - component: {fileID: 3505856621034035901}
+  - component: {fileID: 971999156840343862}
   m_Layer: 0
   m_Name: Minimap (New)
   m_TagString: Untagged
@@ -59,6 +61,8 @@ MonoBehaviour:
   handleTop: {fileID: 5708258759330049640}
   handleBottom: {fileID: 3835960755716470378}
   grid: {fileID: 0}
+  minCorner: {fileID: 0}
+  maxCorner: {fileID: 0}
   boundingBox: {fileID: 2819643889752515673}
 --- !u!114 &8679080204069236370
 MonoBehaviour:
@@ -142,6 +146,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 343d9e23d00aed44b973569fa9d99104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3505856621034035901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4159086768605391003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bffe47ccc9df914e9016239a8c402c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &971999156840343862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4159086768605391003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba32733305f9c6a43a402a4e09030848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synchronizePosition: 1
+  synchronizeRotation: 1
+  synchronizeScale: 0
+  lerpSpeed: 15
 --- !u!1001 &4075661582976750225
 PrefabInstance:
   m_ObjectHideFlags: 0

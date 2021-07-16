@@ -110,6 +110,11 @@ namespace i5.VIAProMa.ResourceManagagement
             {
                 GameObject result = resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, true, data);
                 resultCallback?.Invoke(result);
+                // notify additional listeners
+                foreach (var c in gameObjSpawnedCallbacks)
+                {
+                    c?.Invoke(result); 
+                }
             }
             else
             {
