@@ -17,10 +17,6 @@ public class MockUpEditorWindow : MonoBehaviour
     [SerializeField] SpriteRenderer changeShapeButton;
     MockupEditorList currentList;
 
-    private void Start()
-    {
-        UpdateView();
-    }
     
     /// <summary>
     /// OnClick function to change the shape of the buttons
