@@ -22,13 +22,18 @@ public class MockUpEditorWindow : MonoBehaviour
         UpdateView();
     }
     
-
+    /// <summary>
+    /// OnClick function to change the shape of the buttons
+    /// </summary>
     public void ChangeButtonShape()
     {
         usePreviewButtons = !usePreviewButtons;
         UpdateView();
     }
 
+    /// <summary>
+    /// updates all buttons 
+    /// </summary>
     void UpdateView()
     {
         changeShapeButton.sprite = usePreviewButtons ? previewToText : textToPreview;
