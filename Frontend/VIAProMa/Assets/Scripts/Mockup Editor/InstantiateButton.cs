@@ -17,6 +17,7 @@ public class InstantiateButton : MonoBehaviourPun
     public MockupEditorList list;
     [SerializeField] int index;
     [SerializeField] TMP_Text label;
+    [SerializeField] SpriteRenderer spriteRenderer;
     const byte eventCode = 123;
     MockupEditorItem item;
 
@@ -32,6 +33,7 @@ public class InstantiateButton : MonoBehaviourPun
     {
         item = list.items[index];
         label.text = item.name;
+        if(spriteRenderer != null) spriteRenderer.sprite = item.sprite;
     }
 
     /// <summary>

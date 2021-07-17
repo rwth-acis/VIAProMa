@@ -6,8 +6,51 @@ using UnityEngine;
 public class MockUpEditorWindow : MonoBehaviour
 {
     public Transform spawnPlace;
-    [SerializeField] List<InstantiateButton> buttons;
+    [SerializeField] GameObject buttonsTextContent;
+    [SerializeField] GameObject buttonsPreviewContent;
+    [SerializeField] List<InstantiateButton> buttonsText;
+    [SerializeField] List<InstantiateButton> buttonsWithPreview;
     [SerializeField] List<MockupEditorList> categories;
+    [SerializeField] bool usePreviewButtons;
+    [SerializeField] Sprite textToPreview;
+    [SerializeField] Sprite previewToText;
+    [SerializeField] SpriteRenderer changeShapeButton;
+    MockupEditorList currentList;
+
+    private void Start()
+    {
+        UpdateView();
+    }
+    
+
+    public void ChangeButtonShape()
+    {
+        usePreviewButtons = !usePreviewButtons;
+        UpdateView();
+    }
+
+    void UpdateView()
+    {
+        changeShapeButton.sprite = usePreviewButtons ? previewToText : textToPreview;
+
+        List<InstantiateButton> buttons = usePreviewButtons ? buttonsWithPreview : buttonsText;
+        buttonsPreviewContent.SetActive(usePreviewButtons);
+        buttonsTextContent.SetActive(!usePreviewButtons);
+       
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (i < currentList.items.Count)
+            {
+                buttons[i].gameObject.SetActive(true);
+                buttons[i].list = currentList;
+                buttons[i].UpdateButton();
+            }
+            else
+            {
+                buttons[i].gameObject.SetActive(false);
+            }
+        }
+    }
 
     /// <summary>
     /// Called whenever a new category is selected, called from Toggle Collection
@@ -15,19 +58,8 @@ public class MockUpEditorWindow : MonoBehaviour
     /// <param name="collection">the toggle collection that calls this function</param>
     public void OnCategorySelected(InteractableToggleCollection collection)
     {
-        MockupEditorList currentList = categories[collection.CurrentIndex];
-        for(int i = 0; i < buttons.Count; i++)
-        {
-            if(i < currentList.items.Count)
-            {
-                buttons[i].gameObject.SetActive(true);
-                buttons[i].list = currentList;
-                buttons[i].UpdateButton();
-            } else
-            {
-                buttons[i].gameObject.SetActive(false);
-            }
-        }
+        currentList = categories[collection.CurrentIndex];
+        UpdateView();
     }
 
     /// <summary>
