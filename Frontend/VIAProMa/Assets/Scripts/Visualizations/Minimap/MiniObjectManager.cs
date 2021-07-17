@@ -16,7 +16,6 @@ public class MiniObjectManager : MonoBehaviour
 {
     [SerializeField] private GameObject minCorner;
     [SerializeField] private GameObject maxCorner;
-    [SerializeField] private GameObject scaleIndicatorObject;
     [SerializeField] private float minScale;
     [SerializeField] private float maxScale;
     [SerializeField] private float yOffset;
@@ -76,7 +75,6 @@ public class MiniObjectManager : MonoBehaviour
             Destroy(badKey);
         }
 
-        scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * currentScale;
         var legend = minimapLegend.GetComponent<ScaleLegendController>();
         if (legend)
         {
@@ -101,7 +99,6 @@ public class MiniObjectManager : MonoBehaviour
     {
         // board extent
         float localXLength = maxCorner.transform.localPosition.x - minCorner.transform.localPosition.x;
-        float localYLength = maxCorner.transform.localPosition.y - minCorner.transform.localPosition.y;
         float localZLength = maxCorner.transform.localPosition.z - minCorner.transform.localPosition.z;
 
         float globalMaxX = float.MinValue;
@@ -170,14 +167,12 @@ public class MiniObjectManager : MonoBehaviour
             }
         }
 
-        var gCenter = (globalMin + globalMax) / 2;
 
         // global midpoint, becomes local origin coordinate
         globalCenter = new Vector3((globalMaxX + globalMinX) / 2, (globalMaxY + globalMinY) / 2,
             (globalMaxZ + globalMinZ) / 2);
         float largestDimension = Mathf.Max((globalMaxX - globalMinX), globalMaxZ - globalMinZ);
         float xDimension = globalMaxX - globalMinX;
-        //float yDimension = globalMaxY - globalMinY;
         float zDimension = globalMaxZ - globalMinZ;
         if (largestDimension == 0)
         {

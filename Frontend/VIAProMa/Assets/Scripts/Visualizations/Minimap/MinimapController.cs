@@ -38,7 +38,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
         [SerializeField] private GameObject minCorner;
         [SerializeField] private GameObject maxCorner;
 
-        private string title = "Not Impl";
+        private string title = "Unnamable Minimap";
 
         // Used to resize the minimap from the handles
         // The Y-component here actually refers to the Z-axis because the minimap is placed laying down on the Z-axis
@@ -135,9 +135,16 @@ namespace i5.VIAProMa.Visualizations.Minimap
             return Vector3.Dot(transform.right, delta);
         }
 
-        private void UpdateVisuals()
+        private void OnEnable()
         {
+            boundingBoxStateController.BoundingBoxStateChanged += OnBoundingBoxStateChanged;
         }
+
+        private void OnDisable()
+        {
+            boundingBoxStateController.BoundingBoxStateChanged -= OnBoundingBoxStateChanged;
+        }
+
 
         private void OnBoundingBoxStateChanged(object sender, EventArgs e)
         {
@@ -155,28 +162,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 minimapSurface.localScale.y,
                 size.y);
 
-            var b = minimapSurface.GetColliderBounds().extents;
-
-            // Stay at top and adjust to width + height
-            //headerBackground.localScale = new Vector3(
-            //    size.x,
-            //    size.y,
-            //    0);
-
-            //header.localPosition = new Vector3(
-            //    -15.1462f,
-            //    1.025f,
-            //    3.738f);
-
-            //header.localPosition = new Vector3(
-            //    size.x / 2f - header.localScale.x / 2f,
-            //    1.025f,
-            //    size.y / 2f - header.localScale.z / 2f);
-
-            //header.localPosition = new Vector3(0f, 0f, 0f);
-
-
-            //headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
 
             // put the minimap legend in the upper-right quadrant
             minimapLegend.localScale = new Vector3(
@@ -214,10 +199,11 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 -size.y / 2f
             );
 
-            //boundingBoxCollider.size = new Vector3(
-            //    size.x,
-            //    minimapSurface.localPosition.y,
-            //    size.y);
+
+            boundingBoxCollider.size = new Vector3(
+                minimapSurface.localScale.x + 0.5f,
+                boundingBoxCollider.size.y,
+                boundingBoxCollider.size.z);
 
             minCorner.transform.localPosition = new Vector3(
                 -size.x / 2f,
@@ -230,9 +216,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 0.4f,
                 size.y / 2f);
 
-            //boundingBoxCollider.size = minimapSurface.localScale;
 
-            UpdateVisuals();
         }
     }
 }
