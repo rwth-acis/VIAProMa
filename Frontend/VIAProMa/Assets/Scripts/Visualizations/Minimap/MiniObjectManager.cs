@@ -197,7 +197,13 @@ public class MiniObjectManager : MonoBehaviour
         localPos = localPos * currentScale;
         localPos.y += yOffset;
         localPos.y = Mathf.Min(localPos.y, maxCorner.transform.position.y);
-        return localPos;
+
+        var clamped = new Vector3(
+            Mathf.Clamp(localPos.x, minCorner.transform.localPosition.x, maxCorner.transform.localPosition.x),
+            localPos.y,
+            Mathf.Clamp(localPos.z, minCorner.transform.localPosition.z, maxCorner.transform.localPosition.z)
+        );
+        return clamped;
     }
 
     /// <summary>
