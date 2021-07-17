@@ -5,16 +5,19 @@ using Photon;
 using Photon.Pun;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
+using i5.VIAProMa.ResourceManagagement;
 
 /// <summary>
 /// a component for a button. Instantiate a mockup item from the list.
 /// </summary>
-public class InstantiateButton : MonoBehaviour
+public class InstantiateButton : MonoBehaviourPun
 {
     public MockupEditorList list;
     [SerializeField] int index;
     [SerializeField] TMP_Text label;
-
+    const byte eventCode = 123;
     MockupEditorItem item;
 
     private void Start()
@@ -44,25 +47,48 @@ public class InstantiateButton : MonoBehaviour
     /// </summary>
     void Spawn()
     {
-        Vector3 spawnPosition;
+        Transform spawn;
         MockUpEditorWindow mockupWindow;
-        if(TryGetComponent<MockUpEditorWindow>(out mockupWindow))
+        mockupWindow = GetComponentInParent<MockUpEditorWindow>();
+        if(mockupWindow != null)
         {
-            GetComponentInParent<MockUpEditorWindow>().ClearSpawnPlace();
-            spawnPosition = mockupWindow.spawnPlace.position;
+            mockupWindow.ClearSpawnPlace();
+            spawn = mockupWindow.spawnPlace;
         } else
         {
-            spawnPosition = transform.position;
+            spawn = transform;
         }
 
-        //the base GO which is instantiated every time and "holds" the visual object inside, has the important components (e.g. ownership, network,...)
-        GameObject baseGO = Instantiate(list.PrefabBase, spawnPosition, Quaternion.identity);
-        baseGO.GetComponent<MockupEdiorGameObject>().SetData(list.name, index);
-        //the skin GO which visualizes the object
-        GameObject skinGO = Instantiate(item.Prefab, baseGO.transform);
+        if(PhotonNetwork.InRoom)
+        {
+            object[] data = new object[]
+            {
+                list.name,
+                index
+            };
 
-        //if the skinGO has an interactable component, it should be disabled so that it cannot be pressed
-        Interactable interactable;
-        if (skinGO.TryGetComponent<Interactable>(out interactable)) interactable.enabled = false;
+            ResourceManager.Instance.NetworkInstantiate(list.PrefabBase, spawn.position, spawn.rotation, data);
+        } else
+        {
+            //the base GO which is instantiated every time and "holds" the visual object inside, has the important components (e.g. ownership, network,...)
+            GameObject baseGO = Instantiate(list.PrefabBase, spawn.position, spawn.rotation);
+            baseGO.GetComponent<MockupEdiorGameObject>().SetData(list.name, index);
+
+        
+            //the skin GO which visualizes the object
+            GameObject skinGO = Instantiate(item.Prefab, baseGO.transform);
+
+            //if the skinGO or its children have an interactable component, it should be disabled so that it cannot be pressed
+            Interactable[] interactables = skinGO.GetComponentsInChildren<Interactable>();
+            if(interactables != null && interactables.Length > 0)
+            {
+                for(int i = 0; i < interactables.Length; i++)
+                {
+                    interactables[i].enabled = false;
+                }
+            }
+        }
+        
     }
+
 }
