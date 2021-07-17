@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Visualizations.Minimap;
+using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
@@ -17,29 +18,27 @@ namespace i5.VIAProMa.Visualizations.Minimap
     {
         [Tooltip("All of the minimap items sit on this surface")] [SerializeField]
         private Transform minimapSurface;
+        [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
+        private BoundingBox boundingBox;
+
+        [SerializeField] [Tooltip("The legend shows the current minimap scale")]
+        private Transform minimapLegend;
+
+        private Vector2 surfaceMinSize;
 
         private Vector3 lastPointerPosPos;
         private Vector3 lastPointerPosNeg;
 
-        [Header("UI Elements")] [Tooltip("Reference to the title of the minimap")] [SerializeField]
-        private Transform header; // Contains both the title and the background
-
-        [SerializeField] private TextMeshPro headerTitle;
-        [SerializeField] private Transform headerBackground;
-
+        [Header("Handles")] 
         [SerializeField] private Transform handleLeft;
         [SerializeField] private Transform handleRight;
         [SerializeField] private Transform handleTop;
         [SerializeField] private Transform handleBottom;
-        [SerializeField] private ObjectGrid grid;
 
         [SerializeField] private GameObject minCorner;
         [SerializeField] private GameObject maxCorner;
 
-        [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
-        private BoundingBox boundingBox;
-
-        [Header("Values")] private List<GameObject> items;
+        private string title = "Unnamable Minimap";
 
         // Used to resize the minimap from the handles
         // The Y-component here actually refers to the Z-axis because the minimap is placed laying down on the Z-axis
@@ -52,22 +51,15 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         public Visualization[] HighlightedItems { get; set; }
 
-        public string Title
-        {
-            get => headerTitle.text;
-            set
-            {
-                headerTitle.text = value;
-                headerTitle.gameObject.SetActive(!string.IsNullOrEmpty(value));
-            }
-        }
 
         public float Width
         {
             get => minimapSurface.localScale.x;
             set
             {
-                size.x = value;
+                // adjust both axes to keep square ratio
+                size.x = Mathf.Max(value, surfaceMinSize.x);
+                size.y = Mathf.Max(value, surfaceMinSize.y);
                 UpdateSize();
             }
         }
@@ -77,9 +69,17 @@ namespace i5.VIAProMa.Visualizations.Minimap
             get => minimapSurface.localScale.z;
             set
             {
-                size.y = value;
+                // adjust both axes to keep square ratio
+                size.y = Mathf.Max(value, surfaceMinSize.y);
+                size.x = Mathf.Max(value, surfaceMinSize.x);
                 UpdateSize();
             }
+        }
+
+        public string Title
+        {
+            get => title;
+            set => title = value;
         }
 
         public Color Color
@@ -95,11 +95,8 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         private void Awake()
         {
-            // TODO
-            items = new List<GameObject>();
 
             backgroundRenderer = minimapSurface.gameObject.GetComponent<Renderer>();
-            headerBackgroundRenderer = headerBackground.gameObject.GetComponent<Renderer>();
 
             boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
             if (boundingBoxCollider is null)
@@ -115,6 +112,8 @@ namespace i5.VIAProMa.Visualizations.Minimap
             }
 
             size = new Vector2(minimapSurface.localScale.x, minimapSurface.localScale.z);
+            // record the initial size so we don't go smaller than this
+            surfaceMinSize = new Vector2(minimapSurface.localScale.x, minimapSurface.localScale.z);
             UpdateSize();
         }
 
@@ -136,9 +135,16 @@ namespace i5.VIAProMa.Visualizations.Minimap
             return Vector3.Dot(transform.right, delta);
         }
 
-        private void UpdateVisuals()
+        private void OnEnable()
         {
+            boundingBoxStateController.BoundingBoxStateChanged += OnBoundingBoxStateChanged;
         }
+
+        private void OnDisable()
+        {
+            boundingBoxStateController.BoundingBoxStateChanged -= OnBoundingBoxStateChanged;
+        }
+
 
         private void OnBoundingBoxStateChanged(object sender, EventArgs e)
         {
@@ -156,26 +162,18 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 minimapSurface.localScale.y,
                 size.y);
 
-            // Stay at top and adjust to width + height
-            headerBackground.localScale = new Vector3(
+
+            // put the minimap legend in the upper-right quadrant
+            minimapLegend.localScale = new Vector3(
                 size.x,
-                size.y,
-                0);
+                minimapLegend.localScale.y,
+                size.y);
 
-            //header.localPosition = new Vector3(
-            //    -15.1462f,
-            //    1.025f,
-            //    3.738f);
-
-            //header.localPosition = new Vector3(
-            //    size.x / 2f - header.localScale.x / 2f,
-            //    1.025f,
-            //    size.y / 2f - header.localScale.z / 2f);
-
-            header.localPosition = new Vector3(0f, 0f, 0f);
-
-
-            headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
+            minimapLegend.localPosition = new Vector3(
+                size.x / 2f + minimapLegend.localScale.x / 10f,
+                0.01f,
+                (size.y / 2f) - minimapLegend.localScale.z / 20f
+            );
 
             handleLeft.localPosition = new Vector3(
                 -size.x / 2f,
@@ -201,23 +199,24 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 -size.y / 2f
             );
 
-            //boundingBoxCollider.size = new Vector3(
-            //    size.x,
-            //    minimapSurface.localPosition.y,
-            //    size.y);
+
+            boundingBoxCollider.size = new Vector3(
+                minimapSurface.localScale.x + 0.5f,
+                boundingBoxCollider.size.y,
+                boundingBoxCollider.size.z);
 
             minCorner.transform.localPosition = new Vector3(
-                -size.y / 2f,
+                -size.x / 2f,
                 0f,
                 -size.y / 2f);
 
 
             maxCorner.transform.localPosition = new Vector3(
-                size.y / 2f,
-                0f,
+                size.x / 2f,
+                0.4f,
                 size.y / 2f);
 
-            UpdateVisuals();
+
         }
     }
 }
