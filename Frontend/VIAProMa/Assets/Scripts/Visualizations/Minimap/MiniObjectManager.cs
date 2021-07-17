@@ -93,7 +93,6 @@ public class MiniObjectManager : MonoBehaviour
             mini.transform.localRotation = maxi.transform.rotation;
         }
 
-        print("Scale is " + currentScale);
     }
 
 

@@ -18,23 +18,25 @@ namespace i5.VIAProMa.Visualizations.Minimap
     {
         [Tooltip("All of the minimap items sit on this surface")] [SerializeField]
         private Transform minimapSurface;
+        [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
+        private BoundingBox boundingBox;
+
+        [SerializeField] [Tooltip("The legend shows the current minimap scale")]
+        private Transform minimapLegend;
+
         private Vector2 surfaceMinSize;
 
         private Vector3 lastPointerPosPos;
         private Vector3 lastPointerPosNeg;
 
-        [Header("UI Elements")] [Tooltip("Reference to the title of the minimap")]
+        [Header("Handles")] 
         [SerializeField] private Transform handleLeft;
         [SerializeField] private Transform handleRight;
         [SerializeField] private Transform handleTop;
         [SerializeField] private Transform handleBottom;
-        [SerializeField] private ObjectGrid grid;
 
         [SerializeField] private GameObject minCorner;
         [SerializeField] private GameObject maxCorner;
-
-        [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
-        private BoundingBox boundingBox;
 
         private string title = "Not Impl";
 
@@ -176,6 +178,18 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
             //headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
 
+            // put the minimap legend in the upper-right quadrant
+            minimapLegend.localScale = new Vector3(
+                size.x,
+                minimapLegend.localScale.y,
+                size.y);
+
+            minimapLegend.localPosition = new Vector3(
+                size.x / 2f + minimapLegend.localScale.x / 10f,
+                0.01f,
+                (size.y / 2f) - minimapLegend.localScale.z / 20f
+            );
+
             handleLeft.localPosition = new Vector3(
                 -size.x / 2f,
                 0f,
@@ -215,6 +229,8 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 size.x / 2f,
                 0.4f,
                 size.y / 2f);
+
+            //boundingBoxCollider.size = minimapSurface.localScale;
 
             UpdateVisuals();
         }
