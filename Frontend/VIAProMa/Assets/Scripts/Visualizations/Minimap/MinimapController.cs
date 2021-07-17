@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using i5.VIAProMa.Utilities;
-using i5.VIAProMa.Visualizations.Minimap;
-using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.UI;
-using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace i5.VIAProMa.Visualizations.Minimap
 {
@@ -20,10 +11,10 @@ namespace i5.VIAProMa.Visualizations.Minimap
         private Transform minimapSurface;
         [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
         private BoundingBox boundingBox;
-
         [SerializeField] [Tooltip("The legend shows the current minimap scale")]
         private Transform minimapLegend;
 
+        // keep track of the original size so we can't get any smaller than it
         private Vector2 surfaceMinSize;
 
         private Vector3 lastPointerPosPos;
@@ -35,10 +26,12 @@ namespace i5.VIAProMa.Visualizations.Minimap
         [SerializeField] private Transform handleTop;
         [SerializeField] private Transform handleBottom;
 
+        // defines the extent of the mini objects displayed on top of the surface
         [SerializeField] private GameObject minCorner;
         [SerializeField] private GameObject maxCorner;
 
-        private string title = "Unnamable Minimap";
+        // don't add a title because it looks confusing when displaying items
+        // over it
 
         // Used to resize the minimap from the handles
         // The Y-component here actually refers to the Z-axis because the minimap is placed laying down on the Z-axis
@@ -48,8 +41,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         private BoxCollider boundingBoxCollider;
         private BoundingBoxStateController boundingBoxStateController;
-
-        public Visualization[] HighlightedItems { get; set; }
 
 
         public float Width
@@ -76,11 +67,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
             }
         }
 
-        public string Title
-        {
-            get => title;
-            set => title = value;
-        }
+        public string Title { get; set; } = "Unnamable Minimap";
 
         public Color Color
         {
@@ -117,23 +104,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
             UpdateSize();
         }
 
-        public void StartResizing(Vector3 pointerPosition, bool handleOnPositiveCap)
-        {
-            if (handleOnPositiveCap)
-            {
-                lastPointerPosPos = pointerPosition;
-            }
-            else
-            {
-                lastPointerPosNeg = pointerPosition;
-            }
-        }
 
-        private float ProjectOnRight(Vector3 vector, Vector3 position)
-        {
-            Vector3 delta = vector - position;
-            return Vector3.Dot(transform.right, delta);
-        }
 
         private void OnEnable()
         {
@@ -155,6 +126,9 @@ namespace i5.VIAProMa.Visualizations.Minimap
         }
 
 
+        /// <summary>
+        /// Update the size/scale of the objects in the prefab
+        /// </summary>
         private void UpdateSize()
         {
             minimapSurface.localScale = new Vector3(

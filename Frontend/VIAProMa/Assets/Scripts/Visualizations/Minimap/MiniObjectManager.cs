@@ -19,9 +19,8 @@ public class MiniObjectManager : MonoBehaviour
     [SerializeField] private float maxScale;
     [SerializeField] private float yOffset;
 
+    // reference to the legend so we can tell it the current scale
     [SerializeField] private GameObject minimapLegend;
-
-
 
     // List of mini objects already spawned
     private Dictionary<GameObject, GameObject> miniObjDict;
@@ -31,8 +30,8 @@ public class MiniObjectManager : MonoBehaviour
     private Vector3 globalCenter;
 
     [Header("Mini Object Prefabs")] [SerializeField]
+    // used when there is no miniprefab registered for the big object
     private GameObject miniDefaultObject;
-
     // Mini objects have their own prefab, which is spawned to represent the max object on the minimap
     [SerializeField] private GameObject miniBuilding;
     [SerializeField] private GameObject miniCommitStats;
@@ -164,6 +163,7 @@ public class MiniObjectManager : MonoBehaviour
         // global midpoint, becomes local origin coordinate
         globalCenter = new Vector3((globalMaxX + globalMinX) / 2, (globalMaxY + globalMinY) / 2,
             (globalMaxZ + globalMinZ) / 2);
+        // calculate needed scale
         float largestDimension = Mathf.Max((globalMaxX - globalMinX), globalMaxZ - globalMinZ);
         float xDimension = globalMaxX - globalMinX;
         float zDimension = globalMaxZ - globalMinZ;
@@ -205,7 +205,7 @@ public class MiniObjectManager : MonoBehaviour
     /// with the ResourceManager
     /// </summary>
     /// <param name="objectToTrack">GameObject passed in from ResourceManager</param>
-    public void AddTrackedObject(GameObject objectToTrack)
+    private void AddTrackedObject(GameObject objectToTrack)
     {
         if (miniObjDict.ContainsValue(objectToTrack))
         {

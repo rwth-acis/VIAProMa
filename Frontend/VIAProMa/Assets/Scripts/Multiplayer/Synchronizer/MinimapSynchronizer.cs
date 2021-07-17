@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using i5.VIAProMa.Multiplayer.Common;
+﻿using i5.VIAProMa.Multiplayer.Common;
 using i5.VIAProMa.Visualizations.Minimap;
 using Photon.Pun;
 
