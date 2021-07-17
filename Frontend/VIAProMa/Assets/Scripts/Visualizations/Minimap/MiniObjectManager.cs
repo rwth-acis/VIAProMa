@@ -22,11 +22,10 @@ public class MiniObjectManager : MonoBehaviour
     [SerializeField] private float yOffset;
 
 
+
     // List of mini objects already spawned
-    //private List<GameObject> miniObjects;
     private Dictionary<GameObject, GameObject> miniObjDict;
 
-    // Mini objects have their own prefab, which is spawned to represent the max object on the minimap
     [SerializeField] private GameObject miniObjectParent;
     private float currentScale;
     private Vector3 globalCenter;
@@ -34,6 +33,7 @@ public class MiniObjectManager : MonoBehaviour
     [Header("Mini Object Prefabs")] [SerializeField]
     private GameObject miniDefaultObject;
 
+    // Mini objects have their own prefab, which is spawned to represent the max object on the minimap
     [SerializeField] private GameObject miniBuilding;
     [SerializeField] private GameObject miniCommitStats;
     [SerializeField] private GameObject miniCompetence;
@@ -46,8 +46,10 @@ public class MiniObjectManager : MonoBehaviour
     {
         // newly spawned game objects will be automatically added to the list
         ResourceManager.Instance.RegisterGameObjectSpawnedCallback(AddTrackedObject);
+
+        // <min object, max object>
         miniObjDict = new Dictionary<GameObject, GameObject>();
-        currentScale = 0.5f;
+        currentScale = minScale;
     }
 
 
@@ -59,6 +61,9 @@ public class MiniObjectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        CalculateLocalTransform();
+
         // an OnDestroy() callback would be better but we can't change all Visualizations
         var badKeys = miniObjDict.Where(pair => pair.Value == null)
             .Select(pair => pair.Key)
@@ -69,8 +74,7 @@ public class MiniObjectManager : MonoBehaviour
             Destroy(badKey);
         }
 
-        CalculateLocalTransform();
-        scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * currentScale;
+        //scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * currentScale;
 
         foreach (var g in miniObjDict)
         {
@@ -82,12 +86,14 @@ public class MiniObjectManager : MonoBehaviour
             mini.transform.localRotation = maxi.transform.rotation;
         }
 
+        print(currentScale);
     }
 
 
     //Calculates the GlobalCenter as the middle of the Axis Aligned Bounding Cuboid(AABC) of the tracked objects, and the current scale As the ratio between the local scale length of the cube spaned by the reference corners and the largest dimension of the AABC. Then saves these values in the according variables. Called Every Frame
     void CalculateLocalTransform()
     {
+        // board extent
         float localXLength = maxCorner.transform.localPosition.x - minCorner.transform.localPosition.x;
         float localYLength = maxCorner.transform.localPosition.y - minCorner.transform.localPosition.y;
         float localZLength = maxCorner.transform.localPosition.z - minCorner.transform.localPosition.z;
@@ -99,6 +105,11 @@ public class MiniObjectManager : MonoBehaviour
         float globalMaxZ = float.MinValue;
         float globalMinZ = float.MaxValue;
 
+        var globalMin = new Vector3();
+        var globalMax = new Vector3();
+
+
+        // calc bounding box of max objects
         if (miniObjDict.Count > 0)
         {
             foreach (GameObject g in miniObjDict.Values)
@@ -112,38 +123,53 @@ public class MiniObjectManager : MonoBehaviour
                 if (g.transform.position.x > globalMaxX)
                 {
                     globalMaxX = g.transform.position.x;
+
+                    globalMax.x = g.transform.position.x;
                 }
 
                 if (g.transform.position.x < globalMinX)
                 {
                     globalMinX = g.transform.position.x;
+
+                    globalMin.x = g.transform.position.x;
                 }
 
                 if (g.transform.position.y > globalMaxY)
                 {
                     globalMaxY = g.transform.position.y;
+
+                    globalMax.y = g.transform.position.y;
                 }
 
                 if (g.transform.position.y < globalMinY)
                 {
                     globalMinY = g.transform.position.y;
+
+                    globalMin.y = g.transform.position.y;
                 }
 
                 if (g.transform.position.z > globalMaxZ)
                 {
                     globalMaxZ = g.transform.position.z;
+
+                    globalMax.z = g.transform.position.z;
                 }
 
                 if (g.transform.position.z < globalMinZ)
                 {
                     globalMinZ = g.transform.position.z;
+
+                    globalMin.z = g.transform.position.z;
                 }
             }
         }
 
+        var gCenter = (globalMin + globalMax) / 2;
+
+        // midpoint
         globalCenter = new Vector3((globalMaxX + globalMinX) / 2, (globalMaxY + globalMinY) / 2,
             (globalMaxZ + globalMinZ) / 2);
-        float largestDimension = Mathf.Max(globalMaxX - globalMinX, globalMaxZ - globalMinZ);
+        float largestDimension = Mathf.Max(Math.Abs(globalMaxX - globalMinX), globalMaxZ - globalMinZ);
         float xDimension = globalMaxX - globalMinX;
         float yDimension = globalMaxY - globalMinY;
         float zDimension = globalMaxZ - globalMinZ;
@@ -182,12 +208,9 @@ public class MiniObjectManager : MonoBehaviour
         }
 
         // Add newly spawned (big) object to list
-        //trackedObjects.Add(objectToTrack);
         // Create new mini object for the minimap
-        //int miniObjectTypeIndex = GetMiniObjectTypeIndex(objectToTrack);
         GameObject newMiniobject = InstantiateMiniObject(objectToTrack);
         newMiniobject.transform.parent = miniObjectParent.transform;
-        //miniObjects.Add(newMiniobject);
 
         miniObjDict.Add(newMiniobject, objectToTrack);
     }
@@ -227,14 +250,4 @@ public class MiniObjectManager : MonoBehaviour
 
         return Instantiate(miniDefaultObject);
     }
-
-    //public int GetMiniObjectTypeIndex(GameObject objectToTrack)
-    //{
-    //    if (!(objectToTrack.GetComponents(typeof(ProgressBar)).Length == 0))
-    //    {
-    //        return 1;
-    //    }
-
-    //    return 0;
-    //}
 }

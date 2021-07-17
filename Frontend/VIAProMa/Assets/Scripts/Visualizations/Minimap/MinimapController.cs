@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Visualizations.Minimap;
+using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
     {
         [Tooltip("All of the minimap items sit on this surface")] [SerializeField]
         private Transform minimapSurface;
+        private Vector2 surfaceMinSize;
 
         private Vector3 lastPointerPosPos;
         private Vector3 lastPointerPosNeg;
@@ -53,7 +55,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
             get => minimapSurface.localScale.x;
             set
             {
-                size.x = value;
+                size.x = Mathf.Max(value, surfaceMinSize.x);
                 UpdateSize();
             }
         }
@@ -63,7 +65,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
             get => minimapSurface.localScale.z;
             set
             {
-                size.y = value;
+                size.y = Mathf.Max(value, surfaceMinSize.y);
                 UpdateSize();
             }
         }
@@ -71,10 +73,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
         public string Title
         {
             get => title;
-            set
-            {
-                title = value;
-            }
+            set => title = value;
         }
 
         public Color Color
@@ -107,6 +106,8 @@ namespace i5.VIAProMa.Visualizations.Minimap
             }
 
             size = new Vector2(minimapSurface.localScale.x, minimapSurface.localScale.z);
+            // record the initial size so we don't go smaller than this
+            surfaceMinSize = new Vector2(minimapSurface.localScale.x, minimapSurface.localScale.z);
             UpdateSize();
         }
 
@@ -147,6 +148,8 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 size.x,
                 minimapSurface.localScale.y,
                 size.y);
+
+            var b = minimapSurface.GetColliderBounds().extents;
 
             // Stay at top and adjust to width + height
             //headerBackground.localScale = new Vector3(
