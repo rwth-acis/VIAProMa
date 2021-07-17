@@ -1,14 +1,28 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using Photon.Realtime;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// component which is attacked to every mockup item instance
 /// </summary>
-public class MockupEdiorGameObject : MonoBehaviour
+public class MockupEdiorGameObject : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
     public string category;
     public int index;
+
+    /// <summary>
+    /// called when the object is spawned on the network, called by everyone
+    /// </summary>
+    /// <param name="info"></param>
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        object[] instantiationData = info.photonView.InstantiationData;
+        category = (string)instantiationData[0];
+        index = (int)instantiationData[1];
+        SpawnChildObject();
+    }
 
     /// <summary>
     /// sets the data of the item so which item it represents
@@ -26,7 +40,6 @@ public class MockupEdiorGameObject : MonoBehaviour
     /// </summary>
     public void SpawnChildObject()
     {
-        Debug.Log(transform.childCount);
         if(transform.childCount <= 2) //if less than 3 childs attached, there is no skin currently attached
         {
             MockupEditorList list = Resources.Load<MockupEditorList>(category);
