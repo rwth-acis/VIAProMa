@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using i5.VIAProMa.ResourceManagagement;
 using UnityEngine;
@@ -14,6 +12,7 @@ using i5.VIAProMa.Visualizations.Minimap;
 
 public class MiniObjectManager : MonoBehaviour
 {
+    [Header("Positioning properties")]
     [SerializeField] private GameObject minCorner;
     [SerializeField] private GameObject maxCorner;
     [SerializeField] private float minScale;
@@ -94,7 +93,11 @@ public class MiniObjectManager : MonoBehaviour
     }
 
 
-    //Calculates the GlobalCenter as the middle of the Axis Aligned Bounding Cuboid(AABC) of the tracked objects, and the current scale As the ratio between the local scale length of the cube spaned by the reference corners and the largest dimension of the AABC. Then saves these values in the according variables. Called Every Frame
+    /// <summary>
+    /// Calculates the GlobalCenter as the middle of the Axis Aligned Bounding Cuboid(AABC) of the tracked objects,
+    /// and the current scale As the ratio between the local scale length of the cube spaned by the reference corners
+    /// and the largest dimension of the AABC. Then saves these values in the according variables. Called every frame.
+    /// </summary>
     void CalculateLocalTransform()
     {
         // board extent
@@ -107,10 +110,6 @@ public class MiniObjectManager : MonoBehaviour
         float globalMinY = float.MaxValue;
         float globalMaxZ = float.MinValue;
         float globalMinZ = float.MaxValue;
-
-        var globalMin = new Vector3();
-        var globalMax = new Vector3();
-
 
         // calc bounding box of max objects
         if (miniObjDict.Count > 0)
@@ -127,42 +126,36 @@ public class MiniObjectManager : MonoBehaviour
                 {
                     globalMaxX = g.transform.position.x;
 
-                    globalMax.x = g.transform.position.x;
                 }
 
                 if (g.transform.position.x < globalMinX)
                 {
                     globalMinX = g.transform.position.x;
 
-                    globalMin.x = g.transform.position.x;
                 }
 
                 if (g.transform.position.y > globalMaxY)
                 {
                     globalMaxY = g.transform.position.y;
 
-                    globalMax.y = g.transform.position.y;
                 }
 
                 if (g.transform.position.y < globalMinY)
                 {
                     globalMinY = g.transform.position.y;
 
-                    globalMin.y = g.transform.position.y;
                 }
 
                 if (g.transform.position.z > globalMaxZ)
                 {
                     globalMaxZ = g.transform.position.z;
 
-                    globalMax.z = g.transform.position.z;
                 }
 
                 if (g.transform.position.z < globalMinZ)
                 {
                     globalMinZ = g.transform.position.z;
 
-                    globalMin.z = g.transform.position.z;
                 }
             }
         }
@@ -192,7 +185,12 @@ public class MiniObjectManager : MonoBehaviour
         }
     }
 
-    //Gets the global position of a tracked object and returns the  corresponding local position of the corresponding mini-object in the coordinate system of the minimap
+    /// <summary>
+    /// Gets the global position of a tracked object and returns the
+    /// corresponding local position of the corresponding mini-object in the coordinate system of the minimap
+    /// </summary>
+    /// <param name="globalPos">world position of a gameobject</param>
+    /// <returns>the local position in the minimap's coordinate system</returns>
     private Vector3 TranslateIntoLocalCoordinates(Vector3 globalPos)
     {
         Vector3 localPos = globalPos - globalCenter;
@@ -202,6 +200,11 @@ public class MiniObjectManager : MonoBehaviour
         return localPos;
     }
 
+    /// <summary>
+    /// Adds a new minimap object when a new big item is spawned. This is a callback automatically registered
+    /// with the ResourceManager
+    /// </summary>
+    /// <param name="objectToTrack">GameObject passed in from ResourceManager</param>
     public void AddTrackedObject(GameObject objectToTrack)
     {
         if (miniObjDict.ContainsValue(objectToTrack))
@@ -217,35 +220,39 @@ public class MiniObjectManager : MonoBehaviour
         miniObjDict.Add(newMiniobject, objectToTrack);
     }
 
-    // Helper function to instantiate a new mini objetc of the correct type
-    private GameObject InstantiateMiniObject(GameObject miniObject)
+    /// <summary>
+    /// Helper function to instantiate a new mini object of the correct type, given a (big) object
+    /// </summary>
+    /// <param name="obj">Any unity game object</param>
+    /// <returns>The correct mini object, or a default one is none exists</returns>
+    private GameObject InstantiateMiniObject(GameObject obj)
     {
-        if (miniObject.GetComponent<BuildingProgressBarVisuals>())
+        if (obj.GetComponent<BuildingProgressBarVisuals>())
         {
             return InstantiateMiniObject(miniBuilding);
         }
 
-        if (miniObject.GetComponent<CommitStatisticsVisualizer>())
+        if (obj.GetComponent<CommitStatisticsVisualizer>())
         {
             return Instantiate(miniCommitStats);
         }
 
-        if (miniObject.GetComponent<CompetenceDisplay>())
+        if (obj.GetComponent<CompetenceDisplay>())
         {
             return Instantiate(miniCompetence);
         }
 
-        if (miniObject.GetComponent<KanbanBoardColumn>())
+        if (obj.GetComponent<KanbanBoardColumn>())
         {
             return Instantiate(miniKanban);
         }
 
-        if (miniObject.GetComponent<Minimap>())
+        if (obj.GetComponent<Minimap>())
         {
             return Instantiate(miniMinimap);
         }
 
-        if (miniObject.GetComponent<ProgressBar>())
+        if (obj.GetComponent<ProgressBar>())
         {
             return Instantiate(miniProgressBar);
         }
