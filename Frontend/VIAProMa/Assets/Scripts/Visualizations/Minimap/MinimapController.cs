@@ -55,7 +55,9 @@ namespace i5.VIAProMa.Visualizations.Minimap
             get => minimapSurface.localScale.x;
             set
             {
+                // adjust both axes to keep square ratio
                 size.x = Mathf.Max(value, surfaceMinSize.x);
+                size.y = Mathf.Max(value, surfaceMinSize.y);
                 UpdateSize();
             }
         }
@@ -65,7 +67,9 @@ namespace i5.VIAProMa.Visualizations.Minimap
             get => minimapSurface.localScale.z;
             set
             {
+                // adjust both axes to keep square ratio
                 size.y = Mathf.Max(value, surfaceMinSize.y);
+                size.x = Mathf.Max(value, surfaceMinSize.x);
                 UpdateSize();
             }
         }

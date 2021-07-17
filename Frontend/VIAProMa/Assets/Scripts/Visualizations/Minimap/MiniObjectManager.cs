@@ -74,7 +74,7 @@ public class MiniObjectManager : MonoBehaviour
             Destroy(badKey);
         }
 
-        //scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * currentScale;
+        scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * currentScale;
 
         foreach (var g in miniObjDict)
         {
@@ -86,7 +86,7 @@ public class MiniObjectManager : MonoBehaviour
             mini.transform.localRotation = maxi.transform.rotation;
         }
 
-        print(currentScale);
+        print("Scale is " + currentScale);
     }
 
 
@@ -166,12 +166,12 @@ public class MiniObjectManager : MonoBehaviour
 
         var gCenter = (globalMin + globalMax) / 2;
 
-        // midpoint
+        // global midpoint, becomes local origin coordinate
         globalCenter = new Vector3((globalMaxX + globalMinX) / 2, (globalMaxY + globalMinY) / 2,
             (globalMaxZ + globalMinZ) / 2);
-        float largestDimension = Mathf.Max(Math.Abs(globalMaxX - globalMinX), globalMaxZ - globalMinZ);
+        float largestDimension = Mathf.Max((globalMaxX - globalMinX), globalMaxZ - globalMinZ);
         float xDimension = globalMaxX - globalMinX;
-        float yDimension = globalMaxY - globalMinY;
+        //float yDimension = globalMaxY - globalMinY;
         float zDimension = globalMaxZ - globalMinZ;
         if (largestDimension == 0)
         {
@@ -197,6 +197,7 @@ public class MiniObjectManager : MonoBehaviour
         Vector3 localPos = globalPos - globalCenter;
         localPos = localPos * currentScale;
         localPos.y += yOffset;
+        localPos.y = Mathf.Min(localPos.y, maxCorner.transform.position.y);
         return localPos;
     }
 
