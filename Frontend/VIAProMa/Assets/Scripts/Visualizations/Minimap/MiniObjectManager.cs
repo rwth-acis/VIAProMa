@@ -21,6 +21,8 @@ public class MiniObjectManager : MonoBehaviour
     [SerializeField] private float maxScale;
     [SerializeField] private float yOffset;
 
+    [SerializeField] private GameObject minimapLegend;
+
 
 
     // List of mini objects already spawned
@@ -75,6 +77,11 @@ public class MiniObjectManager : MonoBehaviour
         }
 
         scaleIndicatorObject.transform.localScale = (new Vector3(1, 1, 1)) * currentScale;
+        var legend = minimapLegend.GetComponent<ScaleLegendController>();
+        if (legend)
+        {
+            legend.Scale = currentScale;
+        }
 
         foreach (var g in miniObjDict)
         {

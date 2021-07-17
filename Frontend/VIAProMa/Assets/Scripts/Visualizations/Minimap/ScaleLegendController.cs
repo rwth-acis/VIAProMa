@@ -15,9 +15,17 @@ namespace i5.VIAProMa.Visualizations.Minimap
     /// </summary>
     class ScaleLegendController : MonoBehaviour
     {
-        [SerializeField] private TextMeshPro scaleRatioText;
-        [SerializeField] private float scaleRatio;
+        [SerializeField] private Transform background;
         [SerializeField] private Transform scaleStick;
+        [SerializeField] private TextMeshPro scaleRatioText;
+        private float scaleRatio;
+
+        private float stickInitialSizeX;
+
+        public void Awake()
+        {
+            stickInitialSizeX = scaleStick.localScale.x;
+        }
 
         public float Scale
         {
@@ -32,12 +40,15 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         private void UpdateScaleRatioText()
         {
-            scaleRatioText.SetText(String.Format("{1}x", scaleRatio));
+            scaleRatioText.SetText(String.Format("{0:f2}x", scaleRatio));
         }
 
         private void UpdateScaleStick()
         {
-
+            scaleStick.localScale = new Vector3(
+                scaleRatio * stickInitialSizeX,
+                scaleStick.localScale.y,
+                scaleStick.localScale.z);
         }
     }
 }
