@@ -172,7 +172,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
             //    1.025f,
             //    size.y / 2f - header.localScale.z / 2f);
 
-            header.localPosition = new Vector3(0f, 0f, 0f);
+            //header.localPosition = new Vector3(0f, 0f, 0f);
 
 
             headerTitle.rectTransform.sizeDelta = new Vector2(size.x, headerBackground.localScale.y);
