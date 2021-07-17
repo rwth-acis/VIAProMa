@@ -12,4 +12,6 @@ public class MockupEditorItem
     public string name;
     [Tooltip("The Prefab of the item, mostly holds the visual parts")]
     public GameObject Prefab;
+    [Tooltip("The Preview Image of the object")]
+    public Sprite sprite;
 }
