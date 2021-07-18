@@ -43,8 +43,6 @@ public class MiniObjectManager : MonoBehaviour
 
     public void Awake()
     {
-        // newly spawned game objects will be automatically added to the list
-        ResourceManager.Instance.RegisterGameObjectSpawnedCallback(AddTrackedObject);
 
         // <min object, max object>
         miniObjDict = new Dictionary<GameObject, GameObject>();
@@ -55,6 +53,8 @@ public class MiniObjectManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // newly spawned game objects will be automatically added to the list
+        ResourceManager.Instance?.RegisterGameObjectSpawnedCallback(AddTrackedObject);
     }
 
     // Update is called once per frame
@@ -200,7 +200,7 @@ public class MiniObjectManager : MonoBehaviour
 
         var clamped = new Vector3(
             Mathf.Clamp(localPos.x, minCorner.transform.localPosition.x, maxCorner.transform.localPosition.x),
-            localPos.y,
+            Mathf.Clamp(localPos.y, minCorner.transform.localPosition.y, maxCorner.transform.localPosition.y),
             Mathf.Clamp(localPos.z, minCorner.transform.localPosition.z, maxCorner.transform.localPosition.z)
         );
         return clamped;
