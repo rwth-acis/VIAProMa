@@ -5,14 +5,16 @@ using UnityEngine;
 
 namespace i5.VIAProMa.Visualizations.Minimap
 {
-    public class MinimapController : MonoBehaviour, IVisualizationVisualController
+    public class MinimapController : MonoBehaviour, IVisualizationVisualController, IColorChangeable
     {
         [Tooltip("All of the minimap items sit on this surface")] [SerializeField]
         private Transform minimapSurface;
+
         [Tooltip("Reference to the bounding box of the minimap")] [SerializeField]
         private BoundingBox boundingBox;
+
         [SerializeField] [Tooltip("The legend shows the current minimap scale")]
-        private Transform minimapLegend;
+        private GameObject minimapLegend;
 
         // keep track of the original size so we can't get any smaller than it
         private Vector2 surfaceMinSize;
@@ -20,15 +22,17 @@ namespace i5.VIAProMa.Visualizations.Minimap
         private Vector3 lastPointerPosPos;
         private Vector3 lastPointerPosNeg;
 
-        [Header("Handles")] 
-        [SerializeField] private Transform handleLeft;
+        [Header("Handles")] [SerializeField] private Transform handleLeft;
         [SerializeField] private Transform handleRight;
         [SerializeField] private Transform handleTop;
         [SerializeField] private Transform handleBottom;
 
         // defines the extent of the mini objects displayed on top of the surface
-        [SerializeField] private GameObject minCorner;
-        [SerializeField] private GameObject maxCorner;
+        [Header("Minimap Extents")] [Tooltip("The bottom left corner of the minimap")] [SerializeField]
+        private GameObject minCorner;
+
+        [Tooltip("The top right (above) corner of the minimap")] [SerializeField]
+        private GameObject maxCorner;
 
         // don't add a title because it looks confusing when displaying items
         // over it
@@ -74,15 +78,20 @@ namespace i5.VIAProMa.Visualizations.Minimap
             get => backgroundRenderer.material.color;
             set
             {
-                Debug.Log("Setting color");
                 backgroundRenderer.material.color = value;
+                float h, s, v;
+                Color.RGBToHSV(value, out h, out s, out v);
+                var legend = minimapLegend.GetComponent<ScaleLegendController>();
+                if (legend)
+                {
+                    legend.Color = Color.HSVToRGB(h, s, Mathf.Clamp01(v - 0.2f));
+                }
             }
         }
 
 
         private void Awake()
         {
-
             backgroundRenderer = minimapSurface.gameObject.GetComponent<Renderer>();
 
             boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
@@ -103,7 +112,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
             surfaceMinSize = new Vector2(minimapSurface.localScale.x, minimapSurface.localScale.z);
             UpdateSize();
         }
-
 
 
         private void OnEnable()
@@ -138,15 +146,15 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
 
             // put the minimap legend in the upper-right quadrant
-            minimapLegend.localScale = new Vector3(
+            minimapLegend.transform.localScale = new Vector3(
                 size.x,
-                minimapLegend.localScale.y,
+                minimapLegend.transform.localScale.y,
                 size.y);
 
-            minimapLegend.localPosition = new Vector3(
-                size.x / 2f + minimapLegend.localScale.x / 10f,
+            minimapLegend.transform.localPosition = new Vector3(
+                size.x / 2f + minimapLegend.transform.localScale.x / 10f,
                 0.01f,
-                (size.y / 2f) - minimapLegend.localScale.z / 20f
+                (size.y / 2f) - minimapLegend.transform.localScale.z / 20f
             );
 
             handleLeft.localPosition = new Vector3(
@@ -189,8 +197,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 size.x / 2f,
                 0.4f,
                 size.y / 2f);
-
-
         }
     }
 }

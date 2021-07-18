@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace i5.VIAProMa.Visualizations.Minimap
 {
@@ -13,18 +7,22 @@ namespace i5.VIAProMa.Visualizations.Minimap
     /// Manages the width of the legends and updates the
     /// scale ratio text accordingly
     /// </summary>
-    class ScaleLegendController : MonoBehaviour
+    class ScaleLegendController : MonoBehaviour, IColorChangeable
     {
-        [SerializeField] private Transform background;
+        [Header("Prefab Sub-Objects")]
+        [SerializeField] private GameObject background;
         [SerializeField] private Transform scaleStick;
         [SerializeField] private TextMeshPro scaleRatioText;
-        private float scaleRatio;
 
+        private float scaleRatio;
+        // keep track of initial size
         private float stickInitialSizeX;
+        private Renderer backgroundRenderer;
 
         public void Awake()
         {
             stickInitialSizeX = scaleStick.localScale.x;
+            backgroundRenderer = background.GetComponent<Renderer>();
         }
 
         public float Scale
@@ -38,11 +36,23 @@ namespace i5.VIAProMa.Visualizations.Minimap
             get => scaleRatio;
         }
 
-        private void UpdateScaleRatioText()
+        public Color Color
         {
-            scaleRatioText.SetText(String.Format("{0:f2}x", scaleRatio));
+            get => backgroundRenderer.material.color;
+            set => backgroundRenderer.material.color = value;
         }
 
+        /// <summary>
+        /// Updates the scale text
+        /// </summary>
+        private void UpdateScaleRatioText()
+        {
+            scaleRatioText.SetText($"{scaleRatio:f2}x");
+        }
+
+        /// <summary>
+        /// Updates the sclae stick to one unit of the minimap
+        /// </summary>
         private void UpdateScaleStick()
         {
             scaleStick.localScale = new Vector3(
