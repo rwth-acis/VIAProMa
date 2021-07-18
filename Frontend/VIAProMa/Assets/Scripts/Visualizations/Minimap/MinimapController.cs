@@ -18,7 +18,6 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         // keep track of the original size so we can't get any smaller than it
         private Vector2 surfaceMinSize;
-
         private Vector3 lastPointerPosPos;
         private Vector3 lastPointerPosNeg;
 
@@ -34,14 +33,13 @@ namespace i5.VIAProMa.Visualizations.Minimap
         [Tooltip("The top right (above) corner of the minimap")] [SerializeField]
         private GameObject maxCorner;
 
-        // don't add a title because it looks confusing when displaying items
-        // over it
-
         // Used to resize the minimap from the handles
-        // The Y-component here actually refers to the Z-axis because the minimap is placed laying down on the Z-axis
+        // The Y-component here actually refers to the Z-axis because the minimap is placed
+        // laying down on the Z-axis
         private Vector2 size;
+
+        // Ref to minimap surface renderer
         private Renderer backgroundRenderer;
-        private Renderer headerBackgroundRenderer;
 
         private BoxCollider boundingBoxCollider;
         private BoundingBoxStateController boundingBoxStateController;
@@ -70,7 +68,9 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 UpdateSize();
             }
         }
-
+        
+        // don't add a title because it looks confusing when displaying items
+        // over it
         public string Title { get; set; } = "Unnamable Minimap";
 
         public Color Color
@@ -106,6 +106,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController),
                     boundingBox?.gameObject);
             }
+
 
             size = new Vector2(minimapSurface.localScale.x, minimapSurface.localScale.z);
             // record the initial size so we don't go smaller than this
