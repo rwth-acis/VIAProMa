@@ -1,4 +1,4 @@
-﻿using i5.VIAProMa.Multiplayer.Common;
+using i5.VIAProMa.Multiplayer.Common;
 using i5.VIAProMa.Visualizations.Minimap;
 using Photon.Pun;
 
