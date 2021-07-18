@@ -26,16 +26,29 @@ namespace i5.VIAProMa.ResourceManagagement
         private PhotonView photonView;
 
         /// <summary>
+        /// Callback is called when a game object is spawned by ResourceManager
+        /// </summary>
+        /// <param name="g"></param>
+        public delegate void GameObjectSpawned(GameObject g);
+        /// <summary>
+        /// Maintain a list of callbacks
+        /// </summary>
+        private List<GameObjectSpawned> gameObjSpawnedCallbacks;
+
+        /// <summary>
         /// Checks the setup and collects the network prefab resources
         /// </summary>
         protected override void Awake()
         {
             base.Awake();
             instanatiationJobCallbacks = new Dictionary<short, Action<GameObject>>();
+            gameObjSpawnedCallbacks = new List<GameObjectSpawned>();
+
             if (resourcePrefabCollection == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(resourcePrefabCollection));
             }
+
             if (defaultProfileImage == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(defaultProfileImage));
@@ -58,7 +71,8 @@ namespace i5.VIAProMa.ResourceManagagement
         /// <param name="rotation">The rotatoin with which the object should be instantiated</param>
         /// <param name="data">Instantiation data which can be added to the object</param>
         /// <returns>The created instance in the scene</returns>
-        public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] data = null)
+        public GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation,
+            object[] data = null)
         {
             // can only be done with prefabs which are in a Resource folder
             return resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, false, data);
@@ -88,13 +102,19 @@ namespace i5.VIAProMa.ResourceManagagement
         /// <param name="rotation">The rotatoin with which the object should be instantiated</param>
         /// <param name="data">Instantiation data which can be added to the object</param>
         /// <returns></returns>
-        public void SceneNetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, Action<GameObject> resultCallback, object[] data = null)
+        public void SceneNetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation,
+            Action<GameObject> resultCallback, object[] data = null)
         {
             // only the master client can instantiate new scene objects
             if (PhotonNetwork.IsMasterClient)
             {
                 GameObject result = resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, true, data);
                 resultCallback?.Invoke(result);
+                // notify additional listeners
+                foreach (var c in gameObjSpawnedCallbacks)
+                {
+                    c.Invoke(result); 
+                }
             }
             else
             {
@@ -102,7 +122,8 @@ namespace i5.VIAProMa.ResourceManagagement
             }
         }
 
-        private GameObject MasterSceneNetworkInstantiate(string name, Vector3 position, Quaternion rotation, object[] data = null)
+        private GameObject MasterSceneNetworkInstantiate(string name, Vector3 position, Quaternion rotation,
+            object[] data = null)
         {
             // only the master client can instantiate new scene objects
             if (PhotonNetwork.IsMasterClient)
@@ -116,7 +137,8 @@ namespace i5.VIAProMa.ResourceManagagement
             }
         }
 
-        private async void CallMasterForInstantiation(GameObject obj, Vector3 position, Quaternion rotation, Action<GameObject> resultCallback, object[] data = null)
+        private async void CallMasterForInstantiation(GameObject obj, Vector3 position, Quaternion rotation,
+            Action<GameObject> resultCallback, object[] data = null)
         {
             // create a remote instantiation job
             short jobId = instantiationJobId;
@@ -125,13 +147,14 @@ namespace i5.VIAProMa.ResourceManagagement
 
             short objNameStringId = await NetworkedStringManager.StringToId(obj.name);
 
-            photonView.RPC("RemoteInstantiate", RpcTarget.MasterClient, // consider sending to all clients in order to account for master client switches
+            photonView.RPC("RemoteInstantiate",
+                RpcTarget.MasterClient, // consider sending to all clients in order to account for master client switches
                 jobId,
                 objNameStringId,
                 position,
                 rotation,
                 data
-                );
+            );
         }
 
         [PunRPC]
@@ -155,11 +178,12 @@ namespace i5.VIAProMa.ResourceManagagement
                     resultPhotonViewId = photonViewOnResult.ViewID;
                     photonViewOnResult.TransferOwnership(info.Sender);
                 }
+
                 photonView.RPC("RemoteInstantiationFinished", RpcTarget.Others,
                     info.Sender.ActorNumber,
                     jobId,
                     resultPhotonViewId
-                    );
+                );
             }
         }
 
@@ -168,7 +192,7 @@ namespace i5.VIAProMa.ResourceManagagement
             int querySenderId,
             short jobId,
             int resultPhotonViewId
-            )
+        )
         {
             // check if the instantiation had been posted by this client
             if (PhotonNetwork.LocalPlayer.ActorNumber == querySenderId)
@@ -182,6 +206,12 @@ namespace i5.VIAProMa.ResourceManagagement
                     {
                         // call the callback method with the resulting GameObject
                         instanatiationJobCallbacks[jobId].Invoke(res.gameObject);
+
+                        // notify GameObjectCreated listeners that a new object has been created
+                        foreach (var c in gameObjSpawnedCallbacks)
+                        {
+                            c.Invoke(res.gameObject);
+                        }
                     }
                     else
                     {
@@ -199,6 +229,14 @@ namespace i5.VIAProMa.ResourceManagagement
         /// Default profile image which should be shown if no other profile image could be found
         /// </summary>
         /// <value></value>
-        public Texture2D DefaultProfileImage { get => defaultProfileImage; }
+        public Texture2D DefaultProfileImage
+        {
+            get => defaultProfileImage;
+        }
+
+        public void RegisterGameObjectSpawnedCallback(GameObjectSpawned callback)
+        {
+            gameObjSpawnedCallbacks.Add(callback);
+        }
     }
 }
