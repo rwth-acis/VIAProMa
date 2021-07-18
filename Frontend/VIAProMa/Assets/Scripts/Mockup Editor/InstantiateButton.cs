@@ -58,9 +58,11 @@ public class InstantiateButton : MonoBehaviourPun
             spawn = mockupWindow.spawnPlace;
         } else
         {
+            //it is only the button instantiated in the world (especially for test scenes)
             spawn = transform;
         }
 
+        //proofs if the player is inside a room, if not it can instantiate for himself (especially for test scenes)
         if(PhotonNetwork.InRoom)
         {
             object[] data = new object[]
@@ -69,6 +71,7 @@ public class InstantiateButton : MonoBehaviourPun
                 index
             };
 
+            //instantiate for the whole room
             ResourceManager.Instance.NetworkInstantiate(list.PrefabBase, spawn.position, spawn.rotation, data);
         } else
         {

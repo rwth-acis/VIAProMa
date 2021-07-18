@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// item class to save the settings for every mockup item
+/// item class to save the settings for every instantiated mockup item
 /// </summary>
 [System.Serializable]
 public class MockupEditorItem

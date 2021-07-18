@@ -10,6 +10,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Component attached to the button that opens the Mockup-Editor, also attached to the Close-Button and the Description-Button of the Mockup-Editor
+/// </summary>
 public class OpenMockUp : MonoBehaviourPunCallbacks
 {
     private AssetBundle myLoadedAssetBundle;
@@ -24,7 +27,6 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     // instances:
     private GameObject mockUpWindowInstance;
     private GameObject descriptionInstance;
-    private GameObject descriptionObject;
 
     /// <summary>
     /// Opens a window where the user can select between different objects
@@ -47,6 +49,7 @@ public class OpenMockUp : MonoBehaviourPunCallbacks
     {
         Quaternion targetRotation = transform.rotation;
 
+        //only instantiate the Mockup-Edior once
         if (instance != null)
         {
             instance.SetActive(true);
