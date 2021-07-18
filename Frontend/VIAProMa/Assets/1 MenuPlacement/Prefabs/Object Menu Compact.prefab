@@ -198,6 +198,9 @@ GameObject:
   - component: {fileID: 2901774211984377162}
   - component: {fileID: 2548836086054037141}
   - component: {fileID: 2901774211984377163}
+  - component: {fileID: 6713995577878181610}
+  - component: {fileID: -3414598085000378269}
+  - component: {fileID: 4559004642370537892}
   m_Layer: 8
   m_Name: Object Menu Compact
   m_TagString: Untagged
@@ -240,16 +243,19 @@ MonoBehaviour:
   isMainMenu: 0
   isCompact: 1
   menuID: 2
+  followInManualMode: 1
   boudingBoxType: 0
   menuOrientationType: 0
   updateTimeInterval: 0.1
   inactivityTimeThreshold: 5
+  suggestionTimeInterval: 5
   inactivityDetectionEnabled: 0
   manipulationEnabled: 1
   retrieveBufferSize: 5
-  maxFloatingDistance: 0.6
-  minFloatingDistance: 0.3
+  maxFloatingDistance: 0.8
+  minFloatingDistance: 0.4
   orbitalOffset: {x: 0.1, y: 0, z: 0}
+  followOffset: {x: 0, y: 0.1, z: 0}
   surfaceMagnetismSafetyOffset: 0.05
 --- !u!114 &2901774211984377163
 MonoBehaviour:
@@ -264,6 +270,74 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 2901774212857166768}
+--- !u!114 &6713995577878181610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901774211984377157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98de877dee5fc341b4eb59dfdab266c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoConstraintSelection: 1
+  selectedConstraints: []
+--- !u!114 &-3414598085000378269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901774211984377157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181cd563a8349c34ea8978b0bc8d9c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hostTransform: {fileID: 2901774211984377162}
+  manipulationType: 3
+  twoHandedManipulationType: 0
+  allowFarManipulation: 1
+  useForcesForNearManipulation: 0
+  oneHandRotationModeNear: 1
+  oneHandRotationModeFar: 1
+  releaseBehavior: 3
+  smoothingFar: 1
+  smoothingNear: 1
+  moveLerpTime: 0.001
+  rotateLerpTime: 0.001
+  scaleLerpTime: 0.001
+  enableConstraints: 1
+  constraintsManager: {fileID: 6713995577878181610}
+  elasticsManager: {fileID: 0}
+  onManipulationStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onManipulationEnded:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4559004642370537892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2901774211984377157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5afd5316c63705643b3daba5a6e923bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTetherWhenManipulating: 0
+  IsBoundsHandles: 0
 --- !u!1 &2901774212002499983
 GameObject:
   m_ObjectHideFlags: 0

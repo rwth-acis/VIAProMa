@@ -5946,7 +5946,30 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 2fc7f0a3f8b163c498f1fbf8c96a0816, type: 2}
   OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4267088577488658150, guid: 09ff2c08e5cd6f044acfa776cb63d416,
+          type: 3}
+        m_MethodName: StartTest
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3369136868841600015}
+        m_MethodName: FoldCube
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   Events: []
   resetOnDestroy: 0
   enabledOnStart: 1
@@ -11846,6 +11869,9 @@ GameObject:
   - component: {fileID: -4535803680558345679}
   - component: {fileID: 1670443020806819780}
   - component: {fileID: -7927057354783031506}
+  - component: {fileID: 4328696534739884476}
+  - component: {fileID: 9199620898382458424}
+  - component: {fileID: 2953849355470687101}
   m_Layer: 8
   m_Name: Main Menu
   m_TagString: Untagged
@@ -11862,7 +11888,7 @@ Transform:
   m_GameObject: {fileID: 4798259294027384138}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.3, z: 0.5}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
   - {fileID: 4798259293998122532}
   - {fileID: 4798259293393616449}
@@ -11903,15 +11929,21 @@ MonoBehaviour:
   isMainMenu: 1
   isCompact: 0
   menuID: 0
+  followInManualMode: 0
+  handTrackingEnabled: 0
   boudingBoxType: 0
   menuOrientationType: 0
   updateTimeInterval: 0.1
   inactivityTimeThreshold: 5
+  suggestionTimeInterval: 5
   inactivityDetectionEnabled: 0
   manipulationEnabled: 1
-  maxFloatingDistance: 0.6
-  minFloatingDistance: 0.3
+  retrieveBufferSize: 5
+  maxFloatingDistance: 0.8
+  minFloatingDistance: 0.4
+  defaultFloatingDistance: 0
   orbitalOffset: {x: 0, y: 0, z: 0}
+  followOffset: {x: 0, y: -0.1, z: 0}
   surfaceMagnetismSafetyOffset: 0.05
 --- !u!114 &3369136868841600015
 MonoBehaviour:
@@ -11943,7 +11975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 0}
-  boundsOverride: {fileID: 0}
+  boundsOverride: {fileID: -7927057354783031506}
   boundsCalculationMethod: 0
   activation: 0
   scaleMinimum: 0.2
@@ -12021,6 +12053,74 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.25, y: 0.25, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4328696534739884476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4798259294027384138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98de877dee5fc341b4eb59dfdab266c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoConstraintSelection: 1
+  selectedConstraints: []
+--- !u!114 &9199620898382458424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4798259294027384138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181cd563a8349c34ea8978b0bc8d9c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hostTransform: {fileID: 4798259294027384141}
+  manipulationType: 3
+  twoHandedManipulationType: 0
+  allowFarManipulation: 1
+  useForcesForNearManipulation: 0
+  oneHandRotationModeNear: 0
+  oneHandRotationModeFar: 0
+  releaseBehavior: 3
+  smoothingFar: 1
+  smoothingNear: 1
+  moveLerpTime: 0.001
+  rotateLerpTime: 0.001
+  scaleLerpTime: 0.001
+  enableConstraints: 1
+  constraintsManager: {fileID: 4328696534739884476}
+  elasticsManager: {fileID: 0}
+  onManipulationStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onManipulationEnded:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  onHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2953849355470687101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4798259294027384138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5afd5316c63705643b3daba5a6e923bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTetherWhenManipulating: 0
+  IsBoundsHandles: 0
 --- !u!1 &6885750104008933655
 GameObject:
   m_ObjectHideFlags: 0

@@ -121,6 +121,24 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &435455322 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4798259294027384141, guid: 4100c1c62c0283647b6fa76874680f15,
+    type: 3}
+  m_PrefabInstance: {fileID: 956948914}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &435455325 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4328696534739884476, guid: 4100c1c62c0283647b6fa76874680f15,
+    type: 3}
+  m_PrefabInstance: {fileID: 956948914}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98de877dee5fc341b4eb59dfdab266c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &497825968
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,11 +190,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -4535803680558345679, guid: 4100c1c62c0283647b6fa76874680f15,
-        type: 3}
-      propertyPath: boundsOverride
-      value: 
-      objectReference: {fileID: 956948915}
     - target: {fileID: -1466658138213680451, guid: 4100c1c62c0283647b6fa76874680f15,
         type: 3}
       propertyPath: boudingBoxType
@@ -287,15 +300,19 @@ PrefabInstance:
       propertyPath: VoiceCommand
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 9199620898382458424, guid: 4100c1c62c0283647b6fa76874680f15,
+        type: 3}
+      propertyPath: hostTransform
+      value: 
+      objectReference: {fileID: 435455322}
+    - target: {fileID: 9199620898382458424, guid: 4100c1c62c0283647b6fa76874680f15,
+        type: 3}
+      propertyPath: constraintsManager
+      value: 
+      objectReference: {fileID: 435455325}
     m_RemovedComponents:
     - {fileID: 4946177444658803257, guid: 4100c1c62c0283647b6fa76874680f15, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 4100c1c62c0283647b6fa76874680f15, type: 3}
---- !u!65 &956948915 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: -7927057354783031506, guid: 4100c1c62c0283647b6fa76874680f15,
-    type: 3}
-  m_PrefabInstance: {fileID: 956948914}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1081577898
 GameObject:
   m_ObjectHideFlags: 0
@@ -3620,7 +3637,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3520590988634665393
 Transform:
   m_ObjectHideFlags: 0

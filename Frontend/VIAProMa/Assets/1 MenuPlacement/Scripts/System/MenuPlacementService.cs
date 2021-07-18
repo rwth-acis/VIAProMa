@@ -2,7 +2,6 @@
 using i5.Toolkit.Core.Utilities;
 using i5.VIAProMa.UI.AppBar;
 using Microsoft.MixedReality.Toolkit.Boundary;
-using Microsoft.MixedReality.Toolkit.OpenVR.Headers;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Photon.Pun.UtilityScripts;
@@ -39,7 +38,9 @@ namespace MenuPlacement {
         [Tooltip("The dialog prefab for suggestions in manual mode")]
         [SerializeField] private GameObject suggestionPanel;
         [Tooltip("The default placement mode")]
-        [SerializeField] private MenuPlacementServiceMode placementMode = MenuPlacementServiceMode.Automatic;
+        [SerializeField] private MenuPlacementServiceMode defaultPlacementMode = MenuPlacementServiceMode.Automatic;
+
+        private MenuPlacementServiceMode placementMode;
 
         public MenuPlacementServiceMode PlacementMode
         {
@@ -89,6 +90,8 @@ namespace MenuPlacement {
                 compactMainMenuPoolID = ObjectPool<GameObject>.CreateNewPool(1);
             }
 
+            placementMode = defaultPlacementMode;
+
             foreach (MenuVariants m in objectMenus) {
                 if (m.floatingMenu != null) { 
                     floatingObjectMenuPoolIDs.Add(m.floatingMenu.GetComponent<MenuHandler>().menuID, ObjectPool<GameObject>.CreateNewPool(5));
@@ -110,6 +113,14 @@ namespace MenuPlacement {
         #region Public Methods
         public GameObject GetInBetweenTarget() {
             return inBetweenTarget;
+        }
+        
+        public void Quit() {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            Application.Quit();
+
         }
 
         /// <summary>
@@ -313,7 +324,7 @@ namespace MenuPlacement {
         private void CreateInBetweenTarget() {
             inBetweenTarget = new GameObject("InBetween Target");
             inBetweenTarget.transform.parent = CameraCache.Main.transform;
-            inBetweenTarget.transform.position = new Vector3(CameraCache.Main.transform.position.x, CameraCache.Main.transform.position.y - 0.2f, CameraCache.Main.transform.position.z);
+            inBetweenTarget.transform.position = new Vector3(CameraCache.Main.transform.position.x, CameraCache.Main.transform.position.y - 0.15f, CameraCache.Main.transform.position.z);
         }
 
 

@@ -39,7 +39,7 @@ public class ApplicationMainMenu : MenuBase
     }
 
     public void CreateCube() {
-        GameObject createdCube = Instantiate(cubeToCreate, new Vector3(createButton.transform.position.x - 0.5f, createButton.transform.position.y, createButton.transform.position.z), Quaternion.Euler(0, 0, 0));
+        GameObject createdCube = Instantiate(cubeToCreate, new Vector3(createButton.transform.position.x - 0.3f, createButton.transform.position.y, createButton.transform.position.z), Quaternion.Euler(0, 0, 0));
         createdCube.SetActive(true);
         foldContorller.FoldCube();
     }

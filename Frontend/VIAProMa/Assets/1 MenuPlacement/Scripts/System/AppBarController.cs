@@ -18,6 +18,9 @@ namespace MenuPlacement {
         private MenuPlacementService placementService;
         private bool retrieved = false;
         private PlacementMessage message = new PlacementMessage();
+        [SerializeField] private Sprite unlocked;
+        [SerializeField] private Sprite locked;
+        [SerializeField] private SpriteRenderer icon;
         public Vector3 StartPosition { get; private set; }
         public Quaternion StartRotation { get; private set; }
         public Vector3 StartScale { get; private set; }
@@ -32,9 +35,10 @@ namespace MenuPlacement {
         }
 
         private void Update() {
-            if(placementService.PlacementMode != MenuPlacementService.MenuPlacementServiceMode.Adjustment && targetObject.GetComponent<BoundingBoxStateController>().BoundingBoxActive) {
+            if(placementService.PlacementMode != MenuPlacementService.MenuPlacementServiceMode.Adjustment) {
                 targetObject.GetComponent<BoundingBoxStateController>().BoundingBoxActive = false;
                 targetObject.GetComponent<BoxCollider>().enabled = false;
+                Debug.Log(targetObject);
             }
         }
 
@@ -50,6 +54,9 @@ namespace MenuPlacement {
         
 
         public void OnAppBarCollapse() {
+            //For Evaluation
+            targetObject.GetComponent<ObjectManipulator>().enabled = false;
+
             if (StartPosition != targetObject.transform.localPosition || StartRotation != targetObject.transform.localRotation || StartScale != targetObject.transform.localScale) {
                 Tuple<Vector3, Quaternion, Vector3> lastTransform = new Tuple<Vector3, Quaternion, Vector3>(StartPosition, StartRotation, StartScale);
                 Tuple<Vector3, Quaternion, Vector3> newTransform = new Tuple<Vector3, Quaternion, Vector3>(targetObject.transform.localPosition, targetObject.transform.localRotation, targetObject.transform.localScale);
@@ -62,6 +69,8 @@ namespace MenuPlacement {
                 handler.UpdateOffset(newTransform, lastTransform);            
             }
             targetObject.GetComponent<BoxCollider>().enabled = false;
+            //Test
+            targetObject.GetComponent<ObjectManipulator>().enabled = false;
             placementService.ExitAdjustmentMode();
 
         }
@@ -92,37 +101,56 @@ namespace MenuPlacement {
             else {
                 Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Not in manual mode", 
                     "You are currently not in manual mode, so you cannot switch to another variant. Please first switch to manual mode", true);
-                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.2f;
-                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.2f;
-                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.2f;
+                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
+                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
             }
 
         }
 
         public void SwitchReferenceType() {
-            if(placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
-                
-                if (targetObject.transform.parent == null) {
-                    targetObject.transform.parent = CameraCache.Main.transform;
+            if (targetObject.GetComponent<MenuHandler>().followInManualMode) {
+                if (placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
+
+                    if (targetObject.transform.parent == null) {
+                        targetObject.transform.parent = CameraCache.Main.transform;
+                        icon.sprite = locked;
+                    }
+                    else {
+                        targetObject.transform.parent = null;
+                        icon.sprite = unlocked;
+                    }
                 }
                 else {
-                    targetObject.transform.parent = null;
+                    Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Not in manual mode",
+                        "You are currently not in manual mode, so you cannot change the reference type. Please first switch to manual mode", true);
+                    suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
+                    suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                    suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
                 }
             }
             else {
-                Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Not in manual mode", 
-                    "You are currently not in manual mode, so you cannot change the reference type. Please first switch to manual mode", true);
-                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.2f;
-                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.2f;
-                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.2f;
+                Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Operation Not Allowed",
+                        "This operation is not allowed by the application's developer.", true);
+                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
+                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
             }
+            
         }
 
         public void OnAdjustment() {
+            //Test
+            targetObject.GetComponent<ObjectManipulator>().enabled = true;
+
             StartPosition = targetObject.transform.localPosition;
             StartRotation = targetObject.transform.localRotation;
             StartScale = targetObject.transform.localScale;
             retrieved = false;
+        }
+
+        public void AdjustmentEnd() {
+            
         }
     }
 }

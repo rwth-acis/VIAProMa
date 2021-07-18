@@ -1,25 +1,18 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using ExitGames.Client.Photon.StructWrapping;
+using System.Threading.Tasks;
 using i5.Toolkit.Core.ServiceCore;
-using i5.Toolkit.Core.Utilities;
 using i5.VIAProMa.UI.AppBar;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
-using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.XR.WSA;
 
 namespace MenuPlacement {
-
     public class MenuHandler : MonoBehaviour {
 
         public enum BoundsType {
@@ -36,9 +29,13 @@ namespace MenuPlacement {
         [Tooltip("True, if the menu is an object menu. False, if the menu is a main menu")]
         public bool isMainMenu;
         [Tooltip("Is the menu a normal one or a compact one?")]
-        public bool isCompact;
+        public bool isCompact;       
         [Tooltip("The ID of this menu. Make sure they are different from one to another")]
         public int menuID;
+        [Tooltip("If true, the menu will constrain on the user, though it can still be unlocked using the app bar. If false, the menu will not constrain on the user even if with the app bar.")]
+        public bool followInManualMode = true;
+        [Tooltip("If the target platform doesn't support hand tracking, e.g. HoloLens 1st gen, it should be set to true. Otherwise it is recommanded to set it to false.")]
+        public bool handTrackingEnabled = false;
         [Tooltip("The bounding box will be used to decide whether the space is enough to place the menu. It is a 'Bounds' object containing all Bounds of the corresponding base")]
         [SerializeField] private BoundsType boudingBoxType = BoundsType.BasedOnColliders;
         [Tooltip("The orientation type used on the solver attached to the object by the placement system if applicable")]
@@ -59,12 +56,14 @@ namespace MenuPlacement {
         [Tooltip("The max and min floating distance should be indentical for one menu variant (floating and compact)")]
         [SerializeField] private float maxFloatingDistance = 0.6f;
         [SerializeField] private float minFloatingDistance = 0.3f;
-        [Tooltip("Position Offsets To The Target Object. For object menus, the additive inverse of the X (right) offset will be taken if the menu is on the left side of the targetObjects (e.g. 2 to -2).")]
+        [Tooltip("The distance when the floating menu is first instantiate. If it is smaller than Min Floating Distance, it will be set to the average of Min and Max Floating Distance")]
+        [SerializeField] private float defaultFloatingDistance = 0;
+        [Tooltip("Position Offset to the target object. For object menus, the additive inverse of the X (right) offset will be taken if the menu is on the left side of the targetObjects (e.g. 2 to -2).")]
         [SerializeField] private Vector3 orbitalOffset = Vector3.zero;
+        [Tooltip("Position Offset to the head for floating main menus. It will be directly added to the 'AdditionalOffset' on SolverHandler.")]
+        [SerializeField] private Vector3 followOffset = Vector3.zero;
         [Tooltip("Offsets for the distance between the surface and the attached menu, i.e. the 'Surface Normal Offset' of the SurfaceMagnetism solver")]
         [SerializeField] private float surfaceMagnetismSafetyOffset = 0.05f;
-
-
 
         #endregion Serialize Fields
 
@@ -72,7 +71,6 @@ namespace MenuPlacement {
         private PlacementMessage message = new PlacementMessage();
         private PlacementMessage.SwitchType switchTo = PlacementMessage.SwitchType.NoSwitch;
         private Camera head;
-        private float defaultFloatingDistance;
         private Vector3 orbitalOffsetOppositeType;
         private float inactivityTime = 0;
         private float updateTime = 0;
@@ -111,7 +109,9 @@ namespace MenuPlacement {
 
         // Start is called before the first frame update
         void Start() {
-            defaultFloatingDistance = (minFloatingDistance + maxFloatingDistance) / 2;
+            if (defaultFloatingDistance < minFloatingDistance) {
+                defaultFloatingDistance = (minFloatingDistance + maxFloatingDistance) / 2;
+            }
             placementService = ServiceManager.GetService<MenuPlacementService>();
             head = CameraCache.Main;
             if (isMainMenu) {
@@ -120,9 +120,24 @@ namespace MenuPlacement {
             retrieveBufferManualMode.Capacity = retrieveBufferSize;
             retrieveBufferAutomaticMode.Capacity = retrieveBufferSize;
             originalScale = gameObject.transform.localScale;
-            manualModePositionOffset = new Vector3(0, 0, defaultFloatingDistance);
+            manualModePositionOffset = new Vector3(0, -0.15f, defaultFloatingDistance);
             manualModeRotationOffset = Vector3.zero;
             manualModeScaleOffset = Vector3.one;
+
+
+            //For Evaluation
+            sumDistance = 0;
+            distanceUpdateCount = 0;
+            distanceUpdateTime = 0;
+/*            path = Application.persistentDataPath + "/TestData_MenuID_" + menuID + ".txt";
+            testData = new FileStream(path, FileMode.Create);
+            sw = new StreamWriter(testData);
+            sw.WriteLine("-----------------------Test Started-------------------------");
+            sw.WriteLine("Start Time: " + DateTime.Now);
+            sw.WriteLine("Main Menu: " + isMainMenu);
+            sw.WriteLine("Compact: " + isCompact);
+            sw.WriteLine("");
+            SaveOnUWP();*/
         }
 
         // Update is called once per frame
@@ -147,9 +162,6 @@ namespace MenuPlacement {
                 if (!manualModeEntered) {
                     EnterManualMode();
                 }
-                /*gameObject.transform.position = TargetObject.transform.position + manualModePositionOffset;
-                gameObject.transform.eulerAngles = TargetObject.transform.eulerAngles + manualModeRotationOffset;
-                gameObject.transform.localScale = gameObject.transform.localScale = new Vector3(originalScale.x * manualModeScaleOffset.x, originalScale.y * manualModeScaleOffset.y, originalScale.z * manualModeScaleOffset.z);*/
                 ShowSuggestion();
             }
             else {
@@ -172,6 +184,9 @@ namespace MenuPlacement {
                     suggestionTime += Time.deltaTime;
                 }
             }
+
+            //For Evaluation
+            CalculateAverageDistance();
         }
 
         private void OnDrawGizmos() {
@@ -188,9 +203,15 @@ namespace MenuPlacement {
             Gizmos.DrawCube(GetBoundingBox().center, GetBoundingBox().size);
         }
 
-        #endregion MonoBehaviour Functions
+        private void OnDestroy() {
+            /*            SaveAverageDistance();
+                        SaveLastOffset();*/
+            SaveOnUWP();
+        }
 
-        #region Public Methods
+#endregion MonoBehaviour Functions
+
+#region Public Methods
         /// <summary>
         /// Open the menu with the target object.
         /// </summary>
@@ -251,10 +272,22 @@ namespace MenuPlacement {
                 }
                 //For compact version, add the HandConstraint solver additionally for interaction in very narror space.
                 else {
-                    (menu.GetComponent<HandConstraint>() ?? menu.AddComponent<HandConstraint>()).SafeZone = HandConstraint.SolverSafeZone.RadialSide;
-                    menu.GetComponent<HandConstraint>().SafeZoneBuffer = 0.05f;
-                    menu.GetComponent<HandConstraint>().UpdateLinkedTransform = true;
-                    menu.GetComponent<HandConstraint>().UpdateWhenOppositeHandNear = true;
+                    if (handTrackingEnabled) {
+                        (menu.GetComponent<HandConstraint>() ?? menu.AddComponent<HandConstraint>()).SafeZone = HandConstraint.SolverSafeZone.RadialSide;
+                        menu.GetComponent<HandConstraint>().SafeZoneBuffer = 0.05f;
+                        menu.GetComponent<HandConstraint>().UpdateLinkedTransform = true;
+                        menu.GetComponent<HandConstraint>().UpdateWhenOppositeHandNear = true;
+                    }
+                    else {
+                        (menu.GetComponent<Follow>() ?? menu.AddComponent<Follow>()).MinDistance = 0.3f;
+                        menu.GetComponent<Follow>().MaxDistance = 0.3f;
+                        menu.GetComponent<Follow>().DefaultDistance = 0.3f;
+                        menu.GetComponent<Follow>().MaxViewHorizontalDegrees = 60f;
+                        menu.GetComponent<Follow>().MaxViewVerticalDegrees = 40f;
+                        menu.GetComponent<Follow>().OrientToControllerDeadzoneDegrees = 20f;
+                        menu.GetComponent<Follow>().OrientationType = SolverOrientationType.Unmodified;
+                        menu.GetComponent<Follow>().UpdateLinkedTransform = true;
+                    }
                     (menu.GetComponent<FinalPlacementOptimizer>() ?? menu.AddComponent<FinalPlacementOptimizer>()).OrbitalOffset = orbitalOffset;
                     menu.GetComponent<FinalPlacementOptimizer>().OrientationType = menuOrientationType;
                     menu.GetComponent<FinalPlacementOptimizer>().enabled = true;
@@ -262,11 +295,23 @@ namespace MenuPlacement {
                     if (targetDistance > maxFloatingDistance) {
                         menu.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
                         menu.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
-                        menu.GetComponent<HandConstraint>().enabled = true;
+                        if (handTrackingEnabled) {
+                            menu.GetComponent<HandConstraint>().enabled = true;
+                        }
+                        else {
+                            menu.GetComponent<FinalPlacementOptimizer>().OrbitalOffset = Vector3.zero;
+                            menu.GetComponent<Follow>().enabled = true;
+                        }
+
                         menu.GetComponent<Orbital>().enabled = false;
                     }
                     else {
-                        menu.GetComponent<HandConstraint>().enabled = false;
+                        if (handTrackingEnabled) {
+                            menu.GetComponent<HandConstraint>().enabled = false;
+                        }
+                        else {
+                            menu.GetComponent<Follow>().enabled = false;
+                        }
                     }                    
                 }
             }
@@ -363,6 +408,9 @@ namespace MenuPlacement {
         public void EnterManualMode() {
             gameObject.transform.parent = head.transform;
             gameObject.transform.localPosition = manualModePositionOffset;
+            if (!followInManualMode) {
+                gameObject.transform.parent = null;
+            }
             gameObject.transform.localScale = new Vector3(originalScale.x * manualModeScaleOffset.x, originalScale.y * manualModeScaleOffset.y, originalScale.z * manualModeScaleOffset.z);
             gameObject.transform.localEulerAngles = manualModeRotationOffset;
             manualModeEntered = true;
@@ -374,14 +422,14 @@ namespace MenuPlacement {
             manualModeEntered = false;
         }
 
-        #endregion Public Methods
+#endregion Public Methods
 
-        #region Private Methods
+#region Private Methods
 
         //This function should be called just once for one main menu
         private void InitializeMainMenu() {  
             if (!isCompact) {
-                gameObject.AddComponent<SolverHandler>().AdditionalOffset = orbitalOffset;
+                gameObject.AddComponent<SolverHandler>().AdditionalOffset = followOffset;
                 gameObject.AddComponent<SurfaceMagnetism>().SurfaceNormalOffset = surfaceMagnetismSafetyOffset;
                 gameObject.GetComponent<SurfaceMagnetism>().UpdateLinkedTransform = true;
                 gameObject.GetComponent<SurfaceMagnetism>().CurrentOrientationMode = SurfaceMagnetism.OrientationMode.None;
@@ -392,7 +440,7 @@ namespace MenuPlacement {
                 gameObject.GetComponent<Follow>().MaxDistance = maxFloatingDistance;
                 gameObject.GetComponent<Follow>().DefaultDistance = defaultFloatingDistance;
                 gameObject.GetComponent<Follow>().MaxViewHorizontalDegrees = 60f;
-                gameObject.GetComponent<Follow>().MaxViewVerticalDegrees = 50f;
+                gameObject.GetComponent<Follow>().MaxViewVerticalDegrees = 100f;
                 gameObject.GetComponent<Follow>().OrientToControllerDeadzoneDegrees = 20f;
                 gameObject.GetComponent<Follow>().OrientationType = SolverOrientationType.Unmodified;
                 gameObject.GetComponent<Follow>().UpdateLinkedTransform = true;
@@ -402,15 +450,32 @@ namespace MenuPlacement {
                 
             }
             else {
-                gameObject.AddComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
-                gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
-                gameObject.AddComponent<HandConstraint>().SafeZone = HandConstraint.SolverSafeZone.RadialSide;
-                gameObject.GetComponent<HandConstraint>().SafeZoneBuffer = 0.05f;
-                gameObject.GetComponent<HandConstraint>().UpdateLinkedTransform = true;
-                gameObject.GetComponent<HandConstraint>().UpdateWhenOppositeHandNear = true;
-                gameObject.AddComponent<FinalPlacementOptimizer>().OriginalScale = gameObject.transform.localScale;
-                gameObject.GetComponent<FinalPlacementOptimizer>().OrientationType = menuOrientationType;
-                gameObject.GetComponent<FinalPlacementOptimizer>().enabled = true;
+                if (handTrackingEnabled) {
+                    gameObject.AddComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
+                    gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
+                    gameObject.AddComponent<HandConstraint>().SafeZone = HandConstraint.SolverSafeZone.RadialSide;
+                    gameObject.GetComponent<HandConstraint>().SafeZoneBuffer = 0.05f;
+                    gameObject.GetComponent<HandConstraint>().UpdateLinkedTransform = true;
+                    gameObject.GetComponent<HandConstraint>().UpdateWhenOppositeHandNear = true;
+                    gameObject.AddComponent<FinalPlacementOptimizer>().OriginalScale = gameObject.transform.localScale;
+                    gameObject.GetComponent<FinalPlacementOptimizer>().OrientationType = menuOrientationType;
+                    gameObject.GetComponent<FinalPlacementOptimizer>().enabled = true;
+                }
+                else {
+                    gameObject.AddComponent<SolverHandler>();
+                    gameObject.AddComponent<Follow>().MinDistance = 0.3f;
+                    gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                    gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
+                    gameObject.GetComponent<Follow>().MaxViewHorizontalDegrees = 60f;
+                    gameObject.GetComponent<Follow>().MaxViewVerticalDegrees = 40f;
+                    gameObject.GetComponent<Follow>().OrientToControllerDeadzoneDegrees = 20f;
+                    gameObject.GetComponent<Follow>().OrientationType = SolverOrientationType.Unmodified;
+                    gameObject.GetComponent<Follow>().UpdateLinkedTransform = true;
+                    gameObject.AddComponent<FinalPlacementOptimizer>().OriginalScale = gameObject.transform.localScale;
+                    gameObject.GetComponent<FinalPlacementOptimizer>().OrientationType = menuOrientationType;
+                    gameObject.GetComponent<FinalPlacementOptimizer>().enabled = true;
+                }
+
             }
             if (manipulationEnabled) {
                 InitializeAppBar();
@@ -438,9 +503,14 @@ namespace MenuPlacement {
             float distanceToMenu = Vector3.Dot(gameObject.transform.position - head.transform.position, head.transform.forward);
             //Use to check main menu, 2 * surfaceMagnetismSafetyOffset for better accuracy
             bool closeToSpatialMapping = Physics.Raycast(head.transform.position, head.transform.forward, minFloatingDistance + 2 * surfaceMagnetismSafetyOffset, LayerMask.GetMask("Spatial Mapping"));
-            //Debug.Log(distanceToMenu);
-            //Debug.Log(closeToSpatialMapping);
-            //Debug.Log("Collide with Spatial Mapping: " + CollideWithSpatialMapping());
+            if (isMainMenu && !isCompact) {
+                if(Physics.Raycast(head.transform.position,head.transform.forward,maxFloatingDistance,LayerMask.GetMask("Spatial Mapping"))) {
+                    gameObject.GetComponent<SurfaceMagnetism>().enabled = false;
+                }
+                else {
+                    gameObject.GetComponent<SurfaceMagnetism>().enabled = true;
+                }
+            }
             if (CollideWithSpatialMapping() || (distanceToMenu < minFloatingDistance + surfaceMagnetismSafetyOffset && closeToSpatialMapping)) {
                 if (isMainMenu) {
                     if (!isCompact) {
@@ -464,29 +534,48 @@ namespace MenuPlacement {
                             switchTo = message.switchType;
                             //Because the object is far, the HandConstraint solver should be activated on next call.
                         }
-                        //Activate the HandConstraint solver
+                        //Activate the HandConstraint solver or Follow solver
                         else {
-                            gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
-                            gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
-                            gameObject.GetComponent<HandConstraint>().enabled = true;
-                            gameObject.GetComponent<Orbital>().enabled = false;
+                            if (handTrackingEnabled) {
+                                gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
+                                gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
+                                gameObject.GetComponent<HandConstraint>().enabled = true;
+                                gameObject.GetComponent<Orbital>().enabled = false;
+                            }
+                            else {
+                                gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.Head;
+                                gameObject.transform.position = head.transform.position + head.transform.forward * 0.3f;
+                                gameObject.GetComponent<Follow>().enabled = true;
+                                gameObject.GetComponent<Orbital>().enabled = false;
+                            }
+
                         }
                     }
-                    //The object is close, namely the Beside and Orbital solvers are activated.
-                    //Begin the collision handling process:
-                    //First step: Try to switch to compact version if it is a floating menu
-                    if (!isCompact) { 
-                        message.switchType = PlacementMessage.SwitchType.FloatingToCompact;
-                        switchTo = message.switchType;
-                    }
-                    //Second step: If it is already compact and there is still a collision, then activate the HandConstraint solver.
                     else {
-                        gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
-                        gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
-                        gameObject.GetComponent<HandConstraint>().enabled = true;
-                        gameObject.GetComponent<Orbital>().enabled = false;
-                    }
-                    
+                        //The object is close, namely the Beside and Orbital solvers are activated.
+                        //Begin the collision handling process:
+                        //First step: Try to switch to compact version if it is a floating menu
+                        if (!isCompact) {
+                            message.switchType = PlacementMessage.SwitchType.FloatingToCompact;
+                            switchTo = message.switchType;
+                        }
+                        //Second step: If it is already compact and there is still a collision, then activate the HandConstraint solver or Follow solver.
+                        else {
+                            if (handTrackingEnabled) {
+                                gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
+                                gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
+                                gameObject.GetComponent<HandConstraint>().enabled = true;
+                                gameObject.GetComponent<Orbital>().enabled = false;
+                            }
+                            else {
+                                gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.Head;
+                                gameObject.transform.position = head.transform.position + head.transform.forward * 0.3f;
+                                gameObject.GetComponent<Follow>().enabled = true;
+                                gameObject.GetComponent<Orbital>().enabled = false;
+                            }
+
+                        }
+                    }                    
                 }
             }
             else {
@@ -507,7 +596,7 @@ namespace MenuPlacement {
                     if (!isCompact) {                
                         //The object is between maxFloatingDistance and minFloatingDistance, use the Orbital solver.
                         if (targetDistance <= maxFloatingDistance && targetDistance >= minFloatingDistance) {
-                            gameObject.GetComponent<Orbital>().enabled = true;                           
+                            gameObject.GetComponent<Orbital>().enabled = true;
                             gameObject.GetComponent<InBetween>().enabled = false;
                             gameObject.GetComponent<FinalPlacementOptimizer>().enabled = true;
                         }
@@ -535,43 +624,80 @@ namespace MenuPlacement {
                                 switchTo = message.switchType;
                             }
                             else {
-                                gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
-                                gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
-                                gameObject.GetComponent<HandConstraint>().enabled = true;
-                                gameObject.GetComponent<Orbital>().enabled = false;
-                            }                 
-                        }                       
-                        if (targetDistance >= minFloatingDistance && targetDistance <= maxFloatingDistance) {
-                            //Orbital and Beside solver should be activated on the floating menu.
-                            //Check the space "besides" the targetObject on the left or right side according to user's position, similar to Beside solver.
+                                if (handTrackingEnabled) {
+                                    gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.HandJoint;
+                                    gameObject.GetComponent<SolverHandler>().TrackedHandness = Handedness.Right;
+                                    gameObject.GetComponent<HandConstraint>().enabled = true;
+                                    gameObject.GetComponent<Orbital>().enabled = false;
+                                }
+                                else {
+                                    gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.Head;
+                                    gameObject.transform.position = head.transform.position + head.transform.forward * 0.3f;
+                                    gameObject.GetComponent<Follow>().enabled = true;
+                                    gameObject.GetComponent<Orbital>().enabled = false;
+                                }
+                            }
+                        }
+                        else {
                             Vector3 directionToHead = head.transform.position - TargetObject.transform.position;
                             bool rightSide = Vector3.Dot(directionToHead, head.transform.right) > 0 ? true : false;
                             Vector3 centerFloating = Vector3.zero;
                             Vector3 centerCompact = Vector3.zero;
                             if (rightSide) {
                                 centerFloating = TargetObject.transform.position + head.transform.right * orbitalOffsetOppositeType.x + head.transform.up * orbitalOffsetOppositeType.y + head.transform.forward * orbitalOffsetOppositeType.z;
-                                centerCompact = TargetObject.transform.position + head.transform.right * orbitalOffset.x + head.transform.up * orbitalOffset.y + head.transform.forward * orbitalOffset.z;                               
+                                centerCompact = TargetObject.transform.position + head.transform.right * orbitalOffset.x + head.transform.up * orbitalOffset.y + head.transform.forward * orbitalOffset.z;
                             }
                             else {
-                                centerFloating = TargetObject.transform.position + ( - head.transform.right * orbitalOffsetOppositeType.x) + head.transform.up * orbitalOffsetOppositeType.y + head.transform.forward * orbitalOffsetOppositeType.z;
-                                centerCompact = TargetObject.transform.position + ( - head.transform.right * orbitalOffset.x) + head.transform.up * orbitalOffset.y + head.transform.forward * orbitalOffset.z;
+                                centerFloating = TargetObject.transform.position + (-head.transform.right * orbitalOffsetOppositeType.x) + head.transform.up * orbitalOffsetOppositeType.y + head.transform.forward * orbitalOffsetOppositeType.z;
+                                centerCompact = TargetObject.transform.position + (-head.transform.right * orbitalOffset.x) + head.transform.up * orbitalOffset.y + head.transform.forward * orbitalOffset.z;
                             }
-                            if (!Physics.CheckBox(centerFloating, placementService.GetStoredBoundingBoxOnCloseOppositeType(gameObject).extents, Quaternion.identity, LayerMask.GetMask("Spatial Mapping"))
-                                && !Physics.Raycast(TargetObject.transform.position, centerFloating - TargetObject.transform.position, (centerFloating - TargetObject.transform.position).magnitude, LayerMask.GetMask("Spatial Mapping"))) {
-                                Debug.Log("Besides Free for Floating Orbital");
-                                message.switchType = PlacementMessage.SwitchType.CompactToFloating;
-                                switchTo = message.switchType;
-                            }else if (!Physics.CheckBox(centerCompact, placementService.GetStoredBoundingBoxOnCloseOppositeType(gameObject).extents, Quaternion.identity, LayerMask.GetMask("Spatial Mapping"))
-                                && !Physics.Raycast(TargetObject.transform.position, centerCompact - TargetObject.transform.position, (centerCompact - TargetObject.transform.position).magnitude, LayerMask.GetMask("Spatial Mapping"))) {                       
-                                Debug.Log("Beside Free for Compact Orbital");
-                                gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.CustomOverride;
-                                gameObject.GetComponent<SolverHandler>().TransformOverride = TargetObject.transform;
-                                gameObject.GetComponent<Orbital>().enabled = true;
-                                gameObject.GetComponent<HandConstraint>().enabled = false;
-                                gameObject.GetComponent<FinalPlacementOptimizer>().enabled = true;
+                            if (targetDistance >= minFloatingDistance && targetDistance <= maxFloatingDistance) {
+                                //Orbital and Beside solver should be activated on the floating menu.
+                                //Check the space "besides" the targetObject on the left or right side according to user's position, similar to Beside solver.
+
+                                if (!Physics.CheckBox(centerFloating, placementService.GetStoredBoundingBoxOnCloseOppositeType(gameObject).extents, Quaternion.identity, LayerMask.GetMask("Spatial Mapping"))
+                                    && !Physics.Raycast(TargetObject.transform.position, centerFloating - TargetObject.transform.position, (centerFloating - TargetObject.transform.position).magnitude, LayerMask.GetMask("Spatial Mapping"))) {
+                                    Debug.Log("Besides Free for Floating Orbital");
+                                    message.switchType = PlacementMessage.SwitchType.CompactToFloating;
+                                    switchTo = message.switchType;
+                                }
+                                else if (!Physics.CheckBox(centerCompact, placementService.GetStoredBoundingBoxOnCloseOppositeType(gameObject).extents, Quaternion.identity, LayerMask.GetMask("Spatial Mapping"))
+                                   && !Physics.Raycast(TargetObject.transform.position, centerCompact - TargetObject.transform.position, (centerCompact - TargetObject.transform.position).magnitude, LayerMask.GetMask("Spatial Mapping"))) {
+                                    Debug.Log("Beside Free for Compact Orbital");
+                                    gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.CustomOverride;
+                                    gameObject.GetComponent<SolverHandler>().TransformOverride = TargetObject.transform;
+                                    gameObject.GetComponent<Orbital>().enabled = true;
+                                    gameObject.GetComponent<FinalPlacementOptimizer>().OrbitalOffset = orbitalOffset;
+                                    if (handTrackingEnabled) {
+                                        gameObject.GetComponent<HandConstraint>().enabled = false;
+                                    }
+                                    else {
+                                        gameObject.GetComponent<Follow>().enabled = false;
+                                    }
+                                    gameObject.GetComponent<FinalPlacementOptimizer>().enabled = true;
+                                }
+                            }
+                            //If targetDistance < minFloatingDistance, the menu should remain compact.
+                            if (targetDistance < minFloatingDistance) {
+                                if (!Physics.CheckBox(centerCompact, placementService.GetStoredBoundingBoxOnCloseOppositeType(gameObject).extents, Quaternion.identity, LayerMask.GetMask("Spatial Mapping"))
+                                    && !Physics.Raycast(TargetObject.transform.position, centerCompact - TargetObject.transform.position, (centerCompact - TargetObject.transform.position).magnitude, LayerMask.GetMask("Spatial Mapping"))) {
+                                    Debug.Log("Beside Free for Compact Orbital");
+                                    gameObject.GetComponent<SolverHandler>().TrackedTargetType = TrackedObjectType.CustomOverride;
+                                    gameObject.GetComponent<SolverHandler>().TransformOverride = TargetObject.transform;
+                                    gameObject.GetComponent<Orbital>().enabled = true;
+                                    gameObject.GetComponent<FinalPlacementOptimizer>().OrbitalOffset = orbitalOffset;
+                                    if (handTrackingEnabled) {
+                                        gameObject.GetComponent<HandConstraint>().enabled = false;
+                                    }
+                                    else {
+                                        gameObject.GetComponent<Follow>().enabled = false;
+                                    }
+                                    gameObject.GetComponent<FinalPlacementOptimizer>().enabled = true;
+                                }
                             }
                         }
-                        //If targetDistance < minFloatingDistance, the menu should remain compact.
+                        
+                        
                     }
                     
                 }
@@ -608,7 +734,7 @@ namespace MenuPlacement {
                             gameObject.GetComponent<Orbital>().enabled = false;
                         }
                     }
-                    //Check if there is no occlusion anymore (and have space)
+                    //Check if there is no (potential) occlusion anymore
                     if (targetDistance > maxFloatingDistance) {
                         //For InBetween
                         Vector3 inBetweenPostion = placementService.GetInBetweenTarget().transform.position + Vector3.Normalize(TargetObject.transform.position - placementService.GetInBetweenTarget().transform.position) * defaultFloatingDistance;
@@ -650,25 +776,21 @@ namespace MenuPlacement {
                     if (suggestionTime > suggestionTimeInterval) {
                         placementService.EnterAdjustmentMode();
                         Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.Close | DialogButtonType.Accept , "Menu Needs Adjustment",
-                                    "Collision Detected for the main menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode", true);
-                        suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.2f;
-                        suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.2f;
-                        suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.2f;
+                                    "Collision Detected for the main menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode.", true);
+                        suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
+                        suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                        suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
                         suggestionTime = 0;
                     }
                 }
                 else {
-                    float targetDistance = (head.transform.position - TargetObject.transform.position).magnitude;
-                    //If the target object is far away, namely the InBetween solver is activated.
-                    if (targetDistance > maxFloatingDistance) {
-                    }
                     if (suggestionTime > suggestionTimeInterval) {
                         placementService.EnterAdjustmentMode();
                         Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.Close | DialogButtonType.Accept, "Menu Needs Adjustment",
-                                    "Collision Detected for an object menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode", true);
-                        suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.2f;
-                        suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.2f;
-                        suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.2f;
+                                    "Collision Detected for an object menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode.", true);
+                        suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
+                        suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                        suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
                         suggestionTime = 0;
                     }
                 }
@@ -682,10 +804,10 @@ namespace MenuPlacement {
                         if (suggestionTime > suggestionTimeInterval) {
                             placementService.EnterAdjustmentMode();
                             Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.Close | DialogButtonType.Accept, "Menu Needs Adjustment",
-                                        "Occlusion Detected for the main menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode", true);
-                            suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.2f;
-                            suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.2f;
-                            suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.2f;
+                                        "Occlusion Detected for the main menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode.", true);
+                            suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
+                            suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                            suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
                             suggestionTime = 0;
                         }
                     }
@@ -695,10 +817,10 @@ namespace MenuPlacement {
                         if (suggestionTime > suggestionTimeInterval) {
                             placementService.EnterAdjustmentMode();
                             Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.Close | DialogButtonType.Accept, "Menu Needs Adjustment",
-                                        "Occlusion Detected for an object menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode", true);
-                            suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.2f;
-                            suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.2f;
-                            suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.2f;
+                                        "Occlusion Detected for an object menu! You might need to move to another location, move it closer or switch it to compact version if possible. You can click 'Accept' to switch to automatic mode.", true);
+                            suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
+                            suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
+                            suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
                             suggestionTime = 0;
                         }
                     }
@@ -779,16 +901,72 @@ namespace MenuPlacement {
         }
 
         //Only this functions for object menus, because for main menus we have the SurfaceMagnetismSafetyOffset
-        private bool CollideWithSpatialMapping() {
-            if (!isMainMenu) {                
-                return Physics.CheckBox(GetBoundingBox().center, GetBoundingBox().extents, Quaternion.identity, LayerMask.GetMask("Spatial Mapping"));
-            }
-            else {
-                return false;
+
+        private bool CollideWithSpatialMapping() {          
+            return Physics.CheckBox(GetBoundingBox().center, GetBoundingBox().extents, Quaternion.identity, LayerMask.GetMask("Spatial Mapping"));
+        }
+
+
+#endregion Private Methods
+
+        //Methods For EVALUATION
+        private float sumDistance = 0;
+        private int distanceUpdateCount = 0;
+        private float distanceUpdateTime = 0;
+        private float distanceUpdateTimeThreshold = 3;
+        private string path;
+        FileStream testData;
+
+        StreamWriter sw;
+
+        private void CalculateAverageDistance() {
+            if(placementService.PlacementMode != MenuPlacementService.MenuPlacementServiceMode.Adjustment) {
+                if (distanceUpdateTime > distanceUpdateTimeThreshold) {
+                    distanceUpdateCount++;
+                    sumDistance += (gameObject.transform.position - head.transform.position).magnitude;
+                    distanceUpdateTime = 0;
+                }
+                else {
+                    distanceUpdateTime += Time.deltaTime;
+                }
             }
         }
 
-        #endregion Private Methods
+        private void SaveAverageDistance() {
+            float aveDis = sumDistance / distanceUpdateCount;
+            sumDistance = 0;
+            distanceUpdateCount = 0;
+            sw.WriteLine("The average distance between the user and this menu is:   " + aveDis + " meter.");
+            sw.WriteLine("");
+        }
 
+        private void SaveLastOffset() {
+            sw.WriteLine("The best suited offsets in AUTOMATIC mode:  ");
+            sw.WriteLine("Position Offset: " + gameObject.GetComponent<FinalPlacementOptimizer>().PositionOffset);
+            sw.WriteLine("Rotation Offset: " + gameObject.GetComponent<FinalPlacementOptimizer>().RotationOffset);
+            sw.WriteLine("Scale Offset: " + gameObject.GetComponent<FinalPlacementOptimizer>().ScaleOffset);
+            sw.WriteLine("");
+            sw.WriteLine("The best suited offsets in MANUAL mode:  ");
+            sw.WriteLine("Position Offset: " + manualModePositionOffset);
+            sw.WriteLine("Rotation Offset: " + manualModeRotationOffset);
+            sw.WriteLine("Scale Offset: " + manualModeScaleOffset);
+            sw.WriteLine("");
+            sw.Close();
+            sw.Dispose();
+
+        }
+
+        private void SaveOnUWP() {
+            float aveDis = sumDistance / distanceUpdateCount;
+            sumDistance = 0;
+            distanceUpdateCount = 0;
+            path = Application.persistentDataPath + "/" + menuID + "_" + aveDis + "_" + gameObject.GetComponent<FinalPlacementOptimizer>().PositionOffset + "_" + 
+                gameObject.GetComponent<FinalPlacementOptimizer>().RotationOffset + "_" + gameObject.GetComponent<FinalPlacementOptimizer>().ScaleOffset + "_" + manualModePositionOffset + "_" +
+                manualModeRotationOffset + "_" + manualModeScaleOffset + "F";
+            testData = new FileStream(path, FileMode.Create);
+/*            sw = new StreamWriter(testData);
+            sw.Close();
+            sw.Dispose();*/
+        }
     }
 }
