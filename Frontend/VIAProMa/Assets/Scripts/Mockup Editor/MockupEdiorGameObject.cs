@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// component which is attacked to every mockup item instance
+/// component which is attached to every Mockup-Item instance, that saves which object it represents.
 /// </summary>
 public class MockupEdiorGameObject : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
