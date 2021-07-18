@@ -4,27 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using i5.Toolkit.Core.Utilities;
+using UnityEngine;
 
 namespace i5.VIAProMa.Visualizations.Minimap
 {
     /// <summary>
     /// Abstractor visualization logic for minimap
     /// </summary>
+    [RequireComponent(typeof(MinimapController))]
     public class Minimap : Visualization
     {
-        private MinimapVisuals minimapVisuals;
-
+        /// <summary>
+        /// Initialize the minimap component
+        /// </summary>
         protected override void Awake()
         {
             base.Awake();
-            //minimapVisuals = GetComponent<MinimapVisuals>();
-            //if (minimapVisuals is null)
-            //{
-            //    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MinimapVisuals), gameObject);
-            //}
-
-            ContentProvider = new SingleIssuesProvider();
             Title = "Sample Minimap";
+            visualController = GetComponent<MinimapController>();
+        }
+
+        public override void UpdateView()
+        {
+            base.UpdateView();
         }
     }
 }

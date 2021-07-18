@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using i5.Toolkit.Core.Utilities;
+﻿using i5.Toolkit.Core.Utilities;
 using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine;
 
