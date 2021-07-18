@@ -14,8 +14,11 @@ namespace i5.VIAProMa.Visualizations.Minimap
     {
         private MinimapVisuals minimapVisuals;
 
-        protected override void Awake()
+         protected override void Awake()
         {
+        /// <summary>
+        /// override function to wake the minimap up
+        /// </summary>
             base.Awake();
             //minimapVisuals = GetComponent<MinimapVisuals>();
             //if (minimapVisuals is null)

@@ -20,6 +20,9 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         public override bool WindowEnabled
         {
+        /// <summary>
+        /// override function enable the window
+        /// </summary>
             get => base.WindowEnabled;
             set
             {
@@ -39,6 +42,9 @@ namespace i5.VIAProMa.Visualizations.Minimap
 
         public override void Open()
         {
+        /// <summary>
+        /// function to open the button and the menu
+        /// </summary>
             base.Open();
             transform.position = appBarSpawner.SpawnedInstance.transform.position - 0.05f * appBarSpawner.SpawnedInstance.transform.forward;
             transform.rotation = appBarSpawner.SpawnedInstance.transform.rotation;

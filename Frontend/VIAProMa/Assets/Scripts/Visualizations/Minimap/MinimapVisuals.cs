@@ -20,7 +20,7 @@ namespace i5.VIAProMa.Visualizations.Minimap
         Visualization[] MinimapItems { get; set; }
 
         /// <summary>
-        /// Gets/sers the highlighted items
+        /// Gets/sets the highlighted items
         /// </summary>
         Visualization[] HighlightedItems { get; set; }
 
