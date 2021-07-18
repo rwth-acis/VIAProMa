@@ -12,19 +12,11 @@ namespace i5.VIAProMa.Visualizations.Minimap
     /// </summary>
     public class Minimap : Visualization
     {
-        private MinimapVisuals minimapVisuals;
-
         protected override void Awake()
         {
             base.Awake();
-            //minimapVisuals = GetComponent<MinimapVisuals>();
-            //if (minimapVisuals is null)
-            //{
-            //    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(MinimapVisuals), gameObject);
-            //}
-
-            ContentProvider = new SingleIssuesProvider();
             Title = "Sample Minimap";
+            visualController = GetComponent<MinimapController>();
         }
     }
 }
