@@ -61,4 +61,8 @@ public class OwnershipManager : Singleton<OwnershipManager>, IPunOwnershipCallba
     public void OnOwnershipTransfered(PhotonView targetView, Player previousOwner)
     {
     }
+
+    public void OnOwnershipTransferFailed(PhotonView targetView, Player previousOwner)
+    {
+    }
 }

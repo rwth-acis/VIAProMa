@@ -13,7 +13,7 @@ public class VoiceRecorderManager : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        PhotonVoiceNetwork.Instance.PrimaryRecorder.Init(PhotonVoiceNetwork.Instance.VoiceClient);
+        PhotonVoiceNetwork.Instance.PrimaryRecorder.Init(PhotonVoiceNetwork.Instance);
         Debug.Log("Voice Recorder initialized");
     }
 }
