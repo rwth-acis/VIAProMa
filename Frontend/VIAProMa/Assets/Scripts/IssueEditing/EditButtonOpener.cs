@@ -40,12 +40,12 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
                 buttonInstance.GetComponent<EditButton>().issueName = issueName;
                 buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
-                buttonInstance.GetComponent<EditButton>().issueID= issueID;
+                buttonInstance.GetComponent<EditButton>().issueID = issueID;
                 buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.REQUIREMENTS_BAZAAR;
-                buttonInstance.transform.parent = this.transform;
+                buttonInstance.transform.parent = this.transform.parent.parent.parent;
             }
-            else if(dataSource == DataSource.GITHUB)
+            else if (dataSource == DataSource.GITHUB)
             {
                 buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
                 buttonInstance.GetComponent<EditButton>().issueName = issueName;
@@ -53,9 +53,16 @@ public class EditButtonOpener : MonoBehaviour
                 buttonInstance.GetComponent<EditButton>().issueID = issueID;
                 buttonInstance.SetActive(ServiceManager.GetService<GitHubOidcService>().IsLoggedIn);
                 buttonInstance.GetComponent<EditButton>().source = DataSource.GITHUB;
-                buttonInstance.transform.parent = this.transform;
+                buttonInstance.transform.parent = this.transform.parent.parent.parent;
             }
-
+        }
+        if (dataSource == DataSource.REQUIREMENTS_BAZAAR && buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z))
+        {
+            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z);
+        }
+        else if(dataSource == DataSource.GITHUB && buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z))
+        {
+            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
         }
     }
 
