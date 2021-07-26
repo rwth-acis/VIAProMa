@@ -20,7 +20,7 @@ namespace i5.VIAProMa.WebConnection
         /// <param name="text">The text to convert</param>
         /// <returns>The networked id</returns>
         public static async Task<short> StringToId(string text)
-        {
+        {           
             if (string.IsNullOrEmpty(text))
             {
                 return -1;

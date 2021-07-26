@@ -11,6 +11,10 @@ namespace i5.VIAProMa.Multiplayer
         [Description("Developer")]
         DEVELOPER = 2,
         [Description("Stakeholder")]
-        STAKEHOLDER = 3
+        STAKEHOLDER = 3,
+        [Description("Tutor")]
+        TUTOR = 4,
+        [Description("Student")]
+        STUDENT = 5
     }
 }

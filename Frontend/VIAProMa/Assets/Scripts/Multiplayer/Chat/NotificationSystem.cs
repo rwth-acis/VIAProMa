@@ -10,6 +10,7 @@ namespace i5.VIAProMa.Multiplayer.Chat
     {
         [SerializeField] private GameObject notificationWidget;
         [SerializeField] private TextMeshPro notificationPreviewLabel;
+        public static bool isClicked = false;
 
         public bool CanShowMessages { get; set; } = true;
 
@@ -58,10 +59,19 @@ namespace i5.VIAProMa.Multiplayer.Chat
 
         public void OpenChatMenu()
         {
-            WindowManager.Instance.ChatMenu.Open(
+            if (ShareNRequestHandler.shareNreq == true)
+            {
+                isClicked = true;
+                ShareNRequestHandler.shareNreq = false;
+            }
+            else
+            {
+                WindowManager.Instance.ChatMenu.Open(
                 transform.position - 0.6f * notificationPreviewLabel.transform.right,
                 notificationPreviewLabel.transform.eulerAngles
                 );
+            }
+            
         }
 
         private void OnMessageReceived(object sender, ChatMessageEventArgs e)

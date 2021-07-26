@@ -1,6 +1,4 @@
-﻿// Upgrade NOTE: replaced 'UNITY_INSTANCE_ID' with 'UNITY_VERTEX_INPUT_INSTANCE_ID'
-
-Shader "Custom/Grid Shader"
+﻿Shader "Custom/Grid Shader"
 {
 	Properties
 	{
@@ -43,33 +41,25 @@ Shader "Custom/Grid Shader"
 			{
 				float4 position : POSITION;
 				float2 uv : TEXCOORD0;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
 			struct v2f
 			{
 				float4 position : SV_POSITION;
 				float2 uv : TEXCOORD0;
-				UNITY_VERTEX_INPUT_INSTANCE_ID
-				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 
 			v2f vert(vertexData input)
 			{
 				v2f o;
-				UNITY_SETUP_INSTANCE_ID(input);
-				UNITY_TRANSFER_INSTANCE_ID(input, o);
-				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 				o.position = UnityObjectToClipPos(input.position);
 				o.uv = input.uv;
 				return o;
 			}
 
-
 			float4 frag(v2f input) : SV_TARGET
 			{
-				UNITY_SETUP_INSTANCE_ID(input);
 				if (frac((input.uv.x + _OffsetX + _WireThicknessX / 2.0) / _CellWidth) < (_WireThicknessX / _CellWidth)
 				|| frac((input.uv.y + _OffsetY + _WireThicknessY / 2.0) / _CellHeight) < (_WireThicknessY / _CellHeight))
 				{

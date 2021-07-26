@@ -109,6 +109,7 @@ namespace i5.VIAProMa.UI
         public void OnRoleChanged()
         {
             UserManager.Instance.UserRole = (UserRoles)roleToggles.CurrentIndex;
+            Debug.Log(UserManager.Instance.UserRole);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace i5.VIAProMa.Multiplayer.Avatars
             }
             else
             {
-                idCardController.UserRole = (UserRoles)PlayerPropertyUtilities.GetValueOrDefault<byte>(photonView.Owner.CustomProperties, roleKey, 2);
+                idCardController.UserRole = (UserRoles)PlayerPropertyUtilities.GetValueOrDefault<byte>(photonView.Owner.CustomProperties, roleKey, 5);
             }
         }
 
@@ -47,7 +47,7 @@ namespace i5.VIAProMa.Multiplayer.Avatars
             }
             else if (PhotonNetwork.IsConnected && target == photonView.Owner)
             {
-                byte roleIndex = PlayerPropertyUtilities.GetValueOrDefault<byte>(target.CustomProperties, roleKey, 2); // defaults to "developer" if key not found
+                byte roleIndex = PlayerPropertyUtilities.GetValueOrDefault<byte>(target.CustomProperties, roleKey, 5); // defaults to "developer" if key not found
                 UserRoles role = (UserRoles)roleIndex;
                 idCardController.UserRole = role;
             }
