@@ -67,7 +67,6 @@ namespace i5.VIAProMa.UI.Chat
             targetPosition.z = 3f;
             targetPosition.y = 0f;
             PhotonNetwork.Instantiate(botPrefab, targetPosition, Quaternion.Euler(0, 90, 0), 0);
-            botIsOpen = "true";
         }
 
         private void LoginScript_LoginCompleted(object sender, System.EventArgs e)

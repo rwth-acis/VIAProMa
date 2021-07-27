@@ -31,13 +31,13 @@ namespace i5.VIAProMa.UI.Chat
         public void OnClick()
         {
             photonView.RPC("Close", RpcTarget.All);
-            BotMenu.botIsOpen = "false";
         }
 
         [PunRPC]
         public void Close()
         {
-            Debug.Log("Close Bot");
+            UnityBotButton.BotClose = true;
+            Debug.Log("Close Bot " + UnityBotButton.BotOpen);
             gameObject.SetActive(false);
             WindowClosed?.Invoke(this, EventArgs.Empty);
         }

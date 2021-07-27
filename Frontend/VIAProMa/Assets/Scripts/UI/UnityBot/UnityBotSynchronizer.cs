@@ -23,6 +23,8 @@ public class UnityBotSynchronizer : MonoBehaviourPunCallbacks
     private void Awake()
     {
         NoShare();
+        UnityBotButton.BotOpen = true;
+        UnityBotButton.BotClose = false;
     }
 
     void Update()
@@ -43,6 +45,9 @@ public class UnityBotSynchronizer : MonoBehaviourPunCallbacks
             ShareBot(RequestHandler.reqOwner);
             isReq = false;
         }*/
+        //tell everyone the bot is open
+        if (UnityBotButton.BotOpen == true)
+            ToDisable(UnityBotButton.BotOpen);
 
         //using system notification
         if (NotificationSystem.isClicked == true)
@@ -71,6 +76,19 @@ public class UnityBotSynchronizer : MonoBehaviourPunCallbacks
             StopSharing(PlayerListItem.playerName);
             PlayerList.isShare = false;
         }
+    }
+
+    private void ToDisable(bool status)
+    {
+        photonView.RPC("DisableBotButton", RpcTarget.Others, status);
+    }
+
+    [PunRPC]
+    private void DisableBotButton(bool status)
+    {
+        Debug.Log("Disable bot button");
+        if (UnityBotButton.BotOpen != status)
+            UnityBotButton.BotOpen = status;
     }
 
     private void ShareBot(string playerName)

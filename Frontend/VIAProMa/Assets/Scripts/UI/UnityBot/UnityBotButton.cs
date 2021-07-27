@@ -1,36 +1,27 @@
-﻿using i5.VIAProMa.UI.Chat;
+﻿using HoloToolkit.Unity;
 using Microsoft.MixedReality.Toolkit.UI;
-using Photon.Pun;
 using UnityEngine;
 
-public class UnityBotButton : MonoBehaviourPunCallbacks
+public class UnityBotButton : Singleton<UnityBotButton>
 {
     [SerializeField] private Interactable uniBotButton;
+    public static bool BotOpen = false;
+    public static bool BotClose = false;
 
     public void Update()
     {
-        if (BotMenu.botIsOpen == "true")
+        //Debug.Log("CheckBotStatus: " + BotOpen);
+        if (BotOpen == true & BotClose == false)
         {
-            photonView.RPC("DisableBotButton", RpcTarget.All);
-            BotMenu.botIsOpen = "";
+            if (uniBotButton.Enabled == true)
+                uniBotButton.Enabled = false;
         }
         
-        if (BotMenu.botIsOpen == "false")
+        if (BotClose == true)
         {
-            photonView.RPC("EnableBotButton", RpcTarget.All);
-            BotMenu.botIsOpen = "";
+            if (uniBotButton.Enabled == false)
+                uniBotButton.Enabled = true;
         }
     }
-
-    [PunRPC]
-    private void DisableBotButton()
-    {
-        uniBotButton.Enabled = false;
-    }
-
-    [PunRPC]
-    private void EnableBotButton()
-    {
-        uniBotButton.Enabled = true;
-    }
+   
 }
