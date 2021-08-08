@@ -28,6 +28,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     private Material currentSkybox;
     private GameObject currentPrefab;
     private bool coroutinesFinished = false;
+    private string assetBundlesURL;
 
     /// <summary>
     /// The number of environment entries which are shown on one page
@@ -82,6 +83,8 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
         }
+
+        assetBundlesURL = "file:///" + Application.dataPath + "/AssetBundles/";
         StartCoroutine(GetAssetBundleObjects());
 
         environmentListView.ItemSelected += OnEnvironmentSelected;
@@ -216,7 +219,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
             {
                 currentSkybox = null;
                 currentPrefab = null;
-                string url = "file:///" + Application.dataPath + "/AssetBundles/" + environmentURLs[arrayIndex];
+                string url = assetBundlesURL + environmentURLs[arrayIndex];
                 var request = UnityEngine.Networking.UnityWebRequestAssetBundle.GetAssetBundle(url, 0);
                 AsyncOperation sentRequest = request.SendWebRequest();
                 while (!sentRequest.isDone)
