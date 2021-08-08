@@ -27,12 +27,12 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  observableSearch: 0
   Synchronization: 3
   OwnershipTransfer: 0
+  observableSearch: 0
   ObservedComponents:
   - {fileID: 8645489339138977450}
-  viewIdField: 0
+  sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &6929443080308724567
@@ -407,7 +407,11 @@ MonoBehaviour:
   logLevel: 1
   ignoreGlobalLogLevel: 0
   playbackOnlyWhenEnabled: 0
-  playDelayMs: 200
+  playDelayMs: -1
+  playbackDelaySettings:
+    MinDelaySoft: 200
+    MaxDelaySoft: 400
+    MaxDelayHard: 1000
 --- !u!1001 &6523064825053795340
 PrefabInstance:
   m_ObjectHideFlags: 0
