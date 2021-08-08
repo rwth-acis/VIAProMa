@@ -52,7 +52,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
         public IBrowser Browser { get; set; }
 
         /// <summary>
-        /// Creates a new instance of the learning layers client
+        /// Creates a new instance of the slack client
         /// </summary>
         public SlackOidcProvider()
         {
@@ -120,7 +120,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
         }
 
         /// <summary>
-        /// Gets information about the logged in user from the learning layers provider
+        /// Gets information about the logged in user from the slack provider
         /// </summary>
         /// <param name="accessToken">The access token to authenticate the user</param>
         /// <returns>Returns information about the logged in user if the request was successful, otherwise null</returns>
@@ -145,7 +145,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
         }
 
         /// <summary>
-        /// Checks if the access token is valid by checking it at the Learning Layers provider
+        /// Checks if the access token is valid by checking it at the Slack provider
         /// </summary>
         /// <param name="accessToken">The access token that should be checked</param>
         /// <returns>True if the access token is valid, otherwise false</returns>
@@ -156,7 +156,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
         }
 
         /// <summary>
-        /// Opens the Learning Layers login page in the system's default Web browser
+        /// Opens the Slack login page in the system's default Web browser
         /// </summary>
         /// <param name="scopes">The OpenID Connect scopes that the user must agree to</param>
         /// <param name="redirectUri">The URI to which the browser should redirect after the successful login</param>
