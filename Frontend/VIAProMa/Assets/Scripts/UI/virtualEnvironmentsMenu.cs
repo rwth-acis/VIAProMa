@@ -23,6 +23,11 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
     [SerializeField] private string[] environmentNames;
     [SerializeField] private GameObject[] environmentPrefabs;
     [SerializeField] private string[] environmentCredits;
+    [SerializeField] private string[] environmentURLs;
+
+    private Material currentSkybox;
+    private GameObject currentPrefab;
+    private bool coroutinesFinished = false;
 
     /// <summary>
     /// The number of environment entries which are shown on one page
@@ -77,15 +82,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
         }
-
-        //Insert environments into list
-        for(int i = 0; i < environmentNames.Length; i++)
-        {
-            if (previewImages[i] != null && environmentSkyboxes[i] != null)
-            {
-                environments.Add(new EnvironmentData(environmentNames[i], previewImages[i], environmentSkyboxes[i], environmentPrefabs[i], environmentCredits[i]));
-            }
-        }
+        StartCoroutine(GetAssetBundleObjects());
 
         environmentListView.ItemSelected += OnEnvironmentSelected;
 
@@ -94,7 +91,6 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 
     /// <summary>
     /// Called if a element of the room list view was selected by the user
-    /// Makes sure that the client joins the selected room
     /// </summary>
     /// <param name="skybox">The selected skybox</param>
     /// <param name="e">Arguments about the list view selection event</param>
@@ -112,7 +108,8 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
             }
             if (environmentListView.SeletedItem.EnvironmentPrefab != null)
             {
-                currentEnvironmentInstance = Instantiate(environmentListView.SeletedItem.EnvironmentPrefab, environmentListView.SeletedItem.EnvironmentPrefab.transform.position, environmentListView.SeletedItem.EnvironmentPrefab.transform.rotation);            }
+                currentEnvironmentInstance = Instantiate(environmentListView.SeletedItem.EnvironmentPrefab, environmentListView.SeletedItem.EnvironmentPrefab.transform.position, environmentListView.SeletedItem.EnvironmentPrefab.transform.rotation);            
+            }
         }
     }
 
@@ -209,5 +206,41 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         WindowOpen = false;
         WindowClosed?.Invoke(this, EventArgs.Empty);
         gameObject.SetActive(false);
+    }
+
+    IEnumerator GetAssetBundleObjects()
+    {
+        for (int arrayIndex = 0; arrayIndex < environmentNames.Length; arrayIndex++)
+        {
+            if (arrayIndex != 0)
+            {
+                currentSkybox = null;
+                currentPrefab = null;
+                string url = "file:///" + Application.dataPath + "/AssetBundles/" + environmentURLs[arrayIndex];
+                var request = UnityEngine.Networking.UnityWebRequestAssetBundle.GetAssetBundle(url, 0);
+                AsyncOperation sentRequest = request.SendWebRequest();
+                while (!sentRequest.isDone)
+                { }
+
+                if (UnityEngine.Networking.DownloadHandlerAssetBundle.GetContent(request) != null)
+                {
+                    AssetBundle bundle = UnityEngine.Networking.DownloadHandlerAssetBundle.GetContent(request);
+                    if (bundle != null)
+                    {
+                        environmentSkyboxes[arrayIndex] = bundle.LoadAllAssets<Material>()[0];
+                        if (bundle.LoadAllAssets<GameObject>().Length != 0)
+                            environmentPrefabs[arrayIndex] = bundle.LoadAllAssets<GameObject>()[0];
+                        previewImages[arrayIndex] = bundle.LoadAllAssets<Sprite>()[0];
+                        environmentCredits[arrayIndex] = bundle.LoadAllAssets<TextAsset>()[0].text;
+                    }
+                }
+            }
+
+            if (previewImages[arrayIndex] != null && environmentSkyboxes[arrayIndex] != null)
+            {
+                environments.Add(new EnvironmentData(environmentNames[arrayIndex], previewImages[arrayIndex], environmentSkyboxes[arrayIndex], environmentPrefabs[arrayIndex], environmentCredits[arrayIndex], environmentURLs[arrayIndex]));
+            }
+        }
+        yield return null;
     }
 }
