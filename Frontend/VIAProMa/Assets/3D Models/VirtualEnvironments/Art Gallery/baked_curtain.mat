@@ -9,14 +9,13 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: baked_curtain
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _ALPHABLEND_ON _ALPHAPREMULTIPLY_ON _DIRECTIONAL_LIGHT _HOVER_LIGHT
-    _SPECULAR_HIGHLIGHTS
+  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _DIRECTIONAL_LIGHT _HOVER_LIGHT _SPECULAR_HIGHLIGHTS
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
   stringTagMap:
-    RenderType: Fade
+    RenderType: Transparency
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -53,7 +52,7 @@ Material:
     - _ClippingBorderWidth: 0.025
     - _ColorWriteMask: 15
     - _CullMode: 0
-    - _CustomMode: 2
+    - _CustomMode: 0
     - _Cutoff: 0.5
     - _DirectionalLight: 1
     - _DstBlend: 10
