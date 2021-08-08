@@ -85,7 +85,8 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         }
 
         assetBundlesURL = "file:///" + Application.dataPath + "/AssetBundles/";
-        StartCoroutine(GetAssetBundleObjects());
+        if(UnityEngine.XR.WSA.HolographicSettings.IsDisplayOpaque)
+            StartCoroutine(GetAssetBundleObjects());
 
         environmentListView.ItemSelected += OnEnvironmentSelected;
 
