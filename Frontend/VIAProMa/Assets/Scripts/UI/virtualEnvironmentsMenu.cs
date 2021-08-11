@@ -16,24 +16,27 @@ using UnityEngine.UI;
 public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 {
     [SerializeField] private EnvironmentListView environmentListView;
+    /// <summary>
+    /// The number of environment entries which are shown on one page
+    /// </summary>
+    [SerializeField] private int entriesPerPage;
     [SerializeField] private Interactable pageUpButton;
     [SerializeField] private Interactable pageDownButton;
-    [SerializeField] private Material[] environmentSkyboxes;
-    [SerializeField] private Sprite[] previewImages;
+    [SerializeField] private Material defaultSkybox;
+    [SerializeField] private Sprite defaultpreviewImage;
+    [SerializeField] private string defaultCredits;
+
+    private Material[] environmentSkyboxes;
+    private Sprite[] previewImages;
     [SerializeField] private string[] environmentNames;
-    [SerializeField] private GameObject[] environmentPrefabs;
-    [SerializeField] private string[] environmentCredits;
+    private GameObject[] environmentPrefabs;
+    private string[] environmentCredits;
     [SerializeField] private string[] environmentURLs;
 
     private Material currentSkybox;
     private GameObject currentPrefab;
     private bool coroutinesFinished = false;
     private string assetBundlesURL;
-
-    /// <summary>
-    /// The number of environment entries which are shown on one page
-    /// </summary>
-    public int entriesPerPage = 2;
 
     private List<EnvironmentData> environments = new List<EnvironmentData>();
 
@@ -83,6 +86,15 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
         {
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(pageDownButton));
         }
+
+        environmentPrefabs = new GameObject[environmentURLs.Length];
+        previewImages = new Sprite[environmentURLs.Length];
+        environmentSkyboxes = new Material[environmentURLs.Length];
+        environmentCredits = new string[environmentURLs.Length];
+
+        previewImages[0] = defaultpreviewImage;
+        environmentSkyboxes[0] = defaultSkybox;
+        environmentCredits[0] = defaultCredits;
 
         assetBundlesURL = "file:///" + Application.dataPath + "/AssetBundles/";
         if(UnityEngine.XR.WSA.HolographicSettings.IsDisplayOpaque)
@@ -214,7 +226,7 @@ public class virtualEnvironmentsMenu : MonoBehaviour, IWindow
 
     IEnumerator GetAssetBundleObjects()
     {
-        for (int arrayIndex = 0; arrayIndex < environmentNames.Length; arrayIndex++)
+        for (int arrayIndex = 0; arrayIndex < environmentURLs.Length; arrayIndex++)
         {
             if (arrayIndex != 0)
             {
