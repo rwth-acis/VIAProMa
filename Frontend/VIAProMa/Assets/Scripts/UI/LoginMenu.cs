@@ -2,6 +2,7 @@
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.Utilities;
+using i5.VIAProMa.Login;
 using i5.VIAProMa.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
@@ -95,9 +96,9 @@ public class LoginMenu : MonoBehaviour, IWindow
     // Initializes the controls of the window
     private async void Initialize()
     {
-        if (oidcService == null && ServiceManager.ServiceExists<OpenIDConnectService>())
+        if (oidcService == null && ServiceManager.ServiceExists<LearningLayersOidcService>())
         {
-            oidcService = ServiceManager.GetService<OpenIDConnectService>();
+            oidcService = ServiceManager.GetService<LearningLayersOidcService>();
         }
 
         nameLabel.text = await GetUserNameAsync();
