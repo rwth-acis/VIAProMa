@@ -75,7 +75,6 @@ public class GitHubLogin : ProviderLogin
             }
 
             //To start the login process, call the OpenLoginPage() method of the OpenIDConnectService
-            ServiceManager.GetService<GitHubOidcService>().Scopes = new string[] { "openid", "profile", "email", "rep", "public_repo" };
             ServiceManager.GetService<GitHubOidcService>().OpenLoginPage();
         }
         else
