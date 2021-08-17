@@ -4917,9 +4917,8 @@ GameObject:
   - component: {fileID: 7145078190871146639}
   - component: {fileID: 5844451191234582566}
   - component: {fileID: 9202999703412004574}
-  - component: {fileID: 3264631591864535486}
   m_Layer: 8
-  m_Name: Object Menu 1
+  m_Name: Object Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4958,23 +4957,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9293ba4b5a5e14d429cf717621457ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMainMenu: 0
-  isCompact: 0
-  menuID: 1
-  followInManualMode: 0
-  boudingBoxType: 0
-  menuOrientationType: 0
-  updateTimeInterval: 0.1
-  inactivityTimeThreshold: 5
-  suggestionTimeInterval: 5
+  menuVariantType: 1
+  compact: 0
   inactivityDetectionEnabled: 0
   manipulationEnabled: 1
+  menuID: 1
+  boundingBoxType: 0
+  menuOrientationType: 0
+  updateTimeInterval: 0.1
+  inactivityTimeThreshold: 10
+  suggestionTimeInterval: 5
   retrieveBufferSize: 5
   maxFloatingDistance: 0.8
   minFloatingDistance: 0.4
-  orbitalOffset: {x: 0.2, y: 0, z: 0}
+  defaultFloatingDistance: 0
   followOffset: {x: 0, y: 0, z: 0}
+  followMaxViewHorizontalDegrees: 50
+  followMaxViewVerticalDegrees: 100
   surfaceMagnetismSafetyOffset: 0.05
+  orbitalOffset: {x: 0.2, y: 0, z: 0}
 --- !u!114 &7145078190871146639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5042,20 +5043,6 @@ MonoBehaviour:
   onHoverExited:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3264631591864535486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7145078190871146633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5afd5316c63705643b3daba5a6e923bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTetherWhenManipulating: 0
-  IsBoundsHandles: 0
 --- !u!1 &7145078190936320768
 GameObject:
   m_ObjectHideFlags: 0

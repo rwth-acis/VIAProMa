@@ -1,4 +1,5 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,9 +49,10 @@ public class TestGuide : MonoBehaviour
 
     private void ShowDialog(string title, string content) {
         Component guidePanel = Dialog.Open(dialogPanel, DialogButtonType.OK, title, content, true);
-        guidePanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
-        guidePanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
-        guidePanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
+        guidePanel.gameObject.GetComponent<Follow>().MinDistance = 0.4f;
+        guidePanel.gameObject.GetComponent<Follow>().MaxDistance = 0.4f;
+        guidePanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.4f;
+        guidePanel.gameObject.transform.forward = CameraCache.Main.transform.forward;
     }
 
     private void ShowGuideMessage() {
@@ -66,26 +68,26 @@ public class TestGuide : MonoBehaviour
                     ShowDialog("Task 1/12", "Please freely move in a capacious space with the main menu and interact with it.");
                     break;
                 case 2:
-                    ShowDialog("Task 2/12", "Please move to a wall at a distance about 50cm to let the main menu stick onto it. ");
+                    ShowDialog("Task 2/12", "Please move close to a wall at a distance about 60cm to let the main menu stick onto it.");
                     break;
                 case 3:
-                    ShowDialog("Task 3/12", "Please move even closer to the wall and let the menu anchor on your right hand.");
+                    ShowDialog("Task 3/12", "Please move even closer to the wall and let the menu be switch to a compact variant.");
                     break;
                 case 4:
-                    ShowDialog("Task 4/12", "You can now adjust the menu using the app bar below it to make it best suitable for you to use. You may not change it anymore when you find the best transform " +
+                    ShowDialog("Task 4/12", "You can now adjust the menu using the app bar below it to make it best suitable for you to use. You may not change it anymore when you find the best suitable transform " +
                         "because the last one will be saved.");
                     break;
                 case 5:
-                    ShowDialog("Task 5/12", "Please create an object using the 'create object' button on the main menu. You can close the main menu using the app bar below it.");
+                    ShowDialog("Task 5/12", "Please create an object using the 'create object' button on the main menu. Then you can close the main menu using the app bar below it.");
                     break;
                 case 6:
-                    ShowDialog("Task 6/12", "Please move far away from the created object (farther than 60cm) and let the menu be placed in front of youself.");
+                    ShowDialog("Task 6/12", "Please move far away from the created object and let the menu be placed in front of yourself.");
                     break;
                 case 7:
-                    ShowDialog("Task 7/12", "Please move closer to the object (roughly 30-60cm away from it) and let the menu be placed beside it.");
+                    ShowDialog("Task 7/12", "Please move closer to the object and let the menu be placed beside it.");
                     break;
                 case 8:
-                    ShowDialog("Task 8/12", "Please move even closer (closer than 30cm) to the object and let the system switch to the compact menu.");
+                    ShowDialog("Task 8/12", "Please move even closer to the object and let the system switch to the compact variant.");
                     break;
                 case 9:
                     ShowDialog("Task 9/12", "Please move closer to a wall with the object and try to let the menu collide the wall. For example, try to let the menu be at the right side of the object " +
@@ -96,7 +98,7 @@ public class TestGuide : MonoBehaviour
                     break;
                 case 11:
                     ShowDialog("Task 11/12", "Please adjust the menu's position, orientation and scale using the app bar below it. " +
-                        "You may not change it anymore after reaching the best transform because the last one will be saved. You can freely interact with the menus (object and main menus)" +
+                        "You may not change it anymore after reaching the best suitable transform because the last one will be saved. You can freely interact with the menus (object and main menus)" +
                         " and move to any places to test the placement algorithm.");
                     break;
                 case 12:
@@ -105,7 +107,7 @@ public class TestGuide : MonoBehaviour
                     break;
                 default:
                     ShowDialog("Evaluation Finished!", "Thanks for your time and the participation of the evaluation! Please finish the evalaution questionnaire on LimeSurvey. " +
-                        "You can find the link in Slack or in the folder of this application.");
+                        "Remember to quit the application using the button on the control panel on the left side in your sight.");
                     break;
             }
 

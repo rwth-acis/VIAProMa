@@ -11,5 +11,10 @@ namespace MenuPlacement {
 
         public GameObject floatingMenu;
         public GameObject compactMenu;
+
+        public override string ToString() {
+            return floatingMenu + " and " + compactMenu; 
+        }
+
     }
 }

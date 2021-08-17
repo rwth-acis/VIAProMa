@@ -26,8 +26,6 @@ public class FinalPlacementOptimizer : Solver
 
     public MenuHandler.MenuOrientationType OrientationType { get; set; }
 
-    public Vector3 LastPosition { get; set; }
-
     public Vector3 PositionWithoutOffset { get; private set; }
     public Vector3 OriginalScale { get; set; }
 
@@ -56,29 +54,30 @@ public class FinalPlacementOptimizer : Solver
         set { scaleOffset = value; }
     }
 
-    public override void SolverUpdate() {
+    public override void SolverUpdate() { 
         Camera head = CameraCache.Main;
-        if (gameObject.GetComponent<MenuHandler>().isMainMenu) {
-            if (gameObject.GetComponent<MenuHandler>().isCompact) {
-                GoalPosition += positionOffset;
+        if (gameObject.GetComponent<MenuHandler>().menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
+            if (gameObject.GetComponent<MenuHandler>().compact) {
+                GoalPosition += head.transform.right * positionOffset.x + head.transform.up * positionOffset.y + head.transform.forward * positionOffset.z;
             }
         }
         else {
             if (gameObject.GetComponent<Orbital>().enabled) {
+               
                 Vector3 directionToHead = head.transform.position - SolverHandler.TransformTarget.position;
                 bool rightSide = Vector3.Dot(directionToHead, head.transform.right) > 0 ? true : false;
 
                 if (rightSide) {
-                    PositionWithoutOffset = SolverHandler.TransformTarget.position + head.transform.right * orbitalOffset.x + head.transform.up * orbitalOffset.y + head.transform.forward * orbitalOffset.z;
-                    GoalPosition = PositionWithoutOffset + PositionOffset;
+                    Vector3 finalOffset = head.transform.right * (orbitalOffset.x + positionOffset.x) + head.transform.up * (orbitalOffset.y + positionOffset.y) + head.transform.forward * (orbitalOffset.z + positionOffset.z);
+                    GoalPosition += finalOffset;
                 }
                 else {
-                    PositionWithoutOffset = SolverHandler.TransformTarget.position + (-head.transform.right) * orbitalOffset.x + head.transform.up * orbitalOffset.y + head.transform.forward * orbitalOffset.z;
-                    GoalPosition = PositionWithoutOffset + new Vector3(-PositionOffset.x, PositionOffset.y, PositionOffset.z);
+                    Vector3 finalOffset = - head.transform.right * (orbitalOffset.x + positionOffset.x) + head.transform.up * (orbitalOffset.y + positionOffset.y) + head.transform.forward * (orbitalOffset.z + positionOffset.z);
+                    GoalPosition += finalOffset;
                 }
             }
             else {
-                GoalPosition += positionOffset;
+                GoalPosition += head.transform.right * positionOffset.x + head.transform.up * positionOffset.y + head.transform.forward * positionOffset.z;
             }
         }
         

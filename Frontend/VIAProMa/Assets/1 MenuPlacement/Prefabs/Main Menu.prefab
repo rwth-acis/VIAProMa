@@ -11871,7 +11871,6 @@ GameObject:
   - component: {fileID: -7927057354783031506}
   - component: {fileID: 4328696534739884476}
   - component: {fileID: 9199620898382458424}
-  - component: {fileID: 2953849355470687101}
   m_Layer: 8
   m_Name: Main Menu
   m_TagString: Untagged
@@ -11926,25 +11925,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9293ba4b5a5e14d429cf717621457ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMainMenu: 1
-  isCompact: 0
-  menuID: 0
-  followInManualMode: 0
-  handTrackingEnabled: 0
-  boudingBoxType: 0
-  menuOrientationType: 0
-  updateTimeInterval: 0.1
-  inactivityTimeThreshold: 5
-  suggestionTimeInterval: 5
+  menuVariantType: 0
+  compact: 0
   inactivityDetectionEnabled: 0
   manipulationEnabled: 1
+  menuID: 0
+  boundingBoxType: 0
+  menuOrientationType: 0
+  updateTimeInterval: 0.1
+  inactivityTimeThreshold: 10
+  suggestionTimeInterval: 5
   retrieveBufferSize: 5
   maxFloatingDistance: 0.8
   minFloatingDistance: 0.4
   defaultFloatingDistance: 0
-  orbitalOffset: {x: 0, y: 0, z: 0}
   followOffset: {x: 0, y: -0.1, z: 0}
+  followMaxViewHorizontalDegrees: 50
+  followMaxViewVerticalDegrees: 40
   surfaceMagnetismSafetyOffset: 0.05
+  orbitalOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &3369136868841600015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12080,7 +12079,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hostTransform: {fileID: 4798259294027384141}
-  manipulationType: 3
+  manipulationType: -1
   twoHandedManipulationType: 0
   allowFarManipulation: 1
   useForcesForNearManipulation: 0
@@ -12107,20 +12106,6 @@ MonoBehaviour:
   onHoverExited:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2953849355470687101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4798259294027384138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5afd5316c63705643b3daba5a6e923bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTetherWhenManipulating: 0
-  IsBoundsHandles: 0
 --- !u!1 &6885750104008933655
 GameObject:
   m_ObjectHideFlags: 0

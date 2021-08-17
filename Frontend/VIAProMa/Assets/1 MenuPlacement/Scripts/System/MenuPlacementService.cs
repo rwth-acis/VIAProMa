@@ -1,13 +1,16 @@
 ﻿using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.Utilities;
 using i5.VIAProMa.UI.AppBar;
+using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Boundary;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using Microsoft.MixedReality.Toolkit.WindowsMixedReality.Input;
 using Photon.Pun.UtilityScripts;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using UnityEditor;
@@ -38,9 +41,14 @@ namespace MenuPlacement {
         [Tooltip("The dialog prefab for suggestions in manual mode")]
         [SerializeField] private GameObject suggestionPanel;
         [Tooltip("The default placement mode")]
-        [SerializeField] private MenuPlacementServiceMode defaultPlacementMode = MenuPlacementServiceMode.Automatic;
+        [SerializeField] private DefaultMode defaultPlacementMode = DefaultMode.Automatic;
 
         private MenuPlacementServiceMode placementMode;
+        public bool ArticulatedHandSupported { get; private set; }
+        public bool MotionControllerSupported { get; private set; }
+        public bool GGVHandSupported { get; private set; }
+
+        public bool HandTrackingEnabled { get; private set; }
 
         public MenuPlacementServiceMode PlacementMode
         {
@@ -49,6 +57,11 @@ namespace MenuPlacement {
             {
                 placementMode = value;
             }
+        }
+
+        private enum DefaultMode {
+            Automatic,
+            Manual
         }
 
         public GameObject AppBar
@@ -74,14 +87,19 @@ namespace MenuPlacement {
         //Dictionary<menuID, menuPoolID>
         private Dictionary<int, int> floatingObjectMenuPoolIDs = new Dictionary<int, int>();
         private Dictionary<int, int> compactObjectMenuPoolIDs = new Dictionary<int, int>();
-        private GameObject inBetweenTarget;
 
+        //Dictionary<menuID, PositionOffset>
+        private Dictionary<int, Vector3> inBetweenPositionOffsetOnClose = new Dictionary<int, Vector3>();
+        private Dictionary<int, Vector3> orbitalPositionOffsetOnClose = new Dictionary<int, Vector3>();
+
+        private GameObject inBetweenTarget;
         public bool SuggestionPanelOn { get; set; }
         public MenuPlacementServiceMode PreviousMode { get; set; }
 
 
 
         public void Initialize(IServiceManager owner) {
+            CheckMenuInitialization();
             //make a pool for each MenuVariants and assign the index of the pool to the corresponding variable. Ignore the not assigned menu.
             if (mainMenu.floatingMenu != null) {
                 floatingMainMenuPoolID = ObjectPool<GameObject>.CreateNewPool(1);
@@ -89,8 +107,6 @@ namespace MenuPlacement {
             if (mainMenu.compactMenu != null) {
                 compactMainMenuPoolID = ObjectPool<GameObject>.CreateNewPool(1);
             }
-
-            placementMode = defaultPlacementMode;
 
             foreach (MenuVariants m in objectMenus) {
                 if (m.floatingMenu != null) { 
@@ -100,9 +116,19 @@ namespace MenuPlacement {
                     compactObjectMenuPoolIDs.Add(m.compactMenu.GetComponent<MenuHandler>().menuID, ObjectPool<GameObject>.CreateNewPool(5));
                 }
             }
+
+            if (defaultPlacementMode == DefaultMode.Automatic) {
+                placementMode = MenuPlacementServiceMode.Automatic;
+            }
+            else {
+                placementMode = MenuPlacementServiceMode.Manual;
+            }
+
             SuggestionPanelOn = false;
             CreateInBetweenTarget();
             CreateMenuController();
+            CheckCapability();
+
         }
 
         public void Cleanup() {
@@ -120,7 +146,6 @@ namespace MenuPlacement {
             UnityEditor.EditorApplication.isPlaying = false;
 #endif
             Application.Quit();
-
         }
 
         /// <summary>
@@ -157,8 +182,8 @@ namespace MenuPlacement {
         /// </summary>
         public GameObject OpenMenu(GameObject origin) {
             MenuHandler handler = origin.GetComponent<MenuHandler>();
-            if (handler.isMainMenu) {
-                if (handler.isCompact) {
+            if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
+                if (handler.compact) {
                     return ObjectPool<GameObject>.RequestResource(compactMainMenuPoolID, () => { return Instantiate(mainMenu.compactMenu); });
                 }
                 else {
@@ -166,7 +191,7 @@ namespace MenuPlacement {
                 }
             }
             else {
-                if (handler.isCompact) {
+                if (handler.compact) {
                     return ObjectPool<GameObject>.RequestResource(compactObjectMenuPoolIDs[handler.menuID], () => { return Instantiate(GetObjectMenuWithID(handler.menuID)); });
                 }
                 else {
@@ -180,8 +205,8 @@ namespace MenuPlacement {
         /// </summary>
         public void CloseMenu(GameObject menu) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
-            if (handler.isMainMenu) {
-                if (handler.isCompact) {
+            if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
+                if (handler.compact) {
                     Debug.Log("Close Compact Main Menu");
                     ObjectPool<GameObject>.ReleaseResource(compactMainMenuPoolID, menu);
                 }
@@ -190,7 +215,7 @@ namespace MenuPlacement {
                 }    
             }
             else {
-                if (handler.isCompact) {
+                if (handler.compact) {
                     ObjectPool<GameObject>.ReleaseResource(compactObjectMenuPoolIDs[handler.menuID], menu);
                 }
                 else {
@@ -203,8 +228,8 @@ namespace MenuPlacement {
         public void UpdatePlacement(PlacementMessage message, GameObject menu) {
             switch (message.switchType) {
                 case PlacementMessage.SwitchType.FloatingToCompact:
-                    Debug.Log("The menu is floating: " + !menu.GetComponent<MenuHandler>().isCompact);
-                    if (!menu.GetComponent<MenuHandler>().isCompact) {
+                    Debug.Log("The menu is floating: " + !menu.GetComponent<MenuHandler>().compact);
+                    if (!menu.GetComponent<MenuHandler>().compact) {
                         if (SwitchToCompact(menu) != menu) {
                             menu.GetComponent<MenuHandler>().Close();
                             SwitchToCompact(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
@@ -212,8 +237,31 @@ namespace MenuPlacement {
                     }
                     break;
                 case PlacementMessage.SwitchType.CompactToFloating:
-                    Debug.Log("The menu is compact: " + menu.GetComponent<MenuHandler>().isCompact);
-                    if (menu.GetComponent<MenuHandler>().isCompact) {
+                    Debug.Log("The menu is compact: " + menu.GetComponent<MenuHandler>().compact);
+                    if (menu.GetComponent<MenuHandler>().compact) {
+                        if (SwitchToFloating(menu) != menu) {
+                            menu.GetComponent<MenuHandler>().Close();
+                            SwitchToFloating(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        public void SwitchVariant(PlacementMessage message, GameObject menu, GameObject targetObject) {
+            switch (message.switchType) {
+                case PlacementMessage.SwitchType.FloatingToCompact:
+                    Debug.Log("The menu is floating: " + !menu.GetComponent<MenuHandler>().compact);
+                    if (!menu.GetComponent<MenuHandler>().compact) {
+                        if (SwitchToCompact(menu) != menu) {
+                            menu.GetComponent<MenuHandler>().Close();
+                            SwitchToCompact(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
+                        }
+                    }
+                    break;
+                case PlacementMessage.SwitchType.CompactToFloating:
+                    Debug.Log("The menu is compact: " + menu.GetComponent<MenuHandler>().compact);
+                    if (menu.GetComponent<MenuHandler>().compact) {
                         if (SwitchToFloating(menu) != menu) {
                             menu.GetComponent<MenuHandler>().Close();
                             SwitchToFloating(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
@@ -225,8 +273,8 @@ namespace MenuPlacement {
 
         public Bounds GetStoredBoundingBoxOnCloseOppositeType(GameObject menu) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
-            if (handler.isMainMenu) {
-                if (handler.isCompact) {
+            if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
+                if (handler.compact) {
                     return floatingMainMenuBoundingBoxOnClose;
                 }
                 else {                  
@@ -235,7 +283,7 @@ namespace MenuPlacement {
             }
             else {
                 Bounds res;
-                if (handler.isCompact) {
+                if (handler.compact) {
                     int menuID = SwitchToFloating(menu).GetComponent<MenuHandler>().menuID;
                     if (floatingObjectMenuBoundingBoxOnClose.TryGetValue(menuID, out res)){
                         return res;
@@ -260,8 +308,8 @@ namespace MenuPlacement {
 
         public void StoreBoundingBoxOnClose(GameObject menu, Bounds boundingBox) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
-            if (handler.isMainMenu) {
-                if (handler.isCompact) {
+            if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
+                if (handler.compact) {
                     compactMainMenuBoundingBoxOnClose = boundingBox;
                 }
                 else {
@@ -269,7 +317,7 @@ namespace MenuPlacement {
                 }
             }
             else {
-                if (handler.isCompact) {
+                if (handler.compact) {
                     if (compactObjectMenuBoundingBoxOnClose.ContainsKey(handler.menuID)) {
                         compactObjectMenuBoundingBoxOnClose[handler.menuID] = boundingBox;
                     }
@@ -288,10 +336,76 @@ namespace MenuPlacement {
             }
         }
 
+        public void StoreInBetweenPositionOffsetOnClose(GameObject menu, Vector3 offset) {
+            MenuHandler handler = menu.GetComponent<MenuHandler>();
+            if (inBetweenPositionOffsetOnClose.ContainsKey(handler.menuID)) {
+                inBetweenPositionOffsetOnClose[handler.menuID] = offset;
+            }
+            else {
+                inBetweenPositionOffsetOnClose.Add(handler.menuID, offset);
+            }
+        }
+
+        public Vector3 GetInBetweenPositionOffsetOppositeType(GameObject menu) {
+            MenuHandler handler = menu.GetComponent<MenuHandler>();
+            Vector3 res;
+            if (handler.compact) {
+                int menuID = SwitchToFloating(menu).GetComponent<MenuHandler>().menuID;
+                if (inBetweenPositionOffsetOnClose.TryGetValue(menuID, out res)) {
+                    return res;
+                }
+                else {
+                    return new Vector3();
+                }
+            }
+            else {
+                int menuID = SwitchToCompact(menu).GetComponent<MenuHandler>().menuID;
+                if (inBetweenPositionOffsetOnClose.TryGetValue(menuID, out res)) {
+                    return res;
+                }
+                else {
+                    return new Vector3();
+                }
+            }
+            
+        }
+
+        public void StoreOrbitalPositionOffsetOnClose(GameObject menu, Vector3 offset) {
+            MenuHandler handler = menu.GetComponent<MenuHandler>();
+            if (orbitalPositionOffsetOnClose.ContainsKey(handler.menuID)) {
+                orbitalPositionOffsetOnClose[handler.menuID] = offset;
+            }
+            else {
+                orbitalPositionOffsetOnClose.Add(handler.menuID, offset);
+            }
+        }
+
+        public Vector3 GetOrbitalPositionOffsetOppositeType(GameObject menu) {
+            MenuHandler handler = menu.GetComponent<MenuHandler>();
+            Vector3 res;
+            if (handler.compact) {
+                int menuID = SwitchToFloating(menu).GetComponent<MenuHandler>().menuID;
+                if (orbitalPositionOffsetOnClose.TryGetValue(menuID, out res)) {
+                    return res;
+                }
+                else {
+                    return new Vector3();
+                }
+            }
+            else {
+                int menuID = SwitchToCompact(menu).GetComponent<MenuHandler>().menuID;
+                if (orbitalPositionOffsetOnClose.TryGetValue(menuID, out res)) {
+                    return res;
+                }
+                else {
+                    return new Vector3();
+                }
+            }
+        }
         public Vector3 GetOrbitalOffsetOppositeType(GameObject menu) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
-            if (handler.isMainMenu) {
-                if (handler.isCompact) {
+            if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
+                if (handler.compact) {
                     return mainMenu.floatingMenu.GetComponent<MenuHandler>().OrbitalOffset;
                 }
                 else {
@@ -299,7 +413,7 @@ namespace MenuPlacement {
                 }
             }
             else {
-                if (handler.isCompact) {
+                if (handler.compact) {
                     return SwitchToFloating(GetObjectMenuWithID(handler.menuID)).GetComponent<MenuHandler>().OrbitalOffset;
                 }
                 else {
@@ -314,6 +428,95 @@ namespace MenuPlacement {
 
         #region Private Methods
 
+        private void CheckMenuInitialization() {
+            List<GameObject> menus = new List<GameObject>();
+            if (mainMenu.compactMenu == null) {
+                Debug.LogWarning("The compact main menu is not assigned in Menu Placement Service. Make sure you set it correctly unless you don't want to have it.");
+            }
+            else {
+                if (!mainMenu.compactMenu.GetComponent<MenuHandler>().compact) {
+                    Debug.LogError("The compact main menu is not set to 'compact'. Make sure you set it correctly in the insepctor.");
+                }
+                menus.Add(mainMenu.compactMenu);
+            }
+
+            if(mainMenu.floatingMenu == null) {
+                Debug.LogWarning("The floating main menu is not assigned in Menu Placement Service. Make sure you set it correctly unless you don't want to have it.");
+            }
+            else {
+                if (mainMenu.floatingMenu.GetComponent<MenuHandler>().compact) {
+                    Debug.LogError("The floating main menu is set to 'compact'. Make sure you set it correctly in the insepctor");
+                }
+                menus.Add(mainMenu.floatingMenu);
+            }
+
+            if(mainMenu.floatingMenu != null && mainMenu.compactMenu != null) {
+                if(mainMenu.floatingMenu.GetComponent<MenuHandler>().MinFloatingDistance != mainMenu.compactMenu.GetComponent<MenuHandler>().MinFloatingDistance) {
+                    Debug.LogError("The 'Min Floating Distance' of main menus are not identical");
+                }
+
+                if(mainMenu.floatingMenu.GetComponent<MenuHandler>().MaxFloatingDistance != mainMenu.compactMenu.GetComponent<MenuHandler>().MaxFloatingDistance) {
+                    Debug.LogError("The 'Max Floating Distance' of main menus are not identical");
+                }
+
+                if(mainMenu.floatingMenu.GetComponent<MenuHandler>().DefaultFloatingDistance != mainMenu.compactMenu.GetComponent<MenuHandler>().DefaultFloatingDistance) {
+                    Debug.LogError("The 'Default Floating Distance' of main menus are not identical");
+                }
+            }
+
+            foreach (MenuVariants m in objectMenus){
+                if (m.compactMenu == null) {
+                    Debug.LogWarning("One compact object menu is not assigned to Menu Placement Service. Make sure you set it correctly unless you don't want to have it.");
+                }
+                else {
+                    if (!m.compactMenu.GetComponent<MenuHandler>().compact) {
+                        Debug.LogError("The compact object menu '" + m.compactMenu + "' is not set to 'compact'. Make sure you set it correctly in the insepctor");
+                    }
+                    menus.Add(m.compactMenu);
+                }
+
+                if (m.floatingMenu == null) {
+                    Debug.LogWarning("One floating object menu is not assigned to Menu Placement Service. Make sure you set it correctly unless you don't want to have it.");
+                }
+                else {
+                    if (m.floatingMenu.GetComponent<MenuHandler>().compact) {
+                        Debug.LogError("The floating object menu '" + m.floatingMenu + "' is set to 'compact'. Make sure you set it correctly in the inspector.");
+                    }
+                    menus.Add(m.floatingMenu);
+                }
+
+                if (m.floatingMenu != null && m.compactMenu != null) {
+                    if (m.floatingMenu.GetComponent<MenuHandler>().MinFloatingDistance != m.compactMenu.GetComponent<MenuHandler>().MinFloatingDistance) {
+                        Debug.LogError("The 'Min Floating Distance' of the object menus " + m + "are not identical");
+                    }
+
+                    if (m.floatingMenu.GetComponent<MenuHandler>().MaxFloatingDistance != m.compactMenu.GetComponent<MenuHandler>().MaxFloatingDistance) {
+                        Debug.LogError("The 'Max Floating Distance' of the object menus " + m + "are not identical");
+                    }
+
+                    if (m.floatingMenu.GetComponent<MenuHandler>().DefaultFloatingDistance != m.compactMenu.GetComponent<MenuHandler>().DefaultFloatingDistance) {
+                        Debug.LogError("The 'Default Floating Distance' of the object menus " + m + "are not identical");
+                    }
+                }
+
+            }
+
+            foreach (GameObject menu in menus) {
+                if (!menu.GetComponent<MenuHandler>()) {
+                    Debug.LogError("The menu object '" + menu + "' dosen't have a MenuHandler component. Please make sure every menu object you assigned to Menu Placement Service has a MenuHandler attached to it");
+                    return;
+                }
+            }
+
+            for (int i = 0; i < menus.Count; i++) {
+                for (int j = i + 1; j < menus.Count; j++) {
+                    if (menus[i].GetComponent<MenuHandler>().menuID == menus[j].GetComponent<MenuHandler>().menuID) {
+                        Debug.LogError("The menu objects '" + menus[i] + "' and '" + menus[j] + "' have the same menuID. Make sure every menu object you assigned to Menu Placement Service has an identical menuID.");
+                    }
+                }
+            }
+
+        }
         private void CreateMenuController() {
             Instantiate(menuController);
         }
@@ -353,7 +556,7 @@ namespace MenuPlacement {
         }
 
         private GameObject SwitchToCompact(GameObject menu) {
-            if (!menu.GetComponent<MenuHandler>().isMainMenu) {
+            if (menu.GetComponent<MenuHandler>().menuVariantType == MenuHandler.MenuVariantType.ObjectMenu) {
                 foreach (MenuVariants v in objectMenus) {
                     if (isSameMenu(v.floatingMenu, menu)) {
                         return v.compactMenu;
@@ -367,7 +570,7 @@ namespace MenuPlacement {
         }
 
         private GameObject SwitchToFloating(GameObject menu) {
-            if (!menu.GetComponent<MenuHandler>().isMainMenu) {
+            if (menu.GetComponent<MenuHandler>().menuVariantType == MenuHandler.MenuVariantType.ObjectMenu) {
                 foreach (MenuVariants v in objectMenus) {
                     if (isSameMenu(v.compactMenu, menu)) {
                         return v.floatingMenu;
@@ -381,6 +584,22 @@ namespace MenuPlacement {
         }
 
         #endregion Private Methods
+
+        private void CheckCapability() {
+            if(CoreServices.InputSystem is IMixedRealityCapabilityCheck capabilityChecker) {
+                ArticulatedHandSupported = capabilityChecker.CheckCapability(MixedRealityCapability.ArticulatedHand);
+                MotionControllerSupported = capabilityChecker.CheckCapability(MixedRealityCapability.MotionController);
+                GGVHandSupported = capabilityChecker.CheckCapability(MixedRealityCapability.GGVHand);
+                if(ArticulatedHandSupported || MotionControllerSupported) {
+                    HandTrackingEnabled = true;
+                }
+                else {
+                    HandTrackingEnabled = false;
+                }
+                /*Dialog.Open(SuggestionPanel, DialogButtonType.OK, "Menu Needs Adjustment",
+                                        "ArticulatedHandSupported,: "+ArticulatedHandSupported + "  MotionControllerSupported: " + MotionControllerSupported + "  GGVHandSupported: " + GGVHandSupported, true);*/
+            }
+        }
 
     }
 }

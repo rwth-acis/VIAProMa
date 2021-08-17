@@ -1,6 +1,8 @@
 ﻿using i5.Toolkit.Core.ServiceCore;
 using i5.VIAProMa.UI.AppBar;
 using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit;
+using Microsoft.MixedReality.Toolkit.Experimental.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
@@ -38,7 +40,6 @@ namespace MenuPlacement {
             if(placementService.PlacementMode != MenuPlacementService.MenuPlacementServiceMode.Adjustment) {
                 targetObject.GetComponent<BoundingBoxStateController>().BoundingBoxActive = false;
                 targetObject.GetComponent<BoxCollider>().enabled = false;
-                Debug.Log(targetObject);
             }
         }
 
@@ -89,7 +90,7 @@ namespace MenuPlacement {
         public void SwitchVariant() {
             if(placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
                 handler.ExitManualMode();
-                if (handler.isCompact) {
+                if (handler.compact) {
                     message.switchType = PlacementMessage.SwitchType.CompactToFloating;
                 }
                 else {
@@ -101,42 +102,34 @@ namespace MenuPlacement {
             else {
                 Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Not in manual mode", 
                     "You are currently not in manual mode, so you cannot switch to another variant. Please first switch to manual mode", true);
-                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
-                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
-                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
+                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.4f;
+                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.4f;
+                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.4f;
+                suggestionPanel.gameObject.transform.forward = CameraCache.Main.transform.forward;
             }
 
         }
 
         public void SwitchReferenceType() {
-            if (targetObject.GetComponent<MenuHandler>().followInManualMode) {
-                if (placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
+            if (placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
 
-                    if (targetObject.transform.parent == null) {
-                        targetObject.transform.parent = CameraCache.Main.transform;
-                        icon.sprite = locked;
-                    }
-                    else {
-                        targetObject.transform.parent = null;
-                        icon.sprite = unlocked;
-                    }
+                if (targetObject.transform.parent == null) {
+                    targetObject.transform.parent = CameraCache.Main.transform;
+                    icon.sprite = locked;
                 }
                 else {
-                    Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Not in manual mode",
-                        "You are currently not in manual mode, so you cannot change the reference type. Please first switch to manual mode", true);
-                    suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
-                    suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
-                    suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
+                    targetObject.transform.parent = null;
+                    icon.sprite = unlocked;
                 }
             }
             else {
-                Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Operation Not Allowed",
-                        "This operation is not allowed by the application's developer.", true);
-                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.3f;
-                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.3f;
-                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.3f;
-            }
-            
+                Component suggestionPanel = Dialog.Open(placementService.SuggestionPanel, DialogButtonType.OK, "Not in manual mode",
+                    "You are currently not in manual mode, so you cannot change the reference type. Please first switch to manual mode", true);
+                suggestionPanel.gameObject.GetComponent<Follow>().MinDistance = 0.4f;
+                suggestionPanel.gameObject.GetComponent<Follow>().MaxDistance = 0.4f;
+                suggestionPanel.gameObject.GetComponent<Follow>().DefaultDistance = 0.4f;
+                suggestionPanel.gameObject.transform.forward = CameraCache.Main.transform.forward;
+            }          
         }
 
         public void OnAdjustment() {
