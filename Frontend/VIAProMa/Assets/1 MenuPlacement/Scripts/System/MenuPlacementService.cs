@@ -19,7 +19,7 @@ using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 
 namespace MenuPlacement {
-    [CreateAssetMenu(menuName = "Scriptable Objects/Menu Placement Service ")]
+    [CreateAssetMenu(menuName = "Scriptable Objects/Menu Placement Service")]
     public class MenuPlacementService : ScriptableObject, IService {
 
         public enum MenuPlacementServiceMode {
@@ -36,7 +36,7 @@ namespace MenuPlacement {
         [SerializeField] private List<MenuVariants> objectMenus;
         [Header("User Interface Components")]
         [Tooltip("The Menu Controller enables the manipulation of created menus and interaction with the system.")]
-        [SerializeField] private GameObject menuController;
+        [SerializeField] private GameObject systemControlPanel;
         [SerializeField] private GameObject appBar;
         [Tooltip("The dialog prefab for suggestions in manual mode")]
         [SerializeField] private GameObject suggestionPanel;
@@ -248,7 +248,7 @@ namespace MenuPlacement {
             }
         }
 
-        public void SwitchVariant(PlacementMessage message, GameObject menu, GameObject targetObject) {
+        public void SwitchVariant(PlacementMessage message, GameObject menu) {
             switch (message.switchType) {
                 case PlacementMessage.SwitchType.FloatingToCompact:
                     Debug.Log("The menu is floating: " + !menu.GetComponent<MenuHandler>().compact);
@@ -518,7 +518,7 @@ namespace MenuPlacement {
 
         }
         private void CreateMenuController() {
-            Instantiate(menuController);
+            Instantiate(systemControlPanel);
         }
 
         /// <summary>
@@ -566,7 +566,8 @@ namespace MenuPlacement {
             else {
                 return mainMenu.compactMenu;
             }
-            return null;
+            //No compact variant
+            return menu;
         }
 
         private GameObject SwitchToFloating(GameObject menu) {
@@ -580,26 +581,27 @@ namespace MenuPlacement {
             else {
                 return mainMenu.floatingMenu;
             }
-            return null;
+            //No floating variant
+            return menu;
         }
 
-        #endregion Private Methods
-
         private void CheckCapability() {
-            if(CoreServices.InputSystem is IMixedRealityCapabilityCheck capabilityChecker) {
+            if (CoreServices.InputSystem is IMixedRealityCapabilityCheck capabilityChecker) {
                 ArticulatedHandSupported = capabilityChecker.CheckCapability(MixedRealityCapability.ArticulatedHand);
                 MotionControllerSupported = capabilityChecker.CheckCapability(MixedRealityCapability.MotionController);
                 GGVHandSupported = capabilityChecker.CheckCapability(MixedRealityCapability.GGVHand);
-                if(ArticulatedHandSupported || MotionControllerSupported) {
+                if (ArticulatedHandSupported || MotionControllerSupported) {
                     HandTrackingEnabled = true;
                 }
                 else {
                     HandTrackingEnabled = false;
                 }
-                /*Dialog.Open(SuggestionPanel, DialogButtonType.OK, "Menu Needs Adjustment",
-                                        "ArticulatedHandSupported,: "+ArticulatedHandSupported + "  MotionControllerSupported: " + MotionControllerSupported + "  GGVHandSupported: " + GGVHandSupported, true);*/
             }
         }
+
+        #endregion Private Methods
+
+
 
     }
 }

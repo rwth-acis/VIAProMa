@@ -19,6 +19,7 @@ namespace MenuPlacement {
         private SerializedProperty manipulationEnabled;
         private SerializedProperty boundingBoxType;
         private SerializedProperty menuOrientationType;
+        private SerializedProperty constantViewSizeEnabled;
 
         //Thresholds
         private SerializedProperty updateTimeInterval;
@@ -31,6 +32,11 @@ namespace MenuPlacement {
         private SerializedProperty minFloatingDistance;
         private SerializedProperty defaultFloatingDistance;
 
+        //ConstantViewSize Offsets
+        private SerializedProperty defaultTargetViewPercentV;
+        private SerializedProperty minDistance;
+        private SerializedProperty maxDistance;
+
         //Main Menu Offsets
         private SerializedProperty followOffset;
         private SerializedProperty followMaxViewHorizontalDegrees;
@@ -40,6 +46,7 @@ namespace MenuPlacement {
         //Object Menu Offsets
         private SerializedProperty orbitalOffset;
 
+        bool constantViewSizeEnabledFoldout = true;
         bool mainMenuOffsetFoldout = true;
         bool objectMenuOffsetFoldout = true;
 
@@ -52,6 +59,7 @@ namespace MenuPlacement {
             manipulationEnabled = serializedObject.FindProperty("manipulationEnabled");
             boundingBoxType = serializedObject.FindProperty("boundingBoxType");
             menuOrientationType = serializedObject.FindProperty("menuOrientationType");
+            constantViewSizeEnabled = serializedObject.FindProperty("constantViewSizeEnabled");
 
             updateTimeInterval = serializedObject.FindProperty("updateTimeInterval");
             inactivityTimeThreshold = serializedObject.FindProperty("inactivityTimeThreshold");
@@ -61,6 +69,10 @@ namespace MenuPlacement {
             maxFloatingDistance = serializedObject.FindProperty("maxFloatingDistance");
             minFloatingDistance = serializedObject.FindProperty("minFloatingDistance");
             defaultFloatingDistance = serializedObject.FindProperty("defaultFloatingDistance");
+
+            defaultTargetViewPercentV = serializedObject.FindProperty("defaultTargetViewPercentV");
+            minDistance = serializedObject.FindProperty("minDistance");
+            maxDistance = serializedObject.FindProperty("maxDistance");
 
             followOffset = serializedObject.FindProperty("followOffset");
             followMaxViewHorizontalDegrees = serializedObject.FindProperty("followMaxViewHorizontalDegrees");
@@ -76,27 +88,42 @@ namespace MenuPlacement {
             EditorGUILayout.PropertyField(menuVariantType);
             EditorGUILayout.PropertyField(compact);
             EditorGUILayout.PropertyField(menuID);
+
             EditorGUILayout.PropertyField(inactivityDetectionEnabled);
             EditorGUILayout.PropertyField(manipulationEnabled);
+            EditorGUILayout.PropertyField(constantViewSizeEnabled);
             EditorGUILayout.PropertyField(boundingBoxType);
             EditorGUILayout.PropertyField(menuOrientationType);
-
-
+            
             EditorGUILayout.PropertyField(updateTimeInterval);
             EditorGUILayout.PropertyField(inactivityTimeThreshold);
             EditorGUILayout.PropertyField(suggestionTimeInterval);
             EditorGUILayout.PropertyField(retrieveBufferSize);
-            
+           
             EditorGUILayout.PropertyField(maxFloatingDistance);
             EditorGUILayout.PropertyField(minFloatingDistance);
             EditorGUILayout.PropertyField(defaultFloatingDistance);
-            
+
             EditorGUILayout.Space();
 
             GUIStyle style = EditorStyles.foldout;
             FontStyle previousStyle = style.fontStyle;
             style.fontStyle = FontStyle.Bold;
 
+            constantViewSizeEnabledFoldout = EditorGUILayout.Foldout(constantViewSizeEnabledFoldout, "ConstantViewSize Offsets", true);
+            if (constantViewSizeEnabledFoldout) {
+                if (constantViewSizeEnabled.boolValue == true) {
+                    EditorGUILayout.PropertyField(defaultTargetViewPercentV);
+                    EditorGUILayout.PropertyField(minDistance);
+                    EditorGUILayout.PropertyField(maxDistance);
+                }
+                else {
+                    EditorGUILayout.HelpBox("The ConstantViewSize solver is currently not enabled.", MessageType.Info);
+                }
+            }
+
+            EditorGUILayout.Space();
+           
             mainMenuOffsetFoldout = EditorGUILayout.Foldout(mainMenuOffsetFoldout, "Main Menu Offsets", true);
             if (mainMenuOffsetFoldout) {
                 //0 for main menu, 1 for object menu

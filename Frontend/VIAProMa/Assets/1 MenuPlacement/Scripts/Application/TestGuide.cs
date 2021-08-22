@@ -94,7 +94,7 @@ public class TestGuide : MonoBehaviour
                         "and move the object then closer and closer to the wall. The placement strategy of the object menu will change.");
                     break;
                 case 10:
-                    ShowDialog("Task 10/12", "Please try to move to some places that the menu will be occluded by other things (e.g. by a wall) to test the occlusion detection");
+                    ShowDialog("Task 10/12", "Please try to move to some places so that the menu will be occluded by other things (e.g. by a wall) to test the occlusion detection function.");
                     break;
                 case 11:
                     ShowDialog("Task 11/12", "Please adjust the menu's position, orientation and scale using the app bar below it. " +

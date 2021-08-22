@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace MenuPlacement {
-    public class AppBarController : MonoBehaviour {
+    public class MPAppBarController : MonoBehaviour {
 
         //The menu object
         private GameObject targetObject;
@@ -23,9 +23,11 @@ namespace MenuPlacement {
         [SerializeField] private Sprite unlocked;
         [SerializeField] private Sprite locked;
         [SerializeField] private SpriteRenderer icon;
+        [SerializeField] private GameObject slider;
         public Vector3 StartPosition { get; private set; }
         public Quaternion StartRotation { get; private set; }
         public Vector3 StartScale { get; private set; }
+        public float StartSliderValue { get; private set; }
 
         // Start is called before the first frame update
         void Start() {
@@ -34,6 +36,11 @@ namespace MenuPlacement {
             targetObject.GetComponent<BoxCollider>().enabled = false;
             handler = targetObject.GetComponent<MenuHandler>();
             placementService = ServiceManager.GetService<MenuPlacementService>();
+            if (handler.ConstantViewSizeEnabled) {
+                slider.SetActive(true);
+                slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
+            }
+            
         }
 
         private void Update() {
@@ -48,6 +55,8 @@ namespace MenuPlacement {
             StartPosition = targetObject.transform.localPosition;
             StartRotation = targetObject.transform.localRotation;
             StartScale = targetObject.transform.localScale;
+            slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
+            StartSliderValue = slider.GetComponent<PinchSlider>().SliderValue;
             targetObject.GetComponent<BoxCollider>().enabled = true;
             placementService.EnterAdjustmentMode();
         }
@@ -59,15 +68,15 @@ namespace MenuPlacement {
             targetObject.GetComponent<ObjectManipulator>().enabled = false;
 
             if (StartPosition != targetObject.transform.localPosition || StartRotation != targetObject.transform.localRotation || StartScale != targetObject.transform.localScale) {
-                Tuple<Vector3, Quaternion, Vector3> lastTransform = new Tuple<Vector3, Quaternion, Vector3>(StartPosition, StartRotation, StartScale);
-                Tuple<Vector3, Quaternion, Vector3> newTransform = new Tuple<Vector3, Quaternion, Vector3>(targetObject.transform.localPosition, targetObject.transform.localRotation, targetObject.transform.localScale);
+                Tuple<Vector3, Quaternion, Vector3, float> lastOffsets = new Tuple<Vector3, Quaternion, Vector3, float>(StartPosition, StartRotation, StartScale, StartSliderValue);
+                Tuple<Vector3, Quaternion, Vector3, float> newOffsets = new Tuple<Vector3, Quaternion, Vector3, float>(targetObject.transform.localPosition, targetObject.transform.localRotation, targetObject.transform.localScale, slider.GetComponent<PinchSlider>().SliderValue);
                 if (!retrieved) {
-                    handler.SaveOffsetBeforeManipulation(newTransform, lastTransform);
+                    handler.SaveOffsetBeforeManipulation(newOffsets, lastOffsets);
                 }
                 else {
                     retrieved = false;
                 } 
-                handler.UpdateOffset(newTransform, lastTransform);            
+                handler.UpdateOffset(newOffsets, lastOffsets);            
             }
             targetObject.GetComponent<BoxCollider>().enabled = false;
             //Test
@@ -108,6 +117,13 @@ namespace MenuPlacement {
                 suggestionPanel.gameObject.transform.forward = CameraCache.Main.transform.forward;
             }
 
+        }
+
+        public void OnSliderValueUpdate() {
+            if(placementService.PlacementMode == MenuPlacementService.MenuPlacementServiceMode.Adjustment) {
+                targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV = slider.GetComponent<PinchSlider>().SliderValue;
+                targetObject.transform.localScale = StartScale * (slider.GetComponent<PinchSlider>().SliderValue / StartSliderValue);
+            }
         }
 
         public void SwitchReferenceType() {
