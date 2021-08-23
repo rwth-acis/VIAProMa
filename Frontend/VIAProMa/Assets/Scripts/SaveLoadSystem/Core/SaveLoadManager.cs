@@ -22,7 +22,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
 
         private static bool savedOnQuit = false;
 
-        /// <summary>
+        // <summary>
         /// The list of instance Ids which are tracked
         /// This list is used in order to determine if a new instance of the GameObject must be created or if the settings can be applied to an existing instance
         /// </summary>
@@ -33,6 +33,8 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
         /// When they are initialized, they register in this list
         /// </summary>
         public List<Serializer> Serializers { get; private set; }
+
+        public Dictionary<string, GameObject> registerdGameObjects;
 
         public string SaveName { get; set; } = "";
 
@@ -45,6 +47,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
         {
             base.Awake();
             Serializers = new List<Serializer>();
+            registerdGameObjects = new Dictionary<string, GameObject>();
             trackedIds = new List<string>();
         }
 
@@ -161,6 +164,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 else // the object does not yet exist in the scene => instantiate it
                 {
                     GameObject instantiated = ResourceManager.Instance.NetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity);
+
                     Serializer serializer = instantiated?.GetComponent<Serializer>();
                     if (serializer == null)
                     {
@@ -198,14 +202,15 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
             }
         }
 
+
         /// <summary>
         /// Gets the serializer with the given id
         /// </summary>
         /// <param name="id">The id of the serializer</param>
         /// <returns>The serializer with the id or null if it does not exist</returns>
-        private Serializer GetSerializer(string id)
+        public Serializer GetSerializer(string id)
         {
-            for (int i = 0; i < Serializers.Count; i++)
+            for (int i=0;i<Serializers.Count;i++)
             {
                 if (Serializers[i].Id == id)
                 {
@@ -216,6 +221,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
             return null;
         }
 
+
         /// <summary>
         /// Registers a serializer on the manager so that it is considered in the save-load procedure
         /// </summary>
@@ -223,6 +229,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
         public void RegisterSerializer(Serializer serializer)
         {
             Serializers.Add(serializer);
+            registerdGameObjects.Add(serializer.Id,serializer.gameObject);
         }
 
         /// <summary>
@@ -232,6 +239,20 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
         public void UnRegisterSerializer(Serializer serializer)
         {
             Serializers.Remove(serializer);
+            registerdGameObjects.Remove(serializer.Id);
+        }
+
+        public GameObject GetRegisterdGameobject(string id)
+        {
+            if (registerdGameObjects.TryGetValue(id, out GameObject gameObject))
+            {
+                return gameObject;
+            }
+            else
+            {
+                Debug.Log("The gameobject with the id " + id + " does not exist or is not tracked by the SaveLoadManager", gameObject);
+                return null;
+            }
         }
 
         private async void OnApplicationFocus(bool hasFocus)
