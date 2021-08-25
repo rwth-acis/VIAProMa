@@ -1,19 +1,12 @@
-﻿using ExitGames.Client.Photon.StructWrapping;
-using MenuPlacement;
-using Microsoft.MixedReality.Toolkit.Experimental.StateVisualizer;
+﻿using MenuPlacement;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities.Solvers;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 /// <summary>
-/// This solver should only be used for the Menu Placement System and should be added to object menus.
-/// If TrackedObject/TargetTransform is left to the head, the object this solver attaching to will be placed on the right side of the it, and vice versa.
-/// Note that it computes the direction and postion using the "transform.position" property.
-/// Be sure to order this at the lowest position in the inspector.
+/// This solver should only be used for the Menu Placement System and it fine-tunes the transform of the menu based on several offsets.
+/// Be sure to order this at the lowest position of all solvers except ConstantViewSize.
+/// Its modification of scales will be overwritten by ConstantViewSize, if enabled.
 /// </summary>
 public class FinalPlacementOptimizer : Solver
 {

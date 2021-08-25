@@ -8,7 +8,7 @@ using UnityEngine;
 namespace MenuPlacement {
     [CustomEditor(typeof(MenuHandler))]
     [CanEditMultipleObjects]
-    public class MenuHandlerInspector : UnityEditor.Editor {
+    public class MenuHandlerInspector : Editor {
 
         private SerializedProperty menuVariantType;
         private SerializedProperty compact;

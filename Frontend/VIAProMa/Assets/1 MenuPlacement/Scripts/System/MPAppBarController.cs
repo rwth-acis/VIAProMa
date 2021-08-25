@@ -12,13 +12,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace MenuPlacement {
+    /// <summary>
+    /// This script extend the functionalities of the app bar in VIAProMa
+    /// If more functionalities are required, it is recommanded to write an extra script that implements the IMPAppBarController interface or inherits this script.
+    /// </summary>
     public class MPAppBarController : MonoBehaviour {
 
         //The menu object
         private GameObject targetObject;
         private MenuHandler handler;
         private MenuPlacementService placementService;
-        private bool retrieved = false;
         private PlacementMessage message = new PlacementMessage();
         [SerializeField] private Sprite unlocked;
         [SerializeField] private Sprite locked;
@@ -27,6 +30,8 @@ namespace MenuPlacement {
         public Vector3 StartPosition { get; private set; }
         public Quaternion StartRotation { get; private set; }
         public Vector3 StartScale { get; private set; }
+
+        public Vector3 ConstantViewSizeStartScale { get; private set; }
         public float StartSliderValue { get; private set; }
 
         // Start is called before the first frame update
@@ -50,11 +55,28 @@ namespace MenuPlacement {
             }
         }
 
+
+        /*public void AppBarInitialize(GameObject targetObject) {
+            if (!targetObject.GetComponent<BoundingBoxStateController>()) {
+                targetObject.AddComponent<BoundingBoxStateController>();
+            }
+            (targetObject.GetComponent<BoundingBox>() ?? targetObject.AddComponent<BoundingBox>()).BoundingBoxActivation = BoundingBox.BoundingBoxActivationType.ActivateManually;
+            targetObject.GetComponent<BoundingBox>().CalculationMethod = BoundingBox.BoundsCalculationMethod.ColliderOnly;
+            targetObject.GetComponent<BoundingBox>().Target = targetObject;
+            if (targetObject.GetComponent<MenuHandler>().ConstantViewSizeEnabled) {
+                targetObject.GetComponent<BoundingBox>().ShowScaleHandles = false;
+            }
+            if (!targetObject.GetComponent<MenuHandler>().AppBar) {
+                targetObject.GetComponent<MenuHandler>().AppBar = Instantiate(ServiceManager.GetService<MenuPlacementService>().AppBar);
+                targetObject.GetComponent<MenuHandler>().AppBar.GetComponent<AppBarPlacer>().TargetBoundingBox = targetObject.GetComponent<BoundingBox>();
+            }
+            else {
+                targetObject.GetComponent<MenuHandler>().AppBar.SetActive(true);
+            }
+        }*/
+
         public void OnAppBarExpand() {
-            //Debug.Log(retrieved);
-            StartPosition = targetObject.transform.localPosition;
-            StartRotation = targetObject.transform.localRotation;
-            StartScale = targetObject.transform.localScale;
+            ConstantViewSizeStartScale = targetObject.transform.localScale;
             slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
             StartSliderValue = slider.GetComponent<PinchSlider>().SliderValue;
             targetObject.GetComponent<BoxCollider>().enabled = true;
@@ -64,18 +86,18 @@ namespace MenuPlacement {
         
 
         public void OnAppBarCollapse() {
-            //For Evaluation
+
+            if (placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
+                targetObject.GetComponent<BoundingBox>().ShowScaleHandles = false;
+                slider.SetActive(true);
+            }
+
             targetObject.GetComponent<ObjectManipulator>().enabled = false;
 
             if (StartPosition != targetObject.transform.localPosition || StartRotation != targetObject.transform.localRotation || StartScale != targetObject.transform.localScale) {
                 Tuple<Vector3, Quaternion, Vector3, float> lastOffsets = new Tuple<Vector3, Quaternion, Vector3, float>(StartPosition, StartRotation, StartScale, StartSliderValue);
                 Tuple<Vector3, Quaternion, Vector3, float> newOffsets = new Tuple<Vector3, Quaternion, Vector3, float>(targetObject.transform.localPosition, targetObject.transform.localRotation, targetObject.transform.localScale, slider.GetComponent<PinchSlider>().SliderValue);
-                if (!retrieved) {
-                    handler.SaveOffsetBeforeManipulation(newOffsets, lastOffsets);
-                }
-                else {
-                    retrieved = false;
-                } 
+                handler.SaveOffsetBeforeManipulation(lastOffsets);
                 handler.UpdateOffset(newOffsets, lastOffsets);            
             }
             targetObject.GetComponent<BoxCollider>().enabled = false;
@@ -86,7 +108,6 @@ namespace MenuPlacement {
         }
 
         public void Retrieve() {
-            retrieved = true;
             handler.Retrieve();
         }
 
@@ -120,9 +141,9 @@ namespace MenuPlacement {
         }
 
         public void OnSliderValueUpdate() {
-            if(placementService.PlacementMode == MenuPlacementService.MenuPlacementServiceMode.Adjustment) {
+            if(placementService.PlacementMode == MenuPlacementService.MenuPlacementServiceMode.Adjustment && slider.activeInHierarchy) {
                 targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV = slider.GetComponent<PinchSlider>().SliderValue;
-                targetObject.transform.localScale = StartScale * (slider.GetComponent<PinchSlider>().SliderValue / StartSliderValue);
+                targetObject.transform.localScale = ConstantViewSizeStartScale * (slider.GetComponent<PinchSlider>().SliderValue / StartSliderValue);
             }
         }
 
@@ -149,13 +170,17 @@ namespace MenuPlacement {
         }
 
         public void OnAdjustment() {
-            //Test
-            targetObject.GetComponent<ObjectManipulator>().enabled = true;
-
+            if(placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
+                targetObject.GetComponent<BoundingBox>().ShowScaleHandles = true;
+                slider.SetActive(false);
+            }
+            //For bounding box. If bounds control is applicable, the object menipulator can be removed.
+            targetObject.GetComponent<ObjectManipulator>().enabled = true;            
             StartPosition = targetObject.transform.localPosition;
             StartRotation = targetObject.transform.localRotation;
             StartScale = targetObject.transform.localScale;
-            retrieved = false;
+            slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
+            //retrieved = false;
         }
 
         public void AdjustmentEnd() {

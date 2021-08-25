@@ -1,30 +1,25 @@
 ﻿using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.Utilities;
-using i5.VIAProMa.UI.AppBar;
 using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.Boundary;
-using Microsoft.MixedReality.Toolkit.UI;
 using Microsoft.MixedReality.Toolkit.Utilities;
-using Microsoft.MixedReality.Toolkit.WindowsMixedReality.Input;
-using Photon.Pun.UtilityScripts;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Dynamic;
-using System.Linq;
 using System.Runtime.Remoting.Messaging;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.EventSystems;
+
 
 namespace MenuPlacement {
+    /// <summary>
+    /// The central component of the Menu Placement Service. This service should be initialized at the start of the application. 
+    /// It has the references to all menu objects and stores some data of them. 
+    /// The Menu Handler component should call its methods when needed.
+    /// </summary>
     [CreateAssetMenu(menuName = "Scriptable Objects/Menu Placement Service")]
     public class MenuPlacementService : ScriptableObject, IService {
 
         public enum MenuPlacementServiceMode {
             Automatic,
             Manual,
+            //The adjustment mode is just needed when the app bar is expended and should not be visible to the users.
             Adjustment
         }
 
@@ -64,6 +59,9 @@ namespace MenuPlacement {
             Manual
         }
 
+        /// <summary>
+        /// The app bar for manipulation of menu objects.
+        /// </summary>
         public GameObject AppBar
         {
             get => appBar;
@@ -93,10 +91,13 @@ namespace MenuPlacement {
         private Dictionary<int, Vector3> orbitalPositionOffsetOnClose = new Dictionary<int, Vector3>();
 
         private GameObject inBetweenTarget;
+
         public bool SuggestionPanelOn { get; set; }
+
+        /// <summary>
+        /// used to switch back from the adjustment mode
+        /// </summary>
         public MenuPlacementServiceMode PreviousMode { get; set; }
-
-
 
         public void Initialize(IServiceManager owner) {
             CheckMenuInitialization();
@@ -137,6 +138,10 @@ namespace MenuPlacement {
         
 
         #region Public Methods
+
+        /// <summary>
+        /// Get the InBewteen target, which is an empty objects slightly below the head.
+        /// </summary>
         public GameObject GetInBetweenTarget() {
             return inBetweenTarget;
         }
@@ -149,7 +154,8 @@ namespace MenuPlacement {
         }
 
         /// <summary>
-        /// Switch between automatic and manual mode
+        /// Switch between automatic and manual mode on the users' side.
+        /// For adjustment mode, use the EnterAdjustmentMode() method instead.
         /// </summary>
         public void SwitchMode() {
             if(placementMode == MenuPlacementServiceMode.Automatic) {
@@ -225,6 +231,11 @@ namespace MenuPlacement {
             }
         }
 
+        /// <summary>
+        /// Switch a menu to another variant according to the placement message.
+        /// </summary>
+        /// <param name="message"> the variant switch to</param>
+        /// <param name="menu">the menu object</param>
         public void UpdatePlacement(PlacementMessage message, GameObject menu) {
             switch (message.switchType) {
                 case PlacementMessage.SwitchType.FloatingToCompact:
@@ -248,29 +259,11 @@ namespace MenuPlacement {
             }
         }
 
-        public void SwitchVariant(PlacementMessage message, GameObject menu) {
-            switch (message.switchType) {
-                case PlacementMessage.SwitchType.FloatingToCompact:
-                    Debug.Log("The menu is floating: " + !menu.GetComponent<MenuHandler>().compact);
-                    if (!menu.GetComponent<MenuHandler>().compact) {
-                        if (SwitchToCompact(menu) != menu) {
-                            menu.GetComponent<MenuHandler>().Close();
-                            SwitchToCompact(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
-                        }
-                    }
-                    break;
-                case PlacementMessage.SwitchType.CompactToFloating:
-                    Debug.Log("The menu is compact: " + menu.GetComponent<MenuHandler>().compact);
-                    if (menu.GetComponent<MenuHandler>().compact) {
-                        if (SwitchToFloating(menu) != menu) {
-                            menu.GetComponent<MenuHandler>().Close();
-                            SwitchToFloating(menu).GetComponent<MenuHandler>().Open(menu.GetComponent<MenuHandler>().TargetObject);
-                        }
-                    }
-                    break;
-            }
-        }
-
+        /// <summary>
+        /// Get the bounding box of the other variant, which is saved in MenuPlacementService on its close.
+        /// </summary>
+        /// <param name="menu">the current activated menu variant</param>
+        /// <returns>the bounding box of the other variant</returns>
         public Bounds GetStoredBoundingBoxOnCloseOppositeType(GameObject menu) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
             if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
@@ -306,6 +299,12 @@ namespace MenuPlacement {
             }
         }
 
+        /// <summary>
+        /// Save the bounding box of one menu object. 
+        /// It is called when a menu object is closed.
+        /// </summary>
+        /// <param name="menu">the closed menu</param>
+        /// <param name="boundingBox">the bounding box of the menu</param>
         public void StoreBoundingBoxOnClose(GameObject menu, Bounds boundingBox) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
             if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
@@ -336,6 +335,12 @@ namespace MenuPlacement {
             }
         }
 
+        /// <summary>
+        /// Store the position offset of the InBetween solver of a menu object.
+        /// It is called when a menu object is closed and the InBetween solver is activated.
+        /// </summary>
+        /// <param name="menu">the closed menu</param>
+        /// <param name="offset">the Position Offset of FinalPlacementOptimizer solver</param>
         public void StoreInBetweenPositionOffsetOnClose(GameObject menu, Vector3 offset) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
             if (inBetweenPositionOffsetOnClose.ContainsKey(handler.menuID)) {
@@ -346,6 +351,11 @@ namespace MenuPlacement {
             }
         }
 
+        /// <summary>
+        /// Get the stored InBetween position offset of the other menu variant.
+        /// </summary>
+        /// <param name="menu"> current menu</param>
+        /// <returns>the InBetween offset of the other variant</returns>
         public Vector3 GetInBetweenPositionOffsetOppositeType(GameObject menu) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
             Vector3 res;
@@ -370,6 +380,12 @@ namespace MenuPlacement {
             
         }
 
+        /// <summary>
+        /// Store the position offset of the Orbital solver of a menu object.
+        /// It is called when a menu object is closed and the Orbital solver is activated.
+        /// </summary>
+        /// <param name="menu">the closed menu</param>
+        /// <param name="offset">the Position Offset of FinalPlacementOptimizer solver</param>
         public void StoreOrbitalPositionOffsetOnClose(GameObject menu, Vector3 offset) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
             if (orbitalPositionOffsetOnClose.ContainsKey(handler.menuID)) {
@@ -380,6 +396,11 @@ namespace MenuPlacement {
             }
         }
 
+        /// <summary>
+        /// Get the stored Orbital position offset of the other menu variant (not OrbitalOffset).
+        /// </summary>
+        /// <param name="menu"> current menu</param>
+        /// <returns>the Orbital position offset of the other variant</returns>
         public Vector3 GetOrbitalPositionOffsetOppositeType(GameObject menu) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
             Vector3 res;
@@ -402,6 +423,11 @@ namespace MenuPlacement {
                 }
             }
         }
+
+        /// <summary>
+        /// Get the OrbitalOffset of the other menu variant (not OrbitalOffset).
+        /// </summary>
+        /// <param name="menu"> current menu</param>
         public Vector3 GetOrbitalOffsetOppositeType(GameObject menu) {
             MenuHandler handler = menu.GetComponent<MenuHandler>();
             if (handler.menuVariantType == MenuHandler.MenuVariantType.MainMenu) {
@@ -521,9 +547,7 @@ namespace MenuPlacement {
             Instantiate(systemControlPanel);
         }
 
-        /// <summary>
-        /// Create a target which is lower than head for the InBetween solver on object menus
-        /// </summary>
+        // Create a target which is lower than head for the InBetween solver on object menus
         private void CreateInBetweenTarget() {
             inBetweenTarget = new GameObject("InBetween Target");
             inBetweenTarget.transform.parent = CameraCache.Main.transform;
@@ -585,6 +609,7 @@ namespace MenuPlacement {
             return menu;
         }
 
+        //Check available capabilities of the current ruuning platform
         private void CheckCapability() {
             if (CoreServices.InputSystem is IMixedRealityCapabilityCheck capabilityChecker) {
                 ArticulatedHandSupported = capabilityChecker.CheckCapability(MixedRealityCapability.ArticulatedHand);

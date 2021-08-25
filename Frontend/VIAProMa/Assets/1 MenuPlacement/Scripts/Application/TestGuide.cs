@@ -5,6 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ This script guide the participants through the evaluation process
+
+ */
+
 public class TestGuide : MonoBehaviour
 {
 
