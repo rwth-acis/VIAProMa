@@ -121,7 +121,6 @@ namespace MenuPlacement {
 
         private bool manualModeEntered = false;
 
-
         public GameObject TargetObject { get; private set; }
         public Vector3 OrbitalOffset
         {

@@ -9,7 +9,8 @@ using UnityEngine;
 
 namespace MenuPlacement {
     /// <summary>
-    /// The central component of the Menu Placement Service. This service should be initialized at the start of the application. 
+    /// The central component of the Menu Placement Service.
+    /// This service should be initialized at the start of the application. 
     /// It has the references to all menu objects and stores some data of them. 
     /// The Menu Handler component should call its methods when needed.
     /// </summary>
@@ -454,6 +455,7 @@ namespace MenuPlacement {
 
         #region Private Methods
 
+        //Check if all menus are initialized properly.
         private void CheckMenuInitialization() {
             List<GameObject> menus = new List<GameObject>();
             if (mainMenu.compactMenu == null) {

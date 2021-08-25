@@ -13,8 +13,8 @@ using UnityEngine;
 
 namespace MenuPlacement {
     /// <summary>
-    /// This script extend the functionalities of the app bar in VIAProMa
-    /// If more functionalities are required, it is recommanded to write an extra script that implements the IMPAppBarController interface or inherits this script.
+    /// This script extends the functionalities of the App Bar from VIAProMa
+    /// If more functionalities are required, it is recommanded to write another script inherits this script or an additional script added on the App Bar object.
     /// </summary>
     public class MPAppBarController : MonoBehaviour {
 
@@ -41,6 +41,10 @@ namespace MenuPlacement {
             targetObject.GetComponent<BoxCollider>().enabled = false;
             handler = targetObject.GetComponent<MenuHandler>();
             placementService = ServiceManager.GetService<MenuPlacementService>();
+            //Just for BoundingBox. When BoundsControl is applicable, the object menipulator can be removed.
+            if (!targetObject.GetComponent<ObjectManipulator>()) {
+                targetObject.AddComponent<ObjectManipulator>();
+            }
             if (handler.ConstantViewSizeEnabled) {
                 slider.SetActive(true);
                 slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
@@ -54,26 +58,6 @@ namespace MenuPlacement {
                 targetObject.GetComponent<BoxCollider>().enabled = false;
             }
         }
-
-
-        /*public void AppBarInitialize(GameObject targetObject) {
-            if (!targetObject.GetComponent<BoundingBoxStateController>()) {
-                targetObject.AddComponent<BoundingBoxStateController>();
-            }
-            (targetObject.GetComponent<BoundingBox>() ?? targetObject.AddComponent<BoundingBox>()).BoundingBoxActivation = BoundingBox.BoundingBoxActivationType.ActivateManually;
-            targetObject.GetComponent<BoundingBox>().CalculationMethod = BoundingBox.BoundsCalculationMethod.ColliderOnly;
-            targetObject.GetComponent<BoundingBox>().Target = targetObject;
-            if (targetObject.GetComponent<MenuHandler>().ConstantViewSizeEnabled) {
-                targetObject.GetComponent<BoundingBox>().ShowScaleHandles = false;
-            }
-            if (!targetObject.GetComponent<MenuHandler>().AppBar) {
-                targetObject.GetComponent<MenuHandler>().AppBar = Instantiate(ServiceManager.GetService<MenuPlacementService>().AppBar);
-                targetObject.GetComponent<MenuHandler>().AppBar.GetComponent<AppBarPlacer>().TargetBoundingBox = targetObject.GetComponent<BoundingBox>();
-            }
-            else {
-                targetObject.GetComponent<MenuHandler>().AppBar.SetActive(true);
-            }
-        }*/
 
         public void OnAppBarExpand() {
             ConstantViewSizeStartScale = targetObject.transform.localScale;
@@ -174,13 +158,12 @@ namespace MenuPlacement {
                 targetObject.GetComponent<BoundingBox>().ShowScaleHandles = true;
                 slider.SetActive(false);
             }
-            //For bounding box. If bounds control is applicable, the object menipulator can be removed.
+            
             targetObject.GetComponent<ObjectManipulator>().enabled = true;            
             StartPosition = targetObject.transform.localPosition;
             StartRotation = targetObject.transform.localRotation;
             StartScale = targetObject.transform.localScale;
             slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
-            //retrieved = false;
         }
 
         public void AdjustmentEnd() {

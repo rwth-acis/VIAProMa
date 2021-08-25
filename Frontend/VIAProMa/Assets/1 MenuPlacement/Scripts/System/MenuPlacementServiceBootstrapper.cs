@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuPlacementBootstrapper : BaseServiceBootstrapper
+public class MenuPlacementServiceBootstrapper : BaseServiceBootstrapper
 {
 
     [SerializeField]private MenuPlacementService menuPlacementService;
