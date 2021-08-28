@@ -31,7 +31,6 @@ namespace MenuPlacement {
         public Quaternion StartRotation { get; private set; }
         public Vector3 StartScale { get; private set; }
 
-        public Vector3 ConstantViewSizeStartScale { get; private set; }
         public float StartSliderValue { get; private set; }
 
         // Start is called before the first frame update
@@ -60,7 +59,9 @@ namespace MenuPlacement {
         }
 
         public void OnAppBarExpand() {
-            ConstantViewSizeStartScale = targetObject.transform.localScale;
+            StartPosition = targetObject.transform.localPosition;
+            StartRotation = targetObject.transform.localRotation;
+            StartScale = targetObject.transform.localScale;
             slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
             StartSliderValue = slider.GetComponent<PinchSlider>().SliderValue;
             targetObject.GetComponent<BoxCollider>().enabled = true;
@@ -82,7 +83,7 @@ namespace MenuPlacement {
                 Tuple<Vector3, Quaternion, Vector3, float> lastOffsets = new Tuple<Vector3, Quaternion, Vector3, float>(StartPosition, StartRotation, StartScale, StartSliderValue);
                 Tuple<Vector3, Quaternion, Vector3, float> newOffsets = new Tuple<Vector3, Quaternion, Vector3, float>(targetObject.transform.localPosition, targetObject.transform.localRotation, targetObject.transform.localScale, slider.GetComponent<PinchSlider>().SliderValue);
                 handler.SaveOffsetBeforeManipulation(lastOffsets);
-                handler.UpdateOffset(newOffsets, lastOffsets);            
+                handler.UpdateOffset(newOffsets, lastOffsets);
             }
             targetObject.GetComponent<BoxCollider>().enabled = false;
             //Test
@@ -93,6 +94,11 @@ namespace MenuPlacement {
 
         public void Retrieve() {
             handler.Retrieve();
+            StartPosition = targetObject.transform.localPosition;
+            StartRotation = targetObject.transform.localRotation;
+            StartScale = targetObject.transform.localScale;
+            slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
+            StartSliderValue = slider.GetComponent<PinchSlider>().SliderValue;
         }
 
         public void Close() {
@@ -127,7 +133,7 @@ namespace MenuPlacement {
         public void OnSliderValueUpdate() {
             if(placementService.PlacementMode == MenuPlacementService.MenuPlacementServiceMode.Adjustment && slider.activeInHierarchy) {
                 targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV = slider.GetComponent<PinchSlider>().SliderValue;
-                targetObject.transform.localScale = ConstantViewSizeStartScale * (slider.GetComponent<PinchSlider>().SliderValue / StartSliderValue);
+                targetObject.transform.localScale = StartScale * (slider.GetComponent<PinchSlider>().SliderValue / StartSliderValue);
             }
         }
 
@@ -157,13 +163,13 @@ namespace MenuPlacement {
             if(placementService.PreviousMode == MenuPlacementService.MenuPlacementServiceMode.Manual) {
                 targetObject.GetComponent<BoundingBox>().ShowScaleHandles = true;
                 slider.SetActive(false);
-            }
-            
+            }            
             targetObject.GetComponent<ObjectManipulator>().enabled = true;            
             StartPosition = targetObject.transform.localPosition;
             StartRotation = targetObject.transform.localRotation;
             StartScale = targetObject.transform.localScale;
             slider.GetComponent<PinchSlider>().SliderValue = targetObject.GetComponent<ConstantViewSize>().TargetViewPercentV;
+            StartSliderValue = slider.GetComponent<PinchSlider>().SliderValue;
         }
 
         public void AdjustmentEnd() {

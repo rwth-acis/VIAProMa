@@ -73,8 +73,14 @@ public class FinalPlacementOptimizer : Solver
                 GoalPosition += head.transform.right * positionOffset.x + head.transform.up * positionOffset.y + head.transform.forward * positionOffset.z;
             }
         }
-        
-        GoalRotation = Quaternion.Euler(head.transform.rotation.eulerAngles + RotationOffset);
+        switch (gameObject.GetComponent<MenuHandler>().menuOrientationType) {
+            case MenuHandler.MenuOrientationType.CameraAligned:
+                GoalRotation = Quaternion.Euler(head.transform.rotation.eulerAngles + RotationOffset);
+                break;
+            case MenuHandler.MenuOrientationType.Unmodified:
+                GoalRotation = GoalRotation;
+                break;
+        }        
         FinalPosition = GoalPosition;
         FinalRotation = GoalRotation;
         GoalScale = new Vector3(OriginalScale.x * ScaleOffset.x, OriginalScale.y * ScaleOffset.y, OriginalScale.z * ScaleOffset.z);

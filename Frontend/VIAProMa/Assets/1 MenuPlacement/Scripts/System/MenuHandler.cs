@@ -21,7 +21,8 @@ namespace MenuPlacement {
         }
 
         public enum MenuOrientationType {
-            CameraAligned
+            CameraAligned,
+            Unmodified
         }
 
         public enum MenuVariantType {
@@ -35,18 +36,18 @@ namespace MenuPlacement {
         public MenuVariantType menuVariantType;
         [Tooltip("Is the menu a normal one or a compact one?")]
         public bool compact;
+        [Tooltip("The ID of this menu. Make sure they are different from one to another")]
+        public int menuID;
+        [Tooltip("The orientation type used on the solver attached to the object by the placement system if applicable")]
+        public MenuOrientationType menuOrientationType = MenuOrientationType.CameraAligned;
         [Tooltip("If enabled, the menu will be closed automatically if it is not in the users' head gaze for a while. The time threshold can be set in 'Inactivity Time Threshold'.")]
         [SerializeField] private bool inactivityDetectionEnabled = true;
         [Tooltip("If enabled, an App Bar will be instantiate for this menu object on start. For better performance and avoiding potential problems, it is better to add a BoxCollider and a BoundingBox script manually.")]
         [SerializeField] private bool manipulationEnabled = true;
         [Tooltip("If enabled, the 'ConstantViewSize' solver will be added to the menu object, and the scale option of manipulation will be deactivated, instead a slider for 'Target View Percent V' of 'ConstantViewSize;")]
-        [SerializeField] private bool constantViewSizeEnabled = true;
-        [Tooltip("The ID of this menu. Make sure they are different from one to another")]
-        public int menuID;
+        [SerializeField] private bool constantViewSizeEnabled = true;        
         [Tooltip("The bounding box will be used to decide whether the space is enough to place the menu. It is a 'Bounds' object containing all Bounds of the corresponding base")]
-        [SerializeField] private BoundsType boundingBoxType = BoundsType.BasedOnColliders;
-        [Tooltip("The orientation type used on the solver attached to the object by the placement system if applicable")]
-        [SerializeField] private MenuOrientationType menuOrientationType = MenuOrientationType.CameraAligned;
+        [SerializeField] private BoundsType boundingBoxType = BoundsType.BasedOnColliders;        
 
         [Header("Thresholds")]
         [Tooltip("The time between two placement updates")]
