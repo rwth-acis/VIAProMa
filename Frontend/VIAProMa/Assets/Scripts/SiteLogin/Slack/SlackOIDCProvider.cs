@@ -57,7 +57,7 @@ namespace i5.Toolkit.Core.OpenIDConnectClient
         public SlackOidcProvider()
         {
             RestConnector = new UnityWebRequestRestConnector();
-            JsonSerializer = new JsonUtilityWrapper();
+            JsonSerializer = new JsonUtilityAdapter();
             Browser = new Browser();
         }
 
