@@ -585,13 +585,19 @@ namespace MenuPlacement {
             if (menu.GetComponent<MenuHandler>().menuVariantType == MenuHandler.MenuVariantType.ObjectMenu) {
                 foreach (MenuVariants v in objectMenus) {
                     if (isSameMenu(v.floatingMenu, menu)) {
-                        return v.compactMenu;
+                        if (v.compactMenu != null) {
+                            return v.compactMenu;
+                        }
+
                     }
                 }
             }
             else {
-                return mainMenu.compactMenu;
+                if (mainMenu.compactMenu != null) {
+                    return mainMenu.compactMenu;
+                }
             }
+            Debug.Log(1);
             //No compact variant
             return menu;
         }
@@ -600,12 +606,16 @@ namespace MenuPlacement {
             if (menu.GetComponent<MenuHandler>().menuVariantType == MenuHandler.MenuVariantType.ObjectMenu) {
                 foreach (MenuVariants v in objectMenus) {
                     if (isSameMenu(v.compactMenu, menu)) {
-                        return v.floatingMenu;
+                        if (v.floatingMenu != null) {
+                            return v.floatingMenu;
+                        }
                     }
                 }
             }
             else {
-                return mainMenu.floatingMenu;
+                if (mainMenu.floatingMenu != null) {
+                    return mainMenu.floatingMenu;
+                }
             }
             //No floating variant
             return menu;
