@@ -105,3 +105,6 @@ After that, open the Build Settings Window and change the Target SDK Version and
 Also ensure that both app instances use the same Photon PUN version.
 The PUN version can be seen in the Photon server settings.
 Additionally, both instances must have the same Photon app-IDs in the server settings.
+
+### 3D model of robot Eve
+3D model of robot Eve is created by Lucas Quincoses Toledo, download via this link https://skfb.ly/6RyMo
