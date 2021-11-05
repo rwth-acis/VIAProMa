@@ -10,7 +10,7 @@ namespace i5.VIAProMa.WebConnection
     public class ConnectionManager : Singleton<ConnectionManager>
     {
         [Tooltip("The address of the backend, i.e. its url")]
-        [SerializeField] private string backendAddress = "http://localhost";
+        [SerializeField] private string backendAddress = "http://137.226.232.224";
 
         [Tooltip("The base path of the backend's API.")]
         [SerializeField] private string basePath = "resources";
@@ -65,7 +65,7 @@ namespace i5.VIAProMa.WebConnection
 
         private void Start()
         {
-            BackendAddress = PlayerPrefs.GetString(backendAddressPrefKey, "http://localhost");
+            BackendAddress = PlayerPrefs.GetString(backendAddressPrefKey, "http://137.226.232.224");
         }
 
         /// <summary>

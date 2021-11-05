@@ -107,6 +107,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 cubeAnimator.SetBool(menuOpenAnimParam, true);
                 StartCoroutine(Move(Vector3.zero, new Vector3(0, 3.25f * expandedScale, 0), animationLength));
             }));
+
             MenuOpen = true;
         }
 

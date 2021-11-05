@@ -17,9 +17,10 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 0
   OwnershipTransfer: 0
+  observableSearch: 0
   ObservedComponents:
   - {fileID: 0}
-  viewIdField: 0
+  sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!114 &6450533075561189314
@@ -253,6 +254,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4139768121543928682}
+        m_TargetAssemblyTypeName: 
         m_MethodName: HighlightWires
         m_Mode: 1
         m_Arguments:
@@ -267,6 +269,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4139768121543928682}
+        m_TargetAssemblyTypeName: 
         m_MethodName: UnhighlightWires
         m_Mode: 1
         m_Arguments:
@@ -604,13 +607,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
-      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      propertyPath: VoiceCommand
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
-      propertyPath: VoiceCommand
-      value: 
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}

@@ -36,14 +36,7 @@ public class DeleteButtonOpener : MonoBehaviour
             buttonInstance = Instantiate(deleteButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
             buttonInstance.GetComponent<DeleteButton>().requirementID = requirementID;
             buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
-        }
-        //Check if the placement of the button is indeed correct and next to the position
-        if(buttonInstance != null)
-        {
-            if (buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f)
-            {
-                buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
-            }
+            buttonInstance.transform.parent = this.transform;
         }
     }
 

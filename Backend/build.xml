@@ -47,8 +47,23 @@
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
     <property name="ivy.settings.file" value="${ivy.jar.dir}/ivysettings.xml" />
     <property name="ivy.dep.file" value="${ivy.jar.dir}/ivy.xml" />
+	
+	<target name="print-version"> 
+	   <echo>Java/JVM version: ${ant.java.version}</echo> 
+	   <echo>Java/JVM detail version: ${java.version}</echo> 
+		<fail message="Unsupported Java version: ${ant.java.version}. 
+		  Make sure that the Java version is 1.8.">
+		  <condition>
+		  	<not>
+				<equals arg1="${ant.java.version}" arg2="1.8"/>
+			</not>
+		  </condition>
+		</fail>
+	</target>
+	
+	
     <!-- Download Ivy from Web Site so that it can be used without any special Installation -->
-    <target name="download-ivy" unless="skip.download">
+    <target name="download-ivy" depends="print-version" unless="skip.download">
         <mkdir dir="${ivy.jar.dir}"/>
         <echo message="installing ivy..."/>
         <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
@@ -66,7 +81,7 @@
     <!-- Get Dependencies from our Maven Repository via Ivy -->
     <target name="get_deps" depends="install-ivy, init_deps" description="--> resolve dependencies">
         <ivy:settings>
-            <credentials host="role.dbis.rwth-aachen.de:9911/archiva"  realm="Repository internal"/>
+            <credentials host="archiva.dbis.rwth-aachen.de:9911"  realm="acis-internal"/>
         </ivy:settings>
     	<ivy:retrieve type="jar, bundle" conf="platform" pattern="${lib}/[artifact]-[revision].[ext]"/>
     	<ivy:retrieve type="jar, bundle" conf="bundle" pattern="${servicelib}/[artifact]-[revision].[ext]"/>
@@ -219,22 +234,42 @@ pause
         <delete dir="${tmp.junit}" />
     </target>
     
-    <target name="junit_tests" depends="init_junit, compile_all">
-        <junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="yes">
-            <classpath>
-                <pathelement path="${tmp.classes}" />
-                <pathelement path="${tmp.junit}" />
-                <pathelement path="${lib.junit}" />
-                <path refid="libraries"/>
-            </classpath>
-            <formatter type="plain" />
-            <batchtest fork="yes" todir="${junit.report}">
-                <fileset dir="${tmp.junit}">
-                    <include name="**/*Test.class"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
+	<target name="junit_tests" depends="init_junit, compile_all">
+	    	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="libraries"/>
+	    	<jacoco:coverage destfile="${export}/jacoco.exec" xmlns:jacoco="antlib:org.jacoco.ant">
+				<junit fork="yes" haltonerror="yes" haltonfailure="yes" printsummary="yes">
+		            <classpath>
+		                <pathelement path="${tmp.classes}" />
+		                <pathelement path="${tmp.junit}" />
+		                <pathelement path="${lib.junit}" />
+		                <path refid="libraries"/>
+		            </classpath>
+		            <formatter type="plain" />
+		            <batchtest fork="yes" todir="${junit.report}">
+		                <fileset dir="${tmp.junit}">
+		                    <include name="**/*Test.class"/>
+		                </fileset>
+		            </batchtest>
+		        </junit>
+	    	</jacoco:coverage>
+			<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml"  classpathref="libraries"/>
+	    	        <jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
+	    	            <executiondata>
+	    	                <file file="${export}/jacoco.exec" />
+	    	            </executiondata>
+	    	 
+	    	            <structure name="jacoco">
+	    	                <classfiles>
+	    	                    <fileset dir="${tmp.classes}" />
+	    	                </classfiles>
+	    	                <sourcefiles encoding="UTF-8">
+	    	                    <fileset dir="${src.main}" />
+	    	                </sourcefiles>
+	    	            </structure>
+	    	             
+	    	            <xml destfile="${export}/coverage.xml" />
+			</jacoco:report>
+	    </target>
     
     
     <!-- XML Agent Generation (Builds Jar first so that Generator is available)-->
