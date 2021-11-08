@@ -33,8 +33,8 @@ public class UserManager : Singleton<UserManager>
         {
             if (string.IsNullOrEmpty(defaultName))
             {
-                //defaultName = "Guest" + UnityEngine.Random.Range(0, 1000);
-                defaultName = "Chen-Ching Teng";
+                defaultName = "Guest" + UnityEngine.Random.Range(0, 1000);
+                //defaultName = "Chen-Ching Teng";
             }
             return defaultName;
         }
