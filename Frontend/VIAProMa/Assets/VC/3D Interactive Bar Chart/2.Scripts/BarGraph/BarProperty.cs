@@ -16,6 +16,7 @@ namespace BarGraph.VittorCloud
         public MeshRenderer barMesh;
 
         public BarMouseClick barClickEvents;
+        public string accountEmail;
 
 
         float ScaleFactor;
@@ -34,7 +35,7 @@ namespace BarGraph.VittorCloud
         {
             // Debug.Log("SetBarLabelVisible : " + LabelContainer.transform.localScale.y, this.gameObject);
             originalYscale = LabelContainer.transform.localScale.y;
-            Debug.Log("originalYscale : " + LabelContainer.transform.lossyScale.y, this.gameObject);
+            //Debug.Log("originalYscale : " + LabelContainer.transform.lossyScale.y, this.gameObject);
             LabelContainer.SetActive(false);
 
         }
@@ -55,7 +56,7 @@ namespace BarGraph.VittorCloud
 
             BarLabel.text = value;
             LabelContainer.SetActive(true);
-            Debug.Log("SetBarLabelVisible : " + LabelContainer.transform.localScale.y + " : " + transform.localScale.y, this.gameObject);
+            //Debug.Log("SetBarLabelVisible : " + LabelContainer.transform.localScale.y + " : " + transform.localScale.y, this.gameObject);
             if (transform.localScale.y == 0)
                 LabelContainer.transform.localScale = new Vector3(LabelContainer.transform.localScale.x, originalYscale * scaleFactor/ transform.localScale.x, LabelContainer.transform.localScale.z);
             else
@@ -75,7 +76,7 @@ namespace BarGraph.VittorCloud
         public void SetLabelEnabel()
         {
 
-            Debug.Log("SetBarLabelVisible : " + LabelContainer.transform.localScale.y + " : " + transform.localScale. y, this.gameObject);
+            //Debug.Log("SetBarLabelVisible : " + LabelContainer.transform.localScale.y + " : " + transform.localScale. y, this.gameObject);
             if (transform.localScale.y == 0)
                 LabelContainer.transform.localScale = new Vector3(LabelContainer.transform.localScale.x, originalYscale / (transform.localScale.x ), LabelContainer.transform.localScale.z);
             else
@@ -83,6 +84,11 @@ namespace BarGraph.VittorCloud
 
             LabelContainer.SetActive(true);
 
+        }
+
+        public void ChangeToStudentChart()
+        {
+            StatementManager.instance.studentData(accountEmail);
         }
 
 
