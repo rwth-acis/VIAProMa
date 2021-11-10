@@ -225,7 +225,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowServerStatusMenu()
         {
-            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
+            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right, transform.localEulerAngles);
         }
 
         public void RoomButtonClicked()
