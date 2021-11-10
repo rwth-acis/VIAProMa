@@ -164,6 +164,9 @@ namespace i5.VIAProMa.UI.MainMenuCube
             labelsParent.SetActive(active);
         }
 
+        /// <summary>
+        /// Stops the timer to fold the menu cube ans initialises a new one, which then folds the menu after timeMenuStaysOpen seconds
+        /// </summary>
         public void InitalizeNewCloseTimer()
         {
             if(menuCloseCoroutine != null)
@@ -174,7 +177,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             StartCoroutine(menuCloseCoroutine);
         }
 
-        IEnumerator foldMenuAfterWaitTime()
+        //Folds the menu cube after timeMenuStaysOpen seconds
+        private IEnumerator foldMenuAfterWaitTime()
         {
             yield return new WaitForSeconds(timeMenuStaysOpen);
             if (closeMenuWhenNotUsed)
