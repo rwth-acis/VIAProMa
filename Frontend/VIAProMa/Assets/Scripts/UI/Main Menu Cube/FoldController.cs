@@ -37,6 +37,13 @@ namespace i5.VIAProMa.UI.MainMenuCube
         /// </summary>
         public bool MenuOpen { get; private set; }
 
+        //Timer for closing the menu when not used for too long
+        [Tooltip("When checked, the menu automtically folds back into its closed state, when there was no user input for a while")]
+        [SerializeField] private bool closeMenuWhenNotUsed= true;
+        [Tooltip("Number of seconds the menu cube stays in its unfolded state, without any user input")]
+        [SerializeField] private float timeMenuStaysOpen = 120f;
+        private IEnumerator menuCloseCoroutine;
+
         /// <summary>
         /// Checks the setup of the component
         /// </summary>
@@ -108,6 +115,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 StartCoroutine(Move(Vector3.zero, new Vector3(0, 3.25f * expandedScale, 0), animationLength));
             }));
             MenuOpen = true;
+            InitalizeNewCloseTimer();
         }
 
         /// <summary>
@@ -155,5 +163,25 @@ namespace i5.VIAProMa.UI.MainMenuCube
             appBarSpawner.SpawnedInstance.SetActive(active);
             labelsParent.SetActive(active);
         }
+
+        public void InitalizeNewCloseTimer()
+        {
+            if(menuCloseCoroutine != null)
+            {
+                StopCoroutine(menuCloseCoroutine);
+            }
+            menuCloseCoroutine = foldMenuAfterWaitTime();
+            StartCoroutine(menuCloseCoroutine);
+        }
+
+        IEnumerator foldMenuAfterWaitTime()
+        {
+            yield return new WaitForSeconds(timeMenuStaysOpen);
+            if (closeMenuWhenNotUsed)
+            {
+                FoldCube();
+            }
+        }
+
     }
 }
