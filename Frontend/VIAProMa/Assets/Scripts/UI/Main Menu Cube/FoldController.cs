@@ -165,7 +165,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         }
 
         /// <summary>
-        /// Stops the timer to fold the menu cube ans initialises a new one, which then folds the menu after timeMenuStaysOpen seconds
+        /// Stops the timer to fold the menu cube and initialises a new one, which then folds the menu after timeMenuStaysOpen seconds
         /// </summary>
         public void InitalizeNewCloseTimer()
         {
