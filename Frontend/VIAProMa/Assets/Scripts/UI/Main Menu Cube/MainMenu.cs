@@ -178,7 +178,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowSaveMenu()
         {
             WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right, transform.localEulerAngles);
-            foldController.FoldCube();
+            
         }
 
         public void ShowIssueShelf()
@@ -186,7 +186,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
-            foldController.FoldCube();
+            
         }
 
         private void IssueShelfCreated(GameObject obj)
@@ -201,7 +201,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
-            foldController.FoldCube();
         }
 
         public void ShowLoadShelf()
@@ -209,7 +208,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position + 1f * transform.right;
             targetPosition.y = 0f;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
-            foldController.FoldCube();
         }
 
         public void ShowLoginMenu()
@@ -223,13 +221,11 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 avatarConfiguratorPrefab,
                 ref avatarConfiguratorInstance,
                 transform.position - 1f * transform.right);
-            foldController.FoldCube();
         }
 
         public void ShowServerStatusMenu()
         {
             WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
-            foldController.FoldCube();
         }
 
         public void RoomButtonClicked()
@@ -244,13 +240,11 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 PhotonNetwork.LeaveRoom();
             }
-            foldController.FoldCube();
         }
 
         public void ChatButtonClicked()
         {
             WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-            foldController.FoldCube();
         }
 
         private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)
