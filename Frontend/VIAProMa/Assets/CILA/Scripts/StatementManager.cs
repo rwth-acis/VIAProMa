@@ -39,7 +39,7 @@ public class StatementManager : MonoBehaviour
     public Vector3 scaleSizeMentor;
     public Vector3 scaleSizeStudent;
     public GameObject barChartPrefab;
-    public GameObject scatterPrefab;
+    public GameObject scatterPlotPrefab;
 
     // Use this for initialization
     private void Awake()
@@ -80,5 +80,242 @@ public class StatementManager : MonoBehaviour
         }
     }
 
-    
+    public void CheckRole()
+    {
+        transform.localScale = defScale;
+        bool isExist = false;
+        //Build out full Statement details based on verb viewed to get the user role
+        var query = new StatementsQuery();
+        query.verbId = new Uri("http://id.tincanapi.com/verb/viewed");
+        query.limit = 500;
+        lrsResponse = lrs.QueryStatements(query);
+        print(lrsResponse.success);
+        if (lrsResponse.success) // Get success
+        {
+            print(lrsResponse.content.statements.Count);
+            for (int i = 0; i < lrsResponse.content.statements.Count; i++)
+            {
+                if (lrsResponse.content.statements[i] != null)
+                {
+                    print(lrsResponse.content.statements[i].ToJSON());
+                    if (lrsResponse.content.statements[i].actor.account != null && lrsResponse.content.statements[i].actor.account.name.Contains("@"))
+                    {
+                        if (lrsResponse.content.statements[i].actor.account.name == nameStudent)
+                        {
+                            if (lrsResponse.content.statements[i].context.extensions.ToJSON().Contains("student"))
+                            {
+                                print("student");
+                                isStudent = true;
+                                GetStatement();
+                                return;
+                            }
+                            else
+                            {
+                                print("mentor");
+                                isStudent = false;
+                                GetStatement();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else //Get Statement fails
+        {
+            Debug.Log("Statement Failed:" + lrsResponse.errMsg);
+        }
+    }
+
+    public void GetStatement()
+    {
+        transform.localScale = defScale;
+        bool isExist = false;
+        //Build out full Statement details based on verb completed to get the user learning data
+        var query = new StatementsQuery();
+        query.verbId = new Uri("https://w3id.org/xapi/dod-isd/verbs/completed");
+        query.since = System.DateTime.Parse(dateTimeString);
+
+        lrsResponse = lrs.QueryStatements(query);
+
+        if (lrsResponse.success) //Get Statement Success
+        {
+            if (isStudent)
+            {
+                studentData(nameStudent);
+            }
+            else
+            {
+                mentorData();
+            }
+        }
+        else //Get Statement fails
+        {
+            Debug.Log("Statement Failed:" + lrsResponse.errMsg);
+        }
+    }
+
+    public void studentData(string emailStudent)
+    {
+        if (StudentMode)
+            return;
+        StudentMode = true;
+        MentorMode = false;
+        transform.localScale = defScale;
+        DataSet.Clear();
+        bool isExist = false;
+        for (int i = 0; i < lrsResponse.content.statements.Count; i++)
+        {
+            if (lrsResponse.content.statements[i] != null)
+            {
+                string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
+                string[] namequizSplit = namequiz.Split(' ');
+                for (int j = 0; j < DataSet.Count; j++)
+                {
+                    if (DataSet[j].GroupName == namequizSplit[0])
+                    {
+                        XYBarValues values = new XYBarValues();
+                        if (namequizSplit.Length > 2)
+                            values.XValue = namequizSplit[1] + " " + namequizSplit[2];
+                        else
+                            values.XValue = namequiz;
+                        values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                        DataSet[j].ListOfBars[1] = values;
+                        isExist = true;
+                        break;
+                    }
+                    else
+                        isExist = false;
+                }
+                if (!isExist)
+                {
+                    BarGraphDataSet bar = new BarGraphDataSet();
+                    XYBarValues values = new XYBarValues();
+                    bar.GroupName = namequizSplit[0];
+                    bar.ListOfBars = new List<XYBarValues>(new XYBarValues[2]);
+                    for (int k = 0; k < bar.ListOfBars.Count; k++)
+                    {
+                        if(k == 0)
+                        {
+                            bar.ListOfBars[k] = new XYBarValues();
+                            if (namequizSplit.Length > 2)
+                            {
+                                bar.ListOfBars[k].XValue = namequizSplit[1] + " " + namequizSplit[2];
+                            }
+                            else
+                                bar.ListOfBars[k].XValue = namequiz;
+                            bar.ListOfBars[k].YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                        }
+
+                        else
+                        {
+                            bar.ListOfBars[k] = new XYBarValues();
+                            if (namequizSplit.Length > 2)
+                                bar.ListOfBars[k].XValue = namequizSplit[1] + " " + namequizSplit[2];
+                            else
+                                bar.ListOfBars[k].XValue = namequiz;
+                            bar.ListOfBars[k].YValue = 0;
+                        }
+                    }
+                }
+                    
+            }
+        }
+        DataSet2 = DataSet;
+        barGraphGenerator.GeneratBarGraph(DataSet2);
+        transform.localScale = scaleSizeStudent;
+    }
+
+    public void mentorData()
+    {
+        if (MentorMode)
+            return;
+        StudentMode = false;
+        MentorMode = true;
+        transform.localScale = defScale;
+        DataSet.Clear();
+        bool isExist = false;
+        bool isExistMentor = false;
+        for (int i = 0; i < lrsResponse.content.statements.Count; i++)
+        {
+            if (lrsResponse.content.statements[i] != null)
+            {
+                string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
+
+                for (int j = 0; j < DataSet.Count; j++)
+                {
+                    if (!DataSet[j].ListOfBars.Any(f => f.XValue == namequiz))
+                    {
+                        XYBarValues values = new XYBarValues();
+                        values.XValue = namequiz;
+                        DataSet[j].ListOfBars.Add(values);
+                    }
+                    if (DataSet[j].GroupName == lrsResponse.content.statements[i].actor.account.name)
+                    {
+                        XYBarValues values = new XYBarValues();
+                        values.XValue = namequiz;
+                        values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                        int idNotFound = DataSet[j].ListOfBars.FindIndex(g => g.XValue == values.XValue);
+                        DataSet[j].ListOfBars[idNotFound] = values;
+                    }
+                }
+                if (!DataSet.Any(f => f.GroupName == lrsResponse.content.statements[i].actor.account.name))
+                {
+                    XYBarValues values = new XYBarValues();
+                    BarGraphDataSet bar = new BarGraphDataSet();
+                    bar.GroupName = lrsResponse.content.statements[i].actor.account.name;
+                    values.XValue = namequiz;
+                    values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                    bar.ListOfBars = new List<XYBarValues>();
+                    bar.ListOfBars.Add(values);
+                    DataSet.Add(bar);
+                }
+            }
+        }
+        DataSet2 = DataSet;
+        barGraphGenerator.GeneratBarGraph(DataSet2);
+        transform.localScale = scaleSizeMentor;
+    }
+
+    public void BackButton()
+    {
+        if(isStudent)
+        {
+            studentData(nameStudent);
+        }
+        else
+        {
+            mentorData();
+        }
+    }
+
+    public void BarChart()
+    {
+        barGraphGenerator.barPrefab = barChartPrefab;
+        if(MentorMode)
+        { 
+            MentorMode = false;
+            mentorData();
+        }
+        else if(StudentMode)
+        {
+            StudentMode = false;
+            studentData(nameStudent);
+        }
+    }
+
+    public void ScatterPlot()
+    {
+        barGraphGenerator.barPrefab = scatterPlotPrefab;
+        if (MentorMode)
+        {
+            MentorMode = false;
+            mentorData();
+        }
+        else if (StudentMode)
+        {
+            StudentMode = false;
+            studentData(nameStudent);
+        }
+    }
 }
