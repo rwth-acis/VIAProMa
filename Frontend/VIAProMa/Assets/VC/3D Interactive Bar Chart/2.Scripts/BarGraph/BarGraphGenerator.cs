@@ -39,12 +39,10 @@ namespace BarGraph.VittorCloud
     {
 
         public string GroupName = "groupname";
+        public string email;
         public Color barColor;
         public Material barMaterial;
         public List<XYBarValues> ListOfBars;
-
-       
-
 
     }
 
@@ -180,9 +178,12 @@ namespace BarGraph.VittorCloud
             if (dataSet == null)
             {
                 return;
-
             }
 
+            if (Graph)
+            {
+                Destroy(Graph.gameObject);
+            }
 
             ListOfDataSet = dataSet;
             xMaxSize = ListOfDataSet[0].ListOfBars.Count;
@@ -361,13 +362,13 @@ namespace BarGraph.VittorCloud
                 {
                     float yscaleFactor = (((yMaxSize - 1) * segmentSizeOnYaxis) + yStart) / (yMaxValue - yMinValue);
                     if (barColorProperty == BarColor.SolidColor)
-                        Graph.GenerateBarWithAnimTypeTwo(j, i, ListOfDataSet[i].ListOfBars[j].YValue, yscaleFactor, animationSpeed, yMinValue, xMaxSize, ListOfDataSet[i].barColor);
+                        Graph.GenerateBarWithAnimTypeTwo(j, i, ListOfDataSet[i].ListOfBars[j].YValue, yscaleFactor, animationSpeed, yMinValue, xMaxSize, ListOfDataSet[i].barColor, ListOfDataSet[i].email);
                     else if (barColorProperty == BarColor.HeightWiseGradient)
                     {
 
                         float time = (ListOfDataSet[i].ListOfBars[j].YValue - yMinValue) / (yMaxValue - yMinValue);
                         Color barcolor = HeightWiseGradient.Evaluate(time);
-                        Graph.GenerateBarWithAnimTypeTwo(j, i, ListOfDataSet[i].ListOfBars[j].YValue, yscaleFactor, animationSpeed, yMinValue, xMaxSize, barcolor);
+                        Graph.GenerateBarWithAnimTypeTwo(j, i, ListOfDataSet[i].ListOfBars[j].YValue, yscaleFactor, animationSpeed, yMinValue, xMaxSize, barcolor, ListOfDataSet[i].email);
                     }
 
 
@@ -459,7 +460,7 @@ namespace BarGraph.VittorCloud
 
                 float yscaleFactor = (yMaxSize * segmentSizeOnYaxis) / (yMaxValue - yMinValue);
                 if (barColorProperty == BarColor.SolidColor)
-                    Graph.GenerateBarWithAnimTypeTwo(lastIndex, i, ListOfDataSet[i].ListOfBars[lastIndex].YValue, yscaleFactor, animationSpeed, yMinValue, xMaxSize, ListOfDataSet[i].barColor);
+                    Graph.GenerateBarWithAnimTypeTwo(lastIndex, i, ListOfDataSet[i].ListOfBars[lastIndex].YValue, yscaleFactor, animationSpeed, yMinValue, xMaxSize, ListOfDataSet[i].barColor, ListOfDataSet[i].email);
                 else
                     Graph.GenerateBarWithAnimTypeTwo(lastIndex, i, ListOfDataSet[i].ListOfBars[lastIndex].YValue, yscaleFactor, animationSpeed, yMinValue, xMaxSize, ListOfDataSet[i].barMaterial);
 

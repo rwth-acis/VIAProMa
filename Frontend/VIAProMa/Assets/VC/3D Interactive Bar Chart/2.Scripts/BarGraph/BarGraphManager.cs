@@ -153,13 +153,13 @@ namespace BarGraph.VittorCloud
         #endregion
 
         #region AnimationTypeTwo
-        public void GenerateBarWithAnimTypeTwo(int xIndex, int zIndex, float yValue, float scaleFactor, float animSpeed, int ymin, int xMax, Color barColor)
+        public void GenerateBarWithAnimTypeTwo(int xIndex, int zIndex, float yValue, float scaleFactor, float animSpeed, int ymin, int xMax, Color barColor, string email)
         {
             if (barRef == null)
                 return;
-
-
+            
             GameObject bar = GameObject.Instantiate(barRef, transform.position, transform.rotation);
+            bar.GetComponent<BarProperty>().accountEmail = email;
             bar.transform.parent = ListOfGroups[zIndex].transform;
             //Vector3 pos = new Vector3(ListOfXPoint[xIndex].transform.position.x, 0, ListOfZPoints[zIndex].transform.position.z);
             // Debug.Log("Yes I am calling -----");

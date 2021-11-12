@@ -22,7 +22,8 @@ public class listData
 public class StatementManager : MonoBehaviour
 {
     public static StatementManager instance;
-    public List<listData> listDatas = new List<listData>();
+    public List<listData> listData = new List<listData>();
+    public List<float> score = new List<float>();
     public bool isStudent;
     bool StudentMode;
     bool MentorMode;
@@ -60,7 +61,7 @@ public class StatementManager : MonoBehaviour
 
         barGraphGenerator = GetComponent<BarGraphGenerator>();
         GetStatement();
-
+        
         print(barGraphGenerator);
 
         // if the DataSet2 list is empty then return
@@ -159,8 +160,8 @@ public class StatementManager : MonoBehaviour
     {
         if (StudentMode)
             return;
-        StudentMode = true;
         MentorMode = false;
+        StudentMode = true;
         transform.localScale = defScale;
         DataSet.Clear();
         bool isExist = false;
@@ -168,57 +169,63 @@ public class StatementManager : MonoBehaviour
         {
             if (lrsResponse.content.statements[i] != null)
             {
-                string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
-                string[] namequizSplit = namequiz.Split(' ');
-                for (int j = 0; j < DataSet.Count; j++)
+                if (lrsResponse.content.statements[i].actor.account != null)
                 {
-                    if (DataSet[j].GroupName == namequizSplit[0])
+                    if (lrsResponse.content.statements[i].actor.account.name == emailStudent)
                     {
-                        XYBarValues values = new XYBarValues();
-                        if (namequizSplit.Length > 2)
-                            values.XValue = namequizSplit[1] + " " + namequizSplit[2];
-                        else
-                            values.XValue = namequiz;
-                        values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
-                        DataSet[j].ListOfBars[1] = values;
-                        isExist = true;
-                        break;
-                    }
-                    else
-                        isExist = false;
-                }
-                if (!isExist)
-                {
-                    BarGraphDataSet bar = new BarGraphDataSet();
-                    XYBarValues values = new XYBarValues();
-                    bar.GroupName = namequizSplit[0];
-                    bar.ListOfBars = new List<XYBarValues>(new XYBarValues[2]);
-                    for (int k = 0; k < bar.ListOfBars.Count; k++)
-                    {
-                        if(k == 0)
+                        string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
+                        string[] namequizsplit = namequiz.Split(' ');
+                        for (int j = 0; j < DataSet.Count; j++)
                         {
-                            bar.ListOfBars[k] = new XYBarValues();
-                            if (namequizSplit.Length > 2)
+                            if (DataSet[j].GroupName == namequizsplit[0])
                             {
-                                bar.ListOfBars[k].XValue = namequizSplit[1] + " " + namequizSplit[2];
+                                
+                                XYBarValues values = new XYBarValues();
+                                if (namequizsplit.Length > 2)
+                                    values.XValue = namequizsplit[1] + " " + namequizsplit[2];
+                                else
+                                    values.XValue = namequiz;
+                                values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                                DataSet[j].ListOfBars[1] = values;
+                                isExist = true;
+                                break;
                             }
                             else
-                                bar.ListOfBars[k].XValue = namequiz;
-                            bar.ListOfBars[k].YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                                isExist = false;
                         }
-
-                        else
+                        if (!isExist)
                         {
-                            bar.ListOfBars[k] = new XYBarValues();
-                            if (namequizSplit.Length > 2)
-                                bar.ListOfBars[k].XValue = namequizSplit[1] + " " + namequizSplit[2];
-                            else
-                                bar.ListOfBars[k].XValue = namequiz;
-                            bar.ListOfBars[k].YValue = 0;
+                            BarGraphDataSet bar = new BarGraphDataSet();
+                            XYBarValues values = new XYBarValues();
+                            bar.GroupName = namequizsplit[0];
+                            bar.ListOfBars = new List<XYBarValues>(new XYBarValues[2]);
+                            for (int k = 0; k < bar.ListOfBars.Count; k++)
+                            {
+                                if (k == 0)
+                                {
+                                    bar.ListOfBars[k] = new XYBarValues();
+                                    if (namequizsplit.Length > 2)
+                                    {
+                                        bar.ListOfBars[k].XValue = namequizsplit[1] + " " + namequizsplit[2];
+                                    }
+                                    else
+                                        bar.ListOfBars[k].XValue = namequiz;
+                                    bar.ListOfBars[k].YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                                }
+                                else
+                                {
+                                    bar.ListOfBars[k] = new XYBarValues();
+                                    if (namequizsplit.Length > 2)
+                                        bar.ListOfBars[k].XValue = namequizsplit[1] + " " + namequizsplit[2];
+                                    else
+                                        bar.ListOfBars[k].XValue = namequiz;
+                                    bar.ListOfBars[k].YValue = 0;
+                                }
+                            }
+                            DataSet.Add(bar);
                         }
                     }
                 }
-                    
             }
         }
         DataSet2 = DataSet;
@@ -240,35 +247,40 @@ public class StatementManager : MonoBehaviour
         {
             if (lrsResponse.content.statements[i] != null)
             {
-                string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
 
-                for (int j = 0; j < DataSet.Count; j++)
+                if (lrsResponse.content.statements[i].actor.account != null)
                 {
-                    if (!DataSet[j].ListOfBars.Any(f => f.XValue == namequiz))
+                    string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
+
+                    for (int j = 0; j < DataSet.Count; j++)
                     {
-                        XYBarValues values = new XYBarValues();
-                        values.XValue = namequiz;
-                        DataSet[j].ListOfBars.Add(values);
+                        if (!DataSet[j].ListOfBars.Any(f => f.XValue == namequiz))
+                        {
+                            XYBarValues values = new XYBarValues();
+                            values.XValue = namequiz;
+                            DataSet[j].ListOfBars.Add(values);
+                        }
+                        if (DataSet[j].email == lrsResponse.content.statements[i].actor.account.name)
+                        {
+                            XYBarValues values = new XYBarValues();
+                            values.XValue = namequiz;
+                            values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                            int idNotFound = DataSet[j].ListOfBars.FindIndex(g => g.XValue == values.XValue);
+                            DataSet[j].ListOfBars[idNotFound] = values;
+                        }
                     }
-                    if (DataSet[j].GroupName == lrsResponse.content.statements[i].actor.account.name)
+                    if (!DataSet.Any(f => f.email == lrsResponse.content.statements[i].actor.account.name))
                     {
                         XYBarValues values = new XYBarValues();
+                        BarGraphDataSet bar = new BarGraphDataSet();
+                        bar.GroupName = lrsResponse.content.statements[i].actor.name;
+                        bar.email = lrsResponse.content.statements[i].actor.account.name;
                         values.XValue = namequiz;
                         values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
-                        int idNotFound = DataSet[j].ListOfBars.FindIndex(g => g.XValue == values.XValue);
-                        DataSet[j].ListOfBars[idNotFound] = values;
+                        bar.ListOfBars = new List<XYBarValues>();
+                        bar.ListOfBars.Add(values);
+                        DataSet.Add(bar);
                     }
-                }
-                if (!DataSet.Any(f => f.GroupName == lrsResponse.content.statements[i].actor.account.name))
-                {
-                    XYBarValues values = new XYBarValues();
-                    BarGraphDataSet bar = new BarGraphDataSet();
-                    bar.GroupName = lrsResponse.content.statements[i].actor.account.name;
-                    values.XValue = namequiz;
-                    values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
-                    bar.ListOfBars = new List<XYBarValues>();
-                    bar.ListOfBars.Add(values);
-                    DataSet.Add(bar);
                 }
             }
         }
