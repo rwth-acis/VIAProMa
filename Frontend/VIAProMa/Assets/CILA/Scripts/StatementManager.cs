@@ -55,7 +55,6 @@ public class StatementManager : MonoBehaviour
     private void OnEnable()
     {
         nameStudent = WindowManagerCILA.Instance.LoginMenu.cachedUserInfo.Email;
-
         lrs = new RemoteLRS(
            "https://lrs.tech4comp.dbis.rwth-aachen.de/data/xAPI",
         "79c09762728c78bab3309dd56899e0a5d67a4f76",
@@ -129,10 +128,8 @@ public class StatementManager : MonoBehaviour
                 {
                     if (lrsResponse.content.statements[i].actor.account != null && lrsResponse.content.statements[i].actor.account.name.Contains("@"))
                     {
-                        print(lrsResponse.content.statements[i].actor.account.name + " " + nameStudent);
                         if (lrsResponse.content.statements[i].actor.account.name.ToLower().Contains(nameStudent.ToLower()))
                         {
-                            print(nameStudent == "uchey.mioneshy+cila01@gmail.com");
                             if (lrsResponse.content.statements[i].context.extensions.ToJSON().Contains("student"))
                             {
                                 return "student";
@@ -161,12 +158,12 @@ public class StatementManager : MonoBehaviour
         var query = new StatementsQuery();
         query.verbId = new Uri("https://w3id.org/xapi/dod-isd/verbs/completed");
         query.since = System.DateTime.Parse(dateTimeString);
-        query.limit = 500;
+        query.limit = 5000;
         lrsResponse = lrs.QueryStatements(query);
 
         if (lrsResponse.success) //Get Statement Success
         {
-            if (isStudent)
+                if (isStudent)
             {
                 studentData(nameStudent);
             }
@@ -195,38 +192,23 @@ public class StatementManager : MonoBehaviour
         {
             if (lrsResponse.content.statements[i] != null && lrsResponse.content.statements[i].actor.account != null)
             {
-                string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
-                string[] namequizSplit = namequiz.Split(' ');
-                string n;
-
-                if (namequizSplit.Length > 2)
-                    n = namequizSplit[1] + " " + namequizSplit[2];
-                else
-                    n = namequiz;
-                if (!quizList.Contains(n))
+                if (lrsResponse.content.statements[i].actor.account.name.ToLower().Contains(nameStudent.ToLower()))
                 {
-                    quizList.Add(n);
-                }
-                for (int j = 0; j < DataSet.Count; j++)
-                {
-                    if (!DataSet[j].ListOfBars.Any(f => f.XValue == n))
-                    {
-                        XYBarValues values = new XYBarValues();
-                        values.XValue = n;
-                        DataSet[j].ListOfBars.Add(values);
-                    }
-                    if (DataSet[j].email == lrsResponse.content.statements[i].actor.account.name)
-                    {
+                    string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
+                    string[] namequizSplit = namequiz.Split(' ');
+                    string n;
 
-                        XYBarValues values = new XYBarValues();
-                        values.XValue = n;
-                        values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
-                        int idxfound = DataSet[j].ListOfBars.FindIndex(g => g.XValue == values.XValue);
-                        DataSet[j].ListOfBars[idxfound] = values;
-                    }
-                }
-                if (!DataSet.Any(f => f.GroupName == namequizSplit[0]))
+                    if (namequizSplit.Length > 2)
+                        n = namequizSplit[1] + " " + namequizSplit[2];
+                    else
+                        n = namequiz;
+                    if (!quizList.Contains(n))
                     {
+                        quizList.Add(n);
+                    }
+                    if (!DataSet.Any(f => f.GroupName == namequizSplit[0]))
+                    {
+                        print("bawah"+" "+ namequiz + lrsResponse.content.statements[i].result.score.raw);
                         XYBarValues values = new XYBarValues();
                         BarGraphDataSet bar = new BarGraphDataSet();
                         bar.GroupName = namequizSplit[0];
@@ -235,17 +217,54 @@ public class StatementManager : MonoBehaviour
                         bar.ListOfBars = new List<XYBarValues>();
                         bar.ListOfBars.Add(values);
                         DataSet.Add(bar);
-                }
-                for (int j = 0; j < DataSet.Count; j++)
-                {
-                    for (int k = 0; k < quizList.Count; k++)
-                    {
-                        if (!DataSet[j].ListOfBars.Any(f => f.XValue == quizList[k]))
+                    }
+                    else {
+                        for (int j = 0; j < DataSet.Count; j++)
                         {
-                            XYBarValues values = new XYBarValues();
-                            values.XValue = quizList[k];
-                            DataSet[j].ListOfBars.Add(values);
+                            if (DataSet[j].GroupName == namequizSplit[0])
+                            {
+                                print("atas1" + " " + namequiz + lrsResponse.content.statements[i].result.score.raw);
+                                if (!DataSet[j].ListOfBars.Any(f => f.XValue == n))
+                                {
+                                    print("atas2" + " " + namequiz + lrsResponse.content.statements[i].result.score.raw);
+                                    XYBarValues values = new XYBarValues();
+                                    values.XValue = n;
+                                    values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                                    DataSet[j].ListOfBars.Add(values);
+                                }
+                                else
+                                {
+                                    print("tengah1" + " " + namequiz + lrsResponse.content.statements[i].result.score.raw);
+                                    if ((float)lrsResponse.content.statements[i].result.score.raw > DataSet[j].ListOfBars.Find(f => f.XValue == n).YValue)
+                                    {
+                                        print("tengah" + " " + namequiz + lrsResponse.content.statements[i].result.score.raw);
+                                        DataSet[j].ListOfBars.Find(f => f.XValue == n).YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                                    }
+                                }
+                            }
                         }
+                        for (int j = 0; j < DataSet.Count; j++)
+                        {
+                            for (int k = 0; k < quizList.Count; k++)
+                            {
+                                if (!DataSet[j].ListOfBars.Any(f => f.XValue == quizList[k]))
+                                {
+                                    XYBarValues values = new XYBarValues();
+                                    values.XValue = quizList[k];
+                                    DataSet[j].ListOfBars.Add(values);
+                                }
+                            }
+                        }
+                        //if (DataSet[j].GroupName == lrsResponse.content.statements[i].actor.account.name)
+                        //{
+                        //    print(lrsResponse.content.statements[i].ToJSON());
+
+                        //    XYBarValues values = new XYBarValues();
+                        //    values.XValue = n;
+                        //    values.YValue = (float)lrsResponse.content.statements[i].result.score.raw;
+                        //    int idxfound = DataSet[j].ListOfBars.FindIndex(g => g.XValue == values.XValue);
+                        //    DataSet[j].ListOfBars[idxfound] = values;
+                        //}
                     }
                 }
             }
