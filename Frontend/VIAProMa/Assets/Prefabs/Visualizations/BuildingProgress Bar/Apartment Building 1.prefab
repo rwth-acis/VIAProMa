@@ -289,12 +289,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c1442de97efb9499aca72129dc2225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingHeight: 0.9
+  buildingHeight: 1
   heightSizes:
   - {x: 0.5, y: 0, z: 0.5}
   - {x: 0.5, y: 0.09, z: 0.5}
   - {x: 0.4, y: 0.1, z: 0.4}
   - {x: 0.4, y: 0.9, z: 0.3}
+  heightSizesAndOffsets:
+  - height: 0
+    heightSize: {x: 0.5, y: 0.43}
+    offset: {x: 0, y: -0.032}
+  - height: 0.1
+    heightSize: {x: 0.5, y: 0.42}
+    offset: {x: 0, y: -0.03}
+  - height: 0.11
+    heightSize: {x: 0.38, y: 0.28}
+    offset: {x: 0.01, y: -0.01}
+  - height: 0.91
+    heightSize: {x: 0.38, y: 0.28}
+    offset: {x: 0.01, y: -0.01}
+  - height: 0.92
+    heightSize: {x: 0.38, y: 0.19}
+    offset: {x: 0.01, y: -0.06}
+  - height: 1
+    heightSize: {x: 0.38, y: 0.19}
+    offset: {x: 0.01, y: -0.06}
 --- !u!1 &3612767473157713019
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,7 +1560,7 @@ Transform:
   m_GameObject: {fileID: 8388901200663985023}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: -0.034}
-  m_LocalScale: {x: 0.0004, y: 0.0007, z: 0.0004}
+  m_LocalScale: {x: 0.0004, y: 0.00079, z: 0.0004}
   m_Children:
   - {fileID: 8371167600926679610}
   - {fileID: 4160852009264660307}
