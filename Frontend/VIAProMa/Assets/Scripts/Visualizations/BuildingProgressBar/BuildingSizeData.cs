@@ -8,7 +8,8 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
     [Serializable]
     public class SizeAndOffset
     {
-        public Vector3 heightSize;
+        public float height;
+        public Vector2 heightSize;
         public Vector2 offset;
     }
 
@@ -21,7 +22,6 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         [SerializeField] private float buildingHeight = 1f;
 
         [Tooltip("The array of height sizes and offsets")]
-        [SerializeField] private List<Vector3> heightSizes;
         [SerializeField] private List<SizeAndOffset> heightSizesAndOffsets;
 
         /// <summary>
@@ -38,19 +38,19 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
             {
                 // Draw a semitransparent blue cube at the transforms position
                 Gizmos.color = new Color(1, 0, 0, 0.5f);
-                Gizmos.DrawCube(transform.position + new Vector3(0, transform.lossyScale.y * heightSizeAndOffset.heightSize.y, 0) //Places the cube at the center of the building and on the right height
+                Gizmos.DrawCube(transform.position + new Vector3(0, transform.lossyScale.y * heightSizeAndOffset.height, 0) //Places the cube at the center of the building and on the right height
                     + new Vector3(transform.lossyScale.x*heightSizeAndOffset.offset.x, 0, transform.lossyScale.z * heightSizeAndOffset.offset.y) //Add the offset
-                    , Vector3.Scale(transform.lossyScale, new Vector3(heightSizeAndOffset.heightSize.x, 0.001f, heightSizeAndOffset.heightSize.z)));
+                    , Vector3.Scale(transform.lossyScale, new Vector3(heightSizeAndOffset.heightSize.x, 0.001f, heightSizeAndOffset.heightSize.y)));
             }
         }
 
         //Calculates the smallest index which height is bigger than the given height
         private int getSizeAndOffsetIndex(float height)
         {
-            heightSizesAndOffsets = heightSizesAndOffsets.OrderBy(o => o.heightSize.y).ToList();
+            heightSizesAndOffsets = heightSizesAndOffsets.OrderBy(o => o.height).ToList();
             for (int i = 0; i < heightSizesAndOffsets.Count; i++)
             {
-                if (height <= heightSizesAndOffsets[i].heightSize.y)
+                if (height <= heightSizesAndOffsets[i].height)
                 {
                     return i;
                 }
@@ -74,18 +74,20 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         public Vector2 GetBuildingSize(float height)
         {
             int i = getSizeAndOffsetIndex(height);
-            Vector3 heightSize = heightSizesAndOffsets[i].heightSize;
+            Vector2 heightSize = heightSizesAndOffsets[i].heightSize;
             
 
             if (i == 0)
             {
-                return new Vector2(heightSize.x, heightSize.z);
+                return heightSize;
             }
             else
             {
-                Vector3 previousHeightSize = heightSizesAndOffsets[i - 1].heightSize;
-                return interpolateBetweenHeightSizes(new Vector2(previousHeightSize.x,previousHeightSize.z),previousHeightSize.y,
-                                                     new Vector2(heightSize.x,heightSize.z),heightSize.y,height);
+                Vector2 previousHeightSize = heightSizesAndOffsets[i - 1].heightSize;
+                float previousHeight = heightSizesAndOffsets[i - 1].height;
+                float nextHeight = heightSizesAndOffsets[i].height;
+                return interpolateBetweenHeightSizes(previousHeightSize, previousHeight,
+                                                     heightSize, nextHeight, height);
             }
         }
 
@@ -99,7 +101,7 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         {
             int i = getSizeAndOffsetIndex(height);
             Vector2 offset = heightSizesAndOffsets[i].offset;
-            Vector3 heightSize = heightSizesAndOffsets[i].heightSize;
+           
 
             if (i == 0)
             {
@@ -108,9 +110,10 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
             else
             {
                 Vector3 previousOffset = heightSizesAndOffsets[i-1].offset;
-                Vector3 previousHeightSize = heightSizesAndOffsets[i - 1].heightSize;
-                return interpolateBetweenHeightSizes(previousOffset, previousHeightSize.y,
-                                                     offset, heightSize.y, height);
+                float previousHeight = heightSizesAndOffsets[i - 1].height;
+                float nextHeight = heightSizesAndOffsets[i].height;
+                return interpolateBetweenHeightSizes(previousOffset, previousHeight,
+                                                     offset, nextHeight, height);
             }
         }
 
@@ -120,14 +123,14 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         /// <returns>The bounds of the size planes</returns>
         public Bounds GetBounds()
         {
-            if (heightSizes.Count == 0)
+            if (heightSizesAndOffsets.Count == 0)
             {
                 return new Bounds();
             }
-            Bounds bounds = new Bounds(new Vector3(0, heightSizes[0].y, 0), new Vector3(heightSizes[0].x, 0.001f, heightSizes[0].z));
-            for (int i = 1; i < heightSizes.Count; i++)
+            Bounds bounds = new Bounds(new Vector3(heightSizesAndOffsets[0].offset.x, heightSizesAndOffsets[0].height, heightSizesAndOffsets[0].offset.y), new Vector3(heightSizesAndOffsets[0].heightSize.x, 0.001f, heightSizesAndOffsets[0].heightSize.y));
+            for (int i = 1; i < heightSizesAndOffsets.Count; i++)
             {
-                Bounds cubeBounds = new Bounds(new Vector3(0, heightSizes[i].y, 0), new Vector3(heightSizes[i].x, 0.001f, heightSizes[i].z));
+                Bounds cubeBounds = new Bounds(new Vector3(heightSizesAndOffsets[0].offset.x, heightSizesAndOffsets[i].height, heightSizesAndOffsets[0].offset.y), new Vector3(heightSizesAndOffsets[i].heightSize.x, 0.001f, heightSizesAndOffsets[i].heightSize.y));
                 bounds.Encapsulate(cubeBounds);
             }
             return bounds;
