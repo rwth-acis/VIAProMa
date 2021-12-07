@@ -173,12 +173,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 StopCoroutine(menuCloseCoroutine);
             }
-            menuCloseCoroutine = foldMenuAfterWaitTime();
+            menuCloseCoroutine = FoldMenuAfterWaitTime();
             StartCoroutine(menuCloseCoroutine);
         }
 
         //Folds the menu cube after timeMenuStaysOpen seconds
-        private IEnumerator foldMenuAfterWaitTime()
+        private IEnumerator FoldMenuAfterWaitTime()
         {
             yield return new WaitForSeconds(timeMenuStaysOpen);
             if (closeMenuWhenNotUsed)
