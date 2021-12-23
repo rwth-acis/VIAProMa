@@ -31,7 +31,7 @@ public class StatementManager : MonoBehaviour
 
     private RemoteLRS lrs;
     StatementsResultLRSResponse lrsResponse;
-    public string dateTimeString = "2021-01-01";
+    public string dateTimeString = "2021-11-01";
 
     public List<BarGraphDataSet> DataSet;
     public List<BarGraphDataSet> DataSet2;
@@ -158,12 +158,13 @@ public class StatementManager : MonoBehaviour
         var query = new StatementsQuery();
         query.verbId = new Uri("https://w3id.org/xapi/dod-isd/verbs/completed");
         query.since = System.DateTime.Parse(dateTimeString);
-        query.limit = 5000;
+        query.limit = 50000;
         lrsResponse = lrs.QueryStatements(query);
 
         if (lrsResponse.success) //Get Statement Success
         {
-                if (isStudent)
+            print(lrsResponse.content.statements[1].ToJSON());
+            if (isStudent)
             {
                 studentData(nameStudent);
             }
@@ -192,8 +193,12 @@ public class StatementManager : MonoBehaviour
         {
             if (lrsResponse.content.statements[i] != null && lrsResponse.content.statements[i].actor.account != null)
             {
-                if (lrsResponse.content.statements[i].actor.account.name.ToLower().Contains(nameStudent.ToLower()))
+                print(lrsResponse.content.statements[i].actor.account.name);
+                print(emailStudent);
+                print(lrsResponse.content.statements[i].actor.account.name.ToLower().Contains(nameStudent.ToLower()));
+                if (lrsResponse.content.statements[i].actor.account.name.ToLower().Contains(emailStudent.ToLower()))
                 {
+                    print(lrsResponse.content.statements[i].actor.account.name);
                     string namequiz = lrsResponse.content.statements[i].ToJObject()["object"]["definition"]["name"]["en-US"].ToObject<string>();
                     string[] namequizSplit = namequiz.Split(' ');
                     string n;

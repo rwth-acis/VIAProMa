@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -172,6 +173,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -196,13 +198,12 @@ MonoBehaviour:
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_outlineColor:
-    serializedVersion: 2
-    rgba: 4278190080
   m_fontSize: 25
   m_fontSizeBase: 25
   m_fontWeight: 400
@@ -210,7 +211,9 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 1025
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 1024
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -220,10 +223,8 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
-  m_isLinkedTextComponent: 0
-  m_isTextTruncated: 0
+  parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
@@ -231,40 +232,18 @@ MonoBehaviour:
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
-  m_ignoreRectMaskCulling: 0
-  m_ignoreCulling: 1
   m_horizontalMapping: 0
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
   m_VertexBufferAutoSizeReduction: 1
-  m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
   m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_textInfo:
-    textComponent: {fileID: 210525818}
-    characterCount: 9
-    spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
-    linkCount: 0
-    lineCount: 1
-    pageCount: 1
-    materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_spriteAnimator: {fileID: 0}
   m_hasFontAssetChanged: 0
-  m_subTextObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &210525819
@@ -410,6 +389,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.5529412, b: 0.7058824, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -483,6 +463,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -507,13 +488,12 @@ MonoBehaviour:
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_outlineColor:
-    serializedVersion: 2
-    rgba: 4278190080
   m_fontSize: 25
   m_fontSizeBase: 25
   m_fontWeight: 400
@@ -521,7 +501,9 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 1025
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 1024
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -531,10 +513,8 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
-  m_isLinkedTextComponent: 0
-  m_isTextTruncated: 0
+  parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
@@ -542,40 +522,18 @@ MonoBehaviour:
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
-  m_ignoreRectMaskCulling: 0
-  m_ignoreCulling: 1
   m_horizontalMapping: 0
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
   m_VertexBufferAutoSizeReduction: 1
-  m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
   m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_textInfo:
-    textComponent: {fileID: 891556462}
-    characterCount: 9
-    spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
-    linkCount: 0
-    lineCount: 1
-    pageCount: 1
-    materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_spriteAnimator: {fileID: 0}
   m_hasFontAssetChanged: 0
-  m_subTextObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &891556463
@@ -638,6 +596,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -662,13 +621,12 @@ MonoBehaviour:
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_outlineColor:
-    serializedVersion: 2
-    rgba: 4278190080
   m_fontSize: 25
   m_fontSizeBase: 25
   m_fontWeight: 400
@@ -676,7 +634,9 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 1025
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 1024
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -686,10 +646,8 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
-  m_isLinkedTextComponent: 0
-  m_isTextTruncated: 0
+  parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
@@ -697,40 +655,18 @@ MonoBehaviour:
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
-  m_ignoreRectMaskCulling: 0
-  m_ignoreCulling: 1
   m_horizontalMapping: 0
   m_verticalMapping: 0
   m_uvLineOffset: 0
   m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
   m_VertexBufferAutoSizeReduction: 1
-  m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
   m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_textInfo:
-    textComponent: {fileID: 908794714}
-    characterCount: 9
-    spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
-    linkCount: 0
-    lineCount: 1
-    pageCount: 1
-    materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_spriteAnimator: {fileID: 0}
   m_hasFontAssetChanged: 0
-  m_subTextObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &908794715
@@ -741,6 +677,197 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 908794712}
   m_CullTransparentMesh: 0
+--- !u!1 &932903450
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 932903453}
+  - component: {fileID: 932903452}
+  - component: {fileID: 932903451}
+  m_Layer: 0
+  m_Name: BarGraph (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &932903451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932903450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02117b31f7b8d24ead3290f68e98a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exampleDataSet:
+  - GroupName: Other
+    email: 
+    barColor: {r: 0.10994768, g: 0, b: 1, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 10
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 5
+    - XValue: April
+      YValue: 4
+    - XValue: May
+      YValue: 3
+  - GroupName: Taxes
+    email: 
+    barColor: {r: 0, g: 0.47474718, b: 1, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 15
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 2
+    - XValue: April
+      YValue: 1
+    - XValue: May
+      YValue: 9
+  - GroupName: Maintenance
+    email: 
+    barColor: {r: 0, g: 1, b: 0.81818175, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 18
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 5
+    - XValue: April
+      YValue: 4
+    - XValue: May
+      YValue: 3
+  - GroupName: Fuel
+    email: 
+    barColor: {r: 0.9811321, g: 0.5606469, b: 0, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 10
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 5
+    - XValue: April
+      YValue: 4
+    - XValue: May
+      YValue: 3
+--- !u!114 &932903452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932903450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ddead78b26f39d4a8126f3099e140c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHeight: 10
+  xStart: 1
+  yStart: 1
+  zStart: 1
+  segmentSizeOnXaxis: 1
+  segmentSizeOnYaxis: 1
+  segmentSizeOnZaxis: 1
+  offsetBetweenXRow: 0
+  offsetBetweenZRow: 0
+  animationSpeed: 10
+  graphAnimation: 2
+  barPrefab: {fileID: 3270554237759918115, guid: 6e321fc2afeafcb48935a819cfa7d769,
+    type: 3}
+  barColorProperty: 1
+  barScaleFactor: 1
+  GraphRef: {fileID: 7617952447880570657, guid: 8cfb9fb4bf046474399ed32661948261,
+    type: 3}
+  yMaxValue: 0
+  yMinValue: 0
+  HeightWiseGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  OnBarPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBarPointerUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBarHoverEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBarHoverExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInitialGraphCompleted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 932903451}
+        m_MethodName: StartUpdatingGraph
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!4 &932903453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 932903450}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 45, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1057934418
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,8 +893,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1057934418}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -901,6 +1029,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.94509804, g: 0.972549, b: 0.34509805, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1092,6 +1221,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.23921569, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1234,6 +1364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exampleDataSet:
   - GroupName: Oil
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1258,6 +1389,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 200
   - GroupName: Gas
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1282,6 +1414,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 150
   - GroupName: Naphthas
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1306,6 +1439,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 100
   - GroupName: LPG
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1330,6 +1464,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 50
   - GroupName: Kerosenenes
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1354,6 +1489,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 25
   - GroupName: Jet Fuel
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1378,6 +1514,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 25
   - GroupName: Diesel Fule
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1402,6 +1539,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 25
   - GroupName: Lubricants
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1426,6 +1564,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 25
   - GroupName: Motor Oil
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1450,6 +1589,7 @@ MonoBehaviour:
     - XValue: 2019
       YValue: 25
   - GroupName: Fuel Oil
+    email: 
     barColor: {r: 0, g: 0, b: 0, a: 0}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1491,7 +1631,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1690167731
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1502,9 +1642,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1690167732
 MeshRenderer:
@@ -1520,6 +1660,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1598,6 +1739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exampleDataSet:
   - GroupName: Other
+    email: 
     barColor: {r: 0.10994768, g: 0, b: 1, a: 1}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1612,6 +1754,7 @@ MonoBehaviour:
     - XValue: May
       YValue: 3
   - GroupName: Taxes
+    email: 
     barColor: {r: 0, g: 0.47474718, b: 1, a: 1}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1626,6 +1769,7 @@ MonoBehaviour:
     - XValue: May
       YValue: 9
   - GroupName: Maintenance
+    email: 
     barColor: {r: 0, g: 1, b: 0.81818175, a: 1}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1640,6 +1784,7 @@ MonoBehaviour:
     - XValue: May
       YValue: 3
   - GroupName: Fuel
+    email: 
     barColor: {r: 0.9811321, g: 0.5606469, b: 0, a: 1}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1674,9 +1819,9 @@ MonoBehaviour:
   segmentSizeOnZaxis: 1
   offsetBetweenXRow: 0
   offsetBetweenZRow: 0
-  animationSpeed: 1
+  animationSpeed: 10
   graphAnimation: 2
-  barPrefab: {fileID: 3270554237759918115, guid: d4e25c0df375df54db467e5d137fcdb9,
+  barPrefab: {fileID: 207340582147485332, guid: a2d79281a30c69045b29f493fe32e119,
     type: 3}
   barColorProperty: 1
   barScaleFactor: 1
@@ -1849,6 +1994,197 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e06297e6e198f454ab1f0420e46b861d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1830890475
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1830890478}
+  - component: {fileID: 1830890477}
+  - component: {fileID: 1830890476}
+  m_Layer: 0
+  m_Name: BarGraph (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1830890476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830890475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d02117b31f7b8d24ead3290f68e98a10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exampleDataSet:
+  - GroupName: Other
+    email: 
+    barColor: {r: 0.10994768, g: 0, b: 1, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 10
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 5
+    - XValue: April
+      YValue: 4
+    - XValue: May
+      YValue: 3
+  - GroupName: Taxes
+    email: 
+    barColor: {r: 0, g: 0.47474718, b: 1, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 15
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 2
+    - XValue: April
+      YValue: 1
+    - XValue: May
+      YValue: 9
+  - GroupName: Maintenance
+    email: 
+    barColor: {r: 0, g: 1, b: 0.81818175, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 18
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 5
+    - XValue: April
+      YValue: 4
+    - XValue: May
+      YValue: 3
+  - GroupName: Fuel
+    email: 
+    barColor: {r: 0.9811321, g: 0.5606469, b: 0, a: 1}
+    barMaterial: {fileID: 0}
+    ListOfBars:
+    - XValue: Jan
+      YValue: 10
+    - XValue: Feb
+      YValue: 8
+    - XValue: March
+      YValue: 5
+    - XValue: April
+      YValue: 4
+    - XValue: May
+      YValue: 3
+--- !u!114 &1830890477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830890475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ddead78b26f39d4a8126f3099e140c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHeight: 10
+  xStart: 1
+  yStart: 1
+  zStart: 1
+  segmentSizeOnXaxis: 1
+  segmentSizeOnYaxis: 1
+  segmentSizeOnZaxis: 1
+  offsetBetweenXRow: 0
+  offsetBetweenZRow: 0
+  animationSpeed: 10
+  graphAnimation: 2
+  barPrefab: {fileID: 3270554237759918115, guid: d4e25c0df375df54db467e5d137fcdb9,
+    type: 3}
+  barColorProperty: 1
+  barScaleFactor: 1
+  GraphRef: {fileID: 7617952447880570657, guid: 8cfb9fb4bf046474399ed32661948261,
+    type: 3}
+  yMaxValue: 0
+  yMinValue: 0
+  HeightWiseGradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  OnBarPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBarPointerUp:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBarHoverEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBarHoverExit:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInitialGraphCompleted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1830890476}
+        m_MethodName: StartUpdatingGraph
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!4 &1830890478
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830890475}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 38.01, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1869558395
 GameObject:
   m_ObjectHideFlags: 0
@@ -1881,6 +2217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   exampleDataSet:
   - GroupName: 
+    email: 
     barColor: {r: 0.24022818, g: 1, b: 0, a: 1}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1895,6 +2232,7 @@ MonoBehaviour:
     - XValue: Austin
       YValue: 15
   - GroupName: 
+    email: 
     barColor: {r: 0.94619936, g: 0.9716981, b: 0.34376112, a: 1}
     barMaterial: {fileID: 0}
     ListOfBars:
@@ -1909,6 +2247,7 @@ MonoBehaviour:
     - XValue: Austin
       YValue: 56
   - GroupName: 
+    email: 
     barColor: {r: 1, g: 0.5518868, b: 0.70709175, a: 1}
     barMaterial: {fileID: 0}
     ListOfBars:
