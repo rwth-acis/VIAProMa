@@ -13,6 +13,7 @@ namespace GuidedTour
     public class GuidedTourManager : MonoBehaviour
     {
         public List<TourSection> Sections { get; private set; }
+        private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
 
         void Start()
         {

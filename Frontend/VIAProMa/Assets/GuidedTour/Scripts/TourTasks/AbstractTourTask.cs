@@ -16,7 +16,7 @@ namespace GuidedTour
     {
         [SerializeField] public string Name { get; internal set; }
         [SerializeField] public string Description { get; internal set; }
-        [SerializeField] public string Active { get; internal set; }
+        [SerializeField] public bool Active { get; internal set; }
 
         internal AbstractTourTask(string name, string description)
         {
