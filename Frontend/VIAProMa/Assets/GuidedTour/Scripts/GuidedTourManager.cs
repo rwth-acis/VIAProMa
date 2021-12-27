@@ -46,6 +46,11 @@ namespace GuidedTour
 
         internal void SkipSection()
         {
+            if (ActiveSection == null)
+            {
+                throw new Exception("Tour has already been finished");
+            }
+
             // For the remaining tasks in the section
             for (int task = taskIndex; task < ActiveSection.Tasks.Count; task++)
             {
