@@ -13,8 +13,13 @@ namespace GuidedTour
      */
     public class GuidedTourManager : MonoBehaviour
     {
+        public AbstractTourTask ActiveTask { get; private set; }
+        public TourSection ActiveSection { get; private set; }
         public List<TourSection> Sections { get; private set; }
+
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
+        private int sectionIndex = 0;
+        private int taskIndex = -1;
 
         void Start()
         {
@@ -23,19 +28,70 @@ namespace GuidedTour
             configFile.LoadConfig();
             GuidedTourUtils.LinkTasks(Sections, configFile.Root);
 
-            foreach(TourSection s in Sections)
-            {
-                Debug.Log("== Section: " + s.Name);
-                foreach(AbstractTourTask task in s.Tasks)
-                {
-                    Debug.Log("  = Task: " + task.Name);
-                }
-            }
+            ActiveSection = Sections[0];
+            SelectNextTask();
         }
 
         void Update()
         {
+            if (ActiveTask == null)
+                return;
 
+            if (ActiveTask.IsTaskDone())
+            {
+                Debug.Log("Finished task: " + ActiveTask.Name);
+                SelectNextTask();
+            }
+        }
+
+        internal void SkipSection()
+        {
+            // For the remaining tasks in the section
+            for (int task = taskIndex; task < ActiveSection.Tasks.Count; task++)
+            {
+                ActiveSection.Tasks[task].SkipTask();
+            }
+
+            taskIndex = ActiveSection.Tasks.Count;
+            // Because of setting taskIndex, SelectNextTask() will chose the next section
+            // Since ActiveTask has not been touched, SelectNextTask() will also deactivate it
+            SelectNextTask();
+        }
+
+        private void SelectNextTask()
+        {
+            if (ActiveTask != null)
+            {
+                ActiveTask.Active = false;
+                // To Do: Disable visual component for ActiveTask
+            }
+
+            taskIndex++;
+            if (taskIndex >= ActiveSection.Tasks.Count) // Section finished
+            {
+                sectionIndex++;
+                if (sectionIndex < Sections.Count) // More sections left
+                {
+                    Debug.Log("Completed Section: " + ActiveSection.Name);
+                    ActiveSection = Sections[sectionIndex];
+                    Debug.Log("Next Section: " + ActiveSection.Name);
+
+                    taskIndex = 0;
+                }
+                else // Finished with the complete tour
+                {
+                    Debug.Log("- Tour completed -");
+                    ActiveSection = null;
+                    ActiveTask = null;
+                    return;
+                }
+            }
+
+            ActiveTask = ActiveSection.Tasks[taskIndex];
+            ActiveTask.Active = true;
+            // To Do: Enable visual component for ActiveTask
+
+            Debug.Log("Selected next task: " + ActiveTask.Name);
         }
     }
 }
