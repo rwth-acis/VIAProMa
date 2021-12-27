@@ -12,9 +12,7 @@ namespace GuidedTour
      */
     public class SimpleTourTask : AbstractTourTask
     {
-        internal SimpleTourTask(string name, string description) : base(name, description)
-        {
-        }
+
 
         void Start()
         {

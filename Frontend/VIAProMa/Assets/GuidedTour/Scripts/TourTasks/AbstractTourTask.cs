@@ -14,19 +14,20 @@ namespace GuidedTour
      */
     public abstract class AbstractTourTask : MonoBehaviour
     {
-        [SerializeField] public string Name { get; internal set; }
-        [SerializeField] public string Description { get; internal set; }
-        [SerializeField] public bool Active { get; internal set; }
-
-        internal AbstractTourTask(string name, string description)
+        [SerializeField] private string _id;
+        public string Id
         {
-            this.Name = name;
-            this.Description = description;
+            get { return _id; }
+            set { _id = value; }
         }
+
+        public string Name { get; internal set; }
+        public string Description { get; internal set; }
+        public bool Active { get; internal set; }
 
         void Start()
         {
-
+            Id = _id;
         }
 
         /**
@@ -34,7 +35,7 @@ namespace GuidedTour
          * This method is called on every frame by the TourManger whilst this task is active. As soon as this method returns true, 
          * this task is over and the TourManager selects the next tasks.
          * </summary>
-         */ 
+         */
         internal abstract bool IsTaskDone();
     }
 }

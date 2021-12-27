@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,9 +19,18 @@ namespace GuidedTour
         void Start()
         {
             Sections = new List<TourSection>();
-            // Debug: Add 2 Tour Sections as long as the config file logic is not implemented 
-            Sections.Add(new TourSection("Section 1"));
-            Sections.Add(new TourSection("Section 2"));
+
+            configFile.LoadConfig();
+            GuidedTourUtils.LinkTasks(Sections, configFile.Root);
+
+            foreach(TourSection s in Sections)
+            {
+                Debug.Log("== Section: " + s.Name);
+                foreach(AbstractTourTask task in s.Tasks)
+                {
+                    Debug.Log("  = Task: " + task.Name);
+                }
+            }
         }
 
         void Update()

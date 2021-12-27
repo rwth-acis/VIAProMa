@@ -17,16 +17,13 @@ namespace GuidedTour
         internal TourSection(string name)
         {
             this.Name = name;
+            Tasks = new List<AbstractTourTask>();
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            Tasks = new List<AbstractTourTask>();
-
-            // Debug: Add 2 Tasks per TourSection as long as config logic is not implemented to load sections and tasks from file
-            Tasks.Add(new SimpleTourTask("Test Task 1", "The description for test task 1"));
-            Tasks.Add(new SimpleTourTask("Test Task 2", "The description for test task 2"));
+            
         }
 
         // Update is called once per frame
