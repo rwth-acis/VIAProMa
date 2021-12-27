@@ -39,5 +39,10 @@ namespace GuidedTour
         {
             return done;
         }
+
+        internal override void SkipTask()
+        {
+            // Nothing to do here
+        }
     }
 }

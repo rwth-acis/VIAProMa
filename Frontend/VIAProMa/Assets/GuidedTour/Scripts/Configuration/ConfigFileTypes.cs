@@ -23,5 +23,6 @@ namespace GuidedTour
         public string id;
         public string name;
         public string description;
+        public string action;
     }
 }
