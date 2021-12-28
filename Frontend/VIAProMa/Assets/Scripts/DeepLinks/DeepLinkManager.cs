@@ -10,17 +10,7 @@ namespace i5.VIAProMa.DeepLinks
     /// </summary>
     public class DeepLinkManager : Singleton<DeepLinkManager>
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        
     }
 }
 

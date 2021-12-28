@@ -1,17 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using HoloToolkit.Unity;
 using Photon.Pun;
 using Photon.Realtime;
 
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
     /// <summary>
-    /// Generates an invite link to the currently active session
+    /// Invite link manager which handles everything related to invite links at runtime
     /// </summary>
-    public class InviteLinkGenerator : MonoBehaviour
+    public class InviteLinkManager : Singleton<InviteLinkManager>
     {
-
         /// TODO Invite URI config, for testing purposed only, will be relocated later
         string inviteURI = "i5://ViaProMa/invite";
         string paramName_roomName = "roomName";
@@ -24,7 +24,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         {
 
             Room currentRoom = PhotonNetwork.CurrentRoom;
-            
+
             if (currentRoom == null)
             {
                 Debug.Log("No session is active, Link can not be generated");
@@ -34,14 +34,12 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             string roomName = currentRoom.Name;
 
 
-            
+
 
             return inviteURI + "?" + paramName_roomName + "=" + roomName;
         }
-
-        public void testLinkGeneration()
-        {
-            Debug.Log("Generated Invite Link: " + generateInviteLink());
-        }
     }
+
+    
 }
+
