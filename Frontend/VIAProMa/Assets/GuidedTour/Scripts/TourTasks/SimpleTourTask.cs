@@ -12,9 +12,8 @@ namespace GuidedTour
      */
     public class SimpleTourTask : AbstractTourTask
     {
-        internal SimpleTourTask(string name, string description) : base(name, description)
-        {
-        }
+        private bool done;
+
 
         void Start()
         {
@@ -26,9 +25,24 @@ namespace GuidedTour
 
         }
 
+        /**
+         * <summary>
+         * This method is called by the VisualTourComponent when the button is pressed.
+         * </summary>
+         */
+        public void OnAction()
+        {
+            done = true;
+        }
+
         internal override bool IsTaskDone()
         {
-            return true; // To Do: Listen for "continue" button
+            return done;
+        }
+
+        internal override void SkipTask()
+        {
+            // Nothing to do here
         }
     }
 }
