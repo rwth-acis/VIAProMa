@@ -17,12 +17,7 @@ namespace GuidedTour
 
         void Start()
         {
-
-        }
-
-        void Update()
-        {
-
+            
         }
 
         /**
@@ -33,6 +28,7 @@ namespace GuidedTour
         public void OnAction()
         {
             done = true;
+            Debug.Log("OnAction()");
         }
 
         internal override bool IsTaskDone()

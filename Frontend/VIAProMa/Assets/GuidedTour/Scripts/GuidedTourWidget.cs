@@ -42,15 +42,29 @@ namespace GuidedTour
 
 
 
-        void UpdateTask(AbstractTourTask task)
+        internal void UpdateTask(AbstractTourTask task)
         {
-            
+            if (task == null)
+            {
+                headline.text = "Completed Tour";
+                hintText.text = "You are finished!";
+                return;
+            }
+
             headline.text = task.Name;
             hintText.text = task.Description;
-            
 
+            if (task.GetType() == typeof(SimpleTourTask))
+            {
+                // To Do: Enable button, set button text and callback
+                SimpleTourTask sts = (SimpleTourTask) task;
+                sts.OnAction(); // --> Bind on button (task.ActionName as text)
+            }
+            else
+            {
+                // To Do: Set action label (task.ActionName)
+            }
         }
-
 
 
         public int CurrentPage
