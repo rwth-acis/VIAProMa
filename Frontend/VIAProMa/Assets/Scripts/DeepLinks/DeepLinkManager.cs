@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity;
+using i5.Toolkit.Core.ServiceCore;
+using i5.Toolkit.Core.DeepLinkAPI;
+using i5.VIAProMa.UI.MainMenuCube;
 
 namespace i5.VIAProMa.DeepLinks
 {
@@ -10,7 +13,10 @@ namespace i5.VIAProMa.DeepLinks
     /// </summary>
     public class DeepLinkManager : Singleton<DeepLinkManager>
     {
-        
+        public void ProcessDeepLink(string deepLink)
+        {
+            Debug.Log("Process Deep Link was reached - URI: " + deepLink);
+        }
     }
 }
 
