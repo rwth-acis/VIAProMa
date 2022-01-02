@@ -47,7 +47,7 @@ namespace GuidedTour
             get { return widget.activeSelf; }
             set 
             {
-                widget.SetActive(WidgetVisible);
+                widget.SetActive(value);
                 // Throw Event OnWidgetVisibleChanged (if there is a subscriber)
                 if (OnWidgetVisibleChanged != null)
                     OnWidgetVisibleChanged(value);
