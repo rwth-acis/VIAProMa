@@ -13,9 +13,15 @@ namespace i5.VIAProMa.DeepLinks
     /// </summary>
     public class DeepLinkManager : Singleton<DeepLinkManager>
     {
-        public void ProcessDeepLink(string deepLink)
+        /// <summary>
+        /// Processes an invite deep link.
+        /// </summary>
+        /// <param name="args">Deep link arguments.</param>
+        public void ProcessInviteDeepLink(DeepLinkArgs args)
         {
-            Debug.Log("Process Deep Link was reached - URI: " + deepLink);
+            Debug.Log("DeepLink " + args + " is being processed.");
+            Dictionary<string, string> parameters = args.Parameters;
+            InviteLinksHandler.Instance.JoinByDeepLink(parameters);
         }
     }
 }
