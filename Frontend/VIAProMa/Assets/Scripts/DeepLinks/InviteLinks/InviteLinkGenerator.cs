@@ -13,14 +13,14 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
     {
 
         /// TODO Invite URI config, for testing purposed only, will be relocated later
-        string inviteURI = "i5://ViaProMa/invite";
+        string inviteURI = "i5://invite";
         string paramName_roomName = "roomName";
 
 
         /// <summary>
         /// Generates an invite link for the current session
         /// </summary>
-        public string generateInviteLink()
+        public string GenerateInviteLink()
         {
 
             Room currentRoom = PhotonNetwork.CurrentRoom;
@@ -32,16 +32,12 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             }
 
             string roomName = currentRoom.Name;
-
-
-            
-
             return inviteURI + "?" + paramName_roomName + "=" + roomName;
         }
 
-        public void testLinkGeneration()
+        public void TestLinkGeneration()
         {
-            Debug.Log("Generated Invite Link: " + generateInviteLink());
+            Debug.Log("Generated Invite Link: " + GenerateInviteLink());
         }
     }
 }
