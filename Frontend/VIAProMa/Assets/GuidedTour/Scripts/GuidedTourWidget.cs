@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Microsoft.MixedReality.Toolkit.Input;
+using Microsoft.MixedReality.Toolkit.Utilities;
+using TMPro;
 
 namespace GuidedTour
 {
@@ -11,13 +14,18 @@ namespace GuidedTour
       
         private AbstractTourTask currentTask = null;
         public GameObject widget;
-        public Text headline;
-        public Text hintText;
+        public TextMeshPro headline;
+        public TextMeshPro hintText;
         public GameObject continueButton;
 
         public delegate void WidgetVisibleChangedAction(bool IsVisible);
         public static event WidgetVisibleChangedAction OnWidgetVisibleChanged;
 
+
+        public void Start()
+        {
+            headline.text = "Hallo";
+        }
 
         internal void UpdateTask(AbstractTourTask task)
         {
