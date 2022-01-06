@@ -490,8 +490,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5624662930467032365}
   - component: {fileID: 2668432729327638181}
+  - component: {fileID: 3405098135581101582}
+  - component: {fileID: 2577821909697689657}
   m_Layer: 0
-  m_Name: GuidedTourWidget 1
+  m_Name: GuidedTourWidget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -526,13 +528,62 @@ MonoBehaviour:
   m_GameObject: {fileID: 5624662930467032364}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: baa16ea3fffa14d47af288b9386291ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 216f2a8af4e340f4b9eb97f4c720dd08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   widget: {fileID: 5624662930467032364}
   headline: {fileID: 8353544516853006116}
   hintText: {fileID: 5624662929997818420}
   continueButton: {fileID: 1930279598457245918}
+--- !u!114 &3405098135581101582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5624662930467032364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55691ad5b034fe6966763a6e23818d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackedTargetType: 0
+  trackedHandness: 3
+  trackedHandJoint: 2
+  transformOverride: {fileID: 0}
+  additionalOffset: {x: 0, y: 0, z: 0}
+  additionalRotation: {x: 0, y: 0, z: 0}
+  updateSolvers: 1
+--- !u!114 &2577821909697689657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5624662930467032364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4684083f6dff4a1d8a790bccc354fcf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateLinkedTransform: 0
+  moveLerpTime: 0.1
+  rotateLerpTime: 0.1
+  scaleLerpTime: 0
+  maintainScaleOnInitialization: 1
+  smoothing: 0
+  lifetime: 0
+  referenceDirection: 2
+  minDistance: 2
+  maxDistance: 2
+  minViewDegrees: 0
+  maxViewDegrees: 30
+  aspectV: 1
+  ignoreAngleClamp: 0
+  ignoreDistanceClamp: 0
+  useFixedVerticalPosition: 0
+  fixedVerticalPosition: -0.4
+  orientToReferenceDirection: 0
 --- !u!1 &6630039306301440557
 GameObject:
   m_ObjectHideFlags: 0
