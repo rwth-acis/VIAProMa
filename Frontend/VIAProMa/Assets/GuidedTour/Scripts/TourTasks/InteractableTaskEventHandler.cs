@@ -7,6 +7,14 @@ using Microsoft.MixedReality.Toolkit.Input;
 
 namespace GuidedTour
 {
+
+    /**
+     * <summary>
+     * This listens to, or causes, "OnClick"-Events of gameobjects with the "Interactable" component.
+     * An instance of this Script will automatically attatch itself to any InteractableTourTask.
+     * </summary>
+     */
+
     [UnityEngine.AddComponentMenu("Scripts/MRTK/SDK/InteractableReceiver")]
     public class InteractableTaskEventHandler : ReceiverBaseMonoBehavior
     {
@@ -22,7 +30,7 @@ namespace GuidedTour
         {
             if (task.Active == true && task.done == false) 
             {
-                Debug.Log("Clicked by Luk lol");
+                Debug.Log("InteractableTourTask was successfully finished");
                 task.done = true;
                 Destroy(this);
             }
@@ -32,6 +40,7 @@ namespace GuidedTour
         {
             if (task.Active == true && task.done == false) 
             {
+                Debug.Log("InteractableTourTask was successfully skipped");
                 Interactable.TriggerOnClick();
                 task.done = true;
                 Destroy(this);
