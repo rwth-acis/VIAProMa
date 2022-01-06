@@ -17,6 +17,8 @@ namespace GuidedTour
         public TourSection ActiveSection { get; private set; }
         public List<TourSection> Sections { get; private set; }
 
+        [SerializeField] private GuidedTourWidget widget; 
+
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
         private int sectionIndex = 0;
         private int taskIndex = -1;
@@ -60,7 +62,17 @@ namespace GuidedTour
 
             taskIndex = ActiveSection.Tasks.Count;
             // Because of setting taskIndex, SelectNextTask() will chose the next section
-            // Since ActiveTask has not been touched, SelectNextTask() will also deactivate it
+            SelectNextTask();
+        }
+
+        internal void SkipTask()
+        {
+            if (ActiveSection == null)
+            {
+                throw new Exception("Tour has already been finished");
+            }
+
+            ActiveTask.SkipTask();
             SelectNextTask();
         }
 
@@ -69,7 +81,6 @@ namespace GuidedTour
             if (ActiveTask != null)
             {
                 ActiveTask.Active = false;
-                // To Do: Disable visual component for ActiveTask
             }
 
             taskIndex++;
@@ -87,6 +98,7 @@ namespace GuidedTour
                 else // Finished with the complete tour
                 {
                     Debug.Log("- Tour completed -");
+                    widget.UpdateTask(null);
                     ActiveSection = null;
                     ActiveTask = null;
                     return;
@@ -95,7 +107,7 @@ namespace GuidedTour
 
             ActiveTask = ActiveSection.Tasks[taskIndex];
             ActiveTask.Active = true;
-            // To Do: Enable visual component for ActiveTask
+            widget.UpdateTask(ActiveTask);
 
             Debug.Log("Selected next task: " + ActiveTask.Name);
         }

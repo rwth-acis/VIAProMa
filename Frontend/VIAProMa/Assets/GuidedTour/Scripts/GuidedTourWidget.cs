@@ -2,77 +2,70 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Microsoft.MixedReality.Toolkit.Input;
+using Microsoft.MixedReality.Toolkit.Utilities;
+using TMPro;
 
 namespace GuidedTour
 {
 
     public class GuidedTourWidget : MonoBehaviour
     {
-        protected struct PageText
+      
+        private AbstractTourTask currentTask = null;
+        public GameObject widget;
+        public TextMeshPro headline;
+        public TextMeshPro hintText;
+        public GameObject continueButton;
+
+        public delegate void WidgetVisibleChangedAction(bool IsVisible);
+        public static event WidgetVisibleChangedAction OnWidgetVisibleChanged;
+
+
+        public void Start()
         {
-            public PageText(string headline, string hintText)
+            headline.text = "Hallo";
+        }
+
+        internal void UpdateTask(AbstractTourTask task)
+        {
+            currentTask = task; 
+            if (task == null)
             {
-                Headline = headline;
-                HintText = hintText;
+                headline.text = "Completed Tour";
+                hintText.text = "You are finished!";
+                return;
             }
 
-            public string Headline { get; }
-            public string HintText { get; }
-        }
-
-
-        private PageText[] pages =
-        {
-       new PageText( "Guided Tour - Page 1", "Welcome!\n\nPress the yellow round button on the box labeled 'Main Menu' to start..." ),
-       new PageText( "Guided Tour - Page 2", "Page 2" ),
-       new PageText( "Guided Tour - Page 3", "Page 3" )
-    };
-
-        private int currentPage = 0;
-        public GameObject widget;
-        public Text headline;
-        public Text hintText;
-
-
-        // Start is called before the first frame update
-        void Start()
-        {
-            CurrentPage = 0;
-        }
-
-
-
-        void UpdateTask(AbstractTourTask task)
-        {
-            
             headline.text = task.Name;
             hintText.text = task.Description;
-            
 
-        }
-
-
-
-        public int CurrentPage
-        {
-            get { return currentPage; }
-            set
+            if (task.GetType() == typeof(SimpleTourTask))
+            { 
+                continueButton.SetActive(true);
+            }
+            else
             {
-                if (value >= 0 && value < pages.Length)
-                {
-                    headline.text = pages[value].Headline;
-                    hintText.text = pages[value].HintText;
-                    currentPage = value;
-                }
-
+                continueButton.SetActive(false);
             }
         }
-
 
         public bool WidgetVisible
         {
             get { return widget.activeSelf; }
-            set { widget.SetActive(WidgetVisible); }
+            set 
+            {
+                widget.SetActive(value);
+                // Throw Event OnWidgetVisibleChanged (if there is a subscriber)
+                if (OnWidgetVisibleChanged != null)
+                    OnWidgetVisibleChanged(value);
+            }
+        }
+
+        public void OnContinueClicked() 
+        {
+            SimpleTourTask sts = (SimpleTourTask) currentTask;
+            sts.OnAction(); // --> Bind on button (task.ActionName as text)
         }
 
     }
