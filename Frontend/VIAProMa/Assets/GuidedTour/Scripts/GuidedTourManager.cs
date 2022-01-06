@@ -23,8 +23,9 @@ namespace GuidedTour
         private int sectionIndex = 0;
         private int taskIndex = -1;
 
-        void Start()
+        private void Awake()
         {
+
             Sections = new List<TourSection>();
 
             configFile.LoadConfig();
