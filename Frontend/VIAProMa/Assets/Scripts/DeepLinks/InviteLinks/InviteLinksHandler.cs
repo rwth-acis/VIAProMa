@@ -10,7 +10,7 @@ public class InviteLinksHandler : MonoBehaviour
     /// </summary>
     
 
-    public string decodeLink (string deeplink)
+    public string DecodeLink (string deeplink)
     {
         if(deeplink.IndexOf('=')== -1)
         {
