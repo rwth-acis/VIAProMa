@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -461,7 +461,7 @@ PrefabInstance:
     - target: {fileID: 937139078701923806, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 943790359340717537, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
@@ -806,7 +806,7 @@ PrefabInstance:
     - target: {fileID: 2228182898798395367, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2298999904214481730, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
@@ -2849,7 +2849,7 @@ PrefabInstance:
     - target: {fileID: 8957528376169097140, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8973724346150544505, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
@@ -3370,8 +3370,8 @@ Camera:
   m_GameObject: {fileID: 1787620547}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3385,7 +3385,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 50
+  far clip plane: 1000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -3514,6 +3514,26 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1826346970}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1845159176 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8464822907696227133, guid: 8c93205eb542a734dbe333bde16fe4ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 6436379609130328663}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1845159180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845159176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98de877dee5fc341b4eb59dfdab266c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoConstraintSelection: 1
+  selectedConstraints: []
 --- !u!1 &2038167400
 GameObject:
   m_ObjectHideFlags: 0
@@ -3954,6 +3974,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5189485956093148427, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: constraintsManager
+      value: 
+      objectReference: {fileID: 1845159180}
     - target: {fileID: 5439296140832621754, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: m_havePropertiesChanged

@@ -26,8 +26,24 @@ public class InviteLinksHandler : MonoBehaviour
 
     public void JoinByDeeplink(string deeplink)
     {
-        string roomname = decodeLink(deeplink);
-        PhotonNetwork.JoinRoom(roomname);
+        string roomname = DecodeLink(deeplink);
+        if (!PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.JoinRoom(roomname);
+        }
+        else
+        {
+            if (PhotonNetwork.CurrentRoom.Name == deeplink)
+            {
+                Debug.Log("Bereits in diesem Raum");
+            }
+            else
+            {
+                Debug.Log("Bereits in einer bestehenden Session");
+                //TODO
+            }
+        }
+
     }
 
 }

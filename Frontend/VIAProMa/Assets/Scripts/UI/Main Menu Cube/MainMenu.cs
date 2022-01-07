@@ -25,6 +25,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private TextMeshPro roomButtonText;
         [SerializeField] private Interactable chatButton;
         [SerializeField] private Interactable microphoneButton;
+        [SerializeField] private Interactable inviteLinkButton;
 
         [Header("References")]
         [SerializeField] private GameObject issueShelfPrefab;
@@ -86,6 +87,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
             }
+            if (inviteLinkButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(inviteLinkButton));
+            }
 
             if (issueShelfPrefab == null)
             {
@@ -136,6 +141,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             roomButton.Enabled = PhotonNetwork.IsConnected;
             chatButton.Enabled = PhotonNetwork.InRoom;
             microphoneButton.Enabled = PhotonNetwork.InRoom;
+            inviteLinkButton.Enabled = PhotonNetwork.InRoom;
             saveButton.Enabled = PhotonNetwork.InRoom;
             loadButton.Enabled = PhotonNetwork.InRoom;
             issueShelfButton.Enabled = PhotonNetwork.InRoom;
@@ -250,6 +256,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ChatButtonClicked()
         {
             WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            foldController.FoldCube();
+        }
+
+        public void InviteLinkButtonClicked()
+        {
+            WindowManager.Instance.InviteLinkMenu.Open(inviteLinkButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
             foldController.FoldCube();
         }
 

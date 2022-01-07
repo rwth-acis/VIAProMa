@@ -2,6 +2,7 @@
 using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI.Chat;
 using UnityEngine;
+using i5.VIAProMa.DeepLinks.InviteLinks;
 
 namespace i5.VIAProMa.UI
 {
@@ -12,6 +13,7 @@ namespace i5.VIAProMa.UI
         [SerializeField] private GameObject chatMenuPrefab;
         [SerializeField] private GameObject saveProjectMenuPrefab;
         [SerializeField] private GameObject loginMenuPrefab;
+        [SerializeField] private GameObject inviteLinkMenuPrefab;
 
         private void Start()
         {
@@ -20,6 +22,7 @@ namespace i5.VIAProMa.UI
             ChatMenu = (ChatMenu)InstantiateWindow(chatMenuPrefab);
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
+            InviteLinkMenu = (InviteLinkMenu)InstantiateWindow(inviteLinkMenuPrefab);
         }
 
         private IWindow InstantiateWindow(GameObject prefab)
@@ -45,5 +48,7 @@ namespace i5.VIAProMa.UI
         public SaveProjectWindow SaveProjectWindow { get; private set; }
 
         public LoginMenu LoginMenu { get; private set; }
+
+        public InviteLinkMenu InviteLinkMenu { get; private set; }
     }
 }
