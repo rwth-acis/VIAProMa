@@ -11,7 +11,6 @@ namespace i5.VIAProMa.DeepLinks
     /// Invite Link Handler which handles the reception of Invite Links at runtime
     /// </summary>
     public class InviteLinksHandler : Singleton<InviteLinksHandler>
-    {
         /// <summary>
         /// Gets room name from deep link parameters.
         /// </summary>
@@ -59,6 +58,5 @@ namespace i5.VIAProMa.DeepLinks
             Debug.Log("The room was" + (wasJoined ? "" : " not") + " joined." + (wasJoined ? "" :
                 "\n This may indicate that there was no such room."));
         }
-
     }
 }

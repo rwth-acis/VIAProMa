@@ -13,14 +13,14 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
     public class InviteLinkManager : Singleton<InviteLinkManager>
     {
         /// TODO Invite URI config, for testing purposed only, will be relocated later
-        string inviteURI = "i5://ViaProMa/invite";
-        string paramName_roomName = "roomName";
+        static string inviteURI = "i5://ViaProMa/invite";
+        static string paramName_roomName = "roomName";
 
 
         /// <summary>
         /// Generates an invite link for the current session
         /// </summary>
-        public string generateInviteLink()
+        public static string generateInviteLink()
         {
 
             Room currentRoom = PhotonNetwork.CurrentRoom;
