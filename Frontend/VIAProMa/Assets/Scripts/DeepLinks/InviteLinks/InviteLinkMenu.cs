@@ -3,10 +3,14 @@ using UnityEngine;
 using i5.VIAProMa.UI;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.DeepLinks.InviteLinks;
+using Photon.Pun;
 using TMPro;
 
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
+    /// <summary>
+    /// Class of the Invite Link Menu / Room Options Menu
+    /// </summary>
     public class InviteLinkMenu : MonoBehaviour, IWindow
     {
 
@@ -32,7 +36,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
 
         public void OnEnable()
         {
-            curInviteLink = InviteLinkManager.generateInviteLink();
+            curInviteLink = InviteLinkManager.GenerateInviteLink();
             linkTextfield.text = curInviteLink;
 
         }
@@ -46,6 +50,11 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             WindowOpen = true;
         }
 
+        /// <summary>
+        /// Opens the window at <paramref name="position"/> with an angle of <paramref name="eulerAngles"/>.
+        /// </summary>
+        /// <param name="position">Position of the window.</param>
+        /// <param name="eulerAngles">Angle of the window.</param>
         public void Open(Vector3 position, Vector3 eulerAngles)
         {
             Open();
@@ -70,6 +79,15 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         public void CopyLinkToClipboard() 
         {
             GUIUtility.systemCopyBuffer = curInviteLink;
+        }
+
+        /// <summary>
+        /// Leaves the Photonroom.
+        /// </summary>
+        public void LeaveRoom()
+        {
+            PhotonNetwork.LeaveRoom();
+            this.Close();
         }
     }
 }

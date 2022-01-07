@@ -20,7 +20,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         /// <summary>
         /// Generates an invite link for the current session
         /// </summary>
-        public static string generateInviteLink()
+        public static string GenerateInviteLink()
         {
 
             Room currentRoom = PhotonNetwork.CurrentRoom;

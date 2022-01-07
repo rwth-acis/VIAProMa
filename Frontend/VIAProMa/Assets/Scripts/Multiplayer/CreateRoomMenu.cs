@@ -133,6 +133,7 @@ namespace i5.VIAProMa.Multiplayer
             // do not try to create a room if not connected
             if (!PhotonNetwork.IsConnected)
             {
+                Debug.Log("Photon is disconnected.");
                 return;
             }
 
