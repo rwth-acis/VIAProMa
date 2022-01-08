@@ -17,14 +17,16 @@ namespace GuidedTour
         public TourSection ActiveSection { get; private set; }
         public List<TourSection> Sections { get; private set; }
 
+        [SerializeField] private TextPlacer textPlacer;
         [SerializeField] private GuidedTourWidget widget; 
 
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
         private int sectionIndex = 0;
         private int taskIndex = -1;
 
-        void Start()
+        private void Awake()
         {
+
             Sections = new List<TourSection>();
 
             configFile.LoadConfig();
@@ -107,6 +109,7 @@ namespace GuidedTour
             ActiveTask = ActiveSection.Tasks[taskIndex];
             ActiveTask.Active = true;
             widget.UpdateTask(ActiveTask);
+            textPlacer.drawSectionBoard();
 
             Debug.Log("Selected next task: " + ActiveTask.Name);
         }
