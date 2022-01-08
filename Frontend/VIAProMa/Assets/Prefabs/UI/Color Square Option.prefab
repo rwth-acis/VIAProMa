@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 66432131127126719}
   - component: {fileID: 2679290400605158528}
   - component: {fileID: 7407878807348314126}
+  - component: {fileID: 7949019885967085883}
   m_Layer: 0
   m_Name: Color Square Option
   m_TagString: Untagged
@@ -72,25 +73,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Enabled: 1
-  States: {fileID: 11400000, guid: 5eac1712038236e4b8ffdb3893804fe1, type: 2}
-  InputAction:
-    id: 0
-    description: 
-    axisConstraint: 0
+  states: {fileID: 11400000, guid: 5eac1712038236e4b8ffdb3893804fe1, type: 2}
   InputActionId: 0
-  IsGlobal: 0
+  isGlobal: 0
   Dimensions: 2
+  dimensionIndex: 0
+  startDimensionIndex: 0
   CanSelect: 1
   CanDeselect: 0
   VoiceCommand: 
-  RequiresFocus: 1
-  Profiles:
+  voiceRequiresFocus: 1
+  profiles:
   - Target: {fileID: 492229003890521001}
     Themes:
     - {fileID: 11400000, guid: 4fdfc80e20e554f4e91ec285bda9c239, type: 2}
     - {fileID: 11400000, guid: bc6ab3c423213c44aa9dd6c7beb1cdfb, type: 2}
-    HadDefaultTheme: 1
   OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -105,9 +102,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   Events: []
+  resetOnDestroy: 0
+  enabledOnStart: 1
+--- !u!114 &7949019885967085883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459669351077830485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4752029bca7b574cbfc606b17494d69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound:
+    clip: {fileID: 8300000, guid: 0c49f79fb53ae01448a3b60570a87366, type: 3}
+    volume: 0.3
+    pitch: 1
+    maxDistance: 5
 --- !u!1 &5569374789659640239
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +177,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -174,6 +189,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -196,9 +212,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &492229003890423049
 PrefabInstance:
