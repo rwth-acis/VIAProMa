@@ -9,6 +9,7 @@ namespace GuidedTour
     public class TextPlacer : MonoBehaviour
     {
         [SerializeField] private GuidedTourManager man;
+        private bool metActiveTask = false;
 
         // Start is called before the first frame update
         void Start()
@@ -19,6 +20,7 @@ namespace GuidedTour
         internal void drawSectionBoard()
         {
             bool metActiveSec = false;
+            metActiveTask = false;
             StringBuilder strb = new StringBuilder();
             Debug.Log(man.Sections == null);
             foreach (TourSection sec in man.Sections)
@@ -85,7 +87,7 @@ namespace GuidedTour
 
         private void setTaskColor(StringBuilder strb, AbstractTourTask task, bool isClosingTag)
         {
-            bool activeIsCurrent = false, metActiveTask = false;
+            bool activeIsCurrent = false;
             if(man.ActiveTask.Id == task.Id)
             {
                 activeIsCurrent = true;
