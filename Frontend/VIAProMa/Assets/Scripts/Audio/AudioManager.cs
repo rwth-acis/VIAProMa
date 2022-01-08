@@ -8,15 +8,23 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 
-    [Tooltip("minDistance and maxDistance of AudioSource")]
-    [SerializeField] private float minDistance;
-    [SerializeField] private float maxDistance;
+    [SerializeField] AnimationCurve curve = new AnimationCurve(new Keyframe[] { new Keyframe(0,1), new Keyframe(1,0) });
 
     // AudioManager is a singleton
     private void Start()
     {
         if (instance == null) instance = this;
         else Destroy(gameObject);
+
+        foreach (Keyframe key in curve.keys)
+        {
+            if (key.value > 1 || key.value < 0)
+            {
+                Debug.LogWarning("AudioManager: Curve goes out of bounds! (0 to 1)");
+                break;
+            }
+        }
+        
     }
 
     /// <summary>
@@ -34,12 +42,15 @@ public class AudioManager : MonoBehaviour
         source.volume = sound.volume;
         source.pitch = sound.pitch;
 
+        source.rolloffMode = AudioRolloffMode.Custom;
+        source.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
+
         source.playOnAwake = false;
         source.spatialBlend = 1;
 
-        source.minDistance = minDistance;
-        source.maxDistance = maxDistance;
+        source.maxDistance = sound.maxDistance;
 
+        
         source.Play();
 
         //Destroy the empty GameObject after the clip has been played.
@@ -59,11 +70,14 @@ public class Sound
     [Range(0.1f, 3f)]
     public float pitch;
 
-    public Sound(AudioClip clip, float volume, float pitch)
+    public float maxDistance;
+
+    public Sound(AudioClip clip, float volume = 1, float pitch = 1, float maxDistance = 5)
     {
         this.clip = clip;
         this.volume = volume;
         this.pitch = pitch;
+        this.maxDistance = maxDistance;
     }
 
 }

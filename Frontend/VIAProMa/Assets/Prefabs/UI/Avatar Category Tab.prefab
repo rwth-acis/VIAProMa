@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1245414960931663788}
   - component: {fileID: 9100469389115609893}
   - component: {fileID: 5406432027691035262}
+  - component: {fileID: 5873860291651118304}
   m_Layer: 0
   m_Name: Avatar Category Tab
   m_TagString: Untagged
@@ -46,31 +47,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Enabled: 1
-  States: {fileID: 11400000, guid: 5eac1712038236e4b8ffdb3893804fe1, type: 2}
-  InputAction:
-    id: 0
-    description: 
-    axisConstraint: 0
+  states: {fileID: 11400000, guid: 5eac1712038236e4b8ffdb3893804fe1, type: 2}
   InputActionId: 0
-  IsGlobal: 0
+  isGlobal: 0
   Dimensions: 2
+  dimensionIndex: 0
+  startDimensionIndex: 0
   CanSelect: 1
   CanDeselect: 0
   VoiceCommand: 
-  RequiresFocus: 1
-  Profiles:
+  voiceRequiresFocus: 1
+  profiles:
   - Target: {fileID: 593340925461403371}
     Themes:
     - {fileID: 11400000, guid: 080dc136f48df464e9ca8283cf31bff9, type: 2}
     - {fileID: 11400000, guid: 6469cee20ada61f48b655fcc96143fa1, type: 2}
-    HadDefaultTheme: 1
   OnClick:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   Events: []
+  resetOnDestroy: 0
+  enabledOnStart: 1
 --- !u!65 &5406432027691035262
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -84,6 +81,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.0466, y: 0.07, z: 0.01}
   m_Center: {x: -0.0233, y: 0, z: 0}
+--- !u!114 &5873860291651118304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2235181638211350501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4752029bca7b574cbfc606b17494d69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound:
+    clip: {fileID: 8300000, guid: 0c49f79fb53ae01448a3b60570a87366, type: 3}
+    volume: 0.3
+    pitch: 1
+    maxDistance: 5
 --- !u!1 &7070368969338290917
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,6 +143,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -140,6 +155,7 @@ SpriteRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
