@@ -1,20 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
-using UnityEngine.Audio;
+﻿using System;
+using i5.VIAProMa.UI.MainMenuCube;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    // AudioManager is a singleton
     public static AudioManager instance;
 
-    [SerializeField] AnimationCurve curve = new AnimationCurve(new Keyframe[] { new Keyframe(0,1), new Keyframe(1,0) });
+    [SerializeField]
+    private AnimationCurve curve = new AnimationCurve(new Keyframe[] { new Keyframe(0, 1), new Keyframe(1, 0) });
 
-    // AudioManager is a singleton
+    [SerializeField] private Sound loginSound = new Sound(null);
+    [SerializeField] private Sound logoffSound = new Sound(null);
+    [SerializeField] private Sound messageSound = new Sound(null);
+
     private void Start()
     {
         if (instance == null) instance = this;
-        else Destroy(gameObject);
+        else Destroy(this);
 
         foreach (Keyframe key in curve.keys)
         {
@@ -24,7 +27,8 @@ public class AudioManager : MonoBehaviour
                 break;
             }
         }
-        
+
+        gameObject.AddComponent<AudioListener>();
     }
 
     /// <summary>
@@ -57,20 +61,38 @@ public class AudioManager : MonoBehaviour
         Destroy(soundObject, sound.clip.length + 1f);
     }
 
+    public void PlayLoginSound(Vector3 at)
+    {
+        PlaySoundOnceAt(loginSound, at);
+    }
 
+    public void PlayLogoffSound(Vector3 at)
+    {
+        PlaySoundOnceAt(logoffSound, at);
+    }
+
+    public void PlayMessageSound()
+    {
+        Vector3 mainMenuPosition = FindObjectOfType<MainMenu>().gameObject.transform.position;
+        messageSound.maxDistance = Vector3.Distance(Camera.main.transform.position, mainMenuPosition) + 1; // +1 for a bit of buffer
+        PlaySoundOnceAt(messageSound, mainMenuPosition);
+    }
 }
 
+/// <summary>
+/// A class that holds information for an AudioClip
+/// </summary>
 [Serializable]
 public class Sound
 {
     public AudioClip clip;
 
     [Range(0,1)]
-    public float volume;
+    public float volume = 0.42f;
     [Range(0.1f, 3f)]
-    public float pitch;
+    public float pitch = 1;
 
-    public float maxDistance;
+    public float maxDistance = 5;
 
     public Sound(AudioClip clip, float volume = 1, float pitch = 1, float maxDistance = 5)
     {
