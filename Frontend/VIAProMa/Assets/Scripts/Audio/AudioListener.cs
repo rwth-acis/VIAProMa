@@ -8,13 +8,15 @@ using i5.VIAProMa.Multiplayer.Chat;
 public class AudioListener : MonoBehaviourPunCallbacks
 {
 
-    public void Start()
+    public override void OnConnected()
     {
+        base.OnConnected();
         ChatManager.Instance.MessageReceived += OnMessageReceived;
     }
 
-    private void OnDestroy()
+    public override void OnDisconnected(DisconnectCause cause)
     {
+        base.OnDisconnected(cause);
         ChatManager.Instance.MessageReceived -= OnMessageReceived;
     }
 

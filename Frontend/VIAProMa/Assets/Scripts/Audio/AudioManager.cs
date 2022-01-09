@@ -1,5 +1,6 @@
 ﻿using System;
 using i5.VIAProMa.UI.MainMenuCube;
+using i5.VIAProMa.UI.Chat;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -71,11 +72,17 @@ public class AudioManager : MonoBehaviour
         PlaySoundOnceAt(logoffSound, at);
     }
 
+    /// <summary>
+    /// Plays the Message sound at either the open Chat Menu or the Main Menu Cube
+    /// </summary>
     public void PlayMessageSound()
     {
-        Vector3 mainMenuPosition = FindObjectOfType<MainMenu>().gameObject.transform.position;
-        messageSound.maxDistance = Vector3.Distance(Camera.main.transform.position, mainMenuPosition) + 1; // +1 for a bit of buffer
-        PlaySoundOnceAt(messageSound, mainMenuPosition);
+        Vector3 soundPlayPosition = new Vector3();
+        if (FindObjectOfType<MainMenu>()) soundPlayPosition = FindObjectOfType<MainMenu>().transform.position;
+        if (FindObjectOfType<ChatMenu>().enabled) soundPlayPosition = FindObjectOfType<ChatMenu>().transform.position;
+
+        messageSound.maxDistance = Vector3.Distance(Camera.main.transform.position, soundPlayPosition) + 1; // +1 for a bit of buffer
+        PlaySoundOnceAt(messageSound, soundPlayPosition);
     }
 }
 
