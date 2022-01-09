@@ -55,7 +55,7 @@ namespace i5.VIAProMa.DeepLinks
                 // TODO: Add pop-up with join-option here.
                 PhotonNetwork.LeaveRoom();
             }
-            bool wasJoined = PhotonNetwork.JoinRoom(roomname);
+            bool wasJoined = PhotonNetwork.JoinOrCreateRoom(roomname, null, null);
             Debug.Log("The room was" + (wasJoined ? "" : " not") + " joined." + (wasJoined ? "" :
                 "\n This may indicate that there was no such room."));
         }
