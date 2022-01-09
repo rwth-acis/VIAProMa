@@ -13,7 +13,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
     public class InviteLinkManager : Singleton<InviteLinkManager>
     {
         /// TODO Invite URI config, for testing purposed only, will be relocated later
-        static string inviteURI = "i5://ViaProMa/invite";
+        static string inviteURI = "i5://invite";
         static string paramName_roomName = "roomName";
 
 
