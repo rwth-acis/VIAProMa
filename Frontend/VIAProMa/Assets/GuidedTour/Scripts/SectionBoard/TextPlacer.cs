@@ -25,7 +25,7 @@ namespace GuidedTour
             Debug.Log(man.Sections == null);
             foreach (TourSection sec in man.Sections)
             {
-                bool activeSecIsCurrent=false;
+                bool activeSecIsCurrent = false;
                 if (sec.Name == man.ActiveSection.Name)
                 {
                     metActiveSec = true;
@@ -41,9 +41,15 @@ namespace GuidedTour
                     foreach (AbstractTourTask task in sec.Tasks)
                     {
                         setTaskColor(strb, task, false);
-                        strb.Append("   <size=10>");
-                        strb.Append(task.Description);
-                        strb.Append("</size=10>\n");
+                        strb.Append("<indent=10><size=10>");
+                        strb.Append(task.Name);
+                        if (man.ActiveTask.Id == task.Id)
+                        {
+                            strb.Append("<indent=15><size=8>\n");
+                            strb.Append(task.Description);
+                            strb.Append("</indent=15></size=8>");
+                        }
+                        strb.Append("</size=10></indent=10>\n");
                         setTaskColor(strb, task, false);
                     }
                 }
@@ -88,7 +94,7 @@ namespace GuidedTour
         private void setTaskColor(StringBuilder strb, AbstractTourTask task, bool isClosingTag)
         {
             bool activeIsCurrent = false;
-            if(man.ActiveTask.Id == task.Id)
+            if (man.ActiveTask.Id == task.Id)
             {
                 activeIsCurrent = true;
                 metActiveTask = true;

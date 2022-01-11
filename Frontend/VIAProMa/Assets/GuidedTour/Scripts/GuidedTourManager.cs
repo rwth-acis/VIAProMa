@@ -26,7 +26,6 @@ namespace GuidedTour
 
         private void Awake()
         {
-
             Sections = new List<TourSection>();
 
             configFile.LoadConfig();
@@ -48,12 +47,17 @@ namespace GuidedTour
             }
         }
 
+
+        /**
+         * <summary>
+         * This method skips the current section. For each remaining task of the section the SkipTask() Method is called.
+         * If this section was not the last, the next section will begin with its first task.
+         * <exception cref="InvalidOperationException">If there is no task left in this tour</exception>
+         * </summary>
+         */
         internal void SkipSection()
         {
-            if (ActiveSection == null)
-            {
-                throw new Exception("Tour has already been finished");
-            }
+            CheckTourNotFinished();
 
             // For the remaining tasks in the section
             for (int task = taskIndex; task < ActiveSection.Tasks.Count; task++)
@@ -66,12 +70,15 @@ namespace GuidedTour
             SelectNextTask();
         }
 
+        /**
+         * <summary>
+         * This method skips the current task. If there are reaming tasks in the tour, the next task will be choosen.
+         * <exception cref="InvalidOperationException">If there is no task left in this tour</exception>
+         * </summary>
+         */
         internal void SkipTask()
         {
-            if (ActiveSection == null)
-            {
-                throw new Exception("Tour has already been finished");
-            }
+            CheckTourNotFinished();
 
             ActiveTask.SkipTask();
             SelectNextTask();
@@ -112,6 +119,14 @@ namespace GuidedTour
             textPlacer.drawSectionBoard();
 
             Debug.Log("Selected next task: " + ActiveTask.Name);
+        }
+
+        private void CheckTourNotFinished()
+        {
+            if (ActiveSection == null)
+            {
+                throw new InvalidOperationException("Tour has already been finished");
+            }
         }
     }
 }
