@@ -1621,7 +1621,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4773336746928731127}
   - component: {fileID: 4773336746928731131}
-  - component: {fileID: 4773336746928731130}
   - component: {fileID: 4773336746928731129}
   - component: {fileID: 4773336746928731128}
   m_Layer: 0
@@ -1689,14 +1688,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &4773336746928731130
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4773336746928731126}
-  m_Mesh: {fileID: 0}
 --- !u!222 &4773336746928731129
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1746,7 +1737,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1759,8 +1750,8 @@ MonoBehaviour:
   m_fontSizeMax: 0.3
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 513
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -2979,6 +2970,7 @@ MonoBehaviour:
   closeButton: {fileID: 9165427990491662338}
   roomNameField: {fileID: 8481992936288594745}
   errorMessage: {fileID: 4773336746837986798}
+  errorMessageText: {fileID: 4773336746928731128}
   advancedSettingsCheckbox: {fileID: 4315252609467238853}
   memberNumberSlider: {fileID: 4773336746536439839}
   createRoomButton: {fileID: 4606756679000347361}
@@ -3702,15 +3694,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f89876ff9050224f949c0490969219d, type: 3}
---- !u!1 &4211228849355023275 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1645441935900780, guid: 6f89876ff9050224f949c0490969219d,
-    type: 3}
-  m_PrefabInstance: {fileID: 4212153003072316359}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &4214016220188767471 stripped
+--- !u!4 &4213784424862231871 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4402144810473256, guid: 6f89876ff9050224f949c0490969219d,
+  m_CorrespondingSourceObject: {fileID: 4165280830115576, guid: 6f89876ff9050224f949c0490969219d,
     type: 3}
   m_PrefabInstance: {fileID: 4212153003072316359}
   m_PrefabAsset: {fileID: 0}
@@ -3726,9 +3712,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &4213784424862231871 stripped
+--- !u!4 &4214016220188767471 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 4165280830115576, guid: 6f89876ff9050224f949c0490969219d,
+  m_CorrespondingSourceObject: {fileID: 4402144810473256, guid: 6f89876ff9050224f949c0490969219d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4212153003072316359}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4211228849355023275 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1645441935900780, guid: 6f89876ff9050224f949c0490969219d,
     type: 3}
   m_PrefabInstance: {fileID: 4212153003072316359}
   m_PrefabAsset: {fileID: 0}
@@ -3901,6 +3893,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6a506e649f6f544a8a1f83501246aa5, type: 3}
+--- !u!4 &5958235165904255197 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1193923580483524227, guid: a6a506e649f6f544a8a1f83501246aa5,
+    type: 3}
+  m_PrefabInstance: {fileID: 4773336746229788254}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8481992936288594745 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4001549260016502119, guid: a6a506e649f6f544a8a1f83501246aa5,
@@ -3913,12 +3911,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb937299bb55a8148a57952055fb5387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &5958235165904255197 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1193923580483524227, guid: a6a506e649f6f544a8a1f83501246aa5,
-    type: 3}
-  m_PrefabInstance: {fileID: 4773336746229788254}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4773336746500078872
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4293,12 +4285,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1093263a89abe47499cccf7dcb08effb, type: 3}
---- !u!4 &2835485469002485174 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7307063430561165486, guid: 1093263a89abe47499cccf7dcb08effb,
-    type: 3}
-  m_PrefabInstance: {fileID: 4773336746500078872}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2835485469207970629 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7307063430758334045, guid: 1093263a89abe47499cccf7dcb08effb,
@@ -4308,6 +4294,12 @@ Transform:
 --- !u!4 &2835485469061869627 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7307063430618434851, guid: 1093263a89abe47499cccf7dcb08effb,
+    type: 3}
+  m_PrefabInstance: {fileID: 4773336746500078872}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2835485469002485174 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7307063430561165486, guid: 1093263a89abe47499cccf7dcb08effb,
     type: 3}
   m_PrefabInstance: {fileID: 4773336746500078872}
   m_PrefabAsset: {fileID: 0}
@@ -4503,7 +4495,7 @@ PrefabInstance:
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: VoiceCommand
-      value: Create Room
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}

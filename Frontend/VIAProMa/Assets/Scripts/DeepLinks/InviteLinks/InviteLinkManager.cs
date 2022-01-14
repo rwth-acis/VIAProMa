@@ -4,6 +4,7 @@ using UnityEngine;
 using HoloToolkit.Unity;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Text.RegularExpressions;
 
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
@@ -32,6 +33,8 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             }
 
             string roomName = currentRoom.Name;
+            Regex rgx = new Regex("[^a-zA-Z0-9_]");
+            roomName = rgx.Replace(roomName, "");
 
 
 
