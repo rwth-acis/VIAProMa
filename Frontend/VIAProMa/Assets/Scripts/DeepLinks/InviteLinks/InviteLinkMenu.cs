@@ -6,6 +6,7 @@ using i5.VIAProMa.DeepLinks.InviteLinks;
 using Photon.Pun;
 using TMPro;
 
+
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
     /// <summary>
@@ -81,6 +82,18 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             GUIUtility.systemCopyBuffer = curInviteLink;
         }
 
+        public void ShareLinkMail()
+        {
+            string mailDefaultSubject = "Come join my ViaProMa session!";
+            string mailDefaultBody = "Hello, {Environment.NewLine} I'd like to invite you to my current ViaProMa session! {Environment.NewLine} Just click the link below: {Environment.NewLine}" + curInviteLink + "{Environment.NewLine} Best regards!";
+
+            string mailUrl = "mailto:?to=&subject=" + System.Net.WebUtility.UrlEncode(mailDefaultSubject) +
+                "&body=" + System.Net.WebUtility.UrlEncode(mailDefaultSubject);
+
+            System.Diagnostics.Process.Start(mailUrl);
+
+        }
+
         /// <summary>
         /// Leaves the Photonroom.
         /// </summary>
@@ -89,6 +102,8 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             PhotonNetwork.LeaveRoom();
             this.Close();
         }
+
+        
     }
 }
 

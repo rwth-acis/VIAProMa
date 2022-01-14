@@ -115,7 +115,7 @@ namespace i5.VIAProMa.Multiplayer
         private void OnInputFieldRoomNameChanged(object sender, EventArgs e)
         {
             bool roomExists = roomMenu.CheckIfRoomExists(roomNameField.Text);
-            bool nameInvalid = !checkRoomNameValidity(roomNameField.Text);
+            bool nameInvalid = !CheckRoomNameValidity(roomNameField.Text);
             if (roomExists)
             {
                 errorMessageText.text = "A room with this name already exists.";
@@ -192,7 +192,7 @@ namespace i5.VIAProMa.Multiplayer
         /// <summary>
         /// Checks íf the given string only contains alphanummeric characters, false if not
         /// </summary>
-        public bool checkRoomNameValidity(string roomName)
+        public bool CheckRoomNameValidity(string roomName)
         {
             return Regex.IsMatch(roomName, "^[a-zA-Z0-9_]*$");
         }
