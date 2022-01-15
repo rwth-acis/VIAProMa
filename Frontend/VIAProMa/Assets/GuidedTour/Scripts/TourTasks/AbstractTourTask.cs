@@ -82,5 +82,10 @@ namespace GuidedTour
          * </summary>
          */
         internal abstract void SkipTask();
+
+        public override string ToString()
+        {
+            return this.GetType() + " with ID " + Id;
+        }
     }
 }

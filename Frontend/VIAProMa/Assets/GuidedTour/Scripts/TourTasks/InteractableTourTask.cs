@@ -14,7 +14,6 @@ namespace GuidedTour
      * the "interactable" field in the inspector.
      * </summary>
      */
-
     public class InteractableTourTask : AbstractTourTask
     {
 
