@@ -43,6 +43,7 @@ namespace GuidedTour
             if (ActiveTask.IsTaskDone())
             {
                 Debug.Log("Finished task: " + ActiveTask.Name);
+                ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
                 SelectNextTask();
             }
         }
@@ -63,6 +64,7 @@ namespace GuidedTour
             for (int task = taskIndex; task < ActiveSection.Tasks.Count; task++)
             {
                 ActiveSection.Tasks[task].SkipTask();
+                ActiveSection.Tasks[task].State = AbstractTourTask.TourTaskState.COMPLETED;
             }
 
             taskIndex = ActiveSection.Tasks.Count;
@@ -81,16 +83,12 @@ namespace GuidedTour
             CheckTourNotFinished();
 
             ActiveTask.SkipTask();
+            ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
             SelectNextTask();
         }
 
         private void SelectNextTask()
         {
-            if (ActiveTask != null)
-            {
-                ActiveTask.Active = false;
-            }
-
             taskIndex++;
             if (taskIndex >= ActiveSection.Tasks.Count) // Section finished
             {
@@ -114,7 +112,7 @@ namespace GuidedTour
             }
 
             ActiveTask = ActiveSection.Tasks[taskIndex];
-            ActiveTask.Active = true;
+            ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             widget.UpdateTask(ActiveTask);
             textPlacer.drawSectionBoard();
 

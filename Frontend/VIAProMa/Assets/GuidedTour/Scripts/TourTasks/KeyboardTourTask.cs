@@ -18,7 +18,6 @@ namespace GuidedTour {
         {
             keyboard = keyboard.gameObject.GetComponent<Keyboard>();
             keyboard.InputFinished += c_KeyboardClosed;
-            Active = true;
         }
 
         void c_KeyboardClosed(object sender, InputFinishedEventArgs args) {
@@ -30,7 +29,7 @@ namespace GuidedTour {
 
         internal override void SkipTask() 
         {
-            if(Active && !done) 
+            if(State == TourTaskState.ACTIVE && !done) 
             {
                 // keyboard.Text = targetString;
                 // keyboard.InputDone(false);
@@ -66,7 +65,7 @@ namespace GuidedTour {
 
         internal void OnAction() 
         {
-            if (Active && !done) 
+            if (State == TourTaskState.ACTIVE && !done) 
             {
                 if (inputField.ContentField.text.Equals(targetString)) 
                 {

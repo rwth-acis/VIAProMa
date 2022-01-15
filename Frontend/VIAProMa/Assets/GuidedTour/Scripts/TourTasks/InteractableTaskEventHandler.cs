@@ -28,7 +28,7 @@ namespace GuidedTour
 
         public override void OnClick(InteractableStates state, Interactable source, IMixedRealityPointer pointer = default) 
         {
-            if (task.Active == true && task.done == false) 
+            if (task.State == AbstractTourTask.TourTaskState.ACTIVE && task.done == false) 
             {
                 Debug.Log("InteractableTourTask was successfully finished");
                 task.done = true;
@@ -38,7 +38,7 @@ namespace GuidedTour
 
         internal void EmulateButtonPress() 
         {
-            if (task.Active == true && task.done == false) 
+            if (task.State == AbstractTourTask.TourTaskState.ACTIVE == true && task.done == false) 
             {
                 Debug.Log("InteractableTourTask was successfully skipped");
                 Interactable.TriggerOnClick();

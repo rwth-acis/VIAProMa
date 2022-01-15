@@ -14,12 +14,6 @@ namespace GuidedTour
     {
         private bool done;
 
-
-        void Start()
-        {
-            
-        }
-
         /**
          * <summary>
          * This method is called by the VisualTourComponent when the button is pressed.
@@ -28,7 +22,6 @@ namespace GuidedTour
         public void OnAction()
         {
             done = true;
-            Debug.Log("OnAction()");
         }
 
         internal override bool IsTaskDone()

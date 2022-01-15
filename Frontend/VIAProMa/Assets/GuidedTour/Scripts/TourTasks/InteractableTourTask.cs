@@ -10,7 +10,7 @@ namespace GuidedTour
     /**
      * <summary>
      * This creates a tour-task, that requires the user to interact with an existing button in the scene.
-     * Attatch this script to a "Task" game-object and drag the gameobject with the "Interactable" component into  
+     * Attach this script to a "Task" game-object and drag the gameobject with the "Interactable" component into  
      * the "interactable" field in the inspector.
      * </summary>
      */
@@ -21,9 +21,8 @@ namespace GuidedTour
         
         public Interactable interactable;
         
-        //This listenes to 
+        //This listens to 
         InteractableTaskEventHandler tourTaskEventHandler;
-
         internal bool done = false;
 
 
