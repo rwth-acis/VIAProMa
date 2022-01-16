@@ -16,6 +16,17 @@ namespace GuidedTour
     {
         /**
          * <summary>
+         * The TourTaskState represents in which state a task certainly is.
+         * The state is:
+         * - SCHEDULED, if the task is not currently active. Input should be blocked in this state
+         * - ACTIVE, if the task is the current active task
+         * - COMPLETED, if the task has been completed and is no longer active. In this state input should not be blocked
+         * </summary>
+         */
+        public enum TourTaskState { SCHEDULED, ACTIVE, COMPLETED };
+
+        /**
+         * <summary>
          * The identifier of this task used to reference the task by the configuration file
          * </summary>
          */
@@ -39,11 +50,11 @@ namespace GuidedTour
         public string Description { get; internal set; }
         /**
          * <summary>
-         * Denotes whether the task is active or not. Only one task is active at a time. As long as the task is not active, the 
-         * task might block input by the user regarding this task.
+         * Denotes the current state of the task. See TourTaskState for a list of possible states.
+         * The state should not be set by this class or subclasses, but is instead handled by the GuidedTourManager
          * </summary>
          */
-        public bool Active { get; internal set; }
+        public TourTaskState State { get; internal set; } = TourTaskState.SCHEDULED;
         /**
          * <summary>
          * The description of the action which is performed by the user. Set by the configuration file
@@ -62,8 +73,8 @@ namespace GuidedTour
          * this task is over and the TourManager selects the next tasks.
          * </summary>
          */
-        internal abstract bool IsTaskDone(); 
-        
+        internal abstract bool IsTaskDone();
+
         /**
          * <summary>
          * This method is called when the task should be skipped. The underlying task is responsible for 
@@ -71,5 +82,10 @@ namespace GuidedTour
          * </summary>
          */
         internal abstract void SkipTask();
+
+        public override string ToString()
+        {
+            return this.GetType() + " with ID " + Id;
+        }
     }
 }
