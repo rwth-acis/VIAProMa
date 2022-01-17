@@ -18,7 +18,7 @@ namespace GuidedTour
         public List<TourSection> Sections { get; private set; }
 
         [SerializeField] private TextPlacer textPlacer;
-        [SerializeField] private GuidedTourWidget widget; 
+        [SerializeField] private GuidedTourWidget widget;
 
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
         private int sectionIndex = 0;
@@ -29,7 +29,7 @@ namespace GuidedTour
             Sections = new List<TourSection>();
 
             configFile.LoadConfig();
-            GuidedTourUtils.LinkTasks(Sections, configFile.Root);
+            GuidedTourUtils.CreateTasks(Sections, configFile.Root);
 
             ActiveSection = Sections[0];
             SelectNextTask();
@@ -40,9 +40,11 @@ namespace GuidedTour
             if (ActiveTask == null)
                 return;
 
+            ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             if (ActiveTask.IsTaskDone())
             {
                 Debug.Log("Finished task: " + ActiveTask.Name);
+                ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
                 SelectNextTask();
             }
         }
@@ -63,6 +65,7 @@ namespace GuidedTour
             for (int task = taskIndex; task < ActiveSection.Tasks.Count; task++)
             {
                 ActiveSection.Tasks[task].SkipTask();
+                ActiveSection.Tasks[task].State = AbstractTourTask.TourTaskState.COMPLETED;
             }
 
             taskIndex = ActiveSection.Tasks.Count;
@@ -81,16 +84,12 @@ namespace GuidedTour
             CheckTourNotFinished();
 
             ActiveTask.SkipTask();
+            ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
             SelectNextTask();
         }
 
         private void SelectNextTask()
         {
-            if (ActiveTask != null)
-            {
-                ActiveTask.Active = false;
-            }
-
             taskIndex++;
             if (taskIndex >= ActiveSection.Tasks.Count) // Section finished
             {
@@ -114,7 +113,17 @@ namespace GuidedTour
             }
 
             ActiveTask = ActiveSection.Tasks[taskIndex];
-            ActiveTask.Active = true;
+            if (ActiveTask.GetType() == typeof(UnlinkedTourTask))
+            {
+                string id = ActiveTask.Id;
+                ActiveTask = ActiveSection.Tasks[taskIndex] = GuidedTourUtils.LinkTask((UnlinkedTourTask)ActiveTask);
+                if (ActiveTask == null)
+                {
+                    throw new Exception("No task with the id \"" + id +"\" is in the scene");
+                }
+            }
+
+            ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             widget.UpdateTask(ActiveTask);
             textPlacer.drawSectionBoard();
 
