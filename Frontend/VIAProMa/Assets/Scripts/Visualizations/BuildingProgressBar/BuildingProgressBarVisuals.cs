@@ -34,6 +34,12 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         private int buildingModelIndex;
 
         /// <summary>
+        /// Gets called when DonePercentage is changed
+        /// </summary>
+        public static event PercentageDoneChangedDelegate OnPercentageDoneChange;
+        public delegate void PercentageDoneChangedDelegate(BuildingProgressBarVisuals bar, float oldValue, float newValue);
+
+        /// <summary>
         /// Gets or sets the percentage which should be displayed as done, i.e. for which the building should be visible
         /// </summary>
         public float PercentageDone
@@ -41,6 +47,7 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
             get => percentageDone;
             set
             {
+                OnPercentageDoneChange?.Invoke(this, percentageDone, value);
                 percentageDone = value;
                 UpdateVisuals();
             }

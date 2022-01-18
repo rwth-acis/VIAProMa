@@ -32,6 +32,12 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         [SerializeField] private TextLabel textLabel;
 
         /// <summary>
+        /// Gets called when DonePercentage is changed
+        /// </summary>
+        public static event PercentageDoneChangedDelegate OnPercentageDoneChange;
+        public delegate void PercentageDoneChangedDelegate(ProgressBarController bar, float oldValue, float newValue);
+
+        /// <summary>
         /// Minimum length of the progress bar
         /// </summary>
         public float minLength = 0.05f;
@@ -89,7 +95,9 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             get => percentageDone;
             set
             {
+                float oldValue = percentageDone;
                 percentageDone = Mathf.Clamp01(value);
+                OnPercentageDoneChange?.Invoke(this, oldValue, percentageDone);
                 UpdateVisuals();
             }
         }

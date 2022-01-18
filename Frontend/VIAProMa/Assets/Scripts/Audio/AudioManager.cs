@@ -14,6 +14,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private Sound loginSound = new Sound(null);
     [SerializeField] private Sound logoffSound = new Sound(null);
     [SerializeField] private Sound messageSound = new Sound(null);
+    [SerializeField] private Sound progressBarSound = new Sound(null);
+    [SerializeField] private Sound buildingProgressSound = new Sound(null);
+
 
     private void Start()
     {
@@ -70,6 +73,16 @@ public class AudioManager : MonoBehaviour
     public void PlayLogoffSound(Vector3 at)
     {
         PlaySoundOnceAt(logoffSound, at);
+    }
+
+    internal void PlayBuildingProgressSound(Vector3 at)
+    {
+        PlaySoundOnceAt(buildingProgressSound, at);
+    }
+
+    public void PlayProgressBarSound(Vector3 at)
+    {
+        PlaySoundOnceAt(progressBarSound, at);
     }
 
     /// <summary>
