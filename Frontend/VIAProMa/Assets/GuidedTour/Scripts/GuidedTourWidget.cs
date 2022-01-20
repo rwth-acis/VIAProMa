@@ -27,7 +27,7 @@ namespace GuidedTour
             
         }
 
-        internal void UpdateTask(AbstractTourTask task)
+        internal void UpdateTask(AbstractTourTask task, LanguageFile languageFile, string language)
         {
             currentTask = task;
             if (task == null)
@@ -37,8 +37,8 @@ namespace GuidedTour
                 return;
             }
 
-            headline.text = task.Name;
-            hintText.text = task.Description;
+            headline.text = languageFile.GetTranslation(task.Name, language);
+            hintText.text = languageFile.GetTranslation(task.Description, language);
 
             if (task.GetType() == typeof(SimpleTourTask))
             { 
