@@ -24,12 +24,12 @@ namespace GuidedTour
 
         public void Start()
         {
-            headline.text = "Hallo";
+            
         }
 
         internal void UpdateTask(AbstractTourTask task)
         {
-            currentTask = task; 
+            currentTask = task;
             if (task == null)
             {
                 headline.text = "Completed Tour";
