@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.DeepLinkAPI;
+using i5.VIAProMa.UI;
 //using i5.VIAProMa.DeepLinks;
 
 namespace i5.VIAProMa.DeepLinks
@@ -37,9 +38,20 @@ namespace i5.VIAProMa.DeepLinks
         [DeepLink(scheme: "i5", path: "invite")]
         public void ReceiveDeepLink(DeepLinkArgs args)
         {
-            Debug.Log("Deep link " + args.DeepLink.AbsoluteUri + " was received."); 
-            DeepLinkManager.Instance.ProcessInviteDeepLink(args);
+            Debug.Log("Deep link " + args.DeepLink.AbsoluteUri + " was received.");
+            StartCoroutine(DeepLinkCoroutine(args));
         }
+
+        private IEnumerator DeepLinkCoroutine(DeepLinkArgs args)
+        {
+            Debug.Log("DeepLink received - pause till all instances are loaded");
+            yield return null;
+
+            Debug.Log("All Instances should be loaded - Processing DeepLink");
+            DeepLinkManager.Instance.ProcessInviteDeepLink(args);
+            yield return null;
+        }
+
     }
 
 }
