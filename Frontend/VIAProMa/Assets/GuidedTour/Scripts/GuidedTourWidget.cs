@@ -30,9 +30,9 @@ namespace GuidedTour
 
         public void Start()
         {
-            headline.text = "Hallo";
+            
         }
-
+        
         /**
      * <summary>
      * The UpdateTask method, updates the texts that are visible on the widget with the current task. The information about the task is provided by 
@@ -40,7 +40,7 @@ namespace GuidedTour
      * </summary>
      */
 
-        internal void UpdateTask(AbstractTourTask task)
+        internal void UpdateTask(AbstractTourTask task, LanguageFile languageFile, string language)
         {
             //check if you reached the end of the tour
             currentTask = task; 
@@ -51,9 +51,8 @@ namespace GuidedTour
                 return;
             }
 
-            //set the texts with the information of the current task
-            headline.text = task.Name;
-            hintText.text = task.Description;
+            headline.text = languageFile.GetTranslation(task.Name, language);
+            hintText.text = languageFile.GetTranslation(task.Description, language);
 
             //check the type of the task to identify if the continue button is needed
             if (task.GetType() == typeof(SimpleTourTask))

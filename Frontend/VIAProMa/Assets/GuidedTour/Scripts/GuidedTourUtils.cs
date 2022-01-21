@@ -17,15 +17,29 @@ namespace GuidedTour
          */
         public static void CreateTasks(List<TourSection> sections, ConfigRootEntry root)
         {
+            GameObject simpleTasks = new GameObject("SimpleTourTasks");
+
             foreach (TourSectionEntry s in root.sections)
             {
                 TourSection section = new TourSection(s.sectionName);
                 sections.Add(section);
-                foreach (TaskEntry t in s.tasks)
+                foreach (TaskEntry entry in s.tasks)
                 {
-                    AbstractTourTask task = new UnlinkedTourTask(t);
-                    task.Id = t.id;
-                    SetAttributes(t, task);
+                    AbstractTourTask task;
+
+                    if (entry.id != null) // Task will be linked against an AbstractTourTask instance later
+                    {
+                        task = new UnlinkedTourTask(entry);
+                        task.Id = entry.id;
+                        
+                    }
+                    else // Tasks without an id will be SimpleTourTasks by default
+                    {
+                        task = simpleTasks.AddComponent<SimpleTourTask>();
+                        task.Id = "";
+                    }
+
+                    SetAttributes(entry, task);
                     section.Tasks.Add(task);
                 }
             }
