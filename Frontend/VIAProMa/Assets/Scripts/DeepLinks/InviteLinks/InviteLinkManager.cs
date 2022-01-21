@@ -5,6 +5,7 @@ using HoloToolkit.Unity;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
@@ -13,16 +14,28 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
     /// </summary>
     public class InviteLinkManager : Singleton<InviteLinkManager>
     {
-        /// TODO Invite URI config, for testing purposed only, will be relocated later
-        static string inviteURI = "i5://invite";
-        static string paramName_roomName = "roomName";
-
+        /// <summary>
+        /// Method to read setting from AppSettings
+        /// <param name="key">Key to read.</param>
+        /// <returns>Corresponding value or error string.</returns>
+        /// </summary>
+        public static string ReadSetting(string key)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load("./Assets/Scripts/DeepLinks/App.config");
+            XmlNode node = doc.SelectSingleNode("configuration/configSections/"+key);
+            return node.InnerText;
+        }
 
         /// <summary>
         /// Generates an invite link for the current session
+        /// <returns>Invite link.</returns>
         /// </summary>
         public static string GenerateInviteLink()
         {
+            string inviteURL = ReadSetting("inviteURL");
+            string paramName_roomName = ReadSetting("paramName_roomName");
+
 
             Room currentRoom = PhotonNetwork.CurrentRoom;
 
@@ -39,10 +52,9 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
 
 
 
-            return inviteURI + "?" + paramName_roomName + "=" + roomName;
+            return inviteURL + "?" + paramName_roomName + "=" + roomName;
         }
     }
 
     
 }
-
