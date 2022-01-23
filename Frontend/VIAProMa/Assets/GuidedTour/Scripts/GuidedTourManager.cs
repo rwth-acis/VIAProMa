@@ -19,6 +19,7 @@ namespace GuidedTour
 
         [SerializeField] private TextPlacer textPlacer;
         [SerializeField] private GuidedTourWidget widget;
+        [SerializeField] private GameObject indicatorArrow;
 
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
         private int sectionIndex = 0;
@@ -45,6 +46,7 @@ namespace GuidedTour
             {
                 Debug.Log("Finished task: " + ActiveTask.Name);
                 ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
+                ActiveTask.OnTaskDeactivation(indicatorArrow);
                 SelectNextTask();
             }
         }
@@ -85,6 +87,7 @@ namespace GuidedTour
 
             ActiveTask.SkipTask();
             ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
+            ActiveTask.OnTaskDeactivation(indicatorArrow);
             SelectNextTask();
         }
 
@@ -126,6 +129,7 @@ namespace GuidedTour
             ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             widget.UpdateTask(ActiveTask);
             textPlacer.drawSectionBoard();
+            ActiveTask.OnTaskActivation(indicatorArrow);
 
             Debug.Log("Selected next task: " + ActiveTask.Name);
         }
