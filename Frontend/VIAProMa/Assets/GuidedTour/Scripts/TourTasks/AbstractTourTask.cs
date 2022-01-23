@@ -87,5 +87,8 @@ namespace GuidedTour
         {
             return this.GetType() + " with ID " + Id;
         }
+
+        internal abstract void OnTaskActivation(GameObject indicatorArrow);
+        internal abstract void OnTaskDeactivation(GameObject indicatorArrow);
     }
 }

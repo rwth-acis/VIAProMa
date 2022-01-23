@@ -28,5 +28,10 @@ namespace GuidedTour
         {
             throw new InvalidOperationException("Cannot call SkipTask() on an unlinked tour task");
         }
+
+        internal override void OnTaskActivation(GameObject indicatorArrow) {
+
+        }
+        internal override void OnTaskDeactivation(GameObject indicatorArrow) { }
     }
 }
