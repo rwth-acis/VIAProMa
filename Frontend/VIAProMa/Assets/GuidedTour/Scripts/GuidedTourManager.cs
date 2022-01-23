@@ -17,11 +17,13 @@ namespace GuidedTour
         public TourSection ActiveSection { get; private set; }
         public List<TourSection> Sections { get; private set; }
 
+        [SerializeField] private string language = "en";
         [SerializeField] private TextPlacer textPlacer;
         [SerializeField] private GuidedTourWidget widget;
         [SerializeField] private GameObject indicatorArrow;
 
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
+        private LanguageFile languageFile = new LanguageFile("Assets/GuidedTour/Configuration/Languages.json");
         private int sectionIndex = 0;
         private int taskIndex = -1;
 
@@ -29,6 +31,7 @@ namespace GuidedTour
         {
             Sections = new List<TourSection>();
 
+            languageFile.LoadConfig();
             configFile.LoadConfig();
             GuidedTourUtils.CreateTasks(Sections, configFile.Root);
 
@@ -108,7 +111,7 @@ namespace GuidedTour
                 else // Finished with the complete tour
                 {
                     Debug.Log("- Tour completed -");
-                    widget.UpdateTask(null);
+                    widget.UpdateTask(null, languageFile, language);
                     ActiveSection = null;
                     ActiveTask = null;
                     return;
@@ -127,7 +130,7 @@ namespace GuidedTour
             }
 
             ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
-            widget.UpdateTask(ActiveTask);
+            widget.UpdateTask(ActiveTask, languageFile, language);
             textPlacer.drawSectionBoard();
             ActiveTask.OnTaskActivation(indicatorArrow);
 
