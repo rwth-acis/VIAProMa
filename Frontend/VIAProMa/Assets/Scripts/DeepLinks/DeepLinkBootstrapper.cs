@@ -40,6 +40,19 @@ namespace i5.VIAProMa.DeepLinks
             Debug.Log("Deep link " + args.DeepLink.AbsoluteUri + " was received."); 
             DeepLinkManager.Instance.ProcessInviteDeepLink(args);
         }
+
+        /// <summary>
+        /// Method to read setting from AppSettings
+        /// <param name="key">Key to read.</param>
+        /// <returns>Corresponding value or error string.</returns>
+        /// </summary>
+        public static string ReadSetting(string key)
+        {
+            XmlDocument config = new XmlDocument();
+            config.Load("./Assets/Scripts/DeepLinks/DeepLinkConfig.config");
+            XmlNode node = doc.SelectSingleNode("configuration/configSections/" + key);
+            return node.InnerText;
+        }
     }
 
 }

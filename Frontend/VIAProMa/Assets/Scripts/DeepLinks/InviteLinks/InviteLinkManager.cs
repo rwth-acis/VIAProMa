@@ -21,8 +21,8 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         /// </summary>
         public static string ReadSetting(string key)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load("./Assets/Scripts/DeepLinks/App.config");
+            XmlDocument config = new XmlDocument();
+            config.Load("./Assets/Scripts/DeepLinks/DeepLinkConfig.config");
             XmlNode node = doc.SelectSingleNode("configuration/configSections/"+key);
             return node.InnerText;
         }
@@ -33,7 +33,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         /// </summary>
         public static string GenerateInviteLink()
         {
-            string inviteURL = ReadSetting("inviteURL");
+            string inviteURI = ReadSetting("scheme") + "://" + ReadSetting("invitePath");
             string paramName_roomName = ReadSetting("paramName_roomName");
 
 
@@ -52,7 +52,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
 
 
 
-            return inviteURL + "?" + paramName_roomName + "=" + roomName;
+            return inviteURI + "?" + paramName_roomName + "=" + roomName;
         }
     }
 
