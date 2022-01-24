@@ -4,6 +4,7 @@ using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.DeepLinkAPI;
 using i5.VIAProMa.UI;
+using System.Xml;
 //using i5.VIAProMa.DeepLinks;
 
 namespace i5.VIAProMa.DeepLinks
@@ -60,7 +61,7 @@ namespace i5.VIAProMa.DeepLinks
         {
             XmlDocument config = new XmlDocument();
             config.Load("./Assets/Scripts/DeepLinks/DeepLinkConfig.config");
-            XmlNode node = doc.SelectSingleNode("configuration/configSections/" + key);
+            XmlNode node = config.SelectSingleNode("configuration/configSections/" + key);
             return node.InnerText;
         }
     }

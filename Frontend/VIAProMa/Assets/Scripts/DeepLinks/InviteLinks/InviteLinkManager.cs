@@ -23,7 +23,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         {
             XmlDocument config = new XmlDocument();
             config.Load("./Assets/Scripts/DeepLinks/DeepLinkConfig.config");
-            XmlNode node = doc.SelectSingleNode("configuration/configSections/"+key);
+            XmlNode node = config.SelectSingleNode("configuration/configSections/"+key);
             return node.InnerText;
         }
 
