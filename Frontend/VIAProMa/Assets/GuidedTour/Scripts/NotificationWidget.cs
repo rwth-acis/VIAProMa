@@ -8,20 +8,26 @@ using TMPro;
 
 namespace GuidedTour
 {
-    public class NotoficationWidget : MonoBehaviour
+    public class NotificationWidget : MonoBehaviour
     {
         public GameObject notificationWidget;
         public TextMeshPro notificationPreviewLabel;
 
-        public bool CanShowMessages { get; set; } = true;
-
-        public void ShowMessage(string text)
+        public void ShowMessage(string text, float seconds)
         {
-            if (CanShowMessages)
-            {
-                gameObject.SetActive(true);
-                notificationPreviewLabel.text = text;
-            }
+            StopAllCoroutines();
+
+            gameObject.SetActive(true);
+            notificationPreviewLabel.text = text;
+
+            StartCoroutine(Deactivate(seconds));
+        }
+
+        private IEnumerator Deactivate(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+
+            gameObject.SetActive(false);
         }
 
         public void HideMessage()

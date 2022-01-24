@@ -17,7 +17,7 @@ namespace GuidedTour
 
     public class GuidedTourWidget : MonoBehaviour
     {
-      
+
         private AbstractTourTask currentTask = null;
         public GameObject widget;
         public TextMeshPro headline;
@@ -30,20 +30,19 @@ namespace GuidedTour
 
         public void Start()
         {
-            
-        }
-        
-        /**
-     * <summary>
-     * The UpdateTask method, updates the texts that are visible on the widget with the current task. The information about the task is provided by 
-     * the GuidedTourManager that calls this function. It also sets the continue button, if it is necessary by identifying the type of the task. 
-     * </summary>
-     */
 
+        }
+
+        /**
+         * <summary>
+         * The UpdateTask method, updates the texts that are visible on the widget with the current task. The information about the task is provided by 
+         * the GuidedTourManager that calls this function. It also sets the continue button, if it is necessary by identifying the type of the task. 
+         * </summary>
+         */
         internal void UpdateTask(AbstractTourTask task, LanguageFile languageFile, string language)
         {
             //check if you reached the end of the tour
-            currentTask = task; 
+            currentTask = task;
             if (task == null)
             {
                 headline.text = "Completed Tour";
@@ -56,7 +55,7 @@ namespace GuidedTour
 
             //check the type of the task to identify if the continue button is needed
             if (task.GetType() == typeof(SimpleTourTask))
-            { 
+            {
                 continueButton.SetActive(true);
             }
             else
@@ -74,7 +73,7 @@ namespace GuidedTour
         public bool WidgetVisible
         {
             get { return widget.activeSelf; }
-            set 
+            set
             {
                 widget.SetActive(value);
                 // Throw Event OnWidgetVisibleChanged (if there is a subscriber)
@@ -89,9 +88,9 @@ namespace GuidedTour
      * </summary>
      */
 
-        public void OnContinueClicked() 
+        public void OnContinueClicked()
         {
-            SimpleTourTask sts = (SimpleTourTask) currentTask;
+            SimpleTourTask sts = (SimpleTourTask)currentTask;
             sts.OnAction(); // --> Bind on button 
         }
 
