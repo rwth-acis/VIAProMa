@@ -17,6 +17,7 @@ namespace GuidedTour
         public TourSection ActiveSection { get; private set; }
         public List<TourSection> Sections { get; private set; }
 
+        [SerializeField] private SectionBoard sectionBoard;
         [SerializeField] private string language = "en";
         [SerializeField] private float notificationTime = 5;
         [SerializeField] private TextPlacer textPlacer;
@@ -98,6 +99,7 @@ namespace GuidedTour
 
         private void SelectNextTask()
         {
+            sectionBoard.currentTaskCount++;
             taskIndex++;
             if (taskIndex >= ActiveSection.Tasks.Count) // Section finished
             {
@@ -113,6 +115,7 @@ namespace GuidedTour
                 else // Finished with the complete tour
                 {
                     Debug.Log("- Tour completed -");
+                    sectionBoard.progressBar.PercentageDone = 1;
                     widget.UpdateTask(null, languageFile, language);
                     ActiveSection = null;
                     ActiveTask = null;
@@ -132,6 +135,7 @@ namespace GuidedTour
             }
 
             ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
+            sectionBoard.updateSectionBoard();
             widget.UpdateTask(ActiveTask, languageFile, language);
             textPlacer.drawSectionBoard();
             ActiveTask.OnTaskActivation(indicatorArrow);
