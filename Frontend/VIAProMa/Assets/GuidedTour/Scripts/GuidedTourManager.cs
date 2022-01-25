@@ -17,7 +17,7 @@ namespace GuidedTour
         public TourSection ActiveSection { get; private set; }
         public List<TourSection> Sections { get; private set; }
 
-        [SerializeField] private TextPlacer textPlacer;
+        [SerializeField] private SectionBoard sectionBoard;
         [SerializeField] private GuidedTourWidget widget;
 
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
@@ -90,6 +90,7 @@ namespace GuidedTour
 
         private void SelectNextTask()
         {
+            sectionBoard.currentTaskCount++;
             taskIndex++;
             if (taskIndex >= ActiveSection.Tasks.Count) // Section finished
             {
@@ -106,6 +107,7 @@ namespace GuidedTour
                 {
                     Debug.Log("- Tour completed -");
                     widget.UpdateTask(null);
+                    sectionBoard.progressBar.PercentageDone = 1;
                     ActiveSection = null;
                     ActiveTask = null;
                     return;
@@ -125,7 +127,7 @@ namespace GuidedTour
 
             ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             widget.UpdateTask(ActiveTask);
-            textPlacer.drawSectionBoard();
+            sectionBoard.updateSectionBoard();
 
             Debug.Log("Selected next task: " + ActiveTask.Name);
         }
