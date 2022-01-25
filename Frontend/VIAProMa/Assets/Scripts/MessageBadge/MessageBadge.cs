@@ -23,6 +23,9 @@ namespace i5.VIAProMa.UI.MessageBadge
 
         public Action TryAgainAction { get; set; }
 
+        public event ShowMessageDelegate OnShowMessage;
+        public delegate void ShowMessageDelegate(long messageCode);
+
         /// <summary>
         /// Initialization
         /// Checks if the component was set up correctly
@@ -94,6 +97,7 @@ namespace i5.VIAProMa.UI.MessageBadge
         public void ShowMessage(long messageCode)
         {
             SetContent(messages.GetMessage(messageCode));
+            OnShowMessage?.Invoke(messageCode);
         }
 
         public void Hide()

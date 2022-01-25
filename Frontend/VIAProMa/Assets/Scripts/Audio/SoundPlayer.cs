@@ -2,35 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.UI;
-
-public class SoundPlayer : MonoBehaviour
+namespace i5.VIAProMa.Audio
 {
-
-    [SerializeField] private Sound sound = new Sound(null, 1, 1);
-
-    private void Awake()
+    public class SoundPlayer : MonoBehaviour
     {
-        if(GetComponent<Interactable>() == null)
+
+        [SerializeField] private Sound sound = new Sound(null, 1, 1);
+
+        private void Awake()
         {
-            Debug.LogWarning("SoundPlayer component could not find Interactable component!");
-            return;
+            if (GetComponent<Interactable>() == null)
+            {
+                Debug.LogWarning("SoundPlayer component could not find Interactable component!");
+                return;
+            }
+            GetComponent<Interactable>().OnClick.AddListener(PlaySoundHere);
         }
-        GetComponent<Interactable>().OnClick.AddListener(PlaySoundHere);
-    }
 
-    private void OnDestroy()
-    {
-        if (GetComponent<Interactable>() == null)
+        private void OnDestroy()
         {
-            Debug.LogWarning("SoundPlayer component could not find Interactable component!");
-            return;
+            if (GetComponent<Interactable>() == null)
+            {
+                Debug.LogWarning("SoundPlayer component could not find Interactable component!");
+                return;
+            }
+            GetComponent<Interactable>().OnClick.RemoveListener(PlaySoundHere);
         }
-        GetComponent<Interactable>().OnClick.RemoveListener(PlaySoundHere);
-    }
 
-    public void PlaySoundHere()
-    {
-        AudioManager.instance?.PlaySoundOnceAt(sound, gameObject.transform.position);
-    }
+        public void PlaySoundHere()
+        {
+            AudioManager.instance?.PlaySoundOnceAt(sound, gameObject.transform.position);
+        }
 
+    }
 }
