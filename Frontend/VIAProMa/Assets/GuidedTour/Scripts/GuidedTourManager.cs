@@ -20,7 +20,6 @@ namespace GuidedTour
         [SerializeField] private SectionBoard sectionBoard;
         [SerializeField] private string language = "en";
         [SerializeField] private float notificationTime = 5;
-        [SerializeField] private TextPlacer textPlacer;
         [SerializeField] private GuidedTourWidget widget;
         [SerializeField] private GameObject indicatorArrow;
         [SerializeField] private NotificationWidget notifications;
@@ -137,7 +136,6 @@ namespace GuidedTour
             ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             sectionBoard.updateSectionBoard();
             widget.UpdateTask(ActiveTask, languageFile, language);
-            textPlacer.drawSectionBoard();
             ActiveTask.OnTaskActivation(indicatorArrow);
 
             Debug.Log("Selected next task: " + ActiveTask.Name);
