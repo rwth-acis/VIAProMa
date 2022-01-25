@@ -18,9 +18,15 @@ namespace GuidedTour
         public List<TourSection> Sections { get; private set; }
 
         [SerializeField] private SectionBoard sectionBoard;
+        [SerializeField] private string language = "en";
+        [SerializeField] private float notificationTime = 5;
+        [SerializeField] private TextPlacer textPlacer;
         [SerializeField] private GuidedTourWidget widget;
+        [SerializeField] private GameObject indicatorArrow;
+        [SerializeField] private NotificationWidget notifications;
 
         private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
+        private LanguageFile languageFile = new LanguageFile("Assets/GuidedTour/Configuration/Languages.json");
         private int sectionIndex = 0;
         private int taskIndex = -1;
 
@@ -28,6 +34,7 @@ namespace GuidedTour
         {
             Sections = new List<TourSection>();
 
+            languageFile.LoadConfig();
             configFile.LoadConfig();
             GuidedTourUtils.CreateTasks(Sections, configFile.Root);
 
@@ -43,8 +50,9 @@ namespace GuidedTour
             ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             if (ActiveTask.IsTaskDone())
             {
-                Debug.Log("Finished task: " + ActiveTask.Name);
+                notifications.ShowMessage("Completed Task " + languageFile.GetTranslation(ActiveTask.Name, language), notificationTime);
                 ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
+                ActiveTask.OnTaskDeactivation(indicatorArrow);
                 SelectNextTask();
             }
         }
@@ -85,6 +93,7 @@ namespace GuidedTour
 
             ActiveTask.SkipTask();
             ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
+            ActiveTask.OnTaskDeactivation(indicatorArrow);
             SelectNextTask();
         }
 
@@ -106,8 +115,8 @@ namespace GuidedTour
                 else // Finished with the complete tour
                 {
                     Debug.Log("- Tour completed -");
-                    widget.UpdateTask(null);
                     sectionBoard.progressBar.PercentageDone = 1;
+                    widget.UpdateTask(null, languageFile, language);
                     ActiveSection = null;
                     ActiveTask = null;
                     return;
@@ -126,8 +135,10 @@ namespace GuidedTour
             }
 
             ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
-            widget.UpdateTask(ActiveTask);
             sectionBoard.updateSectionBoard();
+            widget.UpdateTask(ActiveTask, languageFile, language);
+            textPlacer.drawSectionBoard();
+            ActiveTask.OnTaskActivation(indicatorArrow);
 
             Debug.Log("Selected next task: " + ActiveTask.Name);
         }

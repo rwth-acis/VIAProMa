@@ -33,5 +33,10 @@ namespace GuidedTour
         {
             // Nothing to do here
         }
+
+        internal override void OnTaskActivation(GameObject indicatorArrow) {
+
+        }
+        internal override void OnTaskDeactivation(GameObject indicatorArrow) { }
     }
 }
