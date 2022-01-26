@@ -8,18 +8,25 @@ namespace GuidedTour
     /**
      * <summary>
      * The GuidedTourManager holds the TourSection which hold the TourTasks. The Manager is responsible for 
-     * managing the state of the tasks and for managing the config file(s).
+     * managing the state of the tasks and for managing the configuration file(s).
      * </summary>
      */
     public class GuidedTourManager : MonoBehaviour
     {
         /**
-         * The current active task
+         * <summary>The current active task or null if the tour is finished</summary>
          */
         public AbstractTourTask ActiveTask { get; private set; }
+        /**
+         * <summary>The current active tour section or null if the tour is finished</summary>
+         */
         public TourSection ActiveSection { get; private set; }
+        /**
+         * <summary>The list of sections in the tor</summary>
+         */
         public List<TourSection> Sections { get; private set; }
 
+        [Header("References")]
         [Tooltip("The reference to the section board")]
         [SerializeField]
         private SectionBoard sectionBoard;
@@ -36,13 +43,15 @@ namespace GuidedTour
         [SerializeField]
         private NotificationWidget notifications;
 
+        [Header("Settings")]
         [Tooltip("The current language (same identifier for the language as in the language file)")]
         [SerializeField]
         private string language = "en";
-        [Tooltip("The reference to the section board")]
+        [Tooltip("The time the notifications will be shown in seconds")]
         [SerializeField]
         private float notificationTime = 5;
 
+        [Header("Configuration files")]
         [SerializeField]
         private TextAsset configFileLocation;
         [SerializeField]
@@ -98,8 +107,10 @@ namespace GuidedTour
             StartCoroutine(SkipSectionCoroutine());
         }
 
+        // As coroutine to yield in between to let animations play
         private IEnumerator SkipSectionCoroutine()
         {
+            // Make time 20x faster
             Time.timeScale = 20;
             // For the remaining tasks in the section
             for (int task = taskIndex; task < ActiveSection.Tasks.Count; task++)
@@ -113,6 +124,8 @@ namespace GuidedTour
                 ActiveTask.SkipTask();
                 OnTaskCompleted();
             }
+
+            // Reset time
             Time.timeScale = 1;
 
             taskIndex = ActiveSection.Tasks.Count;
@@ -135,6 +148,7 @@ namespace GuidedTour
             SelectNextTask();
         }
 
+        // Selects the next task and sets ActiveTask and ActiveSection
         private void SelectNextTask()
         {
             taskIndex++;
@@ -168,6 +182,7 @@ namespace GuidedTour
             Debug.Log("Selected next task: " + ActiveTask.Name);
         }
 
+        // Called when a new task is selected. ActiveTask is now the new task
         private void OnTaskUpdate()
         {
             if (ActiveTask != null)
@@ -184,6 +199,7 @@ namespace GuidedTour
             }
         }
 
+        // Called when a task is finished (also when it is skipped). ActiveTask is the old task
         private void OnTaskCompleted()
         {
             totalTasksDone++;
@@ -191,6 +207,7 @@ namespace GuidedTour
             ActiveTask.OnTaskDeactivation(indicatorArrow);
         }
 
+        // Links ActiveTask with the real task in the scene, if it is an UnlinkedTourTask
         private void LinkCurrentTask()
         {
             if (ActiveTask.GetType() == typeof(UnlinkedTourTask))
@@ -204,6 +221,7 @@ namespace GuidedTour
             }
         }
 
+        // If the tour is finished, the method throws an InvalidOperationException
         private void CheckTourNotFinished()
         {
             if (ActiveSection == null)

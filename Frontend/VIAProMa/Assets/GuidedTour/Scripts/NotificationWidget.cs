@@ -10,11 +10,17 @@ namespace GuidedTour
 {
     public class NotificationWidget : MonoBehaviour
     {
-        public GameObject notificationWidget;
-        public TextMeshPro notificationPreviewLabel;
+        [SerializeField] private GameObject notificationWidget;
+        [SerializeField] private TextMeshPro notificationPreviewLabel;
 
+        /**
+         * <summary>Show a notification</summary>
+         * <param name="text">The text to display</param>
+         * <param name="seconds">The time to display the notification in seconds</param>
+         */ 
         public void ShowMessage(string text, float seconds)
         {
+            // Stop running coroutines if another message was showing up before
             StopAllCoroutines();
 
             gameObject.SetActive(true);
@@ -23,19 +29,13 @@ namespace GuidedTour
             StartCoroutine(Deactivate(seconds));
         }
 
+        // Wait for seconds and deactivate
         private IEnumerator Deactivate(float seconds)
         {
             yield return new WaitForSeconds(seconds);
 
             gameObject.SetActive(false);
         }
-
-        public void HideMessage()
-        {
-            notificationPreviewLabel.text = "";
-            gameObject.SetActive(false);
-        }
-
 
     }
 }

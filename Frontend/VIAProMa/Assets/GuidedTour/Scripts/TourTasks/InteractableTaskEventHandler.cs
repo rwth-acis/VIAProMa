@@ -10,8 +10,8 @@ namespace GuidedTour
 
     /**
      * <summary>
-     * This listens to, or causes, "OnClick"-Events of gameobjects with the "Interactable" component.
-     * An instance of this Script will automatically attatch itself to any InteractableTourTask.
+     * This listens to, or causes, "OnClick"-Events of gameobjects with the "<see cref="Interactable"/>" component.
+     * An instance of this Script will automatically attach itself to any InteractableTourTask.
      * </summary>
      */
     [UnityEngine.AddComponentMenu("Scripts/MRTK/SDK/InteractableReceiver")]
@@ -27,10 +27,8 @@ namespace GuidedTour
 
         public override void OnClick(InteractableStates state, Interactable source, IMixedRealityPointer pointer = default)
         {
-            Debug.Log("############ " + task.Id + " | State = " + task.State + ", done = " + task.done);
             if (task.State == AbstractTourTask.TourTaskState.ACTIVE && task.done == false)
             {
-                Debug.Log("InteractableTourTask was successfully finished");
                 task.done = true;
                 Destroy(this);
             }
@@ -40,7 +38,6 @@ namespace GuidedTour
         {
             if (task.State == AbstractTourTask.TourTaskState.ACTIVE == true && task.done == false)
             {
-                Debug.Log("InteractableTourTask was successfully skipped");
                 Interactable.TriggerOnClick();
                 task.done = true;
                 Destroy(this);

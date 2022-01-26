@@ -9,8 +9,8 @@ namespace GuidedTour
     public class SectionBoard : MonoBehaviour
     {
         [SerializeField] private GuidedTourManager guidedTourManager;
-        public ProgressBarController progressBar;
-        public TextMeshPro displayText;
+        [SerializeField] private ProgressBarController progressBar;
+        [SerializeField] private TextMeshPro displayText;
 
         internal Dictionary<string, int> secsToTaskCount = new Dictionary<string, int>();
         internal int totalTasks = 0;
@@ -87,7 +87,7 @@ namespace GuidedTour
             }
             if (totalTasks > 0)
             {
-                progressBar.PercentageDone = (float) guidedTourManager.totalTasksDone / totalTasks;
+                progressBar.PercentageDone = (float)guidedTourManager.totalTasksDone / totalTasks;
             }
             displayText.text = guidedTourManager.ActiveSection.Name + " (" + test + "/" + currentSecTaskCount + ")";
         }

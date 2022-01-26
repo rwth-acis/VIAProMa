@@ -14,6 +14,9 @@ namespace GuidedTour
     {
         private readonly TextAsset file;
 
+        /**
+         * <summary>The root of the json file. Available after Load() has been called.</summary>
+         */ 
         public ConfigRootEntry Root { get; private set; }
 
         public ConfigFile(TextAsset file)

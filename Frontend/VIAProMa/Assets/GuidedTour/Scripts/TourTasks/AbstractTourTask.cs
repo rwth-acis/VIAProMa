@@ -77,12 +77,18 @@ namespace GuidedTour
          */
         internal abstract void SkipTask();
 
-        public override string ToString()
-        {
-            return this.GetType() + " with ID " + Id;
-        }
-
+        /**
+         * <summary>
+         * Called when the task becomes active
+         * </summary>
+         */
         internal abstract void OnTaskActivation(GameObject indicatorArrow);
+
+        /**
+        * <summary>
+        * Called when the task becomes inactive after being active before
+        * </summary>
+        */
         internal abstract void OnTaskDeactivation(GameObject indicatorArrow);
     }
 }
