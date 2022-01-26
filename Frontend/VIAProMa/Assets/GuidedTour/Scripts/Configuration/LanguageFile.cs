@@ -13,13 +13,13 @@ namespace GuidedTour
      */
     public class LanguageFile
     {
-        private readonly string fileName;
+        private readonly TextAsset file;
         private readonly Dictionary<string, string> map = new Dictionary<string, string>();
         private LanguageRoot root;
 
-        public LanguageFile(string fileName)
+        public LanguageFile(TextAsset file)
         {
-            this.fileName = fileName;
+            this.file = file;
         }
 
         /**
@@ -29,9 +29,7 @@ namespace GuidedTour
          */
         public void LoadConfig()
         {
-            StreamReader reader = new StreamReader(fileName);
-            root = JsonUtility.FromJson<LanguageRoot>(reader.ReadToEnd());
-            reader.Close();
+            root = JsonUtility.FromJson<LanguageRoot>(file.text);
 
             Map();
         }

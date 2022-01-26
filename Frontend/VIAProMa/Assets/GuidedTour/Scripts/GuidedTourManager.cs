@@ -13,25 +13,52 @@ namespace GuidedTour
      */
     public class GuidedTourManager : MonoBehaviour
     {
+        /**
+         * The current active task
+         */
         public AbstractTourTask ActiveTask { get; private set; }
         public TourSection ActiveSection { get; private set; }
         public List<TourSection> Sections { get; private set; }
 
-        [SerializeField] private SectionBoard sectionBoard;
-        [SerializeField] private string language = "en";
-        [SerializeField] private float notificationTime = 5;
-        [SerializeField] private GuidedTourWidget widget;
-        [SerializeField] private GameObject indicatorArrow;
-        [SerializeField] private NotificationWidget notifications;
+        [Tooltip("The reference to the section board")]
+        [SerializeField]
+        private SectionBoard sectionBoard;
 
-        private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
-        private LanguageFile languageFile = new LanguageFile("Assets/GuidedTour/Configuration/Languages.json");
+        [Tooltip("The reference to the widget")]
+        [SerializeField]
+        private GuidedTourWidget widget;
+
+        [Tooltip("The reference to the indicator arrow")]
+        [SerializeField]
+        private GameObject indicatorArrow;
+
+        [Tooltip("The reference to the notification widget")]
+        [SerializeField]
+        private NotificationWidget notifications;
+
+        [Tooltip("The current language (same identifier for the language as in the language file)")]
+        [SerializeField]
+        private string language = "en";
+        [Tooltip("The reference to the section board")]
+        [SerializeField]
+        private float notificationTime = 5;
+
+        [SerializeField]
+        private TextAsset configFileLocation;
+        [SerializeField]
+        private TextAsset languageFileLocation;
+
+        private ConfigFile configFile;
+        private LanguageFile languageFile;
         internal int sectionIndex = 0;
         internal int taskIndex = -1;
         internal int totalTasksDone = 0;
 
         private void Awake()
         {
+            configFile = new ConfigFile(configFileLocation);
+            languageFile = new LanguageFile(languageFileLocation);
+
             Sections = new List<TourSection>();
 
             languageFile.LoadConfig();
