@@ -82,7 +82,6 @@ namespace GuidedTour
         {
             task.Name = t.name;
             task.Description = t.description;
-            task.ActionName = t.action;
         }
     }
 }

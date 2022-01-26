@@ -55,12 +55,6 @@ namespace GuidedTour
          * </summary>
          */
         public TourTaskState State { get; internal set; } = TourTaskState.SCHEDULED;
-        /**
-         * <summary>
-         * The description of the action which is performed by the user. Set by the configuration file
-         * </summary>
-         */
-        public string ActionName { get; internal set; }
 
         void Start()
         {
