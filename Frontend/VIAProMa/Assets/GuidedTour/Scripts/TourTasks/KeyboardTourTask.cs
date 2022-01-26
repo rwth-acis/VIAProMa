@@ -5,6 +5,8 @@ using UnityEngine;
 // using Microsoft.MixedReality.Toolkit.UI;
 using i5.VIAProMa.UI.KeyboardInput;
 using i5.VIAProMa.UI.InputFields;
+using System;
+using System.Collections;
 
 namespace GuidedTour {
     public class KeyboardTourTask : AbstractTourTask
@@ -12,11 +14,11 @@ namespace GuidedTour {
         private bool done = false;
         [SerializeField] private InputField inputField;
         [SerializeField] private string targetString = "helloWorld.url";
-        [SerializeField] private Keyboard keyboard;
+        private Keyboard keyboard;
         
         private void Awake() 
         {
-            keyboard = keyboard.gameObject.GetComponent<Keyboard>();
+            keyboard = Resources.FindObjectsOfTypeAll<Keyboard>()[0];
             keyboard.InputFinished += c_KeyboardClosed;
         }
 
@@ -31,8 +33,8 @@ namespace GuidedTour {
         {
             if(State == TourTaskState.ACTIVE && !done) 
             {
-                // keyboard.Text = targetString;
-                // keyboard.InputDone(false);
+                keyboard.Text = targetString;
+                keyboard.InputDone(false);
                 Debug.Log("Successfully skipped Input");
                 done = true;
             }
@@ -67,15 +69,23 @@ namespace GuidedTour {
         {
             if (State == TourTaskState.ACTIVE && !done) 
             {
-                if (inputField.ContentField.text.Equals(targetString)) 
-                {
-                    Debug.Log("String is matching");
-                    done = true;
-                }
-                else 
-                {
-                    Debug.Log("String is not matching");
-                }
+                StartCoroutine(CheckString());
+            }
+        }
+
+        private IEnumerator CheckString()
+        {
+            // Wait for a short time to ensure field is updated
+            yield return new WaitForSeconds(0.1f);
+
+            if (inputField.ContentField.text.Equals(targetString))
+            {
+                Debug.Log("String is matching");
+                done = true;
+            }
+            else
+            {
+                Debug.Log("String is not matching");
             }
         }
 

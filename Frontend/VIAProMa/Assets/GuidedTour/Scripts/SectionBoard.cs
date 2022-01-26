@@ -14,7 +14,6 @@ namespace GuidedTour
 
         internal Dictionary<string, int> secsToTaskCount = new Dictionary<string, int>();
         internal int totalTasks = 0;
-        internal int currentTaskCount = -1;
 
         void Start()
         {
@@ -88,7 +87,7 @@ namespace GuidedTour
             }
             if (totalTasks > 0)
             {
-                progressBar.PercentageDone = (float) currentTaskCount / totalTasks;
+                progressBar.PercentageDone = (float) guidedTourManager.totalTasksDone / totalTasks;
             }
             displayText.text = guidedTourManager.ActiveSection.Name + " (" + test + "/" + currentSecTaskCount + ")";
         }

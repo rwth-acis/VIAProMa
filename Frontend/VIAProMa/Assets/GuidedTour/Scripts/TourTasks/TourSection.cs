@@ -9,7 +9,7 @@ namespace GuidedTour
      * A TourSections contains a list of tasks. TourSections are used to split the tour into smaller sections and skip hole sections.
      * </summary>
      */
-    public class TourSection : MonoBehaviour
+    public class TourSection
     {
         public string Name { get; internal set; }
         public List<AbstractTourTask> Tasks { get; private set; } 
