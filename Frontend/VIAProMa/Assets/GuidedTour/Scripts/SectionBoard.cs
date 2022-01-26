@@ -8,8 +8,8 @@ namespace GuidedTour
 {
     public class SectionBoard : MonoBehaviour
     {
+        [SerializeField] internal ProgressBarController progressBar;
         [SerializeField] private GuidedTourManager guidedTourManager;
-        [SerializeField] private ProgressBarController progressBar;
         [SerializeField] private TextMeshPro displayText;
 
         internal Dictionary<string, int> secsToTaskCount = new Dictionary<string, int>();

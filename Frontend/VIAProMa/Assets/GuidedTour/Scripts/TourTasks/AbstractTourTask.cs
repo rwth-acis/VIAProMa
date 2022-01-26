@@ -82,13 +82,13 @@ namespace GuidedTour
          * Called when the task becomes active
          * </summary>
          */
-        internal abstract void OnTaskActivation(GameObject indicatorArrow);
+        internal virtual void OnTaskActivation(GameObject indicatorArrow) { }
 
         /**
         * <summary>
         * Called when the task becomes inactive after being active before
         * </summary>
         */
-        internal abstract void OnTaskDeactivation(GameObject indicatorArrow);
+        internal virtual void OnTaskDeactivation(GameObject indicatorArrow) { }
     }
 }

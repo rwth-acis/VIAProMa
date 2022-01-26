@@ -10,23 +10,22 @@ namespace GuidedTour
     /**
      * <summary>
      * This creates a tour-task, that requires the user to interact with an existing button in the scene.
-     * Attach this script to a "Task" game-object and drag the gameobject with the "Interactable" component into  
-     * the "interactable" field in the inspector.
+     * Attach this script to a "Task" game-object and drag the gameobject with the "<see cref="Interactable"/>" component into  
+     * the "<see cref="interactable"/>" field in the inspector.
      * </summary>
      */
     public class InteractableTourTask : AbstractTourTask
     {
-
-        
-        public Interactable interactable;
-        InteractableTaskEventHandler tourTaskEventHandler;
-        internal bool done = false;
-        private GameObject objectHighlighter;
-        private enum highlighterDirection { arrowOnLeft, arrowOnTop, arrowOnRight, arrowOnBottom};
+        [SerializeField] internal Interactable interactable;
         [SerializeField] private GameObject highlighter;
         [SerializeField] private bool isHighlighterNeeded;
-        [SerializeField] private highlighterDirection arrowPosition;
-        [SerializeField] private Vector3 customOffset = new Vector3(0,0,0);
+        [SerializeField] private HighlighterDirection arrowPosition;
+        [SerializeField] private Vector3 customOffset = new Vector3(0, 0, 0);
+
+        internal bool done = false;
+        private GameObject objectHighlighter;
+        private InteractableTaskEventHandler tourTaskEventHandler;
+        private enum HighlighterDirection { arrowOnLeft, arrowOnTop, arrowOnRight, arrowOnBottom};
 
         void Start() 
         {
