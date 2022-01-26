@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 6537372110963958150}
   - component: {fileID: 4139768121543928682}
   - component: {fileID: 8034647395114849201}
+  - component: {fileID: 6651111132426472722}
   m_Layer: 0
   m_Name: BoundingBox
   m_TagString: Untagged
@@ -278,12 +279,40 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6651111132426472722}
+        m_MethodName: PlaySoundHere
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onHoverEntered:
     m_PersistentCalls:
       m_Calls: []
   onHoverExited:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6651111132426472722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8208002477654262947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4752029bca7b574cbfc606b17494d69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound:
+    clip: {fileID: 8300000, guid: 3a20ebb0f84ee4944a5886f33687a78c, type: 3}
+    volume: 0.4
+    pitch: 1
+    maxDistance: 10
 --- !u!1001 &3248813199074726553
 PrefabInstance:
   m_ObjectHideFlags: 0
