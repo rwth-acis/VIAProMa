@@ -16,12 +16,18 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private Sound messageSound = new Sound(null);
     [SerializeField] private Sound progressBarSound = new Sound(null);
     [SerializeField] private Sound buildingProgressSound = new Sound(null);
+    [SerializeField] private Sound pingSound = new Sound(null);
+    [SerializeField] private Sound errorSound = new Sound(null);
+
+    private Transform mainCam;
 
 
     private void Start()
     {
         if (instance == null) instance = this;
         else Destroy(this);
+
+        mainCam = Camera.main.transform;
 
         foreach (Keyframe key in curve.keys)
         {
@@ -70,6 +76,11 @@ public class AudioManager : MonoBehaviour
         PlaySoundOnceAt(loginSound, at);
     }
 
+    internal void PlayErrorSound(Vector3 at)
+    {
+        PlaySoundOnceAt(errorSound, at);
+    }
+
     public void PlayLogoffSound(Vector3 at)
     {
         PlaySoundOnceAt(logoffSound, at);
@@ -85,6 +96,12 @@ public class AudioManager : MonoBehaviour
         PlaySoundOnceAt(progressBarSound, at);
     }
 
+    public void PlayerPingSound(Vector3 at)
+    {
+        pingSound.maxDistance = Vector3.Distance(mainCam.position, at) + 1;
+        PlaySoundOnceAt(pingSound, at);
+    }
+
     /// <summary>
     /// Plays the Message sound at either the open Chat Menu or the Main Menu Cube
     /// </summary>
@@ -94,7 +111,7 @@ public class AudioManager : MonoBehaviour
         if (FindObjectOfType<MainMenu>()) soundPlayPosition = FindObjectOfType<MainMenu>().transform.position;
         if (FindObjectOfType<ChatMenu>().enabled) soundPlayPosition = FindObjectOfType<ChatMenu>().transform.position;
 
-        messageSound.maxDistance = Vector3.Distance(Camera.main.transform.position, soundPlayPosition) + 1; // +1 for a bit of buffer
+        messageSound.maxDistance = Vector3.Distance(mainCam.position, soundPlayPosition) + 1; // +1 for a bit of buffer
         PlaySoundOnceAt(messageSound, soundPlayPosition);
     }
 }
