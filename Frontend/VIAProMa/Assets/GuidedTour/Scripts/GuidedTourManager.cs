@@ -87,6 +87,7 @@ namespace GuidedTour
             if (ActiveTask.IsTaskDone())
             {
                 notifications.ShowMessage("Completed Task " + languageFile.GetTranslation(ActiveTask.Name, language), notificationTime);
+                notifications.PlaySuccessSound();
                 OnTaskCompleted();
                 SelectNextTask();
             }
