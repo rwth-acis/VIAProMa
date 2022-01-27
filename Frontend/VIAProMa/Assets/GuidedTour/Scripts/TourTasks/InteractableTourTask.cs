@@ -18,7 +18,6 @@ namespace GuidedTour
      */
     public class InteractableTourTask : AbstractTourTask
     {
-
         // Needs to be set when creating an interactable tour task
         public Interactable interactable;
 
@@ -32,6 +31,7 @@ namespace GuidedTour
         // You can change it's relative position or offset in the inspector.
         // In most situations the standard offset should be sufficient.
         private GameObject objectHighlighter;
+
         private enum HighlighterDirection { arrowOnLeft, arrowOnTop, arrowOnRight, arrowOnBottom };
         [Header("Highlighter Arrows")]
         [SerializeField] private GameObject highlighter;

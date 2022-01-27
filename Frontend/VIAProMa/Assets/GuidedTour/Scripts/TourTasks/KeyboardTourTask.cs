@@ -18,10 +18,10 @@ namespace GuidedTour {
      */
     public class KeyboardTourTask : AbstractTourTask
     {
-        private bool done = false;
         [SerializeField] private InputField inputField;
         [SerializeField] private string targetString = "";
         private Keyboard keyboard;
+        private bool done = false;
 
         /**
          * <summary>
@@ -56,7 +56,7 @@ namespace GuidedTour {
          */
         internal override void SkipTask() 
         {
-            if(State == TourTaskState.ACTIVE && !done) 
+            if (State == TourTaskState.ACTIVE && !done)
             {
                 keyboard.Text = targetString;
                 keyboard.InputDone(false);
@@ -96,6 +96,7 @@ namespace GuidedTour {
             return done;
         }
 
+
         /**
          * <summary>
          * This will be called when the confirm-button of the keyboard has been clicked.
@@ -104,12 +105,11 @@ namespace GuidedTour {
          */
         internal void OnAction() 
         {
-            if (State == TourTaskState.ACTIVE && !done) 
+            if (State == TourTaskState.ACTIVE && !done)
             {
                 StartCoroutine(CheckString());
             }
         }
-
 
         /**
          * <summary>
@@ -132,10 +132,5 @@ namespace GuidedTour {
                 Debug.Log("String is not matching");
             }
         }
-
-        internal override void OnTaskActivation(GameObject indicatorArrow) {
-
-        }
-        internal override void OnTaskDeactivation(GameObject indicatorArrow) { }
     }
 }

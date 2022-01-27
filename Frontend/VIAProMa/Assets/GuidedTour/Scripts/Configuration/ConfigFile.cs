@@ -12,12 +12,16 @@ namespace GuidedTour
      */
     public class ConfigFile
     {
-        private readonly string fileName;
+        private readonly TextAsset file;
+
+        /**
+         * <summary>The root of the json file. Available after Load() has been called.</summary>
+         */ 
         public ConfigRootEntry Root { get; private set; }
 
-        public ConfigFile(string fileName)
+        public ConfigFile(TextAsset file)
         {
-            this.fileName = fileName;
+            this.file = file;
         }
 
         /**
@@ -27,22 +31,9 @@ namespace GuidedTour
          */
         public void LoadConfig()
         {
-            StreamReader reader = new StreamReader(fileName);
-            Root = JsonUtility.FromJson<ConfigRootEntry>(reader.ReadToEnd());
-            reader.Close();
+            Root = JsonUtility.FromJson<ConfigRootEntry>(file.text);
         }
 
-        /**
-         * <summary>
-         * Override the file with the current data of the root. Used for debugging purposes only
-         * </summary>
-         */
-        private void WriteConfig()
-        {
-            StreamWriter writer = new StreamWriter(fileName);
-            writer.Write(JsonUtility.ToJson(Root, true));
-            writer.Close();
-        }
     }
 
 }
