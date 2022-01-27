@@ -67,17 +67,7 @@ namespace GuidedTour
             return null;
         }
 
-        private static Dictionary<string, AbstractTourTask> MapTasksById()
-        {
-            Dictionary<string, AbstractTourTask> map = new Dictionary<string, AbstractTourTask>();
-            foreach (AbstractTourTask task in Resources.FindObjectsOfTypeAll<AbstractTourTask>())
-            {
-                map.Add(task.Id, task);
-            }
-
-            return map;
-        }
-
+        // Transfer the attributes from th json entries to the real tasks
         private static void SetAttributes(TaskEntry t, AbstractTourTask task)
         {
             task.Name = t.name;

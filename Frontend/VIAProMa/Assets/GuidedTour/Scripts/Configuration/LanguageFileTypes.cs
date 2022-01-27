@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Types for language file
 namespace GuidedTour
 {
     [System.Serializable]

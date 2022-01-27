@@ -14,24 +14,34 @@ namespace GuidedTour
      * and provides information about the visibility of the continue button and the widget itself.
      * </summary>
      */
-
     public class GuidedTourWidget : MonoBehaviour
     {
+        /**
+         * <summary>
+         * The WidgetVisible method provides a get and set method for the viability of the widget.
+         * </summary>
+         */
+        public bool WidgetVisible
+        {
+            get { return widget.activeSelf; }
+            set
+            {
+                widget.SetActive(value);
+                // Throw Event OnWidgetVisibleChanged (if there is a subscriber)
+                if (OnWidgetVisibleChanged != null)
+                    OnWidgetVisibleChanged(value);
+            }
+        }
 
-        private AbstractTourTask currentTask = null;
-        public GameObject widget;
-        public TextMeshPro headline;
-        public TextMeshPro hintText;
-        public GameObject continueButton;
+        [SerializeField] private GameObject widget;
+        [SerializeField] private TextMeshPro headline;
+        [SerializeField] private TextMeshPro hintText;
+        [SerializeField] private GameObject continueButton;
 
         public delegate void WidgetVisibleChangedAction(bool IsVisible);
         public static event WidgetVisibleChangedAction OnWidgetVisibleChanged;
 
-
-        public void Start()
-        {
-
-        }
+        private AbstractTourTask currentTask = null;
 
         /**
          * <summary>
@@ -64,30 +74,14 @@ namespace GuidedTour
             }
         }
 
-        /**
-     * <summary>
-     * The WidgetVisible method provides a get and set method for the visability of the widget.
-     * </summary>
-     */
 
-        public bool WidgetVisible
-        {
-            get { return widget.activeSelf; }
-            set
-            {
-                widget.SetActive(value);
-                // Throw Event OnWidgetVisibleChanged (if there is a subscriber)
-                if (OnWidgetVisibleChanged != null)
-                    OnWidgetVisibleChanged(value);
-            }
-        }
-        /**
-     * <summary>
-     * The OnContinueClicked method defines the behavior of the continue button. If it was clicked, it moves on to the next task and considers the current 
-     * task as finished.
-     * </summary>
-     */
 
+        /**
+         * <summary>
+         * The OnContinueClicked method defines the behavior of the continue button. If it was clicked, it moves on to the next task and considers the current 
+         * task as finished.
+         * </summary>
+         */
         public void OnContinueClicked()
         {
             SimpleTourTask sts = (SimpleTourTask)currentTask;

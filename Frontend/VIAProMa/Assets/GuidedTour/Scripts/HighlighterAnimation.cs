@@ -92,7 +92,6 @@ namespace GuidedTour
                 }
 
                 SetStartingPosition(activeDirection);
-
             }
         }
 
