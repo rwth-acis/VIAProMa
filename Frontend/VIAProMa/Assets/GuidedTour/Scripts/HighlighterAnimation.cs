@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace GuidedTour
 {
+
+    /**
+     * <summary>
+     * This creates a bouncing animation for highlighter-arrows, that sit next to, on top or under Buttons and text-fields 
+     * and point directly at them. 
+     * </summary>
+     */
     public class HighlighterAnimation : MonoBehaviour
     {
 
@@ -14,14 +21,26 @@ namespace GuidedTour
         private bool moveHorizontally;
         private Vector3 startingPosition;
 
+        // The speed of the bouncing animation
         [SerializeField] private float speed = 0.2f;
+
+        // How far the arrow will bounce
         [SerializeField] private float bouncingDistance = 0.1f;
 
+        // These are standardized values that can be changed in the arrow-prefab.
+        // From our testing they should work fine with most objects. 
+        // If adjusting is required, use the indicatorOffset in the Interactable- and KeyboardTourTask in the Inspector
         [SerializeField] private Vector3 offsetTop;
         [SerializeField] private Vector3 offsetLeft;
         [SerializeField] private Vector3 offsetRight;
         [SerializeField] private Vector3 offsetBottom;
 
+        /**
+         * <summary>
+         * Sets up the positions and rotations of the highlighter arrows, depending on the settings in the
+         * Interactable- or KeyboardTourTasks. 
+         * </summary>
+         */
         internal void HighlighterSetUP(int direction, GameObject highlightedObject, Vector3 userOffset) {
             parent = highlightedObject;
             customOffset = userOffset;
@@ -64,6 +83,12 @@ namespace GuidedTour
 
         }
 
+        /**
+         * <summary>
+         * This sets the position, from which the arrow will start it's bouncing.
+         * It must be updated in case the object, that the arrow points towards, is moved in the scene.
+         * </summary>
+         */
         private void SetStartingPosition(int pos) {
             switch (pos) {
                 case 0:
@@ -82,6 +107,11 @@ namespace GuidedTour
 
         }
 
+        /**
+         * <summary>
+         * This ensures, that the arrow will always point at the desired object, even if that one is moved in the scene.
+         * </summary>
+         */
         private void Update() {
             if (gameObject.activeInHierarchy) {
                 if (moveVertically) {

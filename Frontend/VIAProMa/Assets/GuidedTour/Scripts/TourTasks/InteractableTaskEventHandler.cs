@@ -19,12 +19,23 @@ namespace GuidedTour
     {
         private InteractableTourTask task;
 
+        /**
+         * <summary>
+         * Once this script is activated, it gets the Interactable-component it should listen to, from the InteractableTourTask  
+         * </summary>
+         */
         private void Awake()
         {
             task = GetComponent<InteractableTourTask>();
             Interactable = task.interactable;
         }
 
+        /**
+         * <summary>
+         * This describes what happens when the button is clicked.
+         * If the task was active, it will be set to done, so that the GuidedTourManager can choose the next task.
+         * </summary>
+         */
         public override void OnClick(InteractableStates state, Interactable source, IMixedRealityPointer pointer = default)
         {
             if (task.State == AbstractTourTask.TourTaskState.ACTIVE && task.done == false)
@@ -34,6 +45,11 @@ namespace GuidedTour
             }
         }
 
+        /**
+         * <summary>
+         * This will trigger an onClick-event. By calling this, you can skip a task.
+         * </summary>
+         */
         internal void EmulateButtonPress()
         {
             if (task.State == AbstractTourTask.TourTaskState.ACTIVE == true && task.done == false)
