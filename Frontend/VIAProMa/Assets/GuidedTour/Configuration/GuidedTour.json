@@ -1,47 +1,191 @@
 {
     "sections": [
         {
-            "sectionName": "Section 1",
+            "sectionName": "Getting Started",
             "tasks": [
                 {
-                    "name": "welcome.name",
-                    "description": "welcome.description",
-                    "action": "Continue"
+                    "name": "gettingStarted.welcome.name",
+                    "description": "gettingStarted.welcome.description"
                 },
                 {
-                    "id": "intro.pressStartButton",
-                    "name": "welcome.start.name",
-                    "description": "welcome.start.description",
-                    "action": "(Press the Start-Button)"
-                },
-                {
-                    "id": "intro.pressRoomButton",
-                    "name": "welcome.room.name",
-                    "description": "welcome.room.description",
-                    "action": "(Press the Room-Button)"
+                    "name": "gettingStarted.skipTour.name",
+                    "description": "gettingStarted.skipTour.description"
                 }
             ]
         },
         {
-            "sectionName": "Section 2",
+            "sectionName": "Main Menu",
             "tasks": [
                 {
-                    "id": "issueShelf.open",
-                    "name": "shelf.open.name",
-                    "description": "shelf.open.description",
-                    "action": "Open"
+                    "id": "mainMenu.reposition",
+                    "name": "mainMenu.reposition.name",
+                    "description": "mainMenu.reposition.description"
                 },
                 {
-                    "id": "issueShelf.login",
-                    "name": "shelf.login.name",
-                    "description": "shelf.login.description",
-                    "action": "Login"
+                    "id": "mainMenu.boundingBox",
+                    "name": "mainMenu.boundingBox.name",
+                    "description": "mainMenu.boundingBox.description"
                 },
                 {
-                    "id": "issueShelf.close",
-                    "name": "shelf.close.name",
-                    "description": "shelf.close.description",
-                    "action": "Close the shelf"
+                    "id": "mainMenu.backFromToolbar",
+                    "name": "mainMenu.backFromToolbar.name",
+                    "description": "mainMenu.backFromToolbar.description"
+                },
+                {
+                    "id": "mainMenu.pressStartButton",
+                    "name": "mainMenu.pressStartButton.name",
+                    "description": "mainMenu.pressStartButton.description"
+                },
+                {
+                    "name": "mainMenu.endOfSection.name",
+                    "description": "mainMenu.edOfSection.description"
+                }
+            ]
+        },
+        {
+            "sectionName": "Network Connection",
+            "tasks": [
+                {
+                    "id": "network.serverConnectionSettings",
+                    "name": "network.serverConnectionSettings.name",
+                    "description": "network.serverConnectionSettings.description"
+                },
+                {
+                    "id": "network.backendSettings",
+                    "name": "network.backendSettings.name",
+                    "description": "network.backendSettings.description"
+                },
+                {
+                    "id": "network.enterURL",
+                    "name": "network.enterURL.name",
+                    "description": "network.enterURL.description"
+                },
+                {
+                    "id": "network.URLDone",
+                    "name": "network.URLDone.name",
+                    "description": "network.URLDone.description"
+                },
+                {
+                    "id": "network.leaveSettings",
+                    "name": "network.leaveSettings.name",
+                    "description": "network.leaveSettings.description"
+                },
+                {
+                    "id": "network.endOfSection",
+                    "name": "network.endOfSection.name",
+                    "description": "network.endOfSection.description"
+                }
+            ]
+        },
+        {
+            "sectionName": "Collaboration",
+            "tasks": [
+                {
+                    "id": "collaboration.RoomButton",
+                    "name": "collaboration.RoomButton.name",
+                    "description": "collaboration.RoomButton.description"
+                },
+                {
+                    "id": "collaboration.newRoom",
+                    "name": "collaboration.newRoom.name",
+                    "description": "collaboration.newRoom.description"
+                },
+                {
+                    "id": "collaboration.createAndJoin",
+                    "name": "collaboration.createAndJoin.name",
+                    "description": "collaboration.createAndJoin.description"
+                },
+                {
+                    "name": "collaboration.leaveRoomNotice.name",
+                    "description": "collaboration.leaveRoomNotice.description"
+                },
+                {
+                    "name": "collaboration.avatarInfo.name",
+                    "description": "collaboration.avatarInfo.description"
+                },
+                {
+                    "id": "collaboration.avatarDone"
+                    "name": "collaboration.avatarDone.name",
+                    "description": "collaboration.avatarDone.description"
+                },
+                {
+                    "name": "collaboration.chatInfo.name",
+                    "descriptions": "collaboration.chatInfo.description"
+                }
+            ]
+        },
+        {
+            "sectionName": "Issue Shelf",
+            "tasks": [
+                {
+                    "id": "issueShelf.loadIssues",
+                    "name": "issueShelf.loadIssues.name",
+                    "description": "issueShelf.loadIssues.description"
+                },
+                {
+                    "name": "issueShelf.explanation.name",
+                    "description": "issueShelf.explanation.description"
+                },
+                {
+                    "id": "issueShelf.selectGitHub",
+                    "name": "issueShelf.selectGitHub.name",
+                    "description": "issueShelf.selectGitHub.description"
+                },
+                {
+                    "id": "issueShelf.selectOwner",
+                    "name": "issueShelf.selectOwner.name",
+                    "description": "issueShelf.selectOwner.description"
+                },
+                {
+                    "id": "issueShelf.selectRepository",
+                    "name": "issueShelf.selectRepository.name",
+                    "description": "issueShelf.selectRepository.description"
+                },
+                {
+                    "id": "issueShelf.closeConfig",
+                    "name": "issueShelf.closeConfig.name",
+                    "description": "issueShelf.closeConfig.description"
+                },
+                {
+                    "name": "issueShelf.issuesInfo.name",
+                    "description": "issueShelf.issuesInfo.description"
+                },
+                {
+                    "id": "issueShelf.closeShelf",
+                    "name": "issueShelf.closeShelf.name",
+                    "description": "issueShelf.closeShelf.description"
+                }
+            ]
+        },
+        {
+            "sectionName": "Visualizations",
+            "tasks": [
+                {
+                    "id": "visualizations.openMainMenu",
+                    "name": "visualizations.openMainMenu.name",
+                    "description": "visualizations.openMainMenu.description"
+                },
+                {
+                    "id": "visualizations.openShelf",
+                    "name": "visualizations.openShelf.name",
+                    "description": "visualizations.openShelf.description"
+                },
+                {
+                    "name": "visualizations.accessingVisualizations.name",
+                    "description": "visualizations.accessingVisualizations.description"
+                },
+                {
+                    "name": "visualizations.help.name",
+                    "description": "visualizations.help.description"
+                }
+            ]
+        },
+        {
+            "sectionName": "Done!",
+            "tasks": [
+                {
+                    "name": "done.tourDone.name",
+                    "description": "done.tourDone.description"
                 }
             ]
         }
