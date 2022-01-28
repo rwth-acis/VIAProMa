@@ -151,52 +151,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &167596959
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 167596960}
-  - component: {fileID: 167596961}
-  m_Layer: 0
-  m_Name: Repository
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &167596960
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 167596959}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1160469510}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &167596961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 167596959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aabc14c1aeeac104a9015bb32e2cf427, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _id: issueShelf.selectRepository
-  inputField: {fileID: 0}
-  targetString: VIAProMa
 --- !u!1001 &182245948
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3087,36 +3041,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 394857078}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &224436772
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 224436773}
-  m_Layer: 0
-  m_Name: Close Shelf
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &224436773
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 224436772}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1160469510}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &286805621
 GameObject:
   m_ObjectHideFlags: 0
@@ -3157,7 +3081,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 286805621}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: collaboration.roomButton
@@ -3166,7 +3090,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 2
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &352701307
 GameObject:
   m_ObjectHideFlags: 0
@@ -3207,7 +3135,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 352701307}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: network.endOfSection
@@ -3216,7 +3144,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 1
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1001 &394857078
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3608,60 +3540,6 @@ Transform:
   m_Father: {fileID: 643538350}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &642796743
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 642796744}
-  - component: {fileID: 642796745}
-  m_Layer: 0
-  m_Name: Close Config
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &642796744
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642796743}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1160469510}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &642796745
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 642796743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _id: issueShelf.closeConfig
-  interactable: {fileID: 0}
-  highlighter: {fileID: 586099919682844988, guid: 119dcb66dde1df84c8b6bdf220c91ec8,
-    type: 3}
-  isHighlighterNeeded: 1
-  arrowPosition: 2
-  indicatorOffset: {x: 0, y: 0, z: 0}
-  isblockerNeeded: 0
-  inputBlockerPrefab: {fileID: 0}
-  inputBlockerOffset: {x: 0, y: 0, z: 0}
-  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!4 &643538350 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3635213171481562198, guid: 689e25c8d43f9224a924d56eda753068,
@@ -4002,52 +3880,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &869365305
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 869365306}
-  - component: {fileID: 869365307}
-  m_Layer: 0
-  m_Name: Owner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &869365306
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 869365305}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1160469510}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &869365307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 869365305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aabc14c1aeeac104a9015bb32e2cf427, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _id: issueShelf.selectOwner
-  inputField: {fileID: 0}
-  targetString: rwth-acis
 --- !u!1 &926572254
 GameObject:
   m_ObjectHideFlags: 0
@@ -4115,13 +3947,37 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1138611831}
+  - component: {fileID: 1121279349}
   m_Layer: 0
-  m_Name: Recovery GameObject (1138611831)
+  m_Name: collaboration.avatarDone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1121279349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121279348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: collaboration.avatarDone
+  interactable: {fileID: 1580138788}
+  highlighter: {fileID: 586099919682844988, guid: 119dcb66dde1df84c8b6bdf220c91ec8,
+    type: 3}
+  isHighlighterNeeded: 0
+  arrowPosition: 0
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!4 &1138611831
 Transform:
   m_ObjectHideFlags: 0
@@ -4135,41 +3991,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2146605514}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1160469509
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1160469510}
-  m_Layer: 0
-  m_Name: Tasks (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1160469510
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1160469509}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3297, y: 1.97, z: 1.835}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1953715305}
-  - {fileID: 869365306}
-  - {fileID: 167596960}
-  - {fileID: 642796744}
-  - {fileID: 224436773}
-  m_Father: {fileID: 0}
-  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1325302415
 GameObject:
@@ -4211,7 +4032,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1325302415}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: network.serverConnectionSettings
@@ -4220,7 +4041,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 0
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &1415207428
 GameObject:
   m_ObjectHideFlags: 0
@@ -4261,7 +4086,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1415207428}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: collaboration.avatarInfo
@@ -4270,7 +4095,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 2
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &1452304939
 GameObject:
   m_ObjectHideFlags: 0
@@ -4718,6 +4547,16 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: RoomButtonClicked
       objectReference: {fileID: 0}
+    - target: {fileID: 5983900532850170092, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: VoiceCommand
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983900532921013253, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: VoiceCommand
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5983900533955748886, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: VoiceCommand
@@ -4832,6 +4671,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1580138789 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5983900532921013253, guid: 8c93205eb542a734dbe333bde16fe4ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 1580138786}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1690194828
 GameObject:
   m_ObjectHideFlags: 0
@@ -4872,7 +4723,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1690194828}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: mainMenu.pressStartButton
@@ -4881,7 +4732,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 1
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &1721342644
 GameObject:
   m_ObjectHideFlags: 0
@@ -4922,16 +4777,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1721342644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: visualizations.openShelf
-  interactable: {fileID: 1658153523}
+  interactable: {fileID: 1580138789}
   highlighter: {fileID: 586099919682844988, guid: 119dcb66dde1df84c8b6bdf220c91ec8,
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 0
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &1787620547
 GameObject:
   m_ObjectHideFlags: 0
@@ -5203,60 +5062,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6580c13df571c9242b86ffe5fe901102, type: 3}
---- !u!1 &1953715304
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1953715305}
-  - component: {fileID: 1953715306}
-  m_Layer: 0
-  m_Name: Select GitHub
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1953715305
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1953715304}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1160469510}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1953715306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1953715304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _id: issueShelf.selectGitHub
-  interactable: {fileID: 0}
-  highlighter: {fileID: 586099919682844988, guid: 119dcb66dde1df84c8b6bdf220c91ec8,
-    type: 3}
-  isHighlighterNeeded: 1
-  arrowPosition: 2
-  indicatorOffset: {x: 0, y: 0, z: 0}
-  isblockerNeeded: 0
-  inputBlockerPrefab: {fileID: 0}
-  inputBlockerOffset: {x: 0, y: 0, z: 0}
-  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!114 &1975728306 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3401764234649457732, guid: f2d8b5b55d7a77d4e8e06bc7ccf45650,
@@ -5375,6 +5180,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2129286140}
   - component: {fileID: 2129286141}
+  - component: {fileID: 2129286142}
   m_Layer: 0
   m_Name: visualizations.openMainMenu
   m_TagString: Untagged
@@ -5415,6 +5221,29 @@ MonoBehaviour:
   isHighlighterNeeded: 0
   arrowPosition: 2
   customOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &2129286142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129286139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: visualizations.openMainMenu
+  interactable: {fileID: 1580138788}
+  highlighter: {fileID: 586099919682844988, guid: 119dcb66dde1df84c8b6bdf220c91ec8,
+    type: 3}
+  isHighlighterNeeded: 0
+  arrowPosition: 0
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &2146605513
 GameObject:
   m_ObjectHideFlags: 0
