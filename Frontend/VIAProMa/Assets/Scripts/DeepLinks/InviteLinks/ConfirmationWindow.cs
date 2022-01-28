@@ -29,12 +29,10 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         public override void OnEnable()
         {
             base.OnEnable();
-            LobbyManager.Instance.LobbyJoinStatusChanged += OnRoomIsLeft;
         }
 
         public override void OnDisable()
         {
-            LobbyManager.Instance.LobbyJoinStatusChanged -= OnRoomIsLeft;
             base.OnDisable();
         }
 
@@ -105,12 +103,5 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             }
             this.Close();
         }
-
-        private void OnRoomIsLeft(object sender, EventArgs e)
-        {
-
-        }
-
-
     }
 }
