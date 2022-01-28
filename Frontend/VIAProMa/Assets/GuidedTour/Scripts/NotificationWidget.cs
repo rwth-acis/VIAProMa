@@ -10,11 +10,20 @@ namespace GuidedTour
 {
     public class NotificationWidget : MonoBehaviour
     {
-        public GameObject notificationWidget;
-        public TextMeshPro notificationPreviewLabel;
+        [SerializeField] private GameObject notificationWidget;
+        [SerializeField] private TextMeshPro notificationPreviewLabel;
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip succuess;
+        [SerializeField] private AudioClip fail;
 
+        /**
+         * <summary>Show a notification</summary>
+         * <param name="text">The text to display</param>
+         * <param name="seconds">The time to display the notification in seconds</param>
+         */
         public void ShowMessage(string text, float seconds)
         {
+            // Stop running coroutines if another message was showing up before
             StopAllCoroutines();
 
             gameObject.SetActive(true);
@@ -23,6 +32,7 @@ namespace GuidedTour
             StartCoroutine(Deactivate(seconds));
         }
 
+        // Wait for seconds and deactivate
         private IEnumerator Deactivate(float seconds)
         {
             yield return new WaitForSeconds(seconds);
@@ -30,12 +40,23 @@ namespace GuidedTour
             gameObject.SetActive(false);
         }
 
-        public void HideMessage()
+        /**
+         * <summary>Play the success audio clip</summary>
+         */
+        public void PlaySuccessSound()
         {
-            notificationPreviewLabel.text = "";
-            gameObject.SetActive(false);
+            audioSource.clip = succuess;
+            audioSource.Play();
         }
 
+        /**
+         * <summary>Play the fail audio clip</summary>
+         */
+        public void PlayFailSound()
+        {
+            audioSource.clip = fail;
+            audioSource.Play();
+        }
 
     }
 }

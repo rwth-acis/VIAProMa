@@ -55,12 +55,6 @@ namespace GuidedTour
          * </summary>
          */
         public TourTaskState State { get; internal set; } = TourTaskState.SCHEDULED;
-        /**
-         * <summary>
-         * The description of the action which is performed by the user. Set by the configuration file
-         * </summary>
-         */
-        public string ActionName { get; internal set; }
 
         void Start()
         {
@@ -83,12 +77,18 @@ namespace GuidedTour
          */
         internal abstract void SkipTask();
 
-        public override string ToString()
-        {
-            return this.GetType() + " with ID " + Id;
-        }
+        /**
+         * <summary>
+         * Called when the task becomes active
+         * </summary>
+         */
+        internal virtual void OnTaskActivation(GameObject indicatorArrow) { }
 
-        internal abstract void OnTaskActivation(GameObject indicatorArrow);
-        internal abstract void OnTaskDeactivation(GameObject indicatorArrow);
+        /**
+        * <summary>
+        * Called when the task becomes inactive after being active before
+        * </summary>
+        */
+        internal virtual void OnTaskDeactivation(GameObject indicatorArrow) { }
     }
 }

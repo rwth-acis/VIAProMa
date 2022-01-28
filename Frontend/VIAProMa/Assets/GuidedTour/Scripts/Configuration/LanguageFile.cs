@@ -13,13 +13,13 @@ namespace GuidedTour
      */
     public class LanguageFile
     {
-        private readonly string fileName;
+        private readonly TextAsset file;
         private readonly Dictionary<string, string> map = new Dictionary<string, string>();
         private LanguageRoot root;
 
-        public LanguageFile(string fileName)
+        public LanguageFile(TextAsset file)
         {
-            this.fileName = fileName;
+            this.file = file;
         }
 
         /**
@@ -29,13 +29,12 @@ namespace GuidedTour
          */
         public void LoadConfig()
         {
-            StreamReader reader = new StreamReader(fileName);
-            root = JsonUtility.FromJson<LanguageRoot>(reader.ReadToEnd());
-            reader.Close();
+            root = JsonUtility.FromJson<LanguageRoot>(file.text);
 
             Map();
         }
 
+        // Map the identifiers to their translation for lookup speed
         private void Map()
         {
             if (root.defaultLanguage == null)
@@ -49,8 +48,18 @@ namespace GuidedTour
             }
         }
 
+        /**
+         * <summary>Get the translation for an identifier</summary>
+         * <param name="name">The identifier for the translation</param>
+         * <param name="language">The language tag, as it is used in the language file</param>
+         */
         public string GetTranslation(string name, string language)
         {
+            if (root == null)
+            {
+                throw new InvalidOperationException("Language file has not been loaded yet");
+            }
+
             string str;
             map.TryGetValue(name + ":" + language, out str);
             if (str == null)

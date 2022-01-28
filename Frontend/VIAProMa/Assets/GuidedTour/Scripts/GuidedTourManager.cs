@@ -8,29 +8,66 @@ namespace GuidedTour
     /**
      * <summary>
      * The GuidedTourManager holds the TourSection which hold the TourTasks. The Manager is responsible for 
-     * managing the state of the tasks and for managing the config file(s).
+     * managing the state of the tasks and for managing the configuration file(s).
      * </summary>
      */
     public class GuidedTourManager : MonoBehaviour
     {
+        /**
+         * <summary>The current active task or null if the tour is finished</summary>
+         */
         public AbstractTourTask ActiveTask { get; private set; }
+        /**
+         * <summary>The current active tour section or null if the tour is finished</summary>
+         */
         public TourSection ActiveSection { get; private set; }
+        /**
+         * <summary>The list of sections in the tor</summary>
+         */
         public List<TourSection> Sections { get; private set; }
 
-        [SerializeField] private SectionBoard sectionBoard;
-        [SerializeField] private string language = "en";
-        [SerializeField] private float notificationTime = 5;
-        [SerializeField] private GuidedTourWidget widget;
-        [SerializeField] private GameObject indicatorArrow;
-        [SerializeField] private NotificationWidget notifications;
+        [Header("References")]
+        [Tooltip("The reference to the section board")]
+        [SerializeField]
+        private SectionBoard sectionBoard;
 
-        private ConfigFile configFile = new ConfigFile("Assets/GuidedTour/Configuration/GuidedTour.json");
-        private LanguageFile languageFile = new LanguageFile("Assets/GuidedTour/Configuration/Languages.json");
-        private int sectionIndex = 0;
-        private int taskIndex = -1;
+        [Tooltip("The reference to the widget")]
+        [SerializeField]
+        private GuidedTourWidget widget;
+
+        [Tooltip("The reference to the indicator arrow")]
+        [SerializeField]
+        private GameObject indicatorArrow;
+
+        [Tooltip("The reference to the notification widget")]
+        [SerializeField]
+        private NotificationWidget notifications;
+
+        [Header("Settings")]
+        [Tooltip("The current language (same identifier for the language as in the language file)")]
+        [SerializeField]
+        private string language = "en";
+        [Tooltip("The time the notifications will be shown in seconds")]
+        [SerializeField]
+        private float notificationTime = 5;
+
+        [Header("Configuration files")]
+        [SerializeField]
+        private TextAsset configFileLocation;
+        [SerializeField]
+        private TextAsset languageFileLocation;
+
+        private ConfigFile configFile;
+        private LanguageFile languageFile;
+        internal int sectionIndex = 0;
+        internal int taskIndex = -1;
+        internal int totalTasksDone = 0;
 
         private void Awake()
         {
+            configFile = new ConfigFile(configFileLocation);
+            languageFile = new LanguageFile(languageFileLocation);
+
             Sections = new List<TourSection>();
 
             languageFile.LoadConfig();
@@ -50,8 +87,8 @@ namespace GuidedTour
             if (ActiveTask.IsTaskDone())
             {
                 notifications.ShowMessage("Completed Task " + languageFile.GetTranslation(ActiveTask.Name, language), notificationTime);
-                ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
-                ActiveTask.OnTaskDeactivation(indicatorArrow);
+                notifications.PlaySuccessSound();
+                OnTaskCompleted();
                 SelectNextTask();
             }
         }
@@ -68,12 +105,29 @@ namespace GuidedTour
         {
             CheckTourNotFinished();
 
+            StartCoroutine(SkipSectionCoroutine());
+        }
+
+        // As coroutine to yield in between to let animations play
+        private IEnumerator SkipSectionCoroutine()
+        {
+            // Make time 20x faster
+            Time.timeScale = 20;
             // For the remaining tasks in the section
             for (int task = taskIndex; task < ActiveSection.Tasks.Count; task++)
             {
-                ActiveSection.Tasks[task].SkipTask();
-                ActiveSection.Tasks[task].State = AbstractTourTask.TourTaskState.COMPLETED;
+                ActiveTask = ActiveSection.Tasks[task];
+                LinkCurrentTask();
+                OnTaskUpdate();
+
+                yield return new WaitForSeconds(5);
+
+                ActiveTask.SkipTask();
+                OnTaskCompleted();
             }
+
+            // Reset time
+            Time.timeScale = 1;
 
             taskIndex = ActiveSection.Tasks.Count;
             // Because of setting taskIndex, SelectNextTask() will chose the next section
@@ -91,14 +145,13 @@ namespace GuidedTour
             CheckTourNotFinished();
 
             ActiveTask.SkipTask();
-            ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
-            ActiveTask.OnTaskDeactivation(indicatorArrow);
+            OnTaskCompleted();
             SelectNextTask();
         }
 
+        // Selects the next task and sets ActiveTask and ActiveSection
         private void SelectNextTask()
         {
-            sectionBoard.currentTaskCount++;
             taskIndex++;
             if (taskIndex >= ActiveSection.Tasks.Count) // Section finished
             {
@@ -114,33 +167,62 @@ namespace GuidedTour
                 else // Finished with the complete tour
                 {
                     Debug.Log("- Tour completed -");
-                    sectionBoard.progressBar.PercentageDone = 1;
-                    widget.UpdateTask(null, languageFile, language);
+
                     ActiveSection = null;
                     ActiveTask = null;
+                    OnTaskUpdate();
                     return;
                 }
             }
 
             ActiveTask = ActiveSection.Tasks[taskIndex];
+            LinkCurrentTask();
+            OnTaskUpdate();
+
+
+            Debug.Log("Selected next task: " + ActiveTask.Name);
+        }
+
+        // Called when a new task is selected. ActiveTask is now the new task
+        private void OnTaskUpdate()
+        {
+            if (ActiveTask != null)
+            {
+                sectionBoard.updateSectionBoard();
+                widget.UpdateTask(ActiveTask, languageFile, language);
+                ActiveTask.OnTaskActivation(indicatorArrow);
+                ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
+            }
+            else
+            {
+                sectionBoard.progressBar.PercentageDone = 1;
+                widget.UpdateTask(null, languageFile, language);
+            }
+        }
+
+        // Called when a task is finished (also when it is skipped). ActiveTask is the old task
+        private void OnTaskCompleted()
+        {
+            totalTasksDone++;
+            ActiveTask.State = AbstractTourTask.TourTaskState.COMPLETED;
+            ActiveTask.OnTaskDeactivation(indicatorArrow);
+        }
+
+        // Links ActiveTask with the real task in the scene, if it is an UnlinkedTourTask
+        private void LinkCurrentTask()
+        {
             if (ActiveTask.GetType() == typeof(UnlinkedTourTask))
             {
                 string id = ActiveTask.Id;
                 ActiveTask = ActiveSection.Tasks[taskIndex] = GuidedTourUtils.LinkTask((UnlinkedTourTask)ActiveTask);
                 if (ActiveTask == null)
                 {
-                    throw new Exception("No task with the id \"" + id +"\" is in the scene");
+                    throw new Exception("No task with the id \"" + id + "\" is in the scene");
                 }
             }
-
-            ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
-            sectionBoard.updateSectionBoard();
-            widget.UpdateTask(ActiveTask, languageFile, language);
-            ActiveTask.OnTaskActivation(indicatorArrow);
-
-            Debug.Log("Selected next task: " + ActiveTask.Name);
         }
 
+        // If the tour is finished, the method throws an InvalidOperationException
         private void CheckTourNotFinished()
         {
             if (ActiveSection == null)
