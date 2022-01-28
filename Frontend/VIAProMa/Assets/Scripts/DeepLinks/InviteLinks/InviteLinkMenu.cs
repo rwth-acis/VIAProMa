@@ -42,7 +42,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
 
         public void OnEnable()
         {
-            curInviteLink = InviteLinkManager.GenerateInviteLink();
+            curInviteLink = InviteLinksHandler.GenerateInviteLink();
             linkTextfield.text = curInviteLink;
             feedbackText.text = "";
 
