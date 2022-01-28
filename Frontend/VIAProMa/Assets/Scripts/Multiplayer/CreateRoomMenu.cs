@@ -6,6 +6,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using UnityEngine;
+using System.Text.RegularExpressions;
+using TMPro;
 
 namespace i5.VIAProMa.Multiplayer
 {
@@ -25,6 +27,8 @@ namespace i5.VIAProMa.Multiplayer
         [SerializeField] private InputField roomNameField;
         [Tooltip("An error message which can be displayed")]
         [SerializeField] private GameObject errorMessage;
+        [Tooltip("The text field of the error message")]
+        [SerializeField] private TextMeshPro errorMessageText;
         [Tooltip("Checkbox for advanced settings")]
         [SerializeField] private Interactable advancedSettingsCheckbox;
         [Tooltip("The slider for determining the number of members")]
@@ -104,15 +108,26 @@ namespace i5.VIAProMa.Multiplayer
 
         /// <summary>
         /// Called if the text in the input field for the room name is changed
-        /// Checks if the entered room name already exists; if yes, an error message is displayed and the room creation cannot be finished
+        /// Checks if the entered room name already exists or contains invalid characters; if yes, an error message is displayed and the room creation cannot be finished
         /// </summary>
         /// <param name="sender">The sender of this event</param>
         /// <param name="e">Generic event arguments</param>
         private void OnInputFieldRoomNameChanged(object sender, EventArgs e)
         {
             bool roomExists = roomMenu.CheckIfRoomExists(roomNameField.Text);
-            errorMessage.SetActive(roomExists);
-            createRoomButton.Enabled = !roomExists && roomNameField.Text != "";
+            bool nameInvalid = !CheckRoomNameValidity(roomNameField.Text);
+            if (roomExists)
+            {
+                errorMessageText.text = "A room with this name already exists.";
+            }
+
+            if (nameInvalid)
+            {
+                errorMessageText.text = "Contains invalid characters."; //invalid room name error takes priority over existing room error
+            }
+                
+            errorMessage.SetActive(roomExists || nameInvalid);
+            createRoomButton.Enabled = !roomExists && roomNameField.Text != "" && !nameInvalid;
         }
 
         /// <summary>
@@ -172,6 +187,14 @@ namespace i5.VIAProMa.Multiplayer
             WindowOpen = false;
             WindowClosed?.Invoke(this, EventArgs.Empty);
             gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Checks íf the given string only contains alphanummeric characters, false if not
+        /// </summary>
+        public bool CheckRoomNameValidity(string roomName)
+        {
+            return Regex.IsMatch(roomName, "^[a-zA-Z0-9_]*$");
         }
     }
 }

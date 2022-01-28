@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.DeepLinkAPI;
+using i5.VIAProMa.UI;
+using System.Xml;
 //using i5.VIAProMa.DeepLinks;
 
 namespace i5.VIAProMa.DeepLinks
@@ -37,8 +39,30 @@ namespace i5.VIAProMa.DeepLinks
         [DeepLink(scheme: "i5", path: "invite")]
         public void ReceiveDeepLink(DeepLinkArgs args)
         {
-            Debug.Log("Deep link " + args.DeepLink.AbsoluteUri + " was received."); 
+            Debug.Log("Deep link " + args.DeepLink.AbsoluteUri + " was received.");
+            StartCoroutine(DeepLinkCoroutine(args));
+        }
+
+        private IEnumerator DeepLinkCoroutine(DeepLinkArgs args)
+        {
+            Debug.Log("DeepLink received - pause till all instances are loaded");
+            yield return null;
+
+            Debug.Log("All Instances should be loaded - Processing DeepLink");
             DeepLinkManager.Instance.ProcessInviteDeepLink(args);
+            yield return null;
+        }
+        /// <summary>
+        /// Method to read setting from AppSettings
+        /// <param name="key">Key to read.</param>
+        /// <returns>Corresponding value or error string.</returns>
+        /// </summary>
+        public static string ReadSetting(string key)
+        {
+            XmlDocument config = new XmlDocument();
+            config.Load("./Assets/Scripts/DeepLinks/DeepLinkConfig.config");
+            XmlNode node = config.SelectSingleNode("configuration/configSections/" + key);
+            return node.InnerText;
         }
     }
 

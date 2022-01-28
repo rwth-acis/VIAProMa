@@ -17,7 +17,7 @@ namespace i5.VIAProMa.DeepLinks
         /// Gets room name from deep link parameters.
         /// </summary>
         /// <param name="parameters">Deep link parameters.</param>
-        /// <returns></returns>
+        /// <returns>Room name.</returns>
         private string DecodeLink(Dictionary<string, string> parameters)
         {
             Debug.Log("The deep link does" + (parameters.ContainsKey("roomName") ? "" : " not") + " contain a room name.");

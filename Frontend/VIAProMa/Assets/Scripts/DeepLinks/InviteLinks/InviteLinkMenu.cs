@@ -6,6 +6,7 @@ using i5.VIAProMa.DeepLinks.InviteLinks;
 using Photon.Pun;
 using TMPro;
 
+
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
     /// <summary>
@@ -16,6 +17,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
 
         [Header("UI Elements")]
         [SerializeField] private TextMeshPro linkTextfield;
+        [SerializeField] private TextMeshPro feedbackText;
 
 
         public bool WindowEnabled { get; set; } // not used here
@@ -32,12 +34,17 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(linkTextfield));
             }
+            if (feedbackText == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(feedbackText));
+            }
         }
 
         public void OnEnable()
         {
             curInviteLink = InviteLinkManager.GenerateInviteLink();
             linkTextfield.text = curInviteLink;
+            feedbackText.text = "";
 
         }
 
@@ -79,6 +86,24 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         public void CopyLinkToClipboard() 
         {
             GUIUtility.systemCopyBuffer = curInviteLink;
+            feedbackText.text = "Link copied to clipboard!";
+        }
+
+
+        /// <summary>
+        /// Opens the users default mail client with a share mail template
+        /// </summary>
+        public void ShareLinkMail()
+        {
+            string mailDefaultSubject = "Come join my ViaProMa session!";
+            string mailDefaultBody = $"Hello, {Environment.NewLine} I'd like to invite you to my current ViaProMa session! {Environment.NewLine} Just open the link below: {Environment.NewLine}" + curInviteLink + $"{Environment.NewLine} Best regards!";
+
+            string mailUrl = "mailto:?to=&subject=" + System.Net.WebUtility.UrlEncode(mailDefaultSubject) +
+                "&body=" + System.Net.WebUtility.UrlEncode(mailDefaultBody);
+
+            System.Diagnostics.Process.Start(mailUrl);
+            feedbackText.text = "Check your e-mail client!";
+
         }
 
         /// <summary>
@@ -89,6 +114,8 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             PhotonNetwork.LeaveRoom();
             this.Close();
         }
+
+        
     }
 }
 
