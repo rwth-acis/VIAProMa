@@ -46,7 +46,6 @@ MonoBehaviour:
   _id: network.enterURL
   inputField: {fileID: 3911669983404664380}
   targetString: http://cloud17.dbis.rwth-aachen.de
-  keyboard: {fileID: 0}
 --- !u!1 &2124765425123915705
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +55,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8686521380633970716}
-  - component: {fileID: 4858912989850266659}
+  - component: {fileID: 1008790319604514488}
   m_Layer: 0
   m_Name: network.URLDone
   m_TagString: Untagged
@@ -78,7 +77,7 @@ Transform:
   m_Father: {fileID: 7704003403617726210}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4858912989850266659
+--- !u!114 &1008790319604514488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -87,7 +86,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2124765425123915705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: network.URLDone
@@ -96,7 +95,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 0
   arrowPosition: 0
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &2579038928613517506
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +109,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 244176966824505228}
-  - component: {fileID: 4255509479857031414}
+  - component: {fileID: 3631815601948343700}
   m_Layer: 0
   m_Name: network.backendSettings
   m_TagString: Untagged
@@ -128,7 +131,7 @@ Transform:
   m_Father: {fileID: 7704003403617726210}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4255509479857031414
+--- !u!114 &3631815601948343700
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,7 +140,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2579038928613517506}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: network.backendSettings
@@ -146,7 +149,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 2
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &3671659824378912507
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,7 +374,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7009634879995498859}
-  - component: {fileID: 8634428297887639799}
+  - component: {fileID: 7524266503403153025}
   m_Layer: 0
   m_Name: network.leaveSettings
   m_TagString: Untagged
@@ -389,7 +396,7 @@ Transform:
   m_Father: {fileID: 7704003403617726210}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8634428297887639799
+--- !u!114 &7524266503403153025
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -398,7 +405,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4840053144334671514}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bd2e1f55837c0a4d8fb77aa3cc5f859, type: 3}
+  m_Script: {fileID: 11500000, guid: 75127a8668198ac4e8476e9830429b62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _id: network.leaveSettings
@@ -407,7 +414,11 @@ MonoBehaviour:
     type: 3}
   isHighlighterNeeded: 1
   arrowPosition: 2
-  customOffset: {x: 0, y: 0, z: 0}
+  indicatorOffset: {x: 0, y: 0, z: 0}
+  isblockerNeeded: 0
+  inputBlockerPrefab: {fileID: 0}
+  inputBlockerOffset: {x: 0, y: 0, z: 0}
+  inputBlockerScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1 &5835293017563494087
 GameObject:
   m_ObjectHideFlags: 0
