@@ -14,6 +14,7 @@ namespace i5.VIAProMa.UI
         [SerializeField] private GameObject saveProjectMenuPrefab;
         [SerializeField] private GameObject loginMenuPrefab;
         [SerializeField] private GameObject inviteLinkMenuPrefab;
+        [SerializeField] private GameObject confirmationMenuPrefab;
 
         private void Start()
         {
@@ -23,6 +24,7 @@ namespace i5.VIAProMa.UI
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
             InviteLinkMenu = (InviteLinkMenu)InstantiateWindow(inviteLinkMenuPrefab);
+            ConfirmationMenu = (ConfirmationWindow)InstantiateWindow(confirmationMenuPrefab);
         }
 
         private IWindow InstantiateWindow(GameObject prefab)
@@ -50,5 +52,6 @@ namespace i5.VIAProMa.UI
         public LoginMenu LoginMenu { get; private set; }
 
         public InviteLinkMenu InviteLinkMenu { get; private set; }
+        public ConfirmationWindow ConfirmationMenu { get; private set; }
     }
 }
