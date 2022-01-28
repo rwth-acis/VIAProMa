@@ -31,7 +31,20 @@ namespace GuidedTour {
          */
         private void Awake() 
         {
-            keyboard = Resources.FindObjectsOfTypeAll<Keyboard>()[0];
+            foreach (Keyboard k in Resources.FindObjectsOfTypeAll<Keyboard>())
+            {
+                if (k.gameObject.tag.Equals("GuidedTour"))
+                {
+                    keyboard = k;
+                    break;
+                }
+            }
+
+            if (keyboard == null)
+            {
+                throw new Exception("Cannot find Keyboard");
+            }
+            
             keyboard.InputFinished += c_KeyboardClosed;
         }
 

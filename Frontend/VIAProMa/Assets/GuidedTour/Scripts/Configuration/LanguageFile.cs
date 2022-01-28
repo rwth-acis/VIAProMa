@@ -66,7 +66,7 @@ namespace GuidedTour
             {
                 map.TryGetValue(name + ":" + root.defaultLanguage, out str);
                 if (str == null)
-                    throw new Exception("No translation for name " + name);
+                    throw new Exception("No translation for name \"" + name + "\"");
             }
 
             return str;

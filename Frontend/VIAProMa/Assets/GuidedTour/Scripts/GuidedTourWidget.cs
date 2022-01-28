@@ -57,6 +57,7 @@ namespace GuidedTour
             {
                 headline.text = "Completed Tour";
                 hintText.text = "You are finished!";
+                continueButton.SetActive(false);
                 return;
             }
 
@@ -64,14 +65,7 @@ namespace GuidedTour
             hintText.text = languageFile.GetTranslation(task.Description, language);
 
             //check the type of the task to identify if the continue button is needed
-            if (task.GetType() == typeof(SimpleTourTask))
-            {
-                continueButton.SetActive(true);
-            }
-            else
-            {
-                continueButton.SetActive(false);
-            }
+            continueButton.SetActive(task.GetType() == typeof(SimpleTourTask));
         }
 
 
