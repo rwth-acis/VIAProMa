@@ -54,13 +54,14 @@ namespace i5.VIAProMa.DeepLinks
             Debug.Log("The room name contained in the invite link is: " + roomname);
             if(PhotonNetwork.CurrentRoom != null)
             {
-                Debug.Log("The user was already in a room and will automatically leave the room now.");
-                // TODO: Add pop-up with join-option here.
-                PhotonNetwork.LeaveRoom();
+                WindowManager.Instance.ConfirmationMenu.Open(Camera.main.transform.position + 0.6f * Camera.main.transform.forward, Camera.main.transform.eulerAngles, roomname);
             }
-            bool wasJoined = PhotonNetwork.JoinOrCreateRoom(roomname, null, null);
-            Debug.Log("The room was" + (wasJoined ? "" : " not") + " joined." + (wasJoined ? "" :
-                "\n This may indicate that there was no such room."));
+            else
+            {
+                bool wasJoined = PhotonNetwork.JoinOrCreateRoom(roomname, null, null);
+                Debug.Log("The room was" + (wasJoined ? "" : " not") + " joined." + (wasJoined ? "" :
+                    "\n This may indicate that there was no such room."));
+            }
         }
 
         /// <summary>

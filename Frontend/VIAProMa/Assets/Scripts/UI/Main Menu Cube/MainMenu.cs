@@ -219,7 +219,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
             foldController.FoldCube();
         }
-
+        
         public void ShowLoginMenu()
         {
             WindowManager.Instance.LoginMenu.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
