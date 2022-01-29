@@ -45,6 +45,11 @@ namespace i5.VIAProMa.Audio
             AudioManager.instance.PlayLogoffSound(PhotonView.Find(otherPlayer.ActorNumber).gameObject.transform.position);
         }
 
+        /// <summary>
+        /// Plays the clip for message receiving once, using a PlaySoundOnceAt.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         public void OnMessageReceived(object sender, ChatMessageEventArgs args)
         {
             AudioManager.instance.PlayMessageSound();
@@ -59,12 +64,23 @@ namespace i5.VIAProMa.Audio
             AudioManager.instance.PlayProgressBarSound(bar.transform.position);
         }
 
+        /// <summary>
+        /// Plays the Building Progessbar sound if there was progress
+        /// </summary>
+        /// <param name="bar"></param>
+        /// <param name="oldValue"></param>
+        /// <param name="newValue"></param>
         public void OnBuildingvisualDoneChanged(BuildingProgressBarVisuals bar, float oldValue, float newValue)
         {
             if (newValue <= oldValue) return;
             AudioManager.instance.PlayBuildingProgressSound(bar.transform.position);
         }
 
+        /// <summary>
+        /// Decides which Microphone sound to play
+        /// </summary>
+        /// <param name="button"></param>
+        /// <param name="micStatus"></param>
         public void OnToggleMic(Interactable button, bool micStatus)
         {
             Vector3 at = button.transform.position;

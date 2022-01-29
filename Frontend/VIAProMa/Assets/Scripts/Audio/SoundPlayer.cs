@@ -28,7 +28,9 @@ namespace i5.VIAProMa.Audio
             }
             GetComponent<Interactable>().OnClick.RemoveListener(PlaySoundHere);
         }
-
+        /// <summary>
+        /// Plays the clip of the current sound at the given position, using a PlaySoundOnceAt.
+        /// </summary>
         public void PlaySoundHere()
         {
             AudioManager.instance?.PlaySoundOnceAt(sound, gameObject.transform.position);

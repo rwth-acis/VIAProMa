@@ -4,6 +4,9 @@ using i5.VIAProMa.UI.Chat;
 using UnityEngine;
 namespace i5.VIAProMa.Audio
 {
+    /// <summary>
+    /// Handles the logic for managing and playing audio interaction 
+    /// </summary>
     public class AudioManager : MonoBehaviour
     {
         // AudioManager is a singleton
@@ -68,30 +71,53 @@ namespace i5.VIAProMa.Audio
             Destroy(soundObject, sound.clip.length + 1f);
         }
 
+        /// <summary>
+        /// Plays the clip of the LogIn sound at the given position, using a PlaySoundOnceAt.
+        /// </summary>
+        /// <param name="at"></param>
         public void PlayLoginSound(Vector3 at)
         {
             PlaySoundOnceAt(loginSound, at);
         }
 
+        /// <summary>
+        /// Plays the clip of the LogOff sound at the given position, using a PlaySoundOnceAt.
+        /// </summary>
+        /// <param name="at"></param>
         public void PlayLogoffSound(Vector3 at)
         {
             PlaySoundOnceAt(logoffSound, at);
         }
 
+        /// <summary>
+        /// Plays the clip of the BuildingProgess sound at the given position, using a PlaySoundOnceAt.
+        /// </summary>
+        /// <param name="at"></param>
         internal void PlayBuildingProgressSound(Vector3 at)
         {
             PlaySoundOnceAt(buildingProgressSound, at);
         }
-
+        /// <summary>
+        /// Plays the clip of the ProgressBar sound at the given position, using a PlaySoundOnceAt.
+        /// </summary>
+        /// <param name="at"></param>
         public void PlayProgressBarSound(Vector3 at)
         {
             PlaySoundOnceAt(progressBarSound, at);
         }
 
+        /// <summary>
+        /// Plays the clip for enabling the microphone sound at the given position, using a PlaySoundOnceAt.
+        /// </summary>
+        /// <param name="at"></param>
         public void PlayMicOnSound(Vector3 at)
         {
             PlaySoundOnceAt(micOn, at);
         }
+        /// <summary>
+        /// Plays the clip for disabling the microphone sound at the given position, using a PlaySoundOnceAt.
+        /// </summary>
+        /// <param name="at"></param>
         public void PlayMicOffSound(Vector3 at)
         {
             PlaySoundOnceAt(micOff, at);
@@ -126,6 +152,13 @@ namespace i5.VIAProMa.Audio
 
         public float maxDistance = 5;
 
+        /// <summary>
+        /// Intializes a sound clip with the given factors of the variables
+        /// </summary>
+        /// <param name="clip"></param>
+        /// <param name="volume"></param>
+        /// <param name="pitch"></param>
+        /// <param name="maxDistance"></param>
         public Sound(AudioClip clip, float volume = 1, float pitch = 1, float maxDistance = 5)
         {
             this.clip = clip;
