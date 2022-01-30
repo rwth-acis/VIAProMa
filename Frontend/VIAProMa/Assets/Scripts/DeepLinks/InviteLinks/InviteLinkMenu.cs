@@ -5,7 +5,7 @@ using i5.VIAProMa.Utilities;
 using i5.VIAProMa.DeepLinks.InviteLinks;
 using Photon.Pun;
 using TMPro;
-
+using i5.VIAProMa.Multiplayer;
 
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
@@ -53,6 +53,13 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         /// </summary>
         public void Open()
         {
+            LobbyManager.Instance.LobbyJoinStatusChanged += (s, e) =>
+            {
+                if(PhotonNetwork.CurrentRoom == null)
+                {
+                    this.Close();
+                }
+            };
             gameObject.SetActive(true);
             WindowOpen = true;
         }
