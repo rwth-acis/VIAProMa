@@ -53,10 +53,8 @@ namespace i5.VIAProMa.DeepLinks
             Debug.Log("DeepLink received - pause till all instances are loaded");
             yield return null;
 
-            int i = 0;
-            while(!PhotonNetwork.IsConnected && i < 600)
+            while(!PhotonNetwork.InLobby)
             {
-                i++;
                 yield return null;
             }
 
