@@ -7,7 +7,6 @@ using HoloToolkit.Unity;
 using i5.VIAProMa.UI;
 using System.Text.RegularExpressions;
 using ConfigLoadData;
-//using System.Xml;
 
 namespace i5.VIAProMa.DeepLinks
 {
@@ -65,19 +64,6 @@ namespace i5.VIAProMa.DeepLinks
             }
         }
 
-        /// <summary>
-        /// Method to read setting from AppSettings
-        /// <param name="key">Key to read.</param>
-        /// <returns>Corresponding value or error string.</returns>
-        /// </summary>
-        /*public static string ReadSetting(string key)
-        {
-            XmlDocument config = new XmlDocument();
-            config.Load("./Assets/Scripts/DeepLinks/DeepLinkConfig.config");
-            XmlNode node = config.SelectSingleNode("configuration/configSections/" + key);
-            return node.InnerText;
-        }
-        */
         /// <summary>
         /// Generates an invite link for the current session
         /// <returns>Invite link.</returns>

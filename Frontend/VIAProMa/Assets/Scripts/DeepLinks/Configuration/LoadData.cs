@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.Networking;
 
 namespace ConfigLoadData
 {
@@ -15,7 +16,14 @@ namespace ConfigLoadData
         public static Config LoadConfig()
         {
             string configFilePath = System.IO.Path.Combine(Application.streamingAssetsPath,"DeepLink","config.json");
-            string configData = System.IO.File.ReadAllText(configFilePath);
+
+            UnityWebRequest webRequest = UnityWebRequest.Get(configFilePath);
+            webRequest.SendWebRequest();
+            while (!webRequest.downloadHandler.isDone)
+            {
+            }
+            string configData = webRequest.downloadHandler.text;
+
             Config config = JsonUtility.FromJson<Config>(configData);
             return config;
         }
