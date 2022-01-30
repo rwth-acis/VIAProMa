@@ -94,14 +94,33 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             }
             if (RoomName != null)
             {
-                PhotonNetwork.LeaveRoom();
-                PhotonNetwork.JoinOrCreateRoom(RoomName, null, null);
+                if(PhotonNetwork.CurrentRoom == null)
+                {
+
+                    PhotonNetwork.JoinOrCreateRoom(RoomName, null, null);
+                }
+                else
+                {
+                    LobbyManager.Instance.LobbyJoinStatusChanged += RoomLeftAfterWait;
+                    PhotonNetwork.LeaveRoom();
+                }
             }
             else
             {
                 Debug.Log("Roomname was null, when confirming");
             }
             this.Close();
+        }
+
+        /// <summary>
+        /// Method that subscribes to changes in Room, to join the room when the previous is left
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void RoomLeftAfterWait(object sender, EventArgs e)
+        {
+            PhotonNetwork.JoinOrCreateRoom(RoomName, null, null);
+            LobbyManager.Instance.LobbyJoinStatusChanged -= RoomLeftAfterWait;
         }
     }
 }

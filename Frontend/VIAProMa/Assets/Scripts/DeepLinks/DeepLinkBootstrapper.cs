@@ -4,7 +4,7 @@ using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.DeepLinkAPI;
 using i5.VIAProMa.UI;
-
+using Photon.Pun;
 
 namespace i5.VIAProMa.DeepLinks
 {
@@ -42,10 +42,23 @@ namespace i5.VIAProMa.DeepLinks
             StartCoroutine(DeepLinkCoroutine(args));
         }
 
+        /// <summary>
+        /// Cooroutine to wait for the PhotonNetwork to connect is DeepLink started Application
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         private IEnumerator DeepLinkCoroutine(DeepLinkArgs args)
         {
+
             Debug.Log("DeepLink received - pause till all instances are loaded");
             yield return null;
+
+            int i = 0;
+            while(!PhotonNetwork.IsConnected && i < 600)
+            {
+                i++;
+                yield return null;
+            }
 
             Debug.Log("All Instances should be loaded - Processing DeepLink");
             DeepLinkManager.Instance.ProcessInviteDeepLink(args);
