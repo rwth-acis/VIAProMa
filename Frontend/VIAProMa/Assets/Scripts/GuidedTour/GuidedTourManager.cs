@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace GuidedTour
 {
@@ -170,7 +171,7 @@ namespace GuidedTour
                 }
                 else // Finished with the complete tour
                 {
-                    Debug.Log("- Tour completed -");
+                    SceneManager.LoadScene("MainScene");
 
                     ActiveSection = null;
                     ActiveTask = null;
@@ -192,7 +193,7 @@ namespace GuidedTour
         {
             if (ActiveTask != null)
             {
-                sectionBoard.updateSectionBoard();
+                sectionBoard.UpdateSectionBoard();
                 widget.UpdateTask(ActiveTask, languageFile, language);
                 ActiveTask.OnTaskLinked(this);
                 ActiveTask.OnTaskActivation(indicatorArrow);

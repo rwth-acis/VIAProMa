@@ -47,6 +47,7 @@ namespace GuidedTour
         [SerializeField] private Vector3 inputBlockerScale = new Vector3(0.01f,0.01f,0.01f);
         private GameObject inputBlocker;
         private Vector3 inputBlockerBounds;
+        private bool isInteractableEnabled;
 
         /**
          * <summary>
@@ -65,6 +66,8 @@ namespace GuidedTour
                     inputBlockerBounds = interactable.gameObject.GetComponent<Collider>().bounds.size;
                     inputBlocker.transform.localScale = new Vector3(inputBlockerBounds.x + inputBlockerScale.x, inputBlockerBounds.y + inputBlockerScale.y, inputBlockerBounds.z + inputBlockerScale.z);
 
+                    isInteractableEnabled = interactable.isActiveAndEnabled;
+                    inputBlocker.SetActive(isInteractableEnabled);
                 }
             }
         }
@@ -78,6 +81,12 @@ namespace GuidedTour
 
             if (inputBlocker != null) {
                 inputBlocker.transform.position = interactable.gameObject.transform.position;
+
+                if (isInteractableEnabled != interactable.isActiveAndEnabled)
+                {
+                    isInteractableEnabled = interactable.isActiveAndEnabled;
+                    inputBlocker.SetActive(isInteractableEnabled);
+                }
             }
         }
 
