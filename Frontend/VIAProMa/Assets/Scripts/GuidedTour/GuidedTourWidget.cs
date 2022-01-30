@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace GuidedTour
 {
@@ -82,5 +83,10 @@ namespace GuidedTour
             sts.OnAction(); // --> Bind on button 
         }
 
+
+        public void Close()
+        {
+            SceneManager.LoadScene("MainScene");
+        }
     }
 }

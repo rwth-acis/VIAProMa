@@ -32,6 +32,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
+        [SerializeField] private GameObject guidedTourStartWidget;
 
         private FoldController foldController;
 
@@ -107,9 +108,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
             foldController = gameObject.GetComponent<FoldController>();
 
-            if (PlayerPrefs.GetInt("GuidedTour", 0) == 0)
+            // If guidedTourStartWidget is null, do not show the start widget (e.g. in the GuidedTour Scene)
+            if (PlayerPrefs.GetInt("GuidedTour", 0) == 0 && guidedTourStartWidget != null)
             {
-
+                Instantiate(guidedTourStartWidget);
             }
         }
 
