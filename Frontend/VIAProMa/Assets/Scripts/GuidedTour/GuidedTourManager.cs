@@ -83,8 +83,6 @@ namespace GuidedTour
         {
             if (ActiveTask == null)
                 return;
-
-            ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE; // remove
         }
 
         /**
@@ -163,10 +161,7 @@ namespace GuidedTour
                 sectionIndex++;
                 if (sectionIndex < Sections.Count) // More sections left
                 {
-                    Debug.Log("Completed Section: " + ActiveSection.Name);
                     ActiveSection = Sections[sectionIndex];
-                    Debug.Log("Next Section: " + ActiveSection.Name);
-
                     taskIndex = 0;
                 }
                 else // Finished with the complete tour
@@ -183,9 +178,6 @@ namespace GuidedTour
             ActiveTask = ActiveSection.Tasks[taskIndex];
             LinkCurrentTask();
             OnTaskUpdate();
-
-
-            Debug.Log("Selected next task: " + ActiveTask.Name);
         }
 
         // Called when a new task is selected. ActiveTask is now the new task
