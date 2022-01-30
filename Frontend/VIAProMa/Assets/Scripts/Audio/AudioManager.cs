@@ -14,17 +14,22 @@ namespace i5.VIAProMa.Audio
 
         [SerializeField]
         private AnimationCurve curve = new AnimationCurve(new Keyframe[] { new Keyframe(0, 1), new Keyframe(1, 0) });
+      [SerializeField] private Sound loginSound = new Sound(null);
+      [SerializeField] private Sound logoffSound = new Sound(null);
+      [SerializeField] private Sound messageSound = new Sound(null);
+      [SerializeField] private Sound progressBarSound = new Sound(null);
+      [SerializeField] private Sound buildingProgressSound = new Sound(null);
+      [SerializeField] private Sound pingSound = new Sound(null);
+      [SerializeField] private Sound errorSound = new Sound(null);
+      [SerializeField] private Sound micOn = new Sound(null);
+      [SerializeField] private Sound micOff = new Sound(null);
 
-        [SerializeField] private Sound loginSound = new Sound(null);
-        [SerializeField] private Sound logoffSound = new Sound(null);
-        [SerializeField] private Sound messageSound = new Sound(null);
-        [SerializeField] private Sound progressBarSound = new Sound(null);
-        [SerializeField] private Sound buildingProgressSound = new Sound(null);
-        [SerializeField] private Sound micOn = new Sound(null);
-        [SerializeField] private Sound micOff = new Sound(null);
+      private Transform mainCam;
+        private void Start() {
+  
+        mainCam = Camera.main.transform;
 
-
-        private void Start()
+        foreach (Keyframe key in curve.keys)
         {
             if (instance == null) instance = this;
             else Destroy(this);
@@ -79,7 +84,6 @@ namespace i5.VIAProMa.Audio
         {
             PlaySoundOnceAt(loginSound, at);
         }
-
         /// <summary>
         /// Plays the clip of the LogOff sound at the given position, using a PlaySoundOnceAt.
         /// </summary>
@@ -88,6 +92,10 @@ namespace i5.VIAProMa.Audio
         {
             PlaySoundOnceAt(logoffSound, at);
         }
+      internal void PlayErrorSound(Vector3 at)
+      {
+          PlaySoundOnceAt(errorSound, at);
+      }
 
         /// <summary>
         /// Plays the clip of the BuildingProgess sound at the given position, using a PlaySoundOnceAt.
@@ -137,6 +145,12 @@ namespace i5.VIAProMa.Audio
         }
     }
 
+    public void PlayerPingSound(Vector3 at)
+    {
+        pingSound.maxDistance = Vector3.Distance(mainCam.position, at) + 1;
+        PlaySoundOnceAt(pingSound, at);
+    }
+
     /// <summary>
     /// A class that holds information for an AudioClip
     /// </summary>
@@ -166,6 +180,5 @@ namespace i5.VIAProMa.Audio
             this.pitch = pitch;
             this.maxDistance = maxDistance;
         }
-
     }
 }
