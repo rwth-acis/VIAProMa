@@ -98,12 +98,24 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             string mailDefaultSubject = "Come join my ViaProMa session!";
             string mailDefaultBody = $"Hello, {Environment.NewLine} I'd like to invite you to my current ViaProMa session! {Environment.NewLine} Just open the link below: {Environment.NewLine}" + curInviteLink + $"{Environment.NewLine} Best regards!";
 
-            string mailUrl = "mailto:?to=&subject=" + System.Net.WebUtility.UrlEncode(mailDefaultSubject) +
-                "&body=" + System.Net.WebUtility.UrlEncode(mailDefaultBody);
+            string mailUrl = "mailto:?to=&subject=" + EncodeMailtoURL(mailDefaultSubject) +
+                "&body=" + EncodeMailtoURL(mailDefaultBody);
 
             Application.OpenURL(mailUrl);
             feedbackText.text = "Check your e-mail client!";
 
+        }
+
+        /// <summary>
+        /// Gets string to be used in mailto and converts it to encoded url string.
+        /// </summary>
+        /// <param name="url">The text to URL-encode</param>
+        /// <returns>A URL-encoded string.</returns>
+        public static string EncodeMailtoURL(string url)
+        {
+            url = System.Net.WebUtility.UrlEncode(url);
+            url = url.Replace("+", "%20");
+            return url;
         }
 
         /// <summary>
