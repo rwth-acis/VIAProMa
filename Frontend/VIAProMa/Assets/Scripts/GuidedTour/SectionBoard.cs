@@ -27,7 +27,7 @@ namespace GuidedTour
                 }
                 secsToTaskCount.Add(sec.Name, taskCount);
             }
-            updateSectionBoard();
+            UpdateSectionBoard();
         }
 
         private void Awake()
@@ -48,20 +48,10 @@ namespace GuidedTour
 
         /**
          * <summary>
-         * This method calls the GuidedTourManagers skipSection() function when the Button on the Section Board is pressed
-         * </summary>
-         */
-        public void skipSection()
-        {
-            guidedTourManager.SkipSection();
-        }
-
-        /**
-         * <summary>
          * This Method updates the Visualization of the Progress Bar and Section Board
          * </summary>
          */
-        internal void updateSectionBoard()
+        internal void UpdateSectionBoard()
         {
             int currentTaskIterator = 0;
             int test = 0;

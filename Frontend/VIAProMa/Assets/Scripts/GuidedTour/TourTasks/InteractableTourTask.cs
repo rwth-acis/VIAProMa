@@ -23,8 +23,6 @@ namespace GuidedTour
 
         // This will listen to or cause the OnClick-Events of the Interactable-Component
         private InteractableTaskEventHandler tourTaskEventHandler;
-
-        internal bool done = false;
         
 
         // The highlighter is an optional arrow that can point towards the Interactable-Button.
@@ -49,6 +47,7 @@ namespace GuidedTour
         [SerializeField] private Vector3 inputBlockerScale = new Vector3(0.01f,0.01f,0.01f);
         private GameObject inputBlocker;
         private Vector3 inputBlockerBounds;
+        private bool isInteractableEnabled;
 
         /**
          * <summary>
@@ -67,6 +66,8 @@ namespace GuidedTour
                     inputBlockerBounds = interactable.gameObject.GetComponent<Collider>().bounds.size;
                     inputBlocker.transform.localScale = new Vector3(inputBlockerBounds.x + inputBlockerScale.x, inputBlockerBounds.y + inputBlockerScale.y, inputBlockerBounds.z + inputBlockerScale.z);
 
+                    isInteractableEnabled = interactable.isActiveAndEnabled;
+                    inputBlocker.SetActive(isInteractableEnabled);
                 }
             }
         }
@@ -81,6 +82,11 @@ namespace GuidedTour
             if (inputBlocker != null) {
                 inputBlocker.transform.position = interactable.gameObject.transform.position;
 
+                if (isInteractableEnabled != interactable.isActiveAndEnabled)
+                {
+                    isInteractableEnabled = interactable.isActiveAndEnabled;
+                    inputBlocker.SetActive(isInteractableEnabled);
+                }
             }
         }
 
@@ -92,17 +98,6 @@ namespace GuidedTour
         internal override void SkipTask() 
         {
             tourTaskEventHandler.EmulateButtonPress();
-        }
-
-        /**
-         * <summary>
-         * Functionality required by the GuidedTourManager.
-         * If the task is finished, the bool done will be set to true, so that the manager can load the next one.
-         * </summary>
-         */
-        internal override bool IsTaskDone() 
-        {
-            return done;
         }
 
         /**

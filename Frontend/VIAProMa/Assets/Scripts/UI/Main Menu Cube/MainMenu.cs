@@ -7,6 +7,7 @@ using Photon.Realtime;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace i5.VIAProMa.UI.MainMenuCube
 {
@@ -105,6 +106,11 @@ namespace i5.VIAProMa.UI.MainMenuCube
             }
 
             foldController = gameObject.GetComponent<FoldController>();
+
+            if (PlayerPrefs.GetInt("GuidedTour", 0) == 0)
+            {
+
+            }
         }
 
         public override void OnEnable()
@@ -251,6 +257,11 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
             foldController.FoldCube();
+        }
+
+        public void LoadTutorialScene()
+        {
+            SceneManager.LoadScene("GuidedTourScene");
         }
 
         private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)

@@ -22,13 +22,7 @@ namespace GuidedTour
         /*
          * This point should never be reached because if the ActiveTask becomes an 
          * UnlinkedTourTask the GuidedTourManager will relink it to the real task
-         */ 
-        internal override bool IsTaskDone()
-        {
-            throw new InvalidOperationException("Cannot call IsTaskDone() on an unlinked tour task");
-        }
-
-        // Like IsTaskDone()
+         */
         internal override void SkipTask()
         {
             throw new InvalidOperationException("Cannot call SkipTask() on an unlinked tour task");

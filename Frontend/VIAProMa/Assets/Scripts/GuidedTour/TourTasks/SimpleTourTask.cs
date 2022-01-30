@@ -21,12 +21,7 @@ namespace GuidedTour
          */
         public void OnAction()
         {
-            done = true;
-        }
-
-        internal override bool IsTaskDone()
-        {
-            return done;
+            manager.OnTaskDone();
         }
 
         internal override void SkipTask()

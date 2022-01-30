@@ -38,9 +38,9 @@ namespace GuidedTour
          */
         public override void OnClick(InteractableStates state, Interactable source, IMixedRealityPointer pointer = default)
         {
-            if (task.State == AbstractTourTask.TourTaskState.ACTIVE && task.done == false)
+            if (task.State == AbstractTourTask.TourTaskState.ACTIVE)
             {
-                task.done = true;
+                task.manager.OnTaskDone();
                 Destroy(this);
             }
         }
@@ -52,10 +52,9 @@ namespace GuidedTour
          */
         internal void EmulateButtonPress()
         {
-            if (task.State == AbstractTourTask.TourTaskState.ACTIVE == true && task.done == false)
+            if (task.State == AbstractTourTask.TourTaskState.ACTIVE == true)
             {
                 Interactable.TriggerOnClick();
-                task.done = true;
                 Destroy(this);
             }
         }
