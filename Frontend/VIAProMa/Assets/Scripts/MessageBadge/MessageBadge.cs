@@ -18,6 +18,9 @@ namespace i5.VIAProMa.UI.MessageBadge
         [SerializeField] private MessagePack messages;
         [SerializeField] private Interactable tryAgainButton;
 
+        public event OnShowMessageDelegate OnShowMessage;
+        public delegate void OnShowMessageDelegate(long messageID);
+
         private MessageContent content;
         private int processing = 0;
 
@@ -94,6 +97,7 @@ namespace i5.VIAProMa.UI.MessageBadge
         public void ShowMessage(long messageCode)
         {
             SetContent(messages.GetMessage(messageCode));
+            OnShowMessage?.Invoke(messageCode);
         }
 
         public void Hide()

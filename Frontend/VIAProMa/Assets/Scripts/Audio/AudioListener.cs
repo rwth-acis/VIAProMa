@@ -6,7 +6,8 @@ using Photon.Realtime;
 using i5.VIAProMa.Multiplayer.Chat;
 using i5.VIAProMa.Visualizations.ProgressBars;
 using i5.VIAProMa.Visualizations.BuildingProgressBar;
-
+using Microsoft.MixedReality.Toolkit.UI;
+using i5.VIAProMa.UI.MainMenuCube;
 
 public class AudioListener : MonoBehaviourPunCallbacks
 {
@@ -17,6 +18,7 @@ public class AudioListener : MonoBehaviourPunCallbacks
         ChatManager.Instance.MessageReceived += OnMessageReceived;
         ProgressBarController.OnPercentageDoneChange += OnProgressbarDoneChanged;
         BuildingProgressBarVisuals.OnPercentageDoneChange += OnBuildingvisualDoneChanged;
+        MainMenuActions.OnToggleMicrophone += OnToggleMic;
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -25,6 +27,7 @@ public class AudioListener : MonoBehaviourPunCallbacks
         ChatManager.Instance.MessageReceived -= OnMessageReceived;
         ProgressBarController.OnPercentageDoneChange-= OnProgressbarDoneChanged;
         BuildingProgressBarVisuals.OnPercentageDoneChange -= OnBuildingvisualDoneChanged;
+        MainMenuActions.OnToggleMicrophone -= OnToggleMic;
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -58,6 +61,14 @@ public class AudioListener : MonoBehaviourPunCallbacks
     {
         if (newValue <= oldValue) return;
         AudioManager.instance.PlayBuildingProgressSound(bar.transform.position);
+    }
+
+    
+    public void OnToggleMic(Interactable button, bool micStatus)
+    {
+        Vector3 at = button.transform.position;
+        if (micStatus) AudioManager.instance.PlayMicOnSound(at);
+        else AudioManager.instance.PlayMicOffSound(at);
     }
 
 }

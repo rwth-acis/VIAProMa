@@ -18,6 +18,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private Sound buildingProgressSound = new Sound(null);
     [SerializeField] private Sound pingSound = new Sound(null);
     [SerializeField] private Sound errorSound = new Sound(null);
+    [SerializeField] private Sound micOn = new Sound(null);
+    [SerializeField] private Sound micOff = new Sound(null);
 
     private Transform mainCam;
 
@@ -113,6 +115,15 @@ public class AudioManager : MonoBehaviour
 
         messageSound.maxDistance = Vector3.Distance(mainCam.position, soundPlayPosition) + 1; // +1 for a bit of buffer
         PlaySoundOnceAt(messageSound, soundPlayPosition);
+    }
+
+    public void PlayMicOnSound(Vector3 at)
+    {
+        PlaySoundOnceAt(micOn, at);
+    }
+    public void PlayMicOffSound(Vector3 at)
+    {
+        PlaySoundOnceAt(micOff, at);
     }
 }
 
