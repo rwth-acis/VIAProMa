@@ -101,7 +101,7 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
             string mailUrl = "mailto:?to=&subject=" + System.Net.WebUtility.UrlEncode(mailDefaultSubject) +
                 "&body=" + System.Net.WebUtility.UrlEncode(mailDefaultBody);
 
-            System.Diagnostics.Process.Start(mailUrl);
+            Application.OpenURL(mailUrl);
             feedbackText.text = "Check your e-mail client!";
 
         }
