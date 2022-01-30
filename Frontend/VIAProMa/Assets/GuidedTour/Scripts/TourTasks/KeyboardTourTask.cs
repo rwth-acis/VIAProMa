@@ -80,33 +80,6 @@ namespace GuidedTour {
         public void AutoCompleteInput() 
         {
             keyboard.Text = targetString;
-            //keyboard.InputDone(false);
-        }
-
-        /*
-        public void temp() 
-        {
-            if (Active && !done) 
-            {
-                foreach(char a in targetString) {
-                    keyboard.AddLetter(a);
-                }
-                // keyboard.InputDone(false);
-                Debug.Log("Successfully skipped Input");
-                done = true;
-            }
-        }
-        */
-
-        /**
-         * <summary>
-         * Functionality required by the GuidedTourManager.
-         * If the task is finished, the bool done will be set to true, so that the manager can load the next one.
-         * </summary>
-         */
-        internal override bool IsTaskDone() 
-        {
-            return done;
         }
 
 
@@ -135,14 +108,16 @@ namespace GuidedTour {
             // Wait for a short time to ensure field is updated
             yield return new WaitForSeconds(0.1f);
 
-            if (inputField.ContentField.text.Equals(targetString))
+            if (inputField.ContentField.text.ToLower().Equals(targetString.ToLower()))
             {
                 Debug.Log("String is matching");
-                done = true;
+                manager.OnTaskDone();
             }
             else
             {
                 Debug.Log("String is not matching");
+                manager.notifications.ShowMessage("Wrong text", manager.notificationTime);
+                manager.notifications.PlayFailSound();
             }
         }
     }

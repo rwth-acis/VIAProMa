@@ -23,8 +23,6 @@ namespace GuidedTour
 
         // This will listen to or cause the OnClick-Events of the Interactable-Component
         private InteractableTaskEventHandler tourTaskEventHandler;
-
-        internal bool done = false;
         
 
         // The highlighter is an optional arrow that can point towards the Interactable-Button.
@@ -80,7 +78,6 @@ namespace GuidedTour
 
             if (inputBlocker != null) {
                 inputBlocker.transform.position = interactable.gameObject.transform.position;
-
             }
         }
 
@@ -92,17 +89,6 @@ namespace GuidedTour
         internal override void SkipTask() 
         {
             tourTaskEventHandler.EmulateButtonPress();
-        }
-
-        /**
-         * <summary>
-         * Functionality required by the GuidedTourManager.
-         * If the task is finished, the bool done will be set to true, so that the manager can load the next one.
-         * </summary>
-         */
-        internal override bool IsTaskDone() 
-        {
-            return done;
         }
 
         /**

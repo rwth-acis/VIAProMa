@@ -41,7 +41,7 @@ namespace GuidedTour
 
         [Tooltip("The reference to the notification widget")]
         [SerializeField]
-        private NotificationWidget notifications;
+        internal NotificationWidget notifications;
 
         [Header("Settings")]
         [Tooltip("The current language (same identifier for the language as in the language file)")]
@@ -49,7 +49,7 @@ namespace GuidedTour
         private string language = "en";
         [Tooltip("The time the notifications will be shown in seconds")]
         [SerializeField]
-        private float notificationTime = 5;
+        internal float notificationTime = 5;
 
         [Header("Configuration files")]
         [SerializeField]
@@ -83,14 +83,18 @@ namespace GuidedTour
             if (ActiveTask == null)
                 return;
 
-            ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
-            if (ActiveTask.IsTaskDone())
-            {
-                notifications.ShowMessage("Completed Task " + languageFile.GetTranslation(ActiveTask.Name, language), notificationTime);
-                notifications.PlaySuccessSound();
-                OnTaskCompleted();
-                SelectNextTask();
-            }
+            ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE; // remove
+        }
+
+        /**
+         * <summary>Called by active task when the task is done</summary>
+         */ 
+        internal void OnTaskDone()
+        {
+            notifications.ShowMessage("Completed Task " + languageFile.GetTranslation(ActiveTask.Name, language), notificationTime);
+            notifications.PlaySuccessSound();
+            OnTaskCompleted();
+            SelectNextTask();
         }
 
 
@@ -190,6 +194,7 @@ namespace GuidedTour
             {
                 sectionBoard.updateSectionBoard();
                 widget.UpdateTask(ActiveTask, languageFile, language);
+                ActiveTask.OnTaskLinked(this);
                 ActiveTask.OnTaskActivation(indicatorArrow);
                 ActiveTask.State = AbstractTourTask.TourTaskState.ACTIVE;
             }

@@ -56,18 +56,17 @@ namespace GuidedTour
          */
         public TourTaskState State { get; internal set; } = TourTaskState.SCHEDULED;
 
+        internal GuidedTourManager manager;
+
         void Start()
         {
             Id = _id;
         }
 
-        /**
-         * <summary>
-         * This method is called on every frame by the TourManger whilst this task is active. As soon as this method returns true, 
-         * this task is over and the TourManager selects the next tasks.
-         * </summary>
-         */
-        internal abstract bool IsTaskDone();
+        internal void OnTaskLinked(GuidedTourManager manager)
+        {
+            this.manager = manager;
+        }
 
         /**
          * <summary>
