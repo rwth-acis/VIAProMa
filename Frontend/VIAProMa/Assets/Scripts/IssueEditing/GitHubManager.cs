@@ -213,7 +213,7 @@ namespace Org.Git_Hub.API
             }
             else // This option can be used only if action will be triggered in the same scope as the webrequest
             {
-                return new Response(true, () => webRequest.downloadHandler?.text, () => webRequest.downloadHandler?.data, webRequest.responseCode);
+                return new Response(true, webRequest.downloadHandler?.text, webRequest.downloadHandler?.data, webRequest.responseCode);
             }
         }
     }
