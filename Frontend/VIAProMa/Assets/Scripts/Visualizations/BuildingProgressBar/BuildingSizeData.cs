@@ -1,9 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace i5.VIAProMa.Visualizations.BuildingProgressBar
 {
+    [Serializable]
+    public class SizeAndOffset
+    {
+        public float height;
+        public Vector2 heightSize;
+        public Vector2 offset;
+    }
+
     /// <summary>
     /// Stores information about the building's size on different levels
     /// </summary>
@@ -12,8 +21,8 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         [Tooltip("The overall height of the building")]
         [SerializeField] private float buildingHeight = 1f;
 
-        [Tooltip("The array of height sizes")]
-        [SerializeField] private List<Vector3> heightSizes;
+        [Tooltip("The array of height sizes and offsets")]
+        [SerializeField] private List<SizeAndOffset> heightSizesAndOffsets;
 
         /// <summary>
         /// The overall height of the building
@@ -25,12 +34,35 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         /// </summary>
         private void OnDrawGizmosSelected()
         {
-            foreach (Vector3 heightSize in heightSizes)
+            foreach (SizeAndOffset heightSizeAndOffset in heightSizesAndOffsets)
             {
                 // Draw a semitransparent blue cube at the transforms position
                 Gizmos.color = new Color(1, 0, 0, 0.5f);
-                Gizmos.DrawCube(transform.position + new Vector3(0, transform.lossyScale.y * heightSize.y, 0), Vector3.Scale(transform.lossyScale, new Vector3(heightSize.x, 0.001f, heightSize.z)));
+                Gizmos.DrawCube(transform.position + new Vector3(0, transform.lossyScale.y * heightSizeAndOffset.height, 0) //Places the cube at the center of the building and on the right height
+                    + new Vector3(transform.lossyScale.x*heightSizeAndOffset.offset.x, 0, transform.lossyScale.z * heightSizeAndOffset.offset.y) //Add the offset
+                    , Vector3.Scale(transform.lossyScale, new Vector3(heightSizeAndOffset.heightSize.x, 0.001f, heightSizeAndOffset.heightSize.y)));
             }
+        }
+
+        //Calculates the smallest index which height is bigger than the given height
+        private int getSizeAndOffsetIndex(float height)
+        {
+            heightSizesAndOffsets = heightSizesAndOffsets.OrderBy(o => o.height).ToList();
+            for (int i = 0; i < heightSizesAndOffsets.Count; i++)
+            {
+                if (height <= heightSizesAndOffsets[i].height)
+                {
+                    return i;
+                }
+            }
+            return heightSizesAndOffsets.Count - 1;
+        }
+
+        //Interpolates linear between previousVector and nextVector depending on where wantedHeight lies in the interval from previouseHeight to nextHeight
+        private Vector2 interpolateBetweenHeightSizes(Vector2 previousVector, float previouseHeight, Vector2 nextVector, float nextHeight, float wantedHeight)
+        {
+            float intervalRatio = (wantedHeight - previouseHeight) / (nextHeight - previouseHeight);
+            return Vector2.Lerp(previousVector, nextVector, intervalRatio);
         }
 
         /// <summary>
@@ -41,25 +73,48 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         /// <returns>The 2D size of the building on this level</returns>
         public Vector2 GetBuildingSize(float height)
         {
-            heightSizes = heightSizes.OrderBy(o => o.y).ToList();
-            for (int i = 0; i < heightSizes.Count; i++)
+            int i = getSizeAndOffsetIndex(height);
+            Vector2 heightSize = heightSizesAndOffsets[i].heightSize;
+            
+
+            if (i == 0)
             {
-                if (height <= heightSizes[i].y)
-                {
-                    if (i == 0)
-                    {
-                        return new Vector2(heightSizes[i].x, heightSizes[i].z);
-                    }
-                    else
-                    {
-                        float intervalRatio = (height - heightSizes[i - 1].y) / (heightSizes[i].y - heightSizes[i - 1].y);
-                        Vector2 previousSize = new Vector2(heightSizes[i - 1].x, heightSizes[i - 1].z);
-                        Vector2 nextSize = new Vector2(heightSizes[i].x, heightSizes[i].z);
-                        return Vector2.Lerp(previousSize, nextSize, intervalRatio);
-                    }
-                }
+                return heightSize;
             }
-            return new Vector2(heightSizes[heightSizes.Count - 1].x, heightSizes[heightSizes.Count - 1].z);
+            else
+            {
+                Vector2 previousHeightSize = heightSizesAndOffsets[i - 1].heightSize;
+                float previousHeight = heightSizesAndOffsets[i - 1].height;
+                float nextHeight = heightSizesAndOffsets[i].height;
+                return interpolateBetweenHeightSizes(previousHeightSize, previousHeight,
+                                                     heightSize, nextHeight, height);
+            }
+        }
+
+        /// <summary>
+        /// Gets the offset of a building on a particular height
+        /// Interpolates between the input building offset values between the given height
+        /// </summary>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public Vector2 GetOffset(float height)
+        {
+            int i = getSizeAndOffsetIndex(height);
+            Vector2 offset = heightSizesAndOffsets[i].offset;
+           
+
+            if (i == 0)
+            {
+                return offset;
+            }
+            else
+            {
+                Vector3 previousOffset = heightSizesAndOffsets[i-1].offset;
+                float previousHeight = heightSizesAndOffsets[i - 1].height;
+                float nextHeight = heightSizesAndOffsets[i].height;
+                return interpolateBetweenHeightSizes(previousOffset, previousHeight,
+                                                     offset, nextHeight, height);
+            }
         }
 
         /// <summary>
@@ -68,14 +123,14 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         /// <returns>The bounds of the size planes</returns>
         public Bounds GetBounds()
         {
-            if (heightSizes.Count == 0)
+            if (heightSizesAndOffsets.Count == 0)
             {
                 return new Bounds();
             }
-            Bounds bounds = new Bounds(new Vector3(0, heightSizes[0].y, 0), new Vector3(heightSizes[0].x, 0.001f, heightSizes[0].z));
-            for (int i = 1; i < heightSizes.Count; i++)
+            Bounds bounds = new Bounds(new Vector3(heightSizesAndOffsets[0].offset.x, heightSizesAndOffsets[0].height, heightSizesAndOffsets[0].offset.y), new Vector3(heightSizesAndOffsets[0].heightSize.x, 0.001f, heightSizesAndOffsets[0].heightSize.y));
+            for (int i = 1; i < heightSizesAndOffsets.Count; i++)
             {
-                Bounds cubeBounds = new Bounds(new Vector3(0, heightSizes[i].y, 0), new Vector3(heightSizes[i].x, 0.001f, heightSizes[i].z));
+                Bounds cubeBounds = new Bounds(new Vector3(heightSizesAndOffsets[0].offset.x, heightSizesAndOffsets[i].height, heightSizesAndOffsets[0].offset.y), new Vector3(heightSizesAndOffsets[i].heightSize.x, 0.001f, heightSizesAndOffsets[i].heightSize.y));
                 bounds.Encapsulate(cubeBounds);
             }
             return bounds;
