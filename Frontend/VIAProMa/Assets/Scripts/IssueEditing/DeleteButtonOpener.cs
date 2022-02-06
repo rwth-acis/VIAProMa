@@ -38,7 +38,7 @@ public class DeleteButtonOpener : MonoBehaviour
             buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
             buttonInstance.transform.parent = this.transform.parent.parent.parent;
         }
-        if(buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z))
+        if(buttonInstance != null && buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z))
         {
             buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
         }
