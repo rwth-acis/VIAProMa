@@ -8,6 +8,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
+
 namespace i5.VIAProMa.UI.MainMenuCube
 {
     [RequireComponent(typeof(FoldController))]
@@ -178,7 +179,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowSaveMenu()
         {
             WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right, transform.localEulerAngles);
-            foldController.FoldCube();
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowIssueShelf()
@@ -186,7 +187,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
-            foldController.FoldCube();
+            foldController.InitalizeNewCloseTimer();
         }
 
         private void IssueShelfCreated(GameObject obj)
@@ -201,7 +202,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
-            foldController.FoldCube();
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowLoadShelf()
@@ -209,12 +210,13 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position + 1f * transform.right;
             targetPosition.y = 0f;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
-            foldController.FoldCube();
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowLoginMenu()
         {
             WindowManager.Instance.LoginMenu.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowAvatarConfiguration()
@@ -223,13 +225,13 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 avatarConfiguratorPrefab,
                 ref avatarConfiguratorInstance,
                 transform.position - 1f * transform.right);
-            foldController.FoldCube();
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowServerStatusMenu()
         {
-            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.4f * transform.right, transform.localEulerAngles);
-            foldController.FoldCube();
+            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right, transform.localEulerAngles);
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void RoomButtonClicked()
@@ -244,13 +246,13 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 PhotonNetwork.LeaveRoom();
             }
-            foldController.FoldCube();
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void ChatButtonClicked()
         {
             WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-            foldController.FoldCube();
+            foldController.InitalizeNewCloseTimer();
         }
 
         private void InstantiateControl(GameObject prefab, ref GameObject instance, Vector3 targetPosition)

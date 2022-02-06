@@ -30,20 +30,17 @@ public class DeleteButtonOpener : MonoBehaviour
 
     private void Update()
     {
-        if(buttonInstance == null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
+        if (buttonInstance == null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
         {
             //Instantiate Button next to the Issue Card and pass on the requirement name, the button is activated if the user is logged in
             buttonInstance = Instantiate(deleteButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
             buttonInstance.GetComponent<DeleteButton>().requirementID = requirementID;
             buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
+            buttonInstance.transform.parent = this.transform.parent.parent.parent;
         }
-        //Check if the placement of the button is indeed correct and next to the position
-        if(buttonInstance != null)
+        if(buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z))
         {
-            if (buttonInstance.transform.position.x > this.transform.position.x + 0.08f || buttonInstance.transform.position.y > this.transform.position.y + 0.1f)
-            {
-                buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
-            }
+            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
         }
     }
 
