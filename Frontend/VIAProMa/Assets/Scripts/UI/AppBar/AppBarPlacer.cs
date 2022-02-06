@@ -16,7 +16,6 @@ namespace i5.VIAProMa.UI.AppBar
         [Header("Target Bounding Box")]
         [SerializeField]
         private BoundsControl boundsControl;
-        BoundsControl test;
 
         [Header("Scale & Position Options")]
 
@@ -70,8 +69,8 @@ namespace i5.VIAProMa.UI.AppBar
             Vector3 headPosition = Camera.main.transform.position;
             boundsPoints.Clear();
 
+            helper.GetRawBoundsCorners(boundsControl.TargetBounds);
             helper.UpdateNonAABoundsCornerPositions(boundsControl.TargetBounds, boundsPoints);
-
             int followingFaceIndex = helper.GetIndexOfForwardFace(headPosition);
             Vector3 faceNormal = helper.GetFaceNormal(followingFaceIndex);
 
