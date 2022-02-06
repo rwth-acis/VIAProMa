@@ -3,6 +3,7 @@ using i5.VIAProMa.Visualizations.ProgressBars;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using i5.VIAProMa.Visualizations.BuildingProgressBar;
 
 public class ProgressBarTester : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class ProgressBarTester : MonoBehaviour
     public float percentDone = 0f;
     [Range(0, 1)]
     public float percentInProgress = 0f;
+
+    public int buildingIndex = 0;
 
     public GameObject progressBar;
 
@@ -22,6 +25,7 @@ public class ProgressBarTester : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
         }
         progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
+        progressBar.GetComponent<BuildingProgressBarVisuals>().BuildingModelIndex = buildingIndex;
     }
 
     // Update is called once per frame

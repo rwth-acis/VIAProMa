@@ -193,11 +193,16 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
             else
             {
                 scaffoldingController.gameObject.SetActive(true);
+
+                //Position
+                Vector2 scaffoldingOffset = buildingSizeData.GetOffset(doneHeight);
                 scaffoldingController.transform.localPosition = new Vector3(
-                0,
+                scaffoldingOffset.x,
                 doneHeight + progressHeight / 2f,
-                0
+                scaffoldingOffset.y
                 );
+
+                //Size
                 Vector2 scaffoldingSize = buildingSizeData.GetBuildingSize(doneHeight);
                 scaffoldingController.LocalSize = new Vector3(
                     scaffoldingSize.x,
