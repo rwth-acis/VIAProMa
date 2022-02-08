@@ -13,7 +13,7 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         public string realized; // the date when the requirement was realized
         public int projectId;
         public ReqBazUser creator;
-        public Category[] categories;
+        public int[] categories;
         public string creationDate;
         public string lastUpdatedDate;
         public int numberOfComments;

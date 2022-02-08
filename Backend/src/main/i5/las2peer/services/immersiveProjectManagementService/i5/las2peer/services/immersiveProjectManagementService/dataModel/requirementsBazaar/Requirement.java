@@ -1,8 +1,11 @@
 package i5.las2peer.services.immersiveProjectManagementService.i5.las2peer.services.immersiveProjectManagementService.dataModel.requirementsBazaar;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by bened on 09.05.2019.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Requirement {
     private int id;
     private String name;
@@ -11,7 +14,7 @@ public class Requirement {
     private int projectId;
     private ReqBazUser creator;
     private ReqBazUser leadDeveloper;
-    private Category[] categories;
+    private int[] categories;
     private String creationDate;
     private String lastUpdatedDate;
     private int numberOfComments;
@@ -52,7 +55,7 @@ public class Requirement {
         return leadDeveloper;
     }
 
-    public Category[] getCategories() {
+    public int[] getCategories() {
         return categories;
     }
 

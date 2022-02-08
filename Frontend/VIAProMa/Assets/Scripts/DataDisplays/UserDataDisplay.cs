@@ -51,7 +51,15 @@ namespace i5.VIAProMa.DataDisplays
                 Texture2D profileImage = await GetProfileImage(content);
                 SetProfileImage(profileImage);
 
-                userNameLabel.text = content.FirstName + " " + content.LastName;
+                // prefer clear names but if they are not given, take the user name instead
+                if (!string.IsNullOrEmpty(content.FirstName) || !string.IsNullOrEmpty(content.LastName))
+                {
+                    userNameLabel.text = $"{content.FirstName} {content.LastName}";
+                }
+                else
+                {
+                    userNameLabel.text = content.UserName;
+                }
             }
             else
             {
