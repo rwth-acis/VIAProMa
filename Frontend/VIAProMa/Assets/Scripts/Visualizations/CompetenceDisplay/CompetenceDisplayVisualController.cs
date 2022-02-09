@@ -102,6 +102,7 @@ namespace i5.VIAProMa.Visualizations.Competence
 
             MoveChildrenToMiddle();
             boundsControl.transform.localPosition = new Vector3(0, 0, 0);
+            boundsControl.UpdateBounds();
         }
 
         private void DetermineSizes()
