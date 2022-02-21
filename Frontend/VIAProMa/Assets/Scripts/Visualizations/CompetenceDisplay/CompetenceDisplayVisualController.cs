@@ -125,9 +125,7 @@ namespace i5.VIAProMa.Visualizations.Competence
             titleLabel.MaxHeight = targetRadius * 0.8f;
         }
 
-        /// <summary>
-        /// Moves all children around the pivot, so the canban board can rotate arounds its middle and not its lower left corner point.
-        /// </summary>
+        // Moves all children around the pivot, so the canban board can rotate arounds its middle and not its lower left corner point.
         private void MoveChildrenToMiddle()
         {
             foreach (Transform child in transform)
