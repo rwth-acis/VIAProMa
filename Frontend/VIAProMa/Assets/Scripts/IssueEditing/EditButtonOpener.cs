@@ -35,13 +35,12 @@ public class EditButtonOpener : MonoBehaviour
         switch (dataSource)
         {
             case DataSource.REQUIREMENTS_BAZAAR:
-                buttonInstance.enabled = ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn;
+                buttonInstance.gameObject.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
                 break;
             case DataSource.GITHUB:
-                buttonInstance.enabled = ServiceManager.GetService<GitHubOidcService>().IsLoggedIn;
+                buttonInstance.gameObject.SetActive(ServiceManager.GetService<GitHubOidcService>().IsLoggedIn);
                 break;
         }
-        
     }
 
     private void Update()
@@ -90,7 +89,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LoginCompleted_LearningLayers(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
-            buttonInstance.enabled = true;
+            buttonInstance.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -101,7 +100,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LogoutCompleted_LearningLayers(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
-            buttonInstance.enabled = false;
+            buttonInstance.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -112,7 +111,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LoginCompleted_GitHub(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.GITHUB)
-            buttonInstance.enabled = true;
+            buttonInstance.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -123,7 +122,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LogoutCompleted_GitHub(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.GITHUB)
-            buttonInstance.enabled = false;
+            buttonInstance.gameObject.SetActive(false);
     }
 
     //Destroy button along with this object
