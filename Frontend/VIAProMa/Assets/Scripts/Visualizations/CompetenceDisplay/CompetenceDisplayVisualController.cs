@@ -120,13 +120,15 @@ namespace i5.VIAProMa.Visualizations.Competence
                     1f
                     );
             }
-            //boundsControl.transform.localPosition = new Vector3(0, 0, 0.5f);
 
             titleLabel.MaxWidth = targetRadius * 0.8f;
             titleLabel.MaxHeight = targetRadius * 0.8f;
         }
 
-        public void MoveChildrenToMiddle()
+        /// <summary>
+        /// Moves all children around the pivot, so the canban board can rotate arounds its middle and not its lower left corner point.
+        /// </summary>
+        private void MoveChildrenToMiddle()
         {
             foreach (Transform child in transform)
             {
