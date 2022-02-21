@@ -8,14 +8,12 @@ using i5.VIAProMa.Login;
 
 public class EditButtonOpener : MonoBehaviour
 {
-
-    [SerializeField] private GameObject editButtonPrefab;
     [SerializeField] private TextMeshPro issueName;
     [SerializeField] private TextMeshPro issueDescription;
     [SerializeField] private SourceDisplay source;
 
     [HideInInspector] public int issueID;
-    private GameObject buttonInstance;
+    private EditButton buttonInstance;
     private DataSource dataSource;
 
     // Subscribe to Login and Logout Events
@@ -28,42 +26,60 @@ public class EditButtonOpener : MonoBehaviour
         dataSource = source.Content.Source;
         issueID = source.Content.Id;
 
+        //Setup Button
+        buttonInstance = gameObject.GetComponentInChildren<EditButton>();
+        buttonInstance.issueName = issueName;
+        buttonInstance.issueDescription = issueDescription;
+        buttonInstance.issueID = issueID;
+        buttonInstance.source = dataSource;
+        switch (dataSource)
+        {
+            case DataSource.REQUIREMENTS_BAZAAR:
+                buttonInstance.enabled = ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn;
+                break;
+            case DataSource.GITHUB:
+                buttonInstance.enabled = ServiceManager.GetService<GitHubOidcService>().IsLoggedIn;
+                break;
+        }
+        
     }
 
     private void Update()
     {
-        if (buttonInstance == null)
-        {
-            //Instantiate Button next to the Issue Card and pass on the issue card name and description, the button is activated if the user is logged in
-            if (dataSource == DataSource.REQUIREMENTS_BAZAAR)
-            {
-                buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
-                buttonInstance.GetComponent<EditButton>().issueName = issueName;
-                buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
-                buttonInstance.GetComponent<EditButton>().issueID = issueID;
-                buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
-                buttonInstance.GetComponent<EditButton>().source = DataSource.REQUIREMENTS_BAZAAR;
-                buttonInstance.transform.parent = this.transform.parent.parent.parent;
-            }
-            else if (dataSource == DataSource.GITHUB)
-            {
-                buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
-                buttonInstance.GetComponent<EditButton>().issueName = issueName;
-                buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
-                buttonInstance.GetComponent<EditButton>().issueID = issueID;
-                buttonInstance.SetActive(ServiceManager.GetService<GitHubOidcService>().IsLoggedIn);
-                buttonInstance.GetComponent<EditButton>().source = DataSource.GITHUB;
-                buttonInstance.transform.parent = this.transform.parent.parent.parent;
-            }
-        }
-        if (dataSource == DataSource.REQUIREMENTS_BAZAAR && buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z))
-        {
-            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z);
-        }
-        else if(dataSource == DataSource.GITHUB && buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z))
-        {
-            buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
-        }
+        //if (buttonInstance == null)
+        //{
+        //    //Instantiate Button next to the Issue Card and pass on the issue card name and description, the button is activated if the user is logged in
+        //    if (dataSource == DataSource.REQUIREMENTS_BAZAAR)
+        //    {
+        //        buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
+        //        buttonInstance.GetComponent<EditButton>().issueName = issueName;
+        //        buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
+        //        buttonInstance.GetComponent<EditButton>().issueID = issueID;
+        //        buttonInstance.SetActive(ServiceManager.GetService<LearningLayersOidcService>().IsLoggedIn);
+        //        buttonInstance.GetComponent<EditButton>().source = DataSource.REQUIREMENTS_BAZAAR;
+        //        buttonInstance.transform.parent = this.transform.parent.parent.parent;
+        //    }
+        //    else if (dataSource == DataSource.GITHUB)
+        //    {
+        //        if(!buttonInstance.active && ServiceManager.GetService<GitHubOidcService>().IsLoggedIn)
+        //        { }
+        //        buttonInstance = Instantiate(editButtonPrefab, new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z), Quaternion.identity);
+        //        buttonInstance.GetComponent<EditButton>().issueName = issueName;
+        //        buttonInstance.GetComponent<EditButton>().issueDescription = issueDescription;
+        //        buttonInstance.GetComponent<EditButton>().issueID = issueID;
+        //        buttonInstance.SetActive(ServiceManager.GetService<GitHubOidcService>().IsLoggedIn);
+        //        buttonInstance.GetComponent<EditButton>().source = DataSource.GITHUB;
+        //        buttonInstance.transform.parent = this.transform.parent.parent.parent;
+        //    }
+        //}
+        //if (dataSource == DataSource.REQUIREMENTS_BAZAAR && buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z))
+        //{
+        //    buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.02f, this.transform.position.y + 0.1f, this.transform.position.z);
+        //}
+        //else if(dataSource == DataSource.GITHUB && buttonInstance.transform.position != new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z))
+        //{
+        //    buttonInstance.transform.position = new Vector3(this.transform.position.x + 0.08f, this.transform.position.y + 0.1f, this.transform.position.z);
+        //}
     }
 
     /// <summary>
@@ -74,7 +90,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LoginCompleted_LearningLayers(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
-            buttonInstance.SetActive(true);
+            buttonInstance.enabled = true;
     }
 
     /// <summary>
@@ -85,7 +101,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LogoutCompleted_LearningLayers(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.REQUIREMENTS_BAZAAR)
-            buttonInstance.SetActive(false);
+            buttonInstance.enabled = false;
     }
 
     /// <summary>
@@ -96,7 +112,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LoginCompleted_GitHub(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.GITHUB)
-            buttonInstance.SetActive(true);
+            buttonInstance.enabled = true;
     }
 
     /// <summary>
@@ -107,7 +123,7 @@ public class EditButtonOpener : MonoBehaviour
     public void LogoutCompleted_GitHub(object sender, System.EventArgs e)
     {
         if (buttonInstance != null && dataSource == DataSource.GITHUB)
-            buttonInstance.SetActive(false);
+            buttonInstance.enabled = false;
     }
 
     //Destroy button along with this object
