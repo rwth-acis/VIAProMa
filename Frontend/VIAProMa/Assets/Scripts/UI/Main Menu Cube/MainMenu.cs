@@ -184,7 +184,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowIssueShelf()
         {
-            Vector3 targetPosition = transform.position - 1f * transform.right;
+            Vector3 targetPosition = transform.position - 2f * transform.right;
             targetPosition.y = 0f;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
             foldController.InitalizeNewCloseTimer();
