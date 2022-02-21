@@ -50,7 +50,9 @@ namespace i5.VIAProMa.Shelves.Widgets
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
             // only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture
-            if (!IssueSelectionManager.Instance.SelectionModeActive)
+            if (!IssueSelectionManager.Instance.SelectionModeActive
+                //clicking the edit button shouldn't spawn an issue card
+                && eventData.Pointer.Result.CurrentPointerTarget.GetComponent<EditButton>() == null)
             {
                 // pass instantiation data to the copy so that other clients also know which issue is contained in the created copy
                 object[] instantiationData;
