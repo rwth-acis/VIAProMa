@@ -2,20 +2,19 @@
 using TMPro;
 using i5.VIAProMa.DataModel.API;
 using System;
+using i5.VIAProMa.Login;
+using System.Collections.Generic;
 
-public class EditButton : MonoBehaviour
+public class EditButton : IssueButton
 {
-    [HideInInspector] public TextMeshPro issueName;
-    [HideInInspector] public TextMeshPro issueDescription;
-    [HideInInspector] public DataSource source;
-    [HideInInspector] public int issueID;
+    [SerializeField] private TextMeshPro issueName;
+    [SerializeField] private TextMeshPro issueDescription;
 
     private EditIssueMenu editMenu;
     private GameObject requirementBazaar_UI;
     private GameObject gitHub_UI;
     private bool isOpen = false;
     private ProjectTracker projectTracker;
-
 
     public void Start()
     {
@@ -24,6 +23,7 @@ public class EditButton : MonoBehaviour
         editMenu = projectTracker.editIssueMenu;
         requirementBazaar_UI = editMenu.requirementBazaar_UI;
         gitHub_UI = editMenu.gitHub_UI;
+        Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
     }
 
 
@@ -48,14 +48,14 @@ public class EditButton : MonoBehaviour
                 editMenu.gameObject.SetActive(true);
                 editMenu.issueName = issueName;
                 editMenu.issueDescription = issueDescription;
-                editMenu.issueID = issueID;
-                if (source == DataSource.REQUIREMENTS_BAZAAR)
+                editMenu.issueID = resourceID;
+                if (source.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
                 {
                     editMenu.SetText_RequirementBazaar();
                     requirementBazaar_UI.SetActive(true);
                     gitHub_UI.SetActive(false);
                 }
-                else if (source == DataSource.GITHUB)
+                else if (source.Content.Source == DataSource.GITHUB)
                 {
                     editMenu.SetText_GitHub();
                     requirementBazaar_UI.SetActive(false);
