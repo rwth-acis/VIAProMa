@@ -92,6 +92,12 @@ After the build, execute the corresponding “start_network” script in the “
 It contains two scripts “start_network.bat” and “start_network.sh”. On Windows, execute the “start_network.bat” file. On Linux or Mac, first go back to the backend folder and execute `./bin/start_network.sh` from there.
 
 
+## Publication
+
+Further information about VIAProMa can be found in the following publication:
+
+Hensen B., Klamma R. (2021) VIAProMa: An Agile Project Management Framework for Mixed Reality. In: De Paolis L.T., Arpaia P., Bourdot P. (eds) Augmented Reality, Virtual Reality, and Computer Graphics. AVR 2021. Lecture Notes in Computer Science, vol 12980. Springer, Cham. [https://doi.org/10.1007/978-3-030-87595-4_19](https://doi.org/10.1007/978-3-030-87595-4_19)
+
 ## Troubleshooting
 
 **Problem:** When building the application, errors are shown that the namespace name 'HandJointKind', 'HandMeshObserver' and 'JointPose' are not found.
