@@ -43,18 +43,24 @@ public abstract class IssueButton : MonoBehaviour
         }
     }
 
-    // Unsubscibes from all login/out events that where subscibed to in the setup.
-    private void UnsubcribeFromAllServices()
+    //Sets this GameObject active when the provided datasource equals the datasource of this GameObject. For handeling login events.
+    private EventHandler ReciveLoginEvent(DataSource dataSource)
     {
-        foreach (var handlerPair in subscibedEventHandlers)
+        return (x, y) =>
         {
-            OpenIDConnectService service = DataSourceToService(handlerPair.Value);
-            if (service != null)
-            {
-                service.LoginCompleted -= handlerPair.Key;
-                service.LogoutCompleted -= handlerPair.Key;
-            }
-        }
+            if (dataSource == source.Content.Source)
+                gameObject.SetActive(true);
+        };
+    }
+
+    //Sets this GameObject inactive when the provided datasource equals the datasource of this GameObject. For handeling logout events.
+    private EventHandler ReciveLogoutEvent(DataSource dataSource)
+    {
+        return (x, y) =>
+        {
+            if (dataSource == source.Content.Source)
+                gameObject.SetActive(false);
+        };
     }
 
     //Sets the button active status corresponding to the current source status
@@ -70,23 +76,9 @@ public abstract class IssueButton : MonoBehaviour
         }
     }
 
-    private EventHandler ReciveLoginEvent(DataSource dataSource)
-    {
-        return (x, y) =>
-        {
-            if (dataSource == source.Content.Source)
-                gameObject.SetActive(true);
-        };
-    }
 
-    public EventHandler ReciveLogoutEvent(DataSource dataSource)
-    {
-        return (x, y) =>
-        {
-            if (dataSource == source.Content.Source)
-                gameObject.SetActive(false);
-        };
-    }
+
+
 
     //Converts the source enum to the corresponding service
     private OpenIDConnectService DataSourceToService(DataSource dataSource)
@@ -105,6 +97,20 @@ public abstract class IssueButton : MonoBehaviour
                     return null;
             default:
                 return null;
+        }
+    }
+
+    // Unsubscibes from all login/out events that where subscibed to in the setup.
+    private void UnsubcribeFromAllServices()
+    {
+        foreach (var handlerPair in subscibedEventHandlers)
+        {
+            OpenIDConnectService service = DataSourceToService(handlerPair.Value);
+            if (service != null)
+            {
+                service.LoginCompleted -= handlerPair.Key;
+                service.LogoutCompleted -= handlerPair.Key;
+            }
         }
     }
 
