@@ -24,43 +24,41 @@ public abstract class IssueButton : MonoBehaviour
     protected void Setup(List<DataSource> sources)
     {
         resourceID = source.Content.Id;
-        subcribeToServices(sources);
-        initialLoginStatusCheck(sources);
+        SubcribeToServices(sources);
+        InitialLoginStatusCheck(sources);
     }
 
     //Subscibes to the login/out events corresponding to sources
-    private void subcribeToServices(List<DataSource> sources)
+    private void SubcribeToServices(List<DataSource> sources)
     {
         foreach (var dataSource in sources)
         {
-            EventHandler handler = reciveLoginEvent(dataSource);
-            dataSourceToService(dataSource).LoginCompleted += handler;
+            EventHandler handler = ReciveLoginEvent(dataSource);
+            DataSourceToService(dataSource).LoginCompleted += handler;
             subscibedEventHandlers.Add(handler, dataSource);
 
-            handler = reciveLogoutEvent(dataSource);
-            dataSourceToService(dataSource).LogoutCompleted += handler;
+            handler = ReciveLogoutEvent(dataSource);
+            DataSourceToService(dataSource).LogoutCompleted += handler;
             subscibedEventHandlers.Add(handler, dataSource);
         }
     }
 
-    /// <summary>
-    /// Unsubscibes from all login/out events that where subscibed to in the setup.
-    /// </summary>
-    protected void unsubcribeFromAllServices()
+    // Unsubscibes from all login/out events that where subscibed to in the setup.
+    private void UnsubcribeFromAllServices()
     {
         foreach (var handlerPair in subscibedEventHandlers)
         {
-            dataSourceToService(handlerPair.Value).LoginCompleted -= handlerPair.Key;
-            dataSourceToService(handlerPair.Value).LogoutCompleted -= handlerPair.Key;
+            DataSourceToService(handlerPair.Value).LoginCompleted -= handlerPair.Key;
+            DataSourceToService(handlerPair.Value).LogoutCompleted -= handlerPair.Key;
         }
     }
 
     //Sets the button active status corresponding to the current source status
-    private void initialLoginStatusCheck(List<DataSource> sources)
+    private void InitialLoginStatusCheck(List<DataSource> sources)
     {
         if (sources.Contains(source.Content.Source))
         {
-            gameObject.SetActive(dataSourceToService(source.Content.Source).IsLoggedIn);
+            gameObject.SetActive(DataSourceToService(source.Content.Source).IsLoggedIn);
         }
         else
         {
@@ -68,7 +66,7 @@ public abstract class IssueButton : MonoBehaviour
         }
     }
 
-    private EventHandler reciveLoginEvent(DataSource dataSource)
+    private EventHandler ReciveLoginEvent(DataSource dataSource)
     {
         return (x, y) =>
         {
@@ -77,7 +75,7 @@ public abstract class IssueButton : MonoBehaviour
         };
     }
 
-    public EventHandler reciveLogoutEvent(DataSource dataSource)
+    public EventHandler ReciveLogoutEvent(DataSource dataSource)
     {
         return (x, y) =>
         {
@@ -87,7 +85,7 @@ public abstract class IssueButton : MonoBehaviour
     }
 
     //Converts the source enum to the corresponding service
-    private OpenIDConnectService dataSourceToService(DataSource dataSource)
+    private OpenIDConnectService DataSourceToService(DataSource dataSource)
     {
         switch (dataSource)
         {
@@ -102,7 +100,7 @@ public abstract class IssueButton : MonoBehaviour
 
     public void OnDestroy()
     {
-        unsubcribeFromAllServices();
+        UnsubcribeFromAllServices();
     }
 
 }
