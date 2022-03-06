@@ -1,6 +1,7 @@
 ﻿using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Visualizations.ProgressBars;
 using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
         [Tooltip("The list of building prefabs which can be selected")]
         [SerializeField] private GameObject[] buildingPrefabs;
         [Tooltip("The bounding box of this visualization")]
-        [SerializeField] private BoundingBox boundingBox;
+        [SerializeField] private BoundsControl boundsControl;
         [Tooltip("The label which displays the title of this visualization")]
         [SerializeField] private TextLabel titleLabel;
 
@@ -109,14 +110,14 @@ namespace i5.VIAProMa.Visualizations.BuildingProgressBar
                     }
                 }
             }
-            if (boundingBox == null)
+            if (boundsControl == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundsControl));
             }
-            boundingBoxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
+            boundingBoxCollider = boundsControl?.gameObject.GetComponent<BoxCollider>();
             if (boundingBoxCollider == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox.gameObject);
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundsControl.gameObject);
             }
 
             if (titleLabel == null)

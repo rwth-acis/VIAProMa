@@ -1,6 +1,7 @@
 ﻿using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using Microsoft.MixedReality.Toolkit.UI;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
         [SerializeField] private Interactable upButton;
         [SerializeField] private Interactable downButton;
         [SerializeField] private ObjectGrid grid;
-        [SerializeField] private BoundingBox boundingBox;
+        [SerializeField] private BoundsControl boundsControl;
         [SerializeField] private Transform handleLeft;
         [SerializeField] private Transform handleRight;
         [SerializeField] private Transform handleTop;
@@ -153,21 +154,21 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(grid));
             }
-            if (boundingBox == null)
+            if (boundsControl == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundingBox));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundsControl));
             }
 
-            boundingboxCollider = boundingBox?.gameObject.GetComponent<BoxCollider>();
+            boundingboxCollider = boundsControl?.gameObject.GetComponent<BoxCollider>();
             if (boundingboxCollider == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundingBox?.gameObject);
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoxCollider), boundsControl?.gameObject);
             }
 
-            boundingBoxStateController = boundingBox?.gameObject.GetComponent<BoundingBoxStateController>();
+            boundingBoxStateController = boundsControl?.gameObject.GetComponent<BoundingBoxStateController>();
             if (boundingBoxStateController == null)
             {
-                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), boundingBox?.gameObject);
+                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), boundsControl?.gameObject);
             }
 
             if (handleLeft == null)

@@ -1,13 +1,14 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.UI.BoundsControl;
 using System;
 using UnityEngine;
 
 namespace i5.VIAProMa.Utilities
 {
-    [RequireComponent(typeof(BoundingBox))]
+    [RequireComponent(typeof(BoundsControl))]
     public class BoundingBoxStateController : MonoBehaviour
     {
-        private BoundingBox boundingBox;
+        private BoundsControl boundingBox;
         private BoxCollider boxCollider;
         private ObjectManipulator manipulationHandler;
         private bool boundingBoxActive;
@@ -27,7 +28,7 @@ namespace i5.VIAProMa.Utilities
 
         private void Awake()
         {
-            boundingBox = GetComponent<BoundingBox>();
+            boundingBox = GetComponent<BoundsControl>();
             if (boundingBox == null)
             {
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBox), gameObject);
