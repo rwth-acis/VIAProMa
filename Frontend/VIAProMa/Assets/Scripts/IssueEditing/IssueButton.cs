@@ -48,8 +48,12 @@ public abstract class IssueButton : MonoBehaviour
     {
         foreach (var handlerPair in subscibedEventHandlers)
         {
-            DataSourceToService(handlerPair.Value).LoginCompleted -= handlerPair.Key;
-            DataSourceToService(handlerPair.Value).LogoutCompleted -= handlerPair.Key;
+            OpenIDConnectService service = DataSourceToService(handlerPair.Value);
+            if (service != null)
+            {
+                service.LoginCompleted -= handlerPair.Key;
+                service.LogoutCompleted -= handlerPair.Key;
+            }
         }
     }
 
@@ -90,9 +94,15 @@ public abstract class IssueButton : MonoBehaviour
         switch (dataSource)
         {
             case DataSource.GITHUB:
-                return ServiceManager.GetService<GitHubOidcService>();
+                if (ServiceManager.ServiceExists<GitHubOidcService>())
+                    return ServiceManager.GetService<GitHubOidcService>();
+                else
+                    return null;
             case DataSource.REQUIREMENTS_BAZAAR:
-                return ServiceManager.GetService<LearningLayersOidcService>();
+                if (ServiceManager.ServiceExists<LearningLayersOidcService>())
+                    return ServiceManager.GetService<LearningLayersOidcService>();
+                else
+                    return null;
             default:
                 return null;
         }
