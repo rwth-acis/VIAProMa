@@ -49,8 +49,11 @@ namespace i5.VIAProMa.Shelves.Widgets
         /// <param name="eventData">The event data of the gesture</param>
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
+            GameObject currentPointerTarget = eventData.Pointer.Result.CurrentPointerTarget;
             // only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture
-            if (!IssueSelectionManager.Instance.SelectionModeActive)
+            if (!IssueSelectionManager.Instance.SelectionModeActive
+                //clicking the edit or delete button shouldn't spawn a card
+                && currentPointerTarget.GetComponent<EditButton>() == null && currentPointerTarget.GetComponent<DeleteButton>() == null)
             {
                 // pass instantiation data to the copy so that other clients also know which issue is contained in the created copy
                 object[] instantiationData;

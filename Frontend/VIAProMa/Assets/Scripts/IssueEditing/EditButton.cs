@@ -2,71 +2,71 @@
 using TMPro;
 using i5.VIAProMa.DataModel.API;
 using System;
+using i5.VIAProMa.Login;
+using System.Collections.Generic;
 
-public class EditButton : MonoBehaviour
+public class EditButton : IssueButton
 {
-    [HideInInspector] public TextMeshPro issueName;
-    [HideInInspector] public TextMeshPro issueDescription;
-    [HideInInspector] public DataSource source;
-    [HideInInspector] public int issueID;
+    [SerializeField] private TextMeshPro issueName;
+    [SerializeField] private TextMeshPro issueDescription;
 
     private EditIssueMenu editMenu;
-    private GameObject requirementBazaar_UI;
-    private GameObject gitHub_UI;
+    private GameObject requirementBazaarUI;
+    private GameObject gitHubUI;
     private bool isOpen = false;
     private ProjectTracker projectTracker;
-
 
     public void Start()
     {
         //Get the edit menu from the project tracker and the UIs
         projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
         editMenu = projectTracker.editIssueMenu;
-        requirementBazaar_UI = editMenu.requirementBazaar_UI;
-        gitHub_UI = editMenu.gitHub_UI;
+        requirementBazaarUI = editMenu.requirementBazaar_UI;
+        gitHubUI = editMenu.gitHub_UI;
+        Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
     }
 
 
-    //Close the EditIssue Window
+    // Close the EditIssue Window
     public void CloseMenu()
     {
         if (editMenu != null)
         {
             editMenu.gameObject.SetActive(false);
-            requirementBazaar_UI.SetActive(false);
-            gitHub_UI.SetActive(false);
+            requirementBazaarUI.SetActive(false);
+            gitHubUI.SetActive(false);
         }
         isOpen = false;
     }
 
 
-    //Open the EditIssue Window
+    // Open the EditIssue Window
     public void OpenMenu()
     {
-         if (editMenu != null)
+        if (editMenu != null)
+        {
+            editMenu.gameObject.SetActive(true);
+            editMenu.issueName = issueName;
+            editMenu.issueDescription = issueDescription;
+            editMenu.issueID = resourceID;
+            if (source.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
             {
-                editMenu.gameObject.SetActive(true);
-                editMenu.issueName = issueName;
-                editMenu.issueDescription = issueDescription;
-                editMenu.issueID = issueID;
-                if (source == DataSource.REQUIREMENTS_BAZAAR)
-                {
-                    editMenu.SetText_RequirementBazaar();
-                    requirementBazaar_UI.SetActive(true);
-                    gitHub_UI.SetActive(false);
-                }
-                else if (source == DataSource.GITHUB)
-                {
-                    editMenu.SetText_GitHub();
-                    requirementBazaar_UI.SetActive(false);
-                    gitHub_UI.SetActive(true);
+                editMenu.SetText_RequirementBazaar();
+                requirementBazaarUI.SetActive(true);
+                gitHubUI.SetActive(false);
             }
+            else if (source.Content.Source == DataSource.GITHUB)
+            {
+                editMenu.SetText_GitHub();
+                requirementBazaarUI.SetActive(false);
+                gitHubUI.SetActive(true);
             }
-            isOpen = true;
+        }
+        isOpen = true;
     }
-   
 
-    //Either open or close the Edit Issue Window depending on the current state
+
+    // Either open or close the Edit Issue Window depending on the current state
     public void OpenEditIssueMenu()
     {
         if (editMenu != null)

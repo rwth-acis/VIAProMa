@@ -4,15 +4,16 @@ using i5.VIAProMa.Shelves.IssueShelf;
 using Org.Requirements_Bazaar.API;
 using Microsoft.MixedReality.Toolkit.Input;
 using System;
+using i5.VIAProMa.Login;
+using i5.VIAProMa.DataModel.API;
+using System.Collections.Generic;
 
-
-public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
+public class DeleteButton : IssueButton, IMixedRealityInputHandler
 {
     [SerializeField] GameObject indicator;
 
     private ProjectTracker projectTracker;
     private IssuesLoader issueLoader;
-    [HideInInspector] public int requirementID;
 
     // Timer parameters
     bool holding = false;
@@ -23,6 +24,7 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
     {
         issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
         projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
+        Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
     }
 
     // On Input, start timer until the issue is deleted or the input has stopped, size of indicator is adjusted to delta time
@@ -44,8 +46,8 @@ public class DeleteButton : MonoBehaviour, IMixedRealityInputHandler
     // Called when the delete button on the issue bar is pressed
     public async void DeleteRequirement()
     {
-        projectTracker.OnlastDeletedChanged(requirementID);
-        await RequirementsBazaarManager.DeleteRequirement(requirementID);
+        projectTracker.OnlastDeletedChanged(resourceID);
+        await RequirementsBazaarManager.DeleteRequirement(resourceID);
         issueLoader.LoadContent();
     }
 
