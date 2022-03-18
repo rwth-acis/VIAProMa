@@ -20,7 +20,7 @@ namespace i5.VIAProMa
 
         private void Update()
         {
-            transform.localRotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(targetRotation), Time.deltaTime * damping);
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(targetRotation), Time.deltaTime * damping);
         }
 
         public override void OnFocusEnter(FocusEventData eventData)
