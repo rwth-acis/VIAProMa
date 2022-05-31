@@ -9,20 +9,23 @@ using i5.VIAProMa.Login;
 public class DeleteButtonOpener : MonoBehaviour
 {
 
-    [SerializeField] private GameObject deleteButtonPrefab;
-    [SerializeField] private SourceDisplay source;
-
-    private DataSource dataSource;
+    [SerializeField] private GameObject deleteButton;
+    [SerializeField] private SourceDisplay sourceDisplay;
 
     // Subscribe to Login and Logout Events
     private void Start()
     {
-        dataSource = source.Content.Source;
+        sourceDisplay.OnContentSetup += UpdateButtonState;
+        UpdateButtonState();
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        deleteButtonPrefab.SetActive(dataSource == DataSource.REQUIREMENTS_BAZAAR);
+        sourceDisplay.OnContentSetup -= UpdateButtonState;
+    }
 
+    private void UpdateButtonState()
+    {
+        deleteButton.SetActive(sourceDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR);
     }
 }
