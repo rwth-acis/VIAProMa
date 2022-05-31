@@ -43,7 +43,7 @@ If the window has not appeared or has already been closed, go to Window > Photon
 11. In the import window, select everything that is selectable and click on import.
 Some parts of the import are not selectable.
 This is fine since they have already been imported with the Photon PUN 2 package.
-12. In the the dashboard of the Photon Engine account, create a register a new Photon Voice application and copy its app ID.
+12. In the the dashboard of the Photon Engine account, create and register a new Photon Voice application and copy its app ID.
 13. After the import, go to Window > Photon Unity Networking > Highlight Server Settings and enter the voice app ID under "Settings/ App Id Voice".
 14. Open the scene "Main Scene".
 A prompt will appear which will ask to import TMP Essentials. Click on the upper button.
