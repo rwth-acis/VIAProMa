@@ -25,7 +25,10 @@ public class ProgressBarTester : MonoBehaviour
             SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
         }
         progressBarVisuals = progressBar.GetComponent<IProgressBarVisuals>();
-        progressBar.GetComponent<BuildingProgressBarVisuals>().BuildingModelIndex = buildingIndex;
+        if(progressBar.GetComponent<BuildingProgressBarVisuals>())
+        {
+            progressBar.GetComponent<BuildingProgressBarVisuals>().BuildingModelIndex = buildingIndex;
+        }
     }
 
     // Update is called once per frame
