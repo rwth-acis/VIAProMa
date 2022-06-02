@@ -142,14 +142,14 @@ namespace i5.VIAProMa.LiteratureSearch
     public class CrossRefMessage
     {
         public int totalresults;
-        public List<Paper> items;
+        public List<CrossRefPaper> items;
         public int itemsperpage;
 
         public override string ToString()
         {
             string output = "";
             output += "total results:" + totalresults + "\n";
-            foreach (Paper paper in items)
+            foreach (CrossRefPaper paper in items)
             {
                 output += paper.ToString() + "\n";
             }
@@ -164,7 +164,7 @@ namespace i5.VIAProMa.LiteratureSearch
     /// </summary>
     /// 
     [System.Serializable]
-    public class Paper
+    public class CrossRefPaper
     {
         public string publisher;
         public string abstracttext;
@@ -189,6 +189,17 @@ namespace i5.VIAProMa.LiteratureSearch
             }
             output += URL;
             return output;
+        }
+
+        /// <summary>
+        /// Creates a paper object from the CrossRefPaper object.
+        /// </summary>
+        /// <returns></returns>
+        public Paper ToPaper()
+        {
+            System.DateTime date;
+            System.DateTime.TryParse(created.datetime, out date);
+            return new Paper(publisher, abstracttext, DOI, type, page, isreferencedbycount, title, author, URL, date);
         }
     }
 
