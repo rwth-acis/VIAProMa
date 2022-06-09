@@ -77,9 +77,13 @@ namespace i5.VIAProMa.LiteratureSearch
                     key = authors[0].family.Substring(0, 1) + authors[1].family.Substring(0, 1) + authors[2].family.Substring(0, 1) + (created.Year % 100);
                 }
             }
-            else
+            else if(authors.Count == 1)
             {
                 key = authors[0].family.Substring(0, Math.Min(authors[0].family.Length, 4)) + (created.Year % 100);
+            }
+            else
+            {
+                key = (created.Year % 100).ToString();
             }
         }
 
@@ -90,7 +94,7 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 return false;
             }
-            return paper.title == title;
+            return paper.doi == doi;
         }
 
 
@@ -100,7 +104,7 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 return false;
             }
-            return paper.title == title;
+            return paper.doi == doi;
         }
 
         /// <summary>

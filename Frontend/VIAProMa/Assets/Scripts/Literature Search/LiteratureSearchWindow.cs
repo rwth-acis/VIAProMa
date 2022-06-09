@@ -28,8 +28,6 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private SliderExtension paperCountSlider;
         [Tooltip("The button which confirms the settings and executes the search")]
         [SerializeField] private Interactable executeSearch;
-        [Tooltip("The communicator for executing the search")]
-        [SerializeField] private Communicator communicator;
         [Tooltip("Text to display messages")]
         [SerializeField] private TextMeshPro display;
         [Tooltip("The button to show the next page.")]
@@ -107,10 +105,6 @@ namespace i5.VIAProMa.LiteratureSearch
             if (executeSearch == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(executeSearch));
-            }
-            if (communicator == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(communicator));
             }
             if (display == null)
             {
@@ -193,7 +187,7 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 maxResults = 5;
             }
-            message = await communicator.APISearch(searchField.Text, maxResults);
+            message = await Communicator.APISearch(searchField.Text, maxResults);
             if(message == null)
             {
                 next.IsEnabled = false;
@@ -207,6 +201,7 @@ namespace i5.VIAProMa.LiteratureSearch
                 display.text = "Total results: " + message.totalresults;
                 next.IsEnabled = !(maxResults >= message.totalresults);
             }
+            PaperController.Instance.ShowResults(CrossRefPaper.ToPapers(message.items), transform);
         }
         /// <summary>
         /// Button click event for the next page button.
@@ -224,9 +219,10 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 maxResults = 5;
             }
-            message = await communicator.APISearch(lastQuery, maxResults, CurrentPage);
+            message = await Communicator.APISearch(lastQuery, maxResults, CurrentPage);
             // Trys to prevent offset bigger then total results. CAN FAIL, if max result options are increased on later pages.
             next.IsEnabled = !(maxResults*currentPage >= message.totalresults);
+            PaperController.Instance.ShowResults(CrossRefPaper.ToPapers(message.items), transform);
         }
         /// <summary>
         /// Button click event for the previous page button.
@@ -237,12 +233,13 @@ namespace i5.VIAProMa.LiteratureSearch
             CurrentPage--;
             if (advancedSettingsCheckbox.CurrentDimension == 1)
             {
-                message = await communicator.APISearch(lastQuery, paperCountSlider.ValueInt, CurrentPage);
+                message = await Communicator.APISearch(lastQuery, paperCountSlider.ValueInt, CurrentPage);
             }
             else
             {
-                message = await communicator.APISearch(lastQuery, 5, CurrentPage);
+                message = await Communicator.APISearch(lastQuery, 5, CurrentPage);
             }
+            PaperController.Instance.ShowResults(CrossRefPaper.ToPapers(message.items), transform);
         }
     }
 

@@ -1,4 +1,5 @@
 using i5.VIAProMa.ResourceManagagement;
+using i5.VIAProMa.UI.AppBar;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -46,38 +47,49 @@ namespace i5.VIAProMa.LiteratureSearch
         {
             GameObject currentPointerTarget = eventData.Pointer.Result.CurrentPointerTarget;
             // only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture
-            if (!PaperSelectionManager.Instance.SelectionModeActive
-                //clicking the edit or delete button shouldn't spawn a card
-                && currentPointerTarget.GetComponent<EditButton>() == null && currentPointerTarget.GetComponent<DeleteButton>() == null)
+            if (!PaperSelectionManager.Instance.SelectionModeActive)
             {
-                copyInstance = Instantiate(copyObject, this.transform.localPosition, transform.rotation);
-                PaperDataDisplay remoteDataDisplay = copyInstance?.GetComponent<PaperDataDisplay>();
-                remoteDataDisplay.Setup(localDataDisplay.Content);
-                // create the copy, get the relevant components and set them up
-                //ResourceManager.Instance.SceneNetworkInstantiate(copyObject, transform.position, transform.rotation,
-                //    (obj) =>
-                //    {
-                //        copyInstance = obj;
-                //        handlerOnCopy = copyInstance?.GetComponentInChildren<ObjectManipulator>();
-                //        PaperDataDisplay remoteDataDisplay = copyInstance?.GetComponent<PaperDataDisplay>();
-                //        if (handlerOnCopy == null || remoteDataDisplay == null)
-                //        {
-                //            if (handlerOnCopy == null)
-                //            {
-                //                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ObjectManipulator), copyInstance);
-                //            }
-                //            if (remoteDataDisplay == null)
-                //            {
-                //                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(PaperDataDisplay), copyInstance);
-                //            }
-                //            PhotonNetwork.Destroy(copyInstance);
-                //        }
-                //        else
-                //        {
-                //            remoteDataDisplay.Setup(localDataDisplay.Content);
-                //            handlerOnCopy.OnPointerDown(eventData);
-                //        }
-                //    });
+                object[] instantiationData = new object[1];
+                instantiationData[0] = localDataDisplay.Content.DOI;
+
+                //copyInstance = Instantiate(copyObject, transform.position , transform.rotation);
+
+                //handlerOnCopy = copyInstance?.GetComponentInChildren<ObjectManipulator>();
+                //handlerOnCopy?.OnPointerDown(eventData);
+
+                //PaperDataDisplay remoteDataDisplay = copyInstance?.GetComponent<PaperDataDisplay>();
+                //remoteDataDisplay.Setup(localDataDisplay.Content);
+
+                //BoundingBoxStateController controller = copyInstance?.GetComponentInChildren<BoundingBoxStateController>();
+                //AppBarStateController appBarController = copyInstance?.GetComponentInChildren<AppBarStateController>();
+                //controller.BoundingBoxActive = true;
+                //appBarController.AdjustmentView();
+
+                //create the copy, get the relevant components and set them up
+                ResourceManager.Instance.SceneNetworkInstantiate(copyObject, transform.position, transform.rotation,
+                    (obj) =>
+                    {
+                        copyInstance = obj;
+                        handlerOnCopy = copyInstance?.GetComponentInChildren<ObjectManipulator>();
+                        PaperDataDisplay remoteDataDisplay = copyInstance?.GetComponent<PaperDataDisplay>();
+                        if (handlerOnCopy == null || remoteDataDisplay == null)
+                        {
+                            if (handlerOnCopy == null)
+                            {
+                                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ObjectManipulator), copyInstance);
+                            }
+                            if (remoteDataDisplay == null)
+                            {
+                                SpecialDebugMessages.LogComponentNotFoundError(this, nameof(PaperDataDisplay), copyInstance);
+                            }
+                            PhotonNetwork.Destroy(copyInstance);
+                        }
+                        else
+                        {
+                            remoteDataDisplay.Setup(localDataDisplay.Content);
+                            handlerOnCopy.OnPointerDown(eventData);
+                        }
+                    }, instantiationData);
             }
         }
 

@@ -79,6 +79,7 @@ namespace i5.VIAProMa.Shelves.Widgets
                     (obj) =>
                     {
                         copyInstance = obj;
+                        Debug.Log("the type is: " + copyInstance.GetType());
                         handlerOnCopy = copyInstance?.GetComponentInChildren<ObjectManipulator>();
                         IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
                         if (handlerOnCopy == null || remoteDataDisplay == null)
