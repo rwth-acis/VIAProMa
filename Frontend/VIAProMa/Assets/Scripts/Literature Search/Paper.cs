@@ -87,6 +87,12 @@ namespace i5.VIAProMa.LiteratureSearch
             }
         }
 
+        /// <summary>
+        /// Checks the equality to the object <paramref name="obj"/>.
+        /// Papers are equal if they have the same doi.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>Is the object the same paper.</returns>
         public override bool Equals(object obj)
         {
             Paper paper = obj as Paper;
@@ -97,7 +103,12 @@ namespace i5.VIAProMa.LiteratureSearch
             return paper.doi == doi;
         }
 
-
+        /// <summary>
+        /// Checks the equality to the paper <paramref name="paper"/>.
+        /// Papers are equal if they have the same doi.
+        /// </summary>
+        /// <param name="paper"></param>
+        /// <returns>Is the paper the same paper.</returns>
         public bool Equals(Paper paper)
         {
             if (paper == null)

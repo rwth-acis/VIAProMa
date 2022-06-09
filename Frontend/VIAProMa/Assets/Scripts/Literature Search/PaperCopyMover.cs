@@ -52,19 +52,6 @@ namespace i5.VIAProMa.LiteratureSearch
                 object[] instantiationData = new object[1];
                 instantiationData[0] = localDataDisplay.Content.DOI;
 
-                //copyInstance = Instantiate(copyObject, transform.position , transform.rotation);
-
-                //handlerOnCopy = copyInstance?.GetComponentInChildren<ObjectManipulator>();
-                //handlerOnCopy?.OnPointerDown(eventData);
-
-                //PaperDataDisplay remoteDataDisplay = copyInstance?.GetComponent<PaperDataDisplay>();
-                //remoteDataDisplay.Setup(localDataDisplay.Content);
-
-                //BoundingBoxStateController controller = copyInstance?.GetComponentInChildren<BoundingBoxStateController>();
-                //AppBarStateController appBarController = copyInstance?.GetComponentInChildren<AppBarStateController>();
-                //controller.BoundingBoxActive = true;
-                //appBarController.AdjustmentView();
-
                 //create the copy, get the relevant components and set them up
                 ResourceManager.Instance.SceneNetworkInstantiate(copyObject, transform.position, transform.rotation,
                     (obj) =>

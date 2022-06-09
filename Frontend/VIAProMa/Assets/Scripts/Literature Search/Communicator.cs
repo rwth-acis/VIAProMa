@@ -7,29 +7,26 @@ using System.Threading.Tasks;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
+    /// <summary>
+    /// Class the includes functions to communicate with the CrossRef API.
+    /// </summary>
     public class Communicator : Singleton<Communicator>
     {
+        /// <summary>
+        /// The URL for a standard CrossRef API call.
+        /// </summary>
         private static readonly string apiURL = "https://api.crossref.org/works?query=";
+        /// <summary>
+        /// The URL for a CrossRef API call given a DOI.
+        /// </summary>
         private static readonly string apiURLSingleRequest = "https://api.crossref.org/works/";
 
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
-
         /// <summary>
-        /// Executes an async API search with the query <paramref name="query"/>, <paramref name="maxResults"/> maximum results and search index <paramref name="searchIndex"/>. 
+        /// Executes an async API search with the query <paramref name="query"/>, <paramref name="maxResults"/> maximum results and offset <paramref name="offset"/>. 
         /// </summary>
         /// <param name="query"></param>
         /// <param name="maxResults"></param>
-        /// <param name="searchIndex"></param>
+        /// <param name="offset"></param>
         public static async Task<CrossRefMessage> APISearch(string query, int maxResults = 5, int offset = 0)
         {
             query = query.Replace(" ", "+");
@@ -62,6 +59,11 @@ namespace i5.VIAProMa.LiteratureSearch
 
         }
 
+        /// <summary>
+        /// Gets the data of a paper with a specific <paramref name="doi"/>.
+        /// </summary>
+        /// <param name="doi"></param>
+        /// <returns>The paper with the DOI <paramref name="doi"/>.</returns>
         public static async Task<CrossRefPaper> GetPaper(string doi)
         {
             Response response = await Rest.GetAsync(apiURLSingleRequest + doi);
@@ -76,6 +78,9 @@ namespace i5.VIAProMa.LiteratureSearch
 
 
     }
+    /// <summary>
+    /// Object for a CrossRef API response.
+    /// </summary>
     [System.Serializable]
     public class CrossRefResponse
     {
@@ -104,6 +109,10 @@ namespace i5.VIAProMa.LiteratureSearch
         }
     }
 
+    /// <summary>
+    /// Object for a CrossRef API response for a single paper.
+    /// </summary>
+    [System.Serializable]
     public class CrossRefSingleResponse
     {
         public string status;
@@ -127,7 +136,7 @@ namespace i5.VIAProMa.LiteratureSearch
     }
 
     /// <summary>
-    /// Class for the message of the CrossRef API response.
+    /// Class for the message body of the CrossRef API response.
     /// </summary>
     /// 
     [System.Serializable]

@@ -10,11 +10,17 @@ namespace i5.VIAProMa.LiteratureSearch
     public class PaperSynchronizer : TransformSynchronizer
     {
         private PaperDataDisplay paperDataDisplay;
+        /// <summary>
+        /// Instantiates the privates variable when awoken.
+        /// </summary>
         private void Awake()
         {
             paperDataDisplay = GetComponent<PaperDataDisplay>();
         }
 
+        /// <summary>
+        /// Synchronizes the paper when started.
+        /// </summary>
         private async void Start()
         {
             // in case that the card was already setup, e.g. in the local instance => do not setup again
@@ -35,7 +41,7 @@ namespace i5.VIAProMa.LiteratureSearch
             if (photonView.InstantiationData.Length == 1) 
             { 
                 doi = (string)photonView.InstantiationData[0];
-                CrossRefPaper result = await Communicator.GetPaper(doi);
+                CrossRefPaper result = await Communicator.GetPaper(doi);    // request data for specific doi from CrossRef
                 if (result != null)
                 {
                     paperDataDisplay.Setup(result.ToPaper());
