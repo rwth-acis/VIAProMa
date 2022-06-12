@@ -183,6 +183,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
             foldController.InitalizeNewCloseTimer();
         }
 
+        public void ShowAnchorMenu()
+        {
+            WindowManager.Instance.AnchorMenu.Open(saveButton.transform.position + 0.4f * transform.right, transform.localEulerAngles);
+            foldController.InitalizeNewCloseTimer();
+        }
+
         public void ShowIssueShelf()
         {
             Vector3 targetPosition = transform.position - 2f * transform.right;

@@ -1,6 +1,7 @@
 ﻿using HoloToolkit.Unity;
 using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI.Chat;
+using i5.VIAProMa.Anchoring;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI
@@ -12,6 +13,7 @@ namespace i5.VIAProMa.UI
         [SerializeField] private GameObject chatMenuPrefab;
         [SerializeField] private GameObject saveProjectMenuPrefab;
         [SerializeField] private GameObject loginMenuPrefab;
+        [SerializeField] private GameObject anchorMenuPrefab;
 
         private void Start()
         {
@@ -20,6 +22,8 @@ namespace i5.VIAProMa.UI
             ChatMenu = (ChatMenu)InstantiateWindow(chatMenuPrefab);
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
+            AnchorMenu = (AnchoringMenu)InstantiateWindow(anchorMenuPrefab);
+            Debug.Log(AnchorMenu);
         }
 
         private IWindow InstantiateWindow(GameObject prefab)
@@ -45,5 +49,7 @@ namespace i5.VIAProMa.UI
         public SaveProjectWindow SaveProjectWindow { get; private set; }
 
         public LoginMenu LoginMenu { get; private set; }
+
+        public AnchoringMenu AnchorMenu { get; private set; }
     }
 }
