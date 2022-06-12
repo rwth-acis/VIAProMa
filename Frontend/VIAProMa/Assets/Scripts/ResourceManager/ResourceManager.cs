@@ -2,6 +2,7 @@
 using i5.VIAProMa.ResourceManagagement.PrefabInstantiation;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.WebConnection;
+using i5.VIAProMa.Anchoring;
 using Photon.Pun;
 using System;
 using System.Collections.Generic;
@@ -94,6 +95,7 @@ namespace i5.VIAProMa.ResourceManagagement
             if (PhotonNetwork.IsMasterClient)
             {
                 GameObject result = resourcePrefabCollection.NetworkInstantiate(obj, position, rotation, true, data);
+                Singleton<AnchorManager>.Instance.AttachToAnchor(result.gameObject);
                 resultCallback?.Invoke(result);
             }
             else

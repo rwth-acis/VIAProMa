@@ -1,6 +1,7 @@
 ﻿using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.ResourceManagagement;
 using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Anchoring;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -268,6 +269,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             else
             {
                 instance = GameObject.Instantiate(prefab, targetPosition, targetRotation);
+                HoloToolkit.Unity.Singleton<AnchorManager>.Instance.AttachToAnchor(instance.gameObject);
             }
         }
 
@@ -284,6 +286,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             else
             {
                 instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
+                HoloToolkit.Unity.Singleton<AnchorManager>.Instance.AttachToAnchor(instance.gameObject);
                 PhotonView view = instance.GetComponent<PhotonView>();
                 photonView.RPC(instantiationRPC, RpcTarget.Others, view.ViewID);
             }
@@ -302,6 +305,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             else
             {
                 ResourceManager.Instance.SceneNetworkInstantiate(prefab, targetPosition, targetRotation, OnCreated);
+                HoloToolkit.Unity.Singleton<AnchorManager>.Instance.AttachToAnchor(instance.gameObject);
             }
         }
 
