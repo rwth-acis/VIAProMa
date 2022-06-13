@@ -1,10 +1,31 @@
 using System;
 using UnityEngine;
 using i5.VIAProMa.UI;
+using Microsoft.MixedReality.Toolkit.UI;
 
 public class AnchoringMenu : MonoBehaviour, IWindow
 {
     private bool windowEnabled = true;
+    [SerializeField] private Interactable useAnchoringCheckbox;
+    [SerializeField] private Interactable moveAnchorAloneCheckbox;
+    [SerializeField] private Interactable anchorLockedButton;
+
+    [SerializeField] private SpriteRenderer lockedIconSpriteRenderer;
+
+    [SerializeField] private Sprite unlockedIcon;
+    [SerializeField] private Sprite lockedIcon;
+
+    private GameObject anchorParent;
+    private GameObject anchorObject;
+
+    private bool locked = false;
+
+    public void Awake()
+    {
+        anchorParent = this.transform.parent.parent.parent.gameObject;
+        anchorObject = anchorParent.transform.Find("AnchorObject").gameObject;
+        anchorObject.SetActive(false);
+    }
 
     /// <summary>
     /// States whether the window is enabled
@@ -33,6 +54,36 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public event EventHandler WindowClosed;
 
+    public void OnCheckboxUseAnchoringClicked()
+    {
+        moveAnchorAloneCheckbox.IsEnabled = !moveAnchorAloneCheckbox.IsEnabled;
+        anchorLockedButton.IsEnabled = !anchorLockedButton.IsEnabled;
+        anchorObject.SetActive(!anchorObject.activeSelf);
+    }
+
+    public void OnCheckboxMoveAnchorClicked()
+    {
+        if (anchorObject.GetComponent<ObjectManipulator>().HostTransform == anchorObject.transform)
+            anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorParent.transform;
+        else
+            anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorObject.transform;
+    }
+
+    public void OnLockButtonClicked()
+    {
+        if (locked)
+        {
+            anchorObject.GetComponent<ObjectManipulator>().enabled = false;
+            lockedIconSpriteRenderer.sprite = lockedIcon;
+        }
+        else
+        {
+            anchorObject.GetComponent<ObjectManipulator>().enabled = true;
+            lockedIconSpriteRenderer.sprite = unlockedIcon;
+        }
+        locked = !locked;
+    }
+
     public void Close()
     {
         gameObject.SetActive(false);
@@ -49,4 +100,5 @@ public class AnchoringMenu : MonoBehaviour, IWindow
         transform.localPosition = position;
         transform.localEulerAngles = eulerAngles;
     }
+
 }
