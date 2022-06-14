@@ -135,13 +135,13 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         private void CheckButtonStates()
         {
-            roomButton.Enabled = PhotonNetwork.IsConnected;
-            chatButton.Enabled = PhotonNetwork.InRoom;
-            microphoneButton.Enabled = PhotonNetwork.InRoom;
-            saveButton.Enabled = PhotonNetwork.InRoom;
-            loadButton.Enabled = PhotonNetwork.InRoom;
-            issueShelfButton.Enabled = PhotonNetwork.InRoom;
-            visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
+            roomButton.IsEnabled = PhotonNetwork.IsConnected;
+            chatButton.IsEnabled = PhotonNetwork.InRoom;
+            microphoneButton.IsEnabled = PhotonNetwork.InRoom;
+            saveButton.IsEnabled = PhotonNetwork.InRoom;
+            loadButton.IsEnabled = PhotonNetwork.InRoom;
+            issueShelfButton.IsEnabled = PhotonNetwork.InRoom;
+            visualizationShelfButton.IsEnabled = PhotonNetwork.InRoom;
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
