@@ -3,6 +3,7 @@ using UnityEngine;
 using i5.VIAProMa.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
+using i5.Toolkit.Core.Utilities;
 
 /// <summary>
 /// Controls the menu which allows a user to enable and disable the anchoring system as well as the corresponding settings
@@ -30,13 +31,15 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// <summary>
     /// Whether the locking of the anchor is currently enable or disabled
     /// </summary>
-    private bool locked = false;
+    private bool locked;
 
     public void Awake()
     {
         anchorParent = this.transform.parent.parent.parent.gameObject;
         anchorObject = anchorParent.transform.Find("AnchorObject").gameObject;
         anchorObject.SetActive(false);
+        locked = false;
+        DisableAnchorLock();
     }
 
     /// <summary>
@@ -76,6 +79,14 @@ public class AnchoringMenu : MonoBehaviour, IWindow
         anchorLockedButton.IsEnabled = !anchorLockedButton.IsEnabled;
         anchorObject.SetActive(!anchorObject.activeSelf);
         extendedSettings.SetActive(!extendedSettings.activeSelf);
+        if (extendedSettings.activeSelf)
+        {
+            Debug.Log("Anchoring has been activated.");
+        }
+        else
+        {
+            Debug.Log("Anchoring has been deactivated.");
+        }
     }
 
     /// <summary>
@@ -85,9 +96,15 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     public void OnCheckboxMoveAnchorClicked()
     {
         if (anchorObject.GetComponent<ObjectManipulator>().HostTransform == anchorObject.transform)
+        {
             anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorParent.transform;
+            Debug.Log("Individual moving mode disabled.");
+        }
         else
+        {
             anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorObject.transform;
+            Debug.Log("Individual moving mode enabled.");
+        }       
     }
 
     /// <summary>
@@ -96,20 +113,39 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void OnLockButtonClicked()
     {
-        if (locked)
+        if (!locked)
         {
-            anchorObject.GetComponent<ObjectManipulator>().enabled = false;
-            lockedIconSpriteRenderer.sprite = lockedIcon;
-            lockButtonText.text = "Anchor is locked";
+            EnableAnchorLock();
+            locked = true;
+            Debug.Log("The anchor is now locked.");
 
         }
         else
         {
-            anchorObject.GetComponent<ObjectManipulator>().enabled = true;
-            lockedIconSpriteRenderer.sprite = unlockedIcon;
-            lockButtonText.text = "Anchor is unlocked";
+            DisableAnchorLock();
+            locked = false;
+            Debug.Log("The anchor is now unlocked.");
         }
-        locked = !locked;
+    }
+
+    /// <summary>
+    /// Enables the anchor lock and updates the corresponding components
+    /// </summary>
+    public void EnableAnchorLock()
+    {
+        anchorObject.GetComponent<ObjectManipulator>().enabled = false;
+        lockedIconSpriteRenderer.sprite = lockedIcon;
+        lockButtonText.text = "Anchor is locked";
+    }
+
+    /// <summary>
+    /// Disables the anchor lock and updates the corresponding components
+    /// </summary>
+    public void DisableAnchorLock()
+    {
+        anchorObject.GetComponent<ObjectManipulator>().enabled = true;
+        lockedIconSpriteRenderer.sprite = unlockedIcon;
+        lockButtonText.text = "Anchor is unlocked";
     }
 
     /// <summary>
@@ -121,11 +157,21 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     }
 
     /// <summary>
-    /// Opens the window
+    /// Opens the window and sets the components values for the locking button
     /// </summary>
     public void Open()
     {
         gameObject.SetActive(true);
+
+        if (locked)
+        {
+            EnableAnchorLock();
+
+        }
+        else
+        {
+            DisableAnchorLock();
+        }
     }
 
     public void Open(Vector3 position, Vector3 eulerAngles)
