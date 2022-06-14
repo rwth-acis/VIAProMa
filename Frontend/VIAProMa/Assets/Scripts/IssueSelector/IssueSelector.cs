@@ -167,6 +167,23 @@ namespace i5.VIAProMa.IssueSelection
             }
         }
 
+        /// <summary>
+        /// Updates the visual selection indiciation on the card, ignores the status of the IssueSelectionManager.
+        /// Mainly needed for drag-and-drop functionalities to highlight issue even outside of the SelectionMode.
+        /// </summary>
+        public void UpdateViewIgnoreIssueSelectionManager()
+        {
+            selectionIndicator.SetActive(Selected);
+            if (Selected)
+            {
+                backgroundRenderer.material.color = selectedColor;
+            }
+            else
+            {
+                backgroundRenderer.material.color = originalRendererColor;
+            }
+        }
+
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
         }

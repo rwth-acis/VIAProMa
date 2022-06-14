@@ -14,6 +14,7 @@ public class CheckForCollision : MonoBehaviour
 {
     [SerializeField] float distance = 0.3f;
     [SerializeField] Vector3 direction = Vector3.forward;
+    [SerializeField] Color rayColor = Color.white;
 
     public bool isInRayMode = true;
 
@@ -30,7 +31,6 @@ public class CheckForCollision : MonoBehaviour
     bool rayHit;
     GameObject currentColliderObject;
     bool lastRaycastResult;
-    Color rayColor = Color.white;
 
 
     // Start is called before the first frame update
@@ -45,7 +45,7 @@ public class CheckForCollision : MonoBehaviour
         }
         else if(isInRayMode)
         {
-            Debug.LogWarning("The Component " + name + " should probably have a Line Renderer to see the raycast line.");
+            Debug.LogWarning("The Component " + name + " should have a Line Renderer to see the raycast line.");
         }
     }
 

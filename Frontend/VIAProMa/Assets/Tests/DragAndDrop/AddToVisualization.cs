@@ -3,6 +3,7 @@ using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.Visualizations;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Utilities;
+using i5.VIAProMa.IssueSelection;
 
 using System.Collections;
 using System.Collections.Generic;
@@ -20,11 +21,16 @@ public class AddToVisualization : MonoBehaviour
     List<GameObject> currentHits;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         currentHits = new List<GameObject>();
         CheckForCollision collisionChecker = GetComponent<CheckForCollision>();
-        //add Events to the collision checking class
+        if (collisionChecker == null)
+        {
+            SpecialDebugMessages.LogComponentNotFoundError(this, nameof(CheckForCollision), gameObject);
+            return;
+        }
+        //add Events to the collision checking class; TODO remove this as it is only for testing purposes
         if (onVisualizationNotIssue)
         {
             collisionChecker.RaycastHitEvent.AddListener(AddObjectToThis);
@@ -33,6 +39,7 @@ public class AddToVisualization : MonoBehaviour
         {
             collisionChecker.RaycastHitEvent.AddListener(AddThisToObject);
         }
+
         collisionChecker.RaycastHitEvent.AddListener(AddObjectToHitsList);
         collisionChecker.RaycastHitStopEvent.AddListener(RemoveObjectFromHitsList);
     }
@@ -47,6 +54,10 @@ public class AddToVisualization : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Add an issue to a visualization. Can only be used if this component is part of a visualization.
+    /// </summary>
+    /// <param name="target">the game object that holds the issue.</param>
     public void AddObjectToThis(GameObject target)
     {
         //test if target is an issue
@@ -55,7 +66,6 @@ public class AddToVisualization : MonoBehaviour
         {
             return;
         }
-        Debug.Log("AddObjectToThis found valid object");
 
         //just in case, test if this is a visualization
         Visualization visualization = GetComponent<Visualization>();
@@ -68,6 +78,10 @@ public class AddToVisualization : MonoBehaviour
         AddIssueToVisualization(visualization, issueDataDisplay);
     }
 
+    /// <summary>
+    /// Add an issue to a visualization. Can only be used if this component is part of an issue.
+    /// </summary>
+    /// <param name="target">the visualization this issue should be added to.</param>
     public void AddThisToObject(GameObject target)
     {
         //test if target is a visualization
@@ -76,7 +90,6 @@ public class AddToVisualization : MonoBehaviour
         {
             return;
         }
-        Debug.Log("AddThisToObject found valid object");
 
         //just in case, test if this is an issue
         IssueDataDisplay issueDataDisplay = GetComponentInChildren<IssueDataDisplay>();
@@ -88,6 +101,11 @@ public class AddToVisualization : MonoBehaviour
         AddIssueToVisualization(visualization, issueDataDisplay);
     }
 
+    /// <summary>
+    /// Add an issue to a visualization. Ignored, if the issue is already inside the visualization.
+    /// </summary>
+    /// <param name="visualization">Visualization component of the visualization.</param>
+    /// <param name="issueDataDisplay">IssueDataDisplay Component of the issue.</param>
     void AddIssueToVisualization(Visualization visualization, IssueDataDisplay issueDataDisplay)
     {
         List<Issue> issueList = new List<Issue>(visualization.ContentProvider.Issues);
@@ -97,6 +115,7 @@ public class AddToVisualization : MonoBehaviour
             Debug.Log("Issue already in visualization.");
             return;
         }
+        //done this way because just adding an element doesn't update the visualization
         issueList.Add(issueDataDisplay.Content);
         visualization.ContentProvider.Issues = issueList;
     }
@@ -104,10 +123,38 @@ public class AddToVisualization : MonoBehaviour
     void RemoveObjectFromHitsList(GameObject target)
     {
         currentHits.Remove(target);
+
+        //Deactivate selection indicator of the issue
+        IssueSelector IssueManipulator;
+        if(onVisualizationNotIssue)
+        {
+            IssueManipulator = target.GetComponentInChildren<IssueSelector>();
+        }
+        else
+        {
+            IssueManipulator = GetComponentInChildren<IssueSelector>();
+        }
+
+        IssueManipulator.Selected = false;
+        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
     }
 
     void AddObjectToHitsList(GameObject target)
     {
         currentHits.Add(target);
+
+        //Activate selection indicator of the issue
+        IssueSelector IssueManipulator;
+        if (onVisualizationNotIssue)
+        {
+            IssueManipulator = target.GetComponentInChildren<IssueSelector>();
+        }
+        else
+        {
+            IssueManipulator = GetComponentInChildren<IssueSelector>();
+        }
+
+        IssueManipulator.Selected = true;
+        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
     }
 }
