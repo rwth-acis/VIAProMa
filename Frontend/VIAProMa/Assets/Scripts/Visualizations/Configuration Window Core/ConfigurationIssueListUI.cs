@@ -1,4 +1,5 @@
-﻿using i5.VIAProMa.Utilities;
+﻿using i5.VIAProMa.UI.ListView.Issues;
+using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionButton));
             }
+
             if (selectionActiveMessage == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionActiveMessage));
@@ -43,16 +45,21 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             this.visualization = visualization;
         }
 
-        public void SelectIssues()
+        public void OpenIssueList()
         {
-            visualization.ContentProvider.SelectContent();
+            var issues = visualization.ContentProvider.Issues;
+            var x = new IssueListViewItem();
+            foreach (var issue in issues)
+            {
+                Debug.Log(issue.Name);
+            }
+
             UIEnabled = false;
             selectionActiveMessage.SetActive(true);
         }
 
-        public void EndIssueSelection()
+        public void CloseIssueList()
         {
-            visualization.ContentProvider.EndContentSelection();
             UIEnabled = true;
             selectionActiveMessage.SetActive(false);
         }
