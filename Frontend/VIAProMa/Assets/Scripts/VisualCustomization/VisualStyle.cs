@@ -53,6 +53,14 @@ public class VisualStyleVariant
         assignments ??= new List<MaterialAssignment>();
         assignments.Add(materialAssignment);
     }
+
+    public void ApplyVariant()
+    {
+        foreach (var assignment in assignments)
+        {
+            assignment.renderer.materials = assignment.materials;
+        }
+    }
 }
 
 [CustomEditor(typeof(VisualStyle))]

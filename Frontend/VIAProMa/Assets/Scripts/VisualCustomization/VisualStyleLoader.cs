@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -9,6 +10,45 @@ public class VisualStyleLoader : MonoBehaviour
     [SerializeField] private VisualCustomizationConfiguration configuration;
     [SerializeField] private VisualStyle[] styles;
 
+    private void OnEnable()
+    {
+        ReloadStyle();
+        VisualCustomizationManager.updateStyles += ReloadStyle;
+    }
+
+    private void OnDisable()
+    {
+        VisualCustomizationManager.updateStyles -= ReloadStyle;
+    }
+
+    public void LoadStyle(string styleKey, string variantKey)
+    {
+        foreach (var style in styles)
+        {
+            if (style.key == styleKey)
+            {
+                style.gameObject.SetActive(true);
+                foreach (var variant in style.variants)
+                {
+                    if (variant.key == variantKey)
+                    {
+                        variant.ApplyVariant();
+                    }
+                }
+            }
+            else
+            {
+                style.gameObject.SetActive(false);
+            }
+        }
+    }
+    
+    private void ReloadStyle()
+    {
+        var loadedStyle = VisualCustomizationManager.FindCurrentStyle(key);
+        LoadStyle(loadedStyle.style, loadedStyle.variation);
+    }
+    
     public void RegisterStyles()
     {
         if (configuration)
