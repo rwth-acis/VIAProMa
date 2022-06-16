@@ -5,6 +5,9 @@ using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.IssueSelection;
 
+using Microsoft.MixedReality.Toolkit.UI;
+using Microsoft.MixedReality.Toolkit.Input;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +19,12 @@ public class AddToVisualization : MonoBehaviour
     [SerializeField]
     [Tooltip("Set to true, if this component was added to a visualization, false if added to an issue")]
     bool onVisualizationNotIssue;
+
+    [SerializeField]
+    [Tooltip("Time the component waits before actually adding the component")]
+    float DropWaitTime = 0.2f;
+
+    float timeWaitedForDrop = 0;
 
     //either a list of Issues or a list of Visualizations, depending on onVisualizationNotIssue
     List<GameObject> currentHits;
@@ -31,14 +40,14 @@ public class AddToVisualization : MonoBehaviour
             return;
         }
         //add Events to the collision checking class; TODO remove this as it is only for testing purposes
-        if (onVisualizationNotIssue)
-        {
-            collisionChecker.RaycastHitEvent.AddListener(AddObjectToThis);
-        }
-        else
-        {
-            collisionChecker.RaycastHitEvent.AddListener(AddThisToObject);
-        }
+        //if (onVisualizationNotIssue)
+        //{
+        //    collisionChecker.RaycastHitEvent.AddListener(AddObjectToThis);
+        //}
+        //else
+        //{
+        //    collisionChecker.RaycastHitEvent.AddListener(AddThisToObject);
+        //}
 
         collisionChecker.RaycastHitEvent.AddListener(AddObjectToHitsList);
         collisionChecker.RaycastHitStopEvent.AddListener(RemoveObjectFromHitsList);
@@ -61,14 +70,14 @@ public class AddToVisualization : MonoBehaviour
     public void AddObjectToThis(GameObject target)
     {
         //test if target is an issue
-        IssueDataDisplay issueDataDisplay = target.GetComponentInChildren<IssueDataDisplay>();
+        IssueDataDisplay issueDataDisplay = target.GetComponentInParent<IssueDataDisplay>();
         if(!issueDataDisplay)
         {
             return;
         }
 
         //just in case, test if this is a visualization
-        Visualization visualization = GetComponent<Visualization>();
+        Visualization visualization = GetComponentInParent<Visualization>();
         if(!visualization)
         {
             Debug.LogError("Component needs to be added to a visualization to use this function");
@@ -92,13 +101,14 @@ public class AddToVisualization : MonoBehaviour
         }
 
         //just in case, test if this is an issue
-        IssueDataDisplay issueDataDisplay = GetComponentInChildren<IssueDataDisplay>();
+        IssueDataDisplay issueDataDisplay = GetComponentInParent<IssueDataDisplay>();
         if (!issueDataDisplay)
         {
             Debug.LogError("Component needs to be added to an issue to use this function");
         }
-
         AddIssueToVisualization(visualization, issueDataDisplay);
+
+        Debug.Log(name + " added to " + target.transform.parent.name);
     }
 
     /// <summary>
@@ -112,7 +122,7 @@ public class AddToVisualization : MonoBehaviour
         //only add an issue once to a visualization
         if (issueList.Contains(issueDataDisplay.Content))
         {
-            Debug.Log("Issue already in visualization.");
+            Debug.Log("Issue " + issueDataDisplay.Content.Name + " already in visualization.");
             return;
         }
         //done this way because just adding an element doesn't update the visualization
@@ -124,37 +134,110 @@ public class AddToVisualization : MonoBehaviour
     {
         currentHits.Remove(target);
 
+        //if (currentHits.Count > 0 && !onVisualizationNotIssue)
+        //{
+        //    return;
+        //}
+
         //Deactivate selection indicator of the issue
         IssueSelector IssueManipulator;
         if(onVisualizationNotIssue)
         {
-            IssueManipulator = target.GetComponentInChildren<IssueSelector>();
+            IssueManipulator = target.GetComponentInParent<IssueSelector>();
+
+            //necessary to ignore colliders that are no direct children of the uppermost parent
+            string parentObjectName = target.transform.parent.name;
+            if (parentObjectName == "Status" || parentObjectName == "Creator" || parentObjectName == "Source")
+            {
+                Debug.Log("Hit component that it ignores.");
+                return;
+            }
+
+            ObjectManipulator grabComponent = target.transform.parent.GetComponentInChildren<ObjectManipulator>();
+            //if there is no component, then there was obviously no listener added, so none has to be removed
+            if(grabComponent)
+            {
+                grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
+            }
         }
         else
         {
-            IssueManipulator = GetComponentInChildren<IssueSelector>();
+            IssueManipulator = GetComponentInParent<IssueSelector>();
+            ObjectManipulator grabComponent =  transform.parent.GetComponentInChildren<ObjectManipulator>();
+            grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
         }
-
-        IssueManipulator.Selected = false;
-        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+        if(IssueManipulator)
+        {
+            IssueManipulator.Selected = false;
+            IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+        }
     }
 
     void AddObjectToHitsList(GameObject target)
     {
-        currentHits.Add(target);
+        //currentHits.Add(target);
+        Debug.Log(transform.parent.name + " hit: (" + target.name + ") " + target.transform.parent.name);
 
         //Activate selection indicator of the issue
         IssueSelector IssueManipulator;
         if (onVisualizationNotIssue)
         {
-            IssueManipulator = target.GetComponentInChildren<IssueSelector>();
+            IssueManipulator = target.GetComponentInParent<IssueSelector>();
+
+            //test if target is an issue
+            if (target.GetComponentInParent<IssueDataDisplay>())
+            {
+                //necessary to ignore colliders that are no direct children of the uppermost parent
+                string parentObjectName = target.transform.parent.name;
+                if (parentObjectName == "Status" || parentObjectName == "Creator" || parentObjectName == "Source")
+                {
+                    Debug.Log("Hit component that it ignores.");
+                    return;
+                }
+                currentHits.Add(target);
+                IssueManipulator.Selected = true;
+
+                ObjectManipulator grabComponent = target.transform.parent.GetComponentInChildren<ObjectManipulator>();
+                grabComponent.OnManipulationEnded.AddListener(ManipulationEnded);
+            }
         }
         else
         {
-            IssueManipulator = GetComponentInChildren<IssueSelector>();
+            IssueManipulator = GetComponentInParent<IssueSelector>();
+
+            //test if target is a visualization
+            if (target.GetComponentInParent<Visualization>())
+            {
+                currentHits.Add(target);
+                IssueManipulator.Selected = true;
+                ObjectManipulator grabComponent = transform.parent.GetComponentInChildren<ObjectManipulator>();
+                grabComponent.OnManipulationEnded.AddListener(ManipulationEnded);
+            }
+
         }
 
-        IssueManipulator.Selected = true;
-        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+        if(IssueManipulator)
+        {
+            IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+        }
+    }
+
+    public void ManipulationEnded(ManipulationEventData eventData)
+    {
+        if (onVisualizationNotIssue)
+        {
+            AddObjectToThis(currentHits[0]);
+        }
+        else
+        {
+            AddThisToObject(currentHits[0]);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        CheckForCollision collisionChecker = GetComponent<CheckForCollision>();
+        collisionChecker.RaycastHitEvent.RemoveListener(AddObjectToHitsList);
+        collisionChecker.RaycastHitStopEvent.RemoveListener(RemoveObjectFromHitsList);
     }
 }

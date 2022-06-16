@@ -10,23 +10,35 @@ using UnityEngine.Events;
 [Serializable]
 public class ColliderEvent : UnityEvent<GameObject> { }
 
+// This script needs a rigit body for the Trigger function to work
+[RequireComponent(typeof(Rigidbody))]
 public class CheckForCollision : MonoBehaviour
 {
     [SerializeField] float distance = 0.3f;
     [SerializeField] Vector3 direction = Vector3.forward;
     [SerializeField] Color rayColor = Color.white;
 
-    public bool isInRayMode = true;
+    [SerializeField] bool _isInRayMode = true;
+
+    public bool isInRayMode
+    {
+        get => _isInRayMode;
+        set
+        {
+            _isInRayMode = value;
+            UpdateRayVisual();
+        }
+    }
 
     [SerializeField]
     protected LineRenderer raycastLine;
 
-    [Header("Overlap Start Events")]
+    #region Overlap Events
+    [Header("Overlap Events")]
     public ColliderEvent RaycastHitEvent = new ColliderEvent();
 
-    [Header("Overlap End Events")]
     public ColliderEvent RaycastHitStopEvent = new ColliderEvent();
-
+    #endregion Overlap Events
 
     bool rayHit;
     GameObject currentColliderObject;
@@ -34,16 +46,25 @@ public class CheckForCollision : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //RaycastHitEvent.AddListener(x => Debug.Log(this.name + " ++ recieved hit from " + x.name));
         //RaycastHitStopEvent.AddListener(x => Debug.Log(this.name + " -- no longer hits " + x.name));
+        UpdateRayVisual();
 
-        if(raycastLine)
+        //Make it so object is not influenced by forces
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Rigidbody>().useGravity = false;
+
+    }
+
+    void UpdateRayVisual()
+    {
+        if (raycastLine)
         {
-            raycastLine.enabled = isInRayMode;
+            raycastLine.enabled = _isInRayMode;
         }
-        else if(isInRayMode)
+        else if (_isInRayMode)
         {
             Debug.LogWarning("The Component " + name + " should have a Line Renderer to see the raycast line.");
         }
@@ -51,7 +72,7 @@ public class CheckForCollision : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(isInRayMode)
+        if(_isInRayMode)
         {
             TestForRayHit();
         }
@@ -61,16 +82,16 @@ public class CheckForCollision : MonoBehaviour
     //{
     //}
 
-    private void OnTriggerEnter(Collider potentialTarget)
+    public void OnTriggerEnter(Collider potentialTarget)
     {
-        if (!isInRayMode)
+        if (!_isInRayMode)
         {
             RaycastHitEvent.Invoke(potentialTarget.gameObject);
         }
     }
-    private void OnTriggerExit(Collider potentialTarget)
+    public void OnTriggerExit(Collider potentialTarget)
     {
-        if (!isInRayMode)
+        if (!_isInRayMode)
         {
             RaycastHitStopEvent.Invoke(potentialTarget.gameObject);
         }
@@ -82,7 +103,15 @@ public class CheckForCollision : MonoBehaviour
 
         // checks if there is an object that is colliding with the ray,
         // if there is it saves that object in "raycastHit"
-        rayHit = Physics.Raycast(transform.position, direction, out raycastHit, distance);
+        if(raycastLine)
+        {
+            rayHit = Physics.Raycast(transform.position + raycastLine.GetPosition(0), direction, out raycastHit, distance);
+        }
+        else
+        {
+            rayHit = Physics.Raycast(transform.position, direction, out raycastHit, distance);
+        }
+
 
         if(lastRaycastResult != rayHit)
         {
@@ -106,8 +135,8 @@ public class CheckForCollision : MonoBehaviour
         //Show Ray
         if (raycastLine != null)
         {
-            Vector3 worldHitLocation = transform.position + raycastLine.GetPosition(0) + (direction.normalized * distance);//This needs to be in WORLD space for once, and not local space
-            raycastLine.SetPosition(1, raycastLine.transform.worldToLocalMatrix * ((Vector4)worldHitLocation + new Vector4(0, 0, 0, 1)));
+            Vector3 worldRayEnd = transform.position + raycastLine.GetPosition(0) + (direction.normalized * distance);//This needs to be in WORLD space for once, and not local space
+            raycastLine.SetPosition(1, raycastLine.transform.worldToLocalMatrix * ((Vector4)worldRayEnd + new Vector4(0, 0, 0, 1)));
             raycastLine.startColor = rayColor;
             raycastLine.endColor = rayColor;
         }
