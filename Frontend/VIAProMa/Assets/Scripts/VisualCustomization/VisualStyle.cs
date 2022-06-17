@@ -20,7 +20,8 @@ public class VisualStyle : MonoBehaviour
 
             newVariant.AddMaterialAssignment(materialAssigment);
         }
-        
+
+        variants ??= new List<VisualStyleVariant>();
         variants.Add(newVariant);
 
         EditorUtility.SetDirty(this);
