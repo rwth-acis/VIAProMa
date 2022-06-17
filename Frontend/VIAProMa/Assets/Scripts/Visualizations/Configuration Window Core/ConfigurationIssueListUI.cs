@@ -1,4 +1,5 @@
 ﻿using i5.VIAProMa.UI.ListView.Issues;
+using i5.VIAProMa.UI.MultiListView.Core;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
     public class ConfigurationIssueListUI : MonoBehaviour, IUiFragment
     {
         [SerializeField] private Interactable selectionButton;
-        [SerializeField] private GameObject selectionActiveMessage;
+        [SerializeField] private GameObject listWindow;
 
         private bool uiEnabled = true;
         private Visualization visualization;
@@ -30,13 +31,13 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionButton));
             }
 
-            if (selectionActiveMessage == null)
+            if (listWindow == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(selectionActiveMessage));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(listWindow));
             }
             else
             {
-                selectionActiveMessage.SetActive(false);
+                listWindow.SetActive(false);
             }
         }
 
@@ -48,20 +49,22 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         public void OpenIssueList()
         {
             var issues = visualization.ContentProvider.Issues;
-            var x = new IssueListViewItem();
+            //var issueViewList = gameObject.AddComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
+            //issueViewList.Items = issues;
             foreach (var issue in issues)
             {
                 Debug.Log(issue.Name);
             }
 
+            listWindow.SetActive(true);
             UIEnabled = false;
-            selectionActiveMessage.SetActive(true);
+            listWindow.SetActive(true);
         }
 
         public void CloseIssueList()
         {
             UIEnabled = true;
-            selectionActiveMessage.SetActive(false);
+            listWindow.SetActive(false);
         }
     }
 }
