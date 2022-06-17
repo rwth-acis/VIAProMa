@@ -56,9 +56,9 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             {
                 issueViewList.Items = issues;
             }
-            foreach (var issue in issues)
+            else
             {
-                Debug.Log(issue.Name);
+                Debug.Log("No List Window set. Please add one");
             }
         }
 
