@@ -41,10 +41,10 @@ namespace i5.VIAProMa.LiteratureSearch
             if (photonView.InstantiationData.Length == 1) 
             { 
                 doi = (string)photonView.InstantiationData[0];
-                CrossRefPaper result = await Communicator.GetPaper(doi);    // request data for specific doi from CrossRef
+                Paper result = await Communicator.GetPaper(doi);    // request data for specific doi from CrossRef
                 if (result != null)
                 {
-                    paperDataDisplay.Setup(result.ToPaper());
+                    paperDataDisplay.Setup(result);
                 }
                 else
                 {

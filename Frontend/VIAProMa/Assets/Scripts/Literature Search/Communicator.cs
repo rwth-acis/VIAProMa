@@ -64,7 +64,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         /// <param name="doi"></param>
         /// <returns>The paper with the DOI <paramref name="doi"/>.</returns>
-        public static async Task<CrossRefPaper> GetPaper(string doi)
+        public static async Task<Paper> GetPaper(string doi)
         {
             Response response = await Rest.GetAsync(apiURLSingleRequest + doi);
             string text = await response.GetResponseBody();
@@ -73,7 +73,7 @@ namespace i5.VIAProMa.LiteratureSearch
 
             Debug.Log(resp.ToString());
 
-            return resp.message;
+            return resp.message.ToPaper();
         }
 
 
@@ -175,6 +175,7 @@ namespace i5.VIAProMa.LiteratureSearch
         public int isreferencedbycount;
         public List<string> title;
         public List<Author> author;
+        public List<Reference> reference;
         public string URL;
         public CrossRefDate created;
 
@@ -201,7 +202,15 @@ namespace i5.VIAProMa.LiteratureSearch
         {
             System.DateTime date;
             System.DateTime.TryParse(created.datetime, out date);
-            return new Paper(publisher, abstracttext, DOI, type, page, isreferencedbycount, title, author, URL, date);
+            List<string> references = new List<string>();
+            if(reference != null)
+            {
+                foreach(Reference reference in reference)
+                {
+                    references.Add(reference.ToString());
+                }
+            }
+            return new Paper(publisher, abstracttext, DOI, type, page, isreferencedbycount, title, author, URL, date, references);
         }
 
         public static List<Paper> ToPapers(List<CrossRefPaper> papers)
@@ -238,9 +247,9 @@ namespace i5.VIAProMa.LiteratureSearch
     [System.Serializable]
     public class Reference
     {
-        public string key;
+        //public string key;
         public string DOI;
-        public string unstructured;
+        //public string unstructured;
         public override string ToString()
         {
             return DOI;

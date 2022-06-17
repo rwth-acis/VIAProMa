@@ -1,8 +1,10 @@
 using i5.VIAProMa.LiteratureSearch;
+using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI;
 using i5.VIAProMa.UI.InputFields;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -118,8 +120,6 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(previous));
             }
-            
-            display.text = "";
         }
 
         /// <summary>
@@ -127,9 +127,13 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         public void Close()
         {
+            PaperController.Instance.ClearResults();
+
             WindowOpen = false;
             WindowClosed?.Invoke(this, EventArgs.Empty);
             gameObject.SetActive(false);
+
+            LobbyManager.Instance.LobbyJoinStatusChanged -= OnLobbyStatusChanged;
         }
 
         /// <summary>
@@ -138,8 +142,32 @@ namespace i5.VIAProMa.LiteratureSearch
         public void Open()
         {
             gameObject.SetActive(true);
-            WindowOpen = false;
+            WindowOpen = true;
+
+            LobbyManager.Instance.LobbyJoinStatusChanged += OnLobbyStatusChanged;
+
+            AdjustToRoomStatus();
         }
+
+        private void OnLobbyStatusChanged(object sender, EventArgs e)
+        {
+            AdjustToRoomStatus();
+        }
+
+        private void AdjustToRoomStatus()
+        {
+            if (PhotonNetwork.InRoom)
+            {
+                executeSearch.IsEnabled = true;
+                display.text = "";
+            }
+            else
+            {
+                executeSearch.IsEnabled = false;
+                display.text = "Join a room to search for papers.";
+            }
+        }
+
         /// <summary>
         /// Opens the window at <paramref name="position"/> with the angles <paramref name="eulerAngles"/>.
         /// </summary>
@@ -155,7 +183,7 @@ namespace i5.VIAProMa.LiteratureSearch
         // Start is called before the first frame update
         void Start()
         {
-            display.text = "";
+            
         }
 
         // Update is called once per frame

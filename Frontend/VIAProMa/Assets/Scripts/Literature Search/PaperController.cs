@@ -8,6 +8,7 @@ namespace i5.VIAProMa.LiteratureSearch
     public class PaperController : Singleton<PaperController>
     {
         [SerializeField] private GameObject paperListView;
+
         private List<GameObject> paperResultsList = new List<GameObject>();
 
         // Start is called before the first frame update
@@ -31,7 +32,7 @@ namespace i5.VIAProMa.LiteratureSearch
             ClearResults();
             for(int i = 0; i < results.Count; i++)
             {
-                GameObject displayInstance = Instantiate(paperListView, transform.position + new Vector3(transform.position.x + i * .4f + .3f, 0, 0), transform.rotation);
+                GameObject displayInstance = Instantiate(paperListView, transform.position + new Vector3(i * .4f + .6f, 0, 0), transform.rotation);
                 paperResultsList.Add(displayInstance);
                 PaperDataDisplay remoteDataDisplay = displayInstance?.GetComponent<PaperDataDisplay>();
                 remoteDataDisplay.Setup(results[i]);

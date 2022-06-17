@@ -19,9 +19,9 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private int referencedByCount;
         [SerializeField] private List<string> title;
         [SerializeField] private List<Author> authors;
+        [SerializeField] private List<string> references;
         [SerializeField] private string url;
         [SerializeField] private DateTime created;
-        
 
         public string Key { get => key; }
         public string Publisher { get => publisher; }
@@ -32,6 +32,10 @@ namespace i5.VIAProMa.LiteratureSearch
         public int ReferencedByCount { get => referencedByCount; }
         public List<string> Title { get => title; }
         public List<Author> Authors { get => authors; }
+        /// <summary>
+        /// List of DOIs of the references. 
+        /// </summary>
+        public List<string> References { get => references; }
         public string URL { get => url; }
         public DateTime Created { get => created; }
 
@@ -53,7 +57,9 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <param name="authors">The authors of the paper.</param>
         /// <param name="url">The URL to the paper.</param>
         /// <param name="created">The date the paper was created.</param>
-        public Paper(string publisher, string abstractText, string doi, string type, string page, int referencedByCount, List<string> title, List<Author> authors, string url, DateTime created)
+        /// <param name="references">The list of DOIs of the references.</param>
+        public Paper(string publisher, string abstractText, string doi, string type, string page, int referencedByCount, 
+            List<string> title, List<Author> authors, string url, DateTime created, List<string> references)
         {
             this.publisher = publisher;
             this.abstractText = abstractText;
@@ -65,6 +71,7 @@ namespace i5.VIAProMa.LiteratureSearch
             this.authors = authors;
             this.url = url;
             this.created = created;
+            this.references = references;
 
             if(authors.Count > 1)
             {

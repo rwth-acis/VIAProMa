@@ -1,5 +1,6 @@
 using i5.VIAProMa.LiteratureSearch;
 using i5.VIAProMa.ResourceManagagement;
+using i5.VIAProMa.UI;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
@@ -11,6 +12,7 @@ using UnityEngine;
 public class debug : MonoBehaviour
 {
     [SerializeField] private GameObject displayPrefab;
+    [SerializeField] private GameObject literatureWindow;
 
     private GameObject displayInstance;
     private ObjectManipulator handlerOnCopy;
@@ -26,20 +28,9 @@ public class debug : MonoBehaviour
         
     }
 
-    public void OnDebugClick()
+    public void OnOpenWindowClick()
     {
-        List<string> title = new List<string>();
-        title.Add("this is a test title");
-        List<Author> author = new List<Author>();
-        author.Add(new Author()
-        {
-            family = "dirkson",
-            given = "dirk"
-        });
-        Paper paper = new Paper("pub", "abst", "123498765", "testpaper", "69-420", 42, title, author, "google.com", DateTime.Now);
+        WindowManager.Instance.LiteratureSearchWindow.Open(transform.position + new Vector3(0, 0, -.1f), transform.eulerAngles);
 
-        displayInstance = Instantiate(displayPrefab, this.transform);
-        PaperDataDisplay remoteDataDisplay = displayInstance?.GetComponent<PaperDataDisplay>();
-        remoteDataDisplay.Setup(paper);
     }
 }
