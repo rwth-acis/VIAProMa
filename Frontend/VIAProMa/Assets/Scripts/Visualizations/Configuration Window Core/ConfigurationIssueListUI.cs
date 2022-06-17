@@ -48,17 +48,18 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 
         public void OpenIssueList()
         {
+            listWindow.SetActive(true);
+            UIEnabled = false;
             var issues = visualization.ContentProvider.Issues;
-            //var issueViewList = gameObject.AddComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
-            //issueViewList.Items = issues;
+            var issueViewList = listWindow.GetComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
+            if (issueViewList != null)
+            {
+                issueViewList.Items = issues;
+            }
             foreach (var issue in issues)
             {
                 Debug.Log(issue.Name);
             }
-
-            listWindow.SetActive(true);
-            UIEnabled = false;
-            listWindow.SetActive(true);
         }
 
         public void CloseIssueList()
