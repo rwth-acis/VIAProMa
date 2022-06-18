@@ -15,6 +15,11 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
     [SerializeField] private VisualCustomizationConfiguration configuration;
     [SerializeField] private List<StyleSelection> currentStyleSelections;
 
+    private void Start()
+    {
+        updateStyles.Invoke();
+    }
+
     public void SetStylesDefault()
     {
         currentStyleSelections = new List<StyleSelection>();
@@ -40,6 +45,10 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
 
     public static StyleSelection FindCurrentStyle(string key)
     {
+        if (Instance.currentStyleSelections == null)
+        {
+            Instance.SetStylesDefault();
+        }
         foreach (var styleSelection in Instance.currentStyleSelections)
         {
             if (styleSelection.key == key)
