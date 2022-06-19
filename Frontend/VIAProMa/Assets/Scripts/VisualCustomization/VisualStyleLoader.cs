@@ -12,7 +12,11 @@ public class VisualStyleLoader : MonoBehaviour
 
     private void OnEnable()
     {
-        ReloadStyle();
+        if (VisualCustomizationManager.IsInitialized)
+        {
+            ReloadStyle();
+        }
+        
         VisualCustomizationManager.updateStyles += ReloadStyle;
     }
 
