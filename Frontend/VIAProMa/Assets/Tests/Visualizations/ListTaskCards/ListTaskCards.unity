@@ -3018,9 +3018,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 492463162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afb299b244854dc448164fa5d079ef7b, type: 3}
+  m_Script: {fileID: 11500000, guid: e5ed656251dcb6341b862c7e72fc8511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simulatedIssues: 0000000000000000
+  visualizations: {fileID: 1421350618}
 --- !u!1 &566465959
 GameObject:
   m_ObjectHideFlags: 0
@@ -3399,7 +3401,11 @@ PrefabInstance:
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
       propertyPath: m_text
-      value: This test scene demonstrates the listing of task cards of a visualisation
+      value: 'This test scene demonstrates the listing of task cards of a visualisation.
+
+
+        To
+        add task cards to the visualization just press F5.'
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
@@ -3770,6 +3776,18 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1421350618 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8195115283832244518, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+    type: 3}
+  m_PrefabInstance: {fileID: 2098223573}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf641ac6ead0c3a4996f7e286eca41b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1511488231
 GameObject:
   m_ObjectHideFlags: 0
