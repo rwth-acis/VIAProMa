@@ -20,6 +20,10 @@ namespace i5.VIAProMa.LiteratureSearch
         /// The URL for a CrossRef API call given a DOI.
         /// </summary>
         private static readonly string apiURLSingleRequest = "https://api.crossref.org/works/";
+        /// <summary>
+        /// Email as contact information for the CrossRef-API, advised in the etiquette.
+        /// </summary>
+        private static readonly string mailTo = "sascha.thiemann@rwth-aachen.de";
 
         /// <summary>
         /// Executes an async API search with the query <paramref name="query"/>, <paramref name="maxResults"/> maximum results and offset <paramref name="offset"/>. 
@@ -33,12 +37,12 @@ namespace i5.VIAProMa.LiteratureSearch
             Response res;
             if (offset == 0)
             {
-                res = await Rest.GetAsync(apiURL + query + "&rows=" + maxResults);
+                res = await Rest.GetAsync(apiURL + query + "&rows=" + maxResults + "&mailto=" + mailTo);
 
             }
             else
             {
-                res = await Rest.GetAsync(apiURL + query + "&rows=" + maxResults + "&offset=" + (offset * maxResults));
+                res = await Rest.GetAsync(apiURL + query + "&rows=" + maxResults + "&offset=" + (offset * maxResults) + "&mailto=" + mailTo));
 
             }
             if (!res.Successful)
