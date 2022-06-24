@@ -116,7 +116,7 @@ namespace i5.VIAProMa.DataDisplays
                 }
                 else
                 {
-                    Debug.LogError(res.ResponseCode + ": " + res.ErrorMessage);
+                    //Debug.LogError(res.ResponseCode + ": " + res.ErrorMessage);
                     return ResourceManager.Instance.DefaultProfileImage;
                 }
             }

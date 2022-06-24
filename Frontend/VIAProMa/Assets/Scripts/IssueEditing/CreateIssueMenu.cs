@@ -29,9 +29,12 @@ public class CreateIssueMenu : MonoBehaviour
         {
             case DataSource.REQUIREMENTS_BAZAAR:
                 Category category;
+                Project proj = await RequirementsBazaarManager.GetProject(projectTracker.currentProjectID);
+                Debug.Log(projectTracker.currentCategory.id);
                 if(projectTracker.currentCategory.id == 0)
                 {
-                    category = await RequirementsBazaarManager.GetCategory(1175);
+  
+                    category = await RequirementsBazaarManager.GetCategory(proj.DefaultCategoryId);
                 }
                 else
                 {
