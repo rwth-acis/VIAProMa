@@ -18,10 +18,11 @@ namespace Org.Requirements_Bazaar.DataModel
         [SerializeField] private User leader;
         [SerializeField] private string creationDate;
         [SerializeField] private string lastUpdatedDate;
+        [SerializeField] private string lastActivity;
         [SerializeField] private int numberOfCategories;
         [SerializeField] private int numberOfRequirements;
         [SerializeField] private int numberOfFollowers;
-        [SerializeField] private bool isFollower;
+        [SerializeField] private User userContext;
 
         /// <summary>
         /// Creates a new project and assigns the currently logged in user as the leader
@@ -164,6 +165,17 @@ namespace Org.Requirements_Bazaar.DataModel
         }
 
         /// <summary>
+        /// Timestamp of the time when the project was last updated
+        /// </summary>
+        public string LastActivity
+        {
+            get
+            {
+                return lastActivity;
+            }
+        }
+
+        /// <summary>
         /// Counts the number of categories in this project
         /// </summary>
         public int NumberOfCategories
@@ -197,13 +209,18 @@ namespace Org.Requirements_Bazaar.DataModel
         }
 
         /// <summary>
-        /// True if the currently logged in user is following the project
+        /// The user context
         /// </summary>
-        public bool IsFollower
+        public User UserContext
         {
             get
             {
-                return isFollower;
+                return userContext;
+            }
+
+            set
+            {
+                userContext = value;
             }
         }
 

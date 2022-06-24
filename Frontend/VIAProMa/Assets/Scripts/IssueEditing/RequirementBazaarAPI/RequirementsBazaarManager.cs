@@ -28,16 +28,18 @@ namespace Org.Requirements_Bazaar.API
         public static async Task<Project> GetProject(int projectId)
         {
             string url = baseUrl + "projects/" + projectId.ToString();
+            Debug.Log(url);
 
             Response response = await Rest.GetAsync(url, null, -1, null, true);
             if (!response.Successful)
             {
-                Debug.LogError(response.ResponseBody);
+                Debug.LogError(response.GetResponseBody());
                 return null;
             }
             else
             {
                 Project project = JsonUtility.FromJson<Project>(response.ResponseBody);
+                Debug.Log(project);
                 return project;
             }
         }

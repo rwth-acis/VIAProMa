@@ -29,20 +29,21 @@ public class CreateIssueMenu : MonoBehaviour
         {
             case DataSource.REQUIREMENTS_BAZAAR:
                 Category category;
-                Project proj = await RequirementsBazaarManager.GetProject(projectTracker.currentProjectID);
-                Debug.Log(projectTracker.currentCategory.id);
-                if(projectTracker.currentCategory.id == 0)
+                //Project proj = await RequirementsBazaarManager.GetProject(projectTracker.currentProjectID);
+                /*if(projectTracker.currentCategory.id == 0)
                 {
   
                     category = await RequirementsBazaarManager.GetCategory(proj.DefaultCategoryId);
                 }
                 else
+                {*/
+                Category[] categoryarray = null;
+                if (projectTracker.currentCategory.id != 0)
                 {
                     category = await RequirementsBazaarManager.GetCategory(projectTracker.currentCategory.id);
+                    categoryarray = new Category[1];
+                    categoryarray[0] = category;
                 }
-                Category[] categoryarray = new Category[1];
-                categoryarray[0] = category;
-            
 
                 await RequirementsBazaarManager.CreateRequirement(projectTracker.currentProjectID, issueName.text, issueDescription.text, categoryarray);
                 break;
