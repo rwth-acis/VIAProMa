@@ -17,8 +17,10 @@ public class DragAndDropTestRunner : MonoBehaviour
 
     private void Update()
     {
+        
         if (Input.GetKeyDown(KeyCode.F5))
         {
+            //Fill the "Random Issues" Kanban Board with issues
             SingleIssuesProvider provider = new SingleIssuesProvider();
             for (int i = 0; i < issues; i++)
             {
@@ -27,8 +29,10 @@ public class DragAndDropTestRunner : MonoBehaviour
             column.ContentProvider = provider;
         }
 
+        
         if (Input.GetKeyDown(KeyCode.F6))
         {
+            //Create a new Issue in the scene to test Drag And Drop
             GameObject IssueParent = GameObject.Find("Issues");
             GameObject newIssue = Instantiate(issuePrefab, transform.position, transform.rotation, IssueParent.transform);
 

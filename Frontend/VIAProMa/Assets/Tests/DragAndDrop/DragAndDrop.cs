@@ -27,7 +27,7 @@ public class DragAndDrop : MonoBehaviour
     //A list of Visualizations that currently overlap with the Issue
     List<GameObject> currentHits;
 
-    // Start is called before the first frame update
+    //Awake is called when the script instance is being loaded
     void Awake()
     {
         currentHits = new List<GameObject>();
@@ -55,11 +55,6 @@ public class DragAndDrop : MonoBehaviour
         GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = false;
     }
-
-    // Update is called once per frame
-    //void Update()
-    //{
-    //}
 
     #region TriggerEvents
     public void OnTriggerEnter(Collider potentialTarget)
