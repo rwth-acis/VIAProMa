@@ -25,6 +25,8 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         private static readonly string mailTo = "sascha.thiemann@rwth-aachen.de";
 
+        private static Dictionary<string, Paper> paperCache = new Dictionary<string, Paper>();
+
         /// <summary>
         /// Executes an async API search with the query <paramref name="query"/>, <paramref name="maxResults"/> maximum results and offset <paramref name="offset"/>. 
         /// </summary>
@@ -42,7 +44,7 @@ namespace i5.VIAProMa.LiteratureSearch
             }
             else
             {
-                res = await Rest.GetAsync(apiURL + query + "&rows=" + maxResults + "&offset=" + (offset * maxResults) + "&mailto=" + mailTo));
+                res = await Rest.GetAsync(apiURL + query + "&rows=" + maxResults + "&offset=" + (offset * maxResults) + "&mailto=" + mailTo);
 
             }
             if (!res.Successful)
@@ -70,14 +72,36 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <returns>The paper with the DOI <paramref name="doi"/>.</returns>
         public static async Task<Paper> GetPaper(string doi)
         {
+
+            if (paperCache.ContainsKey(doi))
+            {
+                Debug.Log("from cache + " + doi);
+                return paperCache[doi];
+            }
+            Debug.Log("requested: " + doi);
+
             Response response = await Rest.GetAsync(apiURLSingleRequest + doi);
             string text = await response.GetResponseBody();
+
+            if (!response.Successful)
+            {
+                Debug.Log("Paper with DOI " + doi + " not found");
+                if(!paperCache.ContainsKey(doi))
+                    paperCache.Add(doi, null);
+                return null;
+            }
 
             CrossRefSingleResponse resp = CrossRefSingleResponse.ExtractFromJSON(text);
 
             Debug.Log(resp.ToString());
 
-            return resp.message.ToPaper();
+            Paper paper = resp.message.ToPaper();
+
+            // To avoid adding a paper multiple times because of race conditions
+            if(!paperCache.ContainsKey(doi))
+                paperCache.Add(doi, paper);
+
+            return paper;
         }
 
 

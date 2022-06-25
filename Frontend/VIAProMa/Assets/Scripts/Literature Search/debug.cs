@@ -28,8 +28,15 @@ public class debug : MonoBehaviour
         
     }
 
-    public void OnOpenWindowClick()
+    public async void OnOpenWindowClick()
     {
+        //Paper testPaper = await Communicator.GetPaper("10.1007/978-3-030-87595-4_19");
+
+        //CitationNetwork network = await CitationNetwork.CreateNetwork(testPaper);
+
+        //Debug.Log(network.ToString());
+
+        //Debug.Log("success");
         WindowManager.Instance.LiteratureSearchWindow.Open(transform.position + new Vector3(0, 0, -.1f), transform.eulerAngles);
 
     }

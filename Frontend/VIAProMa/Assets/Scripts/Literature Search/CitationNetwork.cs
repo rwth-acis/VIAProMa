@@ -36,6 +36,7 @@ namespace i5.VIAProMa.LiteratureSearch
             List<Paper> relevantPapers = await GetAllReferences(_base);
             CitationNetworkNode head = new CitationNetworkNode();
             head.Content = _base;
+            network.Head = head;
             
             foreach(Paper relevantPaper in relevantPapers)
             {
@@ -46,11 +47,11 @@ namespace i5.VIAProMa.LiteratureSearch
             }
 
             bool changesOccured = true;
+
+            // Get potentially relevant papers
             while (changesOccured)
             {
                 changesOccured = false;
-
-                // Get potentially relevant papers
                 List<(List<Paper>, Paper)> potentialPapers = new List<(List<Paper>, Paper)>();
                 for(int i = 0; i < network.Papers.Count; i++)
                 {
@@ -60,36 +61,55 @@ namespace i5.VIAProMa.LiteratureSearch
                 // Check if potential papers overlap -> relevant paper
                 for(int i = 0; i < potentialPapers.Count; i++)
                 {
-                    for(int j = i; j < potentialPapers.Count; i++)
+                    for(int j = i + 1; j < potentialPapers.Count; j++)
                     {
                         List<Paper> overlap = GetOverlap(potentialPapers[i].Item1, potentialPapers[j].Item1);
                         if (overlap.Count > 0)
                         {
+                            Debug.Log("found overlap" + $"({i}, {j})");
                             changesOccured = true;
 
                             CitationNetworkNode node1 = network.GetNode(potentialPapers[i].Item2);
                             CitationNetworkNode node2 = network.GetNode(potentialPapers[j].Item2);
-                            foreach(Paper newRelevantPaper in overlap)
+                            for(int overlapIndex = 0; overlapIndex < overlap.Count; overlapIndex++)
                             {
                                 CitationNetworkNode newNode = new CitationNetworkNode
                                 {
-                                    Content = newRelevantPaper
+                                    Content = overlap[overlapIndex]
                                 };
-                                node1.Children.Add(newNode);
-                                node2.Children.Add(newNode);
+                                if(!node1.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
+                                {
+                                    Debug.Log("added node to 1" + $"({i}, {j})");
+                                    node1.Children.Add(newNode);
+                                    changesOccured = true;
+                                }
+                                if(overlap[overlapIndex] == null)
+                                {
+                                    Debug.Log("why here" + overlapIndex);
+                                }
+                                if(!node2.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
+                                {
+                                    Debug.Log("added node to 2" + $"({i}, {j})");
+                                    node2.Children.Add(newNode);
+                                    changesOccured = true;
+                                }
+
                             }
                         }
                     }
+
+
 
                 }
                 
             }
             return network;
+
         }
 
         private CitationNetworkNode GetNode(Paper paper)
         {
-            throw new NotImplementedException();
+            return Head.GetNode(paper);
         }
 
         /// <summary>
@@ -105,7 +125,8 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 if (list2.Contains(paper))
                 {
-                    overlap.Add(paper);
+                    if (paper != null)
+                        overlap.Add(paper);
                 }
             }
             return overlap;
@@ -117,15 +138,23 @@ namespace i5.VIAProMa.LiteratureSearch
             List<Task<Paper>> referencesTasks = new List<Task<Paper>>();
             foreach (string refDOI in basePaper.References)
             {
-                referencesTasks.Add(Communicator.GetPaper(refDOI));
+                if(!String.IsNullOrEmpty(refDOI))
+                    referencesTasks.Add(Communicator.GetPaper(refDOI));
+                await Task.Delay(10);
             }
             List<Paper> references = new List<Paper>();
             foreach (Task<Paper> referencesTask in referencesTasks)
             {
-                references.Add(await referencesTask);
+                Paper reference = await referencesTask;
+                references.Add(reference);
             }
 
             return references;
+        }
+
+        public override string ToString()
+        {
+            return Head.ToString();
         }
     }
 
@@ -138,6 +167,21 @@ namespace i5.VIAProMa.LiteratureSearch
         public bool IsLeaf()
         {
             return Children == null || Children.Count == 0;
+        }
+
+        public CitationNetworkNode GetNode(Paper paper)
+        {
+            if (Content.Equals(paper)) return this;
+            if (IsLeaf()) return null;
+            for(int i = 0; i < Children.Count; i++)
+            {
+                CitationNetworkNode node = Children[i].GetNode(paper);
+                if(node != null)
+                {
+                    return node;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -163,6 +207,21 @@ namespace i5.VIAProMa.LiteratureSearch
                 return papers;
             }
 
+        }
+
+        public override string ToString()
+        {
+            if (IsLeaf())
+            {
+                return "| "+ Content.DOI + " |";
+            }
+
+            string output = Content.DOI + " (";
+            foreach(CitationNetworkNode node in Children)
+            {
+                output += node.ToString();
+            }
+            return output + ")";
         }
     }
 

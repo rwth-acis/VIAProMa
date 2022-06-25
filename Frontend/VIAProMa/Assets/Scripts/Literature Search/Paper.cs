@@ -73,24 +73,31 @@ namespace i5.VIAProMa.LiteratureSearch
             this.created = created;
             this.references = references;
 
-            if(authors.Count > 1)
+            try
             {
-                if(authors.Count == 2)
+                if (authors.Count > 1)
                 {
-                    key = authors[0].family.Substring(0, Math.Min(authors[0].family.Length, 2)) + authors[1].family.Substring(0, Math.Min(authors[0].family.Length, 2)) + (created.Year % 100);
+                    if (authors.Count == 2)
+                    {
+                        key = authors[0].family.Substring(0, Math.Min(authors[0].family.Length, 2)) + authors[1].family.Substring(0, Math.Min(authors[0].family.Length, 2)) + (created.Year % 100);
+                    }
+                    else
+                    {
+                        key = authors[0].family.Substring(0, 1) + authors[1].family.Substring(0, 1) + authors[2].family.Substring(0, 1) + (created.Year % 100);
+                    }
+                }
+                else if (authors.Count == 1)
+                {
+                    key = authors[0].family.Substring(0, Math.Min(authors[0].family.Length, 4)) + (created.Year % 100);
                 }
                 else
                 {
-                    key = authors[0].family.Substring(0, 1) + authors[1].family.Substring(0, 1) + authors[2].family.Substring(0, 1) + (created.Year % 100);
+                    key = (created.Year % 100).ToString();
                 }
             }
-            else if(authors.Count == 1)
+            catch(NullReferenceException e)
             {
-                key = authors[0].family.Substring(0, Math.Min(authors[0].family.Length, 4)) + (created.Year % 100);
-            }
-            else
-            {
-                key = (created.Year % 100).ToString();
+                key = "";
             }
         }
 
