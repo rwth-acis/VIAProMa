@@ -15,12 +15,14 @@ public class ListTaskCardTestRunner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
+            visualizations.ContentProvider.SelectContent();
             for (int i = 0; i < simulatedIssues.Length; i++)
             {
                 var issue = new Issue(DataSource.GITHUB, -1, "Test", "A test", 0, null, IssueStatus.CLOSED, "", "",
                     null, null);
                 visualizations.ContentProvider.Issues.Add(issue);
             }
+
             visualizations.ContentProvider.EndContentSelection();
         }
     }
