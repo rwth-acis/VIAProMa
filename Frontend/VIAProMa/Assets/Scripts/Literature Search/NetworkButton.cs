@@ -23,6 +23,7 @@ namespace i5.VIAProMa.LiteratureSearch
         {
             CitationNetwork network = await CitationNetwork.CreateNetwork(paperInScene.GetComponent<PaperDataDisplay>().Content);
             Debug.Log(network.ToString());
+            StartCoroutine(PaperController.Instance.ShowNetwork(network, this.transform));
         }
     }
 

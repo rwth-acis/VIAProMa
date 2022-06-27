@@ -70,22 +70,26 @@ namespace i5.VIAProMa.LiteratureSearch
                             changesOccured = true;
 
                             CitationNetworkNode node1 = network.GetNode(potentialPapers[i].Item2);
+                            if (node1 == null)
+                            {
+                                Debug.Log("node1 null - doi:" + potentialPapers[i].Item2.ToString());
+                            }
                             CitationNetworkNode node2 = network.GetNode(potentialPapers[j].Item2);
+                            if (node2 == null)
+                            {
+                                Debug.Log("node2 nulldoi:" + potentialPapers[j].Item2.ToString());
+                            }
                             for(int overlapIndex = 0; overlapIndex < overlap.Count; overlapIndex++)
                             {
                                 CitationNetworkNode newNode = new CitationNetworkNode
                                 {
                                     Content = overlap[overlapIndex]
                                 };
-                                if(!node1.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
+                                if (!node1.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
                                 {
                                     Debug.Log("added node to 1" + $"({i}, {j})");
                                     node1.Children.Add(newNode);
                                     changesOccured = true;
-                                }
-                                if(overlap[overlapIndex] == null)
-                                {
-                                    Debug.Log("why here" + overlapIndex);
                                 }
                                 if(!node2.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
                                 {
@@ -103,6 +107,16 @@ namespace i5.VIAProMa.LiteratureSearch
                 }
                 
             }
+
+            for(int i = 0; i < network.Head.Children.Count; i++)
+            {
+                if(network.Head.Children[i].Children.Count == 0)
+                {
+                    network.Head.Children.RemoveAt(i);
+                    i--;
+                }
+            }
+
             return network;
 
         }
@@ -152,76 +166,25 @@ namespace i5.VIAProMa.LiteratureSearch
             return references;
         }
 
+        public List<CitationNetworkNode> GetNodes()
+        {
+            List<CitationNetworkNode> nodes = new List<CitationNetworkNode>();
+            foreach(CitationNetworkNode node in Head.GetAllNodes())
+            {
+                if (!nodes.Contains(node))
+                    nodes.Add(node);
+            }
+            return nodes;
+        }
+
+        public List<(CitationNetworkNode, CitationNetworkNode)> GetConnections()
+        {
+            return Head.GetConnections();
+        }
+
         public override string ToString()
         {
             return Head.ToString();
-        }
-    }
-
-    public class CitationNetworkNode
-    {
-        public Paper Content { get; set; }
-
-        public List<CitationNetworkNode> Children { get; set; } = new List<CitationNetworkNode>();
-
-        public bool IsLeaf()
-        {
-            return Children == null || Children.Count == 0;
-        }
-
-        public CitationNetworkNode GetNode(Paper paper)
-        {
-            if (Content.Equals(paper)) return this;
-            if (IsLeaf()) return null;
-            for(int i = 0; i < Children.Count; i++)
-            {
-                CitationNetworkNode node = Children[i].GetNode(paper);
-                if(node != null)
-                {
-                    return node;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Gets all papers down from a node.
-        /// </summary>
-        /// <returns></returns>
-        public List<Paper> GetAllPapers()
-        {
-            if (IsLeaf())
-            {
-                List<Paper> papers = new List<Paper>();
-                papers.Add(Content);
-                return papers;
-            }
-            else
-            {
-
-                List<Paper> papers = new List<Paper>();
-                for(int i = 0; i < Children.Count; i++)
-                {
-                    papers.AddRange(Children[i].GetAllPapers());
-                }
-                return papers;
-            }
-
-        }
-
-        public override string ToString()
-        {
-            if (IsLeaf())
-            {
-                return "| "+ Content.DOI + " |";
-            }
-
-            string output = Content.DOI + " (";
-            foreach(CitationNetworkNode node in Children)
-            {
-                output += node.ToString();
-            }
-            return output + ")";
         }
     }
 

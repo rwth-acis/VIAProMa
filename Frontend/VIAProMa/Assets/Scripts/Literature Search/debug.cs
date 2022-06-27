@@ -13,6 +13,7 @@ public class debug : MonoBehaviour
 {
     [SerializeField] private GameObject displayPrefab;
     [SerializeField] private GameObject literatureWindow;
+    [SerializeField] private GameObject line;
 
     private GameObject displayInstance;
     private ObjectManipulator handlerOnCopy;
@@ -38,6 +39,10 @@ public class debug : MonoBehaviour
 
         //Debug.Log("success");
         WindowManager.Instance.LiteratureSearchWindow.Open(transform.position + new Vector3(0, 0, -.1f), transform.eulerAngles);
+
+        GameObject lineIn = Instantiate(line);
+        NetworkLine nl = lineIn.GetComponent<NetworkLine>();
+        nl.SetLine(new Vector3(0, 0, 0), new Vector3(2, 2, 0));
 
     }
 }

@@ -114,7 +114,7 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 return false;
             }
-            return paper.doi == doi;
+            return paper.doi.Equals(doi);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 return false;
             }
-            return paper.doi == doi;
+            return paper.doi.Equals(doi);
         }
 
         /// <summary>
@@ -139,6 +139,11 @@ namespace i5.VIAProMa.LiteratureSearch
         public override int GetHashCode()
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            return doi;
         }
     }
 }
