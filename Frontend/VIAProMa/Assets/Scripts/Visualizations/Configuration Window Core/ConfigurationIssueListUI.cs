@@ -10,6 +10,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
     {
         [SerializeField] private Interactable selectionButton;
         [SerializeField] private GameObject listWindow;
+        [SerializeField] private GameObject emptyMessage;
 
         private bool uiEnabled = true;
         private Visualization visualization;
@@ -41,20 +42,33 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             }
         }
 
-        public void Setup(Visualization visualization)
+        public void Setup(Visualization pVisualization)
         {
-            this.visualization = visualization;
+            visualization = pVisualization;
         }
 
         public void OpenIssueList()
         {
             listWindow.SetActive(true);
             UIEnabled = false;
+            reloadIssueList();
+        }
+
+        public void reloadIssueList()
+        {
             var issues = visualization.ContentProvider.Issues;
             var issueViewList = listWindow.GetComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
             if (issueViewList != null)
             {
                 issueViewList.Items = issues;
+                if (emptyMessage != null)
+                {
+                    emptyMessage.SetActive(issues.Count == 0);
+                }
+                else
+                {
+                    Debug.Log("No Empty Message set. Please add one");
+                }
             }
             else
             {
