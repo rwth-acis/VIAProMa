@@ -13,6 +13,8 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         [SerializeField] private Interactable selectionButton;
         [SerializeField] private GameObject listWindow;
         [SerializeField] private GameObject emptyMessage;
+        [SerializeField] private GameObject upButton;
+        [SerializeField] private GameObject downButton;
 
         private bool uiEnabled = true;
         private Visualization visualization;
@@ -84,11 +86,12 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                 else
                 {
                     ChangeEmptyMessageVisibility(false);
-                    if (issuesCount <= currentPage * numberOfIssuesPerPage + 1)
+                    var maxPage = (issuesCount - 1) / (numberOfIssuesPerPage);
+                    if (currentPage > maxPage)
                     {
                         // The page number is too high. There are not enough issues assigned to this visualization.
                         // Some issues were probably removed. We have to lower the page number
-                        currentPage = issues.Count / numberOfIssuesPerPage;
+                        currentPage = maxPage;
                     }
 
                     var issuesForThisPage = new List<Issue>();
@@ -114,6 +117,23 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             if (emptyMessage)
             {
                 emptyMessage.SetActive(visible);
+                if (upButton)
+                {
+                    upButton.SetActive(!visible);
+                }
+                else
+                {
+                    LogMissingField(nameof(upButton));
+                }
+
+                if (downButton)
+                {
+                    downButton.SetActive(!visible);
+                }
+                else
+                {
+                    LogMissingField(nameof(downButton));
+                }
             }
             else
             {
