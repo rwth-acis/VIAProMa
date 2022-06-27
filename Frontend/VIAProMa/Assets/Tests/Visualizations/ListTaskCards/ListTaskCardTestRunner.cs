@@ -6,22 +6,25 @@ namespace Tests.Visualizations.ListTaskCards
 {
     public class ListTaskCardTestRunner : MonoBehaviour
     {
-        [Range(1, 10)] public int[] simulatedIssues;
-        public Visualization visualizations;
+        private const int SimulatedIssuesCount = 1;
+        [SerializeField] private Visualization[] visualizations;
 
         private void Update()
         {
             if (!Input.GetKeyDown(KeyCode.F5)) return;
-            visualizations.ContentProvider.SelectContent();
-        
-            for (var i = 0; i < simulatedIssues.Length; i++)
+            foreach (var visualization in visualizations)
             {
-                var issue = new Issue(DataSource.GITHUB, -1, "Test", "A test", 0, null, IssueStatus.CLOSED, "", "",
-                    null, null);
-                visualizations.ContentProvider.Issues.Add(issue);
-            }
+                visualization.ContentProvider.SelectContent();
 
-            visualizations.ContentProvider.EndContentSelection();
+                for (var i = 0; i < SimulatedIssuesCount; i++)
+                {
+                    var issue = new Issue(DataSource.GITHUB, -1, "Test", "A test", 0, null, IssueStatus.CLOSED, "", "",
+                        null, null);
+                    visualization.ContentProvider.Issues.Add(issue);
+                }
+
+                visualization.ContentProvider.EndContentSelection();
+            }
         }
     }
 }
