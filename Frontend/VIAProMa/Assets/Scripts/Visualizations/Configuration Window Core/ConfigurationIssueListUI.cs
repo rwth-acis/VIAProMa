@@ -1,4 +1,5 @@
-﻿using i5.VIAProMa.UI.ListView.Issues;
+﻿using System;
+using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.UI.MultiListView.Core;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -51,10 +52,16 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         {
             listWindow.SetActive(true);
             UIEnabled = false;
-            reloadIssueList();
+            visualization.ContentProvider.ContentChanged += OnContentChanged;
+            ReloadIssueList();
         }
 
-        public void reloadIssueList()
+        private void OnContentChanged(object sender, EventArgs e)
+        {
+            ReloadIssueList();
+        }
+
+        private void ReloadIssueList()
         {
             var issues = visualization.ContentProvider.Issues;
             var issueViewList = listWindow.GetComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
@@ -78,6 +85,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 
         public void CloseIssueList()
         {
+            visualization.ContentProvider.ContentChanged -= OnContentChanged;
             UIEnabled = true;
             listWindow.SetActive(false);
         }
