@@ -84,7 +84,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                 else
                 {
                     ChangeEmptyMessageVisibility(false);
-                    if (issuesCount <= currentPage * numberOfIssuesPerPage)
+                    if (issuesCount <= currentPage * numberOfIssuesPerPage + 1)
                     {
                         // The page number is too high. There are not enough issues assigned to this visualization.
                         // Some issues were probably removed. We have to lower the page number
@@ -127,25 +127,13 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             SpecialDebugMessages.LogMissingReferenceError(this, referenceName);
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F4))
-            {
-                PageDown();
-            }
-            else if (Input.GetKeyDown(KeyCode.F6))
-            {
-                PageUp();
-            }
-        }
-
-        public void PageUp()
+        public void PageDown()
         {
             currentPage++;
             ReloadIssueList();
         }
 
-        public void PageDown()
+        public void PageUp()
         {
             if (currentPage == 0) return;
             currentPage--;
