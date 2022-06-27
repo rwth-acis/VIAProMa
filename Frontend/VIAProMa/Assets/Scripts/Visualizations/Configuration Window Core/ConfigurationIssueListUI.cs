@@ -1,5 +1,6 @@
 ﻿using System;
-using i5.VIAProMa.UI.ListView.Issues;
+using System.Collections.Generic;
+using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.UI.MultiListView.Core;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -15,6 +16,10 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 
         private bool uiEnabled = true;
         private Visualization visualization;
+        private int currentPage = 0;
+        private IssuesMultiListView issueViewList;
+        private int numberOfIssuesPerPage;
+        private const int NumberOfListViews = 3;
 
         public bool UIEnabled
         {
@@ -22,7 +27,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             set
             {
                 uiEnabled = value;
-                selectionButton.Enabled = uiEnabled;
+                selectionButton.IsEnabled = uiEnabled;
             }
         }
 
@@ -40,6 +45,11 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             else
             {
                 listWindow.SetActive(false);
+                issueViewList = listWindow.GetComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
+                if (issueViewList)
+                {
+                    numberOfIssuesPerPage = NumberOfListViews * issueViewList.numberOfItemsPerListView;
+                }
             }
         }
 
@@ -64,23 +74,82 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         private void ReloadIssueList()
         {
             var issues = visualization.ContentProvider.Issues;
-            var issueViewList = listWindow.GetComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
-            if (issueViewList != null)
+            var issuesCount = issues.Count;
+            if (issueViewList)
             {
-                issueViewList.Items = issues;
-                if (emptyMessage != null)
+                if (issuesCount == 0)
                 {
-                    emptyMessage.SetActive(issues.Count == 0);
+                    ChangeEmptyMessageVisibility(true);
                 }
                 else
                 {
-                    Debug.Log("No Empty Message set. Please add one");
+                    ChangeEmptyMessageVisibility(false);
+                    if (issuesCount <= currentPage * numberOfIssuesPerPage)
+                    {
+                        // The page number is too high. There are not enough issues assigned to this visualization.
+                        // Some issues were probably removed. We have to lower the page number
+                        currentPage = issues.Count / numberOfIssuesPerPage;
+                    }
+
+                    var issuesForThisPage = new List<Issue>();
+                    var issuesStartingPoint = currentPage * numberOfIssuesPerPage;
+                    for (var i = issuesStartingPoint;
+                         i < issuesStartingPoint + numberOfIssuesPerPage && issuesCount > i;
+                         i++)
+                    {
+                        issuesForThisPage.Add(issues[i]);
+                    }
+
+                    issueViewList.Items = issuesForThisPage;
                 }
             }
             else
             {
-                Debug.Log("No List Window set. Please add one");
+                LogMissingField(nameof(listWindow));
             }
+        }
+
+        private void ChangeEmptyMessageVisibility(bool visible)
+        {
+            if (emptyMessage)
+            {
+                emptyMessage.SetActive(visible);
+            }
+            else
+            {
+                LogMissingField(nameof(emptyMessage));
+            }
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        private void LogMissingField(string referenceName)
+        {
+            SpecialDebugMessages.LogMissingReferenceError(this, referenceName);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F4))
+            {
+                PageDown();
+            }
+            else if (Input.GetKeyDown(KeyCode.F6))
+            {
+                PageUp();
+            }
+        }
+
+        public void PageUp()
+        {
+            currentPage++;
+            ReloadIssueList();
+        }
+
+        public void PageDown()
+        {
+            if (currentPage == 0) return;
+            currentPage--;
+            ReloadIssueList();
         }
 
         public void CloseIssueList()
