@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using i5.VIAProMa.DataModel.API;
@@ -16,9 +17,11 @@ public class ListTaskCardTestRunner : MonoBehaviour
         {
             for (int i = 0; i < simulatedIssues.Length; i++)
             {
-                var issue = new Issue(DataSource.GITHUB, -1, "Test", "A test", 0, null, IssueStatus.CLOSED, "", "", null, null);
+                var issue = new Issue(DataSource.GITHUB, -1, "Test", "A test", 0, null, IssueStatus.CLOSED, "", "",
+                    null, null);
                 visualizations.ContentProvider.Issues.Add(issue);
             }
+            visualizations.ContentProvider.EndContentSelection();
         }
     }
 }
