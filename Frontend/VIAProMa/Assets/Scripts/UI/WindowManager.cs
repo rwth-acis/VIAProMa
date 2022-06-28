@@ -23,7 +23,6 @@ namespace i5.VIAProMa.UI
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
             AnchorMenu = (AnchoringMenu)InstantiateWindow(anchorMenuPrefab);
-            Debug.Log(AnchorMenu);
         }
 
         private IWindow InstantiateWindow(GameObject prefab)

@@ -20,6 +20,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable serverConnectionButton;
         [SerializeField] private Interactable saveButton;
         [SerializeField] private Interactable loadButton;
+        [SerializeField] private Interactable anchoringButton;
         [SerializeField] private Interactable issueShelfButton;
         [SerializeField] private Interactable visualizationShelfButton;
         [SerializeField] private Interactable loginButton;
@@ -33,6 +34,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
+        [SerializeField] private AnchorManager anchoringManager;
 
         private FoldController foldController;
 
@@ -142,6 +144,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             loadButton.IsEnabled = PhotonNetwork.InRoom;
             issueShelfButton.IsEnabled = PhotonNetwork.InRoom;
             visualizationShelfButton.IsEnabled = PhotonNetwork.InRoom;
+            anchoringButton.IsEnabled = PhotonNetwork.InRoom;
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -252,6 +255,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             else
             {
                 PhotonNetwork.LeaveRoom();
+                anchoringManager.DisableAnchoring();
+
             }
             foldController.InitalizeNewCloseTimer();
         }

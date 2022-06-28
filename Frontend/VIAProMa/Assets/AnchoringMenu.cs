@@ -4,6 +4,9 @@ using i5.VIAProMa.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
 using i5.Toolkit.Core.Utilities;
+using Photon.Pun;
+using i5.VIAProMa.Multiplayer;
+using i5.VIAProMa.UI.MainMenuCube;
 
 /// <summary>
 /// Controls the menu which allows a user to enable and disable the anchoring system as well as the corresponding settings
@@ -68,6 +71,7 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// Event which is invoked if the window is closed
     /// </summary>
     public event EventHandler WindowClosed;
+   
 
     /// <summary>
     /// Called when the user activates or deactivates the anchoring system using the corresponding checkbox
@@ -75,17 +79,13 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void OnCheckboxUseAnchoringClicked()
     {
-        moveAnchorAloneCheckbox.IsEnabled = !moveAnchorAloneCheckbox.IsEnabled;
-        anchorLockedButton.IsEnabled = !anchorLockedButton.IsEnabled;
-        anchorObject.SetActive(!anchorObject.activeSelf);
-        extendedSettings.SetActive(!extendedSettings.activeSelf);
         if (extendedSettings.activeSelf)
         {
-            Debug.Log("Anchoring has been activated.");
+            DisableAnchoring();
         }
         else
         {
-            Debug.Log("Anchoring has been deactivated.");
+            EnableAnchoring();
         }
     }
 
@@ -116,15 +116,11 @@ public class AnchoringMenu : MonoBehaviour, IWindow
         if (!locked)
         {
             EnableAnchorLock();
-            locked = true;
-            Debug.Log("The anchor is now locked.");
 
         }
         else
         {
             DisableAnchorLock();
-            locked = false;
-            Debug.Log("The anchor is now unlocked.");
         }
     }
 
@@ -136,6 +132,8 @@ public class AnchoringMenu : MonoBehaviour, IWindow
         anchorObject.GetComponent<ObjectManipulator>().enabled = false;
         lockedIconSpriteRenderer.sprite = lockedIcon;
         lockButtonText.text = "Anchor is locked";
+        locked = true;
+        Debug.Log("The anchor is now locked.");
     }
 
     /// <summary>
@@ -146,6 +144,33 @@ public class AnchoringMenu : MonoBehaviour, IWindow
         anchorObject.GetComponent<ObjectManipulator>().enabled = true;
         lockedIconSpriteRenderer.sprite = unlockedIcon;
         lockButtonText.text = "Anchor is unlocked";
+        locked = false;
+        Debug.Log("The anchor is now unlocked.");
+    }
+
+    /// <summary>
+    /// Disables anchoring and all corresponding UI components.
+    /// </summary>
+    public void DisableAnchoring()
+    {
+        useAnchoringCheckbox.IsToggled = false;
+        moveAnchorAloneCheckbox.IsEnabled = false;
+        anchorLockedButton.IsEnabled = false;
+        anchorObject.SetActive(false);
+        extendedSettings.SetActive(false);
+        Debug.Log("Anchoring has been deactivated.");
+    }
+
+    /// <summary>
+    /// Ensables anchoring and all corresponding UI components.
+    /// </summary>
+    public void EnableAnchoring()
+    {
+        moveAnchorAloneCheckbox.IsEnabled = true;
+        anchorLockedButton.IsEnabled = true;
+        anchorObject.SetActive(true);
+        extendedSettings.SetActive(true);
+        Debug.Log("Anchoring has been activated.");
     }
 
     /// <summary>

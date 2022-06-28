@@ -124,6 +124,18 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &232888851 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 745777794303417416, guid: 2ba716e5a8975a546929d28f88b85947,
+    type: 3}
+  m_PrefabInstance: {fileID: 665505992}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &304749710 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3215894185288659648, guid: 6580c13df571c9242b86ffe5fe901102,
@@ -2986,6 +2998,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &586284021 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1616978251398183386, guid: 6580c13df571c9242b86ffe5fe901102,
+    type: 3}
+  m_PrefabInstance: {fileID: 1826346970}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &665505992
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3641,6 +3659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anchor: {fileID: 1896800654}
+  manager: {fileID: 586284021}
 --- !u!1 &1452304939
 GameObject:
   m_ObjectHideFlags: 0
@@ -3878,12 +3897,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1896800655}
     m_Modifications:
-    - target: {fileID: 142782020403195696, guid: 6580c13df571c9242b86ffe5fe901102,
-        type: 3}
-      propertyPath: anchorMenuPrefab
-      value: 
-      objectReference: {fileID: 2805648536711648859, guid: e18e6478ed5508f4c9cbd0dca48e64b4,
-        type: 3}
     - target: {fileID: 439484614112030367, guid: 6580c13df571c9242b86ffe5fe901102,
         type: 3}
       propertyPath: sceneViewId
@@ -4677,6 +4690,21 @@ PrefabInstance:
       propertyPath: anchorManager
       value: 
       objectReference: {fileID: 1310721814}
+    - target: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: windowManager
+      value: 
+      objectReference: {fileID: 586284021}
+    - target: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: anchoringButton
+      value: 
+      objectReference: {fileID: 232888851}
+    - target: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: anchoringManager
+      value: 
+      objectReference: {fileID: 1310721815}
     - target: {fileID: 6436379608399288069, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: profiles.Array.size
