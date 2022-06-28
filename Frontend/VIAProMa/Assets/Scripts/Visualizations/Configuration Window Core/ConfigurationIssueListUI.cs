@@ -22,6 +22,8 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         private IssuesMultiListView issueViewList;
         private int numberOfIssuesPerPage;
         private const int NumberOfListViews = 3;
+        private Interactable upButtonInteractable;
+        private Interactable downButtonInteractable;
 
         public bool UIEnabled
         {
@@ -51,6 +53,24 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                 if (issueViewList)
                 {
                     numberOfIssuesPerPage = NumberOfListViews * issueViewList.numberOfItemsPerListView;
+                }
+
+                if (upButton)
+                {
+                    upButtonInteractable = upButton.GetComponent<Interactable>();
+                }
+                else
+                {
+                    LogMissingField(nameof(upButton));
+                }
+
+                if (downButton)
+                {
+                    downButtonInteractable = downButton.GetComponent<Interactable>();
+                }
+                else
+                {
+                    LogMissingField(nameof(downButton));
                 }
             }
         }
@@ -104,6 +124,23 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                     }
 
                     issueViewList.Items = issuesForThisPage;
+                    if (downButton)
+                    {
+                        downButtonInteractable.IsEnabled = currentPage != maxPage;
+                    }
+                    else
+                    {
+                        LogMissingField(nameof(upButton));
+                    }
+
+                    if (upButton)
+                    {
+                        upButtonInteractable.IsEnabled = currentPage != 0;
+                    }
+                    else
+                    {
+                        LogMissingField(nameof(upButton));
+                    }
                 }
             }
             else
@@ -155,7 +192,6 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 
         public void PageUp()
         {
-            if (currentPage == 0) return;
             currentPage--;
             ReloadIssueList();
         }
