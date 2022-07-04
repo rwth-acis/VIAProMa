@@ -18,7 +18,9 @@ public class DragAndDrop : MonoBehaviour
     [SerializeField]
     [Tooltip("Time the component waits before dropping component actually adds it")]
     float DropWaitTime = 0.2f;
-    float timeWaitedForDrop = 0;
+
+    //Dict to save coroutines combined with the gameObject they would add, so they can be stopped individually
+    Dictionary<GameObject, Coroutine> startedRoutines;
 
     IssueSelector IssueManipulator;
     IssueDataDisplay issueDataDisplay;
@@ -31,6 +33,7 @@ public class DragAndDrop : MonoBehaviour
     void Awake()
     {
         currentHits = new List<GameObject>();
+        startedRoutines = new Dictionary<GameObject, Coroutine>();
 
         IssueManipulator = GetComponentInParent<IssueSelector>();
         if(IssueManipulator == null)
@@ -59,20 +62,48 @@ public class DragAndDrop : MonoBehaviour
     #region TriggerEvents
     public void OnTriggerEnter(Collider potentialTarget)
     {
-        AddObjectToHitsList(potentialTarget.gameObject);
+        //restart coroutine if it already exists in the list; happens if object is deactivated then activated again inside trigger
+        if(startedRoutines.ContainsKey(potentialTarget.gameObject))
+        {
+            StopCoroutine(startedRoutines[potentialTarget.gameObject]);
+            startedRoutines.Remove(potentialTarget.gameObject);
+        }
+        //AddObjectToHitsList(potentialTarget.gameObject);
+        startedRoutines.Add(potentialTarget.gameObject, StartCoroutine(AddIssueWithTimeDelay(potentialTarget.gameObject)));
+        //StartCoroutine(AddIssueWithTimeDelay(potentialTarget));
     }
     public void OnTriggerExit(Collider potentialTarget)
     {
+        //In case the coroutine for adding is still running, i.e. the time delay was not yet reached, stop it
+        StopCoroutine(startedRoutines[potentialTarget.gameObject]);
+        startedRoutines.Remove(potentialTarget.gameObject);
+
         RemoveObjectFromHitsList(potentialTarget.gameObject);
     }
     #endregion TriggerEvents
+
+
+    internal IEnumerator AddIssueWithTimeDelay(GameObject target)
+    {
+        if(DropWaitTime > 0)
+        {
+            yield return new WaitForSecondsRealtime(DropWaitTime);
+        }
+
+        //don't add target if it was deactivated during the wait time
+        if(target.activeSelf)
+        {
+            AddObjectToHitsList(target);
+        }
+
+    }
 
     /// <summary>
     /// Add issue to a visualization. Can only be used if this component is part of an issue.
     /// Is ignored if the issue is already inside the visualization
     /// </summary>
     /// <param name="target">the visualization this issue should be added to.</param>
-    public void AddIssueToVisualization(GameObject target)
+    void AddIssueToVisualization(GameObject target)
     {
         //test if target is a visualization
         Visualization visualization = target.GetComponent<Visualization>();
@@ -95,6 +126,12 @@ public class DragAndDrop : MonoBehaviour
     {
         Visualization visualization = target.GetComponentInParent<Visualization>();
         if (visualization == null)
+        {
+            return;
+        }
+
+        //If object is not in the list, the drop waittime was not yet over so nothing needs to be done
+        if(!currentHits.Contains(visualization.gameObject))
         {
             return;
         }
