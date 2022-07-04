@@ -72,7 +72,6 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <returns>The paper with the DOI <paramref name="doi"/>.</returns>
         public static async Task<Paper> GetPaper(string doi)
         {
-
             if (paperCache.ContainsKey(doi))
             {
                 Debug.Log("from cache + " + doi);

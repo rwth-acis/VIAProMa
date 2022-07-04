@@ -58,6 +58,7 @@ namespace i5.VIAProMa.LiteratureSearch
                     potentialPapers.Add((await GetAllReferences(network.Papers[i]), network.Papers[i]));
                 }
 
+
                 // Check if potential papers overlap -> relevant paper
                 for(int i = 0; i < potentialPapers.Count; i++)
                 {
@@ -70,30 +71,20 @@ namespace i5.VIAProMa.LiteratureSearch
                             changesOccured = true;
 
                             CitationNetworkNode node1 = network.GetNode(potentialPapers[i].Item2);
-                            if (node1 == null)
-                            {
-                                Debug.Log("node1 null - doi:" + potentialPapers[i].Item2.ToString());
-                            }
                             CitationNetworkNode node2 = network.GetNode(potentialPapers[j].Item2);
-                            if (node2 == null)
-                            {
-                                Debug.Log("node2 nulldoi:" + potentialPapers[j].Item2.ToString());
-                            }
                             for(int overlapIndex = 0; overlapIndex < overlap.Count; overlapIndex++)
                             {
                                 CitationNetworkNode newNode = new CitationNetworkNode
                                 {
                                     Content = overlap[overlapIndex]
                                 };
-                                if (!node1.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
+                                if (!(node1 is null) && !node1.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
                                 {
-                                    Debug.Log("added node to 1" + $"({i}, {j})");
                                     node1.Children.Add(newNode);
                                     changesOccured = true;
                                 }
-                                if(!node2.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
+                                if(!(node2 is null) && !node2.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
                                 {
-                                    Debug.Log("added node to 2" + $"({i}, {j})");
                                     node2.Children.Add(newNode);
                                     changesOccured = true;
                                 }
@@ -148,6 +139,10 @@ namespace i5.VIAProMa.LiteratureSearch
 
         private static async Task<List<Paper>> GetAllReferences(Paper basePaper)
         {
+            if(basePaper is null)
+            {
+                return new List<Paper>();
+            }
             // Get all papers of references (as Tasks first for better effiecency)
             List<Task<Paper>> referencesTasks = new List<Task<Paper>>();
             foreach (string refDOI in basePaper.References)

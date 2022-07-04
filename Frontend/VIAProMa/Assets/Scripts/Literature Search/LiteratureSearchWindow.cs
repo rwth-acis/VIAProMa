@@ -2,6 +2,7 @@ using i5.VIAProMa.LiteratureSearch;
 using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI;
 using i5.VIAProMa.UI.InputFields;
+using i5.VIAProMa.UI.MessageBadge;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
@@ -36,10 +37,11 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private Interactable next;
         [Tooltip("The button to show the previous page.")]
         [SerializeField] private Interactable previous;
-
+        [Tooltip("GameObject of the loading and retry icon.")]
+        [SerializeField] private GameObject loadingIcon;
 
         private bool windowEnabled = true;
-
+        private MessageBadge messageBadge;
         public bool WindowEnabled 
         {
             get 
@@ -120,6 +122,14 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(previous));
             }
+            if (loadingIcon == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(loadingIcon));
+            }
+            else 
+            {
+                messageBadge = loadingIcon.GetComponent<MessageBadge>();
+            }
         }
 
         /// <summary>
@@ -149,11 +159,19 @@ namespace i5.VIAProMa.LiteratureSearch
             AdjustToRoomStatus();
         }
 
+        /// <summary>
+        /// Event call for when the room/lobby status changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnLobbyStatusChanged(object sender, EventArgs e)
         {
             AdjustToRoomStatus();
         }
 
+        /// <summary>
+        /// Adjusts the window to a changed room status.
+        /// </summary>
         private void AdjustToRoomStatus()
         {
             if (PhotonNetwork.InRoom)
@@ -180,17 +198,6 @@ namespace i5.VIAProMa.LiteratureSearch
             transform.eulerAngles = eulerAngles;
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
         /// <summary>
         /// Activates or deactivated the advanced settings.
         /// </summary>
@@ -215,6 +222,7 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 maxResults = 5;
             }
+            ShowLoading();
             message = await Communicator.APISearch(searchField.Text, maxResults);
             if(message == null)
             {
@@ -229,6 +237,7 @@ namespace i5.VIAProMa.LiteratureSearch
                 display.text = "Total results: " + message.totalresults;
                 next.IsEnabled = !(maxResults >= message.totalresults);
             }
+            StopLoading();
             PaperController.Instance.ShowResults(CrossRefPaper.ToPapers(message.items), transform);
         }
         /// <summary>
@@ -268,6 +277,23 @@ namespace i5.VIAProMa.LiteratureSearch
                 message = await Communicator.APISearch(lastQuery, 5, CurrentPage);
             }
             PaperController.Instance.ShowResults(CrossRefPaper.ToPapers(message.items), transform);
+        }
+
+        /// <summary>
+        /// Sets the message badge gameobject so that it shows loading.
+        /// </summary>
+        private void ShowLoading()
+        {
+            messageBadge.gameObject.SetActive(true);
+            messageBadge.ShowProcessing();
+        }
+
+        /// <summary>
+        /// Sets the message bade gameobject to done loading.
+        /// </summary>
+        private void StopLoading()
+        {
+            messageBadge.DoneProcessing();
         }
     }
 

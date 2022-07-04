@@ -10,21 +10,10 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private GameObject paperListView;
         [SerializeField] private GameObject paperNetworkView;
         [SerializeField] private GameObject linePrefab;
+
         private List<GameObject> paperResultsList = new List<GameObject>();
         private List<GameObject> paperNetworkList = new List<GameObject>();
         private List<GameObject> connectionsList  = new List<GameObject>();
-
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
 
         public void ShowResults(List<Paper> results, Transform transform = null)
         {
@@ -53,14 +42,26 @@ namespace i5.VIAProMa.LiteratureSearch
 
         public IEnumerator ShowNetwork(CitationNetwork network, Transform transform = null)
         {
+            float itemHeight = .1f;
+            float itemWidth = .15f;
+
+            float heightOffset = .1f;
+            float zOffset = -.1f;
             ClearNetwork();
             if(transform == null)
             {
                 transform = this.transform;
             }
-
-            // Instantiate all nodes
             List<CitationNetworkNode> nodes = network.GetNodes();
+
+            List<int> years = GetAllYears(nodes);
+            List<int> yearEntries = new List<int>();
+            foreach(int i in years)
+            {
+                yearEntries.Add(0);
+            }
+            
+            
             for (int i = 0; i < nodes.Count; i++)
             {
                 CitationNetworkNode node = nodes[i];
@@ -68,15 +69,37 @@ namespace i5.VIAProMa.LiteratureSearch
                 {
                     continue;
                 }
-                GameObject displayInstance = Instantiate(paperNetworkView, 
-                    transform.position + new Vector3(i*.1f, 1f - (network.Base.Created.Year - node.Content.Created.Year) * .1f, 0),
-                    transform.rotation);
+
+                int yearIndex = years.IndexOf(node.Content.Created.Year);
+
+
+                float height = (yearIndex * itemHeight);
+                float xPos;
+                if(yearIndex == years.Count - 1)
+                {
+                    xPos = 0;
+                }
+                else
+                {
+                    xPos = (((int)((yearEntries[yearIndex]) / 2) + 1) * itemWidth);
+
+                    if(yearEntries[yearIndex] % 2 == 0)
+                    {
+                        xPos = -xPos;
+                    }
+                    yearEntries[yearIndex]++;
+                }
+
+
+                GameObject displayInstance = Instantiate(paperNetworkView);
+                displayInstance.transform.parent = transform;
+                displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
+
                 paperNetworkList.Add(displayInstance);
-                PaperDataDisplay remoteDataDisplay = displayInstance?.GetComponent<PaperDataDisplay>();
+                PaperDataDisplay remoteDataDisplay = displayInstance?.GetComponentInChildren<PaperDataDisplay>();
                 remoteDataDisplay.Setup(node.Content);
-                CitationNetworkNode objectNode = displayInstance?.GetComponent<CitationNetworkNode>();
-                objectNode.Content = node.Content;
-                objectNode.Children = node.Children;
+                PaperNetworkItem nodeItem = displayInstance?.GetComponentInChildren<PaperNetworkItem>();
+                nodeItem.Node = node;
             }
 
             yield return null;
@@ -86,9 +109,25 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 GameObject connection = Instantiate(linePrefab);
                 NetworkLine line = connection.GetComponent<NetworkLine>();
-                line.SetLine(GetNode(connections[i].Item1).transform.position, GetNode(connections[i].Item2).transform.position);
+                line.SetLine(GetNode(connections[i].Item1).transform, connections[i].Item1.Content.DOI, 
+                    GetNode(connections[i].Item2).transform, connections[i].Item2.Content.DOI);
                 connectionsList.Add(connection);
             }
+        }
+
+        private List<int> GetAllYears(List<CitationNetworkNode> nodes)
+        {
+            List<int> years = new List<int>();
+
+            foreach(CitationNetworkNode node in nodes)
+            {
+                if (!years.Contains(node.Content.Created.Year))
+                {
+                    years.Add(node.Content.Created.Year);
+                }
+            }
+            years.Sort();
+            return years;
         }
 
         private GameObject GetNode(CitationNetworkNode node)
@@ -97,7 +136,7 @@ namespace i5.VIAProMa.LiteratureSearch
 
             for(int i = 0; i < paperNetworkList.Count; i++)
             {
-                if (node.Content.DOI.Equals(paperNetworkList[i].GetComponent<CitationNetworkNode>().Content.DOI)){
+                if (node.Content.DOI.Equals(paperNetworkList[i].GetComponentInChildren<PaperNetworkItem>().Node.Content.DOI)){
                     obj = paperNetworkList[i];
                 }
             }
@@ -117,6 +156,36 @@ namespace i5.VIAProMa.LiteratureSearch
                 Destroy(connectionsList[i]);
             }
             connectionsList.Clear();
+        }
+        
+        public void HighlightNode(CitationNetworkNode node)
+        {
+            ResetNodeColors();
+
+            for (int i = 0; i < connectionsList.Count; i++)
+            {
+                NetworkLine line = connectionsList[i].GetComponent<NetworkLine>();
+                if(line.StartDOI.Equals(node.Content.DOI))
+                {
+                    line.ChangeColor(Color.blue);
+                }
+                else if (line.EndDOI.Equals(node.Content.DOI))
+                {
+                    line.ChangeColor(Color.red);
+
+                }
+            }
+        }
+
+        private void ResetNodeColors()
+        {
+            for (int i = 0; i < connectionsList.Count; i++)
+            {
+                NetworkLine line = connectionsList[i].GetComponent<NetworkLine>();
+                
+                line.ChangeColor(Color.white);
+                
+            }
         }
     }
 

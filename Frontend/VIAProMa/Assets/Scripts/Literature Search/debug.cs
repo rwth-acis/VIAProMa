@@ -40,9 +40,10 @@ public class debug : MonoBehaviour
         //Debug.Log("success");
         WindowManager.Instance.LiteratureSearchWindow.Open(transform.position + new Vector3(0, 0, -.1f), transform.eulerAngles);
 
-        GameObject lineIn = Instantiate(line);
-        NetworkLine nl = lineIn.GetComponent<NetworkLine>();
-        nl.SetLine(new Vector3(0, 0, 0), new Vector3(2, 2, 0));
+        //GameObject conn = Instantiate(line);
+        //NetworkLine nwl = conn.GetComponent<NetworkLine>();
+        //nwl.SetLine(new Vector3(0, 0, 0), "", new Vector3(0, 0, 2), "");
+        //nwl.ChangeColor();
 
     }
 }
