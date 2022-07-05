@@ -135,16 +135,26 @@ namespace i5.VIAProMa.Shelves.Widgets
             {
                 handlerOnCopy.OnPointerUp(eventData);
 
-                //if parent has Visualization component, this issue card is inside a Kanban Board
-                Visualization visualization = transform.GetComponentInParent<Visualization>();
-                IssueDataDisplay issueDataDisplay = transform.GetComponentInParent<IssueDataDisplay>();
-                if(visualization != null && issueDataDisplay != null)
-                {
-                    List<Issue> issueList = new List<Issue>(visualization.ContentProvider.Issues);
-                    //done this way because just adding an element doesn't update the visualization
-                    issueList.Remove(issueDataDisplay.Content);
-                    visualization.ContentProvider.Issues = issueList;
-                }
+                ////if parent has Visualization component, this issue card is inside a Kanban Board
+                //Visualization visualization = transform.GetComponentInParent<Visualization>();
+                //IssueDataDisplay issueDataDisplay = transform.GetComponentInParent<IssueDataDisplay>();
+                //if(visualization != null && issueDataDisplay != null)
+                //{
+                //    List<Issue> issueList = new List<Issue>(visualization.ContentProvider.Issues);
+                //    //done this way because just adding an element doesn't update the visualization
+                //    issueList.Remove(issueDataDisplay.Content);
+                //    visualization.ContentProvider.Issues = issueList;
+                //}
+            }
+            //if parent has Visualization component, this issue card is inside a Kanban Board
+            Visualization visualization = transform.GetComponentInParent<Visualization>();
+            IssueDataDisplay issueDataDisplay = transform.GetComponentInParent<IssueDataDisplay>();
+            if (visualization != null && issueDataDisplay != null)
+            {
+                List<Issue> issueList = new List<Issue>(visualization.ContentProvider.Issues);
+                //done this way because just adding an element doesn't update the visualization
+                issueList.Remove(issueDataDisplay.Content);
+                visualization.ContentProvider.Issues = issueList;
             }
         }
     }
