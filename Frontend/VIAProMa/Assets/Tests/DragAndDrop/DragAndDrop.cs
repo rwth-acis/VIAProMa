@@ -85,10 +85,7 @@ public class DragAndDrop : MonoBehaviour
 
     internal IEnumerator AddIssueWithTimeDelay(GameObject target)
     {
-        if(DropWaitTime > 0)
-        {
-            yield return new WaitForSecondsRealtime(DropWaitTime);
-        }
+        yield return new WaitForSecondsRealtime(DropWaitTime);
 
         //don't add target if it was deactivated during the wait time
         if(target.activeSelf)
