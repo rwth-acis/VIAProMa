@@ -11,13 +11,13 @@ using UnityEngine;
 public class DragAndDropTestRunner : MonoBehaviour
 {
     public GameObject issuePrefab;
-    public GameObject issueNormalPrefab;
     public KanbanBoardColumn column;
     public int issues = 10;
     private int issueCount;
 
     private void Update()
     {
+        
         if (Input.GetKeyDown(KeyCode.F5))
         {
             //Fill the "Random Issues" Kanban Board with issues
@@ -28,6 +28,7 @@ public class DragAndDropTestRunner : MonoBehaviour
             }
             column.ContentProvider = provider;
         }
+
         
         if (Input.GetKeyDown(KeyCode.F6))
         {
@@ -38,18 +39,10 @@ public class DragAndDropTestRunner : MonoBehaviour
             int id = Random.Range(issues + 1, issues + 1000);
             IssueStatus status = (IssueStatus)Random.Range(0, 3);
             newIssue.GetComponent<IssueDataDisplay>().Setup(
-                new Issue(DataSource.REQUIREMENTS_BAZAAR, 1, "Issue " + id, "Description for " + id, 1, new User(), status, "", "", new User[0], new User[0]));
+                new Issue(DataSource.REQUIREMENTS_BAZAAR, id, "Issue " + id, "Description for " + id, 1, new User(), status, "", "", new User[0], new User[0]));
         }
-    }
 
-    void SpawnIssueInScene(bool useRay)
-    {
-        GameObject newIssue = Instantiate(issuePrefab, transform.position, transform.rotation);
 
-        int id = Random.Range(issues + 1, issues + 1000);
-        IssueStatus status = (IssueStatus)Random.Range(0, 3);
-        newIssue.GetComponent<IssueDataDisplay>().Setup(
-            new Issue(DataSource.REQUIREMENTS_BAZAAR, id, "Issue " + id, "Description for " + id, 1, new User(), status, "", "", new User[0], new User[0]));
-     
+
     }
 }
