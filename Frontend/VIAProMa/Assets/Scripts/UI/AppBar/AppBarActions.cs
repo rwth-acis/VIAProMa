@@ -49,7 +49,7 @@ namespace i5.VIAProMa.UI.AppBar
             }
 
             // check if the bounding box still exists (in this case it was not a child of the target gameobject)
-            if (appBarPlacer.TargetBoundingBox == null)
+            if (appBarPlacer.TargetBoundingBox != null)
             {
                 Destroy(appBarPlacer.TargetBoundingBox.gameObject);
             }
