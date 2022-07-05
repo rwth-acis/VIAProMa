@@ -11,25 +11,13 @@ using UnityEngine;
 public class DragAndDropTestRunner : MonoBehaviour
 {
     public GameObject issuePrefab;
-<<<<<<< HEAD
     public GameObject issueNormalPrefab;
-=======
->>>>>>> drag-and-drop/develop
     public KanbanBoardColumn column;
     public int issues = 10;
     private int issueCount;
 
     private void Update()
     {
-<<<<<<< HEAD
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            SingleIssuesProvider provider = new SingleIssuesProvider();
-            for (int i = 0; i < issues; i++)
-            {
-                provider.Issues.Add(new Issue(DataSource.REQUIREMENTS_BAZAAR, 1, "Issue " + i, "Description for " + i, 1, new User(), IssueStatus.OPEN, "", "", new User[0], new User[0]));
-=======
-        
         if (Input.GetKeyDown(KeyCode.F5))
         {
             //Fill the "Random Issues" Kanban Board with issues
@@ -37,38 +25,19 @@ public class DragAndDropTestRunner : MonoBehaviour
             for (int i = 0; i < issues; i++)
             {
                 provider.Issues.Add(new Issue(DataSource.REQUIREMENTS_BAZAAR, i, "Issue " + i, "Description for " + i, 1, new User(), IssueStatus.OPEN, "", "", new User[0], new User[0]));
->>>>>>> drag-and-drop/develop
             }
             column.ContentProvider = provider;
         }
-
-<<<<<<< HEAD
-        if (Input.GetKeyDown(KeyCode.F6))
-        {
-            SpawnIssueInScene(true);
-        }
-
-        if (Input.GetKeyDown(KeyCode.F7))
-        {
-            SpawnIssueInScene(false);
-        }
-
-        if (Input.GetKeyDown(KeyCode.F8))
-        {
-            GameObject newIssue = Instantiate(issueNormalPrefab, transform.position, transform.rotation);
-=======
         
         if (Input.GetKeyDown(KeyCode.F6))
         {
             //Create a new Issue in the scene to test Drag And Drop
             GameObject IssueParent = GameObject.Find("Issues");
             GameObject newIssue = Instantiate(issuePrefab, transform.position, transform.rotation, IssueParent.transform);
->>>>>>> drag-and-drop/develop
 
             int id = Random.Range(issues + 1, issues + 1000);
             IssueStatus status = (IssueStatus)Random.Range(0, 3);
             newIssue.GetComponent<IssueDataDisplay>().Setup(
-<<<<<<< HEAD
                 new Issue(DataSource.REQUIREMENTS_BAZAAR, 1, "Issue " + id, "Description for " + id, 1, new User(), status, "", "", new User[0], new User[0]));
         }
     }
@@ -80,15 +49,7 @@ public class DragAndDropTestRunner : MonoBehaviour
         int id = Random.Range(issues + 1, issues + 1000);
         IssueStatus status = (IssueStatus)Random.Range(0, 3);
         newIssue.GetComponent<IssueDataDisplay>().Setup(
-            new Issue(DataSource.REQUIREMENTS_BAZAAR, 1, "Issue " + id, "Description for " + id, 1, new User(), status, "", "", new User[0], new User[0]));
-
-        newIssue.GetComponent<CheckForCollision>().isInRayMode = useRay;
-=======
-                new Issue(DataSource.REQUIREMENTS_BAZAAR, id, "Issue " + id, "Description for " + id, 1, new User(), status, "", "", new User[0], new User[0]));
-        }
-
-
-
->>>>>>> drag-and-drop/develop
+            new Issue(DataSource.REQUIREMENTS_BAZAAR, id, "Issue " + id, "Description for " + id, 1, new User(), status, "", "", new User[0], new User[0]));
+     
     }
 }
