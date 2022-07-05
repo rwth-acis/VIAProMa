@@ -27,10 +27,17 @@ public class DragAndDrop : MonoBehaviour
     //A list of Visualizations that currently overlap with the Issue
     List<GameObject> currentHits;
 
+    //--Indicator Stuff--
+    List<LineRenderer> overlapIndicators;
+    [SerializeField]
+    GameObject indicatorLine;
+    int uniqueHitCounter = 0;
+
     //Awake is called when the script instance is being loaded
     void Awake()
     {
         currentHits = new List<GameObject>();
+        overlapIndicators = new List<LineRenderer>();
 
         IssueManipulator = GetComponentInParent<IssueSelector>();
         if(IssueManipulator == null)
@@ -54,6 +61,28 @@ public class DragAndDrop : MonoBehaviour
         //Make it so object is not influenced by forces
         GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = false;
+    }
+
+    private void Update()
+    {
+        //--Indicator Stuff--
+        //only show lines if more than one visualization is hit
+        if(uniqueHitCounter > 1)
+        {
+            for (int i = 0; i < currentHits.Count; i++)
+            {
+                //set the line end position and activate it
+                Vector3 targetPos = currentHits[i].transform.position;
+                LineRenderer laser = overlapIndicators[i];
+                laser.SetPosition(1, laser.transform.worldToLocalMatrix * ((Vector4)targetPos + new Vector4(0, 0, 0, 1)));
+                overlapIndicators[i].enabled = true;
+            }
+        }
+        else if(uniqueHitCounter == 1)
+        {
+            //deactivate lines that are still pointing to the last visualization
+            overlapIndicators.ForEach(x => x.enabled = false);
+        }
     }
 
     #region TriggerEvents
@@ -100,6 +129,13 @@ public class DragAndDrop : MonoBehaviour
         }
 
         currentHits.Remove(visualization.gameObject);
+        //--Indicator Stuff--
+        uniqueHitCounter = (new HashSet<GameObject>(currentHits)).Count;
+
+        //--Indicator Stuff--
+        //remove a line from the list as it is not needed anymore
+        Destroy(overlapIndicators[0].gameObject);
+        overlapIndicators.RemoveAt(0);
 
         //remove listener so letting go no longer adds this issue to visualizations
         grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
@@ -113,6 +149,7 @@ public class DragAndDrop : MonoBehaviour
         IssueManipulator.Selected = false;
         //manually update view because the Selected variable only does so if IssueSelectionManager is in selection mode
         IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+
     }
 
     void AddObjectToHitsList(GameObject target)
@@ -125,7 +162,12 @@ public class DragAndDrop : MonoBehaviour
         }
 
         currentHits.Add(visualization.gameObject);
-        //Debug.Log(transform.parent.name + ": " + visualization.gameObject.name + " added to the Hits list.");
+        //--Indicator Stuff--
+        uniqueHitCounter = (new HashSet<GameObject>(currentHits)).Count;
+
+        //--Indicator Stuff--
+        //add a line which points to one of the visualizations
+        overlapIndicators.Add(Instantiate(indicatorLine, transform).GetComponent<LineRenderer>());
 
         //Activate selection indicator of the issue
         IssueManipulator.Selected = true;
