@@ -24,6 +24,9 @@ public class DragAndDrop : MonoBehaviour
     IssueDataDisplay issueDataDisplay;
     ObjectManipulator grabComponent;
 
+    //--highlighting Stuff--
+    bool issueIsGrabbed = false;
+
     //A list of Visualizations that currently overlap with the Issue
     List<GameObject> currentHits;
 
@@ -58,6 +61,10 @@ public class DragAndDrop : MonoBehaviour
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ObjectManipulator), gameObject);
         }
 
+        //--highlighting Stuff--
+        grabComponent.OnManipulationStarted.AddListener(SetManipulationStartedFlag);
+        grabComponent.OnManipulationEnded.AddListener(SetManipulationEndedFlag);
+
         //Make it so object is not influenced by forces
         GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = false;
@@ -88,7 +95,10 @@ public class DragAndDrop : MonoBehaviour
     #region TriggerEvents
     public void OnTriggerEnter(Collider potentialTarget)
     {
-        AddObjectToHitsList(potentialTarget.gameObject);
+        if(issueIsGrabbed)
+        {
+            AddObjectToHitsList(potentialTarget.gameObject);
+        }
     }
     public void OnTriggerExit(Collider potentialTarget)
     {
@@ -122,9 +132,15 @@ public class DragAndDrop : MonoBehaviour
 
     void RemoveObjectFromHitsList(GameObject target)
     {
-        Visualization visualization = target.GetComponentInParent<Visualization>();
+        Visualization visualization = target.transform.parent.GetComponent<Visualization>();
         if (visualization == null)
         {
+            return;
+        }
+
+        if(!currentHits.Contains(visualization.gameObject))
+        {
+            //necessary because a visualization being dragged on and then off an Issue would potentially result in problems
             return;
         }
 
@@ -155,11 +171,13 @@ public class DragAndDrop : MonoBehaviour
     void AddObjectToHitsList(GameObject target)
     {
         //test if target is a visualization
-        Visualization visualization = target.GetComponentInParent<Visualization>();
+        Visualization visualization = target.transform.parent.GetComponent<Visualization>();
         if (visualization == null)
         {
             return;
         }
+
+        Debug.Log(target.gameObject.name + "; " + target.transform.parent.gameObject.name);
 
         currentHits.Add(visualization.gameObject);
         //--Indicator Stuff--
@@ -186,8 +204,21 @@ public class DragAndDrop : MonoBehaviour
         }
     }
 
+    //--highlighting Stuff--
+    void SetManipulationStartedFlag(ManipulationEventData eventData)
+    {
+        issueIsGrabbed = true;
+    }
+    void SetManipulationEndedFlag(ManipulationEventData eventData)
+    {
+        issueIsGrabbed = false;
+    }
+
     private void OnDestroy()
     {
         grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
+        //--highlighting Stuff--
+        grabComponent.OnManipulationStarted.RemoveListener(SetManipulationStartedFlag);
+        grabComponent.OnManipulationEnded.RemoveListener(SetManipulationEndedFlag);
     }
 }
