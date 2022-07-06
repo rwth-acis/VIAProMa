@@ -27,10 +27,20 @@ public class DragAndDrop : MonoBehaviour
     //A list of Visualizations that currently overlap with the Issue
     List<GameObject> currentHits;
 
+    //list of all currently existing lines
+    List<LineRenderer> overlapIndicators;
+    [SerializeField]
+    [Tooltip("Line Gameobject used to indicate which visualizations overlap with the Issue")]
+    GameObject indicatorLine;
+    //get unique visualizations that overlap with the issue; there can be duplicates in currentHits
+    HashSet<GameObject> uniqueHitSet;
+
     //Awake is called when the script instance is being loaded
     void Awake()
     {
         currentHits = new List<GameObject>();
+        overlapIndicators = new List<LineRenderer>();
+        uniqueHitSet = new HashSet<GameObject>();
 
         IssueManipulator = GetComponentInParent<IssueSelector>();
         if(IssueManipulator == null)
@@ -54,6 +64,28 @@ public class DragAndDrop : MonoBehaviour
         //Make it so object is not influenced by forces
         GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = false;
+    }
+    private void Update()
+    {
+        //only show lines if more than one visualization is hit
+        if (uniqueHitSet.Count > 1)
+        {
+            int i = 0;
+            foreach(GameObject uniqueHit in uniqueHitSet)
+            {
+                //set the line end position and activate it
+                Vector3 targetPos = uniqueHit.transform.position;
+                LineRenderer laser = overlapIndicators[i];
+                laser.SetPosition(1, laser.transform.worldToLocalMatrix * ((Vector4)targetPos + new Vector4(0, 0, 0, 1)));
+                laser.enabled = true;
+                i += 1;
+            }
+        }
+        else if (uniqueHitSet.Count == 1)
+        {
+            //deactivate lines that are still pointing to the last visualization
+            overlapIndicators.ForEach(x => x.enabled = false);
+        }
     }
 
     #region TriggerEvents
@@ -100,6 +132,16 @@ public class DragAndDrop : MonoBehaviour
         }
 
         currentHits.Remove(visualization.gameObject);
+        //get count of unique overlapping visualizations, then get new list after removing visualization
+        int oldHitCounter = uniqueHitSet.Count;
+        uniqueHitSet = new HashSet<GameObject>(currentHits);
+
+        if(uniqueHitSet.Count < oldHitCounter)
+        {
+            //remove a line from the list as it is not needed anymore
+            Destroy(overlapIndicators[0].gameObject);
+            overlapIndicators.RemoveAt(0);
+        }
 
         //remove listener so letting go no longer adds this issue to visualizations
         grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
@@ -126,6 +168,16 @@ public class DragAndDrop : MonoBehaviour
 
         currentHits.Add(visualization.gameObject);
         //Debug.Log(transform.parent.name + ": " + visualization.gameObject.name + " added to the Hits list.");
+
+        //get count of unique overlapping visualizations, then get new list after removing visualization
+        int oldHitCounter = uniqueHitSet.Count;
+        uniqueHitSet = new HashSet<GameObject>(currentHits);
+
+        if (uniqueHitSet.Count > oldHitCounter)
+        {
+            //add a line which is used to point to one of the visualizations
+            overlapIndicators.Add(Instantiate(indicatorLine, transform).GetComponent<LineRenderer>());
+        }
 
         //Activate selection indicator of the issue
         IssueManipulator.Selected = true;
