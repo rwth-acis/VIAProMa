@@ -24,6 +24,9 @@ public class DragAndDrop : MonoBehaviour
     IssueDataDisplay issueDataDisplay;
     ObjectManipulator grabComponent;
 
+    //Is true iff the issue is currently being grabbed
+    bool issueIsGrabbed = false;
+
     //A list of Visualizations that currently overlap with the Issue
     List<GameObject> currentHits;
 
@@ -50,6 +53,12 @@ public class DragAndDrop : MonoBehaviour
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ObjectManipulator), gameObject);
         }
+        else
+        {
+            grabComponent.OnManipulationStarted.AddListener(SetManipulationStartedFlag);
+            grabComponent.OnManipulationEnded.AddListener(SetManipulationEndedFlag);
+        }
+
 
         //Make it so object is not influenced by forces
         GetComponent<Rigidbody>().isKinematic = true;
@@ -59,7 +68,11 @@ public class DragAndDrop : MonoBehaviour
     #region TriggerEvents
     public void OnTriggerEnter(Collider potentialTarget)
     {
-        AddObjectToHitsList(potentialTarget.gameObject);
+        //only add object if issue is grabbed to prevent it being highlighted if visualization is moved over it
+        if (issueIsGrabbed)
+        {
+            AddObjectToHitsList(potentialTarget.gameObject);
+        }
     }
     public void OnTriggerExit(Collider potentialTarget)
     {
@@ -99,16 +112,22 @@ public class DragAndDrop : MonoBehaviour
             return;
         }
 
+        if (!currentHits.Contains(visualization.gameObject))
+        {
+            return;
+        }
+
         currentHits.Remove(visualization.gameObject);
 
-        //remove listener so letting go no longer adds this issue to visualizations
-        grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
 
         //Deactivate selection indicator of the issue, but only if it doesn't overlap with any visualization
         if (currentHits.Count > 0)
         {
             return;
         }
+
+        //remove listener so letting go no longer adds this issue to visualizations
+        grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
 
         IssueManipulator.Selected = false;
         //manually update view because the Selected variable only does so if IssueSelectionManager is in selection mode
@@ -144,8 +163,22 @@ public class DragAndDrop : MonoBehaviour
         }
     }
 
+    #region GrabbingEvents
+    void SetManipulationStartedFlag(ManipulationEventData eventData)
+    {
+        issueIsGrabbed = true;
+    }
+    void SetManipulationEndedFlag(ManipulationEventData eventData)
+    {
+        issueIsGrabbed = false;
+    }
+    #endregion GrabbingEvents
+
     private void OnDestroy()
     {
+        //remove listeners to prevent possible memory leaks
         grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
+        grabComponent.OnManipulationStarted.RemoveListener(SetManipulationStartedFlag);
+        grabComponent.OnManipulationEnded.RemoveListener(SetManipulationEndedFlag);
     }
 }
