@@ -30,10 +30,13 @@ public class DragAndDrop : MonoBehaviour
     List<GameObject> currentHits;
 
     //indicates that the Issue is being destroyed right now; happens after it is added to a visualization
-    bool IssueIsDestroyed = false;
+    bool IssueInSelfDestruction = false;
     [SerializeField]
     [Tooltip("Time the component gets before it is destroyed after being added to a visualization")]
-    float destroyTime = 0.3f;
+    float destroyTime = 0.25f;
+    [SerializeField]
+    [Tooltip("If set to true, issues will be deleted with a little animation after they are dropped into a visualization")]
+    bool destroyIssueAfterDrop = true;
     float timeOffset = 0;
     Vector3 destroyStartPosition;
     Vector3 destroyStartSize;
@@ -72,8 +75,13 @@ public class DragAndDrop : MonoBehaviour
     private void Update()
     {
         //if the issue is set to be destroyed, move it towards the visualization it is added to
-        if(IssueIsDestroyed)
+        if(IssueInSelfDestruction)
         {
+            if(!destroyIssueAfterDrop)
+            {
+                IssueInSelfDestruction = false;
+                return;
+            }
             //if visualizations were moved out of reach of the Issue it doesn't have a target to move to anymore
             if(currentHits.Count == 0)
             {
@@ -138,7 +146,7 @@ public class DragAndDrop : MonoBehaviour
         //set the start position and size of the destroy routine in the update function
         destroyStartPosition = issueGameObject.transform.position;
         destroyStartSize = issueGameObject.transform.localScale;
-        IssueIsDestroyed = true;
+        IssueInSelfDestruction = true;
     }
 
     void RemoveObjectFromHitsList(GameObject target)
