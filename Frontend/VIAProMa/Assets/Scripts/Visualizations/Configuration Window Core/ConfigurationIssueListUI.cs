@@ -115,7 +115,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                     var issuesStartingPoint = currentPage * numberOfIssuesPerPage;
                     for (var j = 0; j < issueViewLists.Count; j++)
                     {
-                        var start = issuesStartingPoint + j;
+                        var start = issuesStartingPoint + j * horizontalIssueViewListSize;
                         var issuesForThisIssueView = new List<Issue>();
                         for (var i = start;
                              i < start + horizontalIssueViewListSize && issuesCount > i;
