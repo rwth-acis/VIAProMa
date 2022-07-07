@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using i5.VIAProMa.DataModel.API;
+using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.UI.MultiListView.Core;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -12,16 +14,16 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
     {
         [SerializeField] private Interactable selectionButton;
         [SerializeField] private GameObject listWindow;
+        [SerializeField] private List<IssueListView> issueViewLists;
+        [SerializeField] private int horizontalIssueViewListSize;
         [SerializeField] private GameObject emptyMessage;
         [SerializeField] private GameObject upButton;
         [SerializeField] private GameObject downButton;
 
         private bool uiEnabled = true;
         private Visualization visualization;
-        private int currentPage = 0;
-        private IssuesMultiListView issueViewList;
+        private int currentPage;
         private int numberOfIssuesPerPage;
-        private const int NumberOfListViews = 3;
         private Interactable upButtonInteractable;
         private Interactable downButtonInteractable;
 
@@ -49,11 +51,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             else
             {
                 listWindow.SetActive(false);
-                issueViewList = listWindow.GetComponent(typeof(IssuesMultiListView)) as IssuesMultiListView;
-                if (issueViewList)
-                {
-                    numberOfIssuesPerPage = NumberOfListViews * issueViewList.numberOfItemsPerListView;
-                }
+                numberOfIssuesPerPage = issueViewLists.Count * horizontalIssueViewListSize;
 
                 if (upButton)
                 {
@@ -97,7 +95,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         {
             var issues = visualization.ContentProvider.Issues;
             var issuesCount = issues.Count;
-            if (issueViewList)
+            if (issueViewLists.Any())
             {
                 if (issuesCount == 0)
                 {
@@ -114,16 +112,21 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                         currentPage = maxPage;
                     }
 
-                    var issuesForThisPage = new List<Issue>();
                     var issuesStartingPoint = currentPage * numberOfIssuesPerPage;
-                    for (var i = issuesStartingPoint;
-                         i < issuesStartingPoint + numberOfIssuesPerPage && issuesCount > i;
-                         i++)
+                    for (var j = 0; j < issueViewLists.Count; j++)
                     {
-                        issuesForThisPage.Add(issues[i]);
+                        var start = issuesStartingPoint + j * horizontalIssueViewListSize;
+                        var issuesForThisIssueView = new List<Issue>();
+                        for (var i = start;
+                             i < start + horizontalIssueViewListSize && issuesCount > i;
+                             i++)
+                        {
+                            issuesForThisIssueView.Add(issues[i]);
+                        }
+
+                        issueViewLists[j].Items = issuesForThisIssueView;
                     }
 
-                    issueViewList.Items = issuesForThisPage;
                     if (downButton)
                     {
                         downButtonInteractable.IsEnabled = currentPage != maxPage;
@@ -145,7 +148,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             }
             else
             {
-                LogMissingField(nameof(listWindow));
+                LogMissingField(nameof(issueViewLists));
             }
         }
 
