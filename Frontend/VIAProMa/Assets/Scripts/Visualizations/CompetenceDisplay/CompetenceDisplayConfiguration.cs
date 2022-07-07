@@ -13,6 +13,9 @@ namespace i5.VIAProMa.Visualizations.Competence
 
         private ConfigurationIssueSelectionUI issueSelection;
 
+        [Tooltip("The UI which lists all assigned issues")] [SerializeField]
+        private ConfigurationIssueListUI issueListUi;
+
         public override bool WindowEnabled
         {
             get => base.WindowEnabled;
@@ -36,6 +39,15 @@ namespace i5.VIAProMa.Visualizations.Competence
             {
                 filterInputField.Text = CombinedFilterText();
                 filterInputField.TextChanged += FilterChanged;
+            }
+
+            if (issueListUi == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueListUi));
+            }
+            else
+            {
+                issueListUi.Setup(visualization);
             }
 
             issueSelection = GetComponent<ConfigurationIssueSelectionUI>();
@@ -103,6 +115,7 @@ namespace i5.VIAProMa.Visualizations.Competence
                     combinedFilter += "; ";
                 }
             }
+
             return combinedFilter;
         }
     }
