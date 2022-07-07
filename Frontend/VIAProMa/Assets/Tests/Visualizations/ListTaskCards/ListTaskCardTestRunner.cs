@@ -8,6 +8,7 @@ namespace Tests.Visualizations.ListTaskCards
     {
         private const int SimulatedIssuesCount = 1;
         [SerializeField] private Visualization[] visualizations;
+        private int globalCount;
 
         private void Update()
         {
@@ -18,7 +19,8 @@ namespace Tests.Visualizations.ListTaskCards
 
                 for (var i = 0; i < SimulatedIssuesCount; i++)
                 {
-                    var issue = new Issue(DataSource.GITHUB, -1, "Test", "A test", 0, null, IssueStatus.CLOSED, "", "",
+                    var issue = new Issue(DataSource.GITHUB, -1, "Test" + globalCount++, "A test" + globalCount, 0,
+                        null, IssueStatus.CLOSED, "", "",
                         null, null);
                     visualization.ContentProvider.Issues.Add(issue);
                 }
