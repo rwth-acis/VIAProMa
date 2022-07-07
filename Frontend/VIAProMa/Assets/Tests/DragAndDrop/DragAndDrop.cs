@@ -20,9 +20,19 @@ public class DragAndDrop : MonoBehaviour
     float DropWaitTime = 0.2f;
     float timeWaitedForDrop = 0;
 
+
     IssueSelector IssueManipulator;
     IssueDataDisplay issueDataDisplay;
     ObjectManipulator grabComponent;
+
+    //--speedCondition stuff--
+    [SerializeField]
+    [Tooltip("If the issue card is moved faster than this speed, it will not be added to the visualization when dropping")]
+    float speedThreshhold = 0.1f;
+    Vector3 oldPosition;
+    //Dict to save coroutines combined with the gameObject they would add, so they can be stopped individually
+    Coroutine speedConditionCoroutine;
+    List<GameObject> hitWaitList;
 
     //--highlighting Stuff--
     bool issueIsGrabbed = false;
@@ -41,8 +51,9 @@ public class DragAndDrop : MonoBehaviour
     {
         currentHits = new List<GameObject>();
         overlapIndicators = new List<LineRenderer>();
+        hitWaitList = new List<GameObject>();
 
-        IssueManipulator = GetComponentInParent<IssueSelector>();
+         IssueManipulator = GetComponentInParent<IssueSelector>();
         if(IssueManipulator == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueSelector), gameObject);
@@ -97,14 +108,57 @@ public class DragAndDrop : MonoBehaviour
     {
         if(issueIsGrabbed)
         {
-            AddObjectToHitsList(potentialTarget.gameObject);
+            //AddObjectToHitsList(potentialTarget.gameObject);
+
+            //--speedCondition stuff--
+            hitWaitList.Add(potentialTarget.gameObject);
+            if(speedConditionCoroutine != null)
+            {
+                StopCoroutine(speedConditionCoroutine);
+            }
+            speedConditionCoroutine = StartCoroutine(TestForSpeedCondition());
         }
     }
     public void OnTriggerExit(Collider potentialTarget)
     {
+        //--speedCondition stuff--
+        //if no more objects are on the waiting list, the coroutine for the speed condition can be stopped
+        hitWaitList.Remove(potentialTarget.gameObject);
+        if(hitWaitList.Count == 0)
+        {
+            StopCoroutine(speedConditionCoroutine);
+        }
+
         RemoveObjectFromHitsList(potentialTarget.gameObject);
     }
     #endregion TriggerEvents
+
+    //--speedCondition stuff--
+    internal IEnumerator TestForSpeedCondition()
+    {
+
+        oldPosition = transform.position;
+        float speed;
+        do
+        {
+            yield return null;
+            speed = (transform.position - oldPosition).magnitude / Time.deltaTime;
+            oldPosition = transform.position;
+            Debug.Log(speed);
+        } while (speed > speedThreshhold);
+
+        //when speed condition is satisfied, add all current
+        foreach(GameObject target in hitWaitList)
+        {
+            //don't add target if it was deactivated during the wait time
+            if (target.activeSelf)
+            {
+                AddObjectToHitsList(target);
+            }
+        }
+        hitWaitList.Clear();
+
+    }
 
     /// <summary>
     /// Add issue to a visualization. Can only be used if this component is part of an issue.
