@@ -231,7 +231,6 @@ public class DragAndDrop : MonoBehaviour
     /// <param name="target">the visualization this issue should be added to.</param>
     public void AddIssueToVisualization(GameObject target)
     {
-        //test if target is a visualization
         Visualization visualization = target.GetComponent<Visualization>();
 
         List<Issue> issueList = new List<Issue>(visualization.ContentProvider.Issues);

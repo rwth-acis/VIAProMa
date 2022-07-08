@@ -4,6 +4,7 @@ using i5.VIAProMa.Utilities;
 using i5.VIAProMa.Visualizations.KanbanBoard;
 using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.ResourceManagagement;
+using i5.VIAProMa.Visualizations.BuildingProgressBar;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,16 @@ public class DragAndDropTestRunner : MonoBehaviour
     public KanbanBoardColumn column;
     public int issues = 10;
     private int issueCount;
+
+    private void Awake()
+    {
+        //if not set to zero, there is a graphical bug where the building is shown fully even though there are no elements inside
+        BuildingProgressBarVisuals[] visualArray = GameObject.FindObjectsOfType<BuildingProgressBarVisuals>();
+        foreach (BuildingProgressBarVisuals visualComponent in visualArray)
+        {
+            visualComponent.PercentageDone = 0f;
+        }
+    }
 
     private void Update()
     {
