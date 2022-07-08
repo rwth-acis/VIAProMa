@@ -24,6 +24,7 @@ public class DragAndDrop : MonoBehaviour
     IssueDataDisplay issueDataDisplay;
     ObjectManipulator grabComponent;
 
+
     [SerializeField]
     [Tooltip("If the issue card is moved faster than this speed, it will not be added to the visualization when dropping")]
     float speedThreshhold = 0.2f;
@@ -33,14 +34,31 @@ public class DragAndDrop : MonoBehaviour
     //list of objects that wait to be added when speed is below threshhold
     List<GameObject> hitWaitList;
 
+    //Is true iff the issue is currently being grabbed
+    bool issueIsGrabbed = false;
+
+
     //A list of Visualizations that currently overlap with the Issue
     List<GameObject> currentHits;
+
+    //list of all currently existing lines
+    List<LineRenderer> overlapIndicators;
+    [SerializeField]
+    [Tooltip("Line Gameobject used to indicate which visualizations overlap with the Issue")]
+    GameObject indicatorLine;
+    //get unique visualizations that overlap with the issue; there can be duplicates in currentHits
+    HashSet<GameObject> uniqueHitSet;
 
     //Awake is called when the script instance is being loaded
     void Awake()
     {
         currentHits = new List<GameObject>();
+
         hitWaitList = new List<GameObject>();
+
+        overlapIndicators = new List<LineRenderer>();
+        uniqueHitSet = new HashSet<GameObject>();
+
 
         IssueManipulator = GetComponentInParent<IssueSelector>();
         if(IssueManipulator == null)
@@ -60,21 +78,55 @@ public class DragAndDrop : MonoBehaviour
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(ObjectManipulator), gameObject);
         }
+        else
+        {
+            grabComponent.OnManipulationStarted.AddListener(SetManipulationStartedFlag);
+            grabComponent.OnManipulationEnded.AddListener(SetManipulationEndedFlag);
+        }
+
 
         //Make it so object is not influenced by forces
         GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = false;
     }
+    private void Update()
+    {
+        //only show lines if more than one visualization is hit
+        if (uniqueHitSet.Count > 1)
+        {
+            int i = 0;
+            foreach(GameObject uniqueHit in uniqueHitSet)
+            {
+                //set the line end position and activate it
+                Vector3 targetPos = uniqueHit.transform.position;
+                LineRenderer laser = overlapIndicators[i];
+                laser.SetPosition(1, laser.transform.worldToLocalMatrix * ((Vector4)targetPos + new Vector4(0, 0, 0, 1)));
+                laser.enabled = true;
+                i += 1;
+            }
+        }
+        else if (uniqueHitSet.Count == 1)
+        {
+            //deactivate lines that are still pointing to the last visualization
+            overlapIndicators.ForEach(x => x.enabled = false);
+        }
+    }
 
     #region TriggerEvents
     public void OnTriggerEnter(Collider potentialTarget)
     {
-        hitWaitList.Add(potentialTarget.gameObject);
-        if (speedConditionCoroutine != null)
+
+        //only add object if issue is grabbed to prevent it being highlighted if visualization is moved over it
+        if (issueIsGrabbed)
         {
-            StopCoroutine(speedConditionCoroutine);
+            hitWaitList.Add(potentialTarget.gameObject);
+            if (speedConditionCoroutine != null)
+            {
+                StopCoroutine(speedConditionCoroutine);
+            }
+            speedConditionCoroutine = StartCoroutine(TestForSpeedCondition());
         }
-        speedConditionCoroutine = StartCoroutine(TestForSpeedCondition());
+
     }
     public void OnTriggerExit(Collider potentialTarget)
     {
@@ -98,7 +150,6 @@ public class DragAndDrop : MonoBehaviour
 
         oldPosition = transform.position;
         float speed;
-        Debug.Log("-----------------------------------------------------------------");
         do
         {
             yield return null;
@@ -152,16 +203,32 @@ public class DragAndDrop : MonoBehaviour
             return;
         }
 
-        currentHits.Remove(visualization.gameObject);
+        if (!currentHits.Contains(visualization.gameObject))
+        {
+            return;
+        }
 
-        //remove listener so letting go no longer adds this issue to visualizations
-        grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
+        currentHits.Remove(visualization.gameObject);
+        //get count of unique overlapping visualizations, then get new list after removing visualization
+        int oldHitCounter = uniqueHitSet.Count;
+        uniqueHitSet = new HashSet<GameObject>(currentHits);
+
+        if(uniqueHitSet.Count < oldHitCounter)
+        {
+            //remove a line from the list as it is not needed anymore
+            Destroy(overlapIndicators[0].gameObject);
+            overlapIndicators.RemoveAt(0);
+        }
+
 
         //Deactivate selection indicator of the issue, but only if it doesn't overlap with any visualization
         if (currentHits.Count > 0)
         {
             return;
         }
+
+        //remove listener so letting go no longer adds this issue to visualizations
+        grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
 
         IssueManipulator.Selected = false;
         //manually update view because the Selected variable only does so if IssueSelectionManager is in selection mode
@@ -180,6 +247,16 @@ public class DragAndDrop : MonoBehaviour
         currentHits.Add(visualization.gameObject);
         //Debug.Log(transform.parent.name + ": " + visualization.gameObject.name + " added to the Hits list.");
 
+        //get count of unique overlapping visualizations, then get new list after removing visualization
+        int oldHitCounter = uniqueHitSet.Count;
+        uniqueHitSet = new HashSet<GameObject>(currentHits);
+
+        if (uniqueHitSet.Count > oldHitCounter)
+        {
+            //add a line which is used to point to one of the visualizations
+            overlapIndicators.Add(Instantiate(indicatorLine, transform).GetComponent<LineRenderer>());
+        }
+
         //Activate selection indicator of the issue
         IssueManipulator.Selected = true;
         IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
@@ -197,8 +274,22 @@ public class DragAndDrop : MonoBehaviour
         }
     }
 
+    #region GrabbingEvents
+    void SetManipulationStartedFlag(ManipulationEventData eventData)
+    {
+        issueIsGrabbed = true;
+    }
+    void SetManipulationEndedFlag(ManipulationEventData eventData)
+    {
+        issueIsGrabbed = false;
+    }
+    #endregion GrabbingEvents
+
     private void OnDestroy()
     {
+        //remove listeners to prevent possible memory leaks
         grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
+        grabComponent.OnManipulationStarted.RemoveListener(SetManipulationStartedFlag);
+        grabComponent.OnManipulationEnded.RemoveListener(SetManipulationEndedFlag);
     }
 }
