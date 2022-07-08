@@ -24,8 +24,19 @@ public class DragAndDrop : MonoBehaviour
     IssueDataDisplay issueDataDisplay;
     ObjectManipulator grabComponent;
 
+
+    [SerializeField]
+    [Tooltip("If the issue card is moved faster than this speed, it will not be added to the visualization when dropping")]
+    float speedThreshhold = 0.2f;
+    Vector3 oldPosition;
+    //coroutine that tests if speed Threshhold is reached
+    Coroutine speedConditionCoroutine;
+    //list of objects that wait to be added when speed is below threshhold
+    List<GameObject> hitWaitList;
+
     //Is true iff the issue is currently being grabbed
     bool issueIsGrabbed = false;
+
 
     //A list of Visualizations that currently overlap with the Issue
     List<GameObject> currentHits;
@@ -42,8 +53,12 @@ public class DragAndDrop : MonoBehaviour
     void Awake()
     {
         currentHits = new List<GameObject>();
+
+        hitWaitList = new List<GameObject>();
+
         overlapIndicators = new List<LineRenderer>();
         uniqueHitSet = new HashSet<GameObject>();
+
 
         IssueManipulator = GetComponentInParent<IssueSelector>();
         if(IssueManipulator == null)
@@ -100,17 +115,61 @@ public class DragAndDrop : MonoBehaviour
     #region TriggerEvents
     public void OnTriggerEnter(Collider potentialTarget)
     {
+
         //only add object if issue is grabbed to prevent it being highlighted if visualization is moved over it
         if (issueIsGrabbed)
         {
-            AddObjectToHitsList(potentialTarget.gameObject);
+            hitWaitList.Add(potentialTarget.gameObject);
+            if (speedConditionCoroutine != null)
+            {
+                StopCoroutine(speedConditionCoroutine);
+            }
+            speedConditionCoroutine = StartCoroutine(TestForSpeedCondition());
         }
+
     }
     public void OnTriggerExit(Collider potentialTarget)
     {
+        //if no more objects are on the waiting list, the coroutine for the speed condition can be stopped
+        hitWaitList.Remove(potentialTarget.gameObject);
+        if (hitWaitList.Count == 0)
+        {
+            StopCoroutine(speedConditionCoroutine);
+        }
+
         RemoveObjectFromHitsList(potentialTarget.gameObject);
     }
     #endregion TriggerEvents
+
+    /// <summary>
+    /// This coroutine tests if the speed threshhold was reached and then adds all objects that are on the HitWaitList.
+    /// It only does so when necessary, i.e. when there is an overlap, to save recources.
+    /// </summary>
+    internal IEnumerator TestForSpeedCondition()
+    {
+
+        oldPosition = transform.position;
+        float speed;
+        do
+        {
+            yield return null;
+            speed = (transform.position - oldPosition).magnitude / Time.deltaTime;
+            oldPosition = transform.position;
+            Debug.Log(speed);
+        } while (speed > speedThreshhold);
+
+        //when speed condition is satisfied, add all current
+        foreach (GameObject target in hitWaitList)
+        {
+            //don't add target if it was deactivated during the wait time
+            if (target.activeSelf)
+            {
+                AddObjectToHitsList(target);
+            }
+        }
+        hitWaitList.Clear();
+
+    }
 
     /// <summary>
     /// Add issue to a visualization. Can only be used if this component is part of an issue.
