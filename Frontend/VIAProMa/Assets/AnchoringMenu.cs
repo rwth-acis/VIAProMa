@@ -7,6 +7,7 @@ using i5.Toolkit.Core.Utilities;
 using Photon.Pun;
 using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI.MainMenuCube;
+using i5.VIAProMa.Anchoring;
 
 /// <summary>
 /// Controls the menu which allows a user to enable and disable the anchoring system as well as the corresponding settings
@@ -14,9 +15,12 @@ using i5.VIAProMa.UI.MainMenuCube;
 public class AnchoringMenu : MonoBehaviour, IWindow
 {
     private bool windowEnabled = true;
+
+    /// <summary>
+    /// UI Elements
+    /// </summary
     [SerializeField] private Interactable useAnchoringCheckbox;
     [SerializeField] private Interactable moveAnchorAloneCheckbox;
-    [SerializeField] private Interactable anchorLockedButton;
 
     [SerializeField] private GameObject extendedSettings;
     [SerializeField] private SpriteRenderer lockedIconSpriteRenderer;
@@ -26,23 +30,21 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     [SerializeField] private Sprite lockedIcon;
 
     /// <summary>
-    /// The anchor in the scene as well as the 3D anchor model as a child
+    /// The anchor in the scene as well as the 3D anchor model as a child and the corresponding manager
     /// </summary>
     private GameObject anchorParent;
     private GameObject anchorObject;
+    private AnchorManager anchorManager;
 
-    /// <summary>
-    /// Whether the locking of the anchor is currently enable or disabled
-    /// </summary>
-    private bool locked;
 
     public void Awake()
     {
         anchorParent = this.transform.parent.parent.parent.gameObject;
         anchorObject = anchorParent.transform.Find("AnchorObject").gameObject;
+        anchorManager = this.transform.parent.parent.gameObject.GetComponentInChildren<AnchorManager>();
         anchorObject.SetActive(false);
-        locked = false;
         DisableAnchorLock();
+        DisableMoveAnchorAlone();
     }
 
     /// <summary>
@@ -79,8 +81,8 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void OnCheckboxUseAnchoringClicked()
     {
-        if (extendedSettings.activeSelf)
-        {
+        if (anchorManager.anchoringEnabled)
+        {          
             DisableAnchoring();
         }
         else
@@ -95,15 +97,13 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void OnCheckboxMoveAnchorClicked()
     {
-        if (anchorObject.GetComponent<ObjectManipulator>().HostTransform == anchorObject.transform)
+        if (anchorManager.moveAnchorAloneEnabled)
         {
-            anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorParent.transform;
-            Debug.Log("Individual moving mode disabled.");
+            DisableMoveAnchorAlone();
         }
         else
         {
-            anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorObject.transform;
-            Debug.Log("Individual moving mode enabled.");
+            EnableMoveAnchorAlone();
         }       
     }
 
@@ -113,7 +113,7 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void OnLockButtonClicked()
     {
-        if (!locked)
+        if (!anchorManager.anchorLocked)
         {
             EnableAnchorLock();
 
@@ -129,10 +129,10 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void EnableAnchorLock()
     {
+        anchorManager.anchorLocked = true;
         anchorObject.GetComponent<ObjectManipulator>().enabled = false;
         lockedIconSpriteRenderer.sprite = lockedIcon;
         lockButtonText.text = "Anchor is locked";
-        locked = true;
         Debug.Log("The anchor is now locked.");
     }
 
@@ -141,10 +141,10 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void DisableAnchorLock()
     {
+        anchorManager.anchorLocked = false;
         anchorObject.GetComponent<ObjectManipulator>().enabled = true;
         lockedIconSpriteRenderer.sprite = unlockedIcon;
         lockButtonText.text = "Anchor is unlocked";
-        locked = false;
         Debug.Log("The anchor is now unlocked.");
     }
 
@@ -153,25 +153,46 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// </summary>
     public void DisableAnchoring()
     {
+        anchorManager.anchoringEnabled = false;
         useAnchoringCheckbox.IsToggled = false;
-        moveAnchorAloneCheckbox.IsEnabled = false;
-        anchorLockedButton.IsEnabled = false;
         anchorObject.SetActive(false);
         extendedSettings.SetActive(false);
         Debug.Log("Anchoring has been deactivated.");
     }
 
     /// <summary>
-    /// Ensables anchoring and all corresponding UI components.
+    /// Enables anchoring and all corresponding UI components.
     /// </summary>
     public void EnableAnchoring()
     {
-        moveAnchorAloneCheckbox.IsEnabled = true;
-        anchorLockedButton.IsEnabled = true;
+        anchorManager.anchoringEnabled = true;
         anchorObject.SetActive(true);
         extendedSettings.SetActive(true);
         Debug.Log("Anchoring has been activated.");
     }
+
+    /// <summary>
+    /// Enables the functionality to move the anchor independently of the scene
+    /// </summary>
+    public void EnableMoveAnchorAlone()
+    {
+        anchorManager.moveAnchorAloneEnabled = true;
+        moveAnchorAloneCheckbox.IsToggled = true;
+        anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorObject.transform;
+        Debug.Log("Individual moving mode enabled.");
+    }
+
+    /// Disables the functionality to move the anchor independently of the scene
+    /// </summary>
+    public void DisableMoveAnchorAlone()
+    {
+        anchorManager.moveAnchorAloneEnabled = false;
+        moveAnchorAloneCheckbox.IsToggled = false;
+        anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorParent.transform;
+        Debug.Log("Individual moving mode disabled.");
+    
+    }
+
 
     /// <summary>
     /// Closes the window
@@ -188,7 +209,7 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     {
         gameObject.SetActive(true);
 
-        if (locked)
+        if (anchorManager.anchorLocked)
         {
             EnableAnchorLock();
 
@@ -196,6 +217,26 @@ public class AnchoringMenu : MonoBehaviour, IWindow
         else
         {
             DisableAnchorLock();
+        }
+
+        if (anchorManager.anchoringEnabled)
+        {
+            EnableAnchoring();
+
+        }
+        else
+        {
+            DisableAnchoring();
+        }
+
+        if (anchorManager.moveAnchorAloneEnabled)
+        {
+            EnableMoveAnchorAlone();
+
+        }
+        else
+        {
+            DisableMoveAnchorAlone();
         }
     }
 
