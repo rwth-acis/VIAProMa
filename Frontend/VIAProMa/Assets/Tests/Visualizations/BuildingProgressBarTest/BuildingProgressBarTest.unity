@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -152,7 +152,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1933225941}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &44860357
 MonoBehaviour:
@@ -163,13 +163,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 44860355}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  percentDone: 1
+  percentDone: 0
   percentInProgress: 0
-  buildingIndex: 5
   progressBar: {fileID: 1562843306}
+  buildingIndex: 5
 --- !u!1 &45188486
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,12 +236,12 @@ PrefabInstance:
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.77
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
@@ -316,7 +316,7 @@ PrefabInstance:
     - target: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_Name
-      value: EiffelTower
+      value: EiffelTower 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f, type: 3}
@@ -407,13 +407,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 246036090}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  percentDone: 1
+  percentDone: 0
   percentInProgress: 0
-  buildingIndex: 4
-  progressBar: {fileID: 8195115283832244517}
+  progressBar: {fileID: 608551592}
+  buildingIndex: 2
 --- !u!4 &246036092
 Transform:
   m_ObjectHideFlags: 0
@@ -426,7 +426,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1933225941}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &299026279 stripped
 GameObject:
@@ -825,7 +825,7 @@ PrefabInstance:
     - target: {fileID: 937139078701923806, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 937139078701923806, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
@@ -1135,7 +1135,7 @@ PrefabInstance:
     - target: {fileID: 2228182898798395367, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2228182898798395367, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
@@ -3190,7 +3190,7 @@ PrefabInstance:
     - target: {fileID: 8957528376169097140, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8957528376169097140, guid: b72229148ad3ea7408d7fbb34a35ea28,
         type: 3}
@@ -3321,8 +3321,9 @@ Transform:
   m_LocalPosition: {x: -0.028737068, y: 0.34357798, z: 0.090973556}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 608551593}
+  - {fileID: 1567732610}
   - {fileID: 8195115283832244518}
+  - {fileID: 608551593}
   - {fileID: 142477278}
   - {fileID: 945261719}
   - {fileID: 1562843307}
@@ -3341,12 +3342,12 @@ PrefabInstance:
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.56
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
@@ -3460,7 +3461,7 @@ GameObject:
   - component: {fileID: 812456299}
   - component: {fileID: 812456300}
   m_Layer: 0
-  m_Name: Appartment1
+  m_Name: Apartment 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3478,7 +3479,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1933225941}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &812456300
 MonoBehaviour:
@@ -3489,13 +3490,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 812456298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  percentDone: 1
+  percentDone: 0
   percentInProgress: 0
-  buildingIndex: 2
   progressBar: {fileID: 142477277}
+  buildingIndex: 3
 --- !u!1001 &925227472
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3506,12 +3507,12 @@ PrefabInstance:
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.161
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
@@ -3586,7 +3587,7 @@ PrefabInstance:
     - target: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_Name
-      value: Appartment1
+      value: Apartment 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f, type: 3}
@@ -3600,12 +3601,12 @@ PrefabInstance:
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.005
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
@@ -3680,7 +3681,7 @@ PrefabInstance:
     - target: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_Name
-      value: Appartment2
+      value: Apartment 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f, type: 3}
@@ -3706,12 +3707,12 @@ PrefabInstance:
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.64
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
@@ -3786,7 +3787,7 @@ PrefabInstance:
     - target: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_Name
-      value: EiffelTower (1)
+      value: Leaning Tower of Pisa
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f, type: 3}
@@ -3880,7 +3881,7 @@ GameObject:
   - component: {fileID: 1359496790}
   - component: {fileID: 1359496791}
   m_Layer: 0
-  m_Name: Appartment2
+  m_Name: Apartment 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3898,7 +3899,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1933225941}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1359496791
 MonoBehaviour:
@@ -3909,13 +3910,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1359496789}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  percentDone: 1
+  percentDone: 0
   percentInProgress: 0
-  buildingIndex: 3
   progressBar: {fileID: 945261720}
+  buildingIndex: 4
 --- !u!1 &1522405292
 GameObject:
   m_ObjectHideFlags: 0
@@ -3927,7 +3928,7 @@ GameObject:
   - component: {fileID: 1522405293}
   - component: {fileID: 1522405294}
   m_Layer: 0
-  m_Name: EiffelTower (1)
+  m_Name: Leaning Tower of Pisa
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3945,7 +3946,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1933225941}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1522405294
 MonoBehaviour:
@@ -3956,13 +3957,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1522405292}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  percentDone: 1
+  percentDone: 0
   percentInProgress: 0
-  buildingIndex: 7
   progressBar: {fileID: 299026279}
+  buildingIndex: 7
 --- !u!1 &1562843306 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
@@ -3974,6 +3975,152 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
     type: 3}
   m_PrefabInstance: {fileID: 533510255}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1567732609
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 472436968}
+    m_Modifications:
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.34357798
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.9090264
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895591995263136, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895591995263149, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_inputSource
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895591995263149, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895591995263149, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895593146347911, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_inputSource
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895593146347911, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895593146347911, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895593146347962, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895593146582023, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.53987753
+      objectReference: {fileID: 0}
+    - target: {fileID: 3305895593146582023, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.10976774
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932808067742171965, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932808067742171965, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: viewIdField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932808067742171965, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: InstantiationId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+        type: 3}
+      propertyPath: m_Name
+      value: Skyscraper 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f, type: 3}
+--- !u!4 &1567732610 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1567732609}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1567732611 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1567732609}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1568164571
 GameObject:
@@ -4222,7 +4369,7 @@ GameObject:
   - component: {fileID: 1667766134}
   - component: {fileID: 1667766135}
   m_Layer: 0
-  m_Name: EiffelTower
+  m_Name: EiffelTower 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4240,7 +4387,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1933225941}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1667766135
 MonoBehaviour:
@@ -4251,13 +4398,60 @@ MonoBehaviour:
   m_GameObject: {fileID: 1667766133}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  percentDone: 1
+  percentDone: 0
   percentInProgress: 0
-  buildingIndex: 6
   progressBar: {fileID: 796802306}
+  buildingIndex: 6
+--- !u!1 &1840673517
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1840673518}
+  - component: {fileID: 1840673519}
+  m_Layer: 0
+  m_Name: Skyscraper 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1840673518
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840673517}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.61704075, y: 4.426809, z: 8.39902}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1933225941}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1840673519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840673517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  percentDone: 0
+  percentInProgress: 0
+  progressBar: {fileID: 8195115283832244517}
+  buildingIndex: 1
 --- !u!1001 &1840763406
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4268,12 +4462,12 @@ PrefabInstance:
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.1262629
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
@@ -4372,8 +4566,19 @@ PrefabInstance:
         building stages.
 
 
-        Test Runner: The test runner has sliders to simulate
-        the percentage of issues which are in progress and which are closed.'
+        Test Runners: The test runners for each progress
+        bar have sliders to simulate the percentage of issues which are in progress
+        and which are closed.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_textAlignment
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
+        type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     - target: {fileID: 2084896095825270086, guid: 7bf39913b7d9e7b46816f871fff478f7,
         type: 3}
@@ -4535,6 +4740,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2113222568}
+  - {fileID: 1840673518}
   - {fileID: 246036092}
   - {fileID: 812456299}
   - {fileID: 1359496790}
@@ -4586,7 +4792,7 @@ GameObject:
   - component: {fileID: 2113222568}
   - component: {fileID: 2113222567}
   m_Layer: 0
-  m_Name: Skyscrapper
+  m_Name: Skyscraper 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4601,13 +4807,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2113222566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babab127c9b90ac4990e7a7767eef72f, type: 3}
+  m_Script: {fileID: 11500000, guid: 58c3fdd2ccabb204998dc286aa16622c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  percentDone: 1
+  percentDone: 0
   percentInProgress: 0
-  buildingIndex: 1
-  progressBar: {fileID: 608551592}
+  progressBar: {fileID: 1567732611}
+  buildingIndex: 0
 --- !u!4 &2113222568
 Transform:
   m_ObjectHideFlags: 0
@@ -4637,7 +4843,7 @@ PrefabInstance:
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.028737068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 513762739022804669, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
@@ -4752,7 +4958,7 @@ PrefabInstance:
     - target: {fileID: 8195115283832244517, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f,
         type: 3}
       propertyPath: m_Name
-      value: Skyscrapper
+      value: Skyscraper 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46c83ff4ac3c6b544ae08879bf7ecf2f, type: 3}
