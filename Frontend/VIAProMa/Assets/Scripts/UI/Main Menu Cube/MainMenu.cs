@@ -196,8 +196,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowIssueShelf()
         {
-            Vector3 targetPosition = transform.position - 2f * transform.right - anchorTransform.position;
-            targetPosition.y = 0f;
+            Vector3 targetPosition = transform.position - 2f * transform.right;
+            targetPosition.y = 0f + anchorTransform.position.y;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
             foldController.InitalizeNewCloseTimer();
         }
@@ -211,16 +211,16 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowVisualizationShelf()
         {
-            Vector3 targetPosition = transform.position - 1f * transform.right - anchorTransform.position;
-            targetPosition.y = 0f;
+            Vector3 targetPosition = transform.position - 1f * transform.right;
+            targetPosition.y = 0f + anchorTransform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowLoadShelf()
         {
-            Vector3 targetPosition = transform.position + 1f * transform.right - anchorTransform.position;
-            targetPosition.y = 0f;
+            Vector3 targetPosition = transform.position + 1f * transform.right;
+            targetPosition.y = 0f + anchorTransform.position.y;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
             foldController.InitalizeNewCloseTimer();
         }
