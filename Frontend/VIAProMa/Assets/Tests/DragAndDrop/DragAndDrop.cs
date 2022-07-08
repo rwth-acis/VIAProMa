@@ -128,10 +128,7 @@ public class DragAndDrop : MonoBehaviour
             //deactivate lines that are still pointing to the last visualization
             overlapIndicators.ForEach(x => x.enabled = false);
         }
-    }
-
-    private void Update()
-    {
+  
         //if the issue is set to be destroyed, move it towards the visualization it is added to
         if(IssueInSelfDestruction)
         {
