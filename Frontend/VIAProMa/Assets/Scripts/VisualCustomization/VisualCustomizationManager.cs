@@ -13,43 +13,22 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
     public static UnityAction updateStyles;
 
     [SerializeField] private VisualCustomizationConfiguration configuration;
-    [SerializeField] private List<StyleSelection> currentStyleSelections;
+    [SerializeField] private VisualCustomizationTheme currentTheme;
 
     private void Start()
     {
         updateStyles.Invoke();
     }
 
-    public void SetStylesDefault()
-    {
-        currentStyleSelections = new List<StyleSelection>();
-        
-        foreach (var entry in configuration.styleEntries)
-        {
-            var selection = new StyleSelection();
-            selection.key = entry.key;
-            if (entry.styleEntries.Count > 0)
-            {
-                selection.style = entry.styleEntries[0].key;
-                if (entry.styleEntries[0].styleVariantEntryEntries.Count > 0)
-                {
-                    selection.variation = entry.styleEntries[0].styleVariantEntryEntries[0].key;
-                }
-            }
-            
-            currentStyleSelections.Add(selection);
-        }
-        
-        EditorUtility.SetDirty(this);
-    }
+    
 
-    public static StyleSelection FindCurrentStyle(string key)
+    public static VisualCustomizationTheme.StyleSelection FindCurrentStyle(string key)
     {
-        if (Instance.currentStyleSelections == null)
+        if (Instance.currentTheme == null)
         {
-            Instance.SetStylesDefault();
+            Instance.configuration.GetDefaultTheme();
         }
-        foreach (var styleSelection in Instance.currentStyleSelections)
+        foreach (var styleSelection in Instance.currentTheme.styleSelections)
         {
             if (styleSelection.key == key)
             {
@@ -57,12 +36,12 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
             }
         }
 
-        return new StyleSelection();
+        return new VisualCustomizationTheme.StyleSelection();
     }
 
     public static void SwitchStyle(string key, string style, string variation)
     {
-        var styleSelection = new StyleSelection
+        var styleSelection = new VisualCustomizationTheme.StyleSelection
         {
             key = key,
             style = style,
@@ -72,11 +51,11 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         SwitchStyle(styleSelection);
     }
     
-    public static void SwitchStyle(StyleSelection newStyle)
+    public static void SwitchStyle(VisualCustomizationTheme.StyleSelection newStyle)
     {
-        for (var index = 0; index < Instance.currentStyleSelections.Count; index++)
+        for (var index = 0; index < Instance.currentTheme.styleSelections.Count; index++)
         {
-            var selection = Instance.currentStyleSelections[index];
+            var selection = Instance.currentTheme.styleSelections[index];
             if (selection.key == newStyle.key)
             {
                 selection.style = newStyle.style;
@@ -105,13 +84,7 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
     }
     
     
-    [Serializable]
-    public class StyleSelection
-    {
-        public string key;
-        public string style;
-        public string variation;
-    }
+
 }
 
 [CustomEditor(typeof(VisualCustomizationManager))]
@@ -124,7 +97,7 @@ public class VisualCustomizationManagerEditor : Editor
         var myScript = (VisualCustomizationManager)target;
         if (GUILayout.Button("Reset to default Styles"))
         {
-            myScript.SetStylesDefault();
+            //myScript.GenerateDefaultTheme();
         }
     }
 }
