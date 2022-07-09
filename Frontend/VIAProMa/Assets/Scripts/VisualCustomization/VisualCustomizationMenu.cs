@@ -57,16 +57,16 @@ namespace i5.VIAProMa.UI
             switch (themeToggles.CurrentIndex)
             {
                 case 0:
-                    VisualCustomizationManager.SwitchStyle("Shelf","Default","Default");
+                    VisualCustomizationManager.SwitchTheme("Default");
                     break;
                 case 1:
-                    VisualCustomizationManager.SwitchStyle("Shelf","Alternative","Default");
+                    VisualCustomizationManager.SwitchTheme("Alternative");
                     break;
                 case 2:
-                    VisualCustomizationManager.SwitchStyle("Shelf","Default","Red");
+                    VisualCustomizationManager.SwitchTheme("Default Red");
                     break;
                 case 3:
-                    VisualCustomizationManager.SwitchStyle("Shelf","Alternative","Red");
+                    VisualCustomizationManager.SwitchTheme("Alternative Red");
                     break;
             }
         }

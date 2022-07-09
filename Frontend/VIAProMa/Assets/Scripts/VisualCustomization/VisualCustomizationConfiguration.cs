@@ -5,13 +5,16 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+//Scripted Object used to configure possible styles and default themes
 [CreateAssetMenu(fileName = "Configuration", menuName = "Scriptable Objects/VisualCustomization/Configuration", order = 1)]
 public class VisualCustomizationConfiguration : ScriptableObject
 {
+    //Contains all possible styles
     public List<StyleConfiguration> styleEntries;
-
+    //The non user generated styles
     public List<VisualCustomizationTheme> themes;
 
+    //Updated by the Button in the StyleLoader, adds an entry for a style to  all possible entries
     public void AddEntry(StyleConfiguration newConfiguration)
     {
         //remove all entries with the same key
@@ -30,6 +33,7 @@ public class VisualCustomizationConfiguration : ScriptableObject
         Debug.Log("Added Entry to Configuration", this);
     }
     
+    //Creates a new theme with all styles set to the default value
     public void AddTheme()
     {
         var defaultStyleSelection = new List<VisualCustomizationTheme.StyleSelection>();
@@ -54,6 +58,7 @@ public class VisualCustomizationConfiguration : ScriptableObject
         EditorUtility.SetDirty(this);
     }
     
+    //Updates all existing themes to include newly added Styles
     public void UpdateThemes()
     {
         //TODO
@@ -61,6 +66,7 @@ public class VisualCustomizationConfiguration : ScriptableObject
         EditorUtility.SetDirty(this);
     }
 
+    //Returns the first theme in the List. It is treated as the default theme
     public VisualCustomizationTheme GetDefaultTheme()
     {
         if (themes == null || themes.Count < 0)

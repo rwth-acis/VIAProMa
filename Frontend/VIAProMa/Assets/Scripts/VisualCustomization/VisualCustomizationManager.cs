@@ -15,19 +15,23 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
     [SerializeField] private VisualCustomizationConfiguration configuration;
     [SerializeField] private VisualCustomizationTheme currentTheme;
 
+    //Is true, if the current theme is changed, but not saved in the custom themes
+    [SerializeField] private bool themeUnsaved = false;
+
     private void Start()
     {
+        currentTheme = configuration.GetDefaultTheme();
+        var saveData = LoadSavedThemes();
+        if (saveData.selectedTheme != null)
+        {
+            currentTheme = saveData.selectedTheme;
+        }
         updateStyles.Invoke();
     }
 
-    
-
+    //Finds the style selected in the current theme by the key of an object
     public static VisualCustomizationTheme.StyleSelection FindCurrentStyle(string key)
     {
-        if (Instance.currentTheme == null)
-        {
-            Instance.configuration.GetDefaultTheme();
-        }
         foreach (var styleSelection in Instance.currentTheme.styleSelections)
         {
             if (styleSelection.key == key)
@@ -39,52 +43,59 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         return new VisualCustomizationTheme.StyleSelection();
     }
 
-    public static void SwitchStyle(string key, string style, string variation)
+    //Switches to a different theme and updates all Styles
+    public static void SwitchTheme(VisualCustomizationTheme theme)
     {
-        var styleSelection = new VisualCustomizationTheme.StyleSelection
+        if (theme != null)
         {
-            key = key,
-            style = style,
-            variation = variation
-        };
-        
-        SwitchStyle(styleSelection);
+            Instance.currentTheme = theme;
+            updateStyles?.Invoke();
+            Instance.themeUnsaved = false;
+        }
     }
     
-    public static void SwitchStyle(VisualCustomizationTheme.StyleSelection newStyle)
+    public static void SwitchTheme(string name)
     {
-        for (var index = 0; index < Instance.currentTheme.styleSelections.Count; index++)
+        var theme = Instance.configuration.themes.Find(theme => theme.name == name);
+        if (theme != null)
         {
-            var selection = Instance.currentTheme.styleSelections[index];
-            if (selection.key == newStyle.key)
-            {
-                selection.style = newStyle.style;
-                selection.variation = newStyle.variation;
-                
-                updateStyles?.Invoke();
-                return;
-            }
+            Instance.currentTheme = theme;
+            updateStyles?.Invoke();
+            Instance.themeUnsaved = false;
         }
     }
 
-    [ContextMenu("switch style Test")]
-    public void SwitchStyleTest()
+    public void SaveTheme(VisualCustomizationTheme toSave)
     {
-         SwitchStyle("Shelf", "Alternative", "Red");
-    }
-    [ContextMenu("switch style Test 2")]
-    public void SwitchStyleTest2()
-    {
-        SwitchStyle("Shelf", "Default", "Default");
-    }
-    [ContextMenu("switch style Test 3")]
-    public void SwitchStyleTest3()
-    {
-        SwitchStyle("Shelf", "Default", "Red");
-    }
-    
-    
+        var saveData = LoadSavedThemes();
+        saveData.AddTheme(toSave);
+        PlayerPrefs.SetString("VisualCustomizationThemes", JsonUtility.ToJson(saveData));
 
+        if (toSave == currentTheme)
+        {
+            Instance.themeUnsaved = false;
+        }
+    }
+    
+    public ThemesSaveData LoadSavedThemes()
+    {
+        ThemesSaveData saveData;
+        if (PlayerPrefs.HasKey("VisualCustomizationThemes"))
+        {
+            saveData = JsonUtility.FromJson<ThemesSaveData>(PlayerPrefs.GetString("VisualCustomizationThemes"));
+        }
+        else
+        {
+            saveData = new ThemesSaveData(currentTheme);
+        }
+        return saveData;
+    }
+
+    [ContextMenu("Clear Saved Themes")]
+    public void ClearAllSavedThemes()
+    {
+        PlayerPrefs.DeleteKey("VisualCustomizationThemes");
+    }
 }
 
 [CustomEditor(typeof(VisualCustomizationManager))]
@@ -95,10 +106,40 @@ public class VisualCustomizationManagerEditor : Editor
         DrawDefaultInspector();
 
         var myScript = (VisualCustomizationManager)target;
-        if (GUILayout.Button("Reset to default Styles"))
-        {
-            //myScript.GenerateDefaultTheme();
-        }
+        
     }
 }
 
+//This class is saved to PLayerprefs and used to save the selected theme and all custom Themes between sessions
+[Serializable]
+public class ThemesSaveData
+{
+    public VisualCustomizationTheme selectedTheme;
+    public List<VisualCustomizationTheme> customThemes;
+
+    public ThemesSaveData(VisualCustomizationTheme selectedTheme, List<VisualCustomizationTheme> customThemes)
+    {
+        this.selectedTheme = selectedTheme;
+        this.customThemes = customThemes;
+    }
+    
+    public ThemesSaveData(VisualCustomizationTheme selectedTheme)
+    {
+        this.selectedTheme = selectedTheme;
+        this.customThemes = new List<VisualCustomizationTheme>();
+    }
+    
+    //Adds theme to the save data. Replaces Themes with the same name if they exists
+    public void AddTheme(VisualCustomizationTheme newTheme)
+    {
+        customThemes.RemoveAll(theme => theme.name == newTheme.name);
+        
+        customThemes.Add(newTheme);
+    }
+    
+    //removes all themes with the given name
+    public void RemoveTheme(string name)
+    {
+        customThemes.RemoveAll(theme => theme.name == name);
+    }
+}
