@@ -8,7 +8,7 @@ namespace i5.VIAProMa.UI
     /// <summary>
     /// UI controller and actions for the visual customization menu
     /// </summary>
-    public class VisualCustomizationMenu : MonoBehaviour, IWindow
+    public class VisualCustomizationMenu2 : MonoBehaviour, IWindow
     {
         [SerializeField] private InteractableToggleCollection themeToggles;
         
