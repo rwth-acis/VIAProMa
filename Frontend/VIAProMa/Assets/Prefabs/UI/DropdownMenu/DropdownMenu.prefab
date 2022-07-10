@@ -173,12 +173,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: Default
+  root: {fileID: 4803879514167120671}
   variants:
   - key: Default
     assignments:
     - name: Background
       renderer: {fileID: 3359006146010963402}
       materials: []
+  - key: In depth Default
+    assignments:
+    - name: Background
+      renderer: {fileID: 3359006146010963402}
+      materials:
+      - {fileID: 2100000, guid: 57688f3f9200e164a86e8372687f0438, type: 2}
+    - name: Content
+      renderer: {fileID: 2402344658051798698}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Background
+      renderer: {fileID: 7463167643643370435}
+      materials:
+      - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - name: TextMeshPro
+      renderer: {fileID: 255541674696007189}
+      materials:
+      - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - name: Quad
+      renderer: {fileID: 1355334821442638135}
+      materials:
+      - {fileID: 2100000, guid: d732ae9f3d96c3b41b1412942c0e6532, type: 2}
 --- !u!1 &1957002615780875552
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,6 +473,7 @@ MonoBehaviour:
   key: Dropdown Menu
   configuration: {fileID: 0}
   styles: []
+  root: {fileID: 0}
 --- !u!1 &8437748324245980393
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,6 +664,24 @@ PrefabInstance:
 --- !u!4 &6302025834997289616 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8894569228733245940}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7463167643643370435 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2089007190018798135, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8894569228733245940}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &255541674696007189 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8711094563216013281, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 8894569228733245940}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1355334821442638135 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7611301349963970755, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
     type: 3}
   m_PrefabInstance: {fileID: 8894569228733245940}
   m_PrefabAsset: {fileID: 0}

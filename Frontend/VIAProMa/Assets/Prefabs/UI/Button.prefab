@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: Default
+  root: {fileID: 3178011426364783460}
   variants:
   - key: Default
     assignments:
@@ -233,6 +234,20 @@ MonoBehaviour:
     - name: Button SeeItSayItLabel Quad
       renderer: {fileID: 7611301349963970755}
       materials: []
+  - key: Better Default
+    assignments:
+    - name: Background
+      renderer: {fileID: 2089007190018798135}
+      materials:
+      - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - name: TextMeshPro
+      renderer: {fileID: 8711094563216013281}
+      materials:
+      - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - name: Quad
+      renderer: {fileID: 7611301349963970755}
+      materials:
+      - {fileID: 2100000, guid: d732ae9f3d96c3b41b1412942c0e6532, type: 2}
 --- !u!1 &2290450352371500721
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,6 +787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9135925e30640d54faa46708d708b1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  key: 
+  key: Button
   configuration: {fileID: 0}
   styles: []
+  root: {fileID: 0}
