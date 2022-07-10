@@ -15,18 +15,16 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class DragAndDrop : MonoBehaviour
 {
-    //TODO add timedelay functionality if user study says that that would be usefull
-    [SerializeField]
-    [Tooltip("Time the component waits before dropping component actually adds it")]
-    float DropWaitTime = 0.2f;
-    float timeWaitedForDrop = 0;
-
+    /* other components of the issue card that are used by this script */
     IssueSelector IssueManipulator;
     IssueDataDisplay issueDataDisplay;
     ObjectManipulator grabComponent;
     GameObject issueGameObject;
 
+    //A list of Visualizations that currently overlap with the Issue
+    List<GameObject> currentHits;
 
+    #region ThreshholdFeatureVariables
     [SerializeField]
     [Tooltip("If the issue card is moved faster than this speed, it will not be added to the visualization when dropping")]
     float speedThreshhold = 0.2f;
@@ -35,15 +33,13 @@ public class DragAndDrop : MonoBehaviour
     Coroutine speedConditionCoroutine;
     //list of objects that wait to be added when speed is below threshhold
     List<GameObject> hitWaitList;
+    #endregion ThreshholdFeatureVariables
 
     //Is true iff the issue is currently being grabbed
     bool issueIsGrabbed = false;
 
-
-    //A list of Visualizations that currently overlap with the Issue
-    List<GameObject> currentHits;
-
-
+    #region IssueDestructionVariables
+    /* variables for the Issue destruction feature */
     //indicates that the Issue is being destroyed right now; happens after it is added to a visualization
     bool IssueInSelfDestruction = false;
     [SerializeField]
@@ -55,7 +51,10 @@ public class DragAndDrop : MonoBehaviour
     float timeOffset = 0;
     Vector3 destroyStartPosition;
     Vector3 destroyStartSize;
+    #endregion IssueDestructionVariables
 
+    #region OverlapIndicatorVariables
+    /* variables for the overlap indicator feature */
     //list of all currently existing lines
     List<LineRenderer> overlapIndicators;
     [SerializeField]
@@ -63,26 +62,26 @@ public class DragAndDrop : MonoBehaviour
     GameObject indicatorLine;
     //get unique visualizations that overlap with the issue; there can be duplicates in currentHits
     HashSet<GameObject> uniqueHitSet;
-
+    #endregion OverlapIndicatorVariables
 
     //Awake is called when the script instance is being loaded
     void Awake()
     {
+        //instantiate lists
         currentHits = new List<GameObject>();
-
         hitWaitList = new List<GameObject>();
-
         overlapIndicators = new List<LineRenderer>();
         uniqueHitSet = new HashSet<GameObject>();
-
 
         IssueManipulator = GetComponentInParent<IssueSelector>();
         if(IssueManipulator == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueSelector), gameObject);
         }
-
-        issueGameObject = IssueManipulator.gameObject;
+        else
+        {
+            issueGameObject = IssueManipulator.gameObject;
+        }
 
         issueDataDisplay = GetComponentInParent<IssueDataDisplay>();
         if(issueDataDisplay == null)
@@ -101,7 +100,6 @@ public class DragAndDrop : MonoBehaviour
             grabComponent.OnManipulationStarted.AddListener(SetManipulationStartedFlag);
             grabComponent.OnManipulationEnded.AddListener(SetManipulationEndedFlag);
         }
-
 
         //Make it so object is not influenced by forces
         GetComponent<Rigidbody>().isKinematic = true;
@@ -129,9 +127,10 @@ public class DragAndDrop : MonoBehaviour
             overlapIndicators.ForEach(x => x.enabled = false);
         }
   
-        //if the issue is set to be destroyed, move it towards the visualization it is added to
+        //if the issue is set to be destroyed, move it towards the visualization it is added to, then delete it
         if(IssueInSelfDestruction)
         {
+            //don't do anything if destroy feature is deactivated
             if(!destroyIssueAfterDrop)
             {
                 IssueInSelfDestruction = false;
@@ -145,6 +144,7 @@ public class DragAndDrop : MonoBehaviour
                 //destroy component over the network. If that doesn't work, destroy it locally
                 try{PhotonNetwork.Destroy(issueGameObject);}
                 catch{Destroy(issueGameObject);}
+                return;
             }
 
             timeOffset += Time.deltaTime * (1.0f / destroyTime);
@@ -167,26 +167,27 @@ public class DragAndDrop : MonoBehaviour
     }
 
     #region TriggerEvents
-    public void OnTriggerEnter(Collider potentialTarget)
+    private void OnTriggerEnter(Collider potentialTarget)
     {
-
         //only add object if issue is grabbed to prevent it being highlighted if visualization is moved over it
         if (issueIsGrabbed)
         {
+            //don't add object directly to the hitsList
             hitWaitList.Add(potentialTarget.gameObject);
             if (speedConditionCoroutine != null)
             {
+                //stop old coroutine so only one is running at a time
                 StopCoroutine(speedConditionCoroutine);
             }
             speedConditionCoroutine = StartCoroutine(TestForSpeedCondition());
         }
 
     }
-    public void OnTriggerExit(Collider potentialTarget)
+    private void OnTriggerExit(Collider potentialTarget)
     {
         //if no more objects are on the waiting list, the coroutine for the speed condition can be stopped
         hitWaitList.Remove(potentialTarget.gameObject);
-        if (hitWaitList.Count == 0)
+        if (hitWaitList.Count == 0 && speedConditionCoroutine != null)
         {
             StopCoroutine(speedConditionCoroutine);
         }
@@ -196,12 +197,12 @@ public class DragAndDrop : MonoBehaviour
     #endregion TriggerEvents
 
     /// <summary>
-    /// This coroutine tests if the speed threshhold was reached and then adds all objects that are on the HitWaitList.
+    /// This coroutine tests if the speed is under the speed threshhold and then adds all objects that are on the HitWaitList.
     /// It only does so when necessary, i.e. when there is an overlap, to save recources.
     /// </summary>
     internal IEnumerator TestForSpeedCondition()
     {
-
+        //each frame test if distance traveled per time (i.e. speed) is slower than the threshhold to add it
         oldPosition = transform.position;
         float speed;
         do
@@ -209,10 +210,9 @@ public class DragAndDrop : MonoBehaviour
             yield return null;
             speed = (transform.position - oldPosition).magnitude / Time.deltaTime;
             oldPosition = transform.position;
-            Debug.Log(speed);
         } while (speed > speedThreshhold);
 
-        //when speed condition is satisfied, add all current
+        //when speed condition is satisfied, add all current objects on the waiting list
         foreach (GameObject target in hitWaitList)
         {
             //don't add target if it was deactivated during the wait time
@@ -232,7 +232,6 @@ public class DragAndDrop : MonoBehaviour
     /// <param name="target">the visualization this issue should be added to.</param>
     public void AddIssueToVisualization(GameObject target)
     {
-        //test if target is a visualization
         Visualization visualization = target.GetComponent<Visualization>();
 
         List<Issue> issueList = new List<Issue>(visualization.ContentProvider.Issues);
@@ -250,6 +249,35 @@ public class DragAndDrop : MonoBehaviour
         destroyStartPosition = issueGameObject.transform.position;
         destroyStartSize = issueGameObject.transform.localScale;
         IssueInSelfDestruction = true;
+    }
+
+    void AddObjectToHitsList(GameObject target)
+    {
+        //test if target is a visualization
+        Visualization visualization = target.GetComponentInParent<Visualization>();
+        if (visualization == null)
+        {
+            return;
+        }
+
+        currentHits.Add(visualization.gameObject);
+
+        //get count of unique overlapping visualizations, then get new list after removing visualization
+        int oldHitCounter = uniqueHitSet.Count;
+        uniqueHitSet = new HashSet<GameObject>(currentHits);
+
+        if (uniqueHitSet.Count > oldHitCounter)
+        {
+            //add a line which is used to point to one of the visualizations
+            overlapIndicators.Add(Instantiate(indicatorLine, transform).GetComponent<LineRenderer>());
+        }
+
+        //Activate selection indicator of the issue
+        IssueManipulator.Selected = true;
+        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+
+        //Add listener so as soon as object is let go it is added to the target visualization
+        grabComponent.OnManipulationEnded.AddListener(ManipulationEnded);
     }
 
     void RemoveObjectFromHitsList(GameObject target)
@@ -293,36 +321,7 @@ public class DragAndDrop : MonoBehaviour
         IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
     }
 
-    void AddObjectToHitsList(GameObject target)
-    {
-        //test if target is a visualization
-        Visualization visualization = target.GetComponentInParent<Visualization>();
-        if (visualization == null)
-        {
-            return;
-        }
-
-        currentHits.Add(visualization.gameObject);
-
-        //get count of unique overlapping visualizations, then get new list after removing visualization
-        int oldHitCounter = uniqueHitSet.Count;
-        uniqueHitSet = new HashSet<GameObject>(currentHits);
-
-        if (uniqueHitSet.Count > oldHitCounter)
-        {
-            //add a line which is used to point to one of the visualizations
-            overlapIndicators.Add(Instantiate(indicatorLine, transform).GetComponent<LineRenderer>());
-        }
-
-        //Activate selection indicator of the issue
-        IssueManipulator.Selected = true;
-        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
-
-        //Add listener so as soon as object is let go it is added to the target visualization
-        grabComponent.OnManipulationEnded.AddListener(ManipulationEnded);
-    }
-
-    public void ManipulationEnded(ManipulationEventData eventData)
+    private void ManipulationEnded(ManipulationEventData eventData)
     {
         //When Issue is let go, add it to all visualizations it overlaps with
         foreach(GameObject vis in currentHits)
