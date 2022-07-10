@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4786,6 +4786,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 2061d81d975eaf544b0ac0e141b3d194,
         type: 2}
+    - target: {fileID: 5539651585649317634, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: styles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5539651585649317634, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: styles.Array.data[1]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5983900532637349593, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -5233,13 +5243,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: variants.Array.data[0].assignments.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: variants.Array.data[1].assignments.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: variants.Array.data[2].assignments.Array.size
       value: 58
+      objectReference: {fileID: 0}
+    - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: variants.Array.data[0].assignments.Array.data[1].name
+      value: MainMenu Button outer Rim
       objectReference: {fileID: 0}
     - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
@@ -5249,7 +5269,7 @@ PrefabInstance:
     - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: variants.Array.data[1].assignments.Array.data[1].name
-      value: MainMenu Button
+      value: MainMenu Button outer Rim
       objectReference: {fileID: 0}
     - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
@@ -5598,6 +5618,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: variants.Array.data[0].assignments.Array.data[1].renderer
+      value: 
+      objectReference: {fileID: 1838760651}
+    - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: variants.Array.data[1].assignments.Array.data[0].renderer
       value: 
       objectReference: {fileID: 261656785}
@@ -5605,7 +5630,7 @@ PrefabInstance:
         type: 3}
       propertyPath: variants.Array.data[1].assignments.Array.data[1].renderer
       value: 
-      objectReference: {fileID: 2399816}
+      objectReference: {fileID: 1838760651}
     - target: {fileID: 8134550488818661029, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: variants.Array.data[1].assignments.Array.data[2].renderer

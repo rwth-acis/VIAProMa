@@ -32,6 +32,11 @@ public class VisualStyleLoader : MonoBehaviour
     {
         foreach (var style in styles)
         {
+            if (style == null)
+            {
+                continue;
+            }
+            
             if (style.key == styleKey)
             {
                 style.gameObject.SetActive(true);
@@ -52,8 +57,14 @@ public class VisualStyleLoader : MonoBehaviour
     
     private void ReloadStyle()
     {
-        var loadedStyle = VisualCustomizationManager.FindCurrentStyle(key);
-        LoadStyle(loadedStyle.style, loadedStyle.variation);
+        if (VisualCustomizationManager.IsInitialized)
+        {
+            var loadedStyle = VisualCustomizationManager.FindCurrentStyle(key);
+            Debug.Log("loadedStyle" + loadedStyle.style);
+            LoadStyle(loadedStyle.style, loadedStyle.variation);
+        }
+        
+        
     }
     
     public void RegisterStyles()
@@ -99,6 +110,8 @@ public class VisualStyleLoader : MonoBehaviour
         {
             styles = GetComponentsInChildren<VisualStyle>(true);
         }
+        
+        EditorUtility.SetDirty(this);
     }
 }
 
