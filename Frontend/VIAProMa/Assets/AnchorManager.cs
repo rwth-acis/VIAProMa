@@ -9,10 +9,6 @@ namespace i5.VIAProMa.Anchoring
 {
     public class AnchorManager : Singleton<AnchorManager>
     {
-
-        private GameObject anchorParent;
-        private GameObject anchorObject;
-
         private bool useAnchor = true;
 
         /// <summary>
@@ -22,8 +18,12 @@ namespace i5.VIAProMa.Anchoring
         public bool anchoringEnabled = false;
         public bool moveAnchorAloneEnabled = false;
 
-        [SerializeField] private GameObject anchor;
+        [SerializeField] private GameObject anchorParent;
+        [SerializeField] private GameObject anchorObject;
         [SerializeField] private GameObject manager;
+
+        public GameObject AnchorObject { get => anchorObject; }
+        public GameObject AnchorParent { get => anchorParent; }
 
         AnchoringMenu menu;
 
@@ -35,7 +35,7 @@ namespace i5.VIAProMa.Anchoring
             if (useAnchor)
             {
                 //attach to anchor
-                objectToAttach.transform.SetParent(anchor.transform);
+                objectToAttach.transform.SetParent(anchorParent.transform);
             }
         }
 
@@ -48,8 +48,6 @@ namespace i5.VIAProMa.Anchoring
             anchoringEnabled = false;
             moveAnchorAloneEnabled = false;
 
-            anchorParent = this.transform.parent.parent.gameObject;
-            anchorObject = anchorParent.transform.Find("AnchorObject").gameObject;
             anchorObject.SetActive(false);
 
             menu = manager.GetComponentInChildren<AnchoringMenu>();

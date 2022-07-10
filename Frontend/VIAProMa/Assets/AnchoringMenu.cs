@@ -39,9 +39,9 @@ public class AnchoringMenu : MonoBehaviour, IWindow
 
     public void Awake()
     {
-        anchorParent = this.transform.parent.parent.parent.gameObject;
-        anchorObject = anchorParent.transform.Find("AnchorObject").gameObject;
-        anchorManager = this.transform.parent.parent.gameObject.GetComponentInChildren<AnchorManager>();
+        anchorManager = AnchorManager.Instance;
+        anchorObject = AnchorManager.Instance.AnchorObject;
+        anchorParent = AnchorManager.Instance.AnchorParent;
         anchorObject.SetActive(false);
         DisableAnchorLock();
         DisableMoveAnchorAlone();
@@ -182,6 +182,7 @@ public class AnchoringMenu : MonoBehaviour, IWindow
         Debug.Log("Individual moving mode enabled.");
     }
 
+    /// <summary>
     /// Disables the functionality to move the anchor independently of the scene
     /// </summary>
     public void DisableMoveAnchorAlone()

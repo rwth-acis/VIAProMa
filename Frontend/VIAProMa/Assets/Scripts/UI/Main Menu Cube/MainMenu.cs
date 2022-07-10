@@ -34,8 +34,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
-        [SerializeField] private AnchorManager anchoringManager;
-        [SerializeField] private Transform anchorTransform;
 
 
         private FoldController foldController;
@@ -184,20 +182,20 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowSaveMenu()
         {
-            WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right - anchorTransform.position, transform.localEulerAngles);
+            WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowAnchorMenu()
         {
-            WindowManager.Instance.AnchorMenu.Open(saveButton.transform.position + 0.4f * transform.right - anchorTransform.position, transform.localEulerAngles);
+            WindowManager.Instance.AnchorMenu.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowIssueShelf()
         {
             Vector3 targetPosition = transform.position - 2f * transform.right;
-            targetPosition.y = 0f + anchorTransform.position.y;
+            targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
             foldController.InitalizeNewCloseTimer();
         }
@@ -212,7 +210,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowVisualizationShelf()
         {
             Vector3 targetPosition = transform.position - 1f * transform.right;
-            targetPosition.y = 0f + anchorTransform.position.y;
+            targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
             foldController.InitalizeNewCloseTimer();
         }
@@ -220,14 +218,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowLoadShelf()
         {
             Vector3 targetPosition = transform.position + 1f * transform.right;
-            targetPosition.y = 0f + anchorTransform.position.y;
+            targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowLoginMenu()
         {
-            WindowManager.Instance.LoginMenu.Open(loginButton.transform.position - anchorTransform.position, loginButton.transform.eulerAngles);
+            WindowManager.Instance.LoginMenu.Open(loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -242,7 +240,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowServerStatusMenu()
         {
-            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - anchorTransform.position, transform.localEulerAngles);
+            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -252,12 +250,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
             // otherwise: leave the current room
             if (PhotonNetwork.InLobby)
             {
-                WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right - anchorTransform.position, transform.localEulerAngles);
+                WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             }
             else
             {
                 PhotonNetwork.LeaveRoom();
-                anchoringManager.DisableAnchoring();
+                AnchorManager.Instance.DisableAnchoring();
 
             }
             foldController.InitalizeNewCloseTimer();
