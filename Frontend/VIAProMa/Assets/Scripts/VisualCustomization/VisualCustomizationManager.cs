@@ -26,7 +26,7 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         {
             currentTheme = saveData.selectedTheme;
         }
-        updateStyles.Invoke();
+        updateStyles?.Invoke();
     }
 
     //Finds the style selected in the current theme by the key of an object
@@ -65,15 +65,26 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         }
     }
 
-    public void SaveTheme(VisualCustomizationTheme toSave)
+    public static void SaveTheme(VisualCustomizationTheme toSave)
     {
         var saveData = LoadSavedThemes();
         saveData.AddTheme(toSave);
         PlayerPrefs.SetString("VisualCustomizationThemes", JsonUtility.ToJson(saveData));
 
-        if (toSave == currentTheme)
+        if (toSave == Instance.currentTheme)
         {
             Instance.themeUnsaved = false;
+        }
+    }
+    
+    public static void RemoveTheme(string key)
+    {
+        var saveData = LoadSavedThemes();
+        saveData.RemoveTheme(key);
+        PlayerPrefs.SetString("VisualCustomizationThemes", JsonUtility.ToJson(saveData));
+        if (Instance.currentTheme.name == key)
+        {
+            SwitchTheme(GetDefaultTheme());
         }
     }
     
@@ -97,6 +108,11 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         PlayerPrefs.DeleteKey("VisualCustomizationThemes");
     }
 
+    public static VisualCustomizationTheme GetDefaultTheme()
+    {
+        return Instance.configuration.GetDefaultTheme();
+    }
+    
     public static List<VisualCustomizationTheme> GetDefaultThemes()
     {
         return Instance.configuration.themes;
@@ -110,6 +126,24 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
     public static VisualCustomizationTheme CurrentTheme()
     {
         return Instance.currentTheme;
+    }
+
+    public static bool IsDefaultTheme(string themeName)
+    {
+        foreach (var visualCustomizationTheme in GetDefaultThemes())
+        {
+            if (visualCustomizationTheme.name == themeName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static List<VisualCustomizationConfiguration.StyleConfiguration> GetPossibleConfigurations()
+    {
+        return Instance.configuration.styleEntries;
     }
 }
 
@@ -125,7 +159,7 @@ public class VisualCustomizationManagerEditor : Editor
     }
 }
 
-//This class is saved to PLayerprefs and used to save the selected theme and all custom Themes between sessions
+//This class is saved to Playerprefs and used to save the selected theme and all custom Themes between sessions
 [Serializable]
 public class ThemesSaveData
 {

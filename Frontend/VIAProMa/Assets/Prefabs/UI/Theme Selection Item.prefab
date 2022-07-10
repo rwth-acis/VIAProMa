@@ -225,9 +225,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42ae50b0010f9464495974af27ef20fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menu: {fileID: 0}
   label: {fileID: 2799754545113265454}
   selectedSprite: {fileID: 4282878467907326801}
   editButton: {fileID: 6560206841598797085}
+  themeButton: {fileID: 6560206840934930906}
 --- !u!1001 &2799754545126258922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -494,6 +496,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2799754545126258922}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6560206840934930906 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2799754545126258922}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1279812865110300107 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3970053818709110049, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
@@ -688,7 +702,7 @@ PrefabInstance:
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 89797619491137253}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -697,7 +711,12 @@ PrefabInstance:
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PageUp
+      value: EditTheme
+      objectReference: {fileID: 0}
+    - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: VisualThemeItem, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 9065799589206597936, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}

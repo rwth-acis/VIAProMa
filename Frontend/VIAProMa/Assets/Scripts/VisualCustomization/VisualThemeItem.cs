@@ -8,11 +8,13 @@ using UnityEngine;
 
 public class VisualThemeItem : MonoBehaviour
 {
+    [SerializeField] private VisualCustomizationMenu menu;
     [SerializeField] private TextMeshPro label;
     [SerializeField] private SpriteRenderer selectedSprite;
     [SerializeField] private Interactable editButton;
+    [SerializeField] private Interactable themeButton;
     
-    private string themeName;
+    private VisualCustomizationTheme theme;
 
     private void OnEnable()
     {
@@ -24,21 +26,40 @@ public class VisualThemeItem : MonoBehaviour
         VisualCustomizationManager.updateStyles -= UpdateSelection;
     }
 
-    public void Setup(string themeName, bool editable)
+    public void Setup(VisualCustomizationTheme theme)
     {
-        this.themeName = themeName;
-        label.text = themeName;
-        selectedSprite.enabled = VisualCustomizationManager.CurrentTheme().name == themeName;
-        editButton.IsEnabled = editable;
+        this.theme = theme;
+        label.text = theme.name;
+        selectedSprite.enabled = VisualCustomizationManager.CurrentTheme().name == theme.name;
     }
 
     public void SelectTheme()
     {
-        VisualCustomizationManager.SwitchTheme(themeName);
+        VisualCustomizationManager.SwitchTheme(theme);
     }
 
     private void UpdateSelection()
     {
-        selectedSprite.enabled = VisualCustomizationManager.CurrentTheme().name == themeName;
+        if (theme != null && VisualCustomizationManager.IsInitialized && VisualCustomizationManager.CurrentTheme() != null)
+        {
+            selectedSprite.enabled = VisualCustomizationManager.CurrentTheme().name == theme.name;
+        }
+    }
+
+    public void Activate()
+    {
+        editButton.IsEnabled = true;
+        themeButton.IsEnabled = true;
+    }
+    
+    public void Deactivate()
+    {
+        editButton.IsEnabled = false;
+        themeButton.IsEnabled = false;
+    }
+
+    public void EditTheme()
+    {
+        menu.OpenEditor(theme);
     }
 }
