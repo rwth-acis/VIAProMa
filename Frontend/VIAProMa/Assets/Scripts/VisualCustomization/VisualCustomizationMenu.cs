@@ -71,11 +71,6 @@ namespace i5.VIAProMa.UI
             allThemes.AddRange(themes);
             allThemes.AddRange(customThemes);
             loadedThemes = allThemes;
-
-            if (loadedThemes.Count / visualThemeItems.Count < page)
-            {
-                page = 0;
-            }
             
             GoToPage(page);
         }

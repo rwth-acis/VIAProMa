@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -14,6 +15,12 @@ public class VisualCustomizationTheme
         this.styleSelections = styleSelections;
     }
 
+    //Checks if the theme has a styleSelection for the given key
+    public bool ContainsKey(string key)
+    {
+        return styleSelections.Any(styleSelection => styleSelection.key == key);
+    }
+    
     [Serializable]
     public class StyleSelection
     {
