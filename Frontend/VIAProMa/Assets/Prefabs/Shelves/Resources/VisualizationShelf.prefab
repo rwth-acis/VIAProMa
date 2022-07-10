@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &5947615819314153450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6834489308165160784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  observableSearch: 0
+  ObservedComponents:
+  - {fileID: 0}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &6450533075561189314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6834489308165160784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7634d4c0b80c1f2478a20e22c71ab27e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  messageBadge: {fileID: 8705900977980613142}
+  upButton: {fileID: 2524491210600306750}
+  downButton: {fileID: 5937520946046400553}
+  visualizationWidgets:
+  - {fileID: 3196158783758177522, guid: 40a784f1fee9db643aaa4e84e27caf89, type: 3}
+  - {fileID: 7058412918980041460, guid: 4acf21ce33308e543bdc269fdffb027d, type: 3}
+  - {fileID: 9192698306843927720, guid: 20334e11e19f9434fa0a733058c6fb23, type: 3}
+  - {fileID: 6089018301692534441, guid: 13bf02f06c6801b49b8c44481ea4cb98, type: 3}
+  - {fileID: 5275054209004939246, guid: 375bf310118e82e4e896b5b3be85abc0, type: 3}
+  objectsPerBoard: 3
+  boards: 5
+  boardLength: 0.8
+  shelfGrid: {fileID: 6128201715212749975}
+  boundingBox: {fileID: 8208002477654262947}
 --- !u!1 &7590399395909370976
 GameObject:
   m_ObjectHideFlags: 0
@@ -29,7 +78,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6834489308165186416}
-  m_RootOrder: 13
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6128201715212749975
 MonoBehaviour:
@@ -94,7 +143,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1.944938, z: 0.60049963}
   m_Children: []
   m_Father: {fileID: 6834489308165186416}
-  m_RootOrder: 15
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6537372110963958150
 BoxCollider:
@@ -526,55 +575,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71186f3e5f2c78d4b8d988b8221c51cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5947615819314153450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6834489308165160784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 0
-  OwnershipTransfer: 0
-  observableSearch: 0
-  ObservedComponents:
-  - {fileID: 0}
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &6450533075561189314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6834489308165160784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7634d4c0b80c1f2478a20e22c71ab27e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  messageBadge: {fileID: 8705900977980613142}
-  upButton: {fileID: 2524491210600306750}
-  downButton: {fileID: 5937520946046400553}
-  visualizationWidgets:
-  - {fileID: 3196158783758177522, guid: 40a784f1fee9db643aaa4e84e27caf89, type: 3}
-  - {fileID: 7058412918980041460, guid: 4acf21ce33308e543bdc269fdffb027d, type: 3}
-  - {fileID: 9192698306843927720, guid: 20334e11e19f9434fa0a733058c6fb23, type: 3}
-  - {fileID: 6089018301692534441, guid: 13bf02f06c6801b49b8c44481ea4cb98, type: 3}
-  - {fileID: 5275054209004939246, guid: 375bf310118e82e4e896b5b3be85abc0, type: 3}
-  objectsPerBoard: 3
-  boards: 5
-  boardLength: 0.8
-  shelfGrid: {fileID: 6128201715212749975}
-  boundingBox: {fileID: 8208002477654262947}
 --- !u!1001 &3338269296404882396
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -596,7 +596,7 @@ PrefabInstance:
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}

@@ -61,8 +61,24 @@ public class VisualCustomizationConfiguration : ScriptableObject
     //Updates all existing themes to include newly added Styles
     public void UpdateThemes()
     {
-        //TODO
-
+        foreach (var visualCustomizationTheme in themes)
+        {
+            foreach (var styleConfiguration in styleEntries)
+            {
+                if (!visualCustomizationTheme.ContainsKey(styleConfiguration.key))
+                {
+                    var newStyleSelection = new VisualCustomizationTheme.StyleSelection
+                    {
+                        key = styleConfiguration.key,
+                        style = styleConfiguration.styleEntries[0].key,
+                        variation = styleConfiguration.styleEntries[0].styleVariantEntryEntries[0].key
+                    };
+                    
+                    visualCustomizationTheme.styleSelections.Add(newStyleSelection);
+                }
+            }
+        }
+        
         EditorUtility.SetDirty(this);
     }
 
@@ -112,7 +128,7 @@ public class VisualCustomizationConfigurationEditor : Editor
         }
         if (GUILayout.Button("Update Themes"))
         {
-            //myScript.GenerateDefaultTheme();
+            myScript.UpdateThemes();
         }
     }
 }

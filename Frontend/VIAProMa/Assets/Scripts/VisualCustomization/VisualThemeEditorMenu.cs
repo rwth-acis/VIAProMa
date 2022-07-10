@@ -250,7 +250,7 @@ namespace i5.VIAProMa.UI
         public void SaveTheme()
         {
             editing.name = nameInput.Text;
-            VisualCustomizationManager.SaveTheme(editing);
+            VisualCustomizationManager.AddCustomTheme(editing);
             VisualCustomizationManager.SwitchTheme(editing);
             mainMenu.ReloadThemes();
             Close();
@@ -258,7 +258,7 @@ namespace i5.VIAProMa.UI
         
         public void DeleteTheme()
         {
-            VisualCustomizationManager.RemoveTheme(originalTheme.name);
+            VisualCustomizationManager.RemoveCustomTheme(originalTheme.name);
             mainMenu.ReloadThemes();
             Close();
         }
