@@ -7,7 +7,6 @@ using UnityEngine;
 public class VisualCustomizationTheme
 {
     public string name;
-    public Sprite previewImage;
     public List<StyleSelection> styleSelections;
 
     public VisualCustomizationTheme(List<StyleSelection> styleSelections)

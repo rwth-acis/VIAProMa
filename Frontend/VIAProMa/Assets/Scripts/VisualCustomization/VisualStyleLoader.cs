@@ -6,10 +6,13 @@ using UnityEngine;
 
 public class VisualStyleLoader : MonoBehaviour
 {
+    
     [SerializeField] private string key;
     [SerializeField] private VisualCustomizationConfiguration configuration;
     [SerializeField] private VisualStyle[] styles;
-
+    [Tooltip("The root for searching mesh renderers")]
+    [SerializeField] private Transform root;
+    
     private void OnEnable()
     {
         if (VisualCustomizationManager.IsInitialized)
@@ -88,7 +91,14 @@ public class VisualStyleLoader : MonoBehaviour
     
     public void FindStyles()
     {
-        styles = GetComponentsInChildren<VisualStyle>(true);
+        if (root != null)
+        {
+            styles = root.GetComponentsInChildren<VisualStyle>(true);
+        }
+        else
+        {
+            styles = GetComponentsInChildren<VisualStyle>(true);
+        }
     }
 }
 

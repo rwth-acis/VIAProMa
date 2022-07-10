@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using i5.Toolkit.Core.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
@@ -10,22 +12,18 @@ namespace i5.VIAProMa.UI
     /// </summary>
     public class VisualCustomizationMenu : MonoBehaviour, IWindow
     {
-        [SerializeField] private InteractableToggleCollection themeToggles;
+        [SerializeField] private Interactable previousButton;
+        [SerializeField] private Interactable nextButton;
+        [SerializeField] private List<VisualThemeItem> visualThemeItems;
         
         public bool WindowEnabled { get; set; }
-
+        private List<VisualCustomizationTheme> loadedThemes;
+        private int page;
+        
         public bool WindowOpen => gameObject.activeSelf;
 
         public event EventHandler WindowClosed;
-        
-        private void Awake()
-        {
-            if (themeToggles == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(themeToggles));
-            }
-        }
-        
+
         public void Close()
         {
             gameObject.SetActive(false);
@@ -38,6 +36,11 @@ namespace i5.VIAProMa.UI
             Initialize();
         }
 
+        private void Start()
+        {
+            Initialize();
+        }
+
         public void Open(Vector3 position, Vector3 eulerAngles)
         {
             Open();
@@ -47,28 +50,47 @@ namespace i5.VIAProMa.UI
 
         private void Initialize()
         {
-            //TODO
+            var themes = VisualCustomizationManager.GetDefaultThemes();
+            var customThemes = VisualCustomizationManager.GetCustomThemes();
+            themes.AddRange(customThemes);
+            loadedThemes = themes;
+            
+            GoToPage(0);
+        }
+
+        private void GoToPage(int pageNumber)
+        {
+            page = pageNumber;
+            var startNumber = pageNumber * visualThemeItems.Count;
+
+            for (var index = 0; index < visualThemeItems.Count; index++)
+            {
+                var visualThemeItem = visualThemeItems[index];
+                var themeIndex = startNumber + index;
+
+                if (themeIndex < loadedThemes.Count)
+                {
+                    visualThemeItems[index].gameObject.SetActive(true);
+                    visualThemeItems[index].Setup(loadedThemes[themeIndex].name,true);
+                }
+                else
+                {
+                    visualThemeItems[index].gameObject.SetActive(false);
+                }
+            }
+            
+            previousButton.IsEnabled = pageNumber != 0;
+            nextButton.IsEnabled = startNumber + visualThemeItems.Count < loadedThemes.Count;
+        }
+
+        public void NextPage()
+        {
+            GoToPage(page+1);
         }
         
-        public void OnThemeChanged()
+        public void PreviousPage()
         {
-            //TODO
-            Debug.Log(themeToggles.CurrentIndex);
-            switch (themeToggles.CurrentIndex)
-            {
-                case 0:
-                    VisualCustomizationManager.SwitchTheme("Default");
-                    break;
-                case 1:
-                    VisualCustomizationManager.SwitchTheme("Alternative");
-                    break;
-                case 2:
-                    VisualCustomizationManager.SwitchTheme("Default Red");
-                    break;
-                case 3:
-                    VisualCustomizationManager.SwitchTheme("Alternative Red");
-                    break;
-            }
+            GoToPage(page-1);
         }
     }
 }

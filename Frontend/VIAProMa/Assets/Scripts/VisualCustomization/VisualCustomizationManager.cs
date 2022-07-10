@@ -77,7 +77,7 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         }
     }
     
-    public ThemesSaveData LoadSavedThemes()
+    public static ThemesSaveData LoadSavedThemes()
     {
         ThemesSaveData saveData;
         if (PlayerPrefs.HasKey("VisualCustomizationThemes"))
@@ -86,7 +86,7 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         }
         else
         {
-            saveData = new ThemesSaveData(currentTheme);
+            saveData = new ThemesSaveData(Instance.currentTheme);
         }
         return saveData;
     }
@@ -95,6 +95,21 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
     public void ClearAllSavedThemes()
     {
         PlayerPrefs.DeleteKey("VisualCustomizationThemes");
+    }
+
+    public static List<VisualCustomizationTheme> GetDefaultThemes()
+    {
+        return Instance.configuration.themes;
+    }
+    
+    public static List<VisualCustomizationTheme> GetCustomThemes()
+    {
+        return LoadSavedThemes().customThemes;
+    }
+
+    public static VisualCustomizationTheme CurrentTheme()
+    {
+        return Instance.currentTheme;
     }
 }
 
