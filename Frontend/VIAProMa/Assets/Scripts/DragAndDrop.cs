@@ -2,6 +2,7 @@ using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.IssueSelection;
 using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Visualizations.Competence;
 using i5.VIAProMa.Visualizations;
 using Photon.Pun;
 
@@ -241,6 +242,22 @@ public class DragAndDrop : MonoBehaviour
             Debug.Log("Issue " + issueDataDisplay.Content.Name + " already in visualization.");
             return;
         }
+
+        try
+        {
+            /**
+             * For some reason that evades any logic whatsoever, the FilterWords string is not instantiated inside
+             * the CompetenceDisplay, but in the Configuration menu, so if you try to add an issue without first
+             * opening the menu at least once, there is an error which abborts the UpdateView routine and the issue
+             * deletion. The end result is a Competence display that may have issues added, but doesn't show them and
+             * an Issue card which is inside the CompetenceDisplay Hitbox, which makes it nigh unreachable.
+             * 
+             * Therefore, if visualization is a competence display, initialize the FilterWords variable.
+             */
+            ((CompetenceDisplay)visualization).FilterWords = new string[0];
+        }
+        catch {}
+
         //done this way because just adding an element doesn't update the visualization
         issueList.Add(issueDataDisplay.Content);
         visualization.ContentProvider.Issues = issueList;
