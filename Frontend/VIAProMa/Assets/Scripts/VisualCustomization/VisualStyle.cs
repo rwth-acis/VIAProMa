@@ -35,7 +35,7 @@ public class VisualStyleVariant
     public struct MaterialAssignment
     {
         public string name;
-        public MeshRenderer renderer;
+        public Renderer renderer;
         public Material[] materials;
 
         public MaterialAssignment(MeshRenderer meshRenderer)
