@@ -144,6 +144,7 @@ public class DragAndDrop : MonoBehaviour
                 //destroy component over the network. If that doesn't work, destroy it locally
                 try{PhotonNetwork.Destroy(issueGameObject);}
                 catch{Destroy(issueGameObject);}
+                return;
             }
 
             timeOffset += Time.deltaTime * (1.0f / destroyTime);
@@ -186,7 +187,7 @@ public class DragAndDrop : MonoBehaviour
     {
         //if no more objects are on the waiting list, the coroutine for the speed condition can be stopped
         hitWaitList.Remove(potentialTarget.gameObject);
-        if (hitWaitList.Count == 0)
+        if (hitWaitList.Count == 0 && speedConditionCoroutine != null)
         {
             StopCoroutine(speedConditionCoroutine);
         }
