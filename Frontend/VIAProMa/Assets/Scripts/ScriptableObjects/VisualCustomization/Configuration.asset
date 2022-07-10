@@ -23,12 +23,18 @@ MonoBehaviour:
       styleVariantEntryEntries:
       - key: Default
       - key: Red
+  - key: Main Menu
+    styleEntries:
+    - key: Default
+      styleVariantEntryEntries:
+      - key: Default
+      - key: Alternative
   themes:
   - name: Default
     styleSelections:
     - key: Shelf
       style: Alternative
-      variation: Default
+      variation: Red
   - name: Default Red
     styleSelections:
     - key: Shelf
@@ -36,6 +42,9 @@ MonoBehaviour:
       variation: Default
   - name: Alternative
     styleSelections:
+    - key: Shelf
+      style: Alternative
+      variation: Red
     - key: Shelf
       style: Alternative
       variation: Red
