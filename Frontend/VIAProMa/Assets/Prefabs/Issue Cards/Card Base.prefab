@@ -1524,7 +1524,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3244801870925433340}
-  - component: {fileID: 6282509094234219197}
+  - component: {fileID: 448190220296625854}
   m_Layer: 0
   m_Name: Default
   m_TagString: Untagged
@@ -1546,7 +1546,7 @@ Transform:
   m_Father: {fileID: 7130583965864504936}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6282509094234219197
+--- !u!114 &448190220296625854
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1559,7 +1559,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: Default
-  variants: []
+  root: {fileID: 5113043743492744269}
+  variants:
+  - key: Default
+    assignments:
+    - name: Background
+      renderer: {fileID: 5113043743327247548}
+      materials:
+      - {fileID: 2100000, guid: cc5fb2a79ac3e154ab57cfc24a2f666e, type: 2}
+    - name: Title
+      renderer: {fileID: 5113043743851458769}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Description
+      renderer: {fileID: 5113043742920443703}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Status Text
+      renderer: {fileID: 5113043742475064748}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Status Background
+      renderer: {fileID: 5113043743441687885}
+      materials:
+      - {fileID: 2100000, guid: 9d9c3aa4369fd314dae728f806837c17, type: 2}
+    - name: CreatorLabel
+      renderer: {fileID: 5113043744223840960}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: UserBadge Variant
+      renderer: {fileID: 2477892254056905192}
+      materials:
+      - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - name: IssueCardProfileImage
+      renderer: {fileID: 5725950453782116977}
+      materials:
+      - {fileID: 2100000, guid: c97f5f148b186fb4b996b236598e78c9, type: 2}
+    - name: NameText
+      renderer: {fileID: 5113043743201697277}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Status Text
+      renderer: {fileID: 7203449665542671135}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Status Background
+      renderer: {fileID: 1498898715806350574}
+      materials:
+      - {fileID: 2100000, guid: 7fc5089e76ea2d94eba185713583e670, type: 2}
 --- !u!1001 &5113043742796818572
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1676,9 +1723,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60d9840555d7e8b45b879ecdacb851dd, type: 3}
---- !u!4 &2477892254059330312 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7248002441899529092, guid: 60d9840555d7e8b45b879ecdacb851dd,
+--- !u!23 &5113043743201697277 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1759655281, guid: 60d9840555d7e8b45b879ecdacb851dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5113043742796818572}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5725950453782116977 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 685540724004573949, guid: 60d9840555d7e8b45b879ecdacb851dd,
     type: 3}
   m_PrefabInstance: {fileID: 5113043742796818572}
   m_PrefabAsset: {fileID: 0}
@@ -1694,3 +1747,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0de5b72e47d86a4a812675c2e30c2b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!23 &2477892254056905192 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7248002441901298020, guid: 60d9840555d7e8b45b879ecdacb851dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5113043742796818572}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2477892254059330312 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7248002441899529092, guid: 60d9840555d7e8b45b879ecdacb851dd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5113043742796818572}
+  m_PrefabAsset: {fileID: 0}

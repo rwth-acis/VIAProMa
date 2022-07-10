@@ -29,6 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6208836074716645228}
+  - {fileID: 8432396440028435797}
   m_Father: {fileID: 2805648536711648858}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -47,6 +48,111 @@ MonoBehaviour:
   key: Save Menu
   configuration: {fileID: 0}
   styles: []
+  root: {fileID: 0}
+--- !u!1 &1569638327816199978
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8432396440028435797}
+  - component: {fileID: 2054141694645125714}
+  m_Layer: 0
+  m_Name: Alternative
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8432396440028435797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569638327816199978}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3856516112205365156}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2054141694645125714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569638327816199978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac53ee1f5b180bf468f2e373736e3bd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: Alternative
+  root: {fileID: 2805648536711648858}
+  variants:
+  - key: Alterntaive 1
+    assignments:
+    - name: Background
+      renderer: {fileID: 2805648536649806407}
+      materials:
+      - {fileID: 2100000, guid: f45c059b7732c234ca97cd53efe62da8, type: 2}
+    - name: Title
+      renderer: {fileID: 2805648536714552292}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Dash
+      renderer: {fileID: 2805648536583345742}
+      materials:
+      - {fileID: 2100000, guid: 57688f3f9200e164a86e8372687f0438, type: 2}
+    - name: Background
+      renderer: {fileID: 4184422957097078180}
+      materials:
+      - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - name: TextMeshPro
+      renderer: {fileID: 6776699321386518642}
+      materials:
+      - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - name: Quad
+      renderer: {fileID: 5714905451045439312}
+      materials:
+      - {fileID: 2100000, guid: d732ae9f3d96c3b41b1412942c0e6532, type: 2}
+    - name: SaveNameLabel
+      renderer: {fileID: 2805648538006454300}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: InputFieldBackground
+      renderer: {fileID: 3926577373354838646}
+      materials:
+      - {fileID: 2100000, guid: 57688f3f9200e164a86e8372687f0438, type: 2}
+    - name: Content
+      renderer: {fileID: 1905206387941650297}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Background
+      renderer: {fileID: 5592264299050320676}
+      materials:
+      - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - name: TextMeshPro
+      renderer: {fileID: 2990975515980154610}
+      materials:
+      - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - name: Quad
+      renderer: {fileID: 4091190926724909520}
+      materials:
+      - {fileID: 2100000, guid: d732ae9f3d96c3b41b1412942c0e6532, type: 2}
+    - name: Caption
+      renderer: {fileID: 4658059281348556284}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: MessageLabel
+      renderer: {fileID: 2805648536901475743}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
 --- !u!1 &2805648536583345737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,6 +1180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: Default
+  root: {fileID: 2805648536711648858}
   variants:
   - key: Default
     assignments:
@@ -1083,6 +1190,64 @@ MonoBehaviour:
     - name: Dash
       renderer: {fileID: 2805648536583345742}
       materials: []
+  - key: In depth Default
+    assignments:
+    - name: Background
+      renderer: {fileID: 2805648536649806407}
+      materials:
+      - {fileID: 2100000, guid: f45c059b7732c234ca97cd53efe62da8, type: 2}
+    - name: Title
+      renderer: {fileID: 2805648536714552292}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Dash
+      renderer: {fileID: 2805648536583345742}
+      materials:
+      - {fileID: 2100000, guid: 57688f3f9200e164a86e8372687f0438, type: 2}
+    - name: Background
+      renderer: {fileID: 4184422957097078180}
+      materials:
+      - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - name: TextMeshPro
+      renderer: {fileID: 6776699321386518642}
+      materials:
+      - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - name: Quad
+      renderer: {fileID: 5714905451045439312}
+      materials:
+      - {fileID: 2100000, guid: d732ae9f3d96c3b41b1412942c0e6532, type: 2}
+    - name: SaveNameLabel
+      renderer: {fileID: 2805648538006454300}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: InputFieldBackground
+      renderer: {fileID: 3926577373354838646}
+      materials:
+      - {fileID: 2100000, guid: 57688f3f9200e164a86e8372687f0438, type: 2}
+    - name: Content
+      renderer: {fileID: 1905206387941650297}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: Background
+      renderer: {fileID: 5592264299050320676}
+      materials:
+      - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
+    - name: TextMeshPro
+      renderer: {fileID: 2990975515980154610}
+      materials:
+      - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - name: Quad
+      renderer: {fileID: 4091190926724909520}
+      materials:
+      - {fileID: 2100000, guid: d732ae9f3d96c3b41b1412942c0e6532, type: 2}
+    - name: Caption
+      renderer: {fileID: 4658059281348556284}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
+    - name: MessageLabel
+      renderer: {fileID: 2805648536901475743}
+      materials:
+      - {fileID: 21340371490990018, guid: afc8299d5d5bbd440a0616c8ecbc7217, type: 2}
 --- !u!1001 &2805648537286377363
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1216,6 +1381,24 @@ PrefabInstance:
 --- !u!4 &789602143229609207 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537286377363}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &5714905451045439312 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7611301349963970755, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537286377363}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6776699321386518642 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8711094563216013281, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537286377363}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4184422957097078180 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2089007190018798135, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
     type: 3}
   m_PrefabInstance: {fileID: 2805648537286377363}
   m_PrefabAsset: {fileID: 0}
@@ -1412,6 +1595,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!23 &5592264299050320676 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7742845248557043535, guid: 2ba716e5a8975a546929d28f88b85947,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537426988139}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &2990975515980154610 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1111753694863248025, guid: 2ba716e5a8975a546929d28f88b85947,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537426988139}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4658059281348556284 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7371102065924503959, guid: 2ba716e5a8975a546929d28f88b85947,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537426988139}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4091190926724909520 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2173406842545456571, guid: 2ba716e5a8975a546929d28f88b85947,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537426988139}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2805648537884379904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1501,9 +1708,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6a506e649f6f544a8a1f83501246aa5, type: 3}
---- !u!4 &3926577373702495619 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1193923580483524227, guid: a6a506e649f6f544a8a1f83501246aa5,
+--- !u!23 &3926577373354838646 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1193923580637184374, guid: a6a506e649f6f544a8a1f83501246aa5,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537884379904}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1905206387941650297 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4368224901352416377, guid: a6a506e649f6f544a8a1f83501246aa5,
     type: 3}
   m_PrefabInstance: {fileID: 2805648537884379904}
   m_PrefabAsset: {fileID: 0}
@@ -1519,3 +1732,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb937299bb55a8148a57952055fb5387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &3926577373702495619 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1193923580483524227, guid: a6a506e649f6f544a8a1f83501246aa5,
+    type: 3}
+  m_PrefabInstance: {fileID: 2805648537884379904}
+  m_PrefabAsset: {fileID: 0}
