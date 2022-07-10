@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HoloToolkit.Unity;
 using i5.VIAProMa.Multiplayer.Chat;
+using i5.VIAProMa.SaveLoadSystem.Core;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,13 +16,13 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
     [SerializeField] private VisualCustomizationConfiguration configuration;
     [SerializeField] private VisualCustomizationTheme currentTheme;
 
-    //Is true, if the current theme is changed, but not saved in the custom themes
-    [SerializeField] private bool themeUnsaved = false;
-
     private void Start()
     {
         currentTheme = configuration.GetDefaultTheme();
         var saveData = LoadSavedThemes();
+        //Updates the custom themes to make sure they are up to date
+        saveData.UpdateThemes(configuration.styleEntries);
+        SaveCustomThemes(saveData);
         if (saveData.selectedTheme != null)
         {
             currentTheme = saveData.selectedTheme;
@@ -49,8 +50,8 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         if (theme != null)
         {
             Instance.currentTheme = theme;
+            SaveCustomThemes(new ThemesSaveData(Instance.currentTheme, GetCustomThemes()));
             updateStyles?.Invoke();
-            Instance.themeUnsaved = false;
         }
     }
     
@@ -61,23 +62,22 @@ public class VisualCustomizationManager : Singleton<VisualCustomizationManager>
         {
             Instance.currentTheme = theme;
             updateStyles?.Invoke();
-            Instance.themeUnsaved = false;
         }
     }
 
-    public static void SaveTheme(VisualCustomizationTheme toSave)
+    public static void AddCustomTheme(VisualCustomizationTheme toSave)
     {
         var saveData = LoadSavedThemes();
         saveData.AddTheme(toSave);
         PlayerPrefs.SetString("VisualCustomizationThemes", JsonUtility.ToJson(saveData));
-
-        if (toSave == Instance.currentTheme)
-        {
-            Instance.themeUnsaved = false;
-        }
     }
     
-    public static void RemoveTheme(string key)
+    public static void SaveCustomThemes(ThemesSaveData saveData)
+    {
+        PlayerPrefs.SetString("VisualCustomizationThemes", JsonUtility.ToJson(saveData));
+    }
+    
+    public static void RemoveCustomTheme(string key)
     {
         var saveData = LoadSavedThemes();
         saveData.RemoveTheme(key);
@@ -190,5 +190,26 @@ public class ThemesSaveData
     public void RemoveTheme(string name)
     {
         customThemes.RemoveAll(theme => theme.name == name);
+    }
+
+    public void UpdateThemes(List<VisualCustomizationConfiguration.StyleConfiguration> styleConfigurations)
+    {
+        foreach (var visualCustomizationTheme in customThemes)
+        {
+            foreach (var styleConfiguration in styleConfigurations)
+            {
+                if (!visualCustomizationTheme.ContainsKey(styleConfiguration.key))
+                {
+                    var newStyleSelection = new VisualCustomizationTheme.StyleSelection
+                    {
+                        key = styleConfigurations[0].key,
+                        style = styleConfigurations[0].styleEntries[0].key,
+                        variation = styleConfigurations[0].styleEntries[0].styleVariantEntryEntries[0].key
+                    };
+                    
+                    visualCustomizationTheme.styleSelections.Add(newStyleSelection);
+                }
+            }
+        }
     }
 }
