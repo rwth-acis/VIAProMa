@@ -7,12 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Main Menu Button Alt
+  m_Name: NotificationLabelBackground Alt
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _HOVER_LIGHT _REFLECTIONS
-    _SPECULAR_HIGHLIGHTS
+  m_ShaderKeywords: _BORDER_LIGHT _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _HOVER_LIGHT
+    _REFLECTIONS _ROUND_CORNERS _SPECULAR_HIGHLIGHTS
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
   stringTagMap:
@@ -74,16 +74,19 @@ Material:
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
     - _BlendedClippingWidth: 1
-    - _BorderLight: 0
+    - _BorderLight: 1
     - _BorderLightOpaque: 0
     - _BorderLightOpaqueAlpha: 1
     - _BorderLightReplacesAlbedo: 0
     - _BorderLightUsesHoverColor: 0
-    - _BorderMinValue: 0.1
-    - _BorderWidth: 0.1
+    - _BorderMinValue: 1
+    - _BorderWidth: 0.083
     - _BumpScale: 1
     - _ClippingBorder: 0
     - _ClippingBorderWidth: 0.025
+    - _ClippingBox: 0
+    - _ClippingPlane: 0
+    - _ClippingSphere: 0
     - _ColorWriteMask: 15
     - _CullMode: 2
     - _CustomMode: 0
@@ -115,6 +118,7 @@ Material:
     - _IndependentCorners: 0
     - _InnerGlow: 0
     - _InnerGlowPower: 4
+    - _InstancedColor: 0
     - _Iridescence: 0
     - _IridescenceAngle: -0.78
     - _IridescenceIntensity: 0.5
@@ -136,9 +140,9 @@ Material:
     - _RenderQueueOverride: -1
     - _RimLight: 0
     - _RimPower: 0.25
-    - _RoundCornerMargin: 0.01
-    - _RoundCornerRadius: 0.25
-    - _RoundCorners: 0
+    - _RoundCornerMargin: 0
+    - _RoundCornerRadius: 0.213
+    - _RoundCorners: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -160,7 +164,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.6843459, g: 0.4719206, b: 0.9528302, a: 1}
+    - _Color: {r: 1, g: 0.25943398, b: 0.37434477, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}

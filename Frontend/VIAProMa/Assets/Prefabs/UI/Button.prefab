@@ -499,6 +499,66 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3679642629139926045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5443263024288830830}
+  - component: {fileID: 3603315164408190933}
+  m_Layer: 0
+  m_Name: Alternative
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5443263024288830830
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3679642629139926045}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1296449266376626775}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3603315164408190933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3679642629139926045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac53ee1f5b180bf468f2e373736e3bd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: Alternative
+  root: {fileID: 3178011426364783460}
+  variants:
+  - key: Alternative 1
+    assignments:
+    - name: Background
+      renderer: {fileID: 2089007190018798135}
+      materials:
+      - {fileID: 2100000, guid: 80281e15a72d3b042ac7cf35c3fa18bb, type: 2}
+    - name: TextMeshPro
+      renderer: {fileID: 8711094563216013281}
+      materials:
+      - {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
+    - name: Quad
+      renderer: {fileID: 7611301349963970755}
+      materials:
+      - {fileID: 2100000, guid: c8052f29913fc40469f4bb87e7311eb6, type: 2}
 --- !u!1 &3778829747718270230
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,6 +832,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2593875414142259517}
+  - {fileID: 5443263024288830830}
   m_Father: {fileID: 3178011426364783460}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
