@@ -31,6 +31,7 @@ public class VisualCustomizationConfiguration : ScriptableObject
         styleEntries.Add(newConfiguration);
         EditorUtility.SetDirty(this);
         Debug.Log("Added Entry to Configuration", this);
+        UpdateThemes();
     }
     
     //Creates a new theme with all styles set to the default value
