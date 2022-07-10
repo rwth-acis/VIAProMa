@@ -7,11 +7,22 @@ using UnityEngine;
 public class VisualStyle : MonoBehaviour
 {
     public string key;
+    [SerializeField] private Transform root;
     public List<VisualStyleVariant> variants;
-
+    
+    
     public void CreateVariant()
     {
-        var renderers = GetComponentsInChildren<MeshRenderer>();
+        MeshRenderer[] renderers;
+
+        if (root == null)
+        {
+            renderers = GetComponentsInChildren<MeshRenderer>();
+        }
+        else
+        {
+            renderers = root.GetComponentsInChildren<MeshRenderer>();
+        }
         var newVariant = new VisualStyleVariant();
 
         foreach (var renderer in renderers)

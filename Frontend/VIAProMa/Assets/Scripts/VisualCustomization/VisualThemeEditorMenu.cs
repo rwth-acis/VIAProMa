@@ -10,7 +10,7 @@ namespace i5.VIAProMa.UI
     /// <summary>
     /// UI controller and actions for the visual customization menu
     /// </summary>
-    public class VisualCustomizationMenu : MonoBehaviour, IWindow
+    public class VisualThemeEditorMenu : MonoBehaviour, IWindow
     {
         [SerializeField] private Interactable previousButton;
         [SerializeField] private Interactable nextButton;
