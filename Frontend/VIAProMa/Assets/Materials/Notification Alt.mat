@@ -7,12 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Main Menu Button Alt
+  m_Name: Notification Alt
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _HOVER_LIGHT _REFLECTIONS
-    _SPECULAR_HIGHLIGHTS
+  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _EMISSION _HOVER_LIGHT
+    _REFLECTIONS _RIM_LIGHT _SPECULAR_HIGHLIGHTS _SPHERICAL_HARMONICS
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
   stringTagMap:
@@ -79,13 +79,16 @@ Material:
     - _BorderLightOpaqueAlpha: 1
     - _BorderLightReplacesAlbedo: 0
     - _BorderLightUsesHoverColor: 0
-    - _BorderMinValue: 0.1
-    - _BorderWidth: 0.1
+    - _BorderMinValue: 0.194
+    - _BorderWidth: 0.072
     - _BumpScale: 1
     - _ClippingBorder: 0
     - _ClippingBorderWidth: 0.025
+    - _ClippingBox: 0
+    - _ClippingPlane: 0
+    - _ClippingSphere: 0
     - _ColorWriteMask: 15
-    - _CullMode: 2
+    - _CullMode: 0
     - _CustomMode: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -93,7 +96,7 @@ Material:
     - _DstBlend: 0
     - _EdgeSmoothingValue: 0.002
     - _EnableChannelMap: 0
-    - _EnableEmission: 0
+    - _EnableEmission: 1
     - _EnableHoverColorOverride: 0
     - _EnableLocalSpaceTriplanarMapping: 0
     - _EnableNormalMap: 0
@@ -115,6 +118,7 @@ Material:
     - _IndependentCorners: 0
     - _InnerGlow: 0
     - _InnerGlowPower: 4
+    - _InstancedColor: 0
     - _Iridescence: 0
     - _IridescenceAngle: -0.78
     - _IridescenceIntensity: 0.5
@@ -134,15 +138,15 @@ Material:
     - _Refraction: 0
     - _RefractiveIndex: 0
     - _RenderQueueOverride: -1
-    - _RimLight: 0
-    - _RimPower: 0.25
+    - _RimLight: 1
+    - _RimPower: 3.61
     - _RoundCornerMargin: 0.01
     - _RoundCornerRadius: 0.25
     - _RoundCorners: 0
-    - _Smoothness: 0.5
+    - _Smoothness: 0.961
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SphericalHarmonics: 0
+    - _SphericalHarmonics: 1
     - _SrcBlend: 1
     - _Stencil: 0
     - _StencilComparison: 0
@@ -160,7 +164,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.6843459, g: 0.4719206, b: 0.9528302, a: 1}
+    - _Color: {r: 0.9150943, g: 0.22877358, b: 0.30634707, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
@@ -171,6 +175,6 @@ Material:
     - _ProximityLightCenterColorOverride: {r: 1, g: 0, b: 0, a: 0}
     - _ProximityLightMiddleColorOverride: {r: 0, g: 1, b: 0, a: 0.5}
     - _ProximityLightOuterColorOverride: {r: 0, g: 0, b: 1, a: 1}
-    - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _RimColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
     - _RoundCornersRadius: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   m_BuildTextureStacks: []
