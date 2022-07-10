@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.UI.ListView.Issues;
-using i5.VIAProMa.UI.MultiListView.Core;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using UnityEngine;
@@ -12,13 +11,28 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
 {
     public class ConfigurationIssueListUI : MonoBehaviour, IUiFragment
     {
-        [SerializeField] private Interactable selectionButton;
-        [SerializeField] private GameObject listWindow;
-        [SerializeField] private List<IssueListView> issueViewLists;
-        [SerializeField] private int horizontalIssueViewListSize;
-        [SerializeField] private GameObject emptyMessage;
-        [SerializeField] private GameObject upButton;
-        [SerializeField] private GameObject downButton;
+        [Tooltip("This button should open the \"List Visualization Content\" window.")] [SerializeField]
+        private Interactable selectionButton;
+
+        [Tooltip("This actual  \"List Visualization Content\" window.")] [SerializeField]
+        private GameObject listWindow;
+
+        [Tooltip("These display the actual issues.")] [SerializeField]
+        private List<IssueListView> issueViewLists;
+
+        [Tooltip("How many issues should be displayed per IssueListView from left to right.")] [SerializeField]
+        private int horizontalIssueViewListSize;
+
+        [Tooltip("The empty message shown when a  \"List Visualization Content\" window is opened but no issues are " +
+                 "added to the visualization.")]
+        [SerializeField]
+        private GameObject emptyMessage;
+
+        [Tooltip("The up button. When pushed go back to the previous page.")] [SerializeField]
+        private GameObject upButton;
+
+        [Tooltip("The down button. When pushed go to the next page.")] [SerializeField]
+        private GameObject downButton;
 
         private bool uiEnabled = true;
         private Visualization visualization;
@@ -83,7 +97,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         }
 
         /// <summary>
-        /// Initializes the issues list window and opens the issue list window on the current page defined by <see cref="ConfigurationIssueListUI.currentPage"/>.
+        /// Initializes the issues list window and opens the "List Visualization Content" window on the current page defined by <see cref="ConfigurationIssueListUI.currentPage"/>.
         /// </summary>
         public void OpenIssueList()
         {
@@ -234,7 +248,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
         }
 
         /// <summary>
-        /// The close button was clicked. Close the issue list window. And reenable the "List Visualization Content" button.
+        /// The close button was clicked. Close the "List Visualization Content" window. And reenable the "List Visualization Content" button.
         /// </summary>
         public void CloseIssueList()
         {
