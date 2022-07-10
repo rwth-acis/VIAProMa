@@ -42,7 +42,7 @@ public class DragAndDrop : MonoBehaviour
     #region IssueDestructionVariables
     /* variables for the Issue destruction feature */
     //indicates that the Issue is being destroyed right now; happens after it is added to a visualization
-    bool IssueInSelfDestruction = false;
+    public bool IssueInSelfDestruction { get; private set; } = false;
     [SerializeField]
     [Tooltip("Time the component gets before it is destroyed after being added to a visualization")]
     float destroyTime = 0.25f;
