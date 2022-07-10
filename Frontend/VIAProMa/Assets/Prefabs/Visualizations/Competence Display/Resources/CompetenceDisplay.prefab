@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2251220285754064856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5158019856239934444}
+  - component: {fileID: 402224415992956274}
+  m_Layer: 0
+  m_Name: DragAndDropCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5158019856239934444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251220285754064856}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3050140181036494613}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &402224415992956274
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251220285754064856}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.29, y: 0.19, z: 0.17}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3050140181036494612
 GameObject:
   m_ObjectHideFlags: 0
@@ -41,6 +85,7 @@ Transform:
   - {fileID: 4843009497105795284}
   - {fileID: 6798500909607908662}
   - {fileID: 3050140181562696000}
+  - {fileID: 5158019856239934444}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -61,6 +106,7 @@ MonoBehaviour:
     type: 3}
   gridObjectCollection: {fileID: 3050140181562696001}
   boundsControl: {fileID: 377257872796663951}
+  DragAndDropCollider: {fileID: 402224415992956274}
   maxSize: 1
 --- !u!114 &6557232867876204770
 MonoBehaviour:
@@ -267,7 +313,6 @@ GameObject:
   - component: {fileID: 2665158845477296407}
   - component: {fileID: 377257872796663951}
   - component: {fileID: 1118299157831691980}
-  - component: {fileID: 997792352288129679}
   m_Layer: 0
   m_Name: Bounding Box
   m_TagString: Untagged
@@ -483,19 +528,6 @@ MonoBehaviour:
   scaleMinimum: 0.2
   scaleMaximum: 2
   relativeToInitialState: 0
---- !u!65 &997792352288129679
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7964723749076555946}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.9, y: 0.9, z: 0.9}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &3050140181725065719
 PrefabInstance:
   m_ObjectHideFlags: 0

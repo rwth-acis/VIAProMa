@@ -14,6 +14,7 @@ namespace i5.VIAProMa.Visualizations.Competence
         [SerializeField] private GameObject userBadgePrefab;
         [SerializeField] private GridObjectCollection gridObjectCollection;
         [SerializeField] private BoundsControl boundsControl;
+        [SerializeField] private BoxCollider DragAndDropCollider;
         [Header("Values")]
         [SerializeField] private float maxSize = 1f;
 
@@ -68,6 +69,10 @@ namespace i5.VIAProMa.Visualizations.Competence
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(boundsControl));
             }
             boundingBoxCollider = boundsControl?.gameObject.GetComponent<BoxCollider>(); // must exist since BoundingBox requires a BoxCollider
+            if(DragAndDropCollider == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(DragAndDropCollider));
+            }
         }
 
         public void DisplayCompetences()
@@ -119,6 +124,12 @@ namespace i5.VIAProMa.Visualizations.Competence
                     2 * targetRadius + cellSize.y + 0.02f, // add 0.02f to clear the username at the bottom
                     1f
                     );
+
+                //change size of the DandD collider to be a bit smaller than the bBC, so it doesn't interfere with it
+                if (DragAndDropCollider != null)
+                {
+                    DragAndDropCollider.size = boundingBoxCollider.size * 0.95f;
+                }
             }
 
             titleLabel.MaxWidth = targetRadius * 0.8f;
