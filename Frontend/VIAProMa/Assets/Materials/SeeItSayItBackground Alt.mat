@@ -7,12 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Window Background Alt
+  m_Name: SeeItSayItBackground Alt
   m_Shader: {fileID: 4800000, guid: 5bdea20278144b11916d77503ba1467a, type: 3}
-  m_ShaderKeywords: _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _HOVER_LIGHT _REFLECTIONS
+  m_ShaderKeywords: _BORDER_LIGHT _BORDER_LIGHT_REPLACES_ALBEDO _DIRECTIONAL_LIGHT
+    _DISABLE_ALBEDO_MAP _HOVER_LIGHT _PROXIMITY_LIGHT _REFLECTIONS _ROUND_CORNERS
     _SPECULAR_HIGHLIGHTS
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
   stringTagMap:
@@ -74,16 +75,19 @@ Material:
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
     - _BlendedClippingWidth: 1
-    - _BorderLight: 0
+    - _BorderLight: 1
     - _BorderLightOpaque: 0
     - _BorderLightOpaqueAlpha: 1
-    - _BorderLightReplacesAlbedo: 0
+    - _BorderLightReplacesAlbedo: 1
     - _BorderLightUsesHoverColor: 0
-    - _BorderMinValue: 0.1
-    - _BorderWidth: 0.1
+    - _BorderMinValue: 0.6
+    - _BorderWidth: 0.2
     - _BumpScale: 1
     - _ClippingBorder: 0
     - _ClippingBorderWidth: 0.025
+    - _ClippingBox: 0
+    - _ClippingPlane: 0
+    - _ClippingSphere: 0
     - _ColorWriteMask: 15
     - _CullMode: 2
     - _CustomMode: 0
@@ -91,7 +95,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DirectionalLight: 1
     - _DstBlend: 0
-    - _EdgeSmoothingValue: 0.002
+    - _EdgeSmoothingValue: 0.0001
     - _EnableChannelMap: 0
     - _EnableEmission: 0
     - _EnableHoverColorOverride: 0
@@ -115,6 +119,7 @@ Material:
     - _IndependentCorners: 0
     - _InnerGlow: 0
     - _InnerGlowPower: 4
+    - _InstancedColor: 0
     - _Iridescence: 0
     - _IridescenceAngle: -0.78
     - _IridescenceIntensity: 0.5
@@ -127,7 +132,7 @@ Material:
     - _NormalMapScale: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ProximityLight: 0
+    - _ProximityLight: 1
     - _ProximityLightSubtractive: 0
     - _ProximityLightTwoSided: 0
     - _Reflections: 1
@@ -136,9 +141,9 @@ Material:
     - _RenderQueueOverride: -1
     - _RimLight: 0
     - _RimPower: 0.25
-    - _RoundCornerMargin: 0.01
-    - _RoundCornerRadius: 0.25
-    - _RoundCorners: 0
+    - _RoundCornerMargin: 0
+    - _RoundCornerRadius: 0.2
+    - _RoundCorners: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -160,7 +165,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _ClippingBorderColor: {r: 1, g: 0.2, b: 0, a: 1}
-    - _Color: {r: 0.5653702, g: 0.990566, b: 0.5696418, a: 1}
+    - _Color: {r: 0.54509807, g: 0.32941177, b: 0.37183893, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
     - _EnvironmentColorX: {r: 1, g: 0, b: 0, a: 1}
