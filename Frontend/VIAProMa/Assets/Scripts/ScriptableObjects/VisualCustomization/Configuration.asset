@@ -1,0 +1,139 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d032cb9c1a31db145b2ef22bddac026f, type: 3}
+  m_Name: Configuration
+  m_EditorClassIdentifier: 
+  styleEntries:
+  - key: Shelf
+    styleEntries:
+    - key: Default
+      styleVariantEntryEntries:
+      - key: Default
+      - key: Red
+    - key: Alternative
+      styleVariantEntryEntries:
+      - key: Default
+      - key: Red
+  - key: Main Menu
+    styleEntries:
+    - key: Default
+      styleVariantEntryEntries:
+      - key: Default
+      - key: Alternative
+  - key: Progress Bar
+    styleEntries:
+    - key: Default
+      styleVariantEntryEntries:
+      - key: Default
+      - key: Alternative
+  - key: Menu
+    styleEntries:
+    - key: Default
+      styleVariantEntryEntries:
+      - key: Default
+      - key: Alternative
+  themes:
+  - name: Default
+    styleSelections:
+    - key: Shelf
+      style: Default
+      variation: Default
+    - key: Main Menu
+      style: Default
+      variation: Default
+    - key: Login Menu
+      style: Default
+      variation: In-depth Default
+    - key: Menu
+      style: Default
+      variation: Default
+    - key: Progress Bar
+      style: Alternative
+      variation: Alternative 2
+    - key: Save Menu
+      style: Default
+      variation: Default
+    - key: Button
+      style: Default
+      variation: Default
+  - name: Default Red
+    styleSelections:
+    - key: Shelf
+      style: Default
+      variation: Red
+    - key: Main Menu
+      style: Default
+      variation: Default
+    - key: Login Menu
+      style: Default
+      variation: Default
+    - key: Menu
+      style: Default
+      variation: Default
+    - key: Progress Bar
+      style: Default
+      variation: Default
+    - key: Save Menu
+      style: Default
+      variation: Default
+    - key: Button
+      style: Default
+      variation: Default
+  - name: Alternative
+    styleSelections:
+    - key: Shelf
+      style: Alternative
+      variation: Default
+    - key: Shelf
+      style: Alternative
+      variation: Red
+    - key: Main Menu
+      style: Default
+      variation: Default
+    - key: Login Menu
+      style: Default
+      variation: Default
+    - key: Menu
+      style: Default
+      variation: Alternative
+    - key: Progress Bar
+      style: Default
+      variation: Default
+    - key: Save Menu
+      style: Default
+      variation: Default
+    - key: Button
+      style: Default
+      variation: Default
+  - name: Alternative Red
+    styleSelections:
+    - key: Shelf
+      style: Alternative
+      variation: Red
+    - key: Main Menu
+      style: Default
+      variation: Default
+    - key: Login Menu
+      style: Default
+      variation: Default
+    - key: Menu
+      style: Default
+      variation: Alternative
+    - key: Progress Bar
+      style: Default
+      variation: Default
+    - key: Save Menu
+      style: Default
+      variation: Default
+    - key: Button
+      style: Default
+      variation: Default

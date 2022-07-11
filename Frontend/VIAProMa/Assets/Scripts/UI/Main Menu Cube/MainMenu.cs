@@ -26,6 +26,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private TextMeshPro roomButtonText;
         [SerializeField] private Interactable chatButton;
         [SerializeField] private Interactable microphoneButton;
+        [SerializeField] private Interactable visualCustomizationButton;
 
         [Header("References")]
         [SerializeField] private GameObject issueShelfPrefab;
@@ -103,6 +104,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             if (avatarConfiguratorPrefab == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfiguratorPrefab));
+            }
+            if (visualCustomizationButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualCustomizationButton));
             }
 
             foldController = gameObject.GetComponent<FoldController>();
@@ -231,6 +236,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowServerStatusMenu()
         {
             WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right, transform.localEulerAngles);
+            foldController.InitalizeNewCloseTimer();
+        }
+
+        public void ShowVisualCustomizationMenu()
+        {
+            WindowManager.Instance.VisualCustomizationMenu.Open(visualCustomizationButton.transform.position - 0.5f * transform.right, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
