@@ -60,7 +60,6 @@ public class VisualStyleLoader : MonoBehaviour
         if (VisualCustomizationManager.IsInitialized)
         {
             var loadedStyle = VisualCustomizationManager.FindCurrentStyle(key);
-            Debug.Log("loadedStyle" + loadedStyle.style);
             LoadStyle(loadedStyle.style, loadedStyle.variation);
         }
         
