@@ -67,24 +67,17 @@ The backend folder contains a [las2peer project](https://github.com/rwth-acis/la
 #### Required Technologies
 
 To install the backend the following technologies are required.
-1. Java 8 (on Windows: make sure that the Java installation is placed in your path variables); if you type java –version in the command line, the output should similar to this:
+1. Java 17 (on Windows: make sure that the Java installation is placed in your path variables); if you type java –version in the command line, the output should similar to this:
    ```
    java version "1.8.0_231"
    Java(TM) SE Runtime Environment (build 1.8.0_231-b11)
    Java HotSpot(TM) 64-Bit Server VM (build 25.231-b11, mixed mode)
    ```
-2. Apache Ant (on Windows: make sure that the Ant installation is placed in your path variables; if you type ant –version in the command line, you should get an output similar to this:
-   ```
-   Apache Ant(TM) version 1.10.1 compiled on February 2 2017
-   ```
-
 To develop the backend, you should also install an IDE, e.g. IntelliJ.
 
 #### Building the Backend
 
-You first have to fetch the dependencies by running `ant get_deps` in the backend folder where the build.xml is stored.
-
-After that, run `ant all` in the backend folder.
+First run ```./gradlew clean jar``` and then ```./gradlew clean build``` to build the backend.
 
 #### Running the Backend
 
