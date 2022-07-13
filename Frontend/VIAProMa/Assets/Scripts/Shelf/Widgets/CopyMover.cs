@@ -3,6 +3,7 @@ using i5.VIAProMa.IssueSelection;
 using i5.VIAProMa.ResourceManagagement;
 using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Anchoring;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
@@ -100,6 +101,7 @@ namespace i5.VIAProMa.Shelves.Widgets
                         }
                     },
                     instantiationData);
+                HoloToolkit.Unity.Singleton<AnchorManager>.Instance.AttachToAnchor(copyInstance.gameObject);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using HoloToolkit.Unity;
+using i5.VIAProMa.Anchoring;
 using i5.VIAProMa.ResourceManagagement;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.WebConnection;
@@ -161,6 +162,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 else // the object does not yet exist in the scene => instantiate it
                 {
                     GameObject instantiated = ResourceManager.Instance.NetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity);
+                    Singleton<AnchorManager>.Instance.AttachToAnchor(instantiated);
                     Serializer serializer = instantiated?.GetComponent<Serializer>();
                     if (serializer == null)
                     {

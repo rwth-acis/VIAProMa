@@ -1,6 +1,7 @@
 ﻿using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.ResourceManagagement;
 using i5.VIAProMa.Utilities;
+using i5.VIAProMa.Anchoring;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -19,6 +20,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable serverConnectionButton;
         [SerializeField] private Interactable saveButton;
         [SerializeField] private Interactable loadButton;
+        [SerializeField] private Interactable anchoringButton;
         [SerializeField] private Interactable issueShelfButton;
         [SerializeField] private Interactable visualizationShelfButton;
         [SerializeField] private Interactable loginButton;
@@ -32,6 +34,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
+
 
         private FoldController foldController;
 
@@ -134,13 +137,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         private void CheckButtonStates()
         {
-            roomButton.Enabled = PhotonNetwork.IsConnected;
-            chatButton.Enabled = PhotonNetwork.InRoom;
-            microphoneButton.Enabled = PhotonNetwork.InRoom;
-            saveButton.Enabled = PhotonNetwork.InRoom;
-            loadButton.Enabled = PhotonNetwork.InRoom;
-            issueShelfButton.Enabled = PhotonNetwork.InRoom;
-            visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
+            roomButton.IsEnabled = PhotonNetwork.IsConnected;
+            chatButton.IsEnabled = PhotonNetwork.InRoom;
+            microphoneButton.IsEnabled = PhotonNetwork.InRoom;
+            saveButton.IsEnabled = PhotonNetwork.InRoom;
+            loadButton.IsEnabled = PhotonNetwork.InRoom;
+            issueShelfButton.IsEnabled = PhotonNetwork.InRoom;
+            visualizationShelfButton.IsEnabled = PhotonNetwork.InRoom;
+            anchoringButton.IsEnabled = PhotonNetwork.InRoom;
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -178,14 +182,20 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowSaveMenu()
         {
-            WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right, transform.localEulerAngles);
+            WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            foldController.InitalizeNewCloseTimer();
+        }
+
+        public void ShowAnchorMenu()
+        {
+            WindowManager.Instance.AnchorMenu.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowIssueShelf()
         {
             Vector3 targetPosition = transform.position - 2f * transform.right;
-            targetPosition.y = 0f;
+            targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
             foldController.InitalizeNewCloseTimer();
         }
@@ -200,7 +210,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowVisualizationShelf()
         {
             Vector3 targetPosition = transform.position - 1f * transform.right;
-            targetPosition.y = 0f;
+            targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
             foldController.InitalizeNewCloseTimer();
         }
@@ -208,14 +218,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowLoadShelf()
         {
             Vector3 targetPosition = transform.position + 1f * transform.right;
-            targetPosition.y = 0f;
+            targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowLoginMenu()
         {
-            WindowManager.Instance.LoginMenu.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
+            WindowManager.Instance.LoginMenu.Open(loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -230,7 +240,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowServerStatusMenu()
         {
-            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right, transform.localEulerAngles);
+            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -240,11 +250,13 @@ namespace i5.VIAProMa.UI.MainMenuCube
             // otherwise: leave the current room
             if (PhotonNetwork.InLobby)
             {
-                WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+                WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             }
             else
             {
                 PhotonNetwork.LeaveRoom();
+                AnchorManager.Instance.DisableAnchoring();
+
             }
             foldController.InitalizeNewCloseTimer();
         }
@@ -268,6 +280,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             else
             {
                 instance = GameObject.Instantiate(prefab, targetPosition, targetRotation);
+                HoloToolkit.Unity.Singleton<AnchorManager>.Instance.AttachToAnchor(instance.gameObject);
             }
         }
 
@@ -284,6 +297,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             else
             {
                 instance = ResourceManager.Instance.NetworkInstantiate(prefab, targetPosition, targetRotation);
+                HoloToolkit.Unity.Singleton<AnchorManager>.Instance.AttachToAnchor(instance.gameObject);
                 PhotonView view = instance.GetComponent<PhotonView>();
                 photonView.RPC(instantiationRPC, RpcTarget.Others, view.ViewID);
             }
@@ -302,6 +316,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             else
             {
                 ResourceManager.Instance.SceneNetworkInstantiate(prefab, targetPosition, targetRotation, OnCreated);
+                HoloToolkit.Unity.Singleton<AnchorManager>.Instance.AttachToAnchor(instance.gameObject);
             }
         }
 
