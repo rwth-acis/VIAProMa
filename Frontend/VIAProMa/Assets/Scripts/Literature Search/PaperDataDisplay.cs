@@ -14,6 +14,12 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private TextMeshPro yearField;
         [SerializeField] private TextMeshPro authorField;
 
+        [SerializeField] private TextMeshPro publisherField;
+        [SerializeField] private TextMeshPro typeField;
+        [SerializeField] private TextMeshPro pagesField;
+        [SerializeField] private TextMeshPro referencedByCountField;
+        [SerializeField] private TextMeshPro abstractField;
+
         private void Awake()
         {
             if (keyField == null)
@@ -32,6 +38,26 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(authorField));
             }
+            if (publisherField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(publisherField));
+            }
+            if (typeField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(typeField));
+            }
+            if (pagesField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(pagesField));
+            }
+            if (referencedByCountField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(referencedByCountField));
+            }
+            if (abstractField == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(abstractField));
+            }
         }
 
         public override void UpdateView()
@@ -48,6 +74,13 @@ namespace i5.VIAProMa.LiteratureSearch
                     authors += author.family + ", " + author.given + "; ";
                 }
                 authorField.text = authors;
+                publisherField.text = content.Publisher ?? "Publisher unknown";
+                typeField.text = content.Type ?? "Type unknow";
+                pagesField.text = content.Page ?? "";
+                referencedByCountField.text = content.ReferencedByCount.ToString();
+                abstractField.text = content.Abstracttext ?? "no abstract contained";
+
+
             }
             else
             {
@@ -55,8 +88,23 @@ namespace i5.VIAProMa.LiteratureSearch
                 titleField.text = "";
                 yearField.text = "";
                 authorField.text = "";
+
+                publisherField.text = "";
+                typeField.text = "";
+                pagesField.text = "";
+                referencedByCountField.text = "";
+                abstractField.text = "";
             }
         }
 
+        public override bool Equals(object other)
+        {
+            PaperDataDisplay display = other as PaperDataDisplay;
+            if(display == null)
+            {
+                return false;
+            }
+            return display.Content.Equals(Content);
+        }
     }
 }

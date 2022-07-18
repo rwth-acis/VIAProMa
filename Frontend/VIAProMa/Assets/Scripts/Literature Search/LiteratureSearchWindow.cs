@@ -39,6 +39,8 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private Interactable previous;
         [Tooltip("GameObject of the loading and retry icon.")]
         [SerializeField] private GameObject loadingIcon;
+        [Tooltip("Prefab of the paper group.")]
+        [SerializeField] private GameObject groupPrefab;
 
         private bool windowEnabled = true;
         private MessageBadge messageBadge;
@@ -129,6 +131,10 @@ namespace i5.VIAProMa.LiteratureSearch
             else 
             {
                 messageBadge = loadingIcon.GetComponent<MessageBadge>();
+            }
+            if (groupPrefab == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(groupPrefab));
             }
         }
 
@@ -256,7 +262,9 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 maxResults = 5;
             }
+            ShowLoading();
             message = await Communicator.APISearch(lastQuery, maxResults, CurrentPage);
+            StopLoading();
             // Trys to prevent offset bigger then total results. CAN FAIL, if max result options are increased on later pages.
             next.IsEnabled = !(maxResults*currentPage >= message.totalresults);
             PaperController.Instance.ShowResults(CrossRefPaper.ToPapers(message.items), transform);
@@ -268,14 +276,18 @@ namespace i5.VIAProMa.LiteratureSearch
         {
             CrossRefMessage message;
             CurrentPage--;
+            int maxResults;
             if (advancedSettingsCheckbox.CurrentDimension == 1)
             {
-                message = await Communicator.APISearch(lastQuery, paperCountSlider.ValueInt, CurrentPage);
+                maxResults = paperCountSlider.ValueInt;
             }
             else
             {
-                message = await Communicator.APISearch(lastQuery, 5, CurrentPage);
+                maxResults = 5;
             }
+            ShowLoading();
+            message = await Communicator.APISearch(lastQuery, maxResults, CurrentPage);
+            StopLoading();
             PaperController.Instance.ShowResults(CrossRefPaper.ToPapers(message.items), transform);
         }
 
@@ -294,6 +306,14 @@ namespace i5.VIAProMa.LiteratureSearch
         private void StopLoading()
         {
             messageBadge.DoneProcessing();
+        }
+
+        /// <summary>
+        /// Creates an empty paper group.
+        /// </summary>
+        public void CreatePaperGroup()
+        {
+            Instantiate(groupPrefab, transform.position + new Vector3(-.6f,0,-.1f), transform.rotation);
         }
     }
 

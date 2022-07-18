@@ -12,7 +12,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <summary>
         /// The list of selected papers
         /// </summary>
-        public List<Paper> SelectedPapers { get; private set; }
+        public List<PaperDataDisplay> SelectedPapers { get; private set; }
 
         /// <summary>
         /// Event which is invoked if the selection mode is changed, i.e. if the selection mode is started or ended
@@ -22,7 +22,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// Event which is invoked if a paper was selected or deselected
         /// The paper and it was selected or deselected can be found in the event arguments
         /// </summary>
-        public event EventHandler<SelectionChangedArgs<Paper>> PaperSelectionChanged;
+        public event EventHandler<SelectionChangedArgs<PaperDataDisplay>> PaperSelectionChanged;
 
         /// <summary>
         /// True if the selection mode is currently active and the user can select papers
@@ -38,7 +38,7 @@ namespace i5.VIAProMa.LiteratureSearch
         protected override void Awake()
         {
             base.Awake();
-            SelectedPapers = new List<Paper>();
+            SelectedPapers = new List<PaperDataDisplay>();
             SelectionModeActive = false;
         }
 
@@ -47,14 +47,14 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         public void StartSelectionMode()
         {
-            StartSelectionMode(new List<Paper>());
+            StartSelectionMode(new List<PaperDataDisplay>());
         }
 
         /// <summary>
         /// Starts the selection mode with the given papers as the initial list
         /// </summary>
         /// <param name="selectedPapers">The list of papers which are already selected</param>
-        public void StartSelectionMode(List<Paper> selectedPapers)
+        public void StartSelectionMode(List<PaperDataDisplay> selectedPapers)
         {
             SelectedPapers = selectedPapers;
             SelectionModeActive = true;
@@ -65,11 +65,12 @@ namespace i5.VIAProMa.LiteratureSearch
         /// Ends the selectoin mode
         /// </summary>
         /// <returns>The list of papers which were selected by the user</returns>
-        public List<Paper> EndSelectionMode()
+        public List<PaperDataDisplay> EndSelectionMode()
         {
             SelectionModeActive = false;
             SelectionModeChanged?.Invoke(this, EventArgs.Empty);
             return SelectedPapers;
+            
         }
 
         /// <summary>
@@ -77,12 +78,12 @@ namespace i5.VIAProMa.LiteratureSearch
         /// Selection Mode should be set to true; otherwise, the method has no effect
         /// </summary>
         /// <param name="paper">The paper to select</param>
-        public void SetSelected(Paper paper)
+        public void SetSelected(PaperDataDisplay paper)
         {
             if (SelectionModeActive)
             {
                 SelectedPapers.Add(paper);
-                PaperSelectionChanged?.Invoke(this, new SelectionChangedArgs<Paper>(paper, true));
+                PaperSelectionChanged?.Invoke(this, new SelectionChangedArgs<PaperDataDisplay>(paper, true));
             }
         }
 
@@ -90,14 +91,14 @@ namespace i5.VIAProMa.LiteratureSearch
         /// Unselects the given paper.
         /// </summary>
         /// <param name="paper"></param>
-        public void SetDeselected(Paper paper)
+        public void SetDeselected(PaperDataDisplay paper)
         {
             if (SelectionModeActive)
             {
                 bool removeSuccessful = SelectedPapers.Remove(paper);
                 if (removeSuccessful)
                 {
-                    PaperSelectionChanged?.Invoke(this, new SelectionChangedArgs<Paper>(paper, false));
+                    PaperSelectionChanged?.Invoke(this, new SelectionChangedArgs<PaperDataDisplay>(paper, false));
                 }
             }
         }
@@ -107,7 +108,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         /// <param name="paper"></param>
         /// <returns></returns>
-        public bool IsSelected(Paper paper)
+        public bool IsSelected(PaperDataDisplay paper)
         {
             return SelectedPapers.Contains(paper);
         }

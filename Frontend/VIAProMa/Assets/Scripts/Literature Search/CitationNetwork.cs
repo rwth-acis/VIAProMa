@@ -8,8 +8,15 @@ namespace i5.VIAProMa.LiteratureSearch
 {
     public class CitationNetwork : MonoBehaviour
     {
+        private static readonly int _cutoff = 3;
+
+        private readonly double _weigthEdges = 1;
+        private readonly double _weigthYear = 1;
+        private readonly double _weigthCitations = 1;
+
         public Paper Base { get; private set; }
         public CitationNetworkNode Head { get; private set; }
+        public bool StepPossible { get; private set; } = true;
 
         public List<Paper> Papers 
         { 
@@ -46,57 +53,13 @@ namespace i5.VIAProMa.LiteratureSearch
                 });
             }
 
-            bool changesOccured = true;
-
+            int loops = 0;
             // Get potentially relevant papers
-            while (changesOccured)
+            while (network.StepPossible && loops < _cutoff)
             {
-                changesOccured = false;
-                List<(List<Paper>, Paper)> potentialPapers = new List<(List<Paper>, Paper)>();
-                for(int i = 0; i < network.Papers.Count; i++)
-                {
-                    potentialPapers.Add((await GetAllReferences(network.Papers[i]), network.Papers[i]));
-                }
+                loops++;
+                network = await network.CalculateNextIteration();
 
-
-                // Check if potential papers overlap -> relevant paper
-                for(int i = 0; i < potentialPapers.Count; i++)
-                {
-                    for(int j = i + 1; j < potentialPapers.Count; j++)
-                    {
-                        List<Paper> overlap = GetOverlap(potentialPapers[i].Item1, potentialPapers[j].Item1);
-                        if (overlap.Count > 0)
-                        {
-                            Debug.Log("found overlap" + $"({i}, {j})");
-                            changesOccured = true;
-
-                            CitationNetworkNode node1 = network.GetNode(potentialPapers[i].Item2);
-                            CitationNetworkNode node2 = network.GetNode(potentialPapers[j].Item2);
-                            for(int overlapIndex = 0; overlapIndex < overlap.Count; overlapIndex++)
-                            {
-                                CitationNetworkNode newNode = new CitationNetworkNode
-                                {
-                                    Content = overlap[overlapIndex]
-                                };
-                                if (!(node1 is null) && !node1.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
-                                {
-                                    node1.Children.Add(newNode);
-                                    changesOccured = true;
-                                }
-                                if(!(node2 is null) && !node2.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
-                                {
-                                    node2.Children.Add(newNode);
-                                    changesOccured = true;
-                                }
-
-                            }
-                        }
-                    }
-
-
-
-                }
-                
             }
 
             for(int i = 0; i < network.Head.Children.Count; i++)
@@ -110,6 +73,57 @@ namespace i5.VIAProMa.LiteratureSearch
 
             return network;
 
+        }
+
+        public async Task<CitationNetwork> CalculateNextIteration()
+        {
+            if (StepPossible)
+            {
+                this.StepPossible = false;
+                List<(List<Paper>, Paper)> potentialPapers = new List<(List<Paper>, Paper)>();
+                for (int i = 0; i < this.Papers.Count; i++)
+                {
+                    potentialPapers.Add((await Communicator.GetAllReferences(this.Papers[i]), this.Papers[i]));
+                }
+
+
+                // Check if potential papers overlap -> relevant paper
+                for (int i = 0; i < potentialPapers.Count; i++)
+                {
+                    for (int j = i + 1; j < potentialPapers.Count; j++)
+                    {
+                        List<Paper> overlap = GetOverlap(potentialPapers[i].Item1, potentialPapers[j].Item1);
+                        if (overlap.Count > 0)
+                        {
+                            CitationNetworkNode node1 = this.GetNode(potentialPapers[i].Item2);
+                            CitationNetworkNode node2 = this.GetNode(potentialPapers[j].Item2);
+                            for (int overlapIndex = 0; overlapIndex < overlap.Count; overlapIndex++)
+                            {
+                                CitationNetworkNode newNode = new CitationNetworkNode
+                                {
+                                    Content = overlap[overlapIndex]
+                                };
+                                if (!(node1 is null) && !node1.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
+                                {
+                                    node1.Children.Add(newNode);
+                                    this.StepPossible = true;
+                                }
+                                if (!(node2 is null) && !node2.Children.Exists(n => n.Content.Equals(overlap[overlapIndex])))
+                                {
+                                    node2.Children.Add(newNode);
+                                    this.StepPossible = true;
+                                }
+
+                            }
+                        }
+                    }
+
+
+
+                }
+            }
+
+            return this;
         }
 
         private CitationNetworkNode GetNode(Paper paper)
@@ -180,6 +194,37 @@ namespace i5.VIAProMa.LiteratureSearch
         public override string ToString()
         {
             return Head.ToString();
+        }
+
+        public Dictionary<string, double> CalculateRanks()
+        {
+            Dictionary<string, double> results = new Dictionary<string, double>();
+
+            List<(CitationNetworkNode, CitationNetworkNode)> connections = GetConnections();
+            List<Paper> papers = Papers;
+            Debug.Log(papers.Count);
+            for(int i = 0; i < papers.Count; i++)
+            {
+                Paper paper = papers[i];
+                double rank = 0;
+                int edges = 0;
+                foreach((CitationNetworkNode, CitationNetworkNode) connection in connections)
+                {
+                    if(paper.Equals(connection.Item1.Content) || paper.Equals(connection.Item2.Content))
+                    {
+                        edges++;
+                    }
+                }
+                rank += edges * _weigthEdges;
+
+                rank += paper.ReferencedByCount / 100 * _weigthCitations;
+
+                rank += (paper.Created.Year/Base.Created.Year) * _weigthYear;
+
+                results.Add(paper.DOI, rank);
+            }
+
+            return results;
         }
     }
 

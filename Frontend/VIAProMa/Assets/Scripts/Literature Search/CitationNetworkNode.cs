@@ -30,7 +30,6 @@ namespace i5.VIAProMa.LiteratureSearch
             for (int i = 0; i < Children.Count; i++)
             {
                 CitationNetworkNode node = Children[i].GetNode(paper);
-                Debug.Log(node?.Content);
                 if (!(node is null))
                 {
                     return node;
@@ -55,6 +54,7 @@ namespace i5.VIAProMa.LiteratureSearch
             {
 
                 List<Paper> papers = new List<Paper>();
+                papers.Add(Content);
                 for (int i = 0; i < Children.Count; i++)
                 {
                     papers.AddRange(Children[i].GetAllPapers());

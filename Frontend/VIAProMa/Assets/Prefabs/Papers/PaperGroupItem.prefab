@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 7bda16f3139578847b3f3e4f6cb46683, type: 3}
-  m_Color: {r: 0.16981132, g: 0.2845136, b: 0.6792453, a: 1}
+  m_Color: {r: 1, g: 0.028497245, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -1131,8 +1131,9 @@ GameObject:
   - component: {fileID: 5113043743492744269}
   - component: {fileID: 9098457856433720014}
   - component: {fileID: 4822907578036753953}
+  - component: {fileID: 4098823795628695494}
   m_Layer: 0
-  m_Name: PaperListItem
+  m_Name: PaperGroupItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1194,6 +1195,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   copyObject: {fileID: 5113043743492744268, guid: 6a44597ff0a20354da88641a1dff619b,
     type: 3}
+--- !u!114 &4098823795628695494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5113043743492744268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8df47b4dd14236040a1da03a64e6248b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionIndicator: {fileID: 142717373874498556}
+  backgroundRenderer: {fileID: 5113043743327247548}
+  selectedColor: {r: 1, g: 0.03424205, b: 0, a: 1}
 --- !u!1 &5113043743851458772
 GameObject:
   m_ObjectHideFlags: 0

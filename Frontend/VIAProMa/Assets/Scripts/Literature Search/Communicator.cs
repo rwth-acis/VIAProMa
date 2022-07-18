@@ -4,6 +4,7 @@ using UnityEngine;
 using HoloToolkit.Unity;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Threading.Tasks;
+using System;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
@@ -74,17 +75,13 @@ namespace i5.VIAProMa.LiteratureSearch
         {
             if (paperCache.ContainsKey(doi))
             {
-                Debug.Log("from cache + " + doi);
                 return paperCache[doi];
             }
-            Debug.Log("requested: " + doi);
-
             Response response = await Rest.GetAsync(apiURLSingleRequest + doi);
             string text = await response.GetResponseBody();
 
             if (!response.Successful)
             {
-                Debug.Log("Paper with DOI " + doi + " not found");
                 if(!paperCache.ContainsKey(doi))
                     paperCache.Add(doi, null);
                 return null;
@@ -103,7 +100,41 @@ namespace i5.VIAProMa.LiteratureSearch
             return paper;
         }
 
+        public static async Task<List<Paper>> GetAllReferences(Paper basePaper)
+        {
+            if (basePaper is null)
+            {
+                return new List<Paper>();
+            }
+            // Get all papers of references (as Tasks first for better effiecency)
+            List<Task<Paper>> referencesTasks = new List<Task<Paper>>();
+            List<Paper> references = new List<Paper>();
+            foreach (string refDOI in basePaper.References)
+            {
 
+                if (!String.IsNullOrEmpty(refDOI))
+                {
+                    if (paperCache.ContainsKey(refDOI))
+                    {
+                        references.Add(paperCache[refDOI]);
+                    }
+                    else
+                    {
+                        referencesTasks.Add(Communicator.GetPaper(refDOI));
+                        await Task.Delay(5);
+                    }
+
+                }
+                
+            }
+            foreach (Task<Paper> referencesTask in referencesTasks)
+            {
+                Paper reference = await referencesTask;
+                references.Add(reference);
+            }
+
+            return references;
+        }
     }
     /// <summary>
     /// Object for a CrossRef API response.

@@ -36,6 +36,7 @@ namespace i5.VIAProMa.LiteratureSearch
                 UpdateView();
             }
         }
+        
 
         /// <summary>
         /// Checks the component's setup and fetches necessary references
@@ -76,7 +77,7 @@ namespace i5.VIAProMa.LiteratureSearch
             // check selection mode in start => all other components which use awake should now be set up
             if (PaperSelectionManager.Instance.SelectionModeActive)
             {
-                Selected = PaperSelectionManager.Instance.IsSelected(paperDataDisplay.Content);
+                Selected = PaperSelectionManager.Instance.IsSelected(paperDataDisplay);
                 UpdateView();
             }
         }
@@ -99,11 +100,11 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ReactToPaperSelectionChanged(object sender, SelectionChangedArgs<Paper> e)
+        private void ReactToPaperSelectionChanged(object sender, SelectionChangedArgs<PaperDataDisplay> e)
         {
             if (paperDataDisplay != null)
             {
-                if (e.ChangedItem.Equals(paperDataDisplay.Content))
+                if (e.ChangedItem.Equals(paperDataDisplay))
                 {
                     Selected = e.Selected;
                 }
@@ -119,7 +120,7 @@ namespace i5.VIAProMa.LiteratureSearch
         {
             if (PaperSelectionManager.Instance.SelectionModeActive) // selection mode was just activated
             {
-                Selected = PaperSelectionManager.Instance.IsSelected(paperDataDisplay.Content);
+                Selected = PaperSelectionManager.Instance.IsSelected(paperDataDisplay);
             }
             else // selection mode has ended
             {
@@ -136,11 +137,11 @@ namespace i5.VIAProMa.LiteratureSearch
             // report selection or deselection to selection manager
             if (Selected)
             {
-                PaperSelectionManager.Instance.SetDeselected(paperDataDisplay.Content);
+                PaperSelectionManager.Instance.SetDeselected(paperDataDisplay);
             }
             else
             {
-                PaperSelectionManager.Instance.SetSelected(paperDataDisplay.Content);
+                PaperSelectionManager.Instance.SetSelected(paperDataDisplay);
             }
             // do not update the selection visuals here; they will be updated by the selection manager through its PaperSelectionChanged event
         }
