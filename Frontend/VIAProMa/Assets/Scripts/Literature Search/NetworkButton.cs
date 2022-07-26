@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
+    /// <summary>
+    /// Class for the network button.
+    /// </summary>
     public class NetworkButton : MonoBehaviour
     {
 
@@ -17,8 +20,22 @@ namespace i5.VIAProMa.LiteratureSearch
         [Tooltip("The gameobject of the button used to calculate the next iteration step.")]
         [SerializeField] private GameObject nextIterationButton;
 
+        /// <summary>
+        /// MessageBadge used to display the loading animation.
+        /// </summary>
         private MessageBadge _messageBadge;
+        /// <summary>
+        /// The citation network calculated and iterated by the class.
+        /// </summary>
         private CitationNetwork _network;
+        /// <summary>
+        /// Network button belonging to this object.
+        /// </summary>
+        private Interactable _button;
+
+        /// <summary>
+        /// Initializes the window and makes sure all UI Elements are referenced and the window is set up correctly.
+        /// </summary>
         private void Awake()
         {
             if (paperInScene == null)
@@ -37,6 +54,10 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(nextIterationButton));
             }
+            if(GetComponent<Interactable>() != null)
+            {
+                _button = GetComponent<Interactable>();
+            }
         }
 
         /// <summary>
@@ -54,20 +75,37 @@ namespace i5.VIAProMa.LiteratureSearch
             StartCoroutine(PaperController.Instance.ShowNetwork(_network, this.transform));
         }
 
+        /// <summary>
+        /// Starts the loading animation
+        /// </summary>
         private void StartLoading()
         { 
             nextIterationButton.GetComponent<Interactable>().IsEnabled = false;
             _messageBadge.gameObject.SetActive(true);
             _messageBadge.ShowProcessing();
+            if(_button != null)
+            {
+                _button.IsEnabled = false;
+            }
         }
 
+        /// <summary>
+        /// Ends the loading animation.
+        /// </summary>
         private void EndLoading()
         {
             _messageBadge.DoneProcessing();
 
+            if(_button != null)
+            {
+                _button.IsEnabled = true;
+            }
             nextIterationButton.GetComponent<Interactable>().IsEnabled = true;
         }
 
+        /// <summary>
+        /// Calculates and visualizes the next iteration step of the citation network.
+        /// </summary>
         public async void NextIterationStep()
         {
             StartLoading();

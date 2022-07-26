@@ -48,6 +48,9 @@ namespace i5.VIAProMa.LiteratureSearch
                 paperCountMesh.text = value.ToString() + " papers";
             } 
         }
+        /// <summary>
+        /// Initializes the window and makes sure all UI Elements are referenced and the window is set up correctly.
+        /// </summary>
         private void Awake()
         {
             if (collection == null)
@@ -158,7 +161,9 @@ namespace i5.VIAProMa.LiteratureSearch
             }
             return false;
         }
-
+        /// <summary>
+        /// Expands the papers in the group.
+        /// </summary>
         public void Expand()
         {
             collection.SetActive(true);
@@ -173,7 +178,9 @@ namespace i5.VIAProMa.LiteratureSearch
             expandButton.gameObject.SetActive(false);
             minimizeButton.gameObject.SetActive(true);
         }
-
+        /// <summary>
+        /// Minimizes the papers in the group.
+        /// </summary>
         public void Minimize()
         {
             collection.SetActive(false);
@@ -183,19 +190,29 @@ namespace i5.VIAProMa.LiteratureSearch
             minimizeButton.gameObject.SetActive(false);
             expandButton.gameObject.SetActive(true);
         }
-
+        /// <summary>
+        /// Adds a title to the list.
+        /// </summary>
+        /// <param name="title">Title to add.</param>
         private void AddTitle(string title)
         {
             _titles.Add(title); 
             UpdateTitlesMesh();
         }
 
+        /// <summary>
+        /// Removes a title from the list.
+        /// </summary>
+        /// <param name="title">Title to remove.</param>
         private void RemoveTitle(string title)
         {
             _titles.Remove(title);
             UpdateTitlesMesh();
         }
 
+        /// <summary>
+        /// Updates the title list text.
+        /// </summary>
         private void UpdateTitlesMesh()
         {
             if(_titles.Count == 0)
@@ -211,6 +228,9 @@ namespace i5.VIAProMa.LiteratureSearch
             titlesMesh.text = display;
         }
 
+        /// <summary>
+        /// Starts the addition mode.
+        /// </summary>
         public void StartAdditionMode()
         {
             PaperSelectionManager.Instance.StartSelectionMode();
@@ -219,6 +239,9 @@ namespace i5.VIAProMa.LiteratureSearch
             additionModeButton.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Adds all selected papers not in the group and removes selected in the group from the group and ends selection mode.
+        /// </summary>
         public void AddSelected()
         {
             PaperDataDisplay[] gameObjects = GameObject.FindObjectsOfType<PaperDataDisplay>();
@@ -229,7 +252,7 @@ namespace i5.VIAProMa.LiteratureSearch
                 GameObject @object = FindObjectWith(gameObjects, display);
                 if(@object != null)
                 {
-                    if(@object.GetComponent<PaperCopyMover>() == null)
+                    if(@object.GetComponentInParent<GridObjectCollection>() == null)
                     {
                         AddPaper(display.Content);
                     }
@@ -246,6 +269,12 @@ namespace i5.VIAProMa.LiteratureSearch
             EndAdditionMode();
         }
 
+        /// <summary>
+        /// Finds a specific data display in an array of display and returns its gameobject.
+        /// </summary>
+        /// <param name="array">Array to be searched.</param>
+        /// <param name="display">Display to search for.</param>
+        /// <returns>GameObject of the data display if it exists, null overwise.</returns>
         private GameObject FindObjectWith(PaperDataDisplay[] array, PaperDataDisplay display)
         {
             for(int i = 0; i < array.Length; i++)
@@ -258,12 +287,18 @@ namespace i5.VIAProMa.LiteratureSearch
             return null;
         }
 
+        /// <summary>
+        /// Cancels the current selection and ends the addition mode.
+        /// </summary> 
         public void CancelSelection()
         {
             PaperSelectionManager.Instance.EndSelectionMode();
             EndAdditionMode();
         }
 
+        /// <summary>
+        /// Ends the addition mode.
+        /// </summary>
         private void EndAdditionMode()
         {
             addButton.gameObject.SetActive(false);
@@ -272,11 +307,15 @@ namespace i5.VIAProMa.LiteratureSearch
         }
 
         /// <summary>
-        /// Deletes the paper group.
+        /// When the GameObject is destoried, all children are destroied too.
         /// </summary>
-        public void DeleteGroup()
+        private void OnDestroy()
         {
-            Destroy(gameObject);
+            for(int i = 0; i < _children.Count; i++)
+            {
+                Destroy(_children[i]);
+            }
+            Destroy(_gridCollection.gameObject);
         }
     }
 

@@ -20,6 +20,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable saveButton;
         [SerializeField] private Interactable loadButton;
         [SerializeField] private Interactable issueShelfButton;
+        [SerializeField] private Interactable literatureSearchButton;
         [SerializeField] private Interactable visualizationShelfButton;
         [SerializeField] private Interactable loginButton;
         [SerializeField] private Interactable roomButton;
@@ -104,6 +105,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfiguratorPrefab));
             }
+            if (literatureSearchButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(literatureSearchButton));
+            }
 
             foldController = gameObject.GetComponent<FoldController>();
         }
@@ -140,6 +145,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             saveButton.Enabled = PhotonNetwork.InRoom;
             loadButton.Enabled = PhotonNetwork.InRoom;
             issueShelfButton.Enabled = PhotonNetwork.InRoom;
+            literatureSearchButton.IsEnabled = PhotonNetwork.InRoom;
             visualizationShelfButton.Enabled = PhotonNetwork.InRoom;
         }
 
@@ -202,6 +208,15 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
+            foldController.InitalizeNewCloseTimer();
+        }
+
+        /// <summary>
+        /// Opens the literature search window.
+        /// </summary>
+        public void ShowLiteratureSearchWindow()
+        {
+            WindowManager.Instance.LiteratureSearchWindow.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 

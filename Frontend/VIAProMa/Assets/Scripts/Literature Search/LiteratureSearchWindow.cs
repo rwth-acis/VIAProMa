@@ -41,8 +41,18 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private GameObject loadingIcon;
         [Tooltip("Prefab of the paper group.")]
         [SerializeField] private GameObject groupPrefab;
+        [Tooltip("RadioButtons for selection of visualization.")]
+        [SerializeField] private InteractableToggleCollection visToggles;
+        [Tooltip("Parent for all advanced settings.")]
+        [SerializeField] private GameObject advancedSettings;
 
+        /// <summary>
+        /// Saves if the window is enables.
+        /// </summary>
         private bool windowEnabled = true;
+        /// <summary>
+        /// MessageBadge used to display the loading animation.
+        /// </summary>
         private MessageBadge messageBadge;
         public bool WindowEnabled 
         {
@@ -132,9 +142,13 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 messageBadge = loadingIcon.GetComponent<MessageBadge>();
             }
-            if (groupPrefab == null)
+            if (visToggles == null)
             {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(groupPrefab));
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(visToggles));
+            }
+            if (advancedSettings == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(advancedSettings));
             }
         }
 
@@ -209,7 +223,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         public void OnAdvanvedSettingsClick()
         {
-            paperCountSlider.gameObject.SetActive(advancedSettingsCheckbox.CurrentDimension == 1);
+            advancedSettings.SetActive(advancedSettingsCheckbox.CurrentDimension == 1);
         }
         /// <summary>
         /// Executes a literature search with the input of the search field.
@@ -296,6 +310,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         private void ShowLoading()
         {
+            executeSearch.IsEnabled = false;
             messageBadge.gameObject.SetActive(true);
             messageBadge.ShowProcessing();
         }
@@ -305,6 +320,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         private void StopLoading()
         {
+            executeSearch.IsEnabled = true;
             messageBadge.DoneProcessing();
         }
 
@@ -314,6 +330,14 @@ namespace i5.VIAProMa.LiteratureSearch
         public void CreatePaperGroup()
         {
             Instantiate(groupPrefab, transform.position + new Vector3(-.6f,0,-.1f), transform.rotation);
+        }
+
+        /// <summary>
+        /// Changes the selected visualization according to the radio buttons in the advanced settings.
+        /// </summary>
+        public void VisualizationSelectionChanged()
+        {
+            PaperController.Instance.ChangeVisualization(visToggles.CurrentIndex);
         }
     }
 

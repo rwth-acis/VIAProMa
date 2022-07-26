@@ -24,11 +24,11 @@ namespace i5.VIAProMa.IssueSelection
         /// <summary>
         /// <typeparamref name="T"/> for which the selection status was changed
         /// </summary>
-        public T ChangedItem { get; private set; }
+        public T ChangedItem { get; protected set; }
 
         /// <summary>
         /// Indicates if <typeparamref name="T"/> was selected (true) or deselected (false)
         /// </summary>
-        public bool Selected { get; private set; }
+        public bool Selected { get; protected set; }
     }
 }

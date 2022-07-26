@@ -72,6 +72,9 @@ namespace i5.VIAProMa.LiteratureSearch
             PaperSelectionManager.Instance.PaperSelectionChanged += ReactToPaperSelectionChanged;
         }
 
+        /// <summary>
+        /// Called when the GameObject is created.
+        /// </summary>
         private void Start()
         {
             // check selection mode in start => all other components which use awake should now be set up
@@ -170,6 +173,7 @@ namespace i5.VIAProMa.LiteratureSearch
             }
         }
 
+        #region Un-used but required by interface
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
         }
@@ -181,6 +185,7 @@ namespace i5.VIAProMa.LiteratureSearch
         public void OnPointerUp(MixedRealityPointerEventData eventData)
         {
         }
+        #endregion
 
         /// <summary>
         /// Called by the Mixed Reality Toolkit if the object was clicked

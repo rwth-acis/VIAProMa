@@ -5,26 +5,64 @@ using UnityEngine;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
+
+    /// <summary>
+    /// Class for the visualization of paper data structures.
+    /// </summary>
     public class PaperController : Singleton<PaperController>
     {
+        /// <summary>
+        /// Enums for visualizations
+        /// </summary>
         private enum Visualizations
         {
-            Scale,
             Depth,
-            Size
+            Size,
+            Scale, 
         }
 
+        [Tooltip("Prefab of the paper list item.")]
         [SerializeField] private GameObject paperListView;
+        [Tooltip("Prefab of the paper network item.")]
         [SerializeField] private GameObject paperNetworkView;
+        [Tooltip("Prefab of the network line.")]
         [SerializeField] private GameObject linePrefab;
 
+        /// <summary>
+        /// List of search result gameobjects.
+        /// </summary>
         private List<GameObject> _paperResultsList = new List<GameObject>();
+        /// <summary>
+        /// List of network node gameobjects.
+        /// </summary>
         private List<GameObject> _paperNetworkList = new List<GameObject>();
+        /// <summary>
+        /// /´List of network edge gameobjects.
+        /// </summary>
         private List<GameObject> _connectionsList  = new List<GameObject>();
 
+        /// <summary>
+        /// Currently selected visualization of citation network
+        /// </summary>
         private Visualizations _currentVisualization = Visualizations.Depth;
-        private readonly float _weigthDepth = .03f; 
+        /// <summary>
+        /// Weight for scaling the visualization with depth.
+        /// </summary>
+        private readonly float _weightDepth = .08f;
+        /// <summary>
+        /// Weight for scaling the visualization with scale.
+        /// </summary>
+        private readonly float _weightScale = 2;
+        /// <summary>
+        /// Weight for scaling the visualization with size.
+        /// </summary>
+        private readonly float _weightSize = 75;
 
+        /// <summary>
+        /// Visualizes the search results.
+        /// </summary>
+        /// <param name="results">List of search result papers.</param>
+        /// <param name="transform">Parent transform of the visualized list.</param>
         public void ShowResults(List<Paper> results, Transform transform = null)
         {
             if(transform == null)
@@ -41,6 +79,9 @@ namespace i5.VIAProMa.LiteratureSearch
             }
         }
 
+        /// <summary>
+        /// Clears the currently visualized results.
+        /// </summary>
         public void ClearResults()
         {
             for(int i = 0; i < _paperResultsList.Count; i++)
@@ -50,19 +91,31 @@ namespace i5.VIAProMa.LiteratureSearch
             _paperResultsList.Clear();
         }
 
+        /// <summary>
+        /// Visualizes a citation network.
+        /// </summary>
+        /// <param name="network">Citation network to visualize.</param>
+        /// <param name="transform">Parent transform of the paper.</param>
+        /// <returns></returns>
         public IEnumerator ShowNetwork(CitationNetwork network, Transform transform = null)
         {
+            // Clear previous network
             ClearNetwork();
 
+            // Initializations
             float itemHeight = .1f;
             float itemWidth = .225f;
 
             float heightOffset = .1f;
             float zOffset = -.1f;
 
-            Dictionary<string, double> ranks = network.CalculateRanks();
 
-            if(transform == null)
+            (Dictionary<string, double>, double, double) rankCalc = network.CalculateRanks();
+            Dictionary<string, double> ranks = rankCalc.Item1;
+            double minRank = rankCalc.Item2;
+            double maxRank = rankCalc.Item3;
+
+            if (transform == null)
             {
                 transform = this.transform;
             }
@@ -77,6 +130,7 @@ namespace i5.VIAProMa.LiteratureSearch
 
             GameObject emptyParent = new GameObject();
             
+            // Loop through all nodes and create node objects
             for (int i = 0; i < nodes.Count; i++)
             {
                 CitationNetworkNode node = nodes[i];
@@ -111,10 +165,33 @@ namespace i5.VIAProMa.LiteratureSearch
                 {
                     rank = ranks[node.Content.DOI];
                 }
+
+                // Affect the transform of the node objects according to the selected visualization.
                 switch (_currentVisualization)
                 {
                     case Visualizations.Depth:
-                        displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset - (float) rank * _weigthDepth);
+                        displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset - (float)rank * _weightDepth);
+                        break;
+                    case Visualizations.Scale:
+                        {
+                            displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
+                            double middle = (maxRank - minRank) / 2;
+                            double normRank = rank - minRank;
+                            //double scale = ((normRank / middle) / (maxRank - minRank)) * 2 * _weightScale;
+                            double scale = (rank / maxRank + .5f) * _weightScale;
+                            Vector3 oldScale = displayInstance.transform.localScale;
+                            Vector3 newScale = new Vector3(oldScale.x * (float)scale, oldScale.y * (float)scale, oldScale.z);
+                            displayInstance.transform.localScale = newScale;
+                        }
+                        break;
+                    case Visualizations.Size:
+                        {
+                            displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
+                            double scale = (rank / (maxRank - minRank)) * _weightSize;
+                            Vector3 oldScale = displayInstance.GetComponentInChildren<PaperNetworkItem>().gameObject.transform.localScale;
+                            Vector3 newScale = new Vector3(oldScale.x, oldScale.y, oldScale.z * (float)scale);
+                            displayInstance.GetComponentInChildren<PaperNetworkItem>().gameObject.transform.localScale = newScale;
+                        }
                         break;
                     default:
                         displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
@@ -128,24 +205,33 @@ namespace i5.VIAProMa.LiteratureSearch
                 remoteDataDisplay.Setup(node.Content);
                 PaperNetworkItem nodeItem = displayInstance?.GetComponentInChildren<PaperNetworkItem>();
                 nodeItem.Node = node;
+
+                yield return null;
             }
             emptyParent.transform.position = transform.position;
             emptyParent.transform.rotation = transform.rotation;
-
-            yield return null;
+            emptyParent.transform.parent = transform;
 
             List<(CitationNetworkNode, CitationNetworkNode)> connections = network.GetConnections();
             for(int i = 0; i < connections.Count; i++)
             {
                 GameObject connection = Instantiate(linePrefab);
+                connection.transform.parent = emptyParent.transform;
                 NetworkLine line = connection.GetComponent<NetworkLine>();
                 line.SetLine(GetNode(connections[i].Item1).transform, connections[i].Item1.Content.DOI, 
                     GetNode(connections[i].Item2).transform, connections[i].Item2.Content.DOI);
                 _connectionsList.Add(connection);
+
+                yield return null;
             }
 
         }
 
+        /// <summary>
+        /// Gets all the years of a list of citation network nodes.
+        /// </summary>
+        /// <param name="nodes">List of citation network nodes.</param>
+        /// <returns>Sorted list of years.</returns>
         private List<int> GetAllYears(List<CitationNetworkNode> nodes)
         {
             List<int> years = new List<int>();
@@ -161,6 +247,11 @@ namespace i5.VIAProMa.LiteratureSearch
             return years;
         }
 
+        /// <summary>
+        /// Gets the GameObject of a citation network node.
+        /// </summary>
+        /// <param name="node">Citation netork node.</param>
+        /// <returns>Returns the GameObject if it exists, otherwise null.</returns>
         private GameObject GetNode(CitationNetworkNode node)
         {
             GameObject obj = null;
@@ -175,6 +266,9 @@ namespace i5.VIAProMa.LiteratureSearch
             return obj;
         }
 
+        /// <summary>
+        /// Clears the visualization of the currently displayed citation network node.
+        /// </summary>
         public void ClearNetwork()
         {
             for (int i = 0; i < _paperNetworkList.Count; i++)
@@ -189,6 +283,10 @@ namespace i5.VIAProMa.LiteratureSearch
             _connectionsList.Clear();
         }
         
+        /// <summary>
+        /// Highlights a node in the visualized citation network node.
+        /// </summary>
+        /// <param name="node">Node to highlight.</param>
         public void HighlightNode(CitationNetworkNode node)
         {
             ResetNodeColors();
@@ -208,6 +306,9 @@ namespace i5.VIAProMa.LiteratureSearch
             }
         }
 
+        /// <summary>
+        /// Sets all edges back to white color.
+        /// </summary>
         private void ResetNodeColors()
         {
             for (int i = 0; i < _connectionsList.Count; i++)
@@ -217,6 +318,16 @@ namespace i5.VIAProMa.LiteratureSearch
                 line.ChangeColor(Color.white);
                 
             }
+        }
+
+        /// <summary>
+        /// Changes the current visualization.
+        /// </summary>
+        /// <param name="vis">Index of visualization.</param>
+        public void ChangeVisualization(int vis)
+        {
+           _currentVisualization = (Visualizations) vis;
+
         }
     }
 

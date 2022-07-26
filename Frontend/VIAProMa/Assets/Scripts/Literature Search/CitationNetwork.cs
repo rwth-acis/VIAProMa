@@ -6,18 +6,38 @@ using UnityEngine;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
+    /// <summary>
+    /// Class for a citation network.
+    /// </summary>
     public class CitationNetwork : MonoBehaviour
     {
+        /// <summary>
+        /// Initial iterationsteps when creating the network.
+        /// </summary>
         private static readonly int _cutoff = 3;
 
-        private readonly double _weigthEdges = 1;
+        private readonly double _weigthEdges = .3;
         private readonly double _weigthYear = 1;
-        private readonly double _weigthCitations = 1;
+        private readonly double _weigthCitations = 3;
 
+        /// <summary>
+        /// Base paper of the network.
+        /// </summary>
         public Paper Base { get; private set; }
+
+        /// <summary>
+        /// Head node of the citation network.
+        /// </summary>
         public CitationNetworkNode Head { get; private set; }
+
+        /// <summary>
+        /// Indicates whether another iteration step is possible.
+        /// </summary>
         public bool StepPossible { get; private set; } = true;
 
+        /// <summary>
+        /// List of all papers in the citation network.
+        /// </summary>
         public List<Paper> Papers 
         { 
             get 
@@ -35,12 +55,17 @@ namespace i5.VIAProMa.LiteratureSearch
             } 
         }
 
+        /// <summary>
+        /// Creates a citation network based on a base paper.
+        /// </summary>
+        /// <param name="_base">Base paper for creation.</param>
+        /// <returns>A citationnetwork based on a paper.</returns>
         public async static Task<CitationNetwork> CreateNetwork(Paper _base)
         {
             CitationNetwork network = new CitationNetwork();
             network.Base = _base;
 
-            List<Paper> relevantPapers = await GetAllReferences(_base);
+            List<Paper> relevantPapers = await Communicator.GetAllReferences(_base);
             CitationNetworkNode head = new CitationNetworkNode();
             head.Content = _base;
             network.Head = head;
@@ -75,6 +100,10 @@ namespace i5.VIAProMa.LiteratureSearch
 
         }
 
+        /// <summary>
+        /// Calculates the next iteration step for expanding the citation network.
+        /// </summary>
+        /// <returns>Task which yields the expanded network once calculated.</returns>
         public async Task<CitationNetwork> CalculateNextIteration()
         {
             if (StepPossible)
@@ -126,6 +155,11 @@ namespace i5.VIAProMa.LiteratureSearch
             return this;
         }
 
+        /// <summary>
+        /// Gets the node of a paper in the citation network.
+        /// </summary>
+        /// <param name="paper">Paper of the node.</param>
+        /// <returns>The node of the paper if it exists, null otherwise.</returns>
         private CitationNetworkNode GetNode(Paper paper)
         {
             return Head.GetNode(paper);
@@ -151,30 +185,10 @@ namespace i5.VIAProMa.LiteratureSearch
             return overlap;
         }
 
-        private static async Task<List<Paper>> GetAllReferences(Paper basePaper)
-        {
-            if(basePaper is null)
-            {
-                return new List<Paper>();
-            }
-            // Get all papers of references (as Tasks first for better effiecency)
-            List<Task<Paper>> referencesTasks = new List<Task<Paper>>();
-            foreach (string refDOI in basePaper.References)
-            {
-                if(!String.IsNullOrEmpty(refDOI))
-                    referencesTasks.Add(Communicator.GetPaper(refDOI));
-                await Task.Delay(10);
-            }
-            List<Paper> references = new List<Paper>();
-            foreach (Task<Paper> referencesTask in referencesTasks)
-            {
-                Paper reference = await referencesTask;
-                references.Add(reference);
-            }
-
-            return references;
-        }
-
+        /// <summary>
+        /// Gets all nodes of the citation network.
+        /// </summary>
+        /// <returns>A list of citation network nodes.</returns>
         public List<CitationNetworkNode> GetNodes()
         {
             List<CitationNetworkNode> nodes = new List<CitationNetworkNode>();
@@ -186,23 +200,36 @@ namespace i5.VIAProMa.LiteratureSearch
             return nodes;
         }
 
+        /// <summary>
+        /// Gets all edges in the citation network.
+        /// </summary>
+        /// <returns>A list of citation network node tuples.</returns>
         public List<(CitationNetworkNode, CitationNetworkNode)> GetConnections()
         {
             return Head.GetConnections();
         }
 
+        /// <summary>
+        /// Turns the citation network into a string.
+        /// </summary>
+        /// <returns>Citation network as string.</returns>
         public override string ToString()
         {
             return Head.ToString();
         }
 
-        public Dictionary<string, double> CalculateRanks()
+        /// <summary>
+        /// Calculates the ranks of all citation network nodes.
+        /// </summary>
+        /// <returns>A tuple of a dictonary, containing the ranks, and minimum and maximum rank.</returns>
+        public (Dictionary<string, double>, double, double) CalculateRanks()
         {
             Dictionary<string, double> results = new Dictionary<string, double>();
 
             List<(CitationNetworkNode, CitationNetworkNode)> connections = GetConnections();
             List<Paper> papers = Papers;
-            Debug.Log(papers.Count);
+            double max = double.MinValue;
+            double min = double.MaxValue;
             for(int i = 0; i < papers.Count; i++)
             {
                 Paper paper = papers[i];
@@ -217,14 +244,23 @@ namespace i5.VIAProMa.LiteratureSearch
                 }
                 rank += edges * _weigthEdges;
 
-                rank += paper.ReferencedByCount / 100 * _weigthCitations;
+                rank += Mathf.Log10(paper.ReferencedByCount) * _weigthCitations;
 
                 rank += (paper.Created.Year/Base.Created.Year) * _weigthYear;
+
+                if(rank > max)
+                {
+                    max = rank;
+                }
+                if(rank < min)
+                {
+                    min = rank;
+                }
 
                 results.Add(paper.DOI, rank);
             }
 
-            return results;
+            return (results, min, max);
         }
     }
 

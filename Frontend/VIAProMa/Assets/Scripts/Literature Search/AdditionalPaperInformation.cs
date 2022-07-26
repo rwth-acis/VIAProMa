@@ -5,11 +5,19 @@ using UnityEngine;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
+
+    /// <summary>
+    /// Class for displaying additional information of a paper.
+    /// </summary>
     public class AdditionalPaperInformation : MonoBehaviour
     {
         [SerializeField] private GameObject paperInScene;
         [SerializeField] private GameObject infoButton;
 
+
+        /// <summary>
+        /// Initializes the window and makes sure all UI Elements are referenced and the window is set up correctly.
+        /// </summary>
         private void Awake()
         {
 

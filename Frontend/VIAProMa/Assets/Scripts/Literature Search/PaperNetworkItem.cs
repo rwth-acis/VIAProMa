@@ -9,6 +9,9 @@ namespace i5.VIAProMa.LiteratureSearch
     {
         public CitationNetworkNode Node { get; set; }
       
+        /// <summary>
+        /// Highlights the node.
+        /// </summary>
         public void OnHighlightNode()
         {
             PaperController.Instance.HighlightNode(Node);

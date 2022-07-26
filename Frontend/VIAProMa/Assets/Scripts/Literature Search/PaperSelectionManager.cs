@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
+    /// <summary>
+    /// Class of the paper selection manager that handles the selection of papers.
+    /// </summary>
     public class PaperSelectionManager : Singleton<PaperSelectionManager>
     {
         /// <summary>
