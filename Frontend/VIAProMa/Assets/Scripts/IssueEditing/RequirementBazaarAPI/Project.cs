@@ -22,7 +22,7 @@ namespace Org.Requirements_Bazaar.DataModel
         [SerializeField] private int numberOfCategories;
         [SerializeField] private int numberOfRequirements;
         [SerializeField] private int numberOfFollowers;
-        [SerializeField] private User userContext;
+        [SerializeField] private bool isFollower;
 
         /// <summary>
         /// Creates a new project and assigns the currently logged in user as the leader
@@ -209,18 +209,13 @@ namespace Org.Requirements_Bazaar.DataModel
         }
 
         /// <summary>
-        /// The user context
+        /// True if the currently logged in user is following the project
         /// </summary>
-        public User UserContext
+        public bool IsFollower
         {
             get
             {
-                return userContext;
-            }
-
-            set
-            {
-                userContext = value;
+                return isFollower;
             }
         }
 
