@@ -22,6 +22,8 @@ namespace i5.VIAProMa.DataDisplays
 
         private const float pixelDensity = 2000f / 512f;
 
+        private static Dictionary<User, string> nonfunctionalProfileURLs = new Dictionary<User, string>();
+
         private static Dictionary<string, Texture2D> profileImages = new Dictionary<string, Texture2D>();
 
         /// <summary>
@@ -97,8 +99,8 @@ namespace i5.VIAProMa.DataDisplays
         /// <returns>The profile image of the given user</returns>
         private static async Task<Texture2D> GetProfileImage(User user)
         {
-            if (string.IsNullOrEmpty(user.ProfileImageUrl))
-            {
+            if (string.IsNullOrEmpty(user.ProfileImageUrl) || user.ProfileImageUrl == "https://api.learning-layers.eu/profile.png" || nonfunctionalProfileURLs.ContainsKey(user))
+                {
                 return ResourceManager.Instance.DefaultProfileImage;
             }
 
@@ -115,8 +117,13 @@ namespace i5.VIAProMa.DataDisplays
                     return res.Value;
                 }
                 else
-                {
-                    //Debug.LogError(res.ResponseCode + ": " + res.ErrorMessage);
+                {   
+                    if (!nonfunctionalProfileURLs.ContainsKey(user))
+                    {
+                        nonfunctionalProfileURLs.Add(user, user.ProfileImageUrl);
+                        Debug.LogError(res.ResponseCode + ": " + res.ErrorMessage);
+                        Debug.Log("The profile image of " + user.UserName + " could not be fetched.");
+                    }
                     return ResourceManager.Instance.DefaultProfileImage;
                 }
             }
