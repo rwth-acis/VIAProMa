@@ -11,6 +11,8 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
     {
         [Tooltip("The UI which handles the issue selection")]
         [SerializeField] private ConfigurationIssueSelectionUI issueSelectionUI;
+        [Tooltip("The UI which lists all assigned issues")]
+        [SerializeField] private ConfigurationIssueListUI issueListUi;
 
         /// <summary>
         /// Gets or sets whether the window is enabled
@@ -39,6 +41,14 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             else
             {
                 issueSelectionUI.Setup(visualization);
+            }
+            if (issueListUi == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueListUi));
+            }
+            else
+            {
+                issueListUi.Setup(visualization);
             }
         }
 

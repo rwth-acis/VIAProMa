@@ -11,6 +11,9 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         private ConfigurationIssueSelectionUI issueSelection;
 
+        [Tooltip("The UI which lists all assigned issues")] [SerializeField]
+        private ConfigurationIssueListUI issueListUi;
+
         public override bool WindowEnabled
         {
             get => base.WindowEnabled;
@@ -28,6 +31,15 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
             if (colorChooser == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(colorChooser));
+            }
+
+            if (issueListUi == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(issueListUi));
+            }
+            else
+            {
+                issueListUi.Setup(visualization);
             }
 
             colorChooser.Setup(visualization);
