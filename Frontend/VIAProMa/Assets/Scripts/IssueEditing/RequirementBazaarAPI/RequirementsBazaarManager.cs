@@ -38,8 +38,7 @@ namespace Org.Requirements_Bazaar.API
             }
             else
             {
-                Project project = JsonUtility.FromJson<Project>(response.ResponseBody);
-                Debug.Log(project);
+                Project project = JsonUtility.FromJson<Project>(response.ResponseBody);   
                 return project;
             }
         }
