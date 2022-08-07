@@ -22,7 +22,7 @@ namespace i5.VIAProMa.DataDisplays
 
         private const float pixelDensity = 2000f / 512f;
 
-        private static Dictionary<User, string> nonfunctionalProfileURLs = new Dictionary<User, string>();
+        private static Dictionary<int, string> nonfunctionalProfileURLs = new Dictionary<int, string>();
 
         private static Dictionary<string, Texture2D> profileImages = new Dictionary<string, Texture2D>();
 
@@ -99,7 +99,7 @@ namespace i5.VIAProMa.DataDisplays
         /// <returns>The profile image of the given user</returns>
         private static async Task<Texture2D> GetProfileImage(User user)
         {
-            if (string.IsNullOrEmpty(user.ProfileImageUrl) || user.ProfileImageUrl == "https://api.learning-layers.eu/profile.png" || nonfunctionalProfileURLs.ContainsKey(user))
+            if (string.IsNullOrEmpty(user.ProfileImageUrl) || user.ProfileImageUrl == "https://api.learning-layers.eu/profile.png" || nonfunctionalProfileURLs.ContainsKey(user.Id))
                 {
                 return ResourceManager.Instance.DefaultProfileImage;
             }
@@ -118,11 +118,11 @@ namespace i5.VIAProMa.DataDisplays
                 }
                 else
                 {   
-                    if (!nonfunctionalProfileURLs.ContainsKey(user))
+                    if (!nonfunctionalProfileURLs.ContainsKey(user.Id))
                     {
-                        nonfunctionalProfileURLs.Add(user, user.ProfileImageUrl);
+                        nonfunctionalProfileURLs.Add(user.Id, user.ProfileImageUrl);
                         Debug.LogError(res.ResponseCode + ": " + res.ErrorMessage);
-                        Debug.Log("The profile image of " + user.UserName + " could not be fetched.");
+                        Debug.Log("The profile image of the user " + user.UserName + " could not be fetched.");
                     }
                     return ResourceManager.Instance.DefaultProfileImage;
                 }

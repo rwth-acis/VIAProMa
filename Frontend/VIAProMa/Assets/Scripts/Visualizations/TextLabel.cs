@@ -176,7 +176,7 @@ namespace i5.VIAProMa.Visualizations
                     textLabels[0].textBounds.size.x + padding * 2f,
                     textLabels[0].textBounds.size.y + padding * 2f,
                     background.localScale.z
-                    );
+                    ); 
             }
         }
 
