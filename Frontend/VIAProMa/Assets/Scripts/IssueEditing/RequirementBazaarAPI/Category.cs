@@ -13,9 +13,10 @@ namespace Org.Requirements_Bazaar.DataModel
         [SerializeField] private string name;
         [SerializeField] private string description;
         [SerializeField] private int projectId;
-        [SerializeField] private User leader;
+        [SerializeField] private User creator;
         [SerializeField] private string creationDate;
         [SerializeField] private string lastUpdatedDate;
+        [SerializeField] private string lastActivity;
         [SerializeField] private int numberOfRequirements;
         [SerializeField] private int numberOfFollowers;
         [SerializeField] private bool isFollower;
@@ -69,16 +70,16 @@ namespace Org.Requirements_Bazaar.DataModel
             }
         }
 
-        public User Leader
+        public User Creator
         {
             get
             {
-                return leader;
+                return creator;
             }
 
             set
             {
-                leader = value;
+                creator = value;
             }
         }
 
@@ -95,6 +96,14 @@ namespace Org.Requirements_Bazaar.DataModel
             get
             {
                 return lastUpdatedDate;
+            }
+        }
+
+        public string LastActivity
+        {
+            get
+            {
+                return lastActivity;
             }
         }
 

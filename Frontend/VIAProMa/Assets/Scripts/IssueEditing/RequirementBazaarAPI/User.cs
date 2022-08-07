@@ -13,11 +13,12 @@ namespace Org.Requirements_Bazaar.DataModel
         [SerializeField] private string userName;
         [SerializeField] private string firstName;
         [SerializeField] private string lastName;
-        [SerializeField] private bool admin;
+        [SerializeField] private string eMail;
         [SerializeField] private long las2peerId;
         [SerializeField] private string profileImage;
         [SerializeField] private bool emailLeadSubscription;
         [SerializeField] private bool emailFollowSubscription;
+        [SerializeField] private bool personalizationEnabled;
         [SerializeField] private string creationDate;
         [SerializeField] private string lastUpdatedDate;
         [SerializeField] private string lastLoginDate;
@@ -71,16 +72,16 @@ namespace Org.Requirements_Bazaar.DataModel
             }
         }
 
-        public bool Admin
+        public string EMail
         {
             get
             {
-                return admin;
+                return eMail;
             }
 
             set
             {
-                admin = value;
+                eMail = value;
             }
         }
 
@@ -128,6 +129,19 @@ namespace Org.Requirements_Bazaar.DataModel
             set
             {
                 emailFollowSubscription = value;
+            }
+        }
+
+        public bool PersonalizationEnabled
+        {
+            get
+            {
+                return personalizationEnabled;
+            }
+
+            set
+            {
+                personalizationEnabled = value;
             }
         }
 

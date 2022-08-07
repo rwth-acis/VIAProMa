@@ -15,10 +15,14 @@ namespace Org.Requirements_Bazaar.DataModel
         [SerializeField] private int id;
         [SerializeField] private string name;
         [SerializeField] private string description;
+        [SerializeField] private string realized;
         [SerializeField] private int projectId;
         [SerializeField] private User creator;
+        [SerializeField] private User leadDeveloper;
         [SerializeField] private Category[] categories;
         [SerializeField] private string creationDate;
+        [SerializeField] private string lastUpdatedDate;
+        [SerializeField] private User lastUpdatingUser;
         [SerializeField] private int numberOfComments;
         [SerializeField] private int numberOfAttachments;
         [SerializeField] private int numberofFollowers;
@@ -72,6 +76,22 @@ namespace Org.Requirements_Bazaar.DataModel
         }
 
         /// <summary>
+        /// The date of when the requirement was marked as realized
+        /// </summary>
+        public string Realized
+        {
+            get
+            {
+                return realized;
+            }
+
+            set
+            {
+                realized = value;
+            }
+        }
+
+        /// <summary>
         /// The id of the project to which the requirement belongs
         /// </summary>
         public int ProjectId
@@ -99,6 +119,17 @@ namespace Org.Requirements_Bazaar.DataModel
         }
 
         /// <summary>
+        /// The user who is marked as lead developer
+        /// </summary>
+        public User LeadDeveloper
+        {
+            get
+            {
+                return leadDeveloper;
+            }
+        }
+
+        /// <summary>
         /// An array of categories to which the requirement belongs
         /// </summary>
         public Category[] Categories
@@ -122,6 +153,28 @@ namespace Org.Requirements_Bazaar.DataModel
             get
             {
                 return creationDate;
+            }
+        }
+
+        /// <summary>
+        /// Timestamp of the time when the requirement was last updated
+        /// </summary>
+        public string LastUpdatedDate
+        {
+            get
+            {
+                return lastUpdatedDate;
+            }
+        }
+
+        /// <summary>
+        /// User that last updated the requirement
+        /// </summary>
+        public User LastUpdatingUser
+        {
+            get
+            {
+                return lastUpdatingUser;
             }
         }
 
