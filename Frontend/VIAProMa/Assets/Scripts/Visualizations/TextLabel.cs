@@ -160,12 +160,15 @@ namespace i5.VIAProMa.Visualizations
             // only show the text label if there is text to show
             gameObject.SetActive(!string.IsNullOrEmpty(text));
 
-            // set up all text components
+            // set up all text components  
             for (int i = 0; i < textLabels.Length; i++)
             {
                 textLabels[i].rectTransform.sizeDelta = new Vector2(maxWidth, maxHeight);
                 textLabels[i].text = text;
-                textLabels[i].ForceMeshUpdate();
+                if (text.Trim() != "")
+                {
+                    textLabels[i].ForceMeshUpdate();
+                }
             }
 
             if (textLabels.Length > 0)
