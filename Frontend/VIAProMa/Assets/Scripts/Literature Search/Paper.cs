@@ -20,7 +20,7 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private List<string> title;
         [SerializeField] private List<Author> authors;
         [SerializeField] private List<string> references;
-        [SerializeField] private string url;
+        [SerializeField] private string url;    
         [SerializeField] private DateTime created;
 
         public string Key { get => key; }

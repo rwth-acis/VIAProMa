@@ -6,17 +6,35 @@ using UnityEngine;
 
 namespace i5.VIAProMa.LiteratureSearch
 {
+    /// <summary>
+    /// Class for the citation network node, used by the citation network.
+    /// </summary>
     public class CitationNetworkNode : MonoBehaviour
     {
+        /// <summary>
+        /// Content of the citation network node.
+        /// </summary>
         public Paper Content { get; set; }
 
+        /// <summary>
+        /// Children of the citation network node.
+        /// </summary>
         public List<CitationNetworkNode> Children { get; set; } = new List<CitationNetworkNode>();
 
+        /// <summary>
+        /// Checks whether the node is a leaf node, i.e. has no children.
+        /// </summary>
+        /// <returns>true if node is leaf.</returns>
         public bool IsLeaf()
         {
             return Children == null || Children.Count == 0;
         }
 
+        /// <summary>
+        /// Gets the node corrisponding to a paper in the node and its descendents.
+        /// </summary>
+        /// <param name="paper">Paper to search for.</param>
+        /// <returns>Node with content <paramref name="paper"/> if it exists, otherwise null.</returns>
         public CitationNetworkNode GetNode(Paper paper)
         {
             if (Content.Equals(paper))
@@ -64,6 +82,10 @@ namespace i5.VIAProMa.LiteratureSearch
 
         }
 
+        /// <summary>
+        /// Returns the amount of layers in the citation network.
+        /// </summary>
+        /// <returns>Number of layers.</returns>
         public int GetLayers()
         {
             if (IsLeaf())
@@ -82,6 +104,11 @@ namespace i5.VIAProMa.LiteratureSearch
             return max + 1;
 
         }
+
+        /// <summary>
+        /// Turns citation network node to string.
+        /// </summary>
+        /// <returns>Node in string form.</returns>
         public override string ToString()
         {
             if (IsLeaf())
@@ -97,6 +124,11 @@ namespace i5.VIAProMa.LiteratureSearch
             return output + ")";
         }
 
+        /// <summary>
+        /// Checks whether an object is the same citation network node.
+        /// </summary>
+        /// <param name="other">Other object.</param>
+        /// <returns>true if both are the same.</returns>
         public override bool Equals(object other)
         {
             CitationNetworkNode node = other as CitationNetworkNode;
@@ -106,6 +138,11 @@ namespace i5.VIAProMa.LiteratureSearch
             }
             return Content.Equals(node.Content);
         }
+        /// <summary>
+        /// Checks whether a node is the same citation network node.
+        /// </summary>
+        /// <param name="node">Other node.</param>
+        /// <returns>true if both are the same.</returns>
         public bool Equals(CitationNetworkNode node)
         {
             if (node == null)
@@ -114,7 +151,10 @@ namespace i5.VIAProMa.LiteratureSearch
             }
             return Content.Equals(node.Content);
         }
-
+        /// <summary>
+        /// Gets the hash code of the citation network node.
+        /// </summary>
+        /// <returns>Hash code.</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();
@@ -141,6 +181,10 @@ namespace i5.VIAProMa.LiteratureSearch
 
         }
 
+        /// <summary>
+        /// Gets all the edges downward from the citation node.
+        /// </summary>
+        /// <returns>List of all edges if edges exist, otherwise empy list.</returns>
         public List<(CitationNetworkNode, CitationNetworkNode)> GetConnections()
         {
             List<(CitationNetworkNode, CitationNetworkNode)> connections = new List<(CitationNetworkNode, CitationNetworkNode)>();
