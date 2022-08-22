@@ -48,7 +48,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <summary>
         /// Weight for scaling the visualization with depth.
         /// </summary>
-        private readonly float _weightDepth = .08f;
+        private readonly float _weightDepth = .04f;
         /// <summary>
         /// Weight for scaling the visualization with scale.
         /// </summary>
@@ -56,7 +56,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <summary>
         /// Weight for scaling the visualization with size.
         /// </summary>
-        private readonly float _weightSize = 75;
+        private readonly float _weightSize = 2;
 
         /// <summary>
         /// Visualizes the search results.
@@ -104,10 +104,16 @@ namespace i5.VIAProMa.LiteratureSearch
 
             // Initializations
             float itemHeight = .1f;
-            float itemWidth = .225f;
+            float itemWidth = .25f;
 
             float heightOffset = .1f;
             float zOffset = -.1f;
+
+            if(_currentVisualization == Visualizations.Scale)
+            {
+                itemHeight = .2f;
+                itemWidth = .35f;
+            }
 
 
             (Dictionary<string, double>, double, double) rankCalc = network.CalculateRanks();
@@ -147,14 +153,14 @@ namespace i5.VIAProMa.LiteratureSearch
 
                 
 
-                xPos = (((int)((yearEntries[yearIndex]) / 2 + 1)) * itemWidth);
+                xPos = (((int)( ((float)(yearEntries[yearIndex])) / 2 + .5)) * itemWidth);
 
                 if(yearEntries[yearIndex] % 2 == 0)
                 {
                     xPos = -xPos;
                 }
                 yearEntries[yearIndex]++;
-                
+                 
 
 
                 GameObject displayInstance = Instantiate(paperNetworkView);
@@ -166,11 +172,18 @@ namespace i5.VIAProMa.LiteratureSearch
                     rank = ranks[node.Content.DOI];
                 }
 
+                Debug.Log(node.Content.ToString() + " - " + rank);
+
                 // Affect the transform of the node objects according to the selected visualization.
                 switch (_currentVisualization)
                 {
                     case Visualizations.Depth:
-                        displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset - (float)rank * _weightDepth);
+                        float z = zOffset - (float)rank * _weightDepth;
+                        if (rank < ((maxRank + minRank) / 2) + minRank)
+                        {
+                            z = zOffset + (float)rank * _weightDepth;
+                        }
+                        displayInstance.transform.position += new Vector3(xPos, height + heightOffset, z);
                         break;
                     case Visualizations.Scale:
                         {
@@ -186,10 +199,10 @@ namespace i5.VIAProMa.LiteratureSearch
                         break;
                     case Visualizations.Size:
                         {
-                            displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
-                            double scale = (rank / (maxRank - minRank)) * _weightSize;
+                            double scale = 1 + (rank - minRank) * _weightSize;
                             Vector3 oldScale = displayInstance.GetComponentInChildren<PaperNetworkItem>().gameObject.transform.localScale;
                             Vector3 newScale = new Vector3(oldScale.x, oldScale.y, oldScale.z * (float)scale);
+                            displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
                             displayInstance.GetComponentInChildren<PaperNetworkItem>().gameObject.transform.localScale = newScale;
                         }
                         break;
@@ -197,8 +210,6 @@ namespace i5.VIAProMa.LiteratureSearch
                         displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
                         break;
                 }
-
-                displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
 
                 _paperNetworkList.Add(displayInstance);
                 PaperDataDisplay remoteDataDisplay = displayInstance?.GetComponentInChildren<PaperDataDisplay>();

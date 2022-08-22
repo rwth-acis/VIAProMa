@@ -34,6 +34,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <param name="query"></param>
         /// <param name="maxResults"></param>
         /// <param name="offset"></param>
+        /// <param name="searchDOI"></param>
         public static async Task<CrossRefMessage> APISearch(string query, int maxResults = 5, int offset = 0)
         {
             query = query.Replace(" ", "+");

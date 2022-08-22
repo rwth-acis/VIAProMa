@@ -216,7 +216,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         /// </summary>
         public void ShowLiteratureSearchWindow()
         {
-            WindowManager.Instance.LiteratureSearchWindow.Open(loginButton.transform.position, loginButton.transform.eulerAngles);
+            WindowManager.Instance.LiteratureSearchWindow.Open(loginButton.transform.position - .2f * transform.forward, loginButton.transform.eulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 

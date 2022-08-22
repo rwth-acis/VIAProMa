@@ -143,7 +143,14 @@ namespace i5.VIAProMa.LiteratureSearch
 
         public override string ToString()
         {
-            return doi;
+            string output = doi;
+            if (title != null && title.Count > 0)
+                output += "; " + title[0];
+            if (authors != null && authors.Count > 0)
+                output += "; " + authors[0];
+            if (created != null)
+                output += "; " + created.Year;
+            return output;
         }
     }
 }

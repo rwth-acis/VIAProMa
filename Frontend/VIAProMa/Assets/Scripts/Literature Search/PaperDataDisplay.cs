@@ -84,7 +84,7 @@ namespace i5.VIAProMa.LiteratureSearch
             if(content != null)
             {
                 keyField.text = content.Key;
-                titleField.text = content.Title[0];
+                titleField.text = content.Title?[0] ?? "Missing title";
                 yearField.text = content.Created.Year.ToString();
                 string authors = "";
                 foreach(Author author in content.Authors)

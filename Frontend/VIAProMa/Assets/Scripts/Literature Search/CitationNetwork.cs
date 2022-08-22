@@ -14,7 +14,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <summary>
         /// Initial iterationsteps when creating the network.
         /// </summary>
-        private static readonly int _cutoff = 3;
+        private static readonly int _cutoff = 1;
 
         private readonly double _weigthEdges = .3;
         private readonly double _weigthYear = 1;
@@ -244,7 +244,10 @@ namespace i5.VIAProMa.LiteratureSearch
                 }
                 rank += edges * _weigthEdges;
 
-                rank += Mathf.Log10(paper.ReferencedByCount) * _weigthCitations;
+                if(paper.ReferencedByCount > 0)
+                {
+                    rank += Mathf.Log10(paper.ReferencedByCount) * _weigthCitations;
+                }
 
                 rank += (paper.Created.Year/Base.Created.Year) * _weigthYear;
 

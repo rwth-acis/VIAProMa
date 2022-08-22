@@ -45,6 +45,8 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private InteractableToggleCollection visToggles;
         [Tooltip("Parent for all advanced settings.")]
         [SerializeField] private GameObject advancedSettings;
+        [Tooltip("Checkbox to enable the search for a specific DOI.")]
+        [SerializeField] private Interactable searchDOICheckbox;
 
         /// <summary>
         /// Saves if the window is enables.
@@ -237,6 +239,19 @@ namespace i5.VIAProMa.LiteratureSearch
             if(advancedSettingsCheckbox.CurrentDimension == 1)
             {
                 maxResults = paperCountSlider.ValueInt;
+                if (searchDOICheckbox.IsToggled)
+                {
+                    Paper paper = await Communicator.GetPaper(searchField.Text);
+                    if(paper is null)
+                    {
+                        display.text = $"{searchField.Text} was not found.";
+                    }
+                    else
+                    {
+                        PaperController.Instance.ShowResults(new List<Paper>() { paper }, transform);
+                    }
+                    return;
+                }
             }
             else
             {

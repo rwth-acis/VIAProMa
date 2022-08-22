@@ -19,6 +19,8 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private GameObject loadingObject;
         [Tooltip("The gameobject of the button used to calculate the next iteration step.")]
         [SerializeField] private GameObject nextIterationButton;
+        [Tooltip("The gameobject of the button used to redraw the citation network")]
+        [SerializeField] private Interactable redrawButton;
 
         /// <summary>
         /// MessageBadge used to display the loading animation.
@@ -54,7 +56,11 @@ namespace i5.VIAProMa.LiteratureSearch
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(nextIterationButton));
             }
-            if(GetComponent<Interactable>() != null)
+            if (redrawButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(redrawButton));
+            }
+            if (GetComponent<Interactable>() != null)
             {
                 _button = GetComponent<Interactable>();
             }
@@ -83,6 +89,7 @@ namespace i5.VIAProMa.LiteratureSearch
             nextIterationButton.GetComponent<Interactable>().IsEnabled = false;
             _messageBadge.gameObject.SetActive(true);
             _messageBadge.ShowProcessing();
+            redrawButton.IsEnabled = false;
             if(_button != null)
             {
                 _button.IsEnabled = false;
@@ -101,6 +108,7 @@ namespace i5.VIAProMa.LiteratureSearch
                 _button.IsEnabled = true;
             }
             nextIterationButton.GetComponent<Interactable>().IsEnabled = true;
+            redrawButton.IsEnabled = true;
         }
 
         /// <summary>
@@ -113,6 +121,10 @@ namespace i5.VIAProMa.LiteratureSearch
             _network = await _network.CalculateNextIteration();
             EndLoading();
             
+            StartCoroutine(PaperController.Instance.ShowNetwork(_network, this.transform));
+        }
+        public void OnRedraw()
+        {
             StartCoroutine(PaperController.Instance.ShowNetwork(_network, this.transform));
         }
     }
