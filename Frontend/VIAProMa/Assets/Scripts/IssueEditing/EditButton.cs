@@ -4,6 +4,7 @@ using i5.VIAProMa.DataModel.API;
 using System;
 using i5.VIAProMa.Login;
 using System.Collections.Generic;
+using i5.VIAProMa.Shelves.IssueShelf;
 
 public class EditButton : IssueButton
 {
@@ -18,12 +19,25 @@ public class EditButton : IssueButton
 
     public void Start()
     {
-        //Get the edit menu from the project tracker and the UIs
-        projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
-        editMenu = projectTracker.editIssueMenu;
-        requirementBazaarUI = editMenu.requirementBazaar_UI;
-        gitHubUI = editMenu.gitHub_UI;
-        Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
+        if (!belongsToShelf())
+        {
+            this.gameObject.SetActive(false);
+        }
+        else
+        {
+            //Get the edit menu from the project tracker and the UIs
+            projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
+            editMenu = projectTracker.editIssueMenu;
+            requirementBazaarUI = editMenu.requirementBazaar_UI;
+            gitHubUI = editMenu.gitHub_UI;
+            Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
+        }
+    }
+
+    // Determines whether the issue card is a child of the issue shelf
+    public bool belongsToShelf()
+    {
+        return this.transform.parent.GetComponentInParent<IssuesLoader>() != null;
     }
 
 

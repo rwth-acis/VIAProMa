@@ -101,7 +101,6 @@ namespace i5.VIAProMa.DataDisplays
         /// <returns>The profile image of the given user</returns>
         private static async Task<Texture2D> GetProfileImage(User user)
         {
-            Debug.Log(user.EMail);
             if (string.IsNullOrEmpty(user.ProfileImageUrl) || user.ProfileImageUrl == "https://api.learning-layers.eu/profile.png" || nonfunctionalProfileURLs.ContainsKey(user.Id))
             {
                 // try and fetch from Gravatar
