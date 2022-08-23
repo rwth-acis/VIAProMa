@@ -11,11 +11,15 @@ public class ReqBazUser {
     public String userName;
     public String firstName;
     public String lastName;
-    public boolean admin;
+    public boolean eMail;
     public long las2peerId;
     public String profileImage;
     public boolean emailLeadSubscription;
     public boolean emailFollowSubscription;
+    public boolean personalizationEnabled;
+    public String creationDate;
+    public String lastUpdatedDate;
+    public String lastLoginDate;
 
     @Override
     public boolean equals(Object obj) {

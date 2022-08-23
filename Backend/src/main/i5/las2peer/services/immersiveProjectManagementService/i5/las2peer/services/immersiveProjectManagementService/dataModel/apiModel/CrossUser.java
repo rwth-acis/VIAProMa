@@ -14,18 +14,20 @@ public class CrossUser {
     private String firstName;
     private String lastName;
     private String profileImageUrl;
+    private String eMail;
 
     public CrossUser()
     {
     }
 
-    public CrossUser(DataSource source, int id, String userName, String firstName, String lastName, String profileImageUrl) {
+    public CrossUser(DataSource source, int id, String userName, String firstName, String lastName, String profileImageUrl, String eMail) {
         this.source = source;
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.profileImageUrl = profileImageUrl;
+        this.eMail = eMail;
     }
 
     @JsonIgnore
@@ -55,6 +57,10 @@ public class CrossUser {
         return profileImageUrl;
     }
 
+    public String getEMail() {
+        return eMail;
+    }
+
     public static CrossUser fromReqBazUser(ReqBazUser rbUser)
     {
         CrossUser user = new CrossUser(
@@ -63,7 +69,8 @@ public class CrossUser {
                 rbUser.userName,
                 rbUser.firstName,
                 rbUser.lastName,
-                rbUser.profileImage
+                rbUser.profileImage,
+                rbUser.eMail
         );
         return user;
     }
@@ -86,7 +93,8 @@ public class CrossUser {
                 ghUser.getLogin(),
                 "",
                 ghUser.getLogin(),
-                ghUser.getAvatar_url()
+                ghUser.getAvatar_url(),
+                "hey@gmail.com"
         );
         return user;
     }

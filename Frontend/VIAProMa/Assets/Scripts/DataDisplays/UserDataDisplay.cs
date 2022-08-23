@@ -101,11 +101,12 @@ namespace i5.VIAProMa.DataDisplays
         /// <returns>The profile image of the given user</returns>
         private static async Task<Texture2D> GetProfileImage(User user)
         {
+            Debug.Log(user.EMail);
             if (string.IsNullOrEmpty(user.ProfileImageUrl) || user.ProfileImageUrl == "https://api.learning-layers.eu/profile.png" || nonfunctionalProfileURLs.ContainsKey(user.Id))
             {
                 // try and fetch from Gravatar
-                if (user.EMail != null)
-                {
+                //if (user.EMail != null)
+                //{
                     ApiResult<Texture2D> res = await FetchProfileImageFromGravatar(user);
                     if (res.Successful)
                     {
@@ -115,12 +116,12 @@ namespace i5.VIAProMa.DataDisplays
                     {
                         return ResourceManager.Instance.DefaultProfileImage;
                     }
-                }
+                //}
                 // otherwise the default profile image
-                else
-                {
-                    return ResourceManager.Instance.DefaultProfileImage;
-                }
+                //else
+                //{
+                    //return ResourceManager.Instance.DefaultProfileImage;
+                //}
             }
 
             // first check if we downloaded the profile picture before
@@ -197,11 +198,11 @@ namespace i5.VIAProMa.DataDisplays
         private static async Task<ApiResult<Texture2D>> FetchProfileImageFromGravatar(User user)
         {
             // create hash from email
-            string hashedEmail = CreateMD5(user.EMail.Trim().ToLower());
+            //string hashedEmail = CreateMD5(user.EMail.Trim().ToLower());
+            string hashedEmail = CreateMD5("emilie.hastrup.kiil@rwth-aachen.de".Trim().ToLower());
 
             // request gravatar image
             UnityWebRequest www = UnityWebRequestTexture.GetTexture("https://www.gravatar.com/avatar/" + hashedEmail + "?r=g&d=404");
-            Debug.Log("https://www.gravatar.com/avatar/" + hashedEmail + "?r=g&d=404");
             await www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
