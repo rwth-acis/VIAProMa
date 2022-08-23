@@ -11,7 +11,7 @@ public class ReqBazUser {
     public String userName;
     public String firstName;
     public String lastName;
-    public boolean eMail;
+    public String eMail;
     public long las2peerId;
     public String profileImage;
     public boolean emailLeadSubscription;

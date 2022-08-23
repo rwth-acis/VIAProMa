@@ -121,7 +121,7 @@ public class GitHubServiceTest {
                             .queryParam("page", 0)
                             .queryParam("per_page", 10);
             URI uri = uriBuilder.build("microsoft", "MixedRealityToolkit-Unity");
-
+            System.out.println(uri.toString());
             ClientResponse result = client.sendRequest("GET", uri.toString(), "");
             System.out.println("Result of 'testGetGitHubIssuesInRepository_Response': " + result.getResponse());
 

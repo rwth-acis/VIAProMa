@@ -14,9 +14,10 @@ public class Requirement {
     private int projectId;
     private ReqBazUser creator;
     private ReqBazUser leadDeveloper;
-    private int[] categories;
+    private Category[] categories;
     private String creationDate;
     private String lastUpdatedDate;
+    private ReqBazUser lastUpdatingUser;
     private int numberOfComments;
     private int numberOfAttachments;
     private int numberOfFollowers;
@@ -55,7 +56,7 @@ public class Requirement {
         return leadDeveloper;
     }
 
-    public int[] getCategories() {
+    public Category[] getCategories() {
         return categories;
     }
 
@@ -65,6 +66,10 @@ public class Requirement {
 
     public String getLastUpdatedDate() {
         return lastUpdatedDate;
+    }
+    
+    public ReqBazUser getLastUpdatingUser() {
+        return lastUpdatingUser;
     }
 
     public int getNumberOfComments() {
