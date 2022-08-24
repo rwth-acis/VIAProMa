@@ -94,7 +94,7 @@ public class CrossUser {
                 "",
                 ghUser.getLogin(),
                 ghUser.getAvatar_url(),
-                ghUser.getAvatar_url()
+                ""
         );
         return user;
     }
