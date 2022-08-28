@@ -37,7 +37,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// </summary>
         private List<GameObject> _paperNetworkList = new List<GameObject>();
         /// <summary>
-        /// /´List of network edge gameobjects.
+        /// List of network edge gameobjects.
         /// </summary>
         private List<GameObject> _connectionsList  = new List<GameObject>();
 
@@ -188,8 +188,8 @@ namespace i5.VIAProMa.LiteratureSearch
                     case Visualizations.Scale:
                         {
                             displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
-                            double middle = (maxRank - minRank) / 2;
-                            double normRank = rank - minRank;
+                            //double middle = (maxRank - minRank) / 2;
+                            //double normRank = rank - minRank;
                             //double scale = ((normRank / middle) / (maxRank - minRank)) * 2 * _weightScale;
                             double scale = (rank / maxRank + .5f) * _weightScale;
                             Vector3 oldScale = displayInstance.transform.localScale;
