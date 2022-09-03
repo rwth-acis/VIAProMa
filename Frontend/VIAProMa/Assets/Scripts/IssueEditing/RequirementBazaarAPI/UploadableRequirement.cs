@@ -14,17 +14,17 @@ namespace Org.Requirements_Bazaar.Serialization
     public class UploadableRequirement
     {
         [SerializeField] private int id;
-        [SerializeField] private int projectId;
         [SerializeField] private string name;
         [SerializeField] private string description;
-        [SerializeField] private Category[] categories;
+        [SerializeField] private int projectId;
+        [SerializeField] private int[] categories;
 
-        public UploadableRequirement(string name, string description, int projectId, Category[] categories)
+        public UploadableRequirement(string name, string description, int projectId, int[] categories)
             : this(0, name, description, projectId, categories)
         {
         }
 
-        public UploadableRequirement(int id, string name, string description, int projectId, Category[] categories)
+        public UploadableRequirement(int id, string name, string description, int projectId, int[] categories)
         {
             this.id = id;
             this.name = name;
@@ -100,7 +100,7 @@ namespace Org.Requirements_Bazaar.Serialization
         /// An array of categories to which the requirement belongs
         /// If it is null or has a length of 0, the requirement will be assigned to the default category of the project
         /// </summary>
-        public Category[] Categories
+        public int[] Categories
         {
             get
             {

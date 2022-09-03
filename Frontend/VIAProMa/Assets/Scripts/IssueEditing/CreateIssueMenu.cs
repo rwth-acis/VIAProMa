@@ -28,13 +28,26 @@ public class CreateIssueMenu : MonoBehaviour
         switch (configurationMenu.ShelfConfiguration.SelectedSource)
         {
             case DataSource.REQUIREMENTS_BAZAAR:
-                Category category;
-                category = await RequirementsBazaarManager.GetCategory(projectTracker.currentCategory.id);
-                Category[] categoryarray = new Category[1];
-                categoryarray[0] = category;
+                int category = 0;
+                Project proj = await RequirementsBazaarManager.GetProject(projectTracker.currentProjectID);
+                int[] categoryarray = null;
+                if (projectTracker.currentCategory.id == 0)
+                {
 
+                    category = proj.DefaultCategoryId;
+                }
+                else
+                {
+                    if (projectTracker.currentCategory.id != 0)
+                    {
+                        category = projectTracker.currentCategory.id;
+                    }
+                }
+                categoryarray = new int[1];
+                categoryarray[0] = category;
                 await RequirementsBazaarManager.CreateRequirement(projectTracker.currentProjectID, issueName.text, issueDescription.text, categoryarray);
                 break;
+
             case DataSource.GITHUB:
                 await GitHubManager.CreateIssue(projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issueName.text, issueDescription.text);
                 break;

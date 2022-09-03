@@ -17,7 +17,7 @@ namespace Org.Requirements_Bazaar.DataModel
         [SerializeField] private string description;
         [SerializeField] private int projectId;
         [SerializeField] private User creator;
-        [SerializeField] private Category[] categories;
+        [SerializeField] private int[] categories;
         [SerializeField] private string creationDate;
         [SerializeField] private int numberOfComments;
         [SerializeField] private int numberOfAttachments;
@@ -101,7 +101,7 @@ namespace Org.Requirements_Bazaar.DataModel
         /// <summary>
         /// An array of categories to which the requirement belongs
         /// </summary>
-        public Category[] Categories
+        public int[] Categories
         {
             get
             {
