@@ -176,16 +176,20 @@ namespace Org.Requirements_Bazaar.API
                 byte[] authentificationInfoInfoBytes = Encoding.UTF8.GetBytes(authentificationInfoInfo);
                 string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
 
-                Debug.Log(encodedAuthentificationInfo);
-
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
-                Debug.Log(headers);
                 Response resp = await Rest.DeleteAsync(url, headers, -1, true);
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                    if(resp.ResponseCode == 401)
+                    {
+                        Debug.LogError("You are not authorized to delete this requirement.");
+                    }
+                    else
+                    {
+                        Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                    }
                     return null;
                 }
                 else
