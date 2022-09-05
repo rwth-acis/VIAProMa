@@ -22,9 +22,22 @@ public class DeleteButton : IssueButton, IMixedRealityInputHandler
 
     public void Start()
     {
-        issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
-        projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
-        Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
+        if (!belongsToShelf())
+        {
+            this.gameObject.SetActive(false);
+        }
+        else
+        {
+            issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
+            projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
+            Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
+        }
+    }
+
+    // Determines whether the issue card is a child of the issue shelf
+    public bool belongsToShelf()
+    {
+        return this.transform.parent.GetComponentInParent<IssuesLoader>() != null;
     }
 
     // On Input, start timer until the issue is deleted or the input has stopped, size of indicator is adjusted to delta time
