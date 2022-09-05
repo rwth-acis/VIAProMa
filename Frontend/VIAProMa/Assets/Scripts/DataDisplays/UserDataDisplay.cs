@@ -105,8 +105,8 @@ namespace i5.VIAProMa.DataDisplays
             if (string.IsNullOrEmpty(user.ProfileImageUrl) || user.ProfileImageUrl == "https://api.learning-layers.eu/profile.png" || nonfunctionalProfileURLs.ContainsKey(user.Id))
             {
                 // try and fetch the profile image from Gravatar 
-                //if (user.EMail != null)
-                //{
+                if (user.EMail != null)
+                {
                     ApiResult<Texture2D> res = await FetchProfileImageFromGravatar(user);
                     if (res.Successful)
                     {
@@ -116,12 +116,12 @@ namespace i5.VIAProMa.DataDisplays
                     {
                         return ResourceManager.Instance.DefaultProfileImage;
                     }
-                //}
+                }
                 // otherwise the default profile image
-                //else
-                //{
-                //return ResourceManager.Instance.DefaultProfileImage;
-                //}
+                else
+                {
+                return ResourceManager.Instance.DefaultProfileImage;
+                }
             }
 
             // first check if we downloaded the profile picture before
@@ -147,8 +147,8 @@ namespace i5.VIAProMa.DataDisplays
                     }
 
                     // try and fetch the profile image from Gravatar instead
-                    //if (user.EMail != null)
-                    //{
+                    if (user.EMail != null)
+                    {
                         res = await FetchProfileImageFromGravatar(user);
                         if (res.Successful)
                         {
@@ -158,12 +158,12 @@ namespace i5.VIAProMa.DataDisplays
                         {
                             return ResourceManager.Instance.DefaultProfileImage;
                         }
-                    //}
+                    }
                     // otherwise the default profile image
-                    //else
-                    //{
-                        //return ResourceManager.Instance.DefaultProfileImage;
-                    //}
+                    else
+                    {
+                        return ResourceManager.Instance.DefaultProfileImage;
+                    }
                 }
             }
         }
@@ -198,10 +198,7 @@ namespace i5.VIAProMa.DataDisplays
         private static async Task<ApiResult<Texture2D>> FetchProfileImageFromGravatar(User user)
         {
             // create hash from email
-            //string hashedEmail = CreateMD5(user.EMail.Trim().ToLower());
-
-            // Temporary email, until the user email is successfully fetched
-            string hashedEmail = CreateMD5("emilie.hastrup.kiil@rwth-aachen.de");
+            string hashedEmail = CreateMD5(user.EMail.Trim().ToLower());
 
             // request gravatar image
             UnityWebRequest www = UnityWebRequestTexture.GetTexture("https://www.gravatar.com/avatar/" + hashedEmail + "?r=g&d=404");
