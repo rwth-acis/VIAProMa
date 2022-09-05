@@ -165,7 +165,10 @@ namespace i5.VIAProMa.Visualizations
             {
                 textLabels[i].rectTransform.sizeDelta = new Vector2(maxWidth, maxHeight);
                 textLabels[i].text = text;
-                textLabels[i].ForceMeshUpdate();
+                if (text.Trim() != "")
+                {
+                    textLabels[i].ForceMeshUpdate();
+                }
             }
 
             if (textLabels.Length > 0)
