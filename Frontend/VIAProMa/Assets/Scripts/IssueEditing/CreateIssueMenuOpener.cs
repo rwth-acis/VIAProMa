@@ -270,7 +270,7 @@ public class CreateIssueMenuOpener : MonoBehaviour
     //Checks if the Button should be Enabled if a RequirementBazaar Configuration is enabled
     private void RequirementBazaarCheck()
     {
-        if (isloggedIn_RequirementBazaar && isProjectLoaded_RequirementBazaar && categorySelected_RequirementBazaar)
+        if (isloggedIn_RequirementBazaar && isProjectLoaded_RequirementBazaar)
             EnableButton();
         else
             DisableButton();
