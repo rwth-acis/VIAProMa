@@ -416,7 +416,7 @@ namespace Org.Requirements_Bazaar.API
             requirement.Description = newDescription;
 
 
-            string url = baseUrl + "requirements/" + requirement.Id;
+            string url = baseUrl + "requirements";
 
             // convert the requirement to a uploadable format (the statistic fields of the requirement are not recognized as input by the service)
             UploadableRequirement uploadableRequirement = requirement.ToUploadFormat();
