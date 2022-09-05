@@ -224,7 +224,6 @@ namespace Org.Requirements_Bazaar.API
                 Debug.LogError("Requirement not found");
                 return null;
             }
-            Debug.Log(requirementId);
             string url = baseUrl + "requirements/" + requirementId.ToString();
             Dictionary<string, string> headers = new Dictionary<string, string>();
             if(ServiceManager.GetService<LearningLayersOidcService>() != null)
@@ -247,12 +246,9 @@ namespace Org.Requirements_Bazaar.API
                 byte[] authentificationInfoInfoBytes = Encoding.UTF8.GetBytes(authentificationInfoInfo);
                 string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
 
-                Debug.Log(encodedAuthentificationInfo);
-
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
-                Debug.Log(headers);
                 Response resp = await Rest.DeleteAsync(url, headers, -1, true);
                 if (!resp.Successful)
                 {
@@ -365,12 +361,8 @@ namespace Org.Requirements_Bazaar.API
                 byte[] authentificationInfoInfoBytes = Encoding.UTF8.GetBytes(authentificationInfoInfo);
                 string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
 
-                Debug.Log(encodedAuthentificationInfo);
-
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
-
-                Debug.Log(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
                 Response resp = await Rest.PostAsync(url, json, headers, -1, true);
                 if (!resp.Successful)
@@ -444,12 +436,8 @@ namespace Org.Requirements_Bazaar.API
                 byte[] authentificationInfoInfoBytes = Encoding.UTF8.GetBytes(authentificationInfoInfo);
                 string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
 
-                Debug.Log(encodedAuthentificationInfo);
-
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
-
-                Debug.Log(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
                 Response response = await Rest.PutAsync(url, json, headers, -1, true);
                 if (!response.Successful)
@@ -473,7 +461,7 @@ namespace Org.Requirements_Bazaar.API
         /// <returns>The updated requirement</returns>
         public static async Task<Requirement> UpdateRequirement(Requirement toUpdate)
         {
-            string url = baseUrl + "requirements/" + toUpdate.Id;
+            string url = baseUrl + "requirements";
 
             // convert the requirement to a uploadable format (the statistic fields of the requirement are not recognized as input by the service)
             UploadableRequirement uploadableRequirement = toUpdate.ToUploadFormat();
