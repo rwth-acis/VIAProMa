@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace i5.VIAProMa.DataDisplays
 {
@@ -102,7 +104,24 @@ namespace i5.VIAProMa.DataDisplays
             // check whether the url can be used to fetch a profile image
             if (string.IsNullOrEmpty(user.ProfileImageUrl) || user.ProfileImageUrl == "https://api.learning-layers.eu/profile.png" || nonfunctionalProfileURLs.ContainsKey(user.Id))
             {
-                return ResourceManager.Instance.DefaultProfileImage;
+                // try and fetch the profile image from Gravatar 
+                //if (user.EMail != null)
+                //{
+                    ApiResult<Texture2D> res = await FetchProfileImageFromGravatar(user);
+                    if (res.Successful)
+                    {
+                        return res.Value;
+                    }
+                    else
+                    {
+                        return ResourceManager.Instance.DefaultProfileImage;
+                    }
+                //}
+                // otherwise the default profile image
+                //else
+                //{
+                //return ResourceManager.Instance.DefaultProfileImage;
+                //}
             }
 
             // first check if we downloaded the profile picture before
@@ -126,7 +145,25 @@ namespace i5.VIAProMa.DataDisplays
                         Debug.LogError(res.ResponseCode + ": " + res.ErrorMessage);
                         Debug.Log("The profile image of the user " + user.UserName + " could not be fetched.");
                     }
-                    return ResourceManager.Instance.DefaultProfileImage;
+
+                    // try and fetch the profile image from Gravatar instead
+                    //if (user.EMail != null)
+                    //{
+                        res = await FetchProfileImageFromGravatar(user);
+                        if (res.Successful)
+                        {
+                            return res.Value;
+                        }
+                        else
+                        {
+                            return ResourceManager.Instance.DefaultProfileImage;
+                        }
+                    //}
+                    // otherwise the default profile image
+                    //else
+                    //{
+                        //return ResourceManager.Instance.DefaultProfileImage;
+                    //}
                 }
             }
         }
@@ -152,6 +189,59 @@ namespace i5.VIAProMa.DataDisplays
             return new ApiResult<Texture2D>(DownloadHandlerTexture.GetContent(www));
 
         }
+
+        /// <summary>
+        /// Fetches the profile image of the user from Gravatar, if no other profile is provided
+        /// </summary>
+        /// <param name="user">The user whose profile image should be fetched</param>
+        /// <returns>The profile image of the given user</returns>
+        private static async Task<ApiResult<Texture2D>> FetchProfileImageFromGravatar(User user)
+        {
+            // create hash from email
+            //string hashedEmail = CreateMD5(user.EMail.Trim().ToLower());
+
+            // Temporary email, until the user email is successfully fetched
+            string hashedEmail = CreateMD5("emilie.hastrup.kiil@rwth-aachen.de");
+
+            // request gravatar image
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture("https://www.gravatar.com/avatar/" + hashedEmail + "?r=g&d=404");
+            await www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                if (www.GetResponseHeaders() == null)
+                {
+                    return new ApiResult<Texture2D>(0, "Device unavailable");
+                }
+                return new ApiResult<Texture2D>(www.responseCode, www.downloadHandler.text);
+            }
+            return new ApiResult<Texture2D>(DownloadHandlerTexture.GetContent(www));
+
+        }
+
+        /// <summary>
+        /// Creates a MG5 hash of a string
+        /// </summary>
+        /// <param name="email">The email address that is to be hashed</param>
+        /// <returns>The result hash</returns>
+        public static string CreateMD5(string email)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                // applies the MD5 hash
+                byte[] inputBytes = Encoding.ASCII.GetBytes(email);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                // convert hash to string
+                StringBuilder finalHash = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    finalHash.Append(hashBytes[i].ToString("X2"));
+                }
+                return finalHash.ToString().ToLower();
+            }
+        }
+
     }
 
 }
