@@ -122,7 +122,7 @@ namespace i5.VIAProMa.LiteratureSearch
                     else
                     {
                         referencesTasks.Add(Communicator.GetPaper(refDOI));
-                        await Task.Delay(5);
+                        await Task.Delay(50);
                     }
 
                 }

@@ -48,7 +48,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <summary>
         /// Weight for scaling the visualization with depth.
         /// </summary>
-        private readonly float _weightDepth = .04f;
+        private readonly float _weightDepth = 1.5f;
         /// <summary>
         /// Weight for scaling the visualization with scale.
         /// </summary>
@@ -56,7 +56,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <summary>
         /// Weight for scaling the visualization with size.
         /// </summary>
-        private readonly float _weightSize = 2;
+        private readonly float _weightSize = 20;
 
         /// <summary>
         /// Visualizes the search results.
@@ -178,12 +178,8 @@ namespace i5.VIAProMa.LiteratureSearch
                 switch (_currentVisualization)
                 {
                     case Visualizations.Depth:
-                        float z = zOffset - (float)rank * _weightDepth;
-                        if (rank < ((maxRank + minRank) / 2) + minRank)
-                        {
-                            z = zOffset + (float)rank * _weightDepth;
-                        }
-                        displayInstance.transform.position += new Vector3(xPos, height + heightOffset, z);
+                        float z = (float)((rank - minRank)/(maxRank - minRank) * _weightDepth) - _weightDepth / 2;
+                        displayInstance.transform.position += new Vector3(xPos, height + heightOffset, -z);
                         break;
                     case Visualizations.Scale:
                         {
@@ -199,7 +195,7 @@ namespace i5.VIAProMa.LiteratureSearch
                         break;
                     case Visualizations.Size:
                         {
-                            double scale = 1 + (rank - minRank) * _weightSize;
+                            double scale = 1 + (rank - minRank) / (maxRank - minRank) * _weightSize;
                             Vector3 oldScale = displayInstance.GetComponentInChildren<PaperNetworkItem>().gameObject.transform.localScale;
                             Vector3 newScale = new Vector3(oldScale.x, oldScale.y, oldScale.z * (float)scale);
                             displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);

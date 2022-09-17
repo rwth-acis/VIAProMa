@@ -1962,6 +1962,7 @@ GameObject:
   - component: {fileID: 259630737895380254}
   - component: {fileID: 5733313774859096206}
   - component: {fileID: 2934234931841331507}
+  - component: {fileID: 5843379323389191871}
   m_Layer: 0
   m_Name: Bounding Box
   m_TagString: Untagged
@@ -2158,6 +2159,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   elasticsManager: {fileID: 0}
+--- !u!114 &5843379323389191871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6338608213388155419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5afd5316c63705643b3daba5a6e923bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTetherWhenManipulating: 0
+  IsBoundsHandles: 0
 --- !u!1 &9036973643498835212
 GameObject:
   m_ObjectHideFlags: 0
@@ -2874,15 +2889,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a565e6c3bee3c4b49a6b762cfd4504f6, type: 3}
---- !u!4 &12928925661500839 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 3186154108654153411}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1115111733179325756 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2544202224179704831, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
+    type: 3}
+  m_PrefabInstance: {fileID: 3186154108654153411}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &12928925661500839 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
     type: 3}
   m_PrefabInstance: {fileID: 3186154108654153411}
   m_PrefabAsset: {fileID: 0}
@@ -2927,7 +2942,7 @@ PrefabInstance:
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0283
+      value: -0.0225
       objectReference: {fileID: 0}
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
@@ -3393,12 +3408,12 @@ PrefabInstance:
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.2214
+      value: 0.179
       objectReference: {fileID: 0}
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.081
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 3178011426364783460, guid: a565e6c3bee3c4b49a6b762cfd4504f6,
         type: 3}
