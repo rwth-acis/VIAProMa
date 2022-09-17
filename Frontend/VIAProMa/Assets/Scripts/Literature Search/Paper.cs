@@ -152,6 +152,31 @@ namespace i5.VIAProMa.LiteratureSearch
                 output += "; " + created.Year;
             return output;
         }
+
+        /// <summary>
+        /// Returns the BibTeX entry for the paper.
+        /// </summary>
+        /// <returns></returns>
+        public string ToBibTeX()
+        {
+            string output = "@misc{ ";
+            output += key + ",";
+            string author = "";
+            for(int i = 0; i < authors.Count; i++)
+            {
+                author += authors[i].family + ", " + authors[i].given;
+                if (i + 1 < authors.Count)
+                {
+                    author += " and ";
+                }
+            }
+            output += "\n\t author={" + author + "},";
+            output += "\n\t year={" + created.Year + "},";
+            output += "\n\t title={" + title[0] + "},";
+            output += "\n\t doi={" + doi + "},";
+            output += "\n}\n\n";
+            return output;
+        }
     }
 }
 

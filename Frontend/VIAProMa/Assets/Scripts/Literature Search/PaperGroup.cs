@@ -29,7 +29,7 @@ namespace i5.VIAProMa.LiteratureSearch
         [SerializeField] private Interactable cancelButton;
         [Tooltip("Button to expand the papers.")]
         [SerializeField] private Interactable expandButton;
-        [Tooltip("Button minimize the papers.")]
+        [Tooltip("Button to minimize the papers.")]
         [SerializeField] private Interactable minimizeButton;
 
         private GridObjectCollection _gridCollection;
@@ -316,6 +316,20 @@ namespace i5.VIAProMa.LiteratureSearch
                 Destroy(_children[i]);
             }
             Destroy(_gridCollection.gameObject);
+        }
+
+        /// <summary>
+        /// Copys the BibTeX for all papers to the clipboard.
+        /// </summary>
+        public void ExportPapers()
+        {
+            string bibTeX = "";
+            foreach(GameObject child in _children)
+            {
+                Paper paper = child.GetComponent<PaperDataDisplay>()?.Content;
+                bibTeX += paper?.ToBibTeX() ?? "";
+            }
+            GUIUtility.systemCopyBuffer = bibTeX;
         }
     }
 
