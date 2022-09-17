@@ -33,6 +33,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956943101993171752}
   m_RootOrder: 3
@@ -267,6 +268,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1956943102276762830}
   - {fileID: 1956943102911226184}
@@ -462,6 +464,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0.01}
   m_LocalScale: {x: 0.35, y: 1, z: 0.01}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956943101993171752}
   m_RootOrder: 0
@@ -485,6 +488,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -538,7 +542,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1956943102437688302}
   - component: {fileID: 1956943102437688290}
-  - component: {fileID: 1956943102437688300}
   - component: {fileID: 1956943102437688303}
   m_Layer: 0
   m_Name: Header Title
@@ -557,6 +560,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956943102911226184}
   m_RootOrder: 1
@@ -577,6 +581,7 @@ MeshRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -607,14 +612,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!222 &1956943102437688300
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956943102437688297}
-  m_CullTransparentMesh: 0
 --- !u!114 &1956943102437688303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -702,12 +699,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_renderer: {fileID: 1956943102437688290}
-  m_maskType: 0
   _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
+  m_hasFontAssetChanged: 0
+  m_renderer: {fileID: 1956943102437688290}
+  m_maskType: 0
 --- !u!1 &1956943102549870936
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,6 +734,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.35, y: 0.1, z: 0.01}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956943102911226184}
   m_RootOrder: 0
@@ -760,6 +758,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -829,6 +828,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1956943102549870937}
   - {fileID: 1956943102437688302}
@@ -862,6 +862,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956943101993171752}
   m_RootOrder: 2
@@ -1056,7 +1057,8 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7843720803815141446, guid: a565e6c3bee3c4b49a6b762cfd4504f6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a565e6c3bee3c4b49a6b762cfd4504f6, type: 3}
 --- !u!4 &3190941845890935465 stripped
 Transform:
@@ -1238,7 +1240,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Configuration Window
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1131359791024916276, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 7551335412351400773, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 8932412913343041881, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 8080224842366365371, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 8052642380994292030, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 6835721129910291336, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 8945595020338821546, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 7189752147505806895, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
+    - {fileID: 3954919414245034141, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 11d995b8e11de854ea727ee6c2b7a2dd, type: 3}
 --- !u!1 &6028368674919524567 stripped
 GameObject:
@@ -1424,7 +1435,8 @@ PrefabInstance:
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7843720803815141446, guid: a565e6c3bee3c4b49a6b762cfd4504f6, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a565e6c3bee3c4b49a6b762cfd4504f6, type: 3}
 --- !u!4 &2181743407763025002 stripped
 Transform:
