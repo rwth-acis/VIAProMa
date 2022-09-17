@@ -12,8 +12,8 @@ A Collaborative Mixed Reality Visualization Framework for Immersive Analytics
 
 #### Prerequisites
 
-- Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2020.3.13f1
-- [Microsoft Mixed Reality Toolkit v2.7.3](https://github.com/microsoft/MixedRealityToolkit-Unity/releases/tag/2.7.3) (already included in the project)
+- Recommended [Unity version](https://unity3d.com/de/get-unity/download/archive): 2021.3.8f1
+- [Microsoft Mixed Reality Toolkit](https://github.com/microsoft/MixedRealityToolkit-Unity) (already included in the project)
 - [i5 Toolkit for Unity](https://github.com/rwth-acis/i5-Toolkit-for-Unity) (already included in the project)
 - [Photon PUN 2](https://assetstore.unity.com/packages/tools/network/pun-2-free-119922) (download through Unity's asset store window in the editor)
 - Visual Studio (tested with VS 2019)
