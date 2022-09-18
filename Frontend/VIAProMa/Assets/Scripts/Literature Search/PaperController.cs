@@ -52,7 +52,7 @@ namespace i5.VIAProMa.LiteratureSearch
         /// <summary>
         /// Weight for scaling the visualization with scale.
         /// </summary>
-        private readonly float _weightScale = 1.3f;
+        private readonly float _weightScale = 1.4f;
         /// <summary>
         /// Weight for scaling the visualization with size.
         /// </summary>
@@ -187,7 +187,7 @@ namespace i5.VIAProMa.LiteratureSearch
                             //double middle = (maxRank - minRank) / 2;
                             //double normRank = rank - minRank;
                             //double scale = ((normRank / middle) / (maxRank - minRank)) * 2 * _weightScale;
-                            double scale = ((rank - minRank) / (maxRank - minRank)) * _weightScale + .7f;
+                            double scale = ((rank - minRank) / (maxRank - minRank)) * _weightScale + _weightScale/2;
                             Vector3 oldScale = displayInstance.transform.localScale;
                             Vector3 newScale = new Vector3(oldScale.x * (float)scale, oldScale.y * (float)scale, oldScale.z);
                             displayInstance.transform.localScale = newScale;
