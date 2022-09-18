@@ -172,22 +172,37 @@ namespace i5.VIAProMa.LiteratureSearch
                     rank = ranks[node.Content.DOI];
                 }
 
-                Debug.Log(node.Content.ToString() + " - " + rank);
-
                 // Affect the transform of the node objects according to the selected visualization.
                 switch (_currentVisualization)
                 {
                     case Visualizations.Depth:
-                        float z = (float)((rank - minRank)/(maxRank - minRank) * _weightDepth) - _weightDepth / 2;
+                        // Avoid devision by zero.
+                        float z;
+                        if (maxRank == minRank)
+                        {
+                            z = 0;
+                        }
+                        else
+                        {
+                            z = (float)((rank - minRank)/(maxRank - minRank) * _weightDepth) - _weightDepth / 2;
+
+                        }
                         displayInstance.transform.position += new Vector3(xPos, height + heightOffset, -z);
                         break;
                     case Visualizations.Scale:
                         {
                             displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
-                            //double middle = (maxRank - minRank) / 2;
-                            //double normRank = rank - minRank;
-                            //double scale = ((normRank / middle) / (maxRank - minRank)) * 2 * _weightScale;
-                            double scale = ((rank - minRank) / (maxRank - minRank)) * _weightScale + _weightScale/2;
+                            // Avoid devision by zero.
+                            double scale;
+                            if (maxRank == minRank)
+                            {
+                                scale = 1;
+                            }
+                            else
+                            {
+                                scale = ((rank - minRank) / (maxRank - minRank)) * _weightScale + _weightScale / 2;
+
+                            }
                             Vector3 oldScale = displayInstance.transform.localScale;
                             Vector3 newScale = new Vector3(oldScale.x * (float)scale, oldScale.y * (float)scale, oldScale.z);
                             displayInstance.transform.localScale = newScale;
@@ -195,7 +210,17 @@ namespace i5.VIAProMa.LiteratureSearch
                         break;
                     case Visualizations.Size:
                         {
-                            double scale = 1 + (rank - minRank) / (maxRank - minRank) * _weightSize;
+                            // Avoid devision by zero.
+                            double scale;
+                            if (maxRank == minRank)
+                            {
+                                scale = 1;
+                            }
+                            else
+                            {
+                                scale = 1 + (rank - minRank) / (maxRank - minRank) * _weightSize;
+
+                            }
                             Vector3 oldScale = displayInstance.GetComponentInChildren<PaperNetworkItem>().gameObject.transform.localScale;
                             Vector3 newScale = new Vector3(oldScale.x, oldScale.y, oldScale.z * (float)scale);
                             displayInstance.transform.position += new Vector3(xPos, height + heightOffset, zOffset);
