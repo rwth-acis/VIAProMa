@@ -129,19 +129,20 @@ namespace i5.VIAProMa.DataDisplays
         /// <returns>The profile image of the given user</returns>
         private static async Task<ApiResult<Texture2D>> FetchProfileImage(User user)
         {
-            UnityWebRequest www = UnityWebRequestTexture.GetTexture(user.ProfileImageUrl);
-            await www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
+            using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(user.ProfileImageUrl))
             {
-                if (www.GetResponseHeaders() == null)
-                {
-                    return new ApiResult<Texture2D>(0, "Device unavailable");
-                }
-                return new ApiResult<Texture2D>(www.responseCode, www.downloadHandler.text);
-            }
-            return new ApiResult<Texture2D>(DownloadHandlerTexture.GetContent(www));
+                await www.SendWebRequest();
 
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    if (www.GetResponseHeaders() == null)
+                    {
+                        return new ApiResult<Texture2D>(0, "Device unavailable");
+                    }
+                    return new ApiResult<Texture2D>(www.responseCode, www.downloadHandler.text);
+                }
+                return new ApiResult<Texture2D>(DownloadHandlerTexture.GetContent(www));
+            }
         }
     }
 

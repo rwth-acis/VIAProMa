@@ -176,20 +176,22 @@ namespace Org.Requirements_Bazaar.Managers
         /// <returns></returns>
         private IEnumerator UploadWWW(string url, string requestType, string body, System.Action<UnityWebRequest> callback)
         {
-            UnityWebRequest req = new UnityWebRequest(url, requestType);
-            if (body != "")
+            using (UnityWebRequest req = new UnityWebRequest(url, requestType))
             {
-                req.uploadHandler = new UploadHandlerRaw(Encoding.ASCII.GetBytes(body));
-                req.uploadHandler.contentType = "application/json";
-            }
-            req.downloadHandler = new DownloadHandlerBuffer();
-            AddHeadersToRequest(req);
-            yield return req.Send();
+                if (body != "")
+                {
+                    req.uploadHandler = new UploadHandlerRaw(Encoding.ASCII.GetBytes(body));
+                    req.uploadHandler.contentType = "application/json";
+                }
+                req.downloadHandler = new DownloadHandlerBuffer();
+                AddHeadersToRequest(req);
+                yield return req.Send();
 
-            if (callback != null)
-            {
-                callback(req);
-            }
+                if (callback != null)
+                {
+                    callback(req);
+                }
+            } 
         }
 
         private IEnumerator UploadWWW(string url, string requestType, List<IMultipartFormSection> body, System.Action<UnityWebRequest> callback)
@@ -212,49 +214,52 @@ namespace Org.Requirements_Bazaar.Managers
             }
 
 
-            UnityWebRequest req = new UnityWebRequest(url);
-            req.method = requestType;
-
-            AddHeadersToRequest(req);
-
-            //string boundary = Encoding.ASCII.GetString(UnityWebRequest.GenerateBoundary());
-
-            //string strEndBoundary = "\r\n--" + boundary + "--";
-
-            //string formdataTemplate = "\r\n--" + boundary +
-            //                         "\r\nContent-Disposition: form-data; name=\"{0}\";\r\n\r\n{1}";
-
-            //Dictionary<string, string> fields = new Dictionary<string, string>();
-            //fields.Add("actionid", "testaction2");
-            //fields.Add("actionname", "testaction2");
-            //fields.Add("actiondesc", "a new action");
-
-            //string strBody = "";
-
-            //foreach (KeyValuePair<string, string> pair in fields)
-            //{
-            //    string formitem = string.Format(formdataTemplate, pair.Key, pair.Value);
-            //    strBody += formitem;
-            //}
-
-            //strBody += strEndBoundary;
-
-            //Debug.Log(strBody);
-
-            //byte[] bytes = Encoding.ASCII.GetBytes(strBody);
-
-            req.uploadHandler = new UploadHandlerRaw(generatedList.ToArray());
-            // req.uploadHandler.contentType = "multipart/form-data; boundary=" + boundary;
-            req.uploadHandler.contentType = "multipart/form-data; boundary=" + Encoding.ASCII.GetString(byteBoundary);
-
-            req.downloadHandler = new DownloadHandlerBuffer();
-
-            yield return req.Send();
-
-            if (callback != null)
+            using (UnityWebRequest req = new UnityWebRequest(url))
             {
-                callback(req);
+                req.method = requestType;
+
+                AddHeadersToRequest(req);
+
+                //string boundary = Encoding.ASCII.GetString(UnityWebRequest.GenerateBoundary());
+
+                //string strEndBoundary = "\r\n--" + boundary + "--";
+
+                //string formdataTemplate = "\r\n--" + boundary +
+                //                         "\r\nContent-Disposition: form-data; name=\"{0}\";\r\n\r\n{1}";
+
+                //Dictionary<string, string> fields = new Dictionary<string, string>();
+                //fields.Add("actionid", "testaction2");
+                //fields.Add("actionname", "testaction2");
+                //fields.Add("actiondesc", "a new action");
+
+                //string strBody = "";
+
+                //foreach (KeyValuePair<string, string> pair in fields)
+                //{
+                //    string formitem = string.Format(formdataTemplate, pair.Key, pair.Value);
+                //    strBody += formitem;
+                //}
+
+                //strBody += strEndBoundary;
+
+                //Debug.Log(strBody);
+
+                //byte[] bytes = Encoding.ASCII.GetBytes(strBody);
+
+                req.uploadHandler = new UploadHandlerRaw(generatedList.ToArray());
+                // req.uploadHandler.contentType = "multipart/form-data; boundary=" + boundary;
+                req.uploadHandler.contentType = "multipart/form-data; boundary=" + Encoding.ASCII.GetString(byteBoundary);
+
+                req.downloadHandler = new DownloadHandlerBuffer();
+
+                yield return req.Send();
+
+                if (callback != null)
+                {
+                    callback(req);
+                }
             }
+            
         }
 
         public void GetTexture(string url, System.Action<UnityWebRequest, Texture> callback)
@@ -275,17 +280,19 @@ namespace Org.Requirements_Bazaar.Managers
         /// <returns></returns>
         IEnumerator CallWWW(string url, string requestType, System.Action<UnityWebRequest, object[]> callback, object[] passOnArgs)
         {
-            UnityWebRequest req = new UnityWebRequest(url, requestType);
-            req.downloadHandler = new DownloadHandlerBuffer();
-
-            AddHeadersToRequest(req);
-
-            yield return req.Send();
-
-            if (callback != null)
+            using (UnityWebRequest req = new UnityWebRequest(url, requestType))
             {
-                callback(req, passOnArgs);
-            }
+                req.downloadHandler = new DownloadHandlerBuffer();
+
+                AddHeadersToRequest(req);
+
+                yield return req.Send();
+
+                if (callback != null)
+                {
+                    callback(req, passOnArgs);
+                }
+            } 
         }
 
         /// <summary>
@@ -297,21 +304,22 @@ namespace Org.Requirements_Bazaar.Managers
         /// <returns></returns>
         IEnumerator GetWWWTexture(string url, System.Action<UnityWebRequest, Texture> callback)
         {
-            UnityWebRequest req = UnityWebRequestTexture.GetTexture(url);
-
-            AddHeadersToRequest(req);
-
-            yield return req.Send();
-
-            if (callback != null)
+            using (UnityWebRequest req = UnityWebRequestTexture.GetTexture(url))
             {
-                if (req.responseCode == 200)
+                AddHeadersToRequest(req);
+
+                yield return req.Send();
+
+                if (callback != null)
                 {
-                    callback(req, DownloadHandlerTexture.GetContent(req));
-                }
-                else
-                {
-                    callback(req, null);
+                    if (req.responseCode == 200)
+                    {
+                        callback(req, DownloadHandlerTexture.GetContent(req));
+                    }
+                    else
+                    {
+                        callback(req, null);
+                    }
                 }
             }
         }
