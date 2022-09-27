@@ -35,15 +35,15 @@ namespace i5.VIAProMa.WebConnection
                 headers,
                 -1,
                 true);
-            if (resp.Successful)
-            {
-                return short.Parse(resp.ResponseBody);
-            }
-            else
-            {
-                Debug.LogError(resp.ResponseBody);
-                return -1;
-            }
+             if (resp.Successful)
+             {
+                 return short.Parse(resp.ResponseBody);
+             }
+             else
+             {
+                 Debug.LogError(resp.ResponseBody);
+                 return -1;
+             }
         }
 
         /// <summary>
