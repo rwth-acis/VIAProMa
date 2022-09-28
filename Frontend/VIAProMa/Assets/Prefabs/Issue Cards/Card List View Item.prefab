@@ -1920,12 +1920,37 @@ PrefabInstance:
     - {fileID: 428423490713513724, guid: 97b58cb1d17699540999b249de1338db, type: 3}
     - {fileID: 7178968688604715272, guid: 97b58cb1d17699540999b249de1338db, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 97b58cb1d17699540999b249de1338db, type: 3}
+--- !u!65 &1383147189242525423 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 6940325297041687118, guid: 97b58cb1d17699540999b249de1338db,
+    type: 3}
+  m_PrefabInstance: {fileID: 8313944100708725921}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1428450797879126535 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6968177425042103974, guid: 97b58cb1d17699540999b249de1338db,
     type: 3}
   m_PrefabInstance: {fileID: 8313944100708725921}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4344279890153374702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1428450797879126535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventsToReceive: 0
+  debounceThreshold: 0.01
+  localForward: {x: -0, y: -0, z: -1}
+  localUp: {x: 0, y: 1, z: 0}
+  localCenter: {x: 0, y: 0, z: -0.01}
+  bounds: {x: 0.12, y: 0.12}
+  touchableCollider: {fileID: 1383147189242525423}
 --- !u!4 &1430373565157735839 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6969502055684065598, guid: 97b58cb1d17699540999b249de1338db,
@@ -2017,9 +2042,40 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 346301002786281237, guid: 1b00cad9e5176be4f8e6db7e9b0aa9ce, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 1b00cad9e5176be4f8e6db7e9b0aa9ce, type: 3}
+--- !u!1 &7666170027043809415 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1553492369138198615, guid: 1b00cad9e5176be4f8e6db7e9b0aa9ce,
+    type: 3}
+  m_PrefabInstance: {fileID: 9217927332423155920}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5586689783390310274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7666170027043809415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventsToReceive: 0
+  debounceThreshold: 0.01
+  localForward: {x: -0, y: -0, z: -1}
+  localUp: {x: 0, y: 1, z: 0}
+  localCenter: {x: 0, y: 0, z: -0.01}
+  bounds: {x: 0.12, y: 0.12}
+  touchableCollider: {fileID: 7674336492426458223}
 --- !u!4 &7667624959607439135 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1550443711599722447, guid: 1b00cad9e5176be4f8e6db7e9b0aa9ce,
+    type: 3}
+  m_PrefabInstance: {fileID: 9217927332423155920}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7674336492426458223 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 1543626849053521087, guid: 1b00cad9e5176be4f8e6db7e9b0aa9ce,
     type: 3}
   m_PrefabInstance: {fileID: 9217927332423155920}
   m_PrefabAsset: {fileID: 0}

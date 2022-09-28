@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 3178011426364783460}
   - component: {fileID: 9065799589206597936}
   - component: {fileID: 1205029162232941941}
+  - component: {fileID: 1345589596613373858}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -345,6 +346,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.08, y: 0.08, z: 0.01}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1345589596613373858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2544202224179704831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventsToReceive: 0
+  debounceThreshold: 0.01
+  localForward: {x: -0, y: -0, z: -1}
+  localUp: {x: 0, y: 1, z: 0}
+  localCenter: {x: 0, y: 0, z: -0.005}
+  bounds: {x: 0.08, y: 0.08}
+  touchableCollider: {fileID: 1205029162232941941}
 --- !u!1 &2707334476474322842
 GameObject:
   m_ObjectHideFlags: 0

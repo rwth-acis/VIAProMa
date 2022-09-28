@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7466830723902395008}
   - component: {fileID: 4001549260016502119}
   - component: {fileID: 1013428426841489636}
+  - component: {fileID: 1160068428479930687}
   m_Layer: 0
   m_Name: InputField
   m_TagString: Untagged
@@ -107,6 +108,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.1, z: 0.01}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1160068428479930687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1193923580483524236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98c748f3768ab714a8449b60fb9edc5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventsToReceive: 0
+  debounceThreshold: 0.01
+  localForward: {x: -0, y: -0, z: -1}
+  localUp: {x: 0, y: 1, z: 0}
+  localCenter: {x: 0, y: 0, z: -0.005}
+  bounds: {x: 0.5, y: 0.1}
+  touchableCollider: {fileID: 1013428426841489636}
 --- !u!1 &1193923580637184369
 GameObject:
   m_ObjectHideFlags: 0
