@@ -179,23 +179,30 @@ namespace Org.Requirements_Bazaar.API
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
-                Response resp = await Rest.DeleteAsync(url, headers, -1, true);
-                if (!resp.Successful)
+                try
                 {
-                    if(resp.ResponseCode == 401)
+                    Response resp = await Rest.DeleteAsync(url, headers, -1, true);
+                    if (!resp.Successful)
                     {
-                        Debug.LogError("You are not authorized to delete this requirement.");
+                        if (resp.ResponseCode == 401)
+                        {
+                            Debug.LogError("You are not authorized to delete this requirement.");
+                        }
+                        else
+                        {
+                            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                        }
+                        return null;
                     }
                     else
                     {
-                        Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                        Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
+                        return requirement;
                     }
-                    return null;
                 }
-                else
+                catch (ArgumentNullException)
                 {
-                    Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
-                    return requirement;
+                    return null;
                 }
             }
         }
