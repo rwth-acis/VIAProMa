@@ -269,6 +269,8 @@ GameObject:
   - component: {fileID: 9065799589206597936}
   - component: {fileID: 1205029162232941941}
   - component: {fileID: 1345589596613373858}
+  - component: {fileID: 1224918517310858829}
+  - component: {fileID: 5799132405594752342}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -365,6 +367,105 @@ MonoBehaviour:
   localCenter: {x: 0, y: 0, z: -0.005}
   bounds: {x: 0.08, y: 0.08}
   touchableCollider: {fileID: 1205029162232941941}
+--- !u!114 &1224918517310858829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2544202224179704831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63c897c097799da4a900032ad3471c47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movingButtonVisuals: {fileID: 2544202224179704831}
+  distanceSpaceMode: 1
+  startPushDistance: 0
+  maxPushDistance: 0.2
+  pressDistance: 0.02
+  releaseDistanceDelta: 0.01
+  returnSpeed: 25
+  releaseOnTouchEnd: 1
+  enforceFrontPush: 1
+  TouchBegin:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9065799589206597936}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.UI.Interactable,
+          Microsoft.MixedReality.Toolkit.SDK
+        m_MethodName: TriggerOnClick
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  TouchEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5799132405594752342}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.PhysicalPressEventRouter,
+          Microsoft.MixedReality.Toolkit.SDK
+        m_MethodName: OnHandPressUntouched
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  ButtonPressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5799132405594752342}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.PhysicalPressEventRouter,
+          Microsoft.MixedReality.Toolkit.SDK
+        m_MethodName: OnHandPressTriggered
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  ButtonReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5799132405594752342}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.PhysicalPressEventRouter,
+          Microsoft.MixedReality.Toolkit.SDK
+        m_MethodName: OnHandPressCompleted
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5799132405594752342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2544202224179704831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 881d1ff8f009f5148b9f192e6ba31223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  routingTarget: {fileID: 9065799589206597936}
+  InteractableOnClick: 0
 --- !u!1 &2707334476474322842
 GameObject:
   m_ObjectHideFlags: 0
