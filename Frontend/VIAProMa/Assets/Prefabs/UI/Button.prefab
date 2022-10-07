@@ -391,11 +391,11 @@ MonoBehaviour:
   TouchBegin:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9065799589206597936}
-        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.UI.Interactable,
+      - m_Target: {fileID: 5799132405594752342}
+        m_TargetAssemblyTypeName: Microsoft.MixedReality.Toolkit.PhysicalPressEventRouter,
           Microsoft.MixedReality.Toolkit.SDK
-        m_MethodName: TriggerOnClick
-        m_Mode: 6
+        m_MethodName: OnHandPressTouched
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -465,7 +465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   routingTarget: {fileID: 9065799589206597936}
-  InteractableOnClick: 0
+  InteractableOnClick: 2
 --- !u!1 &2707334476474322842
 GameObject:
   m_ObjectHideFlags: 0
