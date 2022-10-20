@@ -4,6 +4,7 @@ using i5.VIAProMa.DataModel.API;
 using System;
 using i5.VIAProMa.Login;
 using System.Collections.Generic;
+using i5.VIAProMa.Shelves.IssueShelf;
 
 public class EditButton : IssueButton
 {
@@ -16,14 +17,32 @@ public class EditButton : IssueButton
     private bool isOpen = false;
     private ProjectTracker projectTracker;
 
+    /// <summary>
+    /// Determines whether the issue card is a child of the issue shelf
+    /// </summary>
+    public bool BelongsToShelf
+    {
+        get
+        {
+            return this.transform.parent.GetComponentInParent<IssuesLoader>() != null;
+        }
+    }
+
     public void Start()
     {
-        //Get the edit menu from the project tracker and the UIs
-        projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
-        editMenu = projectTracker.editIssueMenu;
-        requirementBazaarUI = editMenu.requirementBazaar_UI;
-        gitHubUI = editMenu.gitHub_UI;
-        Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
+        if (!BelongsToShelf)
+        {
+            this.gameObject.SetActive(false);
+        }
+        else
+        {
+            //Get the edit menu from the project tracker and the UIs
+            projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
+            editMenu = projectTracker.editIssueMenu;
+            requirementBazaarUI = editMenu.requirementBazaar_UI;
+            gitHubUI = editMenu.gitHub_UI;
+            Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
+        }
     }
 
 
