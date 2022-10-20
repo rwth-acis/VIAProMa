@@ -17,9 +17,20 @@ public class EditButton : IssueButton
     private bool isOpen = false;
     private ProjectTracker projectTracker;
 
+    /// <summary>
+    /// Determines whether the issue card is a child of the issue shelf
+    /// </summary>
+    public bool BelongsToShelf
+    {
+        get
+        {
+            return this.transform.parent.GetComponentInParent<IssuesLoader>() != null;
+        }
+    }
+
     public void Start()
     {
-        if (!belongsToShelf())
+        if (!BelongsToShelf)
         {
             this.gameObject.SetActive(false);
         }
@@ -32,12 +43,6 @@ public class EditButton : IssueButton
             gitHubUI = editMenu.gitHub_UI;
             Setup(new List<DataSource>() { DataSource.GITHUB, DataSource.REQUIREMENTS_BAZAAR });
         }
-    }
-
-    // Determines whether the issue card is a child of the issue shelf
-    public bool belongsToShelf()
-    {
-        return this.transform.parent.GetComponentInParent<IssuesLoader>() != null;
     }
 
 

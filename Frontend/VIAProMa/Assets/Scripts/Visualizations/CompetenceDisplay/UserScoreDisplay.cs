@@ -76,16 +76,16 @@ namespace i5.VIAProMa.Visualizations.Competence
             // show user image in userDisplay
             userDisplay.UpdateView();
 
-            if (content.User.FirstName != "" || content.User.LastName != "")
+            if (!string.IsNullOrEmpty(content.User.FirstName) || !string.IsNullOrEmpty(content.User.LastName))
             {
                 nameLabel.Text = (content.User.FirstName + " " + content.User.LastName).Trim();
-                nameLabel.transform.localPosition = new Vector3(0f, nameLabel.transform.localPosition.y, nameLabel.Width / 2f + 0.02f);
             }
             else
             {
                 nameLabel.Text = content.User.UserName;
-                nameLabel.transform.localPosition = new Vector3(0f, nameLabel.transform.localPosition.y, nameLabel.Width / 2f + 0.02f);
             }
+
+            nameLabel.transform.localPosition = new Vector3(0f, nameLabel.transform.localPosition.y, nameLabel.Width / 2f + 0.02f);
 
             // adapt the size of the user display to the score
             float userDisplaySize = Content.Score / MaxScore * MaxSize;
