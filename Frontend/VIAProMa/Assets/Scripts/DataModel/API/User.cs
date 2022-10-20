@@ -16,6 +16,8 @@ namespace i5.VIAProMa.DataModel.API
         [SerializeField] private string firstName;
         [SerializeField] private string lastName;
         [SerializeField] private string profileImageUrl;
+        [SerializeField] private string eMail;
+
 
         /// <summary>
         /// The data source where this user is registered
@@ -41,12 +43,16 @@ namespace i5.VIAProMa.DataModel.API
         /// The url to the profile image
         /// </summary>
         public string ProfileImageUrl { get => profileImageUrl; }
+        /// <summary>
+        /// The users email
+        /// </summary>
+        public string EMail { get => eMail; }
 
         public User()
         {
         }
 
-        public User(DataSource source, int id, string userName, string firstName, string lastName, string profileImageUrl)
+        public User(DataSource source, int id, string userName, string firstName, string lastName, string profileImageUrl, string eMail)
         {
             this.source = source;
             this.id = id;
@@ -54,6 +60,7 @@ namespace i5.VIAProMa.DataModel.API
             this.firstName = firstName;
             this.lastName = lastName;
             this.profileImageUrl = profileImageUrl;
+            this.eMail = eMail;
         }
     }
 }
