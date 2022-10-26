@@ -29,7 +29,7 @@ namespace i5.VIAProMa.Anchoring
 
         /// <summary>
         /// Adds a game object to the anchor as a child
-        /// </summary
+        /// </summary>
         public void AttachToAnchor(GameObject objectToAttach)
         {
             if (useAnchor)
