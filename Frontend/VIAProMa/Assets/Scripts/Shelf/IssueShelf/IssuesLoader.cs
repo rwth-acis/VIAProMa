@@ -60,13 +60,14 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchField));
             }
-            upButton.Enabled = false;
+            upButton.IsEnabled = false;
             boundingBox.SetActive(false);
         }
 
         private void OnEnable()
         {
             searchField.TextChanged += OnSearchFieldChanged;
+            PageChanged += OnPageChanged;
         }
 
         private void OnDisable()
@@ -182,6 +183,27 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             else
             {
                 boundingBox.SetActive(true);
+            }
+        }
+
+        public void OnPageChanged(object sender, EventArgs e)
+        {
+            if (issuesMultiListView.Items.Count != 0)
+            {
+                if (issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews > issuesMultiListView.Items.Count)
+                {
+                    Debug.Log(issuesMultiListView.Items.Count);
+                    downButton.IsEnabled = false;
+                }
+                else
+                {
+                    Debug.Log(issuesMultiListView.Items.Count);
+                    downButton.IsEnabled = true;
+                }
+            }
+            else
+            {
+                downButton.IsEnabled = true;
             }
         }
     }
