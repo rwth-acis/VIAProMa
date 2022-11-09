@@ -67,7 +67,6 @@ namespace i5.VIAProMa.Shelves.IssueShelf
         private void OnEnable()
         {
             searchField.TextChanged += OnSearchFieldChanged;
-            PageChanged += OnPageChanged;
         }
 
         private void OnDisable()
@@ -140,6 +139,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
                 {
                     List<Issue> items = new List<Issue>(apiResult.Value);
                     issuesMultiListView.Items = items;
+                    CheckDownButton();
                 }
             }
         }
@@ -170,6 +170,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             {
                 List<Issue> items = new List<Issue>(apiResult.Value);
                 issuesMultiListView.Items = items;
+                CheckDownButton();
             }
         }
 
@@ -184,22 +185,14 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             {
                 boundingBox.SetActive(true);
             }
-        }
-
-        public void OnPageChanged(object sender, EventArgs e)
+        } 
+        
+        public void CheckDownButton()
         {
-            if (issuesMultiListView.Items.Count != 0)
+ 
+            if (issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews > issuesMultiListView.Items.Count)
             {
-                if (issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews > issuesMultiListView.Items.Count)
-                {
-                    Debug.Log(issuesMultiListView.Items.Count);
-                    downButton.IsEnabled = false;
-                }
-                else
-                {
-                    Debug.Log(issuesMultiListView.Items.Count);
-                    downButton.IsEnabled = true;
-                }
+                downButton.IsEnabled = false;
             }
             else
             {
