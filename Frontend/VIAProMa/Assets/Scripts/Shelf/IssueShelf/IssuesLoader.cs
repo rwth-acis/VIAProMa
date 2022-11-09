@@ -158,8 +158,13 @@ namespace i5.VIAProMa.Shelves.IssueShelf
                 return;
             }
 
+            int pageIndex = page;
             messageBadge.ShowProcessing();
-            ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository(gitHubShelfConfiguration.Owner, gitHubShelfConfiguration.RepositoryName, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
+            if(page != 0)
+            {
+                pageIndex += 1;
+            }
+            ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository(gitHubShelfConfiguration.Owner, gitHubShelfConfiguration.RepositoryName, pageIndex, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
             messageBadge.DoneProcessing();
             if (apiResult.HasError)
             {
