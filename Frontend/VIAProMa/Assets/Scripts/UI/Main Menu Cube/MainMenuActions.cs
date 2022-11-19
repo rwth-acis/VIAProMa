@@ -11,7 +11,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ToggleMicrophone()
         {
             bool microphoneOn = (microphoneButton.CurrentDimension == 1);
-            PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled = microphoneOn;
+            PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = microphoneOn;
         }
     }
 }

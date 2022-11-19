@@ -13,8 +13,8 @@ namespace i5.VIAProMa.Multiplayer
         /// </summary>
         private void Start()
         {
-            PhotonVoiceNetwork.Instance.PrimaryRecorder.Init(PhotonVoiceNetwork.Instance);
-            Debug.Log("Voice Recorder initialized");
+            //PunVoiceClient.Instance.PrimaryRecorder.Init(PunVoiceClient.Instance);
+            //Debug.Log("Voice Recorder initialized");
         }
     }
 }

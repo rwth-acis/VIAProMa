@@ -22,7 +22,7 @@ public class VoiceChatTester : MonoBehaviour
             if (PhotonNetwork.InRoom)
             {
                 Debug.Log("Toggling voice");
-                PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled = !PhotonVoiceNetwork.Instance.PrimaryRecorder.TransmitEnabled;
+                PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled = !PunVoiceClient.Instance.PrimaryRecorder.TransmitEnabled;
             }
         }
     }
