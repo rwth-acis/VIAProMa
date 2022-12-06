@@ -128,8 +128,8 @@ namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
                 return;
             }
 
-            pageDownButton.Enabled = (page > 0);
-            pageUpButton.Enabled = (page < ((Items.Length - 1) / itemFrames.Length));
+            pageDownButton.IsEnabled = (page > 0);
+            pageUpButton.IsEnabled = (page < ((Items.Length - 1) / itemFrames.Length));
 
             // always go over all itemFrames
             for (int i = 0; i < itemFrames.Length; i++)
@@ -147,11 +147,11 @@ namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
                     // this also means that we do not need a InteractableToggleCollection; this here does the same but with regard to pages
                     if (index == selectedIndex)
                     {
-                        interactables[i].SetDimensionIndex(1); // select
+                        interactables[i].CurrentDimension = 1; // select
                     }
                     else
                     {
-                        interactables[i].SetDimensionIndex(0); // deselect
+                        interactables[i].CurrentDimension = 0; // deselect
                     }
                 }
                 else // out of bounds: deactivate the item frame since we are at the end of the array

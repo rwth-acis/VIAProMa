@@ -185,7 +185,7 @@ namespace Org.Requirements_Bazaar.Managers
                 }
                 req.downloadHandler = new DownloadHandlerBuffer();
                 AddHeadersToRequest(req);
-                yield return req.Send();
+                yield return req.SendWebRequest();
 
                 if (callback != null)
                 {
@@ -252,7 +252,7 @@ namespace Org.Requirements_Bazaar.Managers
 
                 req.downloadHandler = new DownloadHandlerBuffer();
 
-                yield return req.Send();
+                yield return req.SendWebRequest();
 
                 if (callback != null)
                 {
@@ -286,7 +286,7 @@ namespace Org.Requirements_Bazaar.Managers
 
                 AddHeadersToRequest(req);
 
-                yield return req.Send();
+                yield return req.SendWebRequest();
 
                 if (callback != null)
                 {
@@ -308,7 +308,7 @@ namespace Org.Requirements_Bazaar.Managers
             {
                 AddHeadersToRequest(req);
 
-                yield return req.Send();
+                yield return req.SendWebRequest();
 
                 if (callback != null)
                 {

@@ -145,7 +145,7 @@ namespace i5.VIAProMa.DataDisplays
             {
                 await www.SendWebRequest();
 
-                if (www.isNetworkError || www.isHttpError)
+                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
                 {
                     if (www.GetResponseHeaders() == null)
                     {
@@ -194,7 +194,7 @@ namespace i5.VIAProMa.DataDisplays
             {
                 await www.SendWebRequest();
 
-                if (www.isNetworkError || www.isHttpError)
+                if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
                 {
                     if (www.GetResponseHeaders() == null)
                     {

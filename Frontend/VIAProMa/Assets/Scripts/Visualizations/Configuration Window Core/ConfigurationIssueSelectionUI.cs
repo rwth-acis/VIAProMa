@@ -18,7 +18,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             set
             {
                 uiEnabled = value;
-                selectionButton.Enabled = uiEnabled;
+                selectionButton.IsEnabled = uiEnabled;
             }
         }
 

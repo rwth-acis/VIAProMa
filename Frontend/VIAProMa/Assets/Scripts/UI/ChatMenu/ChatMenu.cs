@@ -67,13 +67,13 @@ namespace i5.VIAProMa.UI.Chat
             ChatManager.Instance.ChatMessages.Clear();
             ChatManager.Instance.RecordMessages = false; // no need to record messages anymore
             chatInputField.TextChanged += OnMessageTextChanged;
-            sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
+            sendButton.IsEnabled = !string.IsNullOrEmpty(chatInputField.Text);
             CheckPageButtons();
         }
 
         private void OnMessageTextChanged(object sender, EventArgs e)
         {
-            sendButton.Enabled = !string.IsNullOrEmpty(chatInputField.Text);
+            sendButton.IsEnabled = !string.IsNullOrEmpty(chatInputField.Text);
         }
 
         private void OnDestroy()
@@ -117,8 +117,8 @@ namespace i5.VIAProMa.UI.Chat
         {
             Debug.Log("Page to display: " + chatHistory.pageToDisplay);
             Debug.Log("Page count: " + chatHistory.textInfo.pageCount);
-            pageUpButton.Enabled = chatHistory.pageToDisplay > 1;
-            pageDownButton.Enabled = chatHistory.pageToDisplay < chatHistory.textInfo.pageCount;
+            pageUpButton.IsEnabled = chatHistory.pageToDisplay > 1;
+            pageDownButton.IsEnabled = chatHistory.pageToDisplay < chatHistory.textInfo.pageCount;
         }
 
         public void Open()

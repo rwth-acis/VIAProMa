@@ -51,7 +51,7 @@ namespace i5.VIAProMa.UI
         private void OnSaveNameChanged(object sender, EventArgs e)
         {
             bool validInput = !string.IsNullOrWhiteSpace(saveNameInputField.Text);
-            doneButton.Enabled = validInput;
+            doneButton.IsEnabled = validInput;
         }
 
         public async void SetSaveName()

@@ -30,14 +30,15 @@ namespace i5.VIAProMa.WebConnection
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<Issue[]>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
             }
             else
             {
-                Issue[] issues = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+                Issue[] issues = JsonArrayUtility.FromJson<Issue>(responseBody);
                 foreach (Issue issue in issues)
                 {
                     IssueCache.AddIssue(issue);
@@ -67,14 +68,15 @@ namespace i5.VIAProMa.WebConnection
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<Issue>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<Issue>(resp.ResponseCode, responseBody);
             }
             else
             {
-                Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+                Issue issue = JsonUtility.FromJson<Issue>(responseBody);
                 IssueCache.AddIssue(issue);
                 return new ApiResult<Issue>(issue);
             }
@@ -89,14 +91,15 @@ namespace i5.VIAProMa.WebConnection
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<PunchCardEntry[]>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<PunchCardEntry[]>(resp.ResponseCode, responseBody);
             }
             else
             {
-                PunchCardEntry[] gitHubPunchCard = JsonArrayUtility.FromJson<PunchCardEntry>(resp.ResponseBody);
+                PunchCardEntry[] gitHubPunchCard = JsonArrayUtility.FromJson<PunchCardEntry>(responseBody);
                 return new ApiResult<PunchCardEntry[]>(gitHubPunchCard);
             }
         }

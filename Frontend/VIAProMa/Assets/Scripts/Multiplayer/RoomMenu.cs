@@ -47,9 +47,9 @@ namespace i5.VIAProMa.Multiplayer
             set
             {
                 windowEnabled = value;
-                createRoomButton.Enabled = value;
-                pageUpButton.Enabled = value;
-                pageDownButton.Enabled = value;
+                createRoomButton.IsEnabled = value;
+                pageUpButton.IsEnabled = value;
+                pageDownButton.IsEnabled = value;
             }
         }
 
@@ -199,20 +199,20 @@ namespace i5.VIAProMa.Multiplayer
         {
             if (page == 0) // first page
             {
-                pageUpButton.Enabled = false;
+                pageUpButton.IsEnabled = false;
             }
             else
             {
-                pageUpButton.Enabled = true;
+                pageUpButton.IsEnabled = true;
             }
 
             if (page == ((rooms.Count - 1) / entriesPerPage)) // last page
             {
-                pageDownButton.Enabled = false;
+                pageDownButton.IsEnabled = false;
             }
             else
             {
-                pageDownButton.Enabled = true;
+                pageDownButton.IsEnabled = true;
             }
         }
 

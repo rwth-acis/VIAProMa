@@ -95,7 +95,7 @@ namespace i5.VIAProMa.Shelves.ProjectLoadShelf
         {
             foreach (Interactable interactable in interactables)
             {
-                interactable.Enabled = false;
+                interactable.IsEnabled = false;
             }
         }
 
@@ -103,7 +103,7 @@ namespace i5.VIAProMa.Shelves.ProjectLoadShelf
         {
             foreach (Interactable interactable in interactables)
             {
-                interactable.Enabled = true;
+                interactable.IsEnabled = true;
             }
         }
 

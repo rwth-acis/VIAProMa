@@ -63,7 +63,7 @@ namespace i5.VIAProMa.UI.ListView.NetworkRooms
                 }
 
                 bool roomOpen = content.RoomInfo.IsOpen && !content.IsFull;
-                button.Enabled = roomOpen;
+                button.IsEnabled = roomOpen;
                 lockIcon.SetActive(!roomOpen);
             }
             else

@@ -47,11 +47,11 @@ namespace i5.VIAProMa.Shelves
         {
             if (page <= 0)
             {
-                upButton.Enabled = false;
+                upButton.IsEnabled = false;
             }
             else
             {
-                upButton.Enabled = true;
+                upButton.IsEnabled = true;
             }
         }
 

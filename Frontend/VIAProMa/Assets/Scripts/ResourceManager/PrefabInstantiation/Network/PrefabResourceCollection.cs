@@ -33,7 +33,7 @@ namespace i5.VIAProMa.ResourceManagagement.PrefabInstantiation
                 {
                     if (hasRoomLifespan)
                     {
-                        return PhotonNetwork.InstantiateSceneObject(networkPrefab.Path, position, rotation, 0, data);
+                        return PhotonNetwork.InstantiateRoomObject(networkPrefab.Path, position, rotation, 0, data);
                     }
                     else
                     {
@@ -61,7 +61,7 @@ namespace i5.VIAProMa.ResourceManagagement.PrefabInstantiation
                 {
                     if (hasRoomLifeSpan)
                     {
-                        return PhotonNetwork.InstantiateSceneObject(networkPrefab.Path, position, rotation, 0, data);
+                        return PhotonNetwork.InstantiateRoomObject(networkPrefab.Path, position, rotation, 0, data);
                     }
                     else
                     {

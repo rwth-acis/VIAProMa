@@ -60,7 +60,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchField));
             }
-            upButton.Enabled = false;
+            upButton.IsEnabled = false;
             boundingBox.SetActive(false);
         }
 
