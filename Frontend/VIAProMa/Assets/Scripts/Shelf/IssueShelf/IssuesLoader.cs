@@ -60,7 +60,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchField));
             }
-            upButton.Enabled = false;
+            upButton.IsEnabled = false;
             boundingBox.SetActive(false);
         }
 
@@ -139,6 +139,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
                 {
                     List<Issue> items = new List<Issue>(apiResult.Value);
                     issuesMultiListView.Items = items;
+                    CheckDownButton();
                 }
             }
         }
@@ -158,7 +159,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             }
 
             messageBadge.ShowProcessing();
-            ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository(gitHubShelfConfiguration.Owner, gitHubShelfConfiguration.RepositoryName, page, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
+            ApiResult<Issue[]> apiResult = await GitHub.GetIssuesInRepository(gitHubShelfConfiguration.Owner, gitHubShelfConfiguration.RepositoryName, page+1, issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews);
             messageBadge.DoneProcessing();
             if (apiResult.HasError)
             {
@@ -169,6 +170,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             {
                 List<Issue> items = new List<Issue>(apiResult.Value);
                 issuesMultiListView.Items = items;
+                CheckDownButton();
             }
         }
 
@@ -182,6 +184,19 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             else
             {
                 boundingBox.SetActive(true);
+            }
+        } 
+        
+        public void CheckDownButton()
+        {
+ 
+            if (issuesMultiListView.numberOfItemsPerListView * issuesMultiListView.NumberOfListViews > issuesMultiListView.Items.Count)
+            {
+                downButton.IsEnabled = false;
+            }
+            else
+            {
+                downButton.IsEnabled = true;
             }
         }
     }
