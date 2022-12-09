@@ -31,14 +31,15 @@ namespace Org.Requirements_Bazaar.API
             string url = baseUrl + "projects/" + projectId.ToString();
 
             Response response = await Rest.GetAsync(url, null, -1, null, true);
+            string responseBody = await response.GetResponseBody();
             if (!response.Successful)
             {
-                Debug.LogError(response.ResponseBody);
+                Debug.LogError(responseBody);
                 return null;
             }
             else
             {
-                Project project = JsonUtility.FromJson<Project>(response.ResponseBody);
+                Project project = JsonUtility.FromJson<Project>(responseBody);
                 return project;
             }
         }
@@ -67,14 +68,15 @@ namespace Org.Requirements_Bazaar.API
             }
 
             Response response = await Rest.GetAsync(url, null, -1, null, true);
+            string responseBody = await response.GetResponseBody();
             if (!response.Successful)
             {
-                Debug.LogError(response.ResponseBody);
+                Debug.LogError(responseBody);
                 return null;
             }
             else
             {
-                string json = JsonHelper.EncapsulateInWrapper(response.ResponseBody);
+                string json = JsonHelper.EncapsulateInWrapper(responseBody);
                 int[] categoryList = JsonHelper.FromJson<int>(json);
                 return categoryList;
             }
@@ -110,14 +112,15 @@ namespace Org.Requirements_Bazaar.API
             }
 
             Response response = await Rest.GetAsync(url, null, -1, null, true);
+            string responseBody = await response.GetResponseBody();
             if (!response.Successful)
             {
-                Debug.LogError(response.ResponseBody);
+                Debug.LogError(responseBody);
                 return null;
             }
             else
             {
-                string json = JsonHelper.EncapsulateInWrapper(response.ResponseBody);
+                string json = JsonHelper.EncapsulateInWrapper(responseBody);
                 Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
                 return requirements;
             }
@@ -133,6 +136,7 @@ namespace Org.Requirements_Bazaar.API
             string url = baseUrl + "categories/" + categoryId.ToString();
 
             Response response = await Rest.GetAsync(url, null, -1, null, true);
+            string responseBody = await response.GetResponseBody();
 
             if (!response.Successful)
             {
@@ -142,7 +146,7 @@ namespace Org.Requirements_Bazaar.API
             }
             else
             {
-                int category = JsonUtility.FromJson<int>(response.ResponseBody);
+                int category = JsonUtility.FromJson<int>(responseBody);
                 return category;
             }
         }
@@ -182,6 +186,7 @@ namespace Org.Requirements_Bazaar.API
                 try
                 {
                     Response resp = await Rest.DeleteAsync(url, headers, -1, true);
+                    string responseBody = await resp.GetResponseBody();
                     if (!resp.Successful)
                     {
                         if (resp.ResponseCode == 401)
@@ -190,13 +195,13 @@ namespace Org.Requirements_Bazaar.API
                         }
                         else
                         {
-                            Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
                         }
                         return null;
                     }
                     else
                     {
-                        Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
+                        Requirement requirement = JsonUtility.FromJson<Requirement>(responseBody);
                         return requirement;
                     }
                 }
@@ -257,14 +262,15 @@ namespace Org.Requirements_Bazaar.API
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
                 Response resp = await Rest.DeleteAsync(url, headers, -1, true);
+                string responseBody = await resp.GetResponseBody();
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
                     return null;
                 }
                 else
                 {
-                    Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
+                    Requirement requirement = JsonUtility.FromJson<Requirement>(responseBody);
                     return requirement;
                 }
             }
@@ -372,14 +378,15 @@ namespace Org.Requirements_Bazaar.API
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
                 Response resp = await Rest.PostAsync(url, json, headers, -1, true);
+                string responseBody = await resp.GetResponseBody();
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
                     return null;
                 }
                 else
                 {
-                    Requirement requirement = JsonUtility.FromJson<Requirement>(resp.ResponseBody);
+                    Requirement requirement = JsonUtility.FromJson<Requirement>(responseBody);
                     return requirement;
                 }
             }
@@ -447,14 +454,15 @@ namespace Org.Requirements_Bazaar.API
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
                 Response response = await Rest.PutAsync(url, json, headers, -1, true);
+                string responseBody = await response.GetResponseBody();
                 if (!response.Successful)
                 {
-                    Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
+                    Debug.LogError(response.ResponseCode + ": " + responseBody);
                     return null;
                 }
                 else
                 {
-                    Requirement updatedRequirement = JsonUtility.FromJson<Requirement>(response.ResponseBody);
+                    Requirement updatedRequirement = JsonUtility.FromJson<Requirement>(responseBody);
                     return updatedRequirement;
                 }
             }
@@ -476,14 +484,15 @@ namespace Org.Requirements_Bazaar.API
             string json = JsonUtility.ToJson(uploadableRequirement);
 
             Response response = await Rest.PutAsync(url, json, null, -1, true);
+            string responseBody = await response.GetResponseBody();
             if (!response.Successful)
             {
-                Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
+                Debug.LogError(response.ResponseCode + ": " + responseBody);
                 return null;
             }
             else
             {
-                Requirement requirement = JsonUtility.FromJson<Requirement>(response.ResponseBody);
+                Requirement requirement = JsonUtility.FromJson<Requirement>(responseBody);
                 return requirement;
             }
         }

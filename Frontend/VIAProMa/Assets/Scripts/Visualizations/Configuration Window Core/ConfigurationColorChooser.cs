@@ -26,7 +26,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
                 uiEnabled = value;
                 for (int i = 0; i < toggleCollection.ToggleList.Length; i++)
                 {
-                    toggleCollection.ToggleList[i].Enabled = value;
+                    toggleCollection.ToggleList[i].IsEnabled = value;
                 }
             }
         }

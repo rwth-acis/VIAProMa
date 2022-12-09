@@ -39,8 +39,8 @@ namespace i5.VIAProMa.UI.InputFields
 
         public bool Enabled
         {
-            get => fieldButton.Enabled;
-            set => fieldButton.Enabled = value;
+            get => fieldButton.IsEnabled;
+            set => fieldButton.IsEnabled = value;
         }
 
         public List<string> AutocompleteOptions

@@ -28,7 +28,7 @@ namespace i5.VIAProMa.Visualizations.ColorConfigWindow
             set
             {
                 windowEnabled = value;
-                closeButton.Enabled = windowEnabled;
+                closeButton.IsEnabled = windowEnabled;
                 progressBarTitleField.Enabled = windowEnabled;
             }
         }

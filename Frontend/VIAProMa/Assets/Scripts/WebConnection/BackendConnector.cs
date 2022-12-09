@@ -43,13 +43,14 @@ namespace i5.VIAProMa.WebConnection
                     null,
                     true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (resp.Successful)
             {
-                return new ApiResult<string>(resp.ResponseBody);
+                return new ApiResult<string>(responseBody);
             }
             else
             {
-                return new ApiResult<string>(resp.ResponseCode, resp.ResponseBody);
+                return new ApiResult<string>(resp.ResponseCode, responseBody);
             }
         }
 
@@ -90,14 +91,15 @@ namespace i5.VIAProMa.WebConnection
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<string[]>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<string[]>(resp.ResponseCode, responseBody);
             }
             else
             {
-                string[] projects = JsonArrayUtility.FromJson<string>(resp.ResponseBody);
+                string[] projects = JsonArrayUtility.FromJson<string>(responseBody);
                 return new ApiResult<string[]>(projects);
             }
         }

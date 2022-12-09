@@ -35,13 +35,14 @@ namespace i5.VIAProMa.WebConnection
                 headers,
                 -1,
                 true);
-             if (resp.Successful)
+            string responseBody = await resp.GetResponseBody();
+            if (resp.Successful)
              {
-                 return short.Parse(resp.ResponseBody);
+                 return short.Parse(responseBody);
              }
              else
              {
-                 Debug.LogError(resp.ResponseBody);
+                 Debug.LogError(responseBody);
                  return -1;
              }
         }
@@ -64,13 +65,14 @@ namespace i5.VIAProMa.WebConnection
                 -1,
                 null,
                 true);
+            string responseBody = await resp.GetResponseBody();
             if (resp.Successful)
             {
-                return resp.ResponseBody;
+                return responseBody;
             }
             else
             {
-                Debug.LogError(resp.ResponseBody);
+                Debug.LogError(responseBody);
                 return "";
             }
         }

@@ -27,14 +27,15 @@ namespace i5.VIAProMa.WebConnection
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<Project[]>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
             }
             else
             {
-                Project[] projects = JsonArrayUtility.FromJson<Project>(resp.ResponseBody);
+                Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
                 return new ApiResult<Project[]>(projects);
             }
         }
@@ -53,14 +54,15 @@ namespace i5.VIAProMa.WebConnection
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<Category[]>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<Category[]>(resp.ResponseCode, responseBody);
             }
             else
             {
-                Category[] categories = JsonArrayUtility.FromJson<Category>(resp.ResponseBody);
+                Category[] categories = JsonArrayUtility.FromJson<Category>(responseBody);
                 return new ApiResult<Category[]>(categories);
             }
         }
@@ -85,14 +87,15 @@ namespace i5.VIAProMa.WebConnection
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<Issue>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<Issue>(resp.ResponseCode, responseBody);
             }
             else
             {
-                Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+                Issue issue = JsonUtility.FromJson<Issue>(responseBody);
                 IssueCache.AddIssue(issue);
                 return new ApiResult<Issue>(issue);
             }
@@ -128,14 +131,15 @@ namespace i5.VIAProMa.WebConnection
             }
             Response resp = await Rest.GetAsync(path, null, -1, null, true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<Issue[]>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
             }
             else
             {
-                Issue[] requirements = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+                Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
                 // add to cache
                 foreach (Issue req in requirements)
                 {
@@ -175,14 +179,15 @@ namespace i5.VIAProMa.WebConnection
             }
             Response resp = await Rest.GetAsync(path, null, -1, null, true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
-                return new ApiResult<Issue[]>(resp.ResponseCode, resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
             }
             else
             {
-                Issue[] requirements = JsonArrayUtility.FromJson<Issue>(resp.ResponseBody);
+                Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
                 foreach (Issue req in requirements)
                 {
                     IssueCache.AddIssue(req);

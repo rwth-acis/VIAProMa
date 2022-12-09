@@ -43,11 +43,12 @@ namespace Org.Git_Hub.API
                 headers,
                 -1,
                 true);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
             }
-            Issue issue = JsonUtility.FromJson<Issue>(resp.ResponseBody);
+            Issue issue = JsonUtility.FromJson<Issue>(responseBody);
             return issue;
         }
 
@@ -88,9 +89,10 @@ namespace Org.Git_Hub.API
                      headers,
                      -1,
                      true);
+            string responseBody = await response.GetResponseBody();
             if (!response.Successful)
             {
-                 Debug.LogError(response.ResponseCode + ": " + response.ResponseBody);
+                 Debug.LogError(response.ResponseCode + ": " + responseBody);
                  return null ;
             }
             else
@@ -113,14 +115,15 @@ namespace Org.Git_Hub.API
                 null,
                 true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + resp.ResponseBody);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
                 return null;
             }
             else
             {
-                String json = "{ \"data\": " + resp.ResponseBody + " }";
+                String json = "{ \"data\": " + responseBody + " }";
                 Debug.Log(json);
                 Issue[] issues = JsonArrayUtility.FromJson<Issue>(json);
                 if (issues == null || issues.Length == 0)

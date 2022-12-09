@@ -363,8 +363,8 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         private void CheckButtonStates()
         {
-            upButton.Enabled = (page > 0);
-            downButton.Enabled = (page < issues.Count / ItemsPerPage);
+            upButton.IsEnabled = (page > 0);
+            downButton.IsEnabled = (page < issues.Count / ItemsPerPage);
         }
     }
 }

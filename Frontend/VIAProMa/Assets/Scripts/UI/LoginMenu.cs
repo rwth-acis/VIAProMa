@@ -47,7 +47,7 @@ namespace i5.VIAProMa.UI
 
         private void NameInputChanged(object sender, EventArgs e)
         {
-            doneButton.Enabled = !string.IsNullOrWhiteSpace(nameInputField.Text);
+            doneButton.IsEnabled = !string.IsNullOrWhiteSpace(nameInputField.Text);
         }
 
         public void Close()
@@ -80,7 +80,7 @@ namespace i5.VIAProMa.UI
                 {
                     dimension = 1;
                 }
-                roleToggles.ToggleList[i].SetDimensionIndex(dimension);
+                roleToggles.ToggleList[i].CurrentDimension = dimension;
             }
         }
 

@@ -49,8 +49,8 @@ namespace i5.VIAProMa.Multiplayer
             set
             {
                 windowEnabled = value;
-                createRoomButton.Enabled = value;
-                closeButton.Enabled = value;
+                createRoomButton.IsEnabled = value;
+                closeButton.IsEnabled = value;
             }
         }
 
@@ -98,8 +98,8 @@ namespace i5.VIAProMa.Multiplayer
 
             roomNameField.TextChanged += OnInputFieldRoomNameChanged;
 
-            createRoomButton.Enabled = false;
-            memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.GetDimensionIndex() == 1);
+            createRoomButton.IsEnabled = false;
+            memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.CurrentDimension == 1);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace i5.VIAProMa.Multiplayer
         {
             bool roomExists = roomMenu.CheckIfRoomExists(roomNameField.Text);
             errorMessage.SetActive(roomExists);
-            createRoomButton.Enabled = !roomExists && roomNameField.Text != "";
+            createRoomButton.IsEnabled = !roomExists && roomNameField.Text != "";
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace i5.VIAProMa.Multiplayer
         /// </summary>
         public void OnCheckboxAdvancedSettingsClicked()
         {
-            memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.GetDimensionIndex() == 1);
+            memberNumberSlider.gameObject.SetActive(advancedSettingsCheckbox.CurrentDimension == 1);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace i5.VIAProMa.Multiplayer
             RoomOptions roomOptions = null; // if null is passed to CreateRoom, the options are ignored
                                             // use the maximum member settings if the checkbox for this is checked
                                             // otherwise, roomOptions will remain null and so Photon will use default options
-            if (advancedSettingsCheckbox.GetDimensionIndex() == 1)
+            if (advancedSettingsCheckbox.CurrentDimension == 1)
             {
                 roomOptions = new RoomOptions { MaxPlayers = (byte)memberNumberSlider.ValueInt };
             }
