@@ -11,58 +11,59 @@ using Microsoft.MixedReality.Toolkit.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 // This script needs a rigit body for the Trigger function to work
 [RequireComponent(typeof(Rigidbody))]
 public class DragAndDrop : MonoBehaviour
 {
-    /* other components of the issue card that are used by this script */
-    IssueSelector IssueManipulator;
-    IssueDataDisplay issueDataDisplay;
-    ObjectManipulator grabComponent;
-    GameObject issueGameObject;
-
-    //A list of Visualizations that currently overlap with the Issue
-    List<GameObject> currentHits;
-
     #region ThreshholdFeatureVariables
     [SerializeField]
     [Tooltip("If the issue card is moved faster than this speed, it will not be added to the visualization when dropping")]
-    float speedThreshhold = 0.2f;
-    Vector3 oldPosition;
+    private float speedThreshhold = 0.2f;
+    private Vector3 oldPosition;
     //coroutine that tests if speed Threshhold is reached
-    Coroutine speedConditionCoroutine;
+    private Coroutine speedConditionCoroutine;
     //list of objects that wait to be added when speed is below threshhold
-    List<GameObject> hitWaitList;
+    private List<GameObject> hitWaitList;
     #endregion ThreshholdFeatureVariables
+
+    /* other components of the issue card that are used by this script */
+    private IssueSelector issueManipulator;
+    private IssueDataDisplay issueDataDisplay;
+    private ObjectManipulator grabComponent;
+    private GameObject issueGameObject;
+
+    //A list of Visualizations that currently overlap with the Issue
+    private List<GameObject> currentHits;
 
     //Is true iff the issue is currently being grabbed
     bool issueIsGrabbed = false;
 
     #region IssueDestructionVariables
     /* variables for the Issue destruction feature */
-    //indicates that the Issue is being destroyed right now; happens after it is added to a visualization
-    public bool IssueInSelfDestruction { get; private set; } = false;
     [SerializeField]
     [Tooltip("Time the component gets before it is destroyed after being added to a visualization")]
-    float destroyTime = 0.25f;
+    private float destroyTime = 0.25f;
     [SerializeField]
     [Tooltip("If set to true, issues will be deleted with a little animation after they are dropped into a visualization")]
-    bool destroyIssueAfterDrop = true;
-    float timeOffset = 0;
-    Vector3 destroyStartPosition;
-    Vector3 destroyStartSize;
+    private bool destroyIssueAfterDrop = true;
+    //indicates that the Issue is being destroyed right now; happens after it is added to a visualization
+    public bool IssueInSelfDestruction { get; private set; } = false;
+    private float timeOffset = 0;
+    private Vector3 destroyStartPosition;
+    private Vector3 destroyStartSize;
     #endregion IssueDestructionVariables
 
     #region OverlapIndicatorVariables
     /* variables for the overlap indicator feature */
-    //list of all currently existing lines
-    List<LineRenderer> overlapIndicators;
     [SerializeField]
     [Tooltip("Line Gameobject used to indicate which visualizations overlap with the Issue")]
-    GameObject indicatorLine;
+    private GameObject indicatorLine;
+    //list of all currently existing lines
+    private List<LineRenderer> overlapIndicators;
     //get unique visualizations that overlap with the issue; there can be duplicates in currentHits
-    HashSet<GameObject> uniqueHitSet;
+    private HashSet<GameObject> uniqueHitSet;
     #endregion OverlapIndicatorVariables
 
     //Awake is called when the script instance is being loaded
@@ -74,14 +75,14 @@ public class DragAndDrop : MonoBehaviour
         overlapIndicators = new List<LineRenderer>();
         uniqueHitSet = new HashSet<GameObject>();
 
-        IssueManipulator = GetComponentInParent<IssueSelector>();
-        if(IssueManipulator == null)
+        issueManipulator = GetComponentInParent<IssueSelector>();
+        if(issueManipulator == null)
         {
             SpecialDebugMessages.LogComponentNotFoundError(this, nameof(IssueSelector), gameObject);
         }
         else
         {
-            issueGameObject = IssueManipulator.gameObject;
+            issueGameObject = issueManipulator.gameObject;
         }
 
         issueDataDisplay = GetComponentInParent<IssueDataDisplay>();
@@ -268,7 +269,7 @@ public class DragAndDrop : MonoBehaviour
         IssueInSelfDestruction = true;
     }
 
-    void AddObjectToHitsList(GameObject target)
+    private void AddObjectToHitsList(GameObject target)
     {
         //test if target is a visualization
         Visualization visualization = target.GetComponentInParent<Visualization>();
@@ -290,14 +291,14 @@ public class DragAndDrop : MonoBehaviour
         }
 
         //Activate selection indicator of the issue
-        IssueManipulator.Selected = true;
-        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+        issueManipulator.Selected = true;
+        issueManipulator.UpdateViewIgnoreIssueSelectionManager();
 
         //Add listener so as soon as object is let go it is added to the target visualization
         grabComponent.OnManipulationEnded.AddListener(ManipulationEnded);
     }
 
-    void RemoveObjectFromHitsList(GameObject target)
+    private void RemoveObjectFromHitsList(GameObject target)
     {
         //test if target is a visualization
         Visualization visualization = target.GetComponentInParent<Visualization>();
@@ -333,9 +334,9 @@ public class DragAndDrop : MonoBehaviour
         //remove listener so letting go no longer adds this issue to visualizations
         grabComponent.OnManipulationEnded.RemoveListener(ManipulationEnded);
 
-        IssueManipulator.Selected = false;
+        issueManipulator.Selected = false;
         //manually update view because the Selected variable only does so if IssueSelectionManager is in selection mode
-        IssueManipulator.UpdateViewIgnoreIssueSelectionManager();
+        issueManipulator.UpdateViewIgnoreIssueSelectionManager();
     }
 
     private void ManipulationEnded(ManipulationEventData eventData)
