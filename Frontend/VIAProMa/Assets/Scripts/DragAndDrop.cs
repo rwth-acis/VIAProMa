@@ -17,54 +17,52 @@ using UnityEngine.Animations;
 [RequireComponent(typeof(Rigidbody))]
 public class DragAndDrop : MonoBehaviour
 {
-    #region ThreshholdFeatureVariables
-    [SerializeField]
     [Tooltip("If the issue card is moved faster than this speed, it will not be added to the visualization when dropping")]
-    private float speedThreshhold = 0.2f;
+    [SerializeField] private float speedThreshhold = 0.2f;
+    [Tooltip("Time the component gets before it is destroyed after being added to a visualization")]
+    [SerializeField] private float destroyTime = 0.25f;
+    [Tooltip("If set to true, issues will be deleted with a little animation after they are dropped into a visualization")]
+    [SerializeField] private bool destroyIssueAfterDrop = true;
+    [Tooltip("Line Gameobject used to indicate which visualizations overlap with the Issue")]
+    [SerializeField] private GameObject indicatorLine;
+
+    #region ThreshholdFeatureFields
     private Vector3 oldPosition;
     //coroutine that tests if speed Threshhold is reached
     private Coroutine speedConditionCoroutine;
     //list of objects that wait to be added when speed is below threshhold
     private List<GameObject> hitWaitList;
-    #endregion ThreshholdFeatureVariables
+    #endregion ThreshholdFeatureFields
 
-    /* other components of the issue card that are used by this script */
-    private IssueSelector issueManipulator;
-    private IssueDataDisplay issueDataDisplay;
-    private ObjectManipulator grabComponent;
-    private GameObject issueGameObject;
-
-    //A list of Visualizations that currently overlap with the Issue
-    private List<GameObject> currentHits;
-
-    //Is true iff the issue is currently being grabbed
-    bool issueIsGrabbed = false;
-
-    #region IssueDestructionVariables
+    #region IssueDestructionFields
     /* variables for the Issue destruction feature */
-    [SerializeField]
-    [Tooltip("Time the component gets before it is destroyed after being added to a visualization")]
-    private float destroyTime = 0.25f;
-    [SerializeField]
-    [Tooltip("If set to true, issues will be deleted with a little animation after they are dropped into a visualization")]
-    private bool destroyIssueAfterDrop = true;
-    //indicates that the Issue is being destroyed right now; happens after it is added to a visualization
-    public bool IssueInSelfDestruction { get; private set; } = false;
     private float timeOffset = 0;
     private Vector3 destroyStartPosition;
     private Vector3 destroyStartSize;
-    #endregion IssueDestructionVariables
+    #endregion IssueDestructionFields
 
-    #region OverlapIndicatorVariables
+    #region OverlapIndicatorFields
     /* variables for the overlap indicator feature */
-    [SerializeField]
-    [Tooltip("Line Gameobject used to indicate which visualizations overlap with the Issue")]
-    private GameObject indicatorLine;
     //list of all currently existing lines
     private List<LineRenderer> overlapIndicators;
     //get unique visualizations that overlap with the issue; there can be duplicates in currentHits
     private HashSet<GameObject> uniqueHitSet;
-    #endregion OverlapIndicatorVariables
+    #endregion OverlapIndicatorFields
+
+    // other components
+    private IssueSelector issueManipulator;
+    private IssueDataDisplay issueDataDisplay;
+    private ObjectManipulator grabComponent;
+    private GameObject issueGameObject;
+    //A list of Visualizations that currently overlap with the Issue
+    private List<GameObject> currentHits;
+    //Is true iff the issue is currently being grabbed
+    private bool issueIsGrabbed = false;
+
+    /// <summary>
+    /// indicates that the Issue is being destroyed right now; happens after it is added to a visualization
+    /// </summary>
+    public bool IssueInSelfDestruction { get; private set; } = false;
 
     //Awake is called when the script instance is being loaded
     void Awake()
@@ -323,7 +321,6 @@ public class DragAndDrop : MonoBehaviour
             Destroy(overlapIndicators[0].gameObject);
             overlapIndicators.RemoveAt(0);
         }
-
 
         //Deactivate selection indicator of the issue, but only if it doesn't overlap with any visualization
         if (currentHits.Count > 0)
