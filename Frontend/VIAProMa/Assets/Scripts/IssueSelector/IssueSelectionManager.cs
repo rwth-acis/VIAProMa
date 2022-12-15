@@ -64,7 +64,7 @@ namespace i5.VIAProMa.IssueSelection
         }
 
         /// <summary>
-        /// Ends the selectoin mode
+        /// Ends the selection mode
         /// </summary>
         /// <returns>The list of issues which were selected by the user</returns>
         public List<Issue> EndSelectionMode()
@@ -76,7 +76,7 @@ namespace i5.VIAProMa.IssueSelection
 
         /// <summary>
         /// Selects the given issue
-        /// Selection Mode should be set to true; otherwise, the method has no effect
+        /// SelectionModeActive should be set to true; otherwise, the method has no effect
         /// </summary>
         /// <param name="issue">The issue to select</param>
         public void SetSelected(Issue issue)
@@ -108,7 +108,7 @@ namespace i5.VIAProMa.IssueSelection
         /// <summary>
         /// Checks whether or not the given issue is selected
         /// </summary>
-        /// <param name="issue">THe issue to check</param>
+        /// <param name="issue">The issue to check</param>
         /// <returns>True if the issue is selected; otherwise false</returns>
         public bool IsSelected(Issue issue)
         {
