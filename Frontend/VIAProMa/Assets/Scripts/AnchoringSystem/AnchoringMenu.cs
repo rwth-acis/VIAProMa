@@ -18,7 +18,7 @@ public class AnchoringMenu : MonoBehaviour, IWindow
 
     /// <summary>
     /// UI Elements
-    /// </summary
+    /// </summary>
     [SerializeField] private Interactable useAnchoringCheckbox;
     [SerializeField] private Interactable moveAnchorAloneCheckbox;
 
@@ -51,7 +51,6 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     /// States whether the window is enabled
     /// If set to false, the window will remain visible but all interactable controls are disabled
     /// </summary>
-    /// <value></value>
     public bool WindowEnabled
     {
         get
