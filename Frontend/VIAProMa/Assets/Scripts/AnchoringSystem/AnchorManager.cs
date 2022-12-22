@@ -41,7 +41,7 @@ namespace i5.VIAProMa.Anchoring
 
         /// <summary>
         /// Completely disables anchoring and all corresponding features when leaving a room
-        /// </summary
+        /// </summary>
         public void DisableAnchoring()
         {
             anchorLocked = false;
