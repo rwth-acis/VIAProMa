@@ -8,9 +8,6 @@ using UnityEngine;
 
 namespace i5.VIAProMa.DeepLinks.InviteLinks
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class ConfirmationWindow : MonoBehaviourPunCallbacks, IWindow
     {
         public string RoomName { get; private set; }
@@ -19,12 +16,6 @@ namespace i5.VIAProMa.DeepLinks.InviteLinks
         public bool WindowOpen { get; private set; }
 
         public event EventHandler WindowClosed;
-
-
-        private void Awake()
-        {
-
-        }
 
         public override void OnEnable()
         {

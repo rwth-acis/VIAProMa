@@ -32,7 +32,6 @@ namespace i5.VIAProMa.DeepLinks
             {
                 return parameters["roomName"];
             }
-
         }
 
         /// <summary>
@@ -70,26 +69,17 @@ namespace i5.VIAProMa.DeepLinks
         /// </summary>
         public static string GenerateInviteLink()
         {
-
             string inviteURI = LoadData.LoadConfig().scheme + "://" + LoadData.LoadConfig().invitePath;
             string paramName_roomName = LoadData.LoadConfig().paramName_roomName;
-
-
             Room currentRoom = PhotonNetwork.CurrentRoom;
-
             if (currentRoom == null)
             {
                 Debug.Log("No session is active, Link can not be generated");
                 return "Link can not be generated";
             }
-
             string roomName = currentRoom.Name;
             Regex rgx = new Regex("[^a-zA-Z0-9_]");
             roomName = rgx.Replace(roomName, "");
-
-
-
-
             return inviteURI + "?" + paramName_roomName + "=" + roomName;
         }
     }
