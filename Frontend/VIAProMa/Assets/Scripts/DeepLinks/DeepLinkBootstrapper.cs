@@ -43,7 +43,7 @@ namespace i5.VIAProMa.DeepLinks
         }
 
         /// <summary>
-        /// Cooroutine to wait for the PhotonNetwork to connect is DeepLink started Application
+        /// Coroutine to wait for the PhotonNetwork to connect is DeepLink started Application
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
