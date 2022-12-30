@@ -15,13 +15,15 @@ using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Serialization;
 using ExitGames.Client.Photon.StructWrapping;
 //using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Schema;
 
-public class FileDownloader : MonoBehaviour {
+public class FileDownloader : MonoBehaviour
+{
     public GameObject wrapper;
     
     //private string webLink;
     //private string fileName;
 
-    void Start () {
+    void Start ()
+    {
         string webLink = "http://www.nikita-zaloga.de/undertale-_low_poly.glb";
         string fileName = System.IO.Path.GetFileName(webLink);
         string folderName = "3Dobjects";
@@ -65,7 +67,8 @@ public class FileDownloader : MonoBehaviour {
         testModel.AddComponent<ObjectManipulator>();
         testModel.GetComponent<ObjectManipulator>().HostTransform = testModel.transform;
     }
-    IEnumerator DownloadFile(string path, string webLink) {
+    IEnumerator DownloadFile(string path, string webLink)
+    {
         //downloads file
         var uwr = new UnityWebRequest(webLink, UnityWebRequest.kHttpVerbGET);
         uwr.downloadHandler = new DownloadHandlerFile(path);

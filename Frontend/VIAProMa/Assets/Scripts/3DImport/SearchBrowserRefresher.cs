@@ -21,6 +21,8 @@ public class SearchBrowserRefresher : MonoBehaviour
     private string searchContent;
     private string folderName;
 
+    public GameObject modelWrapper;
+
     [SerializeField] private GameObject itemWrapper;
 
     [SerializeField] private GameObject itemPrefab;
@@ -101,6 +103,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         item.GetComponentInChildren<TextMeshPro>().text = "Loading...";
         item.GetComponentInChildren<Animator>().enabled = true;
+        item.GetComponentInChildren<ImportModel>().gameObject.SetActive(false);
 
         //download file
         uwr = new UnityWebRequest(webLink, UnityWebRequest.kHttpVerbGET);
@@ -148,8 +151,10 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
                                                           dateOfCreation + "<br>" + fileSize;
         item.GetComponentInChildren<Animator>().enabled = false;
+        item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(true);
+        item.GetComponentInChildren<ImportModel>().path = path;
 
-        
+
 
     }
 
@@ -170,6 +175,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<SpriteRenderer>().color = Color.red;
         item.GetComponentInChildren<TextMeshPro>().text = "ERROR: Download failed";
         item.GetComponentInChildren<Animator>().enabled = false;
+        item.GetComponentInChildren<ImportModel>().gameObject.SetActive(false);
     }
 
     private static bool StringEndsWith(string a, string b)
