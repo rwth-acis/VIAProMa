@@ -1,3 +1,5 @@
+#define MRTK_GLTF_IMPORTER_OFF
+
 using System.Collections;
 using System.IO;
 using UnityEngine;
@@ -9,6 +11,9 @@ using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using System.Diagnostics;
 using System;
+using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Serialization;
+using ExitGames.Client.Photon.StructWrapping;
+//using Microsoft.MixedReality.Toolkit.Utilities.Gltf.Schema;
 
 public class FileDownloader : MonoBehaviour {
     public GameObject wrapper;
@@ -38,7 +43,11 @@ public class FileDownloader : MonoBehaviour {
     void LoadModel(String path)
     {
         //import into unity scene
+
         GameObject testModel = Importer.LoadFromFile(path);
+        //Byte[] file = System.IO.File.ReadAllBytes(path);
+        //GltfObject obj = GltfUtility.GetGltfObjectFromGlb(file);
+        //GameObject testModel = ConstructGltf.ConstructAsync(obj).Result;
         testModel.transform.SetParent(wrapper.transform);
 
         //resize object according to mesh bounds
