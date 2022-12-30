@@ -8,12 +8,13 @@ public class ImportedModel : MonoBehaviour
 	[SerializeField] private string webLink = "";
     public string WebLink {
 		get {
-			return _webLink;
+			return webLink;
 		}
 		set {
-			_webLink = value;
+			webLink = value;
 			// TODO: Load and show the model
 		}
 	}
+	public string Owner { get; set; }
 	
 }

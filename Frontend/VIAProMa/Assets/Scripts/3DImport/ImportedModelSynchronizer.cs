@@ -17,5 +17,6 @@ public class ImportedModelSynchronizer : TransformSynchronizer
     void Start()
     {
 		ImportedModel.WebLink = (string)photonView.InstantiationData[0];
+		ImportedModel.Owner = photonView.Owner.NickName;
     }
 }
