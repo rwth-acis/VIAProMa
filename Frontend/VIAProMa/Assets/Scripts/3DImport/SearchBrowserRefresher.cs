@@ -103,7 +103,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         item.GetComponentInChildren<TextMeshPro>().text = "Loading...";
         item.GetComponentInChildren<Animator>().enabled = true;
-        item.GetComponentInChildren<ImportModel>().gameObject.SetActive(false);
+        item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
 
         //download file
         uwr = new UnityWebRequest(webLink, UnityWebRequest.kHttpVerbGET);
@@ -175,7 +175,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<SpriteRenderer>().color = Color.red;
         item.GetComponentInChildren<TextMeshPro>().text = "ERROR: Download failed";
         item.GetComponentInChildren<Animator>().enabled = false;
-        item.GetComponentInChildren<ImportModel>().gameObject.SetActive(false);
+        item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
     }
 
     private static bool StringEndsWith(string a, string b)
