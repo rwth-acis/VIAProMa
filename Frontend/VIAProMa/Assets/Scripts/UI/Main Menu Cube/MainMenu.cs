@@ -23,6 +23,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable anchoringButton;
         [SerializeField] private Interactable issueShelfButton;
         [SerializeField] private Interactable visualizationShelfButton;
+        [SerializeField] private Interactable importModelButton;
         [SerializeField] private Interactable loginButton;
         [SerializeField] private Interactable roomButton;
         [SerializeField] private TextMeshPro roomButtonText;
@@ -69,6 +70,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             if (visualizationShelfButton == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationShelfButton));
+            }
+            if (importModelButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(importModelButton));
             }
             if (loginButton == null)
             {
@@ -144,6 +149,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             loadButton.IsEnabled = PhotonNetwork.InRoom;
             issueShelfButton.IsEnabled = PhotonNetwork.InRoom;
             visualizationShelfButton.IsEnabled = PhotonNetwork.InRoom;
+            importModelButton.IsEnabled = PhotonNetwork.InRoom;
             anchoringButton.IsEnabled = PhotonNetwork.InRoom;
         }
 
@@ -212,6 +218,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = transform.position - 1f * transform.right;
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
+            foldController.InitalizeNewCloseTimer();
+        }
+
+        public void ShowImportModelMenu()
+        {
+            WindowManager.Instance.ImportModelMenu.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
