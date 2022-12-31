@@ -3396,7 +3396,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1350554104
 Transform:
   m_ObjectHideFlags: 0
@@ -3424,8 +3424,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3d3678b342c76e43b9edb91a17963dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  searchbar: {fileID: 8201463556870729032}
-  modelWrapper: {fileID: 1896800654}
   itemWrapper: {fileID: 5401303750828503404}
   itemPrefab: {fileID: 7897803421461259728, guid: c96ecb0ed7077374ca22a591b71eb5d9,
     type: 3}
@@ -3674,6 +3672,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1896800655}
     m_Modifications:
+    - target: {fileID: 142782020403195696, guid: 6580c13df571c9242b86ffe5fe901102,
+        type: 3}
+      propertyPath: importModelMenuPrefab
+      value: 
+      objectReference: {fileID: 481603394222394357, guid: 14203f8c290ba384bb3f6b7f718b0547,
+        type: 3}
     - target: {fileID: 439484614112030367, guid: 6580c13df571c9242b86ffe5fe901102,
         type: 3}
       propertyPath: sceneViewId
@@ -3952,6 +3956,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 3DModelMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 481603394222394357, guid: 14203f8c290ba384bb3f6b7f718b0547,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 481603394222394358, guid: 14203f8c290ba384bb3f6b7f718b0547,
         type: 3}
@@ -4972,9 +4981,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 325b17018e9256a4fab4d429b4dcda87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &8201463556870729032 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8610755058458617916, guid: 14203f8c290ba384bb3f6b7f718b0547,
-    type: 3}
-  m_PrefabInstance: {fileID: 481603394214397300}
-  m_PrefabAsset: {fileID: 0}

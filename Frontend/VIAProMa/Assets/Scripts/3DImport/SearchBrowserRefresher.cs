@@ -13,15 +13,13 @@ using TMPro;
 using System.IO.Enumeration;
 using Photon.Pun;
 using UnityEditor;
+using i5.VIAProMa.UI;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
-    [SerializeField] private GameObject searchbar;
-    private TextMeshPro searchComponent;
-    private string searchContent;
     private string folderName;
 
-    public GameObject modelWrapper;
+    private GameObject modelWrapper;
 
     [SerializeField] private GameObject itemWrapper;
 
@@ -40,9 +38,8 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     void Start()
     {
-        searchComponent = searchbar.GetComponent<TextMeshPro>();
-        searchContent = searchComponent.text;
         folderName = "3Dobjects";
+        modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
 
         itemStartPosition = new Vector3(0, 0.12f, -0.02f);
         itemPositionOffset = new Vector3(0, -0.1f, 0);
@@ -51,13 +48,8 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        //check, if searchBarContent changed
-        if (searchContent != searchComponent.text)
-        {
-            searchContent = searchComponent.text;
-            
+    public void SearchChanged(string searchContent)
+    {            
             //refresh search browser
             foreach (Transform child in itemWrapper.transform)
             {
@@ -87,10 +79,10 @@ public class SearchBrowserRefresher : MonoBehaviour
                 }
 
             }
-        }
+    }
 
         
-    }
+    
 
     IEnumerator DownloadFile(string path, string webLink)
     {           

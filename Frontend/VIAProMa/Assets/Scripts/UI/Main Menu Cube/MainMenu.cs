@@ -223,7 +223,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowImportModelMenu()
         {
-            WindowManager.Instance.ImportModelMenu.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            WindowManager.Instance.ImportManager.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 

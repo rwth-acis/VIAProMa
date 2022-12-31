@@ -12,6 +12,7 @@ using Microsoft.MixedReality.Toolkit.UI;
 using System.Diagnostics;
 using System;
 using ExitGames.Client.Photon.StructWrapping;
+using i5.VIAProMa.UI;
 
 public class ImportModel : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class ImportModel : MonoBehaviour
 
     void Start()
     {
-        modelWrapper = GameObject.Find("3DImportManager").GetComponent<SearchBrowserRefresher>().modelWrapper;
+        modelWrapper = this.gameObject.GetComponentInParent<ImportManager>().modelWrapper;
     }
     public void LoadModel()
     {

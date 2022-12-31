@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace i5.VIAProMa.UI
 {
-    public class ImportModelMenu : MonoBehaviour, IWindow
+    public class ImportManager : MonoBehaviour, IWindow
     {
         [SerializeField] private InputField searchField;
         [SerializeField] private Interactable loginButton;
@@ -15,7 +15,9 @@ namespace i5.VIAProMa.UI
         [SerializeField] private Interactable searchDownButton;
         [SerializeField] private Interactable importedObjectsUpButton;
         [SerializeField] private Interactable importedObjectsDownButton;
-        
+
+        public GameObject modelWrapper;
+
 
         public bool WindowEnabled { get; set; }
 
@@ -61,13 +63,17 @@ namespace i5.VIAProMa.UI
         // Start is called before the first frame update
         void Start()
         {
-            
+            modelWrapper = new GameObject();
+            modelWrapper.name = "3Dmodels";
+            modelWrapper.transform.position = Vector3.zero;
+            modelWrapper.transform.parent = GameObject.Find("AnchorParent").transform;
         }
 
         private void OnQueryChanged(object sender, EventArgs e)
         {
-            bool validInput = !string.IsNullOrWhiteSpace(searchField.Text);
-            if (validInput) Debug.Log("Import Menu Search Field: " + searchField.Text);
+            //Search field changed
+            this.gameObject.GetComponent<SearchBrowserRefresher>().SearchChanged(searchField.Text);
+            //Debug.Log("Import Menu Search Field: " + searchField.Text);
         }
 
         public void Close()

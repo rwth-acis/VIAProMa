@@ -24,7 +24,7 @@ namespace i5.VIAProMa.UI
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
             AnchorMenu = (AnchoringMenu)InstantiateWindow(anchorMenuPrefab);
-            ImportModelMenu = (ImportModelMenu)InstantiateWindow(importModelMenuPrefab);
+            ImportManager = (ImportManager)InstantiateWindow(importModelMenuPrefab);
         }
 
         private IWindow InstantiateWindow(GameObject prefab)
@@ -53,6 +53,6 @@ namespace i5.VIAProMa.UI
 
         public AnchoringMenu AnchorMenu { get; private set; }
 
-        public ImportModelMenu ImportModelMenu { get; private set; }
+        public ImportManager ImportManager { get; private set; }
     }
 }
