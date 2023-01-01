@@ -13,10 +13,13 @@ using System.Diagnostics;
 using System;
 using ExitGames.Client.Photon.StructWrapping;
 using i5.VIAProMa.UI;
+using static SessionBrowserRefresher;
 
 public class ImportModel : MonoBehaviour
 {
     public string path;
+    public ImportedObject model;
+
     private GameObject modelWrapper;
 
     void Start()
@@ -49,6 +52,10 @@ public class ImportModel : MonoBehaviour
         testModel.AddComponent<NearInteractionGrabbable>();
         testModel.AddComponent<ObjectManipulator>();
         testModel.GetComponent<ObjectManipulator>().HostTransform = testModel.transform;
+
+        model.gameObject = testModel;
+
+        this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
     }
 
     

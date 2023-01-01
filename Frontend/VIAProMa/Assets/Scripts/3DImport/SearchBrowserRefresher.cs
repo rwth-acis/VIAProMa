@@ -14,6 +14,7 @@ using System.IO.Enumeration;
 using Photon.Pun;
 using UnityEditor;
 using i5.VIAProMa.UI;
+using static SessionBrowserRefresher;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
@@ -42,9 +43,13 @@ public class SearchBrowserRefresher : MonoBehaviour
         modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
 
         itemStartPosition = new Vector3(0, 0.12f, -0.02f);
-        itemPositionOffset = new Vector3(0, -0.1f, 0);
+        itemPositionOffset = new Vector3(0, -0.09f, 0);
 
-
+        //clear search browser
+        foreach (Transform child in itemWrapper.transform)
+        {
+            Destroy(child.gameObject);
+        }
 
     }
 
@@ -129,7 +134,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         string truncatedWebLink = webLink.Length > 30 ? (webLink.Substring(0, 30) + "...") : webLink;
         string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
         string truncatedFileName = fileName.Length > 30 ? (fileName.Substring(0, 30) + "...") : fileName;
-        string dateOfCreation = "Downloaded: " + System.IO.File.GetCreationTime(path).ToString();
+        string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
         string fileSize = BytesToNiceString(new System.IO.FileInfo(path).Length);
         //string creator = photonView.Owner.NickName;
 
@@ -141,10 +146,11 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<SpriteRenderer>().sprite = noThumbSprite;
         item.GetComponentInChildren<SpriteRenderer>().color = Color.green;
         item.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
-                                                          dateOfCreation + "<br>" + fileSize;
+                                                          "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
         item.GetComponentInChildren<Animator>().enabled = false;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(true);
         item.GetComponentInChildren<ImportModel>().path = path;
+        item.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, webLink, fileName, dateOfDownload, fileSize/*, creator*/);
 
 
 
