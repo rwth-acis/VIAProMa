@@ -18,8 +18,6 @@ using static SessionBrowserRefresher;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
-    private string folderName;
-
     private GameObject modelWrapper;
 
     [SerializeField] private GameObject itemWrapper;
@@ -36,11 +34,13 @@ public class SearchBrowserRefresher : MonoBehaviour
     private Coroutine downloadRoutine;
     private string tempPath;
 
+    private int linkOrFileNameLength;
 
     void Start()
     {
-        folderName = "3Dobjects";
         modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
+
+        linkOrFileNameLength = 45;
 
         itemStartPosition = new Vector3(0, 0.12f, -0.02f);
         itemPositionOffset = new Vector3(0, -0.09f, 0);
@@ -71,7 +71,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             && StringEndsWith(searchContent, ".glb"))
             {
                 string fileName = System.IO.Path.GetFileName(searchContent);
-                string path = Path.Combine(Application.persistentDataPath, folderName, fileName);
+                string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, fileName);
                 if (!System.IO.File.Exists(path))
                 {
                     downloadRoutine = StartCoroutine(DownloadFile(path, searchContent));
@@ -131,9 +131,9 @@ public class SearchBrowserRefresher : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        string truncatedWebLink = webLink.Length > 30 ? (webLink.Substring(0, 30) + "...") : webLink;
+        string truncatedWebLink = webLink.Length > linkOrFileNameLength ? (webLink.Substring(0, linkOrFileNameLength) + "...") : webLink;
         string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
-        string truncatedFileName = fileName.Length > 30 ? (fileName.Substring(0, 30) + "...") : fileName;
+        string truncatedFileName = fileName.Length > linkOrFileNameLength ? (fileName.Substring(0, linkOrFileNameLength) + "...") : fileName;
         string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
         string fileSize = BytesToNiceString(new System.IO.FileInfo(path).Length);
         //string creator = photonView.Owner.NickName;

@@ -29,6 +29,7 @@ namespace i5.VIAProMa.UI
 
         public GameObject modelWrapper;
 
+        public string folderName;
 
         public bool WindowEnabled { get; set; }
 
@@ -102,6 +103,8 @@ namespace i5.VIAProMa.UI
             modelWrapper.name = "3Dmodels";
             modelWrapper.transform.position = Vector3.zero;
             modelWrapper.transform.parent = GameObject.Find("AnchorParent").transform;
+
+            folderName = "3Dobjects";
 
             // Search Menu as default menu
             SetMenuTo("search");

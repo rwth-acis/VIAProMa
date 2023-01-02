@@ -41,10 +41,14 @@ public class SessionBrowserRefresher : MonoBehaviour
     private Vector3 sessionItemStartPosition;
     private Vector3 sessionItemPositionOffset;
 
+    private int linkOrFileNameLength;
+
     void Start()
     {
         sessionItemStartPosition = new Vector3(0, 0.2f, -0.02f);
         sessionItemPositionOffset = new Vector3(0, -0.11f, 0);
+
+        linkOrFileNameLength = 35;
 
         importedObjects = new List<ImportedObject>();
         head = 0;
@@ -54,7 +58,11 @@ public class SessionBrowserRefresher : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
-    
+
+    public void Refresh()
+    {
+
+    }
     public void AddItem(ImportedObject obj)
     {
         importedObjects.Insert(0, obj);
@@ -71,8 +79,8 @@ public class SessionBrowserRefresher : MonoBehaviour
         {
             ImportedObject impObj = importedObjects[i];
 
-            string truncatedWebLink = impObj.webLink.Length > 20 ? (impObj.webLink.Substring(0, 20) + "...") : impObj.webLink;
-            string truncatedFileName = impObj.fileName.Length > 20 ? (impObj.fileName.Substring(0, 20) + "...") : impObj.fileName;
+            string truncatedWebLink = impObj.webLink.Length > linkOrFileNameLength ? (impObj.webLink.Substring(0, linkOrFileNameLength) + "...") : impObj.webLink;
+            string truncatedFileName = impObj.fileName.Length > linkOrFileNameLength ? (impObj.fileName.Substring(0, linkOrFileNameLength) + "...") : impObj.fileName;
             string dateOfDownload = impObj.dateOfDownload;
             string fileSize = impObj.size;
             //string creator = impObj.creator;
@@ -86,8 +94,12 @@ public class SessionBrowserRefresher : MonoBehaviour
             sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
                                                               dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
             sessItem.GetComponentInChildren<Animator>().enabled = false;
-            
-            //sessItem.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(true);
+
+            sessItem.GetComponentInChildren<ImportModel>().path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, impObj.fileName + ".glb");
+            sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
+
+            sessItem.GetComponentInChildren<HighlightModel>().model = impObj.gameObject;
+            sessItem.GetComponentInChildren<DeleteModel>().model = impObj.gameObject;
         }
     }
 
