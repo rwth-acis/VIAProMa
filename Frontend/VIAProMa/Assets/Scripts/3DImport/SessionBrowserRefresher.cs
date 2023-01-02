@@ -32,9 +32,8 @@ public class SessionBrowserRefresher : MonoBehaviour
     public List<ImportedObject> importedObjects;
     private int head;
 
-    public GameObject sessionItemWrapper;
-
-    public GameObject sessionItem;
+    [SerializeField] private GameObject sessionItemWrapper;
+    [SerializeField] private GameObject sessionItem;
     [SerializeField] private Sprite loadingSymbol;
     [SerializeField] private Sprite downloadErrorSprite;
     [SerializeField] private Sprite noThumbSprite;
@@ -45,7 +44,7 @@ public class SessionBrowserRefresher : MonoBehaviour
     void Start()
     {
         sessionItemStartPosition = new Vector3(0, 0.2f, -0.02f);
-        sessionItemPositionOffset = new Vector3(0, -0.09f, 0);
+        sessionItemPositionOffset = new Vector3(0, -0.11f, 0);
 
         importedObjects = new List<ImportedObject>();
         head = 0;
