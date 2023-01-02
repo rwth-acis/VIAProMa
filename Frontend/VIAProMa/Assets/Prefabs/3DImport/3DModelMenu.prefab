@@ -384,7 +384,6 @@ Transform:
   - {fileID: 6936435969232813571}
   - {fileID: 4373016067162191098}
   - {fileID: 5826825651602221156}
-  - {fileID: 6942177936308111711}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -403,9 +402,11 @@ MonoBehaviour:
   searchMenu: {fileID: 2906672401301553700}
   sessionMenu: {fileID: 2906672401736532505}
   harddriveMenu: {fileID: 4309332121167811478}
+  tabs: {fileID: 7903872104150820483}
   searchTabButton: {fileID: 8419077336555611441}
   sessionTabButton: {fileID: 8021506862487231822}
   harddriveTabButton: {fileID: 7257440391354644672}
+  currActiveWindow: 
   searchField: {fileID: 7781223876743657667}
   loginButton: {fileID: 4699526136898096437}
   searchUpButton: {fileID: 8447046825107794633}
@@ -481,7 +482,7 @@ Transform:
   m_Children:
   - {fileID: 8275946428352095464}
   m_Father: {fileID: 5826825651602221156}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &526048857281423876
 GameObject:
@@ -13307,8 +13308,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5718001351837405961}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.303, y: -0.118, z: -0.02}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalPosition: {x: 0, y: -0.06825, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4667976289968216149}
@@ -13316,8 +13317,8 @@ Transform:
   - {fileID: 7327146493110224038}
   - {fileID: 8474199745721577506}
   - {fileID: 5852067230879002699}
-  m_Father: {fileID: 481603394222394358}
-  m_RootOrder: 4
+  m_Father: {fileID: 5826825651602221156}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6424973131695613874
 BoxCollider:
@@ -14466,7 +14467,7 @@ Transform:
   - {fileID: 4206882097099847206}
   - {fileID: 6804963971322602368}
   m_Father: {fileID: 5826825651602221156}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4944636250592065040
 MonoBehaviour:
@@ -21300,6 +21301,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6942177936308111711}
   - {fileID: 6510988649700679625}
   - {fileID: 7692928272634260987}
   m_Father: {fileID: 481603394222394358}

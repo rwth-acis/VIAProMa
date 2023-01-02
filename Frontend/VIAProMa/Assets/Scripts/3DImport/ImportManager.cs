@@ -13,9 +13,11 @@ namespace i5.VIAProMa.UI
         [SerializeField] private GameObject sessionMenu;
         [SerializeField] private GameObject harddriveMenu;
 
+        [SerializeField] private GameObject tabs;
         [SerializeField] private Interactable searchTabButton;
         [SerializeField] private Interactable sessionTabButton;
         [SerializeField] private Interactable harddriveTabButton;
+        [SerializeField] private string currActiveWindow;
 
         [SerializeField] private InputField searchField;
         [SerializeField] private Interactable loginButton;
@@ -102,12 +104,7 @@ namespace i5.VIAProMa.UI
             modelWrapper.transform.parent = GameObject.Find("AnchorParent").transform;
 
             // Search Menu as default menu
-            searchMenu.SetActive(true);
-            searchTabButton.IsEnabled = false;
-            sessionMenu.SetActive(false);
-            sessionTabButton.IsEnabled = true;
-            harddriveMenu.SetActive(false);
-            harddriveTabButton.IsEnabled = true;
+            SetMenuTo("search");
         }
 
         private void OnQueryChanged(object sender, EventArgs e)
@@ -120,6 +117,37 @@ namespace i5.VIAProMa.UI
         // Changes the shown menu and de/-activates tab buttons accordingly
         public void SetMenuTo(String menuName)
         {
+            //set positions of windows
+            switch (currActiveWindow)
+            {
+                case "search":
+                    sessionMenu.transform.GetChild(0).transform.position = searchMenu.transform.GetChild(0).transform.position;
+                    sessionMenu.transform.GetChild(0).transform.rotation = searchMenu.transform.GetChild(0).transform.rotation;
+                    sessionMenu.transform.GetChild(0).transform.localScale = searchMenu.transform.GetChild(0).transform.localScale;
+                    harddriveMenu.transform.GetChild(0).transform.position = searchMenu.transform.GetChild(0).transform.position;
+                    harddriveMenu.transform.GetChild(0).transform.rotation = searchMenu.transform.GetChild(0).transform.rotation;
+                    harddriveMenu.transform.GetChild(0).transform.localScale = searchMenu.transform.GetChild(0).transform.localScale;
+                    break;
+                case "session":
+                    searchMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
+                    searchMenu.transform.GetChild(0).transform.rotation = sessionMenu.transform.GetChild(0).transform.rotation;
+                    searchMenu.transform.GetChild(0).transform.localScale = sessionMenu.transform.GetChild(0).transform.localScale;
+                    harddriveMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
+                    harddriveMenu.transform.GetChild(0).transform.rotation = sessionMenu.transform.GetChild(0).transform.rotation;
+                    harddriveMenu.transform.GetChild(0).transform.localScale = sessionMenu.transform.GetChild(0).transform.localScale;
+                    break;
+                case "harddrive":
+                    sessionMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
+                    sessionMenu.transform.GetChild(0).transform.rotation = harddriveMenu.transform.GetChild(0).transform.rotation;
+                    sessionMenu.transform.GetChild(0).transform.localScale = harddriveMenu.transform.GetChild(0).transform.localScale;
+                    searchMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
+                    searchMenu.transform.GetChild(0).transform.rotation = harddriveMenu.transform.GetChild(0).transform.rotation;
+                    searchMenu.transform.GetChild(0).transform.localScale = harddriveMenu.transform.GetChild(0).transform.localScale;
+                    break;
+            }
+            
+            
+            //enable/disable windows and buttons
             switch (menuName)
             {
                 case "search":
@@ -129,6 +157,8 @@ namespace i5.VIAProMa.UI
                     sessionTabButton.IsEnabled = true;
                     harddriveMenu.SetActive(false);
                     harddriveTabButton.IsEnabled = true;
+                    tabs.transform.parent = searchMenu.transform.GetChild(0).transform;
+                    currActiveWindow = "search";
                     break;
                 case "session":
                     searchMenu.SetActive(false);
@@ -137,6 +167,8 @@ namespace i5.VIAProMa.UI
                     sessionTabButton.IsEnabled = false;
                     harddriveMenu.SetActive(false);
                     harddriveTabButton.IsEnabled = true;
+                    tabs.transform.parent = sessionMenu.transform.GetChild(0).transform;
+                    currActiveWindow = "session";
                     break;
                 case "harddrive":
                     searchMenu.SetActive(false);
@@ -145,6 +177,8 @@ namespace i5.VIAProMa.UI
                     sessionTabButton.IsEnabled = true;
                     harddriveMenu.SetActive(true);
                     harddriveTabButton.IsEnabled = false;
+                    tabs.transform.parent = harddriveMenu.transform.GetChild(0).transform;
+                    currActiveWindow = "harddrive";
                     break;
             }
 
