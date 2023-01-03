@@ -9,9 +9,11 @@ public class DeleteModel : MonoBehaviour
 
     public void DeleteObject()
     {
-        Destroy(model.gameObject.transform);
-        ImportedObject deleteThisObj = GetComponentInParent<SessionBrowserRefresher>().importedObjects.Find(e => e.gameObject = model.gameObject);
-        GetComponentInParent<SessionBrowserRefresher>().importedObjects.Remove(deleteThisObj);
-        GetComponentInParent<SessionBrowserRefresher>().Refresh();
+        //Refresh session browser correctly and delete actual GameObject
+        SessionBrowserRefresher refresher = GetComponentInParent<SessionBrowserRefresher>();
+        ImportedObject deleteThisItem = refresher.importedObjects.Find(e => e.gameObject == model);
+        Destroy(model);
+        refresher.importedObjects.Remove(deleteThisItem);
+        refresher.Refresh(refresher.head);
     }
 }

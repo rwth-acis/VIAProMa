@@ -28,7 +28,7 @@ public class ImportModel : MonoBehaviour
     }
     public void LoadModel()
     {
-        UnityEngine.Debug.Log("LoadModelFunctionTriggered");
+        //UnityEngine.Debug.Log("LoadModelFunctionTriggered");
         //import into unity scene
         GameObject testModel = Importer.LoadFromFile(path);
         testModel.transform.SetParent(modelWrapper.transform);
@@ -36,7 +36,7 @@ public class ImportModel : MonoBehaviour
                                        - this.gameObject.transform.forward * 0.1f
                                        - this.gameObject.transform.up * 0.05f;
         testModel.transform.rotation = this.gameObject.transform.rotation;
-        testModel.transform.eulerAngles += new Vector3(-90, 0, 0);
+        testModel.transform.eulerAngles += new Vector3(-90, -180, 0);
 
         //resize object according to mesh bounds
         MeshFilter[] rr = testModel.GetComponentsInChildren<MeshFilter>();
@@ -52,6 +52,8 @@ public class ImportModel : MonoBehaviour
         testModel.AddComponent<NearInteractionGrabbable>();
         testModel.AddComponent<ObjectManipulator>();
         testModel.GetComponent<ObjectManipulator>().HostTransform = testModel.transform;
+
+        testModel.name = model.fileName;
 
         model.gameObject = testModel;
 

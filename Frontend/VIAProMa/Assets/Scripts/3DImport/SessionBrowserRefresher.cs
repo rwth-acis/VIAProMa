@@ -30,7 +30,7 @@ public class SessionBrowserRefresher : MonoBehaviour
     }
 
     public List<ImportedObject> importedObjects;
-    private int head;
+    public int head;
 
     [SerializeField] private GameObject sessionItemWrapper;
     [SerializeField] private GameObject sessionItem;
@@ -52,30 +52,20 @@ public class SessionBrowserRefresher : MonoBehaviour
 
         importedObjects = new List<ImportedObject>();
         head = 0;
-        //clear session browser
-        foreach (Transform child in sessionItemWrapper.transform)
-        {
-            Destroy(child.gameObject);
-        }
+
+        Refresh(head);
     }
 
-    public void Refresh()
+    public void Refresh(int headPosition)
     {
-
-    }
-    public void AddItem(ImportedObject obj)
-    {
-        importedObjects.Insert(0, obj);
-
-        head = 0;
         //refresh session browser
         foreach (Transform child in sessionItemWrapper.transform)
         {
             Destroy(child.gameObject);
         }
-        //build first page
-        int j = importedObjects.Count() < 5 ? importedObjects.Count() : 5;
-        for (int i = 0; i < j; i++)
+        //build current page according to head position
+        int j = importedObjects.Count() - headPosition < 5 ? importedObjects.Count() - headPosition : 5;
+        for (int i = headPosition; i < j + headPosition; i++)
         {
             ImportedObject impObj = importedObjects[i];
 
@@ -87,7 +77,7 @@ public class SessionBrowserRefresher : MonoBehaviour
 
             GameObject sessItem = Instantiate(sessionItem);
             sessItem.transform.parent = sessionItemWrapper.transform;
-            sessItem.transform.localPosition = sessionItemStartPosition + sessionItemPositionOffset*i;
+            sessItem.transform.localPosition = sessionItemStartPosition + sessionItemPositionOffset * i;
             sessItem.transform.localRotation = Quaternion.identity;
             sessItem.GetComponentInChildren<SpriteRenderer>().sprite = noThumbSprite;
             sessItem.GetComponentInChildren<SpriteRenderer>().color = Color.green;
@@ -98,9 +88,18 @@ public class SessionBrowserRefresher : MonoBehaviour
             sessItem.GetComponentInChildren<ImportModel>().path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, impObj.fileName + ".glb");
             sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
 
+            //UnityEngine.Debug.Log("The impObj is null:" + (impObj.Equals(default(ImportedObject))));
+            //UnityEngine.Debug.Log("The gameObject is null:" + (impObj.gameObject == null));
             sessItem.GetComponentInChildren<HighlightModel>().model = impObj.gameObject;
             sessItem.GetComponentInChildren<DeleteModel>().model = impObj.gameObject;
         }
+    }
+    public void AddItem(ImportedObject obj)
+    {
+        head = 0;
+
+        importedObjects.Insert(head, obj);
+        Refresh(head); //"Refresh Head"... ich sollte wahrscheinlich schlafen gehen
     }
 
     public void IncreaseHead() { head++; }
