@@ -28,12 +28,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private TextMeshPro roomButtonText;
         [SerializeField] private Interactable chatButton;
         [SerializeField] private Interactable microphoneButton;
+        [SerializeField] private Interactable undoRedoButton;
 
         [Header("References")]
         [SerializeField] private GameObject issueShelfPrefab;
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
+        [SerializeField] private GameObject undoRedoMenuPrefab;
 
 
         private FoldController foldController;
@@ -90,6 +92,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
             }
+            if (undoRedoButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(undoRedoButton));
+            }
 
             if (issueShelfPrefab == null)
             {
@@ -106,6 +112,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             if (avatarConfiguratorPrefab == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfiguratorPrefab));
+            }
+            if (undoRedoMenuPrefab == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(undoRedoMenuPrefab));
             }
 
             foldController = gameObject.GetComponent<FoldController>();
@@ -145,6 +155,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             issueShelfButton.IsEnabled = PhotonNetwork.InRoom;
             visualizationShelfButton.IsEnabled = PhotonNetwork.InRoom;
             anchoringButton.IsEnabled = PhotonNetwork.InRoom;
+            // TODO: Photon Integration undoRedoButton = PhotonNetwork...
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -242,6 +253,12 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
+        }
+
+        public void ShowUndoRedoMenu()
+        {
+            Vector3 targetPosition = transform.position + 1f * transform.right;
+            Instantiate(undoRedoMenuPrefab, targetPosition, Quaternion.identity);
         }
 
         public void RoomButtonClicked()

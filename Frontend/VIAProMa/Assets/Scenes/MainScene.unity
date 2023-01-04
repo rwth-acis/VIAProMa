@@ -2993,6 +2993,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1826346970}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &656299787 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 6436379609130328663}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077605939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150a868bdda813a4ba4539951bdc94eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &911172081
 GameObject:
   m_ObjectHideFlags: 0
@@ -4428,6 +4440,11 @@ PrefabInstance:
       objectReference: {fileID: 1896800655}
     - target: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: undoRedoButton
+      value: 
+      objectReference: {fileID: 6436379609130328665}
+    - target: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: anchorTransform
       value: 
       objectReference: {fileID: 1896800655}
@@ -4436,6 +4453,12 @@ PrefabInstance:
       propertyPath: anchoringManager
       value: 
       objectReference: {fileID: 1310721815}
+    - target: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: undoRedoMenuPrefab
+      value: 
+      objectReference: {fileID: 7372155236882747274, guid: 105b5bc1820dec448a917b7fc8205dc1,
+        type: 3}
     - target: {fileID: 6436379608399288069, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: profiles.Array.size
@@ -4799,6 +4822,41 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 656299787}
+    - target: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShowUndoRedoMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: i5.VIAProMa.UI.MainMenuCube.MainMenu, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8679160529903990039, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: m_Mesh
@@ -4822,5 +4880,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 325b17018e9256a4fab4d429b4dcda87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6436379609130328665 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7893566428922470368, guid: 8c93205eb542a734dbe333bde16fe4ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 6436379609130328663}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1410eac1ae94b4d4492a09cc368e152c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
