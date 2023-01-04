@@ -9,7 +9,6 @@ using static System.Net.WebRequestMethods;
 using System.Text;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
-using System.Diagnostics;
 using System;
 using ExitGames.Client.Photon.StructWrapping;
 using i5.VIAProMa.UI;
@@ -50,17 +49,17 @@ public class ImportModel : MonoBehaviour
         testModel.GetComponent<BoxCollider>().size = bounds.size;
         testModel.GetComponent<BoxCollider>().center = bounds.center;
 
+
         testModel.transform.localScale = testModel.transform.localScale / (bounds.size.magnitude * 3.5f);
 
 
-
-        testModel.transform.position = this.gameObject.transform.position
-                                       - this.gameObject.transform.forward * 0.1f
-                                       - this.gameObject.transform.up * 0.05f;
         testModel.transform.rotation = this.gameObject.transform.rotation;
         testModel.transform.eulerAngles += new Vector3(-90, -180, 0);
-
+        //testModel.transform.position = this.gameObject.transform.position;
         
+
+        testModel.transform.position = testModel.transform.position + (this.gameObject.transform.position - testModel.transform.TransformPoint(testModel.GetComponent<BoxCollider>().center));
+        testModel.transform.position = testModel.transform.position - this.gameObject.transform.forward * 0.1f;
 
         testModel.AddComponent<NearInteractionGrabbable>();
         testModel.AddComponent<ObjectManipulator>();

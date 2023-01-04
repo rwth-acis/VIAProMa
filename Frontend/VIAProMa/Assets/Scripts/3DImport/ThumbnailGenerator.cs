@@ -39,8 +39,6 @@ public class ThumbnailGenerator : MonoBehaviour
             Bounds bounds = rr[0].bounds;
             foreach (Renderer r in rr) { bounds.Encapsulate(r.bounds); }
 
-            //model.transform.
-
             model.transform.SetParent(spawnedThumbSetup.transform.GetChild(0));
             model.transform.localPosition = Vector3.zero;
             model.transform.localRotation = Quaternion.identity;
@@ -55,7 +53,7 @@ public class ThumbnailGenerator : MonoBehaviour
 
             model.transform.localScale = model.transform.localScale / (bounds.size.magnitude * 3.5f);
 
-            StartCoroutine(GenerateThumbnail(pathToPNG, renderer, spawnedThumbSetup, model));
+            StartCoroutine(GenerateThumbnail(pathToPNG, renderer, spawnedThumbSetup));
         }
         else
         {
@@ -68,7 +66,7 @@ public class ThumbnailGenerator : MonoBehaviour
         
     }
 
-    private IEnumerator GenerateThumbnail(string pathToPNG, Renderer renderer, GameObject spawnedThumbSetup, GameObject model)
+    private IEnumerator GenerateThumbnail(string pathToPNG, Renderer renderer, GameObject spawnedThumbSetup)
     {
         yield return new WaitForEndOfFrame(); // wait for rendering
 
@@ -76,9 +74,11 @@ public class ThumbnailGenerator : MonoBehaviour
         thumbCam.cullingMask |= 1 << LayerMask.NameToLayer("Thumbnail");
 
         // make camera look at the center of the boxcollider (scaled to global position)
-        Vector3 center = model.GetComponent<BoxCollider>().center;
-        thumbCam.transform.LookAt(center * model.transform.localScale.x);
-        thumbCam.transform.localPosition = new Vector3(thumbCam.transform.localPosition.x, center.y * model.transform.localScale.y + .135f, thumbCam.transform.localPosition.z);
+        BoxCollider col = spawnedThumbSetup.GetComponentInChildren<BoxCollider>();
+
+        thumbCam.transform.position = thumbCam.transform.position + (col.transform.position - col.transform.TransformPoint(col.center));
+        
+        thumbCam.transform.LookAt(col.transform.TransformPoint(col.center));
 
 
         RenderTexture.active = thumbCam.targetTexture;
