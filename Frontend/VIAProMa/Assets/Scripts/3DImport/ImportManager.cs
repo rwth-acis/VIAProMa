@@ -3,6 +3,7 @@ using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Voice.PUN.UtilityScripts;
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI
@@ -108,6 +109,10 @@ namespace i5.VIAProMa.UI
 
             // Search Menu as default menu
             SetMenuTo("search");
+
+            // Set MainCamera near clipping plane
+            Camera mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+            mainCamera.nearClipPlane = 0.01f;
         }
 
         private void OnQueryChanged(object sender, EventArgs e)
@@ -120,7 +125,7 @@ namespace i5.VIAProMa.UI
         // Changes the shown menu and de/-activates tab buttons accordingly
         public void SetMenuTo(String menuName)
         {
-            //set positions of windows
+            //set positions of windows and make buttons not greyed out
             switch (currActiveWindow)
             {
                 case "search":
@@ -130,6 +135,9 @@ namespace i5.VIAProMa.UI
                     harddriveMenu.transform.GetChild(0).transform.position = searchMenu.transform.GetChild(0).transform.position;
                     harddriveMenu.transform.GetChild(0).transform.rotation = searchMenu.transform.GetChild(0).transform.rotation;
                     harddriveMenu.transform.GetChild(0).transform.localScale = searchMenu.transform.GetChild(0).transform.localScale;
+                    //make button white (not greyed out)
+                    searchTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+                    searchTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
                     break;
                 case "session":
                     searchMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
@@ -138,6 +146,9 @@ namespace i5.VIAProMa.UI
                     harddriveMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
                     harddriveMenu.transform.GetChild(0).transform.rotation = sessionMenu.transform.GetChild(0).transform.rotation;
                     harddriveMenu.transform.GetChild(0).transform.localScale = sessionMenu.transform.GetChild(0).transform.localScale;
+                    //make button white (not greyed out)
+                    sessionTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+                    sessionTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
                     break;
                 case "harddrive":
                     sessionMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
@@ -146,6 +157,9 @@ namespace i5.VIAProMa.UI
                     searchMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
                     searchMenu.transform.GetChild(0).transform.rotation = harddriveMenu.transform.GetChild(0).transform.rotation;
                     searchMenu.transform.GetChild(0).transform.localScale = harddriveMenu.transform.GetChild(0).transform.localScale;
+                    //make button white (not greyed out)
+                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
                     break;
             }
             
@@ -155,7 +169,11 @@ namespace i5.VIAProMa.UI
             {
                 case "search":
                     searchMenu.SetActive(true);
-                    searchTabButton.IsEnabled = false;
+                    //make button greyed out
+                    searchTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+                    searchTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+                    searchTabButton.IsEnabled = false;                    
+                    
                     sessionMenu.SetActive(false);
                     sessionTabButton.IsEnabled = true;
                     harddriveMenu.SetActive(false);
@@ -167,7 +185,11 @@ namespace i5.VIAProMa.UI
                     searchMenu.SetActive(false);
                     searchTabButton.IsEnabled = true;
                     sessionMenu.SetActive(true);
+                    //make button greyed out
+                    sessionTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+                    sessionTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
                     sessionTabButton.IsEnabled = false;
+
                     harddriveMenu.SetActive(false);
                     harddriveTabButton.IsEnabled = true;
                     tabs.transform.parent = sessionMenu.transform.GetChild(0).transform;
@@ -179,7 +201,11 @@ namespace i5.VIAProMa.UI
                     sessionMenu.SetActive(false);
                     sessionTabButton.IsEnabled = true;
                     harddriveMenu.SetActive(true);
+                    //make button greyed out
+                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
                     harddriveTabButton.IsEnabled = false;
+
                     tabs.transform.parent = harddriveMenu.transform.GetChild(0).transform;
                     currActiveWindow = "harddrive";
                     break;

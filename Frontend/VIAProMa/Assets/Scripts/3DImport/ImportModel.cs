@@ -32,23 +32,36 @@ public class ImportModel : MonoBehaviour
         //import into unity scene
         GameObject testModel = Importer.LoadFromFile(path);
         testModel.transform.SetParent(modelWrapper.transform);
+        testModel.transform.position = Vector3.zero;
+        testModel.transform.rotation = Quaternion.identity;
+        testModel.transform.localScale = Vector3.one;
+
+        //resize object according to mesh bounds
+        Renderer[] rr = testModel.GetComponentsInChildren<Renderer>();
+        Bounds bounds = rr[0].bounds;
+        foreach (Renderer r in rr) { bounds.Encapsulate(r.bounds); }
+
+        //MeshFilter[] ff = testModel.GetComponentsInChildren<MeshFilter>();
+        //foreach (MeshFilter f in ff) { bounds.Encapsulate(f.mesh.bounds); }
+
+
+        //add interactables and collider
+        testModel.AddComponent<BoxCollider>();
+        testModel.GetComponent<BoxCollider>().size = bounds.size;
+        testModel.GetComponent<BoxCollider>().center = bounds.center;
+
+        testModel.transform.localScale = testModel.transform.localScale / (bounds.size.magnitude * 3.5f);
+
+
+
         testModel.transform.position = this.gameObject.transform.position
                                        - this.gameObject.transform.forward * 0.1f
                                        - this.gameObject.transform.up * 0.05f;
         testModel.transform.rotation = this.gameObject.transform.rotation;
         testModel.transform.eulerAngles += new Vector3(-90, -180, 0);
 
-        //resize object according to mesh bounds
-        MeshFilter[] rr = testModel.GetComponentsInChildren<MeshFilter>();
-        Bounds bounds = rr[0].mesh.bounds;
-        foreach (MeshFilter r in rr) { bounds.Encapsulate(r.mesh.bounds); }
+        
 
-        testModel.transform.localScale = testModel.transform.localScale / (bounds.size.magnitude * 3.5f);
-
-        //add interactables and collider
-        testModel.AddComponent<BoxCollider>();
-        testModel.GetComponent<BoxCollider>().size = bounds.size;
-        testModel.GetComponent<BoxCollider>().center = bounds.center;
         testModel.AddComponent<NearInteractionGrabbable>();
         testModel.AddComponent<ObjectManipulator>();
         testModel.GetComponent<ObjectManipulator>().HostTransform = testModel.transform;

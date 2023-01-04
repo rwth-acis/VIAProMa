@@ -12,11 +12,11 @@ Material:
   m_ValidKeywords:
   - _ALPHATEST_ON
   - _DIRECTIONAL_LIGHT
-  - _DISABLE_ALBEDO_MAP
   - _HOVER_LIGHT
   - _REFLECTIONS
   - _SPECULAR_HIGHLIGHTS
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ALBEDOASSIGNEDATRUNTIME_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -78,7 +78,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlbedoAlphaMode: 0
-    - _AlbedoAssignedAtRuntime: 0
+    - _AlbedoAssignedAtRuntime: 1
     - _BlendOp: 0
     - _BlendedClippingWidth: 1
     - _BorderLight: 0

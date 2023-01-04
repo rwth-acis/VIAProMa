@@ -15,6 +15,7 @@ using Photon.Pun;
 using UnityEditor;
 using i5.VIAProMa.UI;
 using static SessionBrowserRefresher;
+using Microsoft.MixedReality.Toolkit;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
@@ -23,9 +24,9 @@ public class SearchBrowserRefresher : MonoBehaviour
     [SerializeField] private GameObject itemWrapper;
 
     [SerializeField] private GameObject itemPrefab;
-    [SerializeField] private Sprite loadingSymbol;
-    [SerializeField] private Sprite downloadErrorSprite;
-    [SerializeField] private Sprite noThumbSprite;
+    [SerializeField] private Texture loadingSymbolTex;
+    [SerializeField] private Texture downloadErrorTex;
+    [SerializeField] private Texture noThumbTex;
 
     private Vector3 itemStartPosition;
     private Vector3 itemPositionOffset;
@@ -36,54 +37,65 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     private int linkOrFileNameLength;
 
+    [SerializeField] private Interactable headUpButton;
+    [SerializeField] private Interactable headDownButton;
+
     void Start()
     {
         modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
 
-        linkOrFileNameLength = 45;
+        linkOrFileNameLength = 55;
 
         itemStartPosition = new Vector3(0, 0.12f, -0.02f);
         itemPositionOffset = new Vector3(0, -0.09f, 0);
 
-        //clear search browser
+        SearchChanged("");
+    }
+
+    public void SearchChanged(string searchContent)
+    {            
+        //refresh search browser
         foreach (Transform child in itemWrapper.transform)
         {
             Destroy(child.gameObject);
         }
 
-    }
+        //make sure to stop any downloading models            
+        if (downloadRoutine != null) { StopCoroutine(downloadRoutine); }
+        if (uwr != null) { uwr.downloadHandler.Dispose(); }
+        if (tempPath != null) { FileUtil.DeleteFileOrDirectory(tempPath); tempPath = null; }
 
-    public void SearchChanged(string searchContent)
-    {            
-            //refresh search browser
-            foreach (Transform child in itemWrapper.transform)
+        //deactivate up/down buttons
+        headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+        headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+        headDownButton.IsEnabled = false;
+        headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+        headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+        headUpButton.IsEnabled = false;
+
+        //check, if content is a valid link
+        if ((StringStartsWith(searchContent, "http://") || StringStartsWith(searchContent, "https://"))
+        && StringEndsWith(searchContent, ".glb"))
+        {
+            string fileName = System.IO.Path.GetFileName(searchContent);
+            if (fileName == ".glb")
             {
-                Destroy(child.gameObject);
+                RefreshBrowserDownloadError();
+                return;
+            }
+            string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, fileName);
+            if (!System.IO.File.Exists(path))
+            {
+                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent));
+                tempPath = path;
+            }
+            else
+            {
+                UnityEngine.Debug.Log("File already saved in " + path + ", not downloading");
+                RefreshBrowser(path, searchContent);
             }
 
-            //make sure to stop any downloading models            
-            if (downloadRoutine != null) { StopCoroutine(downloadRoutine); }
-            if (uwr != null) { uwr.downloadHandler.Dispose(); }
-            if (tempPath != null) { FileUtil.DeleteFileOrDirectory(tempPath); tempPath = null; }
-
-            //check, if content is a valid link
-            if ((StringStartsWith(searchContent, "http://") || StringStartsWith(searchContent, "https://"))
-            && StringEndsWith(searchContent, ".glb"))
-            {
-                string fileName = System.IO.Path.GetFileName(searchContent);
-                string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, fileName);
-                if (!System.IO.File.Exists(path))
-                {
-                    downloadRoutine = StartCoroutine(DownloadFile(path, searchContent));
-                    tempPath = path;
-                }
-                else
-                {
-                    UnityEngine.Debug.Log("File already saved in " + path + ", not downloading");
-                    RefreshBrowser(path, searchContent);
-                }
-
-            }
+        }
     }
 
         
@@ -96,8 +108,9 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.transform.parent = itemWrapper.transform;
         item.transform.localPosition = itemStartPosition;
         item.transform.localRotation = Quaternion.identity;
-        item.GetComponentInChildren<SpriteRenderer>().sprite = loadingSymbol;
-        item.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+        Renderer thumbRenderer = item.transform.GetChild(0).GetComponentInChildren<Renderer>();
+        thumbRenderer.material.mainTexture = loadingSymbolTex;
+        thumbRenderer.material.color = Color.white;
         item.GetComponentInChildren<TextMeshPro>().text = "Loading...";
         item.GetComponentInChildren<Animator>().enabled = true;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
@@ -143,8 +156,9 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.transform.parent = itemWrapper.transform;
         item.transform.localPosition = itemStartPosition;
         item.transform.localRotation = Quaternion.identity;
-        item.GetComponentInChildren<SpriteRenderer>().sprite = noThumbSprite;
-        item.GetComponentInChildren<SpriteRenderer>().color = Color.green;
+        Renderer thumbRenderer = item.transform.GetChild(0).GetComponentInChildren<Renderer>();
+        GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer);
+        thumbRenderer.material.color = Color.white;
         item.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
                                                           "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
         item.GetComponentInChildren<Animator>().enabled = false;
@@ -169,8 +183,9 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.transform.parent = itemWrapper.transform;
         item.transform.localPosition = itemStartPosition;
         item.transform.localRotation = Quaternion.identity;
-        item.GetComponentInChildren<SpriteRenderer>().sprite = downloadErrorSprite;
-        item.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+        Renderer thumbRenderer = item.transform.GetChild(0).GetComponentInChildren<Renderer>();
+        thumbRenderer.material.mainTexture = downloadErrorTex;
+        thumbRenderer.material.color = Color.red;
         item.GetComponentInChildren<TextMeshPro>().text = "ERROR: Download failed";
         item.GetComponentInChildren<Animator>().enabled = false;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);

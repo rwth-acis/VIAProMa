@@ -3,14 +3,19 @@ using System.IO;
 using Microsoft.MixedReality.Toolkit;
 using Siccity.GLTFUtility;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class ThumbnailGenerator : MonoBehaviour
 {
-    [SerializeField] private Camera thumbCam;
-    [SerializeField] private Transform spawnPos;
+    [SerializeField] private GameObject thumbSetup;
+    private int heightOffset;
 
+    private void Start()
+    {
+        heightOffset = -100;
+    }
 
-    public string GetThumbnailPath(string glbPath)
+    public void SetThumbnail(string glbPath, Renderer renderer)
     {
         string filename = Path.GetFileNameWithoutExtension(glbPath);
         string pathToPNG = Path.Combine(Path.GetDirectoryName(glbPath), filename + ".png");
@@ -18,38 +23,51 @@ public class ThumbnailGenerator : MonoBehaviour
         // If file does not exists, generate thumbnail
         if (!File.Exists(pathToPNG))
         {
+            heightOffset += 100;
+            GameObject spawnedThumbSetup = Instantiate(thumbSetup);
+            spawnedThumbSetup.transform.position = Vector3.zero + new Vector3(0, heightOffset, 0);
             GameObject model = Importer.LoadFromFile(glbPath);
             model.SetLayerRecursively(LayerMask.NameToLayer("Thumbnail"));
-            model.transform.SetParent(spawnPos);
-            model.transform.position = spawnPos.position;
-            model.transform.rotation = spawnPos.rotation;
-            model.transform.eulerAngles += new Vector3(-90, -180, 0);
+            Camera mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+            mainCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Thumbnail"));
+            model.transform.position = Vector3.zero;
+            model.transform.rotation = Quaternion.identity;
+            model.transform.localScale = Vector3.one;
 
             //resize object according to mesh bounds
-            MeshFilter[] rr = model.GetComponentsInChildren<MeshFilter>();
-            Bounds bounds = rr[0].mesh.bounds;
-            foreach (MeshFilter r in rr) { bounds.Encapsulate(r.mesh.bounds); }
+            Renderer[] rr = model.GetComponentsInChildren<Renderer>();
+            Bounds bounds = rr[0].bounds;
+            foreach (Renderer r in rr) { bounds.Encapsulate(r.bounds); }
 
+            //model.transform.
+
+            model.transform.SetParent(spawnedThumbSetup.transform.GetChild(0));
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+            model.transform.localScale = Vector3.one;
+
+            model.transform.eulerAngles += new Vector3(-90, -180 + 45, 0);           
             model.transform.localScale = model.transform.localScale / (bounds.size.magnitude * 3.5f);
 
-            StartCoroutine(GenerateThumbnail(pathToPNG, model));
+            StartCoroutine(GenerateThumbnail(pathToPNG, renderer, spawnedThumbSetup));
+        }
+        else
+        {
+            byte[] bytes = File.ReadAllBytes(pathToPNG);
+            Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+            thumbImg.LoadImage(bytes);
+            renderer.material.mainTexture = thumbImg;
         }
 
-        return pathToPNG;
+        
     }
 
-    public void SetThumbnail(string pngPath, MeshRenderer renderer)
-    {
-        byte[] bytes = File.ReadAllBytes(pngPath);
-        Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
-        thumbImg.LoadImage(bytes);
-        renderer.material.mainTexture = thumbImg;
-    }
-
-    private IEnumerator GenerateThumbnail(string pathToPNG, GameObject model)
+    private IEnumerator GenerateThumbnail(string pathToPNG, Renderer renderer, GameObject spawnedThumbSetup)
     {
         yield return new WaitForEndOfFrame(); // wait for rendering
 
+        Camera thumbCam = spawnedThumbSetup.GetComponentInChildren<Camera>();
+        thumbCam.cullingMask |= 1 << LayerMask.NameToLayer("Thumbnail");
         RenderTexture.active = thumbCam.targetTexture;
 
         thumbCam.Render();
@@ -58,10 +76,19 @@ public class ThumbnailGenerator : MonoBehaviour
         thumbImage.ReadPixels(new Rect(0, 0, thumbCam.targetTexture.width, thumbCam.targetTexture.height), 0, 0);
         thumbImage.Apply();
 
+        heightOffset -= 100;
+
         byte[] bytes = thumbImage.EncodeToPNG();
 
         File.WriteAllBytes(pathToPNG, bytes);
 
-        Destroy(model);
+        Destroy(spawnedThumbSetup);
+
+        bytes = File.ReadAllBytes(pathToPNG);
+        Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+        thumbImg.LoadImage(bytes);
+        thumbImg.Apply();
+        renderer.material.SetTexture("_MainTex", thumbImg);
+        
     }
 }
