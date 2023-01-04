@@ -46,10 +46,16 @@ public class ThumbnailGenerator : MonoBehaviour
             model.transform.localRotation = Quaternion.identity;
             model.transform.localScale = Vector3.one;
 
-            model.transform.eulerAngles += new Vector3(-90, -180 + 45, 0);           
+            model.transform.eulerAngles += new Vector3(-90, -180 + 45, 0);
+
+            // Add BoxCollider
+            model.AddComponent<BoxCollider>();
+            model.GetComponent<BoxCollider>().size = bounds.size;
+            model.GetComponent<BoxCollider>().center = bounds.center;
+
             model.transform.localScale = model.transform.localScale / (bounds.size.magnitude * 3.5f);
 
-            StartCoroutine(GenerateThumbnail(pathToPNG, renderer, spawnedThumbSetup));
+            StartCoroutine(GenerateThumbnail(pathToPNG, renderer, spawnedThumbSetup, model));
         }
         else
         {
@@ -62,12 +68,19 @@ public class ThumbnailGenerator : MonoBehaviour
         
     }
 
-    private IEnumerator GenerateThumbnail(string pathToPNG, Renderer renderer, GameObject spawnedThumbSetup)
+    private IEnumerator GenerateThumbnail(string pathToPNG, Renderer renderer, GameObject spawnedThumbSetup, GameObject model)
     {
         yield return new WaitForEndOfFrame(); // wait for rendering
 
         Camera thumbCam = spawnedThumbSetup.GetComponentInChildren<Camera>();
         thumbCam.cullingMask |= 1 << LayerMask.NameToLayer("Thumbnail");
+
+        // make camera look at the center of the boxcollider (scaled to global position)
+        Vector3 center = model.GetComponent<BoxCollider>().center;
+        thumbCam.transform.LookAt(center * model.transform.localScale.x);
+        thumbCam.transform.localPosition = new Vector3(thumbCam.transform.localPosition.x, center.y * model.transform.localScale.y + .135f, thumbCam.transform.localPosition.z);
+
+
         RenderTexture.active = thumbCam.targetTexture;
 
         thumbCam.Render();
