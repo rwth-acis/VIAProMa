@@ -1,15 +1,15 @@
-﻿using i5.VIAProMa.Multiplayer.Chat;
-using i5.VIAProMa.UI.InputFields;
-using i5.VIAProMa.Utilities;
-using Microsoft.MixedReality.Toolkit.UI;
+﻿using Microsoft.MixedReality.Toolkit.UI;
 using System;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI.Chat
 {
     public class UndoRedoMenu : MonoBehaviour, IWindow
     {
+        [SerializeField] private GameObject Leiste;
+        [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
+
         public bool WindowEnabled { get; set; }
 
         public bool WindowOpen { get; private set; }
@@ -27,6 +27,7 @@ namespace i5.VIAProMa.UI.Chat
         {
             gameObject.SetActive(true);
             WindowOpen = true;
+            LeisteFollowMeToggle.SetFollowMeBehavior(false);
         }
 
         public void Open(Vector3 position, Vector3 eulerAngles)
@@ -34,6 +35,10 @@ namespace i5.VIAProMa.UI.Chat
             Open();
             transform.localPosition = position;
             transform.localEulerAngles = eulerAngles;
+        }
+        public void ToggleFollowMeComponent()
+        {
+            LeisteFollowMeToggle.ToggleFollowMeBehavior();
         }
     }
 }
