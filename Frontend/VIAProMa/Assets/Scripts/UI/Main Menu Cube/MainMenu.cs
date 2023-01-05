@@ -257,8 +257,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowUndoRedoMenu()
         {
-            Vector3 targetPosition = transform.position + 1f * transform.right;
-            Instantiate(undoRedoMenuPrefab, targetPosition, Quaternion.identity);
+            WindowManager.Instance.UndoRedoMenu.Open(undoRedoButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            foldController.InitalizeNewCloseTimer();
         }
 
         public void RoomButtonClicked()
