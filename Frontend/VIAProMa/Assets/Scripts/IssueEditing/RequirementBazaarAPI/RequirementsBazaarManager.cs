@@ -126,6 +126,36 @@ namespace Org.Requirements_Bazaar.API
             }
         }
 
+        public static async Task<Requirement[]> GetAllProjectRequirements(int projectId, string search = "", RequirementState filterState = RequirementState.ALL, RequirementsSortingMode sortMode = RequirementsSortingMode.DEFAULT)
+        {
+            string url = baseUrl + "projects/" + projectId.ToString() + "/requirements";
+            url += "?state=" + filterState.ToString().ToLower();
+
+            if (search != "")
+            {
+                search = CleanString(search);
+                url += "&search=" + search;
+            }
+            if (sortMode != RequirementsSortingMode.DEFAULT)
+            {
+                url += "&sort=" + sortMode.ToString().ToLower();
+            }
+
+            Response response = await Rest.GetAsync(url, null, -1, null, true);
+            string responseBody = await response.GetResponseBody();
+            if (!response.Successful)
+            {
+                Debug.LogError(responseBody);
+                return null;
+            }
+            else
+            {
+                string json = JsonHelper.EncapsulateInWrapper(responseBody);
+                Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
+                return requirements;
+            }
+        }
+
         /// <summary>
         /// Gets a category by its ID
         /// </summary>
@@ -216,11 +246,11 @@ namespace Org.Requirements_Bazaar.API
         /// Deletes a specific requirement by its name
         /// </summary>
         /// <param name="requirementName">The name of the requirement which should be deleted</param>
-        /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
+        /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
         /// <returns>The deleted requirement</returns>
         public static async Task<Requirement> DeleteRequirement(string requirementName, int projectId)
         {
-            Requirement[] projectRequirements = await GetProjectRequirements(projectId);
+            Requirement[] projectRequirements = await GetAllProjectRequirements(projectId);
             int requirementId = 0;
             for (int i = 0; i < projectRequirements.Length; i++)
             {
@@ -396,7 +426,9 @@ namespace Org.Requirements_Bazaar.API
         /// Edits a specific requirement by its id
         /// </summary>
         /// <param name="requirementName">The name of the requirement which should be deleted</param>
-        /// /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
+        /// <param name="projectId">The id of the project of the requirement which should be deleted</param>
+        /// <param name="newName"> The updated title of the requirement</param>
+        /// <param name="newDescription"> The updated description of the requirement</param>
         /// <returns>The deleted requirement</returns>
         public static async Task<Requirement> EditRequirement(int requirementId, int projectId, string newName, string newDescription)
         {
