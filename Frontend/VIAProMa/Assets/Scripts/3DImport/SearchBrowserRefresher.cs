@@ -72,7 +72,11 @@ public class SearchBrowserRefresher : MonoBehaviour
         //make sure to stop any downloading models            
         if (downloadRoutine != null) { StopCoroutine(downloadRoutine); }
         if (uwr != null) { uwr.downloadHandler.Dispose(); }
-        if (tempPath != null) { File.Delete(tempPath); tempPath = null; }
+        if (tempPath != null) {
+            File.Delete(tempPath);
+            tempPath = null;
+            GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
+        }
 
         //deactivate up/down buttons
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
@@ -282,6 +286,8 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<TextMeshPro>().text = "ERROR: Download failed";
         item.GetComponentInChildren<Animator>().enabled = false;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
+
+        GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
     }
 
     private static bool StringEndsWith(string a, string b)
