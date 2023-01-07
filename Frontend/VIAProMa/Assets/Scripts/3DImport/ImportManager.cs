@@ -22,11 +22,7 @@ namespace i5.VIAProMa.UI
 
         [SerializeField] private InputField searchField;
         [SerializeField] private Interactable loginButton;
-        [SerializeField] private Interactable searchUpButton;
-        [SerializeField] private Interactable searchDownButton;
-
-        [SerializeField] private Interactable sessionUpButton;
-        [SerializeField] private Interactable sessionDownButton;
+        
 
         public GameObject modelWrapper;
 
@@ -43,6 +39,8 @@ namespace i5.VIAProMa.UI
 
         private void Awake()
         {
+            folderName = "3Dobjects";
+
             if (searchMenu == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchMenu));
@@ -79,22 +77,7 @@ namespace i5.VIAProMa.UI
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(loginButton));
             }
-            if (searchUpButton == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchUpButton));
-            }
-            if (searchDownButton == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(searchDownButton));
-            }
-            if (sessionUpButton == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(sessionUpButton));
-            }
-            if (sessionDownButton == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(sessionDownButton));
-            }
+            
         }
 
         // Start is called before the first frame update
@@ -104,8 +87,8 @@ namespace i5.VIAProMa.UI
             modelWrapper.name = "3Dmodels";
             modelWrapper.transform.position = Vector3.zero;
             modelWrapper.transform.parent = GameObject.Find("AnchorParent").transform;
+            GetComponent<ImportModel>().modelWrapper = modelWrapper;
 
-            folderName = "3Dobjects";
 
             // Search Menu as default menu
             SetMenuTo("search");

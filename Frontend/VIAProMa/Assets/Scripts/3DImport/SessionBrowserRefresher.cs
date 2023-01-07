@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class SessionBrowserRefresher : MonoBehaviour
 {
@@ -44,6 +43,8 @@ public class SessionBrowserRefresher : MonoBehaviour
 
     private int linkOrFileNameLength;
 
+    [SerializeField] private Texture downloadErrorTex;
+
     void Start()
     {
         sessionItemStartPosition = new Vector3(0, 0.2f, -0.02f);
@@ -57,41 +58,30 @@ public class SessionBrowserRefresher : MonoBehaviour
     }
 
     public void Refresh(int headPosition)
-    {
-        if (importedObjects.Count() >= 2)
-        {
+    {       
             headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
             headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
             headDownButton.IsEnabled = true;
             headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
             headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
-            headUpButton.IsEnabled = true;
-        }
+            headUpButton.IsEnabled = true;        
+        
         //head is at the bottom
-        if (importedObjects.Count() - headPosition - 1 <= 0)
+        if (importedObjects.Count() - headPosition - 1 - 4 <= 0)
         {
             headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
             headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
             headDownButton.IsEnabled = false;
-            if (importedObjects.Count() >= 2)
-            {
-                headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
-                headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
-                headUpButton.IsEnabled = true;
-            }
+            
         }
+        
         //head is at the top
         if (headPosition == 0)
         {
             headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
             headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
             headUpButton.IsEnabled = false;
-            if (importedObjects.Count() >= 2)
-            {
-                headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
-                headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
-                headDownButton.IsEnabled = true;
-            }
+            
         }     
         
 
@@ -118,20 +108,34 @@ public class SessionBrowserRefresher : MonoBehaviour
             sessItem.transform.localRotation = Quaternion.identity;
             string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, impObj.fileName + ".glb");
             Renderer thumbRenderer = sessItem.transform.GetChild(0).GetComponentInChildren<Renderer>();
-            GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer);
+            
+            //broken glbs can break everything, thats why we have to try and catch here
+            try { GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer); }
+            catch {
+                thumbRenderer.material.color = Color.red;
+                sessItem.GetComponentInChildren<TextMeshPro>().text = "ERROR: file cannot be imported";
+                sessItem.GetComponentInChildren<Animator>().enabled = false;
+                thumbRenderer.material.mainTexture = downloadErrorTex;
+
+                sessItem.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
+                sessItem.GetComponentInChildren<HighlightModel>(true).gameObject.SetActive(false);
+                sessItem.GetComponentInChildren<DeleteModel>().model = impObj.gameObject;
+                sessItem.GetComponentInChildren<DeleteModel>(true).gameObject.SetActive(true);
+                continue;
+            }
+            
             thumbRenderer.material.color = Color.white;
             sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
-                                                              "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
+                                                                "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
             sessItem.GetComponentInChildren<Animator>().enabled = false;
 
             sessItem.GetComponentInChildren<ImportModel>().path = path;
             sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
 
-            //UnityEngine.Debug.Log("The impObj is null:" + (impObj.Equals(default(ImportedObject))));
-            //UnityEngine.Debug.Log("The gameObject is null:" + (impObj.gameObject == null));
             sessItem.GetComponentInChildren<HighlightModel>().model = impObj.gameObject;
             if (impObj.gameObject.tag == "Highlighted") { sessItem.GetComponentInChildren<HighlightModel>().HighlightObject(); }
             sessItem.GetComponentInChildren<DeleteModel>().model = impObj.gameObject;
+                      
         }
     }
     public void AddItem(ImportedObject obj)

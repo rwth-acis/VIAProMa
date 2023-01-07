@@ -2,8 +2,6 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
-using Siccity.GLTFUtility;
-using static System.Net.WebRequestMethods;
 using System.Text;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -16,12 +14,16 @@ using UnityEditor;
 using i5.VIAProMa.UI;
 using static SessionBrowserRefresher;
 using Microsoft.MixedReality.Toolkit;
+using System.Collections.Generic;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
     private GameObject modelWrapper;
 
     [SerializeField] private GameObject itemWrapper;
+    [SerializeField] private GameObject sessionItemWrapper;
+
+    public GameObject searchBarText;
 
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private Texture loadingSymbolTex;
@@ -30,6 +32,9 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     private Vector3 itemStartPosition;
     private Vector3 itemPositionOffset;
+
+    private Vector3 sessionItemStartPosition;
+    private Vector3 sessionItemPositionOffset;
 
     private UnityWebRequest uwr;
     private Coroutine downloadRoutine;
@@ -49,11 +54,15 @@ public class SearchBrowserRefresher : MonoBehaviour
         itemStartPosition = new Vector3(0, 0.12f, -0.02f);
         itemPositionOffset = new Vector3(0, -0.09f, 0);
 
+        sessionItemStartPosition = new Vector3(0, 0.2f, -0.02f);
+        sessionItemPositionOffset = new Vector3(0, -0.11f, 0);
+
         SearchChanged("");
     }
 
     public void SearchChanged(string searchContent)
-    {            
+    {
+        UnityEngine.Debug.Log(searchContent);
         //refresh search browser
         foreach (Transform child in itemWrapper.transform)
         {
@@ -63,7 +72,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         //make sure to stop any downloading models            
         if (downloadRoutine != null) { StopCoroutine(downloadRoutine); }
         if (uwr != null) { uwr.downloadHandler.Dispose(); }
-        if (tempPath != null) { FileUtil.DeleteFileOrDirectory(tempPath); tempPath = null; }
+        if (tempPath != null) { File.Delete(tempPath); tempPath = null; }
 
         //deactivate up/down buttons
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
@@ -115,6 +124,24 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<Animator>().enabled = true;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
 
+        //refresh session browser
+        foreach (Transform child in sessionItemWrapper.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        //spawn loading item for sessionbrowser
+        GameObject sessLoadingItem = Instantiate(itemPrefab);
+        sessLoadingItem.transform.parent = sessionItemWrapper.transform;
+        sessLoadingItem.transform.localPosition = sessionItemStartPosition;
+        sessLoadingItem.transform.localRotation = Quaternion.identity;
+        Renderer sessThumbRenderer = sessLoadingItem.transform.GetChild(0).GetComponentInChildren<Renderer>();
+        sessThumbRenderer.material.mainTexture = loadingSymbolTex;
+        sessThumbRenderer.material.color = Color.white;
+        sessLoadingItem.GetComponentInChildren<TextMeshPro>().text = "Loading...";
+        sessLoadingItem.GetComponentInChildren<Animator>().enabled = true;
+        sessLoadingItem.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
+
         //download file
         uwr = new UnityWebRequest(webLink, UnityWebRequest.kHttpVerbGET);
         uwr.downloadHandler = new DownloadHandlerFile(path);
@@ -124,7 +151,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         {
             UnityEngine.Debug.LogError(uwr.error);
             uwr.downloadHandler.Dispose();
-            FileUtil.DeleteFileOrDirectory(path);
+            File.Delete(path);
             tempPath = null;
             RefreshBrowserDownloadError();
             yield break;
@@ -132,8 +159,61 @@ public class SearchBrowserRefresher : MonoBehaviour
         tempPath = null;
         uwr.downloadHandler.Dispose();
         UnityEngine.Debug.Log("File successfully downloaded and saved to " + path);
+
+        //this is very stupid but must be done: the webLink is saved in a textfile for every object, so that users can import objects from their harddrive
+        string pathToTXT = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt");
+        string pathToPNG = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".png");
+        File.WriteAllText(pathToTXT, webLink);
+
+        //delete img, if already exists
+        File.Delete(pathToPNG);
+
+        //refresh harddrive browser
+        GetComponent<HarddriveBrowserRefresher>().RefreshList();
+
+        //refresh search browser
         RefreshBrowser(path, webLink);
+
+        //refresh session browser
+        List<ImportedObject> oldList = GetComponent<SessionBrowserRefresher>().importedObjects;
+        List<ImportedObject> newList = new List<ImportedObject>();
+        foreach (ImportedObject impObj in oldList)
+        {
+            ImportedObject impObjChanged = impObj;
+            if (impObj.webLink == webLink)
+            {
+                impObjChanged = UpdateImpObj(impObj, path);
+            }
+            newList.Add(impObjChanged);
+        }
+        GetComponent<SessionBrowserRefresher>().importedObjects = newList;
+        GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
         yield return null;
+    }
+
+    //this script is used when the session items are updated because of a new, conflicting download
+    private ImportedObject UpdateImpObj(ImportedObject impObj, string path)
+    {
+        Transform tr = impObj.gameObject.transform;
+        GameObject tempGameObject = impObj.gameObject;
+        Destroy(impObj.gameObject);
+        //this needs to be tried and catched if uuh the link changes to something unloadable
+        try {            
+            impObj.gameObject = GetComponent<ImportModel>().LoadModel(path);           
+        }
+        catch {
+            impObj.gameObject = tempGameObject;
+            impObj.gameObject.SetActive(false);
+            return impObj; 
+        }
+        impObj.gameObject.transform.position = tr.position;
+        impObj.gameObject.transform.rotation = tr.rotation;
+        impObj.gameObject.transform.localScale = tr.localScale;
+
+        impObj.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
+        impObj.size = BytesToNiceString(new System.IO.FileInfo(path).Length);
+        //impObj.creator = photonView.Owner.NickName;
+        return impObj;
     }
 
     void RefreshBrowser(string path, string webLink)
@@ -151,13 +231,26 @@ public class SearchBrowserRefresher : MonoBehaviour
         string fileSize = BytesToNiceString(new System.IO.FileInfo(path).Length);
         //string creator = photonView.Owner.NickName;
 
-        //spawn downloaded item
+        
         GameObject item = Instantiate(itemPrefab);
         item.transform.parent = itemWrapper.transform;
         item.transform.localPosition = itemStartPosition;
         item.transform.localRotation = Quaternion.identity;
         Renderer thumbRenderer = item.transform.GetChild(0).GetComponentInChildren<Renderer>();
-        GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer);
+
+        //broken glbs can break everything, thats why we have to try and catch here
+        try { GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer); }
+        catch
+        {
+            thumbRenderer.material.color = Color.red;
+            item.GetComponentInChildren<TextMeshPro>().text = "ERROR: file cannot be imported";
+            item.GetComponentInChildren<Animator>().enabled = false;
+            thumbRenderer.material.mainTexture = downloadErrorTex;
+
+            item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
+            return;
+        }        
+        
         thumbRenderer.material.color = Color.white;
         item.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
                                                           "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;

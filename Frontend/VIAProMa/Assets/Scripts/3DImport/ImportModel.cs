@@ -13,23 +13,60 @@ using System;
 using ExitGames.Client.Photon.StructWrapping;
 using i5.VIAProMa.UI;
 using static SessionBrowserRefresher;
+using TMPro;
 
 public class ImportModel : MonoBehaviour
 {
     public string path;
     public ImportedObject model;
 
-    private GameObject modelWrapper;
+    public GameObject modelWrapper;
 
     void Start()
     {
-        modelWrapper = this.gameObject.GetComponentInParent<ImportManager>().modelWrapper;
+        if (GetComponent<ImportManager>() == null)
+        {
+            modelWrapper = GetComponentInParent<ImportManager>().modelWrapper;
+        }
     }
     public void LoadModel()
     {
-        //UnityEngine.Debug.Log("LoadModelFunctionTriggered");
+        //was file deleted?
+        if (!System.IO.File.Exists(path))
+        {
+            GetComponentInParent<SearchBrowserRefresher>().SearchChanged(model.webLink);
+            GetComponentInParent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = model.webLink;
+            return;
+        }
+
+        GameObject testModel = LoadModel(path);
+
+        testModel.name = model.fileName;
+
+        model.gameObject = testModel;
+
+        this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
+    }
+
+    private void UpdateImpObj(ImportedObject impObj)
+    {
+        impObj.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
+        impObj.size = BytesToNiceString(new System.IO.FileInfo(path).Length);
+        //impObj.creator = photonView.Owner.NickName;
+
+        Transform tr = impObj.gameObject.transform;
+        impObj.gameObject = LoadModel(path);
+        impObj.gameObject.transform.position = tr.position;
+        impObj.gameObject.transform.rotation = tr.rotation;
+    }
+
+
+    //function, that only spawns the new GameObject correctly
+    public GameObject LoadModel(string path)
+    {
         //import into unity scene
-        GameObject testModel = Importer.LoadFromFile(path);
+        AnimationClip[] animClips;
+        GameObject testModel = Importer.LoadFromFile(path, new ImportSettings(), out animClips);
         testModel.transform.SetParent(modelWrapper.transform);
         testModel.transform.position = Vector3.zero;
         testModel.transform.rotation = Quaternion.identity;
@@ -50,14 +87,26 @@ public class ImportModel : MonoBehaviour
         testModel.GetComponent<BoxCollider>().center = bounds.center;
 
 
+        // Taking only the first clip for now. Should be pretty easy to extend it  to generalize
+        if (animClips.Length > 0)
+        {
+            Animation anim = testModel.AddComponent<Animation>();
+            animClips[0].legacy = true;
+            animClips[0].wrapMode = WrapMode.Loop;
+            anim.AddClip(animClips[0], animClips[0].name);
+            anim.Play(animClips[0].name);
+        }
+
+
+
         testModel.transform.localScale = testModel.transform.localScale / (bounds.size.magnitude * 3.5f);
 
 
         testModel.transform.rotation = this.gameObject.transform.rotation;
         testModel.transform.eulerAngles += new Vector3(-90, -180, 0);
         //testModel.transform.position = this.gameObject.transform.position;
-        
 
+        //use the center of the bounding box to set the object
         testModel.transform.position = testModel.transform.position + (this.gameObject.transform.position - testModel.transform.TransformPoint(testModel.GetComponent<BoxCollider>().center));
         testModel.transform.position = testModel.transform.position - this.gameObject.transform.forward * 0.1f;
 
@@ -65,12 +114,18 @@ public class ImportModel : MonoBehaviour
         testModel.AddComponent<ObjectManipulator>();
         testModel.GetComponent<ObjectManipulator>().HostTransform = testModel.transform;
 
-        testModel.name = model.fileName;
+        testModel.name = System.IO.Path.GetFileNameWithoutExtension(path);
 
-        model.gameObject = testModel;
-
-        this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
+        return testModel;
     }
-
-    
+    static String BytesToNiceString(long byteCount)
+    {
+        string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+        if (byteCount == 0)
+            return "0" + suf[0];
+        long bytes = Math.Abs(byteCount);
+        int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+        double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+        return (Math.Sign(byteCount) * num).ToString() + suf[place];
+    }
 }

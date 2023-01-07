@@ -4,6 +4,7 @@ using Microsoft.MixedReality.Toolkit;
 using Siccity.GLTFUtility;
 using UnityEngine;
 using System.Threading.Tasks;
+using TMPro;
 
 public class ThumbnailGenerator : MonoBehaviour
 {
@@ -20,7 +21,15 @@ public class ThumbnailGenerator : MonoBehaviour
         string filename = Path.GetFileNameWithoutExtension(glbPath);
         string pathToPNG = Path.Combine(Path.GetDirectoryName(glbPath), filename + ".png");
 
-        // If file does not exists, generate thumbnail
+        // If file does not exists, download it
+        //if (!File.Exists(glbPath))
+        //{
+        //    GetComponent<SearchBrowserRefresher>().SearchChanged(glbPath);
+        //    GetComponent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = glbPath;
+        //    return;
+        //}
+
+        // If image does not exists, generate thumbnail
         if (!File.Exists(pathToPNG))
         {
             heightOffset += 100;
@@ -76,6 +85,7 @@ public class ThumbnailGenerator : MonoBehaviour
         // make camera look at the center of the boxcollider (scaled to global position)
         BoxCollider col = spawnedThumbSetup.GetComponentInChildren<BoxCollider>();
 
+        //use the center of the bounding box to set the camera
         thumbCam.transform.position = thumbCam.transform.position + (col.transform.position - col.transform.TransformPoint(col.center));
         
         thumbCam.transform.LookAt(col.transform.TransformPoint(col.center));
