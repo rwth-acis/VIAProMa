@@ -15,9 +15,15 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
         private Vector3 pointerStartPosition;
         private Vector3 kanbanBoardColumnStartPosition;
         private float startLength;
+        private GameObject CommandController;
+        private CommandController commandController;
+
 
         private void Awake()
         {
+            CommandController = GameObject.Find("CommandController");
+            commandController = CommandController.GetComponent<CommandController>();
+
             if (kanbanBoardController == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(kanbanBoardController));
@@ -51,56 +57,8 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         public void OnPointerDragged(MixedRealityPointerEventData eventData)
         {
-            if (eventData.Pointer == activePointer && !eventData.used)
-            {
-                Vector3 delta = activePointer.Position - pointerStartPosition;
-                float handDelta;
-                if (xAxis)
-                {
-                    handDelta = Vector3.Dot(kanbanBoardController.transform.right, delta);
-                }
-                else
-                {
-                    handDelta = Vector3.Dot(kanbanBoardController.transform.up, delta);
-                }
-                if (!positiveEnd)
-                {
-                    handDelta *= -1f;
-                }
-                if (xAxis)
-                {
-                    float newLength = startLength + handDelta;
-                    float previousWidth = kanbanBoardController.Width;
-                    kanbanBoardController.Width = newLength;
-                    if (kanbanBoardController.Width != previousWidth) // only move if the width was actually changed (it could be unaffected if min or max size was reached)
-                    {
-                        Vector3 pivotCorrection = new Vector3(handDelta / 2f, 0, 0);
-                        if (positiveEnd)
-                        {
-                            pivotCorrection *= -1;
-                        }
-                        kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition - kanbanBoardController.transform.localRotation * pivotCorrection;
-                    }
-                }
-                else
-                {
-                    float newLength = startLength + handDelta;
-                    float previousHeight = kanbanBoardController.Height;
-                    kanbanBoardController.Height = newLength;
-                    if (kanbanBoardController.Height != previousHeight) // only move if the height was actually changed (it could be unaffected if min or max size was reached)
-                    {
-                        Vector3 pivotCorrection = new Vector3(0, handDelta / 2f, 0);
-                        if (positiveEnd)
-                        {
-                            pivotCorrection *= -1;
-                        }
-                        kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition - kanbanBoardController.transform.localRotation * pivotCorrection;
-                    }
-                }
-
-                // mark pointer data as used
-                eventData.Use();
-            }
+            ICommand drag = new ScaleKanbanBoardCommand(eventData, startLength, kanbanBoardColumnStartPosition, pointerStartPosition, activePointer, xAxis, positiveEnd, kanbanBoardController);
+            commandController.Execute(drag);
         }
 
         public void OnPointerUp(MixedRealityPointerEventData eventData)
