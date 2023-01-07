@@ -36,7 +36,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
         [SerializeField] private GameObject undoRedoMenuPrefab;
-
+        [SerializeField] private CommandController commandController;
 
         private FoldController foldController;
 
@@ -257,7 +257,9 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowUndoRedoMenu()
         {
-            WindowManager.Instance.UndoRedoMenu.Open(undoRedoButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            ICommand createMenu = new CreateMenuCommand(loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
+            commandController.Execute(createMenu);
+            // WindowManager.Instance.UndoRedoMenu.Open(undoRedoButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 

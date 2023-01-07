@@ -9,6 +9,8 @@ namespace i5.VIAProMa.UI.Chat
     {
         [SerializeField] private GameObject Leiste;
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
+        private GameObject CommandController;
+        private CommandController commandController;
 
         public bool WindowEnabled { get; set; }
 
@@ -16,11 +18,10 @@ namespace i5.VIAProMa.UI.Chat
 
         public event EventHandler WindowClosed;
 
-        public void Close()
+        public void Awake()
         {
-            WindowOpen = false;
-            WindowClosed?.Invoke(this, EventArgs.Empty);
-            gameObject.SetActive(false);
+            CommandController = GameObject.Find("CommandController");
+            commandController = CommandController.GetComponent<CommandController>();
         }
 
         public void Open()
@@ -36,9 +37,27 @@ namespace i5.VIAProMa.UI.Chat
             transform.localPosition = position;
             transform.localEulerAngles = eulerAngles;
         }
+
+        public void Close()
+        {
+            WindowOpen = false;
+            WindowClosed?.Invoke(this, EventArgs.Empty);
+            gameObject.SetActive(false);
+        }
+
         public void ToggleFollowMeComponent()
         {
             LeisteFollowMeToggle.ToggleFollowMeBehavior();
+        }
+
+        public void Undo()
+        {
+            commandController.Undo();
+        }
+
+        public void Redo()
+        {
+            commandController.Redo();
         }
     }
 }
