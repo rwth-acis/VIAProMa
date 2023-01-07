@@ -257,9 +257,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowUndoRedoMenu()
         {
-            ICommand createMenu = new CreateMenuCommand(loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
+            ICommand createMenu = new CreateMenuCommand(undoRedoButton.transform.position - 0.3f * transform.right + 0.15f * transform.up - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             commandController.Execute(createMenu);
-            // WindowManager.Instance.UndoRedoMenu.Open(undoRedoButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
