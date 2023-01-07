@@ -73,9 +73,10 @@ public class SearchBrowserRefresher : MonoBehaviour
         if (downloadRoutine != null) { StopCoroutine(downloadRoutine); }
         if (uwr != null) { uwr.downloadHandler.Dispose(); }
         if (tempPath != null) {
-            File.Delete(tempPath);
+            string temptemp = tempPath;
             tempPath = null;
             GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
+            File.Delete(temptemp);
         }
 
         //deactivate up/down buttons
