@@ -103,11 +103,18 @@ namespace i5.VIAProMa.UI
             //GameObject keyboard = Resources.FindObjectsOfTypeAll<GameObject>().;
             //keyboard.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
 
-
+            DeleteLoneImageFiles();
         }
-   
 
-        public void DeleteLoneImages()
+        
+        public void Refresh3DImportSystem()
+        {
+            DeleteLoneImageFiles();
+
+            //delete 3Dmodels
+            Destroy(modelWrapper);
+        }
+        private void DeleteLoneImageFiles()
         {
             //delete lone image files
             FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName)).GetFiles("*.png");

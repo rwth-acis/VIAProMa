@@ -228,7 +228,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
             Vector3 targetPosition = importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position;
             //WindowManager.Instance.ImportManager.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             NetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, "SetImportManagerInstance");
-            importModelInstance.GetComponent<ImportManager>().DeleteLoneImages();
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -273,6 +272,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 PhotonNetwork.LeaveRoom();
                 AnchorManager.Instance.DisableAnchoring();
+                if (importModelInstance != null)
+                {
+                    importModelInstance.GetComponent<ImportManager>().Refresh3DImportSystem();
+                }
 
             }
             foldController.InitalizeNewCloseTimer();
