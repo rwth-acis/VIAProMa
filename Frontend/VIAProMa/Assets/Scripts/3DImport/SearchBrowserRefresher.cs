@@ -52,7 +52,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     {
         modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
 
-        linkOrFileNameLength = 55;
+        linkOrFileNameLength = 54;
 
         itemStartPosition = new Vector3(0, 0.12f, -0.02f);
         itemPositionOffset = new Vector3(0, -0.09f, 0);
@@ -109,7 +109,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             else
             {
                 UnityEngine.Debug.Log("File already saved in " + path + ", not downloading");
-                RefreshBrowser(path, searchContent);
+                RefreshBrowser(path);
             }
 
         }
@@ -168,7 +168,8 @@ public class SearchBrowserRefresher : MonoBehaviour
         uwr.downloadHandler.Dispose();
         UnityEngine.Debug.Log("File successfully downloaded and saved to " + path);
 
-        //this is very stupid but must be done: the webLink is saved in a textfile for every object, so that users can import objects from their harddrive
+        //this might seem stupid but must be done: the webLink is saved in a textfile for every object,
+        //so that users can import objects from their harddrive, and see where the object originally was downloaded from
         string pathToTXT = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt");
         string pathToPNG = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".png");
         File.WriteAllText(pathToTXT, webLink);
@@ -180,7 +181,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         GetComponent<HarddriveBrowserRefresher>().RefreshList();
 
         //refresh search browser
-        RefreshBrowser(path, webLink);
+        RefreshBrowser(path);
 
         //refresh session browser
         List<ImportedObject> oldList = GetComponent<SessionBrowserRefresher>().importedObjects;
@@ -224,15 +225,16 @@ public class SearchBrowserRefresher : MonoBehaviour
         return impObj;
     }
 
-    void RefreshBrowser(string path, string webLink)
+    void RefreshBrowser(string path)
     {
         //refresh search browser
         foreach (Transform child in itemWrapper.transform)
         {
             Destroy(child.gameObject);
         }
-
-        string truncatedWebLink = webLink.Length > linkOrFileNameLength ? (webLink.Substring(0, linkOrFileNameLength) + "...") : webLink;
+        
+        string webLink = File.ReadAllText(Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt"));
+        string truncatedWebLink = webLink.Length > linkOrFileNameLength ? (webLink.Substring(0, linkOrFileNameLength / 2) + "..." + webLink.Substring(webLink.Length - linkOrFileNameLength/2)) : webLink;
         string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
         string truncatedFileName = fileName.Length > linkOrFileNameLength ? (fileName.Substring(0, linkOrFileNameLength) + "...") : fileName;
         string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();

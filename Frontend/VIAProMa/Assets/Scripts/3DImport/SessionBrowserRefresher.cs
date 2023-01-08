@@ -96,7 +96,7 @@ public class SessionBrowserRefresher : MonoBehaviour
         {
             ImportedObject impObj = importedObjects[i];
 
-            string truncatedWebLink = impObj.webLink.Length > linkOrFileNameLength ? (impObj.webLink.Substring(0, linkOrFileNameLength) + "...") : impObj.webLink;
+            string truncatedWebLink = impObj.webLink.Length > linkOrFileNameLength ? (impObj.webLink.Substring(0, linkOrFileNameLength / 2) + "..." + impObj.webLink.Substring(impObj.webLink.Length - linkOrFileNameLength / 2)) : impObj.webLink;
             string truncatedFileName = impObj.fileName.Length > linkOrFileNameLength ? (impObj.fileName.Substring(0, linkOrFileNameLength) + "...") : impObj.fileName;
             string dateOfDownload = impObj.dateOfDownload;
             string fileSize = impObj.size;
