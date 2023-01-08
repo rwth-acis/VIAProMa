@@ -78,7 +78,7 @@ namespace i5.VIAProMa.UI
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(loginButton));
             }
-            
+
         }
 
         // Start is called before the first frame update
@@ -103,6 +103,12 @@ namespace i5.VIAProMa.UI
             //GameObject keyboard = Resources.FindObjectsOfTypeAll<GameObject>().;
             //keyboard.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
 
+
+        }
+   
+
+        public void DeleteLoneImages()
+        {
             //delete lone image files
             FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName)).GetFiles("*.png");
             foreach (FileInfo imageFile in imageFiles)
@@ -116,120 +122,120 @@ namespace i5.VIAProMa.UI
             }
         }
 
-    private void OnQueryChanged(object sender, EventArgs e)
-        {
-            //Search field changed
-            this.gameObject.GetComponent<SearchBrowserRefresher>().SearchChanged(searchField.Text);
-            //Debug.Log("Import Menu Search Field: " + searchField.Text);
-        }
-
-        // Changes the shown menu and de/-activates tab buttons accordingly
-        public void SetMenuTo(String menuName)
-        {
-            //set positions of windows and make buttons not greyed out
-            switch (currActiveWindow)
+        private void OnQueryChanged(object sender, EventArgs e)
             {
-                case "search":
-                    sessionMenu.transform.GetChild(0).transform.position = searchMenu.transform.GetChild(0).transform.position;
-                    sessionMenu.transform.GetChild(0).transform.rotation = searchMenu.transform.GetChild(0).transform.rotation;
-                    sessionMenu.transform.GetChild(0).transform.localScale = searchMenu.transform.GetChild(0).transform.localScale;
-                    harddriveMenu.transform.GetChild(0).transform.position = searchMenu.transform.GetChild(0).transform.position;
-                    harddriveMenu.transform.GetChild(0).transform.rotation = searchMenu.transform.GetChild(0).transform.rotation;
-                    harddriveMenu.transform.GetChild(0).transform.localScale = searchMenu.transform.GetChild(0).transform.localScale;
-                    //make button white (not greyed out)
-                    searchTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
-                    searchTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
-                    break;
-                case "session":
-                    searchMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
-                    searchMenu.transform.GetChild(0).transform.rotation = sessionMenu.transform.GetChild(0).transform.rotation;
-                    searchMenu.transform.GetChild(0).transform.localScale = sessionMenu.transform.GetChild(0).transform.localScale;
-                    harddriveMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
-                    harddriveMenu.transform.GetChild(0).transform.rotation = sessionMenu.transform.GetChild(0).transform.rotation;
-                    harddriveMenu.transform.GetChild(0).transform.localScale = sessionMenu.transform.GetChild(0).transform.localScale;
-                    //make button white (not greyed out)
-                    sessionTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
-                    sessionTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
-                    break;
-                case "harddrive":
-                    sessionMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
-                    sessionMenu.transform.GetChild(0).transform.rotation = harddriveMenu.transform.GetChild(0).transform.rotation;
-                    sessionMenu.transform.GetChild(0).transform.localScale = harddriveMenu.transform.GetChild(0).transform.localScale;
-                    searchMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
-                    searchMenu.transform.GetChild(0).transform.rotation = harddriveMenu.transform.GetChild(0).transform.rotation;
-                    searchMenu.transform.GetChild(0).transform.localScale = harddriveMenu.transform.GetChild(0).transform.localScale;
-                    //make button white (not greyed out)
-                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
-                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
-                    break;
+                //Search field changed
+                this.gameObject.GetComponent<SearchBrowserRefresher>().SearchChanged(searchField.Text);
+                //Debug.Log("Import Menu Search Field: " + searchField.Text);
             }
-            
-            
-            //enable/disable windows and buttons
-            switch (menuName)
+
+            // Changes the shown menu and de/-activates tab buttons accordingly
+            public void SetMenuTo(String menuName)
             {
-                case "search":
-                    searchMenu.SetActive(true);
-                    //make button greyed out
-                    searchTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
-                    searchTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
-                    searchTabButton.IsEnabled = false;                    
+                //set positions of windows and make buttons not greyed out
+                switch (currActiveWindow)
+                {
+                    case "search":
+                        sessionMenu.transform.GetChild(0).transform.position = searchMenu.transform.GetChild(0).transform.position;
+                        sessionMenu.transform.GetChild(0).transform.rotation = searchMenu.transform.GetChild(0).transform.rotation;
+                        sessionMenu.transform.GetChild(0).transform.localScale = searchMenu.transform.GetChild(0).transform.localScale;
+                        harddriveMenu.transform.GetChild(0).transform.position = searchMenu.transform.GetChild(0).transform.position;
+                        harddriveMenu.transform.GetChild(0).transform.rotation = searchMenu.transform.GetChild(0).transform.rotation;
+                        harddriveMenu.transform.GetChild(0).transform.localScale = searchMenu.transform.GetChild(0).transform.localScale;
+                        //make button white (not greyed out)
+                        searchTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+                        searchTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
+                        break;
+                    case "session":
+                        searchMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
+                        searchMenu.transform.GetChild(0).transform.rotation = sessionMenu.transform.GetChild(0).transform.rotation;
+                        searchMenu.transform.GetChild(0).transform.localScale = sessionMenu.transform.GetChild(0).transform.localScale;
+                        harddriveMenu.transform.GetChild(0).transform.position = sessionMenu.transform.GetChild(0).transform.position;
+                        harddriveMenu.transform.GetChild(0).transform.rotation = sessionMenu.transform.GetChild(0).transform.rotation;
+                        harddriveMenu.transform.GetChild(0).transform.localScale = sessionMenu.transform.GetChild(0).transform.localScale;
+                        //make button white (not greyed out)
+                        sessionTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+                        sessionTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
+                        break;
+                    case "harddrive":
+                        sessionMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
+                        sessionMenu.transform.GetChild(0).transform.rotation = harddriveMenu.transform.GetChild(0).transform.rotation;
+                        sessionMenu.transform.GetChild(0).transform.localScale = harddriveMenu.transform.GetChild(0).transform.localScale;
+                        searchMenu.transform.GetChild(0).transform.position = harddriveMenu.transform.GetChild(0).transform.position;
+                        searchMenu.transform.GetChild(0).transform.rotation = harddriveMenu.transform.GetChild(0).transform.rotation;
+                        searchMenu.transform.GetChild(0).transform.localScale = harddriveMenu.transform.GetChild(0).transform.localScale;
+                        //make button white (not greyed out)
+                        harddriveTabButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+                        harddriveTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
+                        break;
+                }
+            
+            
+                //enable/disable windows and buttons
+                switch (menuName)
+                {
+                    case "search":
+                        searchMenu.SetActive(true);
+                        //make button greyed out
+                        searchTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+                        searchTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+                        searchTabButton.IsEnabled = false;                    
                     
-                    sessionMenu.SetActive(false);
-                    sessionTabButton.IsEnabled = true;
-                    harddriveMenu.SetActive(false);
-                    harddriveTabButton.IsEnabled = true;
-                    tabs.transform.parent = searchMenu.transform.GetChild(0).transform;
-                    currActiveWindow = "search";
-                    break;
-                case "session":
-                    searchMenu.SetActive(false);
-                    searchTabButton.IsEnabled = true;
-                    sessionMenu.SetActive(true);
-                    //make button greyed out
-                    sessionTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
-                    sessionTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
-                    sessionTabButton.IsEnabled = false;
+                        sessionMenu.SetActive(false);
+                        sessionTabButton.IsEnabled = true;
+                        harddriveMenu.SetActive(false);
+                        harddriveTabButton.IsEnabled = true;
+                        tabs.transform.parent = searchMenu.transform.GetChild(0).transform;
+                        currActiveWindow = "search";
+                        break;
+                    case "session":
+                        searchMenu.SetActive(false);
+                        searchTabButton.IsEnabled = true;
+                        sessionMenu.SetActive(true);
+                        //make button greyed out
+                        sessionTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+                        sessionTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+                        sessionTabButton.IsEnabled = false;
 
-                    harddriveMenu.SetActive(false);
-                    harddriveTabButton.IsEnabled = true;
-                    tabs.transform.parent = sessionMenu.transform.GetChild(0).transform;
-                    currActiveWindow = "session";
-                    break;
-                case "harddrive":
-                    searchMenu.SetActive(false);
-                    searchTabButton.IsEnabled = true;
-                    sessionMenu.SetActive(false);
-                    sessionTabButton.IsEnabled = true;
-                    harddriveMenu.SetActive(true);
-                    //make button greyed out
-                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
-                    harddriveTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
-                    harddriveTabButton.IsEnabled = false;
+                        harddriveMenu.SetActive(false);
+                        harddriveTabButton.IsEnabled = true;
+                        tabs.transform.parent = sessionMenu.transform.GetChild(0).transform;
+                        currActiveWindow = "session";
+                        break;
+                    case "harddrive":
+                        searchMenu.SetActive(false);
+                        searchTabButton.IsEnabled = true;
+                        sessionMenu.SetActive(false);
+                        sessionTabButton.IsEnabled = true;
+                        harddriveMenu.SetActive(true);
+                        //make button greyed out
+                        harddriveTabButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+                        harddriveTabButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+                        harddriveTabButton.IsEnabled = false;
 
-                    tabs.transform.parent = harddriveMenu.transform.GetChild(0).transform;
-                    currActiveWindow = "harddrive";
-                    break;
+                        tabs.transform.parent = harddriveMenu.transform.GetChild(0).transform;
+                        currActiveWindow = "harddrive";
+                        break;
+                }
+
             }
 
-        }
+            public void Close()
+            {
+                gameObject.SetActive(false);
+                WindowClosed?.Invoke(this, EventArgs.Empty);
+            }
 
-        public void Close()
-        {
-            gameObject.SetActive(false);
-            WindowClosed?.Invoke(this, EventArgs.Empty);
-        }
+            public void Open()
+            {
+                gameObject.SetActive(true);
+            }
 
-        public void Open()
-        {
-            gameObject.SetActive(true);
-        }
-
-        public void Open(Vector3 position, Vector3 eulerAngles)
-        {
-            Open();
-            transform.localPosition = position;
-            transform.localEulerAngles = eulerAngles;
-        }
+            public void Open(Vector3 position, Vector3 eulerAngles)
+            {
+                Open();
+                transform.localPosition = position;
+                transform.localEulerAngles = eulerAngles;
+            }
     }
 }

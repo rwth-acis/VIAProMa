@@ -35,6 +35,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
+        [SerializeField] private GameObject importModelPrefab;
 
 
         private FoldController foldController;
@@ -44,6 +45,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         private GameObject visualizationShelfInstance;
         private GameObject loadShelfInstance;
         private GameObject avatarConfiguratorInstance;
+        private GameObject importModelInstance;
 
         private void Awake()
         {
@@ -223,7 +225,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowImportModelMenu()
         {
-            WindowManager.Instance.ImportManager.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            Vector3 targetPosition = importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position;
+            //WindowManager.Instance.ImportManager.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            NetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, "SetImportManagerInstance");
+            importModelInstance.GetComponent<ImportManager>().DeleteLoneImages();
             foldController.InitalizeNewCloseTimer();
         }
 
