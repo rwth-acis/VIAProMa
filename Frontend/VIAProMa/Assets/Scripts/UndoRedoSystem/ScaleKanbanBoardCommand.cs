@@ -12,39 +12,57 @@ public class ScaleKanbanBoardCommand : ICommand
 
     private Vector3 pointerStartPosition;
     private Vector3 kanbanBoardColumnStartPosition;
+    private Vector3 kanbanBoardColumnEndPosition;
     private i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController kanbanBoardController;
-    float oldWidth;
-    float oldHeight;
+    private float oldWidth;
+    private float oldHeight;
+    private float newWidth;
+    private float newHeight;
 
-    public ScaleKanbanBoardCommand(Vector3 skanbanBoardColumnStartPosition, bool sxAxis, i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController skanbanBoardController, float soldWidth, float soldHeight)
+
+    public ScaleKanbanBoardCommand(Vector3 skanbanBoardColumnStartPosition, bool sxAxis, i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController skanbanBoardController, float soldWidth, float soldHeight, float snewWidth, float snewHeight, Vector3 skanbanBoardColumnEndPosition)
     {
         xAxis = sxAxis;
         kanbanBoardColumnStartPosition = skanbanBoardColumnStartPosition;
+        kanbanBoardColumnEndPosition = skanbanBoardColumnEndPosition;
         kanbanBoardController = skanbanBoardController;
         oldHeight = soldHeight;
         oldWidth = soldWidth;
+        newHeight = snewHeight;
+        newWidth = snewWidth;
     }
 
     public void Execute()
     {
 
-
     }
 
-
-
     // Setzt Breite/Höhe und Position zurück
-        public void Undo()
+    public void Undo()
     {
-            if (xAxis)
-            {
+        if (xAxis)
+        {
             kanbanBoardController.Width = oldWidth;
             kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition;
-            }
-            else
-            {
+        }
+        else
+        {
             kanbanBoardController.Height = oldHeight;
             kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition;
-            }
+        }
+    }
+
+    public void Redo()
+    {
+        if (xAxis)
+        {
+            kanbanBoardController.Width = newWidth;
+            kanbanBoardController.transform.localPosition = kanbanBoardColumnEndPosition;
+        }
+        else
+        {
+            kanbanBoardController.Height = newHeight;
+            kanbanBoardController.transform.localPosition = kanbanBoardColumnEndPosition;
+        }
     }
 }

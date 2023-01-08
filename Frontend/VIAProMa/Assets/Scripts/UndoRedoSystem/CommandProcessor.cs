@@ -47,6 +47,6 @@ public class CommandProcessor
 
         currentPosition++;
         ICommand command = commands[currentPosition];
-        command.Execute();
+        command.Redo();
     }
 }

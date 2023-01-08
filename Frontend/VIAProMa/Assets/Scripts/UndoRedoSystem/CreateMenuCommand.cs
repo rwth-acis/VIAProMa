@@ -23,4 +23,9 @@ public class CreateMenuCommand : ICommand
     {
         WindowManager.Instance.UndoRedoMenu.Close();
     }
+
+    public void Redo()
+    {
+
+    }
 }

@@ -20,4 +20,9 @@ public class MoveCommand : ICommand
     {
 
     }
+
+    public void Redo()
+    {
+
+    }
 }
