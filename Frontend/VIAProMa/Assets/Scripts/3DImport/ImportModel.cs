@@ -22,6 +22,17 @@ public class ImportModel : MonoBehaviour
 
     public GameObject modelWrapper;
 
+    [SerializeField] private Shader GLTFshaderMetallic;
+    [SerializeField] private Shader GLTFshaderMetallicTransparent;
+    [SerializeField] private Shader GLTFshaderSpecular;
+    [SerializeField] private Shader GLTFshaderSpecularTransparent;
+
+    [SerializeField] private Shader shaderMetallic;
+    [SerializeField] private Shader shaderMetallicTransparent;
+    [SerializeField] private Shader shaderSpecular;
+    [SerializeField] private Shader shaderSpecularTransparent;
+
+
     void Start()
     {
         if (GetComponent<ImportManager>() == null)
@@ -97,13 +108,28 @@ public class ImportModel : MonoBehaviour
             anim.Play(animClips[0].name);
         }
 
-        //changing the shader... maybe we dont do this
-        //foreach (Renderer r in rr)
-        //{
-        //    r.material.shader = MixedReality;
-        //}
+        //changing the shader
+        foreach (Renderer r in rr)
+        {
+            if (r.material.shader == GLTFshaderMetallic)
+            {
+                r.material.shader = shaderMetallic;
+            }
+            else if (r.material.shader == GLTFshaderMetallicTransparent)
+            {
+                r.material.shader = shaderMetallicTransparent;
+            }
+            else if (r.material.shader == GLTFshaderSpecular)
+            {
+                r.material.shader = shaderSpecular;
+            }
+            else if (r.material.shader == GLTFshaderSpecularTransparent)
+            {
+                r.material.shader = shaderSpecularTransparent;
+            }
+        }
 
-        testModel.transform.localScale = testModel.transform.localScale / (bounds.size.magnitude * 3.5f);
+        testModel.transform.localScale = testModel.transform.localScale / (bounds.size.magnitude * 4f);
 
 
         testModel.transform.rotation = this.gameObject.transform.rotation;

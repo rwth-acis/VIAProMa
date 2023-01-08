@@ -380,7 +380,7 @@ Transform:
   m_GameObject: {fileID: 481603394222394357}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6936435969087241790}
@@ -412,10 +412,6 @@ MonoBehaviour:
   currActiveWindow: 
   searchField: {fileID: 7781223876743657667}
   loginButton: {fileID: 4699526136898096437}
-  searchUpButton: {fileID: 8447046825107794633}
-  searchDownButton: {fileID: 7153362546980844573}
-  sessionUpButton: {fileID: 8447046826025478900}
-  sessionDownButton: {fileID: 7153362547135132704}
   modelWrapper: {fileID: 0}
   folderName: 
 --- !u!114 &6909768939252432587
@@ -438,8 +434,11 @@ MonoBehaviour:
   loadingSymbolTex: {fileID: 2800000, guid: ee0b330b28779044492c799b6825d0aa, type: 3}
   downloadErrorTex: {fileID: 2800000, guid: ccf39e31a72e47446a5ae5219afade16, type: 3}
   noThumbTex: {fileID: 2800000, guid: 6eca282673c33e44f8004e6a3ddf3163, type: 3}
+  errorObj: {fileID: 8582691538114042719, guid: 0e6ead35909d5b444b4afe6c09e4186c,
+    type: 3}
   headUpButton: {fileID: 8447046825107794633}
   headDownButton: {fileID: 7153362546980844573}
+  mainCamTr: {fileID: 0}
 --- !u!114 &726555445452882421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,6 +504,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path: 
+  modelWrapper: {fileID: 0}
+  GLTFshaderMetallic: {fileID: 4800000, guid: 057d08f5d01be134593d0fe0e40c1759, type: 3}
+  GLTFshaderMetallicTransparent: {fileID: 4800000, guid: 7258d825fa9aac6439f21eb173b880c6,
+    type: 3}
+  GLTFshaderSpecular: {fileID: 4800000, guid: d28fc76bfd3057e4c8f1c6f0b91590c8, type: 3}
+  GLTFshaderSpecularTransparent: {fileID: 4800000, guid: 475158e3052e5c4488fa32f8df9d7be7,
+    type: 3}
+  shaderMetallic: {fileID: 4800000, guid: 672be0871d85ac474ae2f28b1cc68219, type: 3}
+  shaderMetallicTransparent: {fileID: 4800000, guid: 6be2a27d57e9f48a5a68ec89060dc0f4,
+    type: 3}
+  shaderSpecular: {fileID: 4800000, guid: 9adb484ea08a7ce099530278ba5729ba, type: 3}
+  shaderSpecularTransparent: {fileID: 4800000, guid: 61ac09e23983d6389ba39b0485e0cec4,
+    type: 3}
 --- !u!1 &517934351303204759
 GameObject:
   m_ObjectHideFlags: 0

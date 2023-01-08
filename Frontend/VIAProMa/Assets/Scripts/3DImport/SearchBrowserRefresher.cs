@@ -30,6 +30,8 @@ public class SearchBrowserRefresher : MonoBehaviour
     [SerializeField] private Texture downloadErrorTex;
     [SerializeField] private Texture noThumbTex;
 
+    [SerializeField] private GameObject errorObj;
+
     private Vector3 itemStartPosition;
     private Vector3 itemPositionOffset;
 
@@ -45,6 +47,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     [SerializeField] private Interactable headUpButton;
     [SerializeField] private Interactable headDownButton;
 
+    public Transform mainCamTr;
     void Start()
     {
         modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
@@ -200,15 +203,15 @@ public class SearchBrowserRefresher : MonoBehaviour
     private ImportedObject UpdateImpObj(ImportedObject impObj, string path)
     {
         Transform tr = impObj.gameObject.transform;
-        GameObject tempGameObject = impObj.gameObject;
         Destroy(impObj.gameObject);
         //this needs to be tried and catched if uuh the link changes to something unloadable
         try {            
             impObj.gameObject = GetComponent<ImportModel>().LoadModel(path);           
         }
         catch {
-            impObj.gameObject = tempGameObject;
-            impObj.gameObject.SetActive(false);
+            impObj.gameObject = errorObj;
+            impObj.gameObject.transform.position = tr.position;
+            impObj.gameObject.transform.LookAt(mainCamTr); ;
             return impObj; 
         }
         impObj.gameObject.transform.position = tr.position;

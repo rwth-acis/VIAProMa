@@ -3,8 +3,10 @@ using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Voice.PUN.UtilityScripts;
 using System;
+using System.IO;
 using TMPro;
 using UnityEngine;
+using static SessionBrowserRefresher;
 
 namespace i5.VIAProMa.UI
 {
@@ -22,7 +24,7 @@ namespace i5.VIAProMa.UI
 
         [SerializeField] private InputField searchField;
         [SerializeField] private Interactable loginButton;
-        
+
 
         public GameObject modelWrapper;
 
@@ -95,10 +97,23 @@ namespace i5.VIAProMa.UI
             // Set MainCamera near clipping plane
             Camera mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
             mainCamera.nearClipPlane = 0.01f;
+            GetComponent<SearchBrowserRefresher>().mainCamTr = mainCamera.transform;
 
-            GameObject keyboard = GameObject.Find("Keyboard");
-            keyboard.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            //finding the keyboard may be too hard...
+            //GameObject keyboard = Resources.FindObjectsOfTypeAll<GameObject>().;
+            //keyboard.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
 
+            //delete lone image files
+            FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName)).GetFiles("*.png");
+            foreach (FileInfo imageFile in imageFiles)
+            {
+                string imagePath = imageFile.FullName;
+                string pathToGLB = Path.Combine(Path.GetDirectoryName(imagePath), Path.GetFileNameWithoutExtension(imagePath) + ".glb");
+                if (!File.Exists(pathToGLB))
+                {
+                    File.Delete(imagePath);
+                }
+            }
         }
 
     private void OnQueryChanged(object sender, EventArgs e)

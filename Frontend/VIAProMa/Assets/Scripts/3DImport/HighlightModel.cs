@@ -25,7 +25,7 @@ public class HighlightModel : MonoBehaviour
 
             foreach (Renderer r in rr)
             {
-                    r.material.SetColor("_EmissionColor", Color.black);
+                    r.material.SetColor("_HighlightColor", Color.black);
 
             }
             gameObject.transform.parent.GetChild(0).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
@@ -44,7 +44,7 @@ public class HighlightModel : MonoBehaviour
                 {
                     r.material.SetTexture("_EmissionMap", emTex);
                 }
-                r.material.SetColor("_EmissionColor", Color.yellow);
+                r.material.SetColor("_HighlightColor", Color.yellow);
             }
             gameObject.transform.parent.GetChild(0).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.yellow);
             GetComponentInChildren<TextMeshPro>().color = Color.yellow;
