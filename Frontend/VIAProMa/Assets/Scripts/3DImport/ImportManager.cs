@@ -27,7 +27,6 @@ namespace i5.VIAProMa.UI
         public GameObject modelWrapper;
 
         public string folderName;
-
         public bool WindowEnabled { get; set; }
 
         public bool WindowOpen
@@ -96,9 +95,13 @@ namespace i5.VIAProMa.UI
             // Set MainCamera near clipping plane
             Camera mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
             mainCamera.nearClipPlane = 0.01f;
+
+            GameObject keyboard = GameObject.Find("Keyboard");
+            keyboard.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+
         }
 
-        private void OnQueryChanged(object sender, EventArgs e)
+    private void OnQueryChanged(object sender, EventArgs e)
         {
             //Search field changed
             this.gameObject.GetComponent<SearchBrowserRefresher>().SearchChanged(searchField.Text);
