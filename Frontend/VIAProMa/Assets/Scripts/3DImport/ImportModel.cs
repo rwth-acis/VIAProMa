@@ -97,7 +97,11 @@ public class ImportModel : MonoBehaviour
             anim.Play(animClips[0].name);
         }
 
-
+        //changing the shader... maybe we dont do this
+        //foreach (Renderer r in rr)
+        //{
+        //    r.material.shader = MixedReality;
+        //}
 
         testModel.transform.localScale = testModel.transform.localScale / (bounds.size.magnitude * 3.5f);
 

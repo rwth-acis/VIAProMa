@@ -7,11 +7,14 @@ using static SessionBrowserRefresher;
 public class HighlightModel : MonoBehaviour
 {
     public GameObject model;
-    private bool highlighted;
+    public bool highlighted;
+
+    [SerializeField] private Texture emTex;
 
     private void Awake()
     {
         highlighted = false;
+        
     }
 
     public void HighlightObject()
@@ -19,9 +22,11 @@ public class HighlightModel : MonoBehaviour
         if (highlighted)
         {
             Renderer[] rr = model.GetComponentsInChildren<Renderer>();
+
             foreach (Renderer r in rr)
             {
-                r.material.SetColor("_Color", Color.white);
+                    r.material.SetColor("_EmissionColor", Color.black);
+
             }
             gameObject.transform.parent.GetChild(0).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
             GetComponentInChildren<TextMeshPro>().color = Color.white;
@@ -32,9 +37,14 @@ public class HighlightModel : MonoBehaviour
         else
         {
             Renderer[] rr = model.GetComponentsInChildren<Renderer>();
+
             foreach (Renderer r in rr)
             {
-                r.material.SetColor("_Color", Color.yellow);
+                if (r.material.GetTexture("_EmissionMap") == null)
+                {
+                    r.material.SetTexture("_EmissionMap", emTex);
+                }
+                r.material.SetColor("_EmissionColor", Color.yellow);
             }
             gameObject.transform.parent.GetChild(0).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.yellow);
             GetComponentInChildren<TextMeshPro>().color = Color.yellow;
