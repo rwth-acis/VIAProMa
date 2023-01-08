@@ -1,6 +1,8 @@
 ﻿using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace i5.VIAProMa.Visualizations.KanbanBoard
 {
@@ -17,6 +19,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
         private float startLength;
         private GameObject CommandController;
         private CommandController commandController;
+        ICommand drag;
 
 
         private void Awake()
@@ -36,6 +39,8 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
+
+
             if (activePointer == null && !eventData.used)
             {
                 activePointer = eventData.Pointer;
@@ -57,7 +62,8 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         public void OnPointerDragged(MixedRealityPointerEventData eventData)
         {
-            ICommand drag = new ScaleKanbanBoardCommand(eventData, startLength, kanbanBoardColumnStartPosition, pointerStartPosition, activePointer, xAxis, positiveEnd, kanbanBoardController);
+            Debug.Log("TEst");
+            drag = new ScaleKanbanBoardCommand(eventData, startLength, kanbanBoardColumnStartPosition, pointerStartPosition, activePointer, xAxis, positiveEnd, kanbanBoardController);
             commandController.Execute(drag);
         }
 
@@ -68,6 +74,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                 activePointer = null;
                 eventData.Use();
             }
+            Debug.Log("HAAt");
         }
 
         private void MoveForPivotScaling()

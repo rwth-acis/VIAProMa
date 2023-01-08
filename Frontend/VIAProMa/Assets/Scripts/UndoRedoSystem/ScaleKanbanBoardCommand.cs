@@ -86,16 +86,17 @@ public class ScaleKanbanBoardCommand : ICommand
                     kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition - kanbanBoardController.transform.localRotation * pivotCorrection;
                 }
             }
+            // mark pointer data as used
+            eventData.Use();
 
         }
 
-        // mark pointer data as used
-        eventData.Use();
+
     }
 
 
 
-    //versucht, an den Rechenoperationen rumzubasteln fuer redo: funktioniert nicht
+    // Setzt Breite/Höhe und Position zurück
         public void Undo()
     {
             if (xAxis)

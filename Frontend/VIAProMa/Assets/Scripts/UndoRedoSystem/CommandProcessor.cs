@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine;
 
 public class CommandProcessor
 {
@@ -7,9 +9,19 @@ public class CommandProcessor
 
     public void Execute(ICommand command)
     {
-        command.Execute();
+
+
+        if(currentPosition < commands.Count - 1)
+        {
+            commands.RemoveRange(currentPosition + 1, commands.Count - 1);
+
+        }
+
+
         commands.Add(command);
         currentPosition++;
+        command.Execute();
+        Debug.Log(currentPosition);
     }
 
     public void Undo()
@@ -22,6 +34,8 @@ public class CommandProcessor
         ICommand command = commands[currentPosition];
         command.Undo();
         currentPosition--;
+
+        Debug.Log(currentPosition);
     }
 
     public void Redo()
