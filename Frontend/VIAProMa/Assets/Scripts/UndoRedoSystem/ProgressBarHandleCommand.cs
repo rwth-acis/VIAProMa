@@ -29,4 +29,9 @@ public class ProgressBarHandleCommand : ICommand
     {
         progressBar.SetHandles(previousPosition, newHandleOnPositiveCap);
     }
+
+    public void Redo()
+    {
+
+    }
 }
