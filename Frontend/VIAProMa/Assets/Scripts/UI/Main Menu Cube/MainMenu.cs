@@ -28,6 +28,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private TextMeshPro roomButtonText;
         [SerializeField] private Interactable chatButton;
         [SerializeField] private Interactable microphoneButton;
+        [SerializeField] private Interactable advancedSettingsButton; //<-- Assign Advanced Setting Script
 
         [Header("References")]
         [SerializeField] private GameObject issueShelfPrefab;
@@ -241,6 +242,13 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowServerStatusMenu()
         {
             WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            foldController.InitalizeNewCloseTimer();
+        }
+
+        //Advanced Settings
+        public void ShowAdvancedSettingsMenu()
+        {
+            WindowManager.Instance.AdvancedSettingsMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
