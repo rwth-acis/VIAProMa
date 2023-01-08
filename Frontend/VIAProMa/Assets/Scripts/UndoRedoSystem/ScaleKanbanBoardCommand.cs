@@ -16,6 +16,12 @@ public class ScaleKanbanBoardCommand : ICommand
     private float startLength;
     private MixedRealityPointerEventData eventData;
     private i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController kanbanBoardController;
+    float handDelta;
+    float newLength;
+    float previousWidth;
+    float previousHeight;
+    float oldWidth;
+    float oldHeight;
 
     public ScaleKanbanBoardCommand(MixedRealityPointerEventData seventData, float sstartlength, Vector3 skanbanBoardColumnStartPosition, Vector3 spointerStartPosition, IMixedRealityPointer dactivePointer, bool sxAxis, bool spositiveEnd, i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController skanbanBoardController)
     {
@@ -36,7 +42,6 @@ public class ScaleKanbanBoardCommand : ICommand
         if (eventData.Pointer == activePointer && !eventData.used)
         {
             Vector3 delta = activePointer.Position - pointerStartPosition;
-            float handDelta;
             if (xAxis)
             {
                 handDelta = Vector3.Dot(kanbanBoardController.transform.right, delta);
@@ -51,8 +56,9 @@ public class ScaleKanbanBoardCommand : ICommand
             }
             if (xAxis)
             {
-                float newLength = startLength + handDelta;
-                float previousWidth = kanbanBoardController.Width;
+                newLength = startLength + handDelta;
+                oldWidth = startLength;
+                previousWidth = kanbanBoardController.Width;
                 kanbanBoardController.Width = newLength;
                 if (kanbanBoardController.Width != previousWidth) // only move if the width was actually changed (it could be unaffected if min or max size was reached)
                 {
@@ -66,8 +72,9 @@ public class ScaleKanbanBoardCommand : ICommand
             }
             else
             {
-                float newLength = startLength + handDelta;
-                float previousHeight = kanbanBoardController.Height;
+                newLength = startLength + handDelta;
+                oldHeight = startLength;
+                previousHeight = kanbanBoardController.Height;
                 kanbanBoardController.Height = newLength;
                 if (kanbanBoardController.Height != previousHeight) // only move if the height was actually changed (it could be unaffected if min or max size was reached)
                 {
@@ -91,59 +98,15 @@ public class ScaleKanbanBoardCommand : ICommand
     //versucht, an den Rechenoperationen rumzubasteln fuer redo: funktioniert nicht
         public void Undo()
     {
-        if (eventData.Pointer == activePointer && !eventData.used)
-        {
-            Vector3 delta = activePointer.Position - pointerStartPosition;
-            float handDelta;
             if (xAxis)
             {
-                handDelta = Vector3.Dot(kanbanBoardController.transform.right, delta);
+            kanbanBoardController.Width = oldWidth;
+            kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition;
             }
             else
             {
-                handDelta = Vector3.Dot(kanbanBoardController.transform.up, delta);
+            kanbanBoardController.Height = oldHeight;
+            kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition;
             }
-            if (!positiveEnd)
-            {
-                handDelta *= -1f;
-            }
-            if (xAxis)
-            {
-                // original: + statt -
-                float newLength = startLength + handDelta;
-                float previousWidth = kanbanBoardController.Width;
-                kanbanBoardController.Width = newLength;
-                if (kanbanBoardController.Width != previousWidth) // only move if the width was actually changed (it could be unaffected if min or max size was reached)
-                {
-                    Vector3 pivotCorrection = new Vector3(handDelta / 2f, 0, 0);
-                    if (positiveEnd)
-                    {
-                        pivotCorrection *= -1;
-                    }
-                    // original: - statt +
-                    kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition + kanbanBoardController.transform.localRotation * pivotCorrection;
-                }
-            }
-            else
-            {
-                float newLength = startLength + handDelta;
-                float previousHeight = kanbanBoardController.Height;
-                kanbanBoardController.Height = newLength;
-                if (kanbanBoardController.Height != previousHeight) // only move if the height was actually changed (it could be unaffected if min or max size was reached)
-                {
-                    Vector3 pivotCorrection = new Vector3(0, handDelta / 2f, 0);
-                    if (positiveEnd)
-                    {
-                        pivotCorrection *= -1;
-                    }
-                    //original: - statt +
-                    kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition + kanbanBoardController.transform.localRotation * pivotCorrection;
-                }
-            }
-
-        }
-
-        // mark pointer data as used
-        eventData.Use();
     }
 }
