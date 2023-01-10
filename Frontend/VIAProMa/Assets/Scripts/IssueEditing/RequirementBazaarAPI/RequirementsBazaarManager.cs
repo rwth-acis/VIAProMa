@@ -373,6 +373,8 @@ namespace Org.Requirements_Bazaar.API
                 string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
                 byte[] authentificationInfoInfoBytes = Encoding.UTF8.GetBytes(authentificationInfoInfo);
                 string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+                Debug.Log("Authorization : Basic " + encodedAuthentificationInfo);
+                Debug.Log("access-token" + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);

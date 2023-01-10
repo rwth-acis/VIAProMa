@@ -5,6 +5,8 @@ using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
 using i5.VIAProMa.Login;
+using i5.VIAProMa.Shelves.IssueShelf;
+using System.Threading.Tasks;
 
 public class LearningLayersLogin : ProviderLogin
 {
@@ -18,12 +20,15 @@ public class LearningLayersLogin : ProviderLogin
     [SerializeField] public Color loggedInColor = new Color(0f, 135f / 255f, 3f / 255f); // green
     [SerializeField] public Color loggedOutColor = new Color(188f / 255f, 2f / 255f, 0f); // red
 
+    private ShelfConfigurationMenu scm;
+
 
     public override void Start()
     {
         ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginScript_LoginCompleted;
         ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LoginScript_LogoutCompleted;
         SetLED(false);
+        scm = this.transform.parent.parent.GetComponent<ShelfConfigurationMenu>();
     }
 
 
@@ -45,6 +50,7 @@ public class LearningLayersLogin : ProviderLogin
         statusCaption.text = "You are logged in!";
         Debug.Log("Successful Login to Learning Layers");
         SetLED(true);
+        scm.LoadReqBazProjectList();
     }
 
     /// <summary>
@@ -59,6 +65,7 @@ public class LearningLayersLogin : ProviderLogin
         statusCaption.text = "You are not logged in yet.";
         Debug.Log("Successful Logout from Learning Layers.");
         SetLED(false);
+        scm.LoadReqBazProjectList();
     }
 
     /// <summary>

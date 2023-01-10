@@ -312,7 +312,7 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             shelf.LoadContent();
         }
 
-        private async Task LoadReqBazProjectList()
+        public async Task LoadReqBazProjectList()
         {
             shelf.MessageBadge.ShowProcessing();
             ApiResult<Project[]> res = await RequirementsBazaar.GetProjects();

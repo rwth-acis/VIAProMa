@@ -1,7 +1,12 @@
-﻿using i5.VIAProMa.DataModel.API;
+﻿using i5.Toolkit.Core.ServiceCore;
+using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.Login;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using Org.Requirements_Bazaar.API;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -20,23 +25,85 @@ namespace i5.VIAProMa.WebConnection
         public static async Task<ApiResult<Project[]>> GetProjects()
         {
             Debug.Log("Requirements Baazar: GetProjects");
-            Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
-                null,
-                -1,
-                null,
-                true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
-            if (!resp.Successful)
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
+                Response resp = await Rest.GetAsync(
+                    ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
+                    null,
+                    -1,
+                    null,
+                    true);
+                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                string responseBody = await resp.GetResponseBody();
+                if (!resp.Successful)
+                {
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                    return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
+                }
+                else
+                {
+                    Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
+                    List<Project> visibleProjects = new List<Project>();
+                    foreach (Project project in projects)
+                    {
+                        if (project.visibility == true)
+                            visibleProjects.Add(project);
+                    }
+                    return new ApiResult<Project[]>(visibleProjects.ToArray());
+                }
             }
             else
             {
-                Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
-                return new ApiResult<Project[]>(projects);
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
+                {
+                    Debug.Log("Service not null");
+                }
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        Response resp = await Rest.GetAsync(
+                    ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
+                    null,
+                    -1,
+                    null,
+                    true);
+                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                        string responseBody = await resp.GetResponseBody();
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                            return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
+                        }
+                        else
+                        {
+                            Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
+                            return new ApiResult<Project[]>(projects);
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
             }
         }
 
@@ -194,6 +261,58 @@ namespace i5.VIAProMa.WebConnection
                 }
                 return new ApiResult<Issue[]>(requirements);
             }
+        }
+
+        /// <summary>
+        /// Decodes the access token using JWT decoding
+        /// </summary>
+        /// <param name="accessToken">The access token of the user</param>
+        /// <returns>The decoded access token</returns>
+        private static string JWT_Decoding(string accessToken)
+        {
+            string[] tokenParts = accessToken.Split('.');
+            if (tokenParts.Length > 2)
+            {
+                string decodedBody = tokenParts[1];
+                int paddingLength = 4 - decodedBody.Length % 4;
+                if (paddingLength < 4)
+                {
+                    decodedBody += new string('=', paddingLength);
+                }
+                byte[] bytes = System.Convert.FromBase64String(decodedBody);
+                string decodedToken = System.Text.ASCIIEncoding.ASCII.GetString(bytes);
+                return decodedToken;
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Extracts the subject and preferred username information from the decoded access token
+        /// </summary>
+        /// <param name="decodedToken">The access token which has been decoded using JWT</param>
+        /// <returns>A string containing the subject and preferred username</returns>
+        private static string GetBasicAuthentificationInfo(string decodedToken)
+        {
+            string[] elements = decodedToken.Split(',');
+            string sub = "";
+            string preferred_username = "";
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                if (elements[i].Contains("sub"))
+                {
+                    sub = elements[i].Split(':')[1];
+                    sub = sub.Substring(1, sub.Length - 2);
+                }
+                if (elements[i].Contains("preferred_username"))
+                {
+                    preferred_username = elements[i].Split(':')[1];
+                    preferred_username = preferred_username.Substring(1, preferred_username.Length - 2);
+                }
+            }
+
+            return preferred_username + ":" + sub;
+
         }
     }
 }
