@@ -8,6 +8,10 @@ using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using UnityEngine;
+using System;
+using System.Collections.Generic;
+using VIAProMa.Assets.Scripts.Analytics.LogTypes;
+using VIAProMa.Assets.Scripts.Analytics;
 
 namespace i5.VIAProMa.Shelves.Widgets
 {
@@ -17,7 +21,7 @@ namespace i5.VIAProMa.Shelves.Widgets
     /// Does not consume any of the input data since they are redirected to the created copy
     /// </summary>
     [RequireComponent(typeof(IssueDataDisplay))]
-    public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler
+    public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler, IObservable<LogpointIssueSelected>
     {
         [Tooltip("The prefab which should be instantiated as a copy")]
         public GameObject copyObject;
@@ -27,12 +31,18 @@ namespace i5.VIAProMa.Shelves.Widgets
 
         private IssueDataDisplay localDataDisplay;
 
+        // A list of all the observers observing the state of this object for the analytics module.
+        private List<IObserver<LogpointIssueSelected>> observers = new List<IObserver<LogpointIssueSelected>>();
+
         /// <summary>
         /// Sets the component up
         /// </summary>
         private void Awake()
         {
             localDataDisplay = GetComponent<IssueDataDisplay>();
+
+            // Add an observer for the analytics for this object.
+            IssueEditingObserver observer = new IssueEditingObserver(this);
         }
 
         /// <summary>
@@ -56,6 +66,9 @@ namespace i5.VIAProMa.Shelves.Widgets
                 //clicking the edit or delete button shouldn't spawn a card
                 && currentPointerTarget.GetComponent<EditButton>() == null && currentPointerTarget.GetComponent<DeleteButton>() == null)
             {
+                // Analytics: Notify the observers that the card has been clicked on.
+                NotifyObservers(new LogpointIssueSelected(localDataDisplay));
+
                 // pass instantiation data to the copy so that other clients also know which issue is contained in the created copy
                 object[] instantiationData;
                 if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
@@ -135,5 +148,49 @@ namespace i5.VIAProMa.Shelves.Widgets
                 handlerOnCopy.OnPointerUp(eventData);
             }
         }
+
+
+        // Implementation of necessary methods for the analytics module
+        #region Observer Implemenations
+        public IDisposable Subscribe(IObserver<LogpointIssueSelected> observer)
+        {
+            if (!observers.Contains(observer))
+                observers.Add(observer);
+            return new Unsubscriber(observers, observer);
+        }
+
+        public void NotifyObservers(LogpointIssueSelected log)
+        {
+            if (AnalyticsManager.Instance.AnalyticsEnabled)
+                foreach (var observer in observers)
+                    observer.OnNext(log);
+        }
+
+        private class Unsubscriber : IDisposable
+        {
+            private List<IObserver<LogpointIssueSelected>> _observers;
+            private IObserver<LogpointIssueSelected> _observer;
+
+            public Unsubscriber(List<IObserver<LogpointIssueSelected>> observers, IObserver<LogpointIssueSelected> observer)
+            {
+                this._observers = observers;
+                this._observer = observer;
+            }
+
+            public void Dispose()
+            {
+                if (_observer != null && _observers.Contains(_observer))
+                    _observers.Remove(_observer);
+            }
+        }
+
+
+        class IssueEditingObserver : ObserverWrapper<LogpointIssueSelected>.Observer
+        {
+            public IssueEditingObserver(IObservable<LogpointIssueSelected> observable) : base(observable) { }
+        }
+        #endregion Observer Implemenations
+
+
     }
 }
