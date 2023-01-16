@@ -3,35 +3,58 @@ using Photon.Pun;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using i5.VIAProMa.WebConnection;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
-    private bool _analyticsEnabled;
-    public bool AnalyticsEnabled { get { return _analyticsEnabled; } set { PhotonView.Get(this).RPC("setAnalyticsEnabled", RpcTarget.All, value); } }
+    private AnalyticsSettings _settings;
+
+    [SerializeField]
+    public bool AnalyticsEnabled {
+        get { return _settings.AnalyticsEnabled; } 
+        set {
+                SetSettingsOnBackend();
+                PhotonView.Get(this).RPC("SetAnalyticsEnabled", RpcTarget.All, value); 
+        }
+    }
+
 
     public AnalyticsManager()
     {
-        CheckAnalyticsFromBackendAsync();
+         _settings = new AnalyticsSettings();
     }
 
-    private async void CheckAnalyticsFromBackendAsync()
+    public void Start()
     {
-        // _analyticsEnabled = true;
+        GetSettingsFromBackendAsync();
+    }
+
+    private async void GetSettingsFromBackendAsync()
+    {
         Response resp =
                 await Rest.GetAsync(
-                    ConnectionManager.Instance.BackendAPIBaseURL + "analytics/test2/settings",
+                    ConnectionManager.Instance.BackendAPIBaseURL + "analytics/viaproma/settings",
                     null,
                     -1,
                     null,
                     true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         string responseBody = await resp.GetResponseBody();
-        _analyticsEnabled = responseBody == "true";
+        _settings = JsonConvert.DeserializeObject<AnalyticsSettings>(responseBody);
+    }
+
+    private async void SetSettingsOnBackend()
+    {
+        string settingsJSON = JsonConvert.SerializeObject(_settings);
+        Response resp =
+                await Rest.PostAsync(
+                    ConnectionManager.Instance.BackendAPIBaseURL + "analytics/viaproma/settings", settingsJSON);
+        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
     }
 
     [PunRPC]
     private void SetAnalyticsEnabled(bool enabled)
     {
-        _analyticsEnabled = enabled;
+        _settings.AnalyticsEnabled = enabled;
     }
 }

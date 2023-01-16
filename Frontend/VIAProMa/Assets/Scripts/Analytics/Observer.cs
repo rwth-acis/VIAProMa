@@ -53,14 +53,11 @@ namespace VIAProMa.Assets.Scripts.Analytics
                 }
 
                 // Make call to REST API to log state to file
-                // HttpClient client = new HttpClient();
 
                 HttpClient client = new HttpClient();
                 string requestUri = "http://pmsl.cytexal.com:8080/resources/analytics/viaproma"; // TODO: Use correct URL
                 string json = JsonConvert.SerializeObject(state);
                 Response res = await Rest.PostAsync(requestUri, json)/* .GetAwaiter().GetResult() */;
-                Thread.Sleep(3000); // TODO: Use proper async code.
-
 
                 if (!res.Successful)
                     throw new Exception("Could not transmit telemetry data to backend!");
