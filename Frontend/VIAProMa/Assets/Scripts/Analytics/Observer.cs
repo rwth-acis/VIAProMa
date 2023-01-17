@@ -1,11 +1,8 @@
 #nullable enable
 
 using System;
-using System.Net.Http;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
-using System.Threading;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace VIAProMa.Assets.Scripts.Analytics
@@ -54,10 +51,9 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
                 // Make call to REST API to log state to file
 
-                HttpClient client = new HttpClient();
                 string requestUri = "http://pmsl.cytexal.com:8080/resources/analytics/viaproma"; // TODO: Use correct URL
                 string json = JsonConvert.SerializeObject(state);
-                Response res = await Rest.PostAsync(requestUri, json)/* .GetAwaiter().GetResult() */;
+                Response res = await Rest.PostAsync(requestUri, json);
 
                 if (!res.Successful)
                     throw new Exception("Could not transmit telemetry data to backend!");
