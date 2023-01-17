@@ -13,8 +13,9 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     public bool AnalyticsEnabled {
         get { return _settings.AnalyticsEnabled; } 
         set {
-                SetSettingsOnBackend();
-                PhotonView.Get(this).RPC("SetAnalyticsEnabled", RpcTarget.All, value); 
+            PhotonView.Get(this).RPC("SetAnalyticsEnabled", RpcTarget.Others, value);
+            _settings.AnalyticsEnabled = value;
+            SetSettingsOnBackend();
         }
     }
 
