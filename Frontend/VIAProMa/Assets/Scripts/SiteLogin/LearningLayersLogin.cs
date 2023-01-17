@@ -7,6 +7,7 @@ using TMPro;
 using i5.VIAProMa.Login;
 using i5.VIAProMa.Shelves.IssueShelf;
 using System.Threading.Tasks;
+using i5.VIAProMa.UI.MultiListView.Core;
 
 public class LearningLayersLogin : ProviderLogin
 {
@@ -21,10 +22,12 @@ public class LearningLayersLogin : ProviderLogin
     [SerializeField] public Color loggedOutColor = new Color(188f / 255f, 2f / 255f, 0f); // red
 
     private ShelfConfigurationMenu scm;
-
+    private IssuesLoader issueLoader;
 
     public override void Start()
     {
+        issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
+
         ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginScript_LoginCompleted;
         ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LoginScript_LogoutCompleted;
         SetLED(false);
@@ -66,6 +69,8 @@ public class LearningLayersLogin : ProviderLogin
         Debug.Log("Successful Logout from Learning Layers.");
         SetLED(false);
         scm.LoadReqBazProjectList();
+        this.transform.parent.parent.parent.GetComponent<IssuesMultiListView>().Clear();
+        issueLoader.LoadContent();
     }
 
     /// <summary>
