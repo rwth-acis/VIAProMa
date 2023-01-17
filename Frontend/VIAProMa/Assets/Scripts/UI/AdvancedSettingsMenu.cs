@@ -8,7 +8,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
-namespace i5.VIAProMa.Multiplayer
+namespace i5.VIAProMa.UI
 {
     /// <summary>
     /// Controls the UI for the advanced settings menu.
