@@ -46,6 +46,9 @@ namespace i5.VIAProMa.WebConnection
                     List<Project> visibleProjects = new List<Project>();
                     foreach (Project project in projects)
                     {
+                        Debug.Log(project.id);
+                        Debug.Log(project.name);
+                        Debug.Log(project.visibility);
                         if (project.visibility == true)
                             visibleProjects.Add(project);
                     }
@@ -77,30 +80,42 @@ namespace i5.VIAProMa.WebConnection
 
                     headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                     headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
-
+                    Debug.Log("Authorization" + ":" + "Basic " + encodedAuthentificationInfo);
+                    Debug.Log("access-token" + ":" + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
                     try
                     {
                         Response resp = await Rest.GetAsync(
-                    ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
-                    null,
+                    //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/?state=all&per_page=500",
+                    "https://requirements-bazaar.org/bazaar/projects/?state=all&per_page=500",
+                    headers,
                     -1,
                     null,
                     true);
                         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                         string responseBody = await resp.GetResponseBody();
+                        Debug.Log("Before response");
                         if (!resp.Successful)
                         {
+                            Debug.Log("If!");
                             Debug.LogError(resp.ResponseCode + ": " + responseBody);
                             return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
                         }
                         else
                         {
+                            responseBody = "{\"array\":" + responseBody + "}";
                             Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
+                            foreach (Project project in projects)
+                            {
+                                Debug.Log(project.id);
+                                Debug.Log(project.name);
+                                Debug.Log(project.visibility);
+                            }
                             return new ApiResult<Project[]>(projects);
                         }
                     }
                     catch (ArgumentNullException)
                     {
+                        Debug.LogError("ArgumentNullException");
                         return null;
                     }
                 }
@@ -114,23 +129,81 @@ namespace i5.VIAProMa.WebConnection
         /// <returns>The categories of the project, contained in the APIResult object</returns>
         public static async Task<ApiResult<Category[]>> GetCategoriesInProject(int projectId)
         {
-            Response resp = await Rest.GetAsync(
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
+            {
+                Response resp = await Rest.GetAsync(
                 ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
                 null,
                 -1,
                 null,
                 true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
-            if (!resp.Successful)
-            {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<Category[]>(resp.ResponseCode, responseBody);
+                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                string responseBody = await resp.GetResponseBody();
+                if (!resp.Successful)
+                {
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                    return new ApiResult<Category[]>(resp.ResponseCode, responseBody);
+                }
+                else
+                {
+                    Category[] categories = JsonArrayUtility.FromJson<Category>(responseBody);
+                    return new ApiResult<Category[]>(categories);
+                }
             }
             else
             {
-                Category[] categories = JsonArrayUtility.FromJson<Category>(responseBody);
-                return new ApiResult<Category[]>(categories);
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
+                {
+                    Debug.Log("Service not null");
+                }
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        Response resp = await Rest.GetAsync(
+                //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
+                "https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories?state=all&per_page=500",
+                headers,
+                -1,
+                null,
+                true);
+                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                        string responseBody = await resp.GetResponseBody();
+                        responseBody = "{\"array\":" + responseBody + "}";
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                            return new ApiResult<Category[]>(resp.ResponseCode, responseBody);
+                        }
+                        else
+                        {
+                            Category[] categories = JsonArrayUtility.FromJson<Category>(responseBody);
+                            return new ApiResult<Category[]>(categories);
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
             }
         }
 
@@ -196,23 +269,82 @@ namespace i5.VIAProMa.WebConnection
             {
                 path += "&search=" + search;
             }
-            Response resp = await Rest.GetAsync(path, null, -1, null, true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
-            if (!resp.Successful)
+
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                Response resp = await Rest.GetAsync(path, null, -1, null, true);
+                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                string responseBody = await resp.GetResponseBody();
+                if (!resp.Successful)
+                {
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                    return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                }
+                else
+                {
+                    Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                    // add to cache
+                    foreach (Issue req in requirements)
+                    {
+                        IssueCache.AddIssue(req);
+                    }
+                    return new ApiResult<Issue[]>(requirements);
+                }
             }
             else
             {
-                Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
-                // add to cache
-                foreach (Issue req in requirements)
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
                 {
-                    IssueCache.AddIssue(req);
+                    Debug.Log("Service not null");
                 }
-                return new ApiResult<Issue[]>(requirements);
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        path = "https://requirements-bazaar.org/bazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+                        Response resp = await Rest.GetAsync(path, headers, -1, null, true);
+                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                        string responseBody = await resp.GetResponseBody();
+                        responseBody = "{\"array\":" + responseBody + "}";
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                            return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                        }
+                        else
+                        {
+                            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                            // add to cache
+                            foreach (Issue req in requirements)
+                            {
+                                IssueCache.AddIssue(req);
+                            }
+                            return new ApiResult<Issue[]>(requirements);
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
             }
         }
 
@@ -244,22 +376,80 @@ namespace i5.VIAProMa.WebConnection
             {
                 path += "&search=" + search;
             }
-            Response resp = await Rest.GetAsync(path, null, -1, null, true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
-            if (!resp.Successful)
+
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                Response resp = await Rest.GetAsync(path, null, -1, null, true);
+                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                string responseBody = await resp.GetResponseBody();
+                if (!resp.Successful)
+                {
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                    return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                }
+                else
+                {
+                    Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                    foreach (Issue req in requirements)
+                    {
+                        IssueCache.AddIssue(req);
+                    }
+                    return new ApiResult<Issue[]>(requirements);
+                }
             }
             else
             {
-                Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
-                foreach (Issue req in requirements)
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
                 {
-                    IssueCache.AddIssue(req);
+                    Debug.Log("Service not null");
                 }
-                return new ApiResult<Issue[]>(requirements);
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        path = "https://requirements-bazaar.org/bazaar/" + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+                        Response resp = await Rest.GetAsync(path, headers, -1, null, true);
+                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                        string responseBody = await resp.GetResponseBody();
+                        responseBody = "{\"array\":" + responseBody + "}";
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                            return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                        }
+                        else
+                        {
+                            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                            foreach (Issue req in requirements)
+                            {
+                                IssueCache.AddIssue(req);
+                            }
+                            return new ApiResult<Issue[]>(requirements);
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
             }
         }
 
