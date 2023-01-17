@@ -1,7 +1,7 @@
 using i5.VIAProMa.UI;
 using i5.VIAProMa.UI.InputFields;
 using i5.VIAProMa.Utilities;
-using i5.VIAProMa.WebConnection;
+using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -24,6 +24,8 @@ namespace i5.VIAProMa.Multiplayer
 
         public event EventHandler WindowClosed;
 
+        [SerializeField] public Interactable AnalyticsToggleBtn;
+
         /// <summary>
         /// Initializes the component and makes sure that it is set up correctly
         /// </summary>
@@ -38,7 +40,12 @@ namespace i5.VIAProMa.Multiplayer
                 advancedSettingsMenu.SetActive(false);
             }
         }
-      
+
+        private void Update()
+        {
+            AnalyticsToggleBtn.IsToggled = AnalyticsManager.Instance.AnalyticsEnabled;
+        }
+
         /// <summary>
         /// Opens the window by making the GameObject active
         /// </summary>
@@ -64,6 +71,11 @@ namespace i5.VIAProMa.Multiplayer
             WindowOpen = false;
             WindowClosed?.Invoke(this, EventArgs.Empty);
             gameObject.SetActive(false);
+        }
+
+        public void ToggleAnalytics()
+        {
+            AnalyticsManager.Instance.AnalyticsEnabled = AnalyticsToggleBtn.IsToggled;
         }
     }
 }

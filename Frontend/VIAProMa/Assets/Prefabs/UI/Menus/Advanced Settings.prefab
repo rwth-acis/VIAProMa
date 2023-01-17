@@ -298,6 +298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   advancedSettingsMenu: {fileID: 149168206650073456}
+  AnalyticsToggleBtn: {fileID: 149168208460262867}
 --- !u!1 &149168206666530327
 GameObject:
   m_ObjectHideFlags: 0
@@ -1912,7 +1913,7 @@ MonoBehaviour:
   isGlobal: 0
   Dimensions: 2
   dimensionIndex: 0
-  startDimensionIndex: 0
+  startDimensionIndex: 1
   CanSelect: 1
   CanDeselect: 1
   voiceCommand: Select
@@ -1937,9 +1938,9 @@ MonoBehaviour:
   OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: Increment
+      - m_Target: {fileID: -6936157432880652759}
+        m_TargetAssemblyTypeName: i5.VIAProMa.Multiplayer.AdvancedSettingsMenu, Assembly-CSharp
+        m_MethodName: ToggleAnalytics
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
