@@ -241,6 +241,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowServerStatusMenu()
         {
+            if(WindowManager.Instance.AdvancedSettingsMenu.enabled)
+            {
+                WindowManager.Instance.AdvancedSettingsMenu.Close();
+            }
             WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
@@ -248,6 +252,11 @@ namespace i5.VIAProMa.UI.MainMenuCube
         //Advanced Settings
         public void ShowAdvancedSettingsMenu()
         {
+
+            if (WindowManager.Instance.ServerStatusMenu.enabled)
+            {
+                WindowManager.Instance.ServerStatusMenu.Close();
+            }
             WindowManager.Instance.AdvancedSettingsMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
