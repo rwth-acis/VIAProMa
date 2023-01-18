@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
 using VIAProMa.Assets.Scripts.Analytics;
+using i5.VIAProMa.UI.ListView.Issues;
 
 public class GazableIssueCard : MonoBehaviour, IObservable<LogpointGazedAt>
 {
@@ -14,7 +15,9 @@ public class GazableIssueCard : MonoBehaviour, IObservable<LogpointGazedAt>
     }
     public void GazeDetected()
     {
-        LogpointGazedAt logpoint = new LogpointGazedAt("one", "two", "three");  //TODO: Fill with data!
+        string id = this.GetComponent<IssueDataDisplay>().Content.Id.ToString();
+        Debug.Log("ID der Issue" + id);
+        LogpointGazedAt logpoint = new LogpointGazedAt("VIAProMa Project Name", id, "IssueCard");  //TODO: Fill with data!
         NotifyObservers(logpoint);
     }
     // Implementation of necessary methods for the analytics module
