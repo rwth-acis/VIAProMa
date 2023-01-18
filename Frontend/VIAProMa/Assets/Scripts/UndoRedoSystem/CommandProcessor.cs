@@ -7,6 +7,19 @@ public class CommandProcessor
     private List<ICommand> commands = new List<ICommand>();
     private int currentPosition = -1;
 
+    private Color notActiveColor = Color.grey;
+    private Color activeColor;
+    private Material buttonMaterial;
+    private GameObject undoButton;
+    private GameObject redoButton;
+    public void Awake()
+    {
+
+        buttonMaterial = Resources.Load("Material/Night_Sky.mat", typeof(Material)) as Material;
+        activeColor = buttonMaterial.color;
+
+    }
+
     public void Execute(ICommand command)
     {
 
@@ -35,7 +48,17 @@ public class CommandProcessor
         command.Undo();
         currentPosition--;
 
-        Debug.Log(currentPosition);
+        if(currentPosition == -1)
+        {
+            undoButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Undo Button/BackPlate/Quad");
+            undoButton.GetComponent<Renderer>().material.color = notActiveColor;
+        }
+
+        if(currentPosition + 1 < commands.Count)
+        {
+            redoButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");
+            redoButton.GetComponent<Renderer>().material.color = activeColor;
+        }
     }
 
     public void Redo()

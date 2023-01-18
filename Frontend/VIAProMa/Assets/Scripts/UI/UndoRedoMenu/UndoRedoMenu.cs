@@ -26,8 +26,8 @@ namespace i5.VIAProMa.UI.Chat
         {
             CommandController = GameObject.Find("CommandController");
             commandController = CommandController.GetComponent<CommandController>();
-            undoButtonBG = GameObject.Find("Undo Button/Backplate/Quad");
-            redoButtonBG = GameObject.Find("Redo Button/Backplate/Quad");
+            undoButtonBG = GameObject.Find("Undo Button/BackPlate/Quad");
+            redoButtonBG = GameObject.Find("Redo Button/BackPlate/Quad");
             /* ColorBlock colorBlock = bButton.GetComponent<Button>().colors;
              colorBlock.normalColor = yourColor;
              bButton.GetComponent<Button>().colors = colorBlock;*/
