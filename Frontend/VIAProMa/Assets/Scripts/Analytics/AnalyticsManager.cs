@@ -4,6 +4,7 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using i5.VIAProMa.WebConnection;
 using UnityEngine;
 using Newtonsoft.Json;
+using Microsoft.MixedReality.Toolkit;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
@@ -28,6 +29,11 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     public void Start()
     {
         GetSettingsFromBackendAsync();
+        if (_settings.AnalyticsEnabled && !CoreServices.InputSystem.EyeGazeProvider.IsEyeTrackingEnabled)
+        {
+            Debug.LogError("Eye tracking is disabled! Instuctions: " +
+                "https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/eye-tracking/eye-tracking-basic-setup?view=mrtkunity-2022-05#testing-your-unity-app-on-a-hololens-2");
+        }
     }
 
     private async void GetSettingsFromBackendAsync()
