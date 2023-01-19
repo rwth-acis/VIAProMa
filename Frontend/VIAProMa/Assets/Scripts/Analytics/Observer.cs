@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
-
     public abstract class ObserverWrapper<LogType> where LogType : class
     {
         public abstract class Observer : IObserver<LogType>
