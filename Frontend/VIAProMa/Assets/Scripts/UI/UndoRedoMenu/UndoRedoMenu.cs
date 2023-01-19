@@ -11,10 +11,6 @@ namespace i5.VIAProMa.UI.Chat
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
         private GameObject CommandController;
         private CommandController commandController;
-        private GameObject undoButtonBG;
-        private GameObject redoButtonBG;
-        private Color activeColor;
-        private Color notActiveColor = Color.grey;
 
         public bool WindowEnabled { get; set; }
 
@@ -26,35 +22,9 @@ namespace i5.VIAProMa.UI.Chat
         {
             CommandController = GameObject.Find("CommandController");
             commandController = CommandController.GetComponent<CommandController>();
-            undoButtonBG = GameObject.Find("Undo Button/BackPlate/Quad");
-            redoButtonBG = GameObject.Find("Redo Button/BackPlate/Quad");
-            /* ColorBlock colorBlock = bButton.GetComponent<Button>().colors;
-             colorBlock.normalColor = yourColor;
-             bButton.GetComponent<Button>().colors = colorBlock;*/
-            activeColor = undoButtonBG.GetComponent<Renderer>().material.color;
-            
         }
 
 
-        public void changeColor(bool undoable, bool redoable)
-        {
-            if(!undoable)
-            {
-                undoButtonBG.GetComponent<Renderer>().material.color = notActiveColor;
-            }
-            if (!redoable)
-            {
-                redoButtonBG.GetComponent<Renderer>().material.color = notActiveColor;
-            }
-            if(undoable)
-            {
-                undoButtonBG.GetComponent<Renderer>().material.color = activeColor;
-            }
-            if (redoable)
-            {
-                redoButtonBG.GetComponent<Renderer>().material.color = activeColor;
-            }
-        }
 
 
         public void Open()
@@ -90,7 +60,7 @@ namespace i5.VIAProMa.UI.Chat
 
         public void Redo()
         {
-            changeColor(false, false);
+
             commandController.Redo();
         }
     }
