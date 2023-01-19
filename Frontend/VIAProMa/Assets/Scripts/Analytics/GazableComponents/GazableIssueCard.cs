@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
-using VIAProMa.Assets.Scripts.Analytics;
 using i5.VIAProMa.UI.ListView.Issues;
 
 namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
