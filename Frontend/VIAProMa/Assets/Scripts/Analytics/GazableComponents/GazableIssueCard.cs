@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
-using i5.VIAProMa.UI.ListView.Issues;
+using i5.VIAProMa.SaveLoadSystem.Core;
 
 namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
 {
@@ -17,9 +17,8 @@ namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
 
         public void GazeDetected()
         {
-            string id = this.GetComponent<IssueDataDisplay>().Content.Id.ToString();
-            Debug.Log("ID des Issues" + id);
-            LogpointGazedAt logpoint = new LogpointGazedAt("VIAProMa Project Name", id, "IssueCard");  //TODO: Fill with data!
+            string loggedObjectID = this.GetComponent<Serializer>().Id;
+            LogpointGazedAt logpoint = new LogpointGazedAt(loggedObjectID, "IssueCard");
             NotifyObservers(logpoint);
         }
 

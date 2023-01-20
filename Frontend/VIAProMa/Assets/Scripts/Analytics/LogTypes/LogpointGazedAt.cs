@@ -6,9 +6,9 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
         public string LoggedObjectID { get; set; }
         public string LoggedObjectType { get; set; }
 
-        public LogpointGazedAt(string VIAProMaProjectID, string LoggedObjectID, string LoggedObjectType)
+        public LogpointGazedAt(string LoggedObjectID, string LoggedObjectType)
         {
-            this.VIAProMaProjectID = VIAProMaProjectID;
+            this.VIAProMaProjectID = AnalyticsManager.Instance.ProjectID;
             this.LoggedObjectID = LoggedObjectID;
             this.LoggedObjectType = LoggedObjectType;
         }
