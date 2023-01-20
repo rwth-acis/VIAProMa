@@ -5,7 +5,6 @@ using UnityEngine.Networking;
 using System.Text;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
-using System.Diagnostics;
 using System;
 using TMPro;
 using System.IO.Enumeration;
@@ -15,9 +14,25 @@ using i5.VIAProMa.UI;
 using static SessionBrowserRefresher;
 using Microsoft.MixedReality.Toolkit;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using WebSocketSharp;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
+    private class SearchResult
+    {
+        public string Name { get; set;}
+        public string Uid { get; set;}
+        public string PublishedAt { get; set;}
+
+        public override string ToString()
+        {
+            return String.Format("Name: {0}, UID: {1}, PublishedAt: {2}", Name, Uid, PublishedAt);
+        }
+    }
+
     private GameObject modelWrapper;
 
     [SerializeField] private GameObject itemWrapper;
@@ -108,15 +123,51 @@ public class SearchBrowserRefresher : MonoBehaviour
             }
             else
             {
-                UnityEngine.Debug.Log("File already saved in " + path + ", not downloading");
+                Debug.Log("File already saved in " + path + ", not downloading");
                 RefreshBrowser(path);
             }
 
+        } 
+        else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
+        {
+            StartCoroutine(SearchOnSketchfab(searchContent));
         }
     }
 
         
-    
+    private IEnumerator SearchOnSketchfab(string query)
+    {   
+
+        string uri = "https://api.sketchfab.com/v3/search?type=models&count=10&cursor=10&q=" + UnityWebRequest.EscapeURL(query);
+        //Debug.Log(uri);
+
+        using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
+
+        webRequest.SetRequestHeader("Accept", "application/json");
+        //webRequest.SetRequestHeader("Host", "api.sketchfab.com");
+        webRequest.SetRequestHeader("Authorization", "Token 3cf292185cd448acaac043a965237e6b");
+
+        yield return webRequest.SendWebRequest();
+
+        if (webRequest.result == UnityWebRequest.Result.Success)
+        {
+            JObject jsonResponse = JObject.Parse(webRequest.downloadHandler.text);
+            IList<JToken> results = jsonResponse["results"].Children().ToList();
+
+            IList<SearchResult> searchResults = new List<SearchResult>();
+            foreach(JToken result in results)
+            {
+                SearchResult searchResult = result.ToObject<SearchResult>();
+                searchResults.Add(searchResult);
+                Debug.Log(searchResult);
+            }
+        }
+        else
+        {
+            Debug.Log("Error connecting to sketchfab API: " + webRequest.error);
+        }
+
+    }
 
     IEnumerator DownloadFile(string path, string webLink)
     {           
