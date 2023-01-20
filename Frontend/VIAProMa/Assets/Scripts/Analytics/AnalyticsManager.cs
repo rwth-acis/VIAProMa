@@ -5,29 +5,59 @@ using i5.VIAProMa.WebConnection;
 using UnityEngine;
 using Newtonsoft.Json;
 using Microsoft.MixedReality.Toolkit;
+using System.Collections;
+using UnityEngine.UI;
+using System;
+using POpusCodec.Enums;
+using UnityEngine.TextCore.Text;
+using UnityEngine.XR.ARSubsystems;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
     private AnalyticsSettings _settings;
 
+    public Text TextObject;
+    public DateTime CurrentAt;
+    public DateTime ExpiresAt;
+
     [SerializeField]
     public bool AnalyticsEnabled {
+        
         get { return _settings.AnalyticsEnabled; } 
         set {
             PhotonView.Get(this).RPC("SetAnalyticsEnabled", RpcTarget.Others, value);
             _settings.AnalyticsEnabled = value;
+
+            ShowEnabledText(); //TODO: Photon Implementation
             SetSettingsOnBackend();
         }
     }
 
+    public void ShowEnabledText()
+    {
+        TextObject.text = "Telemetry Enabled!";
+        if (AnalyticsManager.Instance.AnalyticsEnabled)
+        {
+            CurrentAt = DateTime.Now;
+            ExpiresAt = DateTime.Now.AddSeconds(5);
+        }
+    }
+    public void Update()
+    {
+        CurrentAt = DateTime.Now;
+        if (AnalyticsManager.Instance.AnalyticsEnabled && (CurrentAt < ExpiresAt)) TextObject.enabled = true;
+        else TextObject.enabled = false;  
+    }
 
     public AnalyticsManager()
     {
-         _settings = new AnalyticsSettings();
+        _settings = new AnalyticsSettings();
     }
 
     public void Start()
     {
+        TextObject.text = "";
+        ShowEnabledText();
         GetSettingsFromBackendAsync();
         if (_settings.AnalyticsEnabled && !CoreServices.InputSystem.EyeGazeProvider.IsEyeTrackingEnabled)
         {
@@ -38,6 +68,7 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 
     private async void GetSettingsFromBackendAsync()
     {
+        ShowEnabledText();
         Response resp =
                 await Rest.GetAsync(
                     ConnectionManager.Instance.BackendAPIBaseURL + "analytics/viaproma/settings",
@@ -63,5 +94,6 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     private void SetAnalyticsEnabled(bool enabled)
     {
         _settings.AnalyticsEnabled = enabled;
+        ShowEnabledText();
     }
 }

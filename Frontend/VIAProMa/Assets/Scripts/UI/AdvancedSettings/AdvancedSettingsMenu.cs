@@ -1,13 +1,10 @@
-using i5.VIAProMa.UI;
-using i5.VIAProMa.UI.InputFields;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
-using Photon.Realtime;
 using System;
-using TMPro;
 using UnityEngine;
-
+using UnityEngine.UI;
+using System.Collections;
 namespace i5.VIAProMa.UI
 {
     /// <summary>
@@ -23,6 +20,8 @@ namespace i5.VIAProMa.UI
         public bool WindowEnabled { get; set; } // not used here
 
         public event EventHandler WindowClosed;
+
+        public Text textElement;
 
         [SerializeField] public Interactable AnalyticsToggleBtn;
 
