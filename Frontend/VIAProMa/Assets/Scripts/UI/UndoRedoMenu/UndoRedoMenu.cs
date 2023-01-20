@@ -25,8 +25,6 @@ namespace i5.VIAProMa.UI.Chat
         }
 
 
-
-
         public void Open()
         {
             gameObject.SetActive(true);

@@ -25,12 +25,9 @@ public class CommandProcessor
             commands.RemoveRange(currentPosition + 1, commands.Count - 1);
 
         }
-
-
         commands.Add(command);
         currentPosition++;
         command.Execute();
-
         if (state == 0)
         {
             closeButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Close Button/BackPlate/Quad");
@@ -39,13 +36,9 @@ public class CommandProcessor
             redoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");
             state = 1;
         }
-
         // Undo is now possible, Redo not
         changeColor(true, false);
         Debug.Log(currentPosition);
-
-
-
     }
 
     public void Undo()
@@ -79,13 +72,7 @@ public class CommandProcessor
         {
             return;
         }
-
-        currentPosition++;
-        Debug.Log(currentPosition);
-        ICommand command = commands[currentPosition];
-        command.Redo();
-
-        if(currentPosition >= commands.Count - 1)
+        else if(currentPosition >= commands.Count - 2)
         {
             changeColor(true, false);
         }
@@ -93,6 +80,10 @@ public class CommandProcessor
         {
             changeColor(true, true);
         }
+        currentPosition++;
+        Debug.Log(currentPosition);
+        ICommand command = commands[currentPosition];
+        command.Redo();
 
     }
 
