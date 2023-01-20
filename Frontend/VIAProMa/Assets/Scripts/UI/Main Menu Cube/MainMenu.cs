@@ -23,6 +23,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private Interactable anchoringButton;
         [SerializeField] private Interactable issueShelfButton;
         [SerializeField] private Interactable visualizationShelfButton;
+        [SerializeField] private Interactable importModelButton;
         [SerializeField] private Interactable loginButton;
         [SerializeField] private Interactable roomButton;
         [SerializeField] private TextMeshPro roomButtonText;
@@ -34,6 +35,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
+        [SerializeField] private GameObject importModelPrefab;
 
 
         private FoldController foldController;
@@ -43,6 +45,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         private GameObject visualizationShelfInstance;
         private GameObject loadShelfInstance;
         private GameObject avatarConfiguratorInstance;
+        private GameObject importModelInstance;
 
         private void Awake()
         {
@@ -69,6 +72,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             if (visualizationShelfButton == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(visualizationShelfButton));
+            }
+            if (importModelButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(importModelButton));
             }
             if (loginButton == null)
             {
@@ -144,6 +151,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             loadButton.IsEnabled = PhotonNetwork.InRoom;
             issueShelfButton.IsEnabled = PhotonNetwork.InRoom;
             visualizationShelfButton.IsEnabled = PhotonNetwork.InRoom;
+            importModelButton.IsEnabled = PhotonNetwork.InRoom;
             anchoringButton.IsEnabled = PhotonNetwork.InRoom;
         }
 
@@ -215,6 +223,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
             foldController.InitalizeNewCloseTimer();
         }
 
+        public void ShowImportModelMenu()
+        {
+            Vector3 targetPosition = importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position;
+            //WindowManager.Instance.ImportManager.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            NetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, "SetImportManagerInstance");
+            foldController.InitalizeNewCloseTimer();
+        }
+
         public void ShowLoadShelf()
         {
             Vector3 targetPosition = transform.position + 1f * transform.right;
@@ -256,6 +272,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 PhotonNetwork.LeaveRoom();
                 AnchorManager.Instance.DisableAnchoring();
+                if (importModelInstance != null)
+                {
+                    importModelInstance.GetComponent<ImportManager>().Refresh3DImportSystem();
+                }
 
             }
             foldController.InitalizeNewCloseTimer();
