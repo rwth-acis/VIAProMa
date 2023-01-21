@@ -29,9 +29,9 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
             PhotonView.Get(this).RPC("SetIsAnalyticsEnabled", RpcTarget.Others, value);
             _settings.AnalyticsEnabled = value;
 
-            ShowIsTelemetryEnabledPopup();
+            ShowIsTelemetryEnabledPopup(true);
             // Let other players display the new telemetry enabled state popup.
-            PhotonView.Get(this).RPC("ShowIsTelemetryEnabledPopup", RpcTarget.Others);
+            PhotonView.Get(this).RPC("ShowIsTelemetryEnabledPopup", RpcTarget.Others, value);
 
             SetSettingsOnBackend();
         }
@@ -45,8 +45,9 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     }
 
     [PunRPC]
-    public void ShowIsTelemetryEnabledPopup()
+    public void ShowIsTelemetryEnabledPopup(bool alibi)
     {
+        // TODO: Remove the boolean parameter alibi. In is not used anywhere but Photon complains if there isn't a boolean parameter here. We have no clue why, but it works this way.
         TextObject.text = AnalyticsManager.Instance.AnalyticsEnabled ? "Telemetry Enabled!" : "Telemetry Disabled!";
         ExpiresAt = DateTime.Now.AddSeconds(2.5);
         NotificationSound.Play();
@@ -66,7 +67,7 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
                 "https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/eye-tracking/eye-tracking-basic-setup?view=mrtkunity-2022-05#testing-your-unity-app-on-a-hololens-2");
         }
         TextObject.text = "";
-        ShowIsTelemetryEnabledPopup();
+        ShowIsTelemetryEnabledPopup(true);
         isStartOver = true;
     }
 
