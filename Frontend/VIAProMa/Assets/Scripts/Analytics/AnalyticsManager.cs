@@ -24,9 +24,10 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
         }
     }
 
-    public string ProjectID
+    public Guid ProjectID
     {
-        get { return _projectGUID.ToString(); }
+        get { return _projectGUID; }
+        set { _projectGUID = value; }
     }
 
 
@@ -43,13 +44,11 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
             Debug.LogError("Eye tracking is disabled! Instuctions: " +
                 "https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/eye-tracking/eye-tracking-basic-setup?view=mrtkunity-2022-05#testing-your-unity-app-on-a-hololens-2");
         }
-    }
 
-    public new void Awake()
-    {
         // Generate a new GUID for the VIAProMa project that the analytics refer to. If the project ID is already set (for example because the project has been saved and loaded), do nothing and use the old ID.
-        if (_projectGUID == null)
+        if (_projectGUID.Equals(Guid.Empty))
             _projectGUID = Guid.NewGuid();
+        Debug.Log(_projectGUID);
     }
 
     private async void GetSettingsFromBackendAsync()
