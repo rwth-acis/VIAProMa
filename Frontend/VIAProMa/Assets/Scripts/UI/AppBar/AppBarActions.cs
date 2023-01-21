@@ -16,6 +16,15 @@ namespace i5.VIAProMa.UI.AppBar
         private Quaternion startRotation;
         private Vector3 startScale;
 
+        //-----------------------
+        ICommand position;
+        ICommand rotation;
+        ICommand scale;
+        private GameObject CommandController;
+        private CommandController commandController;
+
+
+
         /// <summary>
         /// True if the target to which the app bar belongs is a networed object (with a PhotonView)
         /// </summary>
@@ -31,6 +40,8 @@ namespace i5.VIAProMa.UI.AppBar
             {
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
             }
+            CommandController = GameObject.Find("CommandController");
+            commandController = CommandController.GetComponent<CommandController>();
         }
 
         /// <summary>
@@ -63,8 +74,12 @@ namespace i5.VIAProMa.UI.AppBar
         public void StartAdjustment()
         {
             startPosition = appBarPlacer.TargetBoundingBox.Target.transform.localPosition;
+            position = new AppBarPositionCommand(startPosition, appBarPlacer);
             startRotation = appBarPlacer.TargetBoundingBox.Target.transform.localRotation;
+            //rotation = new AppBarRotationCommand(startRotation, appBarPlacer);
             startScale = appBarPlacer.TargetBoundingBox.Target.transform.localScale;
+            //scale = new AppBarScaleCommand(startScale, appBarPlacer);
+            commandController.Execute(position);
         }
 
         /// <summary>
