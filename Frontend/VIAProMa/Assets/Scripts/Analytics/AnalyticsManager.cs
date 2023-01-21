@@ -97,6 +97,6 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     [PunRPC]
     private void SetIsAnalyticsEnabled(bool enabled)
     {
-        this.AnalyticsEnabled = enabled;
+        _settings.AnalyticsEnabled = enabled;
     }
 }
