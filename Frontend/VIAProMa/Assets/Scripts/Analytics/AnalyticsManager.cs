@@ -12,7 +12,6 @@ using UnityEngine.UI;
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
     private AnalyticsSettings _settings;
-
     public Text TextObject;
     public GameObject Background;
     public DateTime CurrentAt;
@@ -22,7 +21,6 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     [SerializeField]
     public bool AnalyticsEnabled
     {
-
         get { return _settings.AnalyticsEnabled; }
         set
         {
@@ -38,6 +36,22 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
         }
     }
 
+    public void Update()
+    {
+        CurrentAt = DateTime.Now;
+        if ((CurrentAt < ExpiresAt) && isStartOver)
+        {
+            Background.SetActive(true);
+            TextObject.enabled = true;
+        }
+        else
+        {
+            Background.SetActive(false);
+            TextObject.enabled = false;
+        }
+    }
+
+    [PunRPC]
     public void ShowIsTelemetryEnabledPopup()
     {
 
@@ -52,21 +66,6 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 
         CurrentAt = DateTime.Now;
         ExpiresAt = DateTime.Now.AddSeconds(2.5);
-    }
-
-    public void Update()
-    {
-        CurrentAt = DateTime.Now;
-        if ((CurrentAt < ExpiresAt) && isStartOver)
-        {
-            Background.SetActive(true);
-            TextObject.enabled = true;
-        }
-        else
-        {
-            Background.SetActive(false);
-            TextObject.enabled = false;
-        }
     }
 
     public AnalyticsManager()
