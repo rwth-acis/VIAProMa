@@ -2,20 +2,18 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 {
     public class LogpointGazedAt : Logpoint
     {
-        public string ProjectName { get; set; }
-        public string LogID { get; set; }
+        public string LoggedObjectID { get; set; }
         public string LoggedObjectType { get; set; }
 
-        public LogpointGazedAt(string ProjectName, string LogID, string LoggedObjectType)
+        public LogpointGazedAt(string LoggedObjectID, string LoggedObjectType)
         {
-            this.ProjectName = ProjectName;
-            this.LogID = LogID;
+            this.LoggedObjectID = LoggedObjectID;
             this.LoggedObjectType = LoggedObjectType;
         }
 
         public override string ToString()
         {
-            return string.Format("{0}: Project Name: {1}, LogID: {2} LoggedType: {3}", base.Timestamp, ProjectName, LogID, LoggedObjectType);
+            return base.ToString() + string.Format(", Logged Object ID: {0} Logged Object Type: {1}", LoggedObjectID, LoggedObjectType);
         }
     }
 }
