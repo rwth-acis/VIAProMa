@@ -14,7 +14,6 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     private AnalyticsSettings _settings;
     public Text TextObject;
     public GameObject Background;
-    public DateTime CurrentAt;
     public DateTime ExpiresAt;
     private bool isStartOver = false;
 
@@ -38,33 +37,15 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 
     public void Update()
     {
-        CurrentAt = DateTime.Now;
-        if ((CurrentAt < ExpiresAt) && isStartOver)
-        {
-            Background.SetActive(true);
-            TextObject.enabled = true;
-        }
-        else
-        {
-            Background.SetActive(false);
-            TextObject.enabled = false;
-        }
+        bool showPopup = (DateTime.Now < ExpiresAt) && isStartOver;
+        Background.SetActive(showPopup);
+        TextObject.enabled = showPopup;
     }
 
     [PunRPC]
     public void ShowIsTelemetryEnabledPopup()
     {
-
-        if (AnalyticsManager.Instance.AnalyticsEnabled)
-        {
-            TextObject.text = "Telemetry Enabled!";
-        }
-        else
-        {
-            TextObject.text = "Telemetry Disabled!";
-        }
-
-        CurrentAt = DateTime.Now;
+        TextObject.text = AnalyticsManager.Instance.AnalyticsEnabled ? "Telemetry Enabled!" : "Telemetry Disabled!";
         ExpiresAt = DateTime.Now.AddSeconds(2.5);
     }
 
