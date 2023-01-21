@@ -19,14 +19,11 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 {
     private AnalyticsSettings _settings;
 
-    //everything concerned with the Telemetry Notification
     public Text TextObject;
     public GameObject Background;
     public DateTime CurrentAt;
     public DateTime ExpiresAt;
     private bool isStartOver = false;
-    public AudioSource NotificationSound;
-
 
     [SerializeField]
     public bool AnalyticsEnabled {
@@ -55,7 +52,6 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 
         CurrentAt = DateTime.Now;
         ExpiresAt = DateTime.Now.AddSeconds(2.5);
-        if(isStartOver) NotificationSound.Play();
     }
 
     public void Update()
@@ -68,7 +64,7 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
         }
         else
         {
-            Background.SetActive(false); 
+            Background.SetActive(false);
             TextObject.enabled = false;
         }
     }
