@@ -5,15 +5,9 @@ using i5.VIAProMa.WebConnection;
 using UnityEngine;
 using Newtonsoft.Json;
 using Microsoft.MixedReality.Toolkit;
-using System.Collections;
-using UnityEngine.UI;
 using System;
-using POpusCodec.Enums;
-using UnityEngine.TextCore.Text;
-using UnityEngine.XR.ARSubsystems;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
@@ -26,26 +20,32 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     private bool isStartOver = false;
 
     [SerializeField]
-    public bool AnalyticsEnabled {
-        
-        get { return _settings.AnalyticsEnabled; } 
-        set {
-            PhotonView.Get(this).RPC("SetAnalyticsEnabled", RpcTarget.Others, value);
+    public bool AnalyticsEnabled
+    {
+
+        get { return _settings.AnalyticsEnabled; }
+        set
+        {
+            // Let other players pull the new settings.
+            PhotonView.Get(this).RPC("SetIsAnalyticsEnabled", RpcTarget.Others, value);
             _settings.AnalyticsEnabled = value;
 
-            ShowEnabledText(); //TODO: Photon Implementation
+            ShowIsTelemetryEnabledPopup();
+            // Let other players display the new telemetry enabled state popup.
+            PhotonView.Get(this).RPC("ShowIsTelemetryEnabledPopup", RpcTarget.Others, value);
+
             SetSettingsOnBackend();
         }
     }
 
-    public void ShowEnabledText()
+    public void ShowIsTelemetryEnabledPopup()
     {
-        
+
         if (AnalyticsManager.Instance.AnalyticsEnabled)
         {
             TextObject.text = "Telemetry Enabled!";
         }
-        else if(!AnalyticsManager.Instance.AnalyticsEnabled)
+        else
         {
             TextObject.text = "Telemetry Disabled!";
         }
@@ -83,13 +83,12 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
                 "https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/eye-tracking/eye-tracking-basic-setup?view=mrtkunity-2022-05#testing-your-unity-app-on-a-hololens-2");
         }
         TextObject.text = "";
-        ShowEnabledText();
+        ShowIsTelemetryEnabledPopup();
         isStartOver = true;
     }
 
     private async Task GetSettingsFromBackendAsync()
     {
-        ShowEnabledText();
         Response resp =
                 await Rest.GetAsync(
                     ConnectionManager.Instance.BackendAPIBaseURL + "analytics/viaproma/settings",
@@ -99,7 +98,7 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
                     true);
         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         string responseBody = await resp.GetResponseBody();
-        _settings = JsonConvert.DeserializeObject<AnalyticsSettings>(responseBody);
+        _settings = JsonConvert.DeserializeObject<AnalyticsSettings>(responseBody); // TODO: Edit to only get Analytics enabled key, when updating to project based analytics.
     }
 
     private async void SetSettingsOnBackend()
@@ -112,9 +111,8 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
     }
 
     [PunRPC]
-    private void SetAnalyticsEnabled(bool enabled)
+    private void SetIsAnalyticsEnabled(bool enabled)
     {
-        _settings.AnalyticsEnabled = enabled;
-        ShowEnabledText();
+        this.AnalyticsEnabled = enabled;
     }
 }
