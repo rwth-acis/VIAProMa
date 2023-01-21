@@ -20,7 +20,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
         [SerializeField] private float autoSaveInterval = 5f;
 
         [Header("Version")]
-        [SerializeField] private int saveDataVersion = 2;
+        [SerializeField] private int saveDataVersion = 2; // Unity UI overrides the standard value => This value must be updated in Unity as well.
 
         private static bool savedOnQuit = false;
 
