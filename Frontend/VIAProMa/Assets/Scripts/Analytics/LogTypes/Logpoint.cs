@@ -18,7 +18,7 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 
         public override string ToString()
         {
-            return Timestamp.ToString();
+            return string.Format("Time: {0}, VIAProMa Project ID: {1}, User ID: {2}", Timestamp.ToString(), VIAProMaProjectID.ToString(), UserId);
         }
     }
 }

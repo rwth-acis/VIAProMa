@@ -3,6 +3,7 @@ using i5.VIAProMa.UI.ListView.Issues;
 
 namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 {
+    // TODO: Maybe reduce information down to Issue ID, to be consistent with LogpointGazedAt
     public class LogpointIssueSelected : Logpoint
     {
         public string CreatorEMail { get; set; }
@@ -30,7 +31,7 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 
         public override string ToString()
         {
-            return string.Format("Timestamp: {0} CreatorEMail: {1}, CreatorUserName: {2}, IssueId: {3}, IssueName: {4}, Status: {5}", Timestamp, CreatorEMail, CreatorUserName, IssueId, IssueName, Status);
+            return base.ToString() + string.Format(", Creator EMail: {0}, Creator User Name: {1}, Issue ID: {2}, Issue Name: {3}, Status: {4}", CreatorEMail, CreatorUserName, IssueId, IssueName, Status);
         }
     }
 }

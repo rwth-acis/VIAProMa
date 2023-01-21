@@ -1,5 +1,3 @@
-using System;
-
 namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 {
     public class LogpointGazedAt : Logpoint
@@ -15,7 +13,7 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 
         public override string ToString()
         {
-            return string.Format("{0}: VIAProMaProjectID: {1}, LoggedObjectID: {2} LoggedObjectType: {3}", base.Timestamp, VIAProMaProjectID, LoggedObjectID, LoggedObjectType);
+            return base.ToString() + string.Format(", Logged Object ID: {0} Logged Object Type: {1}", LoggedObjectID, LoggedObjectType);
         }
     }
 }
