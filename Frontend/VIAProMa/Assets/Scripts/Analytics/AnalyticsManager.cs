@@ -11,12 +11,14 @@ using UnityEngine.UI;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
+    // Everything concerned with the Notification PopUp
     private AnalyticsSettings _settings;
     public Text TextObject;
     public GameObject Background;
     public DateTime CurrentAt;
     public DateTime ExpiresAt;
     private bool isStartOver = false;
+    public AudioSource NotificationSound;
 
     [SerializeField]
     public bool AnalyticsEnabled
@@ -66,6 +68,7 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 
         CurrentAt = DateTime.Now;
         ExpiresAt = DateTime.Now.AddSeconds(2.5);
+        NotificationSound.Play();
     }
 
     public AnalyticsManager()
