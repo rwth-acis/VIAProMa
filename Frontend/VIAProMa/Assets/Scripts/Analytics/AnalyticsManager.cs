@@ -11,14 +11,19 @@ using System;
 using POpusCodec.Enums;
 using UnityEngine.TextCore.Text;
 using UnityEngine.XR.ARSubsystems;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using UnityEngine.UIElements;
 
 public class AnalyticsManager : Singleton<AnalyticsManager>
 {
     private AnalyticsSettings _settings;
 
     public Text TextObject;
+    public GameObject Background;
     public DateTime CurrentAt;
     public DateTime ExpiresAt;
+    private bool isStartOver = false;
 
     [SerializeField]
     public bool AnalyticsEnabled {
@@ -35,18 +40,33 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 
     public void ShowEnabledText()
     {
-        TextObject.text = "Telemetry Enabled!";
+        
         if (AnalyticsManager.Instance.AnalyticsEnabled)
         {
-            CurrentAt = DateTime.Now;
-            ExpiresAt = DateTime.Now.AddSeconds(5);
+            TextObject.text = "Telemetry Enabled!";
         }
+        else if(!AnalyticsManager.Instance.AnalyticsEnabled)
+        {
+            TextObject.text = "Telemetry Disabled!";
+        }
+
+        CurrentAt = DateTime.Now;
+        ExpiresAt = DateTime.Now.AddSeconds(2.5);
     }
+
     public void Update()
     {
         CurrentAt = DateTime.Now;
-        if (AnalyticsManager.Instance.AnalyticsEnabled && (CurrentAt < ExpiresAt)) TextObject.enabled = true;
-        else TextObject.enabled = false;  
+        if ((CurrentAt < ExpiresAt) && isStartOver)
+        {
+            Background.SetActive(true);
+            TextObject.enabled = true;
+        }
+        else
+        {
+            Background.SetActive(false);
+            TextObject.enabled = false;
+        }
     }
 
     public AnalyticsManager()
@@ -54,19 +74,20 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
         _settings = new AnalyticsSettings();
     }
 
-    public void Start()
+    public async Task Start()
     {
-        TextObject.text = "";
-        ShowEnabledText();
-        GetSettingsFromBackendAsync();
+        await GetSettingsFromBackendAsync();
         if (_settings.AnalyticsEnabled && !CoreServices.InputSystem.EyeGazeProvider.IsEyeTrackingEnabled)
         {
             Debug.LogError("Eye tracking is disabled! Instuctions: " +
                 "https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/eye-tracking/eye-tracking-basic-setup?view=mrtkunity-2022-05#testing-your-unity-app-on-a-hololens-2");
         }
+        TextObject.text = "";
+        ShowEnabledText();
+        isStartOver = true;
     }
 
-    private async void GetSettingsFromBackendAsync()
+    private async Task GetSettingsFromBackendAsync()
     {
         ShowEnabledText();
         Response resp =
