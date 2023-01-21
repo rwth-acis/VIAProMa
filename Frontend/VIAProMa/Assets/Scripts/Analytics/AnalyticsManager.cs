@@ -31,7 +31,7 @@ public class AnalyticsManager : Singleton<AnalyticsManager>
 
             ShowIsTelemetryEnabledPopup();
             // Let other players display the new telemetry enabled state popup.
-            PhotonView.Get(this).RPC("ShowIsTelemetryEnabledPopup", RpcTarget.Others, value);
+            PhotonView.Get(this).RPC("ShowIsTelemetryEnabledPopup", RpcTarget.Others);
 
             SetSettingsOnBackend();
         }
