@@ -30,9 +30,9 @@ public class CommandProcessor
         command.Execute();
         if (state == 0)
         {
-           // closeButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Close Button/BackPlate/Quad");
-            //undoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Undo Button/BackPlate/Quad");
-            //redoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");
+           /*closeButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Close Button/BackPlate/Quad");
+           undoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Undo Button/BackPlate/Quad");
+           redoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");*/
 
             //die oberen zeilen für normale szene benutzen
             closeButton = GameObject.Find("UndoRedoMenu/Leiste/Close Button/BackPlate/Quad");
@@ -40,13 +40,11 @@ public class CommandProcessor
             redoButtonBG = GameObject.Find("UndoRedoMenu/Leiste/Backdrop/Redo Button/BackPlate/Quad");
 
             activeColor = closeButton.GetComponent<Renderer>().material.color;
-
-
             state = 1;
         }
         // Undo is now possible, Redo not
         changeColor(true, false);
-        Debug.Log(currentPosition);
+        //Debug.Log(currentPosition);
     }
 
     public void Undo()
@@ -59,7 +57,7 @@ public class CommandProcessor
         ICommand command = commands[currentPosition];
         command.Undo();
         currentPosition--;
-        Debug.Log(currentPosition);
+       // Debug.Log(currentPosition);
 
 
         //Undo only possible if there is still something to undo, redo possible
@@ -89,7 +87,7 @@ public class CommandProcessor
             changeColor(true, true);
         }
         currentPosition++;
-        Debug.Log(currentPosition);
+        //Debug.Log(currentPosition);
         ICommand command = commands[currentPosition];
         command.Redo();
 
