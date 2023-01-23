@@ -17,9 +17,7 @@ namespace i5.VIAProMa.UI.AppBar
         private Vector3 startScale;
 
         //-----------------------
-        ICommand position;
-        ICommand rotation;
-        ICommand scale;
+        ICommand transform;
         private GameObject CommandController;
         private CommandController commandController;
 
@@ -74,12 +72,10 @@ namespace i5.VIAProMa.UI.AppBar
         public void StartAdjustment()
         {
             startPosition = appBarPlacer.TargetBoundingBox.Target.transform.localPosition;
-            position = new AppBarPositionCommand(startPosition, appBarPlacer);
             startRotation = appBarPlacer.TargetBoundingBox.Target.transform.localRotation;
-            //rotation = new AppBarRotationCommand(startRotation, appBarPlacer);
             startScale = appBarPlacer.TargetBoundingBox.Target.transform.localScale;
-            //scale = new AppBarScaleCommand(startScale, appBarPlacer);
-            commandController.Execute(position);
+            transform = new AppBarTransformCommand(startPosition, startRotation, startScale, appBarPlacer);
+            commandController.Execute(transform);
         }
 
         /// <summary>
