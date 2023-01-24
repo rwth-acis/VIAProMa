@@ -8,14 +8,17 @@ using i5.VIAProMa.Visualizations.ProgressBars;
 
 public class ProgressBarHandleCommand : ICommand
 {
-    private Vector3 previousPosition;
+    private Vector3 prevPointer;
+    private Vector3 finPointer;
+
     private bool newHandleOnPositiveCap;
     private ProgressBarController progressBar;
 
-    public ProgressBarHandleCommand(Vector3 spreviousPosition, bool snewHandleOnPositiveCap, ProgressBarController sprogressBar)
+    public ProgressBarHandleCommand(Vector3 spointer, Vector3 finalPointer, bool snewHandleOnPositiveCap, ProgressBarController sprogressBar)
     {
-        previousPosition = spreviousPosition;
-        newHandleOnPositiveCap = !snewHandleOnPositiveCap;
+        prevPointer = spointer;
+        finPointer = finalPointer;
+        newHandleOnPositiveCap = snewHandleOnPositiveCap;
         progressBar = sprogressBar;
         
     }
@@ -27,11 +30,13 @@ public class ProgressBarHandleCommand : ICommand
 
     public void Undo()
     {
-        progressBar.SetHandles(previousPosition, newHandleOnPositiveCap);
+        progressBar.StartResizing(finPointer, newHandleOnPositiveCap);
+        progressBar.SetHandles(prevPointer, newHandleOnPositiveCap);
     }
 
     public void Redo()
     {
-
+        progressBar.StartResizing(prevPointer, newHandleOnPositiveCap);
+        progressBar.SetHandles(finPointer, newHandleOnPositiveCap);
     }
 }

@@ -6,6 +6,8 @@ public class CommandProcessor
 {
     private List<ICommand> commands = new List<ICommand>();
     private int currentPosition = -1;
+    private int range = 0;
+
 
     public void Execute(ICommand command)
     {
@@ -13,7 +15,8 @@ public class CommandProcessor
 
         if(currentPosition < commands.Count - 1)
         {
-            commands.RemoveRange(currentPosition + 1, commands.Count - 1);
+            range = commands.Count - (currentPosition + 1); 
+            commands.RemoveRange(currentPosition + 1, range);
 
         }
 
@@ -21,7 +24,8 @@ public class CommandProcessor
         commands.Add(command);
         currentPosition++;
         command.Execute();
-        Debug.Log(currentPosition);
+        Debug.Log("Position: " + currentPosition);
+        Debug.Log("Count: " + commands.Count);
     }
 
     public void Undo()
