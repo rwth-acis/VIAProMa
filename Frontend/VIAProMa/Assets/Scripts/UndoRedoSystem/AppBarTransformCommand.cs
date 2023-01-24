@@ -25,7 +25,10 @@ public class AppBarTransformCommand : ICommand
 
     public void Execute()
     {
-        startPosition = appBarPlacer.TargetBoundingBox.Target.transform.localPosition;
+        //startPosition = appBarPlacer.TargetBoundingBox.Target.transform.localPosition;
+        appBarPlacer.TargetBoundingBox.Target.transform.localPosition = endPosition;
+        appBarPlacer.TargetBoundingBox.Target.transform.localRotation = endRotation;
+        appBarPlacer.TargetBoundingBox.Target.transform.localScale = endScale;
     }
 
     public void Undo()
@@ -37,7 +40,7 @@ public class AppBarTransformCommand : ICommand
         appBarPlacer.TargetBoundingBox.Target.transform.localRotation = startRotation;
         appBarPlacer.TargetBoundingBox.Target.transform.localScale = startScale;
     }
-
+ 
     public void Redo()
     {
         appBarPlacer.TargetBoundingBox.Target.transform.localPosition = endPosition;

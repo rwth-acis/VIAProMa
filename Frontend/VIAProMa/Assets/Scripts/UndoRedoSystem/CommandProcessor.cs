@@ -37,7 +37,7 @@ public class CommandProcessor
         }
 
         // Undo is now possible, Redo not
-        changeColor(true, false);
+        ChangeColor(true, false);
 
         //TODO Delete Debug.log
         Debug.Log(currentPosition);
@@ -60,10 +60,10 @@ public class CommandProcessor
         // Undo only possible if there is still something to undo, redo possible
         if (currentPosition == -1)
         {
-            changeColor(false, true);
+            ChangeColor(false, true);
         } else
         {
-            changeColor(true, true);
+            ChangeColor(true, true);
         }
     }
 
@@ -75,19 +75,19 @@ public class CommandProcessor
         }
         else if(currentPosition >= commands.Count - 2)
         {
-            changeColor(true, false);
+            ChangeColor(true, false);
         }
         else
         {
-            changeColor(true, true);
+            ChangeColor(true, true);
         }
         currentPosition++;
         Debug.Log(currentPosition);
         ICommand command = commands[currentPosition];
-        command.Redo();
+        command.Execute();
     }
 
-    public void changeColor(bool undoable, bool redoable)
+    public void ChangeColor(bool undoable, bool redoable)
     {
         if (!undoable)
         {
