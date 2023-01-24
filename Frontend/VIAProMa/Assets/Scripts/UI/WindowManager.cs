@@ -14,6 +14,7 @@ namespace i5.VIAProMa.UI
         [SerializeField] private GameObject saveProjectMenuPrefab;
         [SerializeField] private GameObject loginMenuPrefab;
         [SerializeField] private GameObject anchorMenuPrefab;
+        [SerializeField] private GameObject undoRedoMenuPrefab;
 
         private void Start()
         {
@@ -23,6 +24,8 @@ namespace i5.VIAProMa.UI
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
             AnchorMenu = (AnchoringMenu)InstantiateWindow(anchorMenuPrefab);
+            UndoRedoMenu = (UndoRedoMenu)InstantiateWindow(undoRedoMenuPrefab);
+
         }
 
         private IWindow InstantiateWindow(GameObject prefab)
@@ -50,5 +53,7 @@ namespace i5.VIAProMa.UI
         public LoginMenu LoginMenu { get; private set; }
 
         public AnchoringMenu AnchorMenu { get; private set; }
+
+        public UndoRedoMenu UndoRedoMenu { get; private set; }
     }
 }
