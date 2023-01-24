@@ -9,8 +9,8 @@ namespace i5.VIAProMa.UI.Chat
     {
         [SerializeField] private GameObject Leiste;
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
-        private GameObject CommandController;
-        private CommandController commandController;
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
 
         public bool WindowEnabled { get; set; }
 
@@ -20,8 +20,8 @@ namespace i5.VIAProMa.UI.Chat
 
         public void Awake()
         {
-            CommandController = GameObject.Find("CommandController");
-            commandController = CommandController.GetComponent<CommandController>();
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
 
         public void Open()
@@ -52,12 +52,12 @@ namespace i5.VIAProMa.UI.Chat
 
         public void Undo()
         {
-            commandController.Undo();
+            UndoRedoManager.Undo();
         }
 
         public void Redo()
         {
-            commandController.Redo();
+            UndoRedoManager.Redo();
         }
     }
 }

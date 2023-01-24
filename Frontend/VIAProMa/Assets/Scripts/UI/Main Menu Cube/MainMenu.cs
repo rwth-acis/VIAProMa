@@ -35,7 +35,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
         [SerializeField] private GameObject undoRedoMenuPrefab;
-        [SerializeField] private CommandController commandController;
+        [SerializeField] private UndoRedoManager UndoRedoManager;
 
         private FoldController foldController;
 
@@ -192,14 +192,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowSaveMenu()
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.SaveProjectWindow, saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-            commandController.Execute(createMenu);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowAnchorMenu()
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.AnchorMenu, saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-            commandController.Execute(createMenu);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -237,7 +237,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowLoginMenu()
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.LoginMenu, loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
-            commandController.Execute(createMenu);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -253,14 +253,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowServerStatusMenu()
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.ServerStatusMenu, serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-            commandController.Execute(createMenu);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowUndoRedoMenu()
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.UndoRedoMenu, undoRedoButton.transform.position - 0.3f * transform.right + 0.15f * transform.up - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-            commandController.Execute(createMenu);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -271,7 +271,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             if (PhotonNetwork.InLobby)
             {
                 ICommand createMenu = new CreateMenuCommand(MenuType.RoomMenu, roomButton.transform.position - 0.6f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-                commandController.Execute(createMenu);
+                UndoRedoManager.Execute(createMenu);
             }
             else
             {
@@ -285,7 +285,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ChatButtonClicked()
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.ChatMenu, chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
-            commandController.Execute(createMenu);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 

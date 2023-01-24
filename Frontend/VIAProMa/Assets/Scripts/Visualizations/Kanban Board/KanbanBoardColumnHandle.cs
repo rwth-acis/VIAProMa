@@ -19,8 +19,8 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
         private Vector3 kanbanBoardColumnEndPosition;
         private float startLength;
 
-        private GameObject CommandController;
-        private CommandController commandController;
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
         
         private float oldHeight;
         private float oldWidth;
@@ -34,8 +34,8 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         private void Awake()
         {
-            CommandController = GameObject.Find("CommandController");
-            commandController = CommandController.GetComponent<CommandController>();
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
 
             if (kanbanBoardController == null)
             {
@@ -130,7 +130,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
         public void OnPointerUp(MixedRealityPointerEventData eventData)
         {
             ICommand drag = new ScaleKanbanBoardCommand(kanbanBoardColumnStartPosition, xAxis, kanbanBoardController, oldWidth, oldHeight, newWidth, newHeight, kanbanBoardColumnEndPosition);
-            commandController.Execute(drag);
+            UndoRedoManager.Execute(drag);
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 activePointer = null;

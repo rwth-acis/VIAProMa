@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CommandController : MonoBehaviour
+public class UndoRedoManager : MonoBehaviour
 {
     private CommandProcessor commandProcessor;
 

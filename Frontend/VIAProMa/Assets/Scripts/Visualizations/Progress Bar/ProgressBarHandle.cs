@@ -15,13 +15,13 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         private Vector3 prevPointer;
         private Vector3 finPointer;
 
-        private GameObject CommandController;
-        private CommandController commandController;
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
 
         private void Awake()
         {
-            CommandController = GameObject.Find("CommandController");
-            commandController = CommandController.GetComponent<CommandController>();
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
             
             if (progressBar == null)
             {
@@ -65,7 +65,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             }
 
             ICommand resize = new ProgressBarHandleCommand(prevPointer, finPointer, handleOnPositiveCap, progressBar);
-            commandController.Execute(resize);
+            UndoRedoManager.Execute(resize);
         }
     }
 }

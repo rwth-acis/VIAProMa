@@ -17,8 +17,8 @@ namespace i5.VIAProMa.UI.AppBar
         private Vector3 startScale;
 
         //-----------------------
-        private GameObject CommandController;
-        private CommandController commandController;
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
 
         /// <summary>
         /// True if the target to which the app bar belongs is a networed object (with a PhotonView)
@@ -35,8 +35,8 @@ namespace i5.VIAProMa.UI.AppBar
             {
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
             }
-            CommandController = GameObject.Find("CommandController");
-            commandController = CommandController.GetComponent<CommandController>();
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace i5.VIAProMa.UI.AppBar
             startRotation = appBarPlacer.TargetBoundingBox.Target.transform.localRotation;
             startScale = appBarPlacer.TargetBoundingBox.Target.transform.localScale;
             ICommand transform = new AppBarTransformCommand(startPosition, startRotation, startScale, appBarPlacer);
-            commandController.Execute(transform);
+            UndoRedoManager.Execute(transform);
         }
 
         /// <summary>
