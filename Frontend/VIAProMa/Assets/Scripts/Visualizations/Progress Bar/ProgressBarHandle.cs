@@ -12,8 +12,8 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         private IMixedRealityPointer activePointer;
 
-        private Vector3 previousPosition;
-        public bool newHandleOnPositiveCap;
+        private Vector3 prevPointer;
+        private Vector3 finPointer;
 
         private GameObject CommandController;
         private CommandController commandController;
@@ -30,14 +30,17 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void OnPointerClicked(MixedRealityPointerEventData eventData)
         {
-            previousPosition = progressBar.transform.position;
+
         }
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
+            //previousPosition = progressBar.transform.position;
+
             if (activePointer == null && !eventData.used)
             {
                 activePointer = eventData.Pointer;
+                prevPointer = activePointer.Position;
 
                 progressBar.StartResizing(activePointer.Position, handleOnPositiveCap);
                 eventData.Use();
@@ -56,13 +59,15 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void OnPointerUp(MixedRealityPointerEventData eventData)
         {
+            finPointer = activePointer.Position;
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 activePointer = null;
                 eventData.Use();
             }
 
-            ICommand resize = new ProgressBarHandleCommand(previousPosition, newHandleOnPositiveCap, progressBar);
+            Debug.Log("Huuuh");
+            ICommand resize = new ProgressBarHandleCommand(prevPointer, finPointer, handleOnPositiveCap, progressBar);
             commandController.Execute(resize);
 
         }
