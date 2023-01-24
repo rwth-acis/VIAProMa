@@ -14,6 +14,7 @@ public class ScaleKanbanBoardCommand : ICommand
     private Vector3 kanbanBoardColumnStartPosition;
     private Vector3 kanbanBoardColumnEndPosition;
     private i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController kanbanBoardController;
+    
     private float oldWidth;
     private float oldHeight;
     private float newWidth;
@@ -37,7 +38,6 @@ public class ScaleKanbanBoardCommand : ICommand
 
     }
 
-    // Setzt Breite/Höhe und Position zurück
     public void Undo()
     {
         if (xAxis)

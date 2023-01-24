@@ -20,7 +20,6 @@ public class ProgressBarHandleCommand : ICommand
         finPointer = finalPointer;
         newHandleOnPositiveCap = snewHandleOnPositiveCap;
         progressBar = sprogressBar;
-        
     }
 
     public void Execute()

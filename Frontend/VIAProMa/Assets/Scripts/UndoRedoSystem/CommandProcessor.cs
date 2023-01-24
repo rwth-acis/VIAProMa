@@ -2,35 +2,31 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
-public class CommandProcessor
+public class CommandProcessor : MonoBehaviour
 {
     private List<ICommand> commands = new List<ICommand>();
     private int currentPosition = -1;
     private int range = 0;
 
-
     private Color notActiveColor = Color.grey;
     private Color activeColor;
-    public Material buttonMaterial;
     private GameObject undoButtonBG;
     private GameObject redoButtonBG;
     private GameObject closeButton;
-    private int state = 0;
-
+    private int state = 0; // Used for only initializing references/colors once. Used instead of Awake() as objects are not initialized at this point
 
     public void Execute(ICommand command)
     {
-
-
         if(currentPosition < commands.Count - 1)
         {
             range = commands.Count - (currentPosition + 1); 
             commands.RemoveRange(currentPosition + 1, range);
-
         }
+
         commands.Add(command);
         currentPosition++;
         command.Execute();
+
         if (state == 0)
         {
             closeButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Close Button/BackPlate/Quad");
@@ -39,8 +35,11 @@ public class CommandProcessor
             redoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");
             state = 1;
         }
+
         // Undo is now possible, Redo not
         changeColor(true, false);
+
+        //TODO Delete Debug.log
         Debug.Log(currentPosition);
     }
 
@@ -54,19 +53,18 @@ public class CommandProcessor
         ICommand command = commands[currentPosition];
         command.Undo();
         currentPosition--;
+        
+        //TODO Delete Debug.log
         Debug.Log(currentPosition);
 
-
-        //Undo only possible if there is still something to undo, redo possible
+        // Undo only possible if there is still something to undo, redo possible
         if (currentPosition == -1)
         {
-
             changeColor(false, true);
         } else
         {
             changeColor(true, true);
         }
-
     }
 
     public void Redo()
@@ -87,7 +85,6 @@ public class CommandProcessor
         Debug.Log(currentPosition);
         ICommand command = commands[currentPosition];
         command.Redo();
-
     }
 
     public void changeColor(bool undoable, bool redoable)

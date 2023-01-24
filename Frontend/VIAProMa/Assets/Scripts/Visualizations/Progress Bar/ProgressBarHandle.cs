@@ -22,6 +22,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         {
             CommandController = GameObject.Find("CommandController");
             commandController = CommandController.GetComponent<CommandController>();
+            
             if (progressBar == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
@@ -30,13 +31,10 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void OnPointerClicked(MixedRealityPointerEventData eventData)
         {
-
         }
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
-            //previousPosition = progressBar.transform.position;
-
             if (activePointer == null && !eventData.used)
             {
                 activePointer = eventData.Pointer;
@@ -49,7 +47,6 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void OnPointerDragged(MixedRealityPointerEventData eventData)
         {
-
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 progressBar.SetHandles(activePointer.Position, handleOnPositiveCap);
@@ -60,16 +57,15 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         public void OnPointerUp(MixedRealityPointerEventData eventData)
         {
             finPointer = activePointer.Position;
+
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 activePointer = null;
                 eventData.Use();
             }
 
-            Debug.Log("Huuuh");
             ICommand resize = new ProgressBarHandleCommand(prevPointer, finPointer, handleOnPositiveCap, progressBar);
             commandController.Execute(resize);
-
         }
     }
 }

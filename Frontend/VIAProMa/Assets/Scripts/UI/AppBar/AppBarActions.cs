@@ -17,11 +17,8 @@ namespace i5.VIAProMa.UI.AppBar
         private Vector3 startScale;
 
         //-----------------------
-        ICommand transform;
         private GameObject CommandController;
         private CommandController commandController;
-
-
 
         /// <summary>
         /// True if the target to which the app bar belongs is a networed object (with a PhotonView)
@@ -74,7 +71,7 @@ namespace i5.VIAProMa.UI.AppBar
             startPosition = appBarPlacer.TargetBoundingBox.Target.transform.localPosition;
             startRotation = appBarPlacer.TargetBoundingBox.Target.transform.localRotation;
             startScale = appBarPlacer.TargetBoundingBox.Target.transform.localScale;
-            transform = new AppBarTransformCommand(startPosition, startRotation, startScale, appBarPlacer);
+            ICommand transform = new AppBarTransformCommand(startPosition, startRotation, startScale, appBarPlacer);
             commandController.Execute(transform);
         }
 

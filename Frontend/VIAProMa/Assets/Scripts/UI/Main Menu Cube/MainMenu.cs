@@ -9,7 +9,6 @@ using System;
 using TMPro;
 using UnityEngine;
 
-
 namespace i5.VIAProMa.UI.MainMenuCube
 {
     [RequireComponent(typeof(FoldController))]
@@ -155,7 +154,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
             issueShelfButton.IsEnabled = PhotonNetwork.InRoom;
             visualizationShelfButton.IsEnabled = PhotonNetwork.InRoom;
             anchoringButton.IsEnabled = PhotonNetwork.InRoom;
-            // TODO: Photon Integration undoRedoButton = PhotonNetwork...
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -195,7 +193,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.SaveProjectWindow, saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             commandController.Execute(createMenu);
-            // WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -203,7 +200,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.AnchorMenu, saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             commandController.Execute(createMenu);
-            // WindowManager.Instance.AnchorMenu.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -242,7 +238,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.LoginMenu, loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
             commandController.Execute(createMenu);
-            // WindowManager.Instance.LoginMenu.Open(loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -259,7 +254,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.ServerStatusMenu, serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             commandController.Execute(createMenu);
-            // WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -278,7 +272,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 ICommand createMenu = new CreateMenuCommand(MenuType.RoomMenu, roomButton.transform.position - 0.6f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
                 commandController.Execute(createMenu);
-                // WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             }
             else
             {
@@ -293,7 +286,6 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.ChatMenu, chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
             commandController.Execute(createMenu);
-            //WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 

@@ -18,18 +18,19 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
         private Vector3 kanbanBoardColumnStartPosition;
         private Vector3 kanbanBoardColumnEndPosition;
         private float startLength;
+
         private GameObject CommandController;
         private CommandController commandController;
-        ICommand drag;
+        
         private float oldHeight;
         private float oldWidth;
         private float newHeight;
         private float newWidth;
+        
         float handDelta;
         float newLength;
         float previousWidth;
         float previousHeight;
-
 
         private void Awake()
         {
@@ -69,7 +70,6 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         public void OnPointerDragged(MixedRealityPointerEventData eventData)
         {
-
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 Vector3 delta = activePointer.Position - pointerStartPosition;
@@ -121,16 +121,15 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                         kanbanBoardColumnEndPosition = kanbanBoardController.transform.localPosition;
                     }
                 }
-                // mark pointer data as used
+
+                // Mark pointer data as used
                 eventData.Use();
-
             }
-
         }
 
         public void OnPointerUp(MixedRealityPointerEventData eventData)
         {
-            drag = new ScaleKanbanBoardCommand(kanbanBoardColumnStartPosition, xAxis, kanbanBoardController, oldWidth, oldHeight, newWidth, newHeight, kanbanBoardColumnEndPosition);
+            ICommand drag = new ScaleKanbanBoardCommand(kanbanBoardColumnStartPosition, xAxis, kanbanBoardController, oldWidth, oldHeight, newWidth, newHeight, kanbanBoardColumnEndPosition);
             commandController.Execute(drag);
             if (eventData.Pointer == activePointer && !eventData.used)
             {
@@ -138,7 +137,6 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                 eventData.Use();
             }
         }
-
 
         private void MoveForPivotScaling()
         {

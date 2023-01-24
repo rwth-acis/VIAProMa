@@ -13,7 +13,7 @@ public class AppBarTransformCommand : ICommand
 
     private GameObject currentObject;
     private i5.VIAProMa.UI.AppBar.AppBarPlacer appBarPlacer;
-    //appBarPlacer = currentObject.GetComponent<i5.VIAProMa.UI.AppBar.AppBarPlacer>();
+    // appBarPlacer = currentObject.GetComponent<i5.VIAProMa.UI.AppBar.AppBarPlacer>();
 
     public AppBarTransformCommand(Vector3 pStartPosition, Quaternion pStartRotation, Vector3 pStartScale, i5.VIAProMa.UI.AppBar.AppBarPlacer pAppBarPlacer)
     {
@@ -22,7 +22,6 @@ public class AppBarTransformCommand : ICommand
         startScale = pStartScale;
         appBarPlacer = pAppBarPlacer;
     }
-
 
     public void Execute()
     {
