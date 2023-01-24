@@ -18,6 +18,7 @@ public class ProjectTracker : MonoBehaviour
     public Category currentCategory = null;
     public EditIssueMenu editIssueMenu = null;
     public DataSource currentSource = DataSource.REQUIREMENTS_BAZAAR;
+    public bool currentVisibility = false;
 
     /// <summary>
     /// Event which is invoked if an issue has been deleted

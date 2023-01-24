@@ -8,6 +8,9 @@ using i5.VIAProMa.Login;
 using i5.VIAProMa.Shelves.IssueShelf;
 using System.Threading.Tasks;
 using i5.VIAProMa.UI.MultiListView.Core;
+using i5.VIAProMa.UI.InputFields;
+using i5.VIAProMa.UI.DropdownMenu;
+using i5.VIAProMa.DataModel.ReqBaz;
 
 public class LearningLayersLogin : ProviderLogin
 {
@@ -21,12 +24,18 @@ public class LearningLayersLogin : ProviderLogin
     [SerializeField] public Color loggedInColor = new Color(0f, 135f / 255f, 3f / 255f); // green
     [SerializeField] public Color loggedOutColor = new Color(188f / 255f, 2f / 255f, 0f); // red
 
+    [SerializeField] private InputField reqBazProjectInput;
+    [SerializeField] private CategoryDropdownMenu reqBazCategoryDropdownMenu;
+    [SerializeField] private ShelfConfigurationMenu configurationMenu;
+
     private ShelfConfigurationMenu scm;
     private IssuesLoader issueLoader;
+    private ProjectTracker projectTracker;
 
     public override void Start()
     {
         issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
+        projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
 
         ServiceManager.GetService<LearningLayersOidcService>().LoginCompleted += LoginScript_LoginCompleted;
         ServiceManager.GetService<LearningLayersOidcService>().LogoutCompleted += LoginScript_LogoutCompleted;
@@ -70,6 +79,14 @@ public class LearningLayersLogin : ProviderLogin
         SetLED(false);
         scm.LoadReqBazProjectList();
         this.transform.parent.parent.parent.GetComponent<IssuesMultiListView>().Clear();
+        reqBazProjectInput.Text = "";
+        List<Category>  reqCategories = new List<Category>();
+        reqCategories.Insert(0, new Category(-1, "No Category"));
+        reqBazCategoryDropdownMenu.Items = reqCategories;
+        ReqBazShelfConfiguration reqBazShelfConfiguration = (ReqBazShelfConfiguration)configurationMenu.ShelfConfiguration;
+        reqBazShelfConfiguration.SelectedProject = null;
+        reqBazShelfConfiguration.SelectedCategory = null;
+        issueLoader.ResetPage();
         issueLoader.LoadContent();
     }
 

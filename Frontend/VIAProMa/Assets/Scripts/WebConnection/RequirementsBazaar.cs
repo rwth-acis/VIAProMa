@@ -46,9 +46,6 @@ namespace i5.VIAProMa.WebConnection
                     List<Project> visibleProjects = new List<Project>();
                     foreach (Project project in projects)
                     {
-                        Debug.Log(project.id);
-                        Debug.Log(project.name);
-                        Debug.Log(project.visibility);
                         if (project.visibility == true)
                             visibleProjects.Add(project);
                     }
@@ -80,8 +77,6 @@ namespace i5.VIAProMa.WebConnection
 
                     headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                     headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
-                    Debug.Log("Authorization" + ":" + "Basic " + encodedAuthentificationInfo);
-                    Debug.Log("access-token" + ":" + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
                     try
                     {
                         Response resp = await Rest.GetAsync(
@@ -93,10 +88,8 @@ namespace i5.VIAProMa.WebConnection
                     true);
                         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                         string responseBody = await resp.GetResponseBody();
-                        Debug.Log("Before response");
                         if (!resp.Successful)
                         {
-                            Debug.Log("If!");
                             Debug.LogError(resp.ResponseCode + ": " + responseBody);
                             return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
                         }
@@ -104,12 +97,6 @@ namespace i5.VIAProMa.WebConnection
                         {
                             responseBody = "{\"array\":" + responseBody + "}";
                             Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
-                            foreach (Project project in projects)
-                            {
-                                Debug.Log(project.id);
-                                Debug.Log(project.name);
-                                Debug.Log(project.visibility);
-                            }
                             return new ApiResult<Project[]>(projects);
                         }
                     }
