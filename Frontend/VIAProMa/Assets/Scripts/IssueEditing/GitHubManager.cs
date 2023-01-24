@@ -36,7 +36,6 @@ namespace Org.Git_Hub.API
             headers.Add("Authorization", "token " + ServiceManager.GetService<GitHubOidcService>().AccessToken);
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + name + "\", \"body\": \"" + description + "\" }";
-
             Response resp = await Rest.PostAsync(
                 "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues",
                 json,
@@ -44,6 +43,7 @@ namespace Org.Git_Hub.API
                 -1,
                 true);
             string responseBody = await resp.GetResponseBody();
+
             if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + responseBody);
@@ -82,7 +82,6 @@ namespace Org.Git_Hub.API
             Debug.Log(ServiceManager.GetService<GitHubOidcService>().AccessToken);
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + newName + "\", \"body\": \"" + newDescription + "\" }";
-
             Response response = await PatchAsync(
                      "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues/" + issueID,
                      json,
