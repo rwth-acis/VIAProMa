@@ -24,6 +24,7 @@ namespace i5.VIAProMa.UI.Chat
             commandController = CommandController.GetComponent<CommandController>();
         }
 
+
         public void Open()
         {
             gameObject.SetActive(true);
@@ -57,6 +58,7 @@ namespace i5.VIAProMa.UI.Chat
 
         public void Redo()
         {
+
             commandController.Redo();
         }
     }
