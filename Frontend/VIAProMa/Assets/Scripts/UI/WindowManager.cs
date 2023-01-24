@@ -25,7 +25,6 @@ namespace i5.VIAProMa.UI
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
             AnchorMenu = (AnchoringMenu)InstantiateWindow(anchorMenuPrefab);
             UndoRedoMenu = (UndoRedoMenu)InstantiateWindow(undoRedoMenuPrefab);
-
         }
 
         private IWindow InstantiateWindow(GameObject prefab)
@@ -55,5 +54,16 @@ namespace i5.VIAProMa.UI
         public AnchoringMenu AnchorMenu { get; private set; }
 
         public UndoRedoMenu UndoRedoMenu { get; private set; }
+    }
+
+    public enum MenuType
+    {
+        RoomMenu,
+        ServerStatusMenu,
+        ChatMenu,
+        SaveProjectWindow,
+        LoginMenu,
+        AnchorMenu,
+        UndoRedoMenu
     }
 }
