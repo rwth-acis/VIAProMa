@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static SessionBrowserRefresher;
 
-public class networkImportModel : MonoBehaviour
+public class networkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
 {
     public string path;
     public ImportedObject model;
@@ -22,6 +22,7 @@ public class networkImportModel : MonoBehaviour
 
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+        Debug.Log("Hello! OnPhotonInstantiate");
         GameObject anch = GameObject.Find("AnchorParent");
         SessionBrowserRefresher refresher = anch.GetComponentInChildren<SessionBrowserRefresher>();
         //GameObject modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
