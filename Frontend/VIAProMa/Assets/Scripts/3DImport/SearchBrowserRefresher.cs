@@ -203,6 +203,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     //this script is used when the session items are updated because of a new, conflicting download
     private ImportedObject UpdateImpObj(ImportedObject impObj, string path)
     {
+        string tag = impObj.gameObject.tag;
         Transform tr = impObj.gameObject.transform;
         Destroy(impObj.gameObject);
         //this needs to be tried and catched if uuh the link changes to something unloadable
@@ -218,6 +219,8 @@ public class SearchBrowserRefresher : MonoBehaviour
         impObj.gameObject.transform.position = tr.position;
         impObj.gameObject.transform.rotation = tr.rotation;
         impObj.gameObject.transform.localScale = tr.localScale;
+
+        impObj.gameObject.tag = tag;
 
         impObj.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
         impObj.size = BytesToNiceString(new System.IO.FileInfo(path).Length);

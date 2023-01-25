@@ -16,12 +16,14 @@ public class DeleteFile : MonoBehaviour
         //string imgPath = Path.Combine(Application.persistentDataPath, GetComponentInParent<ImportManager>().folderName, System.IO.Path.GetFileNameWithoutExtension(path) + ".png");
         string txtPath = Path.Combine(Application.persistentDataPath, GetComponentInParent<ImportManager>().folderName, System.IO.Path.GetFileNameWithoutExtension(path) + ".txt");
         HarddriveBrowserRefresher refresher = GetComponentInParent<HarddriveBrowserRefresher>();
+        SessionBrowserRefresher sessRefresher = GetComponentInParent<SessionBrowserRefresher>();
         ImportedObject deleteThisItem = refresher.downloadedObjects.Find(e => e.webLink == path);
         System.IO.File.Delete(path);
         //System.IO.File.Delete(imgPath);
         System.IO.File.Delete(txtPath);
         refresher.downloadedObjects.Remove(deleteThisItem);
         refresher.RefreshBrowser(refresher.head);
+        sessRefresher.Refresh(sessRefresher.head);
     }
 
 }

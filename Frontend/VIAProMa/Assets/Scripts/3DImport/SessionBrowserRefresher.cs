@@ -130,6 +130,11 @@ public class SessionBrowserRefresher : MonoBehaviour
             sessItem.GetComponentInChildren<Animator>().enabled = false;
 
             sessItem.GetComponentInChildren<ImportModel>().path = path;
+            if (!File.Exists(path))
+            {
+                sessItem.GetComponentInChildren<ImportModel>().gameObject.GetComponentInChildren<TextMeshPro>().text = "Download";
+                sessItem.GetComponentInChildren<ImportModel>().gameObject.GetComponentInChildren<TextMeshPro>().fontSize = 0.05f;
+            }
             sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
 
             sessItem.GetComponentInChildren<HighlightModel>().model = impObj.gameObject;
