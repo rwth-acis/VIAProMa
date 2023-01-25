@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 
 public class CommandProcessor
@@ -13,11 +12,20 @@ public class CommandProcessor
     private GameObject undoButtonBG;
     private GameObject redoButtonBG;
     private GameObject closeButton;
-    private int state = 0; // Used for only initializing references/colors once. Used instead of Awake() as objects are not initialized at this point
+
+    public CommandProcessor()
+    {
+        closeButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Close Button/BackPlate/Quad");
+        activeColor = closeButton.GetComponent<Renderer>().material.color;
+        undoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Undo Button/BackPlate/Quad");
+        redoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");
+
+        RefreshColor();
+    }
 
     public void Execute(ICommand command)
     {
-        if(currentPosition < commands.Count - 1)
+        if (currentPosition < commands.Count - 1)
         {
             range = commands.Count - (currentPosition + 1); 
             commands.RemoveRange(currentPosition + 1, range);
@@ -27,17 +35,7 @@ public class CommandProcessor
         currentPosition++;
         command.Execute();
 
-        if (state == 0)
-        {
-            closeButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Close Button/BackPlate/Quad");
-            activeColor = closeButton.GetComponent<Renderer>().material.color;
-            undoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Undo Button/BackPlate/Quad");
-            redoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");
-            state = 1;
-        }
-
-        // Undo is now possible, Redo not
-        ChangeColor(true, false);
+        RefreshColor();
 
         //TODO Delete Debug.log
         Debug.Log(currentPosition);
@@ -47,40 +45,28 @@ public class CommandProcessor
     {
         if (currentPosition < 0)
         {
+            RefreshColor();
             return;
         }
 
         ICommand command = commands[currentPosition];
         command.Undo();
         currentPosition--;
-        
+
+        RefreshColor();
+
         //TODO Delete Debug.log
         Debug.Log(currentPosition);
-
-        // Undo only possible if there is still something to undo, redo possible
-        if (currentPosition == -1)
-        {
-            ChangeColor(false, true);
-        } else
-        {
-            ChangeColor(true, true);
-        }
     }
-
+    
     public void Redo()
     {
         if (currentPosition >= commands.Count - 1)
         {
+            RefreshColor();
             return;
         }
-        else if(currentPosition >= commands.Count - 2)
-        {
-            ChangeColor(true, false);
-        }
-        else
-        {
-            ChangeColor(true, true);
-        }
+        
         currentPosition++;
         Debug.Log(currentPosition);
         ICommand command = commands[currentPosition];
@@ -97,8 +83,14 @@ public class CommandProcessor
         }
 
         command.Execute();
+        RefreshColor();
     }
 
+    /// <summary>
+    ///  Sets the color of the Undo and Redo Button, indicating if they are active or inactive.
+    /// </summary>
+    /// <param name="undoable">State of the Undo Button. Active (blue) if true, inactive (grey) if false</param>
+    /// <param name="redoable">State of the Redo Button. Active (blue) if true, inactive (grey) if false</param>
     public void ChangeColor(bool undoable, bool redoable)
     {
         if (!undoable)
@@ -117,5 +109,12 @@ public class CommandProcessor
         {
             redoButtonBG.GetComponent<Renderer>().material.color = activeColor;
         }
+    }
+    
+    public void RefreshColor()
+    {
+        bool redoPossible = (currentPosition <= commands.Count - 2 && commands.Count >= 1);
+        bool undoPossible = (currentPosition >= 0);
+        ChangeColor(undoPossible, redoPossible);
     }
 }
