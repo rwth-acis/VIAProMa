@@ -24,13 +24,18 @@ public class ProgressBarHandleCommand : ICommand
 
     public void Execute()
     {
-        progressBar.StartResizing(prevPointer, newHandleOnPositiveCap);
-        progressBar.SetHandles(finPointer, newHandleOnPositiveCap);
+        
     }
 
     public void Undo()
     {
         progressBar.StartResizing(finPointer, newHandleOnPositiveCap);
         progressBar.SetHandles(prevPointer, newHandleOnPositiveCap);
+    }
+
+    public void Redo()
+    {
+        progressBar.StartResizing(prevPointer, newHandleOnPositiveCap);
+        progressBar.SetHandles(finPointer, newHandleOnPositiveCap);
     }
 }

@@ -84,6 +84,18 @@ public class CommandProcessor
         currentPosition++;
         Debug.Log(currentPosition);
         ICommand command = commands[currentPosition];
+
+        /*
+         * Special case for the ProgressBarHandleCommand, where instead of Execute() Redo() is used.
+         * This is done because the dragging of the Handle Bar is continous, while the Redo snaps it
+         * to the last position the Handle Bar was let go off
+        */
+        if (command.GetType() == typeof(ProgressBarHandleCommand))
+        {
+            ProgressBarHandleCommand progressBarHandleCommand = (ProgressBarHandleCommand)command;
+            progressBarHandleCommand.Redo();
+        }
+
         command.Execute();
     }
 
