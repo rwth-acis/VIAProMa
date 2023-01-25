@@ -5,6 +5,9 @@ using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Newtonsoft.Json;
 using i5.VIAProMa.WebConnection;
+using VIAProMa.Assets.Scripts.Analytics.LogTypes;
+using i5.Toolkit.Core.ExperienceAPI;
+using i5.Toolkit.Core.Utilities;
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
@@ -13,10 +16,17 @@ namespace VIAProMa.Assets.Scripts.Analytics
         public abstract class Observer : IObserver<LogType>
         {
             private IDisposable? unsubscriber;
+            private ExperienceAPIClient lrsClient;
 
             public Observer(IObservable<LogType> observable)
             {
                 unsubscriber = observable.Subscribe(this);
+
+                Uri lrsEndpoint = new Uri("https://lrs.tech4comp.dbis.rwth-aachen.de/data/xAPI");
+                string authToken = "a218e7ee16b48874f25428c5b790d1014c741da3";
+                lrsClient = new ExperienceAPIClient();
+                lrsClient.XApiEndpoint = lrsEndpoint;
+                lrsClient.AuthorizationToken = authToken;
             }
 
             // Subscribe to another observable than the one subscribed to previously.
@@ -55,8 +65,23 @@ namespace VIAProMa.Assets.Scripts.Analytics
                 string requestUri = ConnectionManager.Instance.BackendAPIBaseURL + "projects/analytics/" + projcetID;
 
                 Response res = await Rest.PostAsync(requestUri, json);
-                ConnectionManager.Instance.CheckStatusCode(res.ResponseCode);
-                string responseBody = await res.GetResponseBody();
+
+                if (!res.Successful)
+                    throw new Exception("Could not transmit telemetry data to backend!");
+                else
+                    Debug.Log(res.ResponseCode.ToString()); // TODO: Proper handeling
+
+                if (state is LogpointLRSExportable)
+                {
+                    // Make request to LRS.
+                    LogpointLRSExportable? lrsState = state as LogpointLRSExportable;
+                    Actor actor = new Actor(lrsState!.Actor);
+                    Verb verb = new Verb(lrsState.Verb);
+                    XApiObject apiObject = new XApiObject(lrsState.ObjectID);
+
+                    WebResponse<string> lrsRes = await lrsClient.SendStatementAsync(actor, verb, apiObject);
+                    Debug.Log(lrsRes.Content);
+                }
             }
 
             public void Unsubscribe()

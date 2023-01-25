@@ -21,7 +21,7 @@ namespace i5.VIAProMa.Shelves.Widgets
     /// Does not consume any of the input data since they are redirected to the created copy
     /// </summary>
     [RequireComponent(typeof(IssueDataDisplay))]
-    public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler, IObservable<LogpointIssueSelected>
+    public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler, IObservable<LogpointLRSExportable>
     {
         [Tooltip("The prefab which should be instantiated as a copy")]
         public GameObject copyObject;
@@ -32,7 +32,7 @@ namespace i5.VIAProMa.Shelves.Widgets
         private IssueDataDisplay localDataDisplay;
 
         // A list of all the observers observing the state of this object for the analytics module.
-        private List<IObserver<LogpointIssueSelected>> observers = new List<IObserver<LogpointIssueSelected>>();
+        private List<IObserver<LogpointLRSExportable>> observers = new List<IObserver<LogpointLRSExportable>>();
 
         /// <summary>
         /// Sets the component up
@@ -67,7 +67,8 @@ namespace i5.VIAProMa.Shelves.Widgets
                 && currentPointerTarget.GetComponent<EditButton>() == null && currentPointerTarget.GetComponent<DeleteButton>() == null)
             {
                 // Analytics: Notify the observers that the card has been clicked on.
-                NotifyObservers(new LogpointIssueSelected(localDataDisplay));
+                NotifyObservers(new LogpointLRSExportable("IssueCardInitialized", "IssueCard", Convert.ToString(localDataDisplay.Content.Id)));
+                // NotifyObservers(new LogpointIssueSelected(localDataDisplay));
 
                 // pass instantiation data to the copy so that other clients also know which issue is contained in the created copy
                 object[] instantiationData;
@@ -152,14 +153,14 @@ namespace i5.VIAProMa.Shelves.Widgets
 
         // Implementation of necessary methods for the analytics module
         #region Observer Implemenations
-        public IDisposable Subscribe(IObserver<LogpointIssueSelected> observer)
+        public IDisposable Subscribe(IObserver<LogpointLRSExportable> observer)
         {
             if (!observers.Contains(observer))
                 observers.Add(observer);
             return new Unsubscriber(observers, observer);
         }
 
-        public void NotifyObservers(LogpointIssueSelected log)
+        public void NotifyObservers(LogpointLRSExportable log)
         {
             if (AnalyticsManager.Instance.AnalyticsEnabled)
                 foreach (var observer in observers)
@@ -168,10 +169,10 @@ namespace i5.VIAProMa.Shelves.Widgets
 
         private class Unsubscriber : IDisposable
         {
-            private List<IObserver<LogpointIssueSelected>> _observers;
-            private IObserver<LogpointIssueSelected> _observer;
+            private List<IObserver<LogpointLRSExportable>> _observers;
+            private IObserver<LogpointLRSExportable> _observer;
 
-            public Unsubscriber(List<IObserver<LogpointIssueSelected>> observers, IObserver<LogpointIssueSelected> observer)
+            public Unsubscriber(List<IObserver<LogpointLRSExportable>> observers, IObserver<LogpointLRSExportable> observer)
             {
                 this._observers = observers;
                 this._observer = observer;
@@ -185,9 +186,9 @@ namespace i5.VIAProMa.Shelves.Widgets
         }
 
 
-        class IssueEditingObserver : ObserverWrapper<LogpointIssueSelected>.Observer
+        class IssueEditingObserver : ObserverWrapper<LogpointLRSExportable>.Observer
         {
-            public IssueEditingObserver(IObservable<LogpointIssueSelected> observable) : base(observable) { }
+            public IssueEditingObserver(IObservable<LogpointLRSExportable> observable) : base(observable) { }
         }
         #endregion Observer Implemenations
 

@@ -7,9 +7,9 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
         public string ObjectType { get; set; }
         public string ObjectID { get; set; }
 
-        public LogpointLRSExportable(string Actor, string Verb, string ObjectType, string ObjectID)
+        public LogpointLRSExportable(string Verb, string ObjectType, string ObjectID)
         {
-            this.Actor = Actor;
+            this.Actor = base.UserId;
             this.Verb = Verb;
             this.ObjectType = ObjectType;
             this.ObjectID = ObjectID;

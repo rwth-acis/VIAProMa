@@ -13,14 +13,16 @@ namespace VIAProMa.Assets.Scripts.Analytics
 {
     public class AnalyticsManager : Singleton<AnalyticsManager>
     {
-        // Everything concerned with the Notification PopUp
         private AnalyticsSettings _settings;
         private Guid _projectGUID;
+
+        #region Everything concerned with the Notification PopUp
         public Text TextObject;
         public GameObject Background;
         public DateTime ExpiresAt;
         private bool isStartOver = false;
         public AudioSource NotificationSound;
+        #endregion Everything concerned with the Notification PopUp
 
         [SerializeField]
         public bool AnalyticsEnabled
@@ -56,7 +58,6 @@ namespace VIAProMa.Assets.Scripts.Analytics
         [PunRPC]
         public void ShowIsTelemetryEnabledPopup()
         {
-            // TODO: Remove the boolean parameter alibi. In is not used anywhere but Photon complains if there isn't a boolean parameter here. We have no clue why, but it works this way.
             TextObject.text = AnalyticsManager.Instance.AnalyticsEnabled ? "Telemetry Enabled!" : "Telemetry Disabled!";
             ExpiresAt = DateTime.Now.AddSeconds(2.5);
             NotificationSound.Play();
@@ -91,7 +92,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
             string projectID = AnalyticsManager.Instance.ProjectID.ToString();
             Response resp =
                     await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/"+ projectID,
+                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/" + projectID,
                         null,
                         -1,
                         null,
