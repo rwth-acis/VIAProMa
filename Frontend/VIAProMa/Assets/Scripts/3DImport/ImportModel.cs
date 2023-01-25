@@ -63,9 +63,10 @@ public class ImportModel : MonoBehaviour
 
         this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
 
-        object[] objs = { testModel, model };
+        object[] objs = { path, model.webLink, model.fileName, model.dateOfDownload, model.size, testModel.transform.position, testModel.transform.rotation };
         PhotonNetwork.Instantiate("networkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
 
+        //testModel.AddComponent<PhotonTransformView>();
 
 
     }
@@ -157,9 +158,7 @@ public class ImportModel : MonoBehaviour
 
         testModel.name = System.IO.Path.GetFileNameWithoutExtension(path);
 
-        //testModel.AddComponent<PhotonView>();
-        testModel.AddComponent<PhotonTransformView>();
-        //testModel.GetComponent<PhotonTransformView>().m_SynchronizePosition = true;
+        
 
         return testModel;
     }
