@@ -9,10 +9,18 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using static SessionBrowserRefresher;
+using HoloToolkit.Unity;
 
 public class HarddriveBrowserRefresher : MonoBehaviour
 {
-    public List<ImportedObject> downloadedObjects;
+	private struct ModelData {
+		public string path;
+        public string webLink;
+        public string fileName;
+        public string dateOfDownload;
+        public string size;
+	}
+
     public int head;
 
     [SerializeField] private Interactable headUpButton;
@@ -35,31 +43,53 @@ public class HarddriveBrowserRefresher : MonoBehaviour
 
         linkOrFileNameLength = 42;
 
-        downloadedObjects = new List<ImportedObject>();
         RefreshList();        
     }
 
+	void OnEnable()
+	{
+		ModelDownloader downloader = Singleton<ModelDownloader>.Instance;
+		downloader.OnModelDeleted += OnAdded;
+		downloader.OnModelDownloaded += OnRemoved;
+	}
+	void OnDisable()
+	{
+		ModelDownloader downloader = Singleton<ModelDownloader>.Instance;
+		downloader.OnModelDeleted -= OnAdded;
+		downloader.OnModelDownloaded -= OnRemoved;
+	}
+
+
+	void OnAdded(string url) {
+		RefreshList();
+	}
+	void OnRemoved(string url) {
+		RefreshList();
+	}
     public void RefreshList()
     {
         head = 0;
-        downloadedObjects.Clear();
-        FileInfo[] files = new DirectoryInfo(Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName)).GetFiles("*.glb").OrderBy(p => p.CreationTime).ToArray();
-        foreach (FileInfo file in files)
-        {
-            string path = file.FullName;
-            string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
-            string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
-            string fileSize = BytesToNiceString(new System.IO.FileInfo(path).Length);
-
-            ImportedObject dowObj = new ImportedObject(null, path, fileName, dateOfDownload, fileSize/*, creator*/);
-            downloadedObjects.Insert(0, dowObj);
-            Debug.Log(dowObj.fileName);
-        }
-        Debug.Log(downloadedObjects.Count());
         RefreshBrowser(head);
     }
     public void RefreshBrowser(int headPosition)
     {
+		ModelDownloader downloader = Singleton<ModelDownloader>.Instance;
+		Dictionary<string, ModelDownloader.ModelDownload> downloads = downloader.GetDownloads();
+		List<ModelData> downloadedObjects = new List<ModelData>();
+		foreach (KeyValuePair<string, ModelDownloader.ModelDownload> entry in downloads) {
+			if (entry.Value.state != ModelDownloader.ModelDownloadState.Finished)
+				continue;
+			ModelData data = new ModelData();
+			string path = entry.Value.path;
+			data.path = path;
+			data.fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+			data.size = BytesToNiceString(new System.IO.FileInfo(path).Length);
+			data.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
+			data.webLink = entry.Key;
+			downloadedObjects.Add(data);
+		}
+		downloadedObjects = downloadedObjects.OrderBy(p => p.dateOfDownload).ToList();
+
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
         headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
         headDownButton.IsEnabled = true;
@@ -95,7 +125,7 @@ public class HarddriveBrowserRefresher : MonoBehaviour
         int j = downloadedObjects.Count() - headPosition < 5 ? downloadedObjects.Count() - headPosition : 5;
         for (int i = headPosition; i < j + headPosition; i++)
         {
-            ImportedObject impObj = downloadedObjects[i];
+            ModelData impObj = downloadedObjects[i];
 
             string truncatedWebLink = impObj.webLink.Length > linkOrFileNameLength ? (impObj.webLink.Substring(0, linkOrFileNameLength / 2) + "..." + impObj.webLink.Substring(impObj.webLink.Length - linkOrFileNameLength / 2)) : impObj.webLink;
             string truncatedFileName = impObj.fileName.Length > linkOrFileNameLength ? (impObj.fileName.Substring(0, linkOrFileNameLength) + "...") : impObj.fileName;
@@ -107,11 +137,10 @@ public class HarddriveBrowserRefresher : MonoBehaviour
             sessItem.transform.parent = hardItemWrapper.transform;
             sessItem.transform.localPosition = hardItemStartPosition + hardItemPositionOffset * (i - headPosition);
             sessItem.transform.localRotation = Quaternion.identity;
-            string path = impObj.webLink;
             Renderer thumbRenderer = sessItem.transform.GetChild(0).GetComponentInChildren<Renderer>();
             
             //broken glbs can break everything, thats why we have to try and catch here
-            try { GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer); }
+            try { GetComponent<ThumbnailGenerator>().SetThumbnail(impObj.path, thumbRenderer); }
             catch
             {
                 thumbRenderer.material.color = Color.red;
@@ -120,19 +149,19 @@ public class HarddriveBrowserRefresher : MonoBehaviour
                 thumbRenderer.material.mainTexture = downloadErrorTex;
 
                 sessItem.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
-                sessItem.GetComponentInChildren<DeleteFile>().path = path;
+                sessItem.GetComponentInChildren<DeleteFile>().url = impObj.webLink;
                 sessItem.GetComponentInChildren<DeleteFile>(true).gameObject.SetActive(true);
                 continue;
             }
 
             thumbRenderer.material.color = Color.white;
-            sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
+            sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" +
                                                                 "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
             sessItem.GetComponentInChildren<Animator>().enabled = false;
 
-            sessItem.GetComponentInChildren<DeleteFile>().path = path;
+            sessItem.GetComponentInChildren<DeleteFile>().url = impObj.webLink;
 
-            string txtPath = Path.Combine(Application.persistentDataPath, GetComponentInParent<ImportManager>().folderName, System.IO.Path.GetFileNameWithoutExtension(path) + ".txt");
+            string txtPath = Path.Combine(Application.persistentDataPath, GetComponentInParent<ImportManager>().folderName, impObj.fileName + ".txt");
             string webLink = System.IO.File.ReadAllText(txtPath);
             sessItem.GetComponentInChildren<ImportModel>().url = impObj.webLink;
 
