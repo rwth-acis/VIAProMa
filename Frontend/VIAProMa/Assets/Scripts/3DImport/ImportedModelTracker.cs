@@ -15,7 +15,8 @@ public static class ImportedModelTracker
 
 	public delegate void AddAction(ImportedModel obj);
 	public static event AddAction OnAdded;
-	
+	public delegate void LoadedAction(ImportedModel obj);
+	public static event LoadedAction OnLoad;
 	public delegate void RemoveAction(ImportedModel obj);
 	public static event RemoveAction OnRemove;
 
@@ -23,6 +24,10 @@ public static class ImportedModelTracker
 		importedModels.Add(obj);
 		if (OnAdded != null)
 			OnAdded(obj);
+	}
+	public static void LoadedObject(ImportedModel obj) {
+		if (OnLoad != null)
+			OnLoad(obj);
 	}
 	public static void RemoveObject(ImportedModel obj) {
 		importedModels.Remove(obj);

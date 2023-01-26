@@ -29,6 +29,8 @@ public class ImportedModel : MonoBehaviour
 		GameObject model = importer.InstantiateModel(path);
 		model.transform.SetParent(transform);
 
+		ImportedModelTracker.LoadedObject(this);
+
 		yield break;
 	}
 

@@ -83,7 +83,7 @@ public class HarddriveBrowserRefresher : MonoBehaviour
 			string path = entry.Value.path;
 			data.path = path;
 			data.fileName = System.IO.Path.GetFileNameWithoutExtension(path);
-			data.size = BytesToNiceString(new System.IO.FileInfo(path).Length);
+			data.size = ModelDownloader.BytesToNiceString(new System.IO.FileInfo(path).Length);
 			data.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
 			data.webLink = entry.Key;
 			downloadedObjects.Add(data);
@@ -178,16 +178,5 @@ public class HarddriveBrowserRefresher : MonoBehaviour
     {
         head--;
         RefreshBrowser(head);
-    }
-
-    static String BytesToNiceString(long byteCount)
-    {
-        string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-        if (byteCount == 0)
-            return "0" + suf[0];
-        long bytes = Math.Abs(byteCount);
-        int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
-        double num = Math.Round(bytes / Math.Pow(1024, place), 1);
-        return (Math.Sign(byteCount) * num).ToString() + suf[place];
     }
 }

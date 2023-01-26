@@ -6,29 +6,10 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using HoloToolkit.Unity;
 
 public class SessionBrowserRefresher : MonoBehaviour
 {
-    public struct ImportedObject 
-    {
-        public ImportedObject(GameObject GameObject, string WebLink, string FileName, string DateOfDownload, string Size/*, string Creator*/)
-        {
-            gameObject = GameObject;
-            webLink = WebLink;
-            fileName = FileName;
-            dateOfDownload = DateOfDownload;
-            size = Size;
-            //creator = Creator;
-        }
-
-        public GameObject gameObject;
-        public string webLink;
-        public string fileName;
-        public string dateOfDownload;
-        public string size;
-        //public string creator;     
-    }
-
     public int head;
 
     [SerializeField] private Interactable headUpButton;
@@ -57,17 +38,18 @@ public class SessionBrowserRefresher : MonoBehaviour
 	void OnEnable() {
 		Refresh(head);
 
-		ImportedModelTracker.OnAdded += ObjectAdded;
+		ImportedModelTracker.OnLoad += ObjectLoad;
 		ImportedModelTracker.OnRemove += ObjectRemoved;
 	}
 	void OnRemove() {
-		ImportedModelTracker.OnAdded -= ObjectAdded;
+		ImportedModelTracker.OnLoad -= ObjectLoad;
 		ImportedModelTracker.OnRemove -= ObjectRemoved;
 	}
 
     public void Refresh(int headPosition)
     {       
 		List<ImportedModel> importedModels = ImportedModelTracker.ImportedModels;
+		ModelDownloader downloader = Singleton<ModelDownloader>.Instance;
 
 		headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
 		headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
@@ -105,12 +87,12 @@ public class SessionBrowserRefresher : MonoBehaviour
         for (int i = headPosition; i < j + headPosition; i++)
         {
             ImportedModel impObj = importedModels[i];
+			ModelDownloader.ModelDownload download = downloader.GetDownload(impObj.WebLink);
 
+			string path = download.path;
             string truncatedWebLink = impObj.WebLink.Length > linkOrFileNameLength ? (impObj.WebLink.Substring(0, linkOrFileNameLength / 2) + "..." + impObj.WebLink.Substring(impObj.WebLink.Length - linkOrFileNameLength / 2)) : impObj.WebLink;
-            // string truncatedFileName = impObj.fileName.Length > linkOrFileNameLength ? (impObj.fileName.Substring(0, linkOrFileNameLength) + "...") : impObj.fileName;
-            // string dateOfDownload = impObj.dateOfDownload;
-            // string fileSize = impObj.size;
-            // string creator = impObj.creator;
+            string fileSize = ModelDownloader.BytesToNiceString(new System.IO.FileInfo(path).Length);
+			string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
 
             GameObject sessItem = Instantiate(sessionItem);
             sessItem.transform.parent = sessionItemWrapper.transform;
@@ -120,8 +102,8 @@ public class SessionBrowserRefresher : MonoBehaviour
             Renderer thumbRenderer = sessItem.transform.GetChild(0).GetComponentInChildren<Renderer>();
             
             //broken glbs can break everything, thats why we have to try and catch here
-            // try { GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer); }
-            // catch {
+            try { GetComponent<ThumbnailGenerator>().SetThumbnail(path, thumbRenderer); }
+            catch {
                 thumbRenderer.material.color = Color.red;
                 sessItem.GetComponentInChildren<TextMeshPro>().text = "ERROR: file cannot be imported";
                 sessItem.GetComponentInChildren<Animator>().enabled = false;
@@ -132,11 +114,11 @@ public class SessionBrowserRefresher : MonoBehaviour
                 sessItem.GetComponentInChildren<DeleteModel>().model = impObj.gameObject;
                 sessItem.GetComponentInChildren<DeleteModel>(true).gameObject.SetActive(true);
             	continue;
-            // }
+            }
             
             thumbRenderer.material.color = Color.white;
-            // sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
-            //                                                     "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
+            sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" +
+                                                                "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
             sessItem.GetComponentInChildren<Animator>().enabled = false;
 
             sessItem.GetComponentInChildren<ImportModel>().url = impObj.WebLink;
@@ -148,7 +130,7 @@ public class SessionBrowserRefresher : MonoBehaviour
         }
     }
 
-	void ObjectAdded(ImportedModel obj) {
+	void ObjectLoad(ImportedModel obj) {
 		Refresh(head);
 	}
 	void ObjectRemoved(ImportedModel obj) {

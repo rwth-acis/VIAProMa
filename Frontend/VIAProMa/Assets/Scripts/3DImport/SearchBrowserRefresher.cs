@@ -136,31 +136,6 @@ public class SearchBrowserRefresher : MonoBehaviour
         sessLoadingItem.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
 	}
 
-    //this script is used when the session items are updated because of a new, conflicting download
-    private ImportedObject UpdateImpObj(ImportedObject impObj, string path)
-    {
-        Transform tr = impObj.gameObject.transform;
-        Destroy(impObj.gameObject);
-        //this needs to be tried and catched if uuh the link changes to something unloadable
-        // try {            
-        //     impObj.gameObject = GetComponent<ImportModel>().LoadModel(path);           
-        // }
-        // catch {
-            impObj.gameObject = errorObj;
-            impObj.gameObject.transform.position = tr.position;
-            impObj.gameObject.transform.LookAt(mainCamTr); ;
-            return impObj; 
-        // }
-        impObj.gameObject.transform.position = tr.position;
-        impObj.gameObject.transform.rotation = tr.rotation;
-        impObj.gameObject.transform.localScale = tr.localScale;
-
-        impObj.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
-        impObj.size = BytesToNiceString(new System.IO.FileInfo(path).Length);
-        //impObj.creator = photonView.Owner.NickName;
-        return impObj;
-    }
-
     void RefreshBrowser(string path)
     {
         //refresh search browser
@@ -174,7 +149,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
         string truncatedFileName = fileName.Length > linkOrFileNameLength ? (fileName.Substring(0, linkOrFileNameLength) + "...") : fileName;
         string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
-        string fileSize = BytesToNiceString(new System.IO.FileInfo(path).Length);
+        string fileSize = ModelDownloader.BytesToNiceString(new System.IO.FileInfo(path).Length);
         //string creator = photonView.Owner.NickName;
 
         
@@ -226,16 +201,5 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
 
         GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
-    }
-
-    static String BytesToNiceString(long byteCount)
-    {
-        string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-        if (byteCount == 0)
-            return "0" + suf[0];
-        long bytes = Math.Abs(byteCount);
-        int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
-        double num = Math.Round(bytes / Math.Pow(1024, place), 1);
-        return (Math.Sign(byteCount) * num).ToString() + suf[place];
     }
 }
