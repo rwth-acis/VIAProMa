@@ -88,7 +88,6 @@ namespace i5.VIAProMa.UI
             modelWrapper.name = "3Dmodels";
             modelWrapper.transform.position = Vector3.zero;
             modelWrapper.transform.parent = GameObject.Find("AnchorParent").transform;
-            GetComponent<ImportModel>().modelWrapper = modelWrapper;
 
 
             // Search Menu as default menu

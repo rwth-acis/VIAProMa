@@ -129,8 +129,7 @@ public class SessionBrowserRefresher : MonoBehaviour
                                                                 "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
             sessItem.GetComponentInChildren<Animator>().enabled = false;
 
-            sessItem.GetComponentInChildren<ImportModel>().path = path;
-            sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
+            sessItem.GetComponentInChildren<ImportModel>().url = impObj.webLink;
 
             sessItem.GetComponentInChildren<HighlightModel>().model = impObj.gameObject;
             if (impObj.gameObject.tag == "Highlighted") { sessItem.GetComponentInChildren<HighlightModel>().HighlightObject(); }

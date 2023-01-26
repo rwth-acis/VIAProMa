@@ -206,15 +206,15 @@ public class SearchBrowserRefresher : MonoBehaviour
         Transform tr = impObj.gameObject.transform;
         Destroy(impObj.gameObject);
         //this needs to be tried and catched if uuh the link changes to something unloadable
-        try {            
-            impObj.gameObject = GetComponent<ImportModel>().LoadModel(path);           
-        }
-        catch {
+        // try {            
+        //     impObj.gameObject = GetComponent<ImportModel>().LoadModel(path);           
+        // }
+        // catch {
             impObj.gameObject = errorObj;
             impObj.gameObject.transform.position = tr.position;
             impObj.gameObject.transform.LookAt(mainCamTr); ;
             return impObj; 
-        }
+        // }
         impObj.gameObject.transform.position = tr.position;
         impObj.gameObject.transform.rotation = tr.rotation;
         impObj.gameObject.transform.localScale = tr.localScale;
@@ -266,8 +266,7 @@ public class SearchBrowserRefresher : MonoBehaviour
                                                           "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
         item.GetComponentInChildren<Animator>().enabled = false;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(true);
-        item.GetComponentInChildren<ImportModel>().path = path;
-        item.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, webLink, fileName, dateOfDownload, fileSize/*, creator*/);
+        item.GetComponentInChildren<ImportModel>().url = webLink;
 
 
 
