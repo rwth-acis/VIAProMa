@@ -16,9 +16,7 @@ public class DeleteModel : MonoBehaviour
 
         //Refresh session browser correctly and delete actual GameObject
         SessionBrowserRefresher refresher = GetComponentInParent<SessionBrowserRefresher>();
-        ImportedObject deleteThisItem = refresher.importedObjects.Find(e => e.gameObject == model);
         Destroy(model);
-        refresher.importedObjects.Remove(deleteThisItem);
 
         //was FILE deleted?
         //if (!System.IO.File.Exists(Path.Combine(Application.persistentDataPath, GetComponentInParent<ImportManager>().folderName, deleteThisItem.fileName + ".glb")))
@@ -27,7 +25,5 @@ public class DeleteModel : MonoBehaviour
         //    GetComponentInParent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = deleteThisItem.webLink;
         //    return;
         //}
-
-        refresher.Refresh(refresher.head);
     }
 }

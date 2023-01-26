@@ -182,21 +182,7 @@ public class SearchBrowserRefresher : MonoBehaviour
 
         //refresh search browser
         RefreshBrowser(path);
-
-        //refresh session browser
-        List<ImportedObject> oldList = GetComponent<SessionBrowserRefresher>().importedObjects;
-        List<ImportedObject> newList = new List<ImportedObject>();
-        foreach (ImportedObject impObj in oldList)
-        {
-            ImportedObject impObjChanged = impObj;
-            if (impObj.webLink == webLink)
-            {
-                impObjChanged = UpdateImpObj(impObj, path);
-            }
-            newList.Add(impObjChanged);
-        }
-        GetComponent<SessionBrowserRefresher>().importedObjects = newList;
-        GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
+		
         yield return null;
     }
 

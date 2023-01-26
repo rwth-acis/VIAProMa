@@ -16,5 +16,12 @@ public class ImportedModel : MonoBehaviour
 		}
 	}
 	public string Owner { get; set; }
+
+	void OnEnable() {
+		ImportedModelTracker.AddObject(this);
+	}
+	void OnDisable() {
+		ImportedModelTracker.RemoveObject(this);
+	}
 	
 }
