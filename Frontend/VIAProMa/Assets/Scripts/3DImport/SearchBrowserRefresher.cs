@@ -15,6 +15,7 @@ using i5.VIAProMa.UI;
 using static SessionBrowserRefresher;
 using Microsoft.MixedReality.Toolkit;
 using System.Collections.Generic;
+using HoloToolkit.Unity;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
@@ -38,9 +39,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     private Vector3 sessionItemStartPosition;
     private Vector3 sessionItemPositionOffset;
 
-    private UnityWebRequest uwr;
     private Coroutine downloadRoutine;
-    private string tempPath;
 
     private int linkOrFileNameLength;
 
@@ -74,13 +73,6 @@ public class SearchBrowserRefresher : MonoBehaviour
 
         //make sure to stop any downloading models            
         if (downloadRoutine != null) { StopCoroutine(downloadRoutine); }
-        if (uwr != null) { uwr.downloadHandler.Dispose(); }
-        if (tempPath != null) {
-            string temptemp = tempPath;
-            tempPath = null;
-            GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
-            File.Delete(temptemp);
-        }
 
         //deactivate up/down buttons
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
@@ -90,37 +82,30 @@ public class SearchBrowserRefresher : MonoBehaviour
         headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
         headUpButton.IsEnabled = false;
 
-        //check, if content is a valid link
-        if ((StringStartsWith(searchContent, "http://") || StringStartsWith(searchContent, "https://"))
-        && StringEndsWith(searchContent, ".glb"))
-        {
-            string fileName = System.IO.Path.GetFileName(searchContent);
-            if (fileName == ".glb")
-            {
-                RefreshBrowserDownloadError();
-                return;
-            }
-            string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, fileName);
-            if (!System.IO.File.Exists(path))
-            {
-                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent));
-                tempPath = path;
-            }
-            else
-            {
-                UnityEngine.Debug.Log("File already saved in " + path + ", not downloading");
-                RefreshBrowser(path);
-            }
-
-        }
+		if ((searchContent.StartsWith("http://") || searchContent.StartsWith("https://"))
+        && searchContent.EndsWith(".glb"))
+		{
+			downloadRoutine = StartCoroutine(DownloadFile(searchContent));
+		}
     }
 
-        
-    
+	private IEnumerator DownloadFile(string url)
+	{
+		RefreshBrowserLoading();
 
-    IEnumerator DownloadFile(string path, string webLink)
-    {           
-        //spawn loading item
+		ModelDownloader downloader = Singleton<ModelDownloader>.Instance;
+		yield return downloader.Download(url);
+		ModelDownloader.ModelDownload download = downloader.GetDownload(url);
+		if (download.state == ModelDownloader.ModelDownloadState.Failed) {
+			RefreshBrowserDownloadError();
+			yield break;
+		}
+		RefreshBrowser(download.path);
+	}
+
+	private void RefreshBrowserLoading()
+	{
+		//spawn loading item
         GameObject item = Instantiate(itemPrefab);
         item.transform.parent = itemWrapper.transform;
         item.transform.localPosition = itemStartPosition;
@@ -149,42 +134,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         sessLoadingItem.GetComponentInChildren<TextMeshPro>().text = "Loading...";
         sessLoadingItem.GetComponentInChildren<Animator>().enabled = true;
         sessLoadingItem.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
-
-        //download file
-        uwr = new UnityWebRequest(webLink, UnityWebRequest.kHttpVerbGET);
-        uwr.downloadHandler = new DownloadHandlerFile(path);
-        yield return uwr.SendWebRequest();
-     
-        if (uwr.result != UnityWebRequest.Result.Success)
-        {
-            UnityEngine.Debug.LogError(uwr.error);
-            uwr.downloadHandler.Dispose();
-            File.Delete(path);
-            tempPath = null;
-            RefreshBrowserDownloadError();
-            yield break;
-        }
-        tempPath = null;
-        uwr.downloadHandler.Dispose();
-        UnityEngine.Debug.Log("File successfully downloaded and saved to " + path);
-
-        //this might seem stupid but must be done: the webLink is saved in a textfile for every object,
-        //so that users can import objects from their harddrive, and see where the object originally was downloaded from
-        string pathToTXT = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt");
-        string pathToPNG = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".png");
-        File.WriteAllText(pathToTXT, webLink);
-
-        //delete img, if already exists
-        File.Delete(pathToPNG);
-
-        //refresh harddrive browser
-        GetComponent<HarddriveBrowserRefresher>().RefreshList();
-
-        //refresh search browser
-        RefreshBrowser(path);
-		
-        yield return null;
-    }
+	}
 
     //this script is used when the session items are updated because of a new, conflicting download
     private ImportedObject UpdateImpObj(ImportedObject impObj, string path)
@@ -245,7 +195,7 @@ public class SearchBrowserRefresher : MonoBehaviour
 
             item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
             return;
-        }        
+        }
         
         thumbRenderer.material.color = Color.white;
         item.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
@@ -253,9 +203,6 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<Animator>().enabled = false;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(true);
         item.GetComponentInChildren<ImportModel>().url = webLink;
-
-
-
     }
 
     void RefreshBrowserDownloadError()
@@ -279,36 +226,6 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
 
         GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
-    }
-
-    private static bool StringEndsWith(string a, string b)
-    {
-        int ap = a.Length - 1;
-        int bp = b.Length - 1;
-
-        while (ap >= 0 && bp >= 0 && a[ap] == b[bp])
-        {
-            ap--;
-            bp--;
-        }
-
-        return (bp < 0);
-    }
-
-    private static bool StringStartsWith(string a, string b)
-    {
-        int aLen = a.Length;
-        int bLen = b.Length;
-
-        int ap = 0; int bp = 0;
-
-        while (ap < aLen && bp < bLen && a[ap] == b[bp])
-        {
-            ap++;
-            bp++;
-        }
-
-        return (bp == bLen);
     }
 
     static String BytesToNiceString(long byteCount)
