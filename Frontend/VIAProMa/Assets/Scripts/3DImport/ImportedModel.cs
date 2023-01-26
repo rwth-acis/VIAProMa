@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using HoloToolkit.Unity;
 
 public class ImportedModel : MonoBehaviour
 {
@@ -12,10 +13,24 @@ public class ImportedModel : MonoBehaviour
 		}
 		set {
 			webLink = value;
-			// TODO: Load and show the model
+
+			StartCoroutine(LoadModel());
 		}
 	}
 	public string Owner { get; set; }
+
+	IEnumerator LoadModel() {
+		ModelDownloader downloader = Singleton<ModelDownloader>.Instance;
+		yield return downloader.Download(webLink);
+		ModelDownloader.ModelDownload download = downloader.GetDownload(webLink);
+		string path = download.path;
+
+		ModelImporter importer = Singleton<ModelImporter>.Instance;
+		GameObject model = importer.InstantiateModel(path);
+		model.transform.SetParent(transform);
+
+		yield break;
+	}
 
 	void OnEnable() {
 		ImportedModelTracker.AddObject(this);
