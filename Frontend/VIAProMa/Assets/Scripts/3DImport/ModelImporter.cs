@@ -74,10 +74,6 @@ public class ModelImporter: Singleton<ModelImporter> {
 
         model.transform.eulerAngles = new Vector3(-90, -180, 0);
 
-        model.AddComponent<NearInteractionGrabbable>();
-        model.AddComponent<ObjectManipulator>();
-        model.GetComponent<ObjectManipulator>().HostTransform = model.transform;
-
         model.name = System.IO.Path.GetFileNameWithoutExtension(path);
 
         
