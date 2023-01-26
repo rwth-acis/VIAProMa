@@ -32,8 +32,9 @@ public class ModelDownloader: Singleton<ModelDownloader> {
 	{
 		if (downloads.ContainsKey(url)) {
 			yield return AwaitDownload(url);
+		} else {
+			yield return InternalDownload(url);
 		}
-		yield return InternalDownload(url);
 	}
 
 	IEnumerator AwaitDownload(string url)

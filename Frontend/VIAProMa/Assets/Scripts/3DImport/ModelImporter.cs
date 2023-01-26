@@ -23,9 +23,6 @@ public class ModelImporter: Singleton<ModelImporter> {
         //import into unity scene
         AnimationClip[] animClips;
         GameObject model = Importer.LoadFromFile(path, new ImportSettings(), out animClips);
-        model.transform.position = Vector3.zero;
-        model.transform.rotation = Quaternion.identity;
-        model.transform.localScale = Vector3.one;
 
         //resize object according to mesh bounds
         Renderer[] rr = model.GetComponentsInChildren<Renderer>();
@@ -75,14 +72,7 @@ public class ModelImporter: Singleton<ModelImporter> {
 
         model.transform.localScale = model.transform.localScale / (bounds.size.magnitude * 4f);
 
-
-        model.transform.rotation = this.gameObject.transform.rotation;
-        model.transform.eulerAngles += new Vector3(-90, -180, 0);
-        //model.transform.position = this.gameObject.transform.position;
-
-        //use the center of the bounding box to set the object
-        model.transform.position = model.transform.position + (this.gameObject.transform.position - model.transform.TransformPoint(model.GetComponent<BoxCollider>().center));
-        model.transform.position = model.transform.position - this.gameObject.transform.forward * 0.1f;
+        model.transform.eulerAngles = new Vector3(-90, -180, 0);
 
         model.AddComponent<NearInteractionGrabbable>();
         model.AddComponent<ObjectManipulator>();
