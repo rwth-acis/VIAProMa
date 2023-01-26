@@ -27,8 +27,8 @@ public class ImportedModel : MonoBehaviour
 
 		ModelImporter importer = Singleton<ModelImporter>.Instance;
 		GameObject model = importer.InstantiateModel(path);
-        GetComponent<BoxCollider>().size = model.GetComponent<BoxCollider>().size;
-        GetComponent<BoxCollider>().center = model.GetComponent<BoxCollider>().center;
+        GetComponent<BoxCollider>().size = model.GetComponent<BoxCollider>().size * model.transform.localScale.y;
+        GetComponent<BoxCollider>().center = model.GetComponent<BoxCollider>().center * model.transform.localScale.y;
 		model.transform.SetParent(transform);
 		model.transform.localPosition = Vector3.zero;
 
