@@ -23,6 +23,7 @@ public class ImportModel : MonoBehaviour
     public void LoadModel()
     {
 		object[] InstantiationData = new object[] {(object)url};
-		PhotonNetwork.Instantiate("ImportedModel", new Vector3(0, 0, 0), Quaternion.identity, 0, InstantiationData);
+		Vector3 position = transform.position - transform.forward * 0.1f;
+		PhotonNetwork.Instantiate("ImportedModel", position, Quaternion.identity, 0, InstantiationData);
     }
 }

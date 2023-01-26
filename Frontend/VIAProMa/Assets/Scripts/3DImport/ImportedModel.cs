@@ -30,6 +30,7 @@ public class ImportedModel : MonoBehaviour
         GetComponent<BoxCollider>().size = model.GetComponent<BoxCollider>().size;
         GetComponent<BoxCollider>().center = model.GetComponent<BoxCollider>().center;
 		model.transform.SetParent(transform);
+		model.transform.localPosition = Vector3.zero;
 
 		ImportedModelTracker.LoadedObject(this);
 
