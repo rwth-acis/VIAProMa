@@ -213,7 +213,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         catch {
             impObj.gameObject = errorObj;
             impObj.gameObject.transform.position = tr.position;
-            impObj.gameObject.transform.LookAt(mainCamTr); ;
+            impObj.gameObject.transform.LookAt(mainCamTr);
             return impObj; 
         }
         impObj.gameObject.transform.position = tr.position;

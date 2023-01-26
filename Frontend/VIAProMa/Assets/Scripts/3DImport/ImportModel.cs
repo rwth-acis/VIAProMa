@@ -55,15 +55,15 @@ public class ImportModel : MonoBehaviour
 
 
 
-        GameObject testModel = LoadModel(path);
+        //GameObject testModel = LoadModel(path);
 
-        testModel.name = model.fileName;
+        //testModel.name = model.fileName;
 
-        model.gameObject = testModel;
+        //model.gameObject = testModel;
 
-        this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
+        //this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
 
-        object[] objs = { path, model.webLink, model.fileName, model.dateOfDownload, model.size, testModel.transform.position, testModel.transform.rotation };
+        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, gameObject.transform.position, gameObject.transform.rotation };
         PhotonNetwork.InstantiateRoomObject("networkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
 
         //testModel.AddComponent<PhotonTransformView>();
