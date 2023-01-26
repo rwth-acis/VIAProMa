@@ -35,7 +35,16 @@ public class ScaleKanbanBoardCommand : ICommand
 
     public void Execute()
     {
-
+        if (xAxis)
+        {
+            kanbanBoardController.Width = newWidth;
+            kanbanBoardController.transform.localPosition = kanbanBoardColumnEndPosition;
+        }
+        else
+        {
+            kanbanBoardController.Height = newHeight;
+            kanbanBoardController.transform.localPosition = kanbanBoardColumnEndPosition;
+        }
     }
 
     public void Undo()
@@ -49,20 +58,6 @@ public class ScaleKanbanBoardCommand : ICommand
         {
             kanbanBoardController.Height = oldHeight;
             kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition;
-        }
-    }
-
-    public void Redo()
-    {
-        if (xAxis)
-        {
-            kanbanBoardController.Width = newWidth;
-            kanbanBoardController.transform.localPosition = kanbanBoardColumnEndPosition;
-        }
-        else
-        {
-            kanbanBoardController.Height = newHeight;
-            kanbanBoardController.transform.localPosition = kanbanBoardColumnEndPosition;
         }
     }
 }

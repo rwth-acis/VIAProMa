@@ -69,9 +69,4 @@ public class CreateMenuCommand : ICommand
                 break;
         }
     }
-
-    public void Redo()
-    {
-
-    }
 }

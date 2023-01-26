@@ -24,7 +24,7 @@ public class ProgressBarHandleCommand : ICommand
 
     public void Execute()
     {
-
+        
     }
 
     public void Undo()

@@ -259,8 +259,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowUndoRedoMenu()
         {
-            ICommand createMenu = new CreateMenuCommand(MenuType.UndoRedoMenu, undoRedoButton.transform.position - 0.3f * transform.right + 0.15f * transform.up - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-            UndoRedoManager.Execute(createMenu);
+            // The UndoRedoMenu is excluded on purpose from the Undo/Redo System, as else it would cut of all commands from before opening the menu
+            // ICommand createMenu = new CreateMenuCommand(MenuType.UndoRedoMenu, undoRedoButton.transform.position - 0.3f * transform.right + 0.15f * transform.up - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            // UndoRedoManager.Execute(createMenu);
+            WindowManager.Instance.UndoRedoMenu.Open(undoRedoButton.transform.position - 0.3f * transform.right + 0.15f * transform.up - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
