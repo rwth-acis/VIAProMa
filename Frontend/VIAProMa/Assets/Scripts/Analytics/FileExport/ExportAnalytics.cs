@@ -7,16 +7,20 @@ using UnityEngine;
 
 namespace VIAProMa.Assets.Scripts.Analytics.FileExport
 {
-    public class ExportAnalytics
+    public class ExportAnalytics : MonoBehaviour
     {
         public async void ExportToJsonAsync()
         {
-            string now = DateTime.Now.ToString();
+            // Generate path for JSON file export.
+            string now = DateTime.Now.ToString("ddMMyyHHmmss");
             string json = await FetchAnalyticsDataJSONAsync();
-            string userProfile = Environment.GetEnvironmentVariable("USERPROFILE");
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string exportPath = userProfile + "\\VIAProMa_Exports\\Analytics\\";
-            StreamWriter writer = new StreamWriter(exportPath + "AnalyticsExport_" + now + ".json");
-            Debug.Log(exportPath);
+            Directory.CreateDirectory(exportPath);
+
+            StreamWriter writer = new StreamWriter(exportPath + now + ".json");
+            await writer.WriteAsync(json);
+            writer.Flush();
             await writer.WriteLineAsync(json);
         }
 
@@ -26,7 +30,7 @@ namespace VIAProMa.Assets.Scripts.Analytics.FileExport
 
             Response resp =
                     await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "analytics/json-export/" + projectID,
+                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/analytics/json-export/test" ,// + projectID,
                         null,
                         -1,
                         null,
