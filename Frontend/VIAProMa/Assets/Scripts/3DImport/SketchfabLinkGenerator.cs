@@ -37,7 +37,7 @@ public class SketchfabLinkGenerator : MonoBehaviour
         }
         else
         {
-            GetComponent<SearchBrowserRefresher>().SearchChanged(downloadUrl, uid);
+            GetComponent<SearchBrowserRefresher>().SearchChanged("Sketchfab: " + downloadUrl, uid);
         }
     }
 
