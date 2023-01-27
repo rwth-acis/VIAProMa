@@ -72,6 +72,7 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     private string sketchfabThumbsFolder;
 
+    private string searchContentGlobal;
 
     public Transform mainCamTr;
     void Start()
@@ -94,7 +95,8 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     public void SearchChanged(string searchContent, string Uid)
     {
-        UnityEngine.Debug.Log(searchContent);
+        searchContentGlobal = searchContent;
+        //UnityEngine.Debug.Log(searchContent);
         //refresh search browser
         foreach (Transform child in itemWrapper.transform)
         {
@@ -118,6 +120,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
         headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
         headUpButton.IsEnabled = false;
+        head = 0;
 
         //check, if content is a valid link
         if ((StringStartsWith(searchContent, "http://") || StringStartsWith(searchContent, "https://"))
@@ -144,12 +147,12 @@ public class SearchBrowserRefresher : MonoBehaviour
         } 
         else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
         {
-            StartCoroutine(SearchOnSketchfab(searchContent));
+            StartCoroutine(SearchOnSketchfab(searchContent, 10, 10));
         }
     }
 
         
-    private IEnumerator SearchOnSketchfab(string query)
+    private IEnumerator SearchOnSketchfab(string query, int range, int cursor)
     {
         //refresh thumbs folder
         FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
@@ -159,7 +162,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             File.Delete(imagePath);       
         }
 
-        string uri = "https://api.sketchfab.com/v3/search?type=models&count=10&cursor=10&q=" + UnityWebRequest.EscapeURL(query);
+        string uri = "https://api.sketchfab.com/v3/search?type=models&count=" + range + "&cursor=" + cursor + "&downloadable=true" + "&q=" + UnityWebRequest.EscapeURL(query);
         //Debug.Log(uri);
 
         using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
@@ -195,6 +198,24 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     public void RefreshSearchBrowser(int headPosition)
     {
+        //refresh search browser
+        foreach (Transform child in itemWrapper.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        if (searchedObjects.Count() - headPosition < 6)
+        {
+            headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+            headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+            headDownButton.IsEnabled = false;
+            headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+            headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+            headUpButton.IsEnabled = false;
+
+            SearchOnSketchfab(searchContentGlobal, searchedObjects.Count() + 10, searchedObjects.Count() + 10);
+        }
+
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
         headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
         headDownButton.IsEnabled = true;
@@ -221,11 +242,8 @@ public class SearchBrowserRefresher : MonoBehaviour
         }
 
 
-        //refresh search browser
-        foreach (Transform child in itemWrapper.transform)
-        {
-            Destroy(child.gameObject);
-        }
+        
+
         //build current page according to head position
         int j = searchedObjects.Count() - headPosition < 4 ? searchedObjects.Count() - headPosition : 4;
         for (int i = headPosition; i < j + headPosition; i++)

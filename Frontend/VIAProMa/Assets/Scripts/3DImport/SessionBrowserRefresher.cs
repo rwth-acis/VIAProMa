@@ -8,7 +8,8 @@ using TMPro;
 using UnityEngine;
 
 public class SessionBrowserRefresher : MonoBehaviour
-{
+{   
+    //Struct that holds any required information for an imported 3D object.
     public struct ImportedObject 
     {
         public ImportedObject(GameObject GameObject, string WebLink, string FileName, string DateOfDownload, string Size/*, string Creator*/)
@@ -30,6 +31,7 @@ public class SessionBrowserRefresher : MonoBehaviour
     }
 
     public List<ImportedObject> importedObjects;
+
     public int head;
 
     [SerializeField] private Interactable headUpButton;
@@ -57,6 +59,9 @@ public class SessionBrowserRefresher : MonoBehaviour
         Refresh(head);
     }
 
+    /// <summary>
+    /// Refreshes the SessionBrowser.
+    /// </summary>
     public void Refresh(int headPosition)
     {       
             headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
@@ -130,6 +135,11 @@ public class SessionBrowserRefresher : MonoBehaviour
             sessItem.GetComponentInChildren<Animator>().enabled = false;
 
             sessItem.GetComponentInChildren<ImportModel>().path = path;
+            if (!File.Exists(path))
+            {
+                sessItem.GetComponentInChildren<ImportModel>().gameObject.GetComponentInChildren<TextMeshPro>().text = "Download";
+                sessItem.GetComponentInChildren<ImportModel>().gameObject.GetComponentInChildren<TextMeshPro>().fontSize = 0.05f;
+            }
             sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
 
             sessItem.GetComponentInChildren<HighlightModel>().model = impObj.gameObject;
@@ -138,6 +148,10 @@ public class SessionBrowserRefresher : MonoBehaviour
                       
         }
     }
+
+    /// <summary>
+    /// Adds an item to the list of imported objects.
+    /// </summary>
     public void AddItem(ImportedObject obj)
     {
         head = 0;
@@ -146,11 +160,18 @@ public class SessionBrowserRefresher : MonoBehaviour
         Refresh(head); //"Refresh Head"... ich sollte wahrscheinlich schlafen gehen
     }
 
+    /// <summary>
+    /// Increased to move down in the list of imported objects in the SessionBrowser.
+    /// </summary>
     public void IncreaseHead()
     {        
         head++;      
         Refresh(head);
     }
+
+    /// <summary>
+    /// Decreased to move up in the list of imported objects in the SessionBrowser.
+    /// </summary>
     public void DecreaseHead()
     {
         head--;

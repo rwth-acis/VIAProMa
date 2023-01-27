@@ -16,18 +16,14 @@ public class ThumbnailGenerator : MonoBehaviour
         heightOffset = -100;
     }
 
+    /// <summary>
+    /// Sets thumbnail given a local .glb path.
+    /// </summary>
     public void SetThumbnail(string glbPath, Renderer renderer)
     {
         string filename = Path.GetFileNameWithoutExtension(glbPath);
         string pathToPNG = Path.Combine(Path.GetDirectoryName(glbPath), filename + ".png");
 
-        // If file does not exists, download it
-        //if (!File.Exists(glbPath))
-        //{
-        //    GetComponent<SearchBrowserRefresher>().SearchChanged(glbPath);
-        //    GetComponent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = glbPath;
-        //    return;
-        //}
 
         // If image does not exists, generate thumbnail
         if (!File.Exists(pathToPNG))
@@ -75,6 +71,7 @@ public class ThumbnailGenerator : MonoBehaviour
         
     }
 
+    //Generates thumbnail
     private IEnumerator GenerateThumbnail(string pathToPNG, Renderer renderer, GameObject spawnedThumbSetup)
     {
         yield return new WaitForEndOfFrame(); // wait for rendering
