@@ -12,14 +12,15 @@ namespace VIAProMa.Assets.Scripts.Analytics.FileExport
         public async void ExportToJsonAsync()
         {
             string now = DateTime.Now.ToString();
-            string json = await FetchAnalyticsDataAsync();
-            string exportPath = "%USERPROFILE%/VIAProMa_Exports/Analytics/AnalyticsExport_";
-            StreamWriter writer = new StreamWriter(exportPath + now + ".json");
+            string json = await FetchAnalyticsDataJSONAsync();
+            string userProfile = Environment.GetEnvironmentVariable("USERPROFILE");
+            string exportPath = userProfile + "\\VIAProMa_Exports\\Analytics\\";
+            StreamWriter writer = new StreamWriter(exportPath + "AnalyticsExport_" + now + ".json");
             Debug.Log(exportPath);
             await writer.WriteLineAsync(json);
         }
 
-        public async Task<string> FetchAnalyticsDataAsync()
+        public async Task<string> FetchAnalyticsDataJSONAsync()
         {
             string projectID = AnalyticsManager.Instance.ProjectID.ToString();
 
