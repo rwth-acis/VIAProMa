@@ -61,16 +61,30 @@ namespace i5.VIAProMa.Shelves.Widgets
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
             GameObject currentPointerTarget = eventData.Pointer.Result.CurrentPointerTarget;
-            // only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture
+            // Only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture.
             if (!IssueSelectionManager.Instance.SelectionModeActive
-                //clicking the edit or delete button shouldn't spawn a card
+                // Clicking the edit or delete button shouldn't spawn a card.
                 && currentPointerTarget.GetComponent<EditButton>() == null && currentPointerTarget.GetComponent<DeleteButton>() == null)
             {
                 // Analytics: Notify the observers that the card has been clicked on.
-                NotifyObservers(new LogpointLRSExportable("IssueCardInitialized", "IssueCard", Convert.ToString(localDataDisplay.Content.Id)));
-                // NotifyObservers(new LogpointIssueSelected(localDataDisplay));
+                // TODO: Fetch correct values.
+                string objectIRI = "Unknown Issue source!";
+                if (localDataDisplay.Content.Source == DataSource.GITHUB)
+                {
+                    string repository = "TODOGetRepository";
+                    string repositoryOwner = "TODOGetRepositoryOwner";
+                    objectIRI = string.Format("https://github.com/{0}/{1}/issues/{2}", repositoryOwner, repository, localDataDisplay.Content.Id);
+                }
+                else if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
+                {
+                    string projectID = "TODOGetProjectID";
+                    objectIRI = string.Format("https://requirements-bazaar.org/projects/{0}/requirements/{1}", projectID, localDataDisplay.Content.Id);
+                }
 
-                // pass instantiation data to the copy so that other clients also know which issue is contained in the created copy
+                LogpointLRSExportable logpoint = new LogpointLRSExportable("http://id.tincanapi.com/verb/selected", objectIRI);
+                NotifyObservers(logpoint);
+
+                // Pass instantiation data to the copy so that other clients also know which issue is contained in the created copy.
                 object[] instantiationData;
                 if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
                 {

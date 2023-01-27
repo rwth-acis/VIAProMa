@@ -22,11 +22,10 @@ namespace VIAProMa.Assets.Scripts.Analytics
             {
                 unsubscriber = observable.Subscribe(this);
 
-                Uri lrsEndpoint = new Uri("https://lrs.tech4comp.dbis.rwth-aachen.de/data/xAPI");
-                string authToken = "a218e7ee16b48874f25428c5b790d1014c741da3";
                 lrsClient = new ExperienceAPIClient();
-                lrsClient.XApiEndpoint = lrsEndpoint;
-                lrsClient.AuthorizationToken = authToken;
+                lrsClient.XApiEndpoint = new Uri("https://lrs.tech4comp.dbis.rwth-aachen.de/data/xAPI/");
+                lrsClient.AuthorizationToken = "Basic MDkwOGNhNGFmMTRjNzg3YWU2MjIzODUwMDIxYWMwNjRkYTc5MDcwMDphMjE4ZTdlZTE2YjQ4ODc0ZjI1NDI4YzViNzkwZDEwMTRjNzQxZGEz"; // TODO: Change key when publishing.
+                lrsClient.Version = "1.0.3";
             }
 
             // Subscribe to another observable than the one subscribed to previously.
@@ -75,12 +74,8 @@ namespace VIAProMa.Assets.Scripts.Analytics
                 {
                     // Make request to LRS.
                     LogpointLRSExportable? lrsState = state as LogpointLRSExportable;
-                    Actor actor = new Actor(lrsState!.Actor);
-                    Verb verb = new Verb(lrsState.Verb);
-                    XApiObject apiObject = new XApiObject(lrsState.ObjectID);
-
-                    WebResponse<string> lrsRes = await lrsClient.SendStatementAsync(actor, verb, apiObject);
-                    Debug.Log(lrsRes.Content);
+                    WebResponse<string> lrsRes = await lrsClient.SendStatementAsync(lrsState!.GetStatement());
+                    Debug.Log(lrsRes.Content); // TODO: Remove in production.
                 }
             }
 
