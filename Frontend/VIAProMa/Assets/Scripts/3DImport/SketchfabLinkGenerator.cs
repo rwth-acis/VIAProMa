@@ -31,7 +31,14 @@ public class SketchfabLinkGenerator : MonoBehaviour
             Debug.Log("Error connecting to sketchfab API: " + webRequest.error);
         }
 
-        SearchBrowserRefresher.SearchChanged(downloadUrl, uid);
+        if (GetComponent<SearchBrowserRefresher>() == null)
+        {
+            GetComponentInParent<SearchBrowserRefresher>().SearchChanged(downloadUrl, uid);
+        }
+        else
+        {
+            GetComponent<SearchBrowserRefresher>().SearchChanged(downloadUrl, uid);
+        }
     }
 
     public void GetDownloadLink()

@@ -48,7 +48,7 @@ public class ImportModel : MonoBehaviour
             //if sketchfab
             if (!model.webLink.EndsWith(".glb"))
             {
-                GetComponentInParent<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink);
+                StartCoroutine(GetComponentInParent<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink));
             }
             else
             //if direct link
