@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+
 
 public class UndoRedoManager : MonoBehaviour
 {
@@ -8,6 +11,12 @@ public class UndoRedoManager : MonoBehaviour
     {
         commandProcessor = new CommandProcessor();
     }
+
+    public List<ICommand> getCommandList()
+    {
+        return commandProcessor.getCommandListCP();
+    }
+
 
     public void Execute(ICommand command)
     {

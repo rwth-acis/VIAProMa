@@ -18,7 +18,13 @@ namespace i5.VIAProMa.UI.Chat
         [SerializeField] private GameObject Leiste;
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
         private GameObject UndoRedoManagerGameObject;
-        private TextMeshPro textField;      
+        private int numberOfTextFields;
+        private List<ICommand> commands;
+        private int lastCommandIndexChecker;
+        private int lastCommandIndex;
+        private int cubeIndex;
+        private int currentTextMesh = 0;
+        //private CommandProcessor commandProcessor;
 
         public bool WindowEnabled { get; set; }
 
@@ -26,11 +32,31 @@ namespace i5.VIAProMa.UI.Chat
 
         public event EventHandler WindowClosed;
 
-        public void Awake()
+
+
+        void Awake()
         { 
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+            numberOfTextFields = commandItemsText.Length;
+            lastCommandIndex = commands.Count;
         }
+
+
+        void Update()
+        {
+            //lastCommandIndexChecker = commands.Count;
+            commands = UndoRedoManager.getCommandList();
+            //addCommandToUI();
+            //lastCommandIndex = commands.Count;
+            //addCommandToUI();
+            /*if (lastCommandIndex < commands.Count)
+            {
+                lastCommandIndex = commands.Count;
+                addCommandToUI();
+            }*/
+        }
+
 
         public void Open()
         {
@@ -68,10 +94,49 @@ namespace i5.VIAProMa.UI.Chat
             UndoRedoManager.Redo();
         }
 
+
         public void Select(int index)
         {
-            commandItemsText[index].GetComponent<TextMeshPro>().text = "klappt es?";
+            //commandItemsText[index].GetComponent<TextMeshPro>().text = commands[0].GetType().ToString();
+            cubeIndex = index;
+            addCommandToUI();
         }
 
+
+        public void scrollUp()
+        {
+            if (pageUpButton.IsEnabled)
+            {
+                UpdateView(true, false);
+            }
+        }
+
+        public void addCommandToUI()
+        {
+            //commands = UndoRedoManager.getCommandList();
+            commandItemsText[0].GetComponent<TextMeshPro>().text = commands[0].GetType().ToString();
+            //currentTextMesh++;
+        }
+
+
+        public void scrollDown()
+        {
+            if (pageDownButton.IsEnabled)
+            {
+                UpdateView(false, true);
+            }
+        }
+
+        public void UpdateView(bool up, bool down)
+        {
+            if (up)
+            {
+
+            }
+            else if (down)
+            {
+
+            }
+        }
     }
 }

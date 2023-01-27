@@ -8,6 +8,13 @@ public class CommandProcessor
     private int currentPosition = -1;
     private int range = 0;
 
+    public List<ICommand> getCommandListCP()
+    {
+        return commands;
+    }
+
+
+
     private Color notActiveColor = Color.grey;
     private Color activeColor;
     private GameObject undoButtonBG;
