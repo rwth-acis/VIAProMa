@@ -18,25 +18,30 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using WebSocketSharp;
+using UnityEditor.Search;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
-    private class SearchResult
+    public class SearchResult
     {
         public string Name { get; set;}
         public string Uid { get; set;}
         public string PublishedAt { get; set;}
 
+        public string ThumbnailLink { get; set; }
+
         public override string ToString()
         {
-            return String.Format("Name: {0}, UID: {1}, PublishedAt: {2}", Name, Uid, PublishedAt);
+            return String.Format("Name: {0}, UID: {1}, PublishedAt: {2}, ThumbnailLink: {3}", Name, Uid, PublishedAt, ThumbnailLink);
         }
     }
 
     private GameObject modelWrapper;
 
+    [SerializeField] private GameObject sketchfabItem;
     [SerializeField] private GameObject itemWrapper;
     [SerializeField] private GameObject sessionItemWrapper;
+
 
     public GameObject searchBarText;
 
@@ -62,20 +67,29 @@ public class SearchBrowserRefresher : MonoBehaviour
     [SerializeField] private Interactable headUpButton;
     [SerializeField] private Interactable headDownButton;
 
+    public List<SearchResult> searchedObjects;
+    public int head;
+
+    private string sketchfabThumbsFolder;
+
+
     public Transform mainCamTr;
     void Start()
     {
         modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
+        sketchfabThumbsFolder = "SketchfabThumbs";
 
         linkOrFileNameLength = 54;
 
         itemStartPosition = new Vector3(0, 0.12f, -0.02f);
-        itemPositionOffset = new Vector3(0, -0.09f, 0);
+        itemPositionOffset = new Vector3(0, -0.11f, 0);
 
         sessionItemStartPosition = new Vector3(0, 0.2f, -0.02f);
         sessionItemPositionOffset = new Vector3(0, -0.11f, 0);
 
         SearchChanged("");
+        searchedObjects = new List<SearchResult>();
+        head = 0;
     }
 
     public void SearchChanged(string searchContent)
@@ -136,7 +150,14 @@ public class SearchBrowserRefresher : MonoBehaviour
 
         
     private IEnumerator SearchOnSketchfab(string query)
-    {   
+    {
+        //refresh thumbs folder
+        FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
+        foreach (FileInfo imageFile in imageFiles)
+        {
+            string imagePath = imageFile.FullName;       
+            File.Delete(imagePath);       
+        }
 
         string uri = "https://api.sketchfab.com/v3/search?type=models&count=10&cursor=10&q=" + UnityWebRequest.EscapeURL(query);
         //Debug.Log(uri);
@@ -152,22 +173,102 @@ public class SearchBrowserRefresher : MonoBehaviour
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             JObject jsonResponse = JObject.Parse(webRequest.downloadHandler.text);
-            IList<JToken> results = jsonResponse["results"].Children().ToList();
+            List<JToken> results = jsonResponse["results"].Children().ToList();
 
-            IList<SearchResult> searchResults = new List<SearchResult>();
+            List<SearchResult> searchResults = new List<SearchResult>();
             foreach(JToken result in results)
             {
                 SearchResult searchResult = result.ToObject<SearchResult>();
                 searchResults.Add(searchResult);
                 Debug.Log(searchResult);
             }
+
+
+
         }
         else
         {
             Debug.Log("Error connecting to sketchfab API: " + webRequest.error);
         }
-
     }
+
+
+    public void RefreshSearchBrowser(int headPosition)
+    {
+        headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+        headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
+        headDownButton.IsEnabled = true;
+        headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
+        headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
+        headUpButton.IsEnabled = true;
+
+        //head is at the bottom
+        if (searchedObjects.Count() - headPosition - 1 - 3 <= 0)
+        {
+            headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+            headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+            headDownButton.IsEnabled = false;
+
+        }
+
+        //head is at the top
+        if (headPosition == 0)
+        {
+            headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+            headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+            headUpButton.IsEnabled = false;
+
+        }
+
+
+        //refresh session browser
+        foreach (Transform child in sessionItemWrapper.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        //build current page according to head position
+        int j = searchedObjects.Count() - headPosition < 4 ? searchedObjects.Count() - headPosition : 4;
+        for (int i = headPosition; i < j + headPosition; i++)
+        {
+            SearchResult searchObj = searchedObjects[i];
+
+            string truncatedUID = searchObj.Uid.Length > linkOrFileNameLength ? (searchObj.Uid.Substring(0, linkOrFileNameLength / 2) + "..." + searchObj.Uid.Substring(searchObj.Uid.Length - linkOrFileNameLength / 2)) : searchObj.Uid;
+            string truncatedFileName = searchObj.Name.Length > linkOrFileNameLength ? (searchObj.Name.Substring(0, linkOrFileNameLength) + "...") : searchObj.Name;
+            string truncatedPublisher = searchObj.PublishedAt;
+
+            GameObject searchItem = Instantiate(sketchfabItem);
+            searchItem.transform.parent = sessionItemWrapper.transform;
+            searchItem.transform.localPosition = itemStartPosition + itemPositionOffset * (i - headPosition);
+            searchItem.transform.localRotation = Quaternion.identity;
+            
+            Renderer thumbRenderer = searchItem.transform.GetChild(0).GetComponentInChildren<Renderer>();
+            byte[] bytes = File.ReadAllBytes(searchObj.ThumbnailLink);
+            Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+            thumbImg.LoadImage(bytes);
+            thumbImg.Apply();
+            thumbRenderer.material.SetTexture("_MainTex", thumbImg);
+
+
+            thumbRenderer.material.color = Color.white;
+            searchItem.GetComponentInChildren<TextMeshPro>().text = truncatedUID + "<br>" + truncatedFileName + "<br>" +
+                                                                "Published: " + truncatedPublisher;
+            searchItem.GetComponentInChildren<Animator>().enabled = false;
+
+            searchItem.GetComponentInChildren<SketchfabLinkGenerator>().Uid = searchObj.Uid;
+        }
+    }
+
+    public void IncreaseHead()
+    {
+        head++;
+        RefreshSearchBrowser(head);
+    }
+    public void DecreaseHead()
+    {
+        head--;
+        RefreshSearchBrowser(head);
+    }
+
 
     IEnumerator DownloadFile(string path, string webLink)
     {           
