@@ -5,6 +5,8 @@ using HoloToolkit.Unity;
 using Siccity.GLTFUtility;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
+using System.IO;
+using i5.VIAProMa.UI;
 
 public class ModelImporter: Singleton<ModelImporter> {
 
@@ -18,11 +20,18 @@ public class ModelImporter: Singleton<ModelImporter> {
     [SerializeField] private Shader shaderSpecular;
     [SerializeField] private Shader shaderSpecularTransparent;
 
+
     public GameObject InstantiateModel(string path)
     {
+
+
         //import into unity scene
         AnimationClip[] animClips;
         GameObject model = Importer.LoadFromFile(path, new ImportSettings(), out animClips);
+
+        model.transform.position = Vector3.zero;
+        model.transform.rotation = Quaternion.identity;
+        model.transform.localScale = Vector3.one;
 
         //resize object according to mesh bounds
         Renderer[] rr = model.GetComponentsInChildren<Renderer>();
@@ -72,12 +81,15 @@ public class ModelImporter: Singleton<ModelImporter> {
 
         model.transform.localScale = model.transform.localScale / (bounds.size.magnitude * 4f);
 
-        model.transform.eulerAngles = new Vector3(-90, -180, 0);
+        
+
+        model.AddComponent<NearInteractionGrabbable>();
+        model.AddComponent<ObjectManipulator>();
+        model.GetComponent<ObjectManipulator>().HostTransform = model.transform;
 
         model.name = System.IO.Path.GetFileNameWithoutExtension(path);
 
-        
-
+       
         return model;
     }
 }

@@ -21,7 +21,7 @@ public static class ImportedModelTracker
 	public static event RemoveAction OnRemove;
 
 	public static void AddObject(ImportedModel obj) {
-		importedModels.Add(obj);
+		importedModels.Insert(0, obj);
 		if (OnAdded != null)
 			OnAdded(obj);
 	}
