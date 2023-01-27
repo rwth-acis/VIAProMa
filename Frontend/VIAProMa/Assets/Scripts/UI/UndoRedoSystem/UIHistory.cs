@@ -21,9 +21,13 @@ namespace i5.VIAProMa.UI.Chat
         private int numberOfTextFields;
         private List<ICommand> commands;
         private int lastCommandIndexChecker;
-        private int lastCommandIndex;
+        private int lastCommandIndex = 0;
         private int cubeIndex;
         private int currentTextMesh = 0;
+        private int stoppedAtIndex = 0;
+        private int currentCommandIndex;
+        private int lowerRangeIndex = 0;
+        private int upperRangeIndex = 0;
         //private CommandProcessor commandProcessor;
 
         public bool WindowEnabled { get; set; }
@@ -33,28 +37,27 @@ namespace i5.VIAProMa.UI.Chat
         public event EventHandler WindowClosed;
 
 
-
-        void Awake()
-        { 
-            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
-            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
-            numberOfTextFields = commandItemsText.Length;
-            lastCommandIndex = commands.Count;
-        }
-
-
         void Update()
-        {
+        {            
             //lastCommandIndexChecker = commands.Count;
             commands = UndoRedoManager.getCommandList();
             //addCommandToUI();
             //lastCommandIndex = commands.Count;
-            //addCommandToUI();
-            /*if (lastCommandIndex < commands.Count)
+            //Debug.Log("commands Count:" + commands.Count);
+            //Debug.Log("lastCommandIndex"+lastCommandIndex);
+            if (lastCommandIndex < commands.Count)
             {
                 lastCommandIndex = commands.Count;
                 addCommandToUI();
-            }*/
+            }
+        }
+
+        void Awake()
+        {
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+            numberOfTextFields = commandItemsText.Length;
+            //lastCommandIndex = 0;
         }
 
 
@@ -103,40 +106,71 @@ namespace i5.VIAProMa.UI.Chat
         }
 
 
-        public void scrollUp()
-        {
-            if (pageUpButton.IsEnabled)
-            {
-                UpdateView(true, false);
-            }
-        }
-
+   
         public void addCommandToUI()
         {
             //commands = UndoRedoManager.getCommandList();
-            commandItemsText[0].GetComponent<TextMeshPro>().text = commands[0].GetType().ToString();
-            //currentTextMesh++;
+            if (lastCommandIndex - 1 <= numberOfTextFields) {
+                commandItemsText[currentTextMesh].GetComponent<TextMeshPro>().text = commands[lastCommandIndex - 1].GetType().ToString();
+                currentTextMesh++;
+                stoppedAtIndex++;
+                if (upperRangeIndex <= 8)
+                {
+                    upperRangeIndex++;
+                }
+            }
+            else
+            {
+                //Debug.Log("lastCommandsIndex größer 9!!!!");
+
+            }
+            //Debug.Log("currentTextMesh");
+            //Debug.Log(currentTextMesh);
+        }
+
+
+        //TODO
+        public void fillWithExistingCommands()
+        {
+
+        }
+
+        public void scrollUp()
+        {
+            if (lowerRangeIndex >= 0)
+            {
+                lowerRangeIndex--;
+                upperRangeIndex--;
+                currentCommandIndex = lowerRangeIndex;
+                for (int i = 0; i<=8; i++)
+                {
+                    if (currentCommandIndex <= upperRangeIndex)
+                    {
+                        commandItemsText[i].GetComponent<TextMeshPro>().text = commands[currentCommandIndex].GetType().ToString();
+                    }
+                    currentCommandIndex++;
+                }
+            }
         }
 
 
         public void scrollDown()
         {
-            if (pageDownButton.IsEnabled)
+            if (upperRangeIndex <= lastCommandIndex)
             {
-                UpdateView(false, true);
+                lowerRangeIndex++;
+                upperRangeIndex++;
+                currentCommandIndex = lowerRangeIndex;
+                for (int i = 0; i <= 8; i++)
+                {
+                    if (currentCommandIndex <= upperRangeIndex)
+                    {
+                        commandItemsText[i].GetComponent<TextMeshPro>().text = commands[currentCommandIndex].GetType().ToString();
+                    }
+                    currentCommandIndex++;
+                }
             }
         }
 
-        public void UpdateView(bool up, bool down)
-        {
-            if (up)
-            {
-
-            }
-            else if (down)
-            {
-
-            }
-        }
     }
 }
