@@ -87,9 +87,10 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         private async Task GetSettingsFromBackendAsync()
         {
+            string projectId = AnalyticsManager.Instance.ProjectID.ToString();
             Response resp =
                     await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "analytics/viaproma/settings",
+                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/"+projectId,
                         null,
                         -1,
                         null,
@@ -101,10 +102,11 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         private async void SetSettingsOnBackend()
         {
+            string projectId = AnalyticsManager.Instance.ProjectID.ToString();
             string settingsJSON = JsonConvert.SerializeObject(_settings);
             Response resp =
                     await Rest.PostAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "analytics/viaproma/settings", settingsJSON);
+                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/" + projectId, settingsJSON);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         }
 
