@@ -53,9 +53,9 @@ public class HarddriveBrowserRefresher : MonoBehaviour
 
             ImportedObject dowObj = new ImportedObject(null, path, fileName, dateOfDownload, fileSize/*, creator*/);
             downloadedObjects.Insert(0, dowObj);
-            Debug.Log(dowObj.fileName);
+            //Debug.Log(dowObj.fileName);
         }
-        Debug.Log(downloadedObjects.Count());
+        //Debug.Log(downloadedObjects.Count());
         RefreshBrowser(head);
     }
     public void RefreshBrowser(int headPosition)

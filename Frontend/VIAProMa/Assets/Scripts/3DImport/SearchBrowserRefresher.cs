@@ -331,7 +331,10 @@ public class SearchBrowserRefresher : MonoBehaviour
         File.WriteAllText(pathToTXT, webLink);
 
         //delete img, if already exists
-        File.Delete(pathToPNG);
+        if (File.Exists(pathToTXT))
+        {
+            File.Delete(pathToPNG);
+        }
 
         //refresh harddrive browser
         GetComponent<HarddriveBrowserRefresher>().RefreshList();
