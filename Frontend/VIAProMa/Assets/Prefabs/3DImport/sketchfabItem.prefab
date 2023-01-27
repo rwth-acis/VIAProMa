@@ -1334,7 +1334,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.0092}
+  m_AnchoredPosition: {x: -0.0004, y: -0.0092}
   m_SizeDelta: {x: 0.032, y: 0.01}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &7058229973312827611
@@ -1407,7 +1407,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Import
+  m_text: Download
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6a84f857bec7e7345843ae29404c57ce, type: 2}
   m_sharedMaterial: {fileID: 21202819797275496, guid: 6a84f857bec7e7345843ae29404c57ce,
@@ -1435,8 +1435,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.07
-  m_fontSizeBase: 0.07
+  m_fontSize: 0.06
+  m_fontSizeBase: 0.06
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1618,6 +1618,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7058229973621074691}
   - component: {fileID: 7058229973621074746}
+  - component: {fileID: 9056018243184299940}
   - component: {fileID: 7058229973621074745}
   - component: {fileID: 7058229973621074744}
   - component: {fileID: 7058229973621074751}
@@ -1630,7 +1631,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7058229973621074691
 Transform:
   m_ObjectHideFlags: 0
@@ -1664,6 +1665,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.032, y: 0.032, z: 0.016}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9056018243184299940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7058229973621074690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20cff85a5b61eb245be3cd7117309d80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Uid: 
 --- !u!114 &7058229973621074745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2412,7 +2426,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3760570692762470063}
   m_Layer: 0
-  m_Name: Item
+  m_Name: sketchfabItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
