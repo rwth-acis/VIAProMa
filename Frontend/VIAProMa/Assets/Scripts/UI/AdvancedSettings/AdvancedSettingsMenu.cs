@@ -5,6 +5,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using VIAProMa.Assets.Scripts.Analytics;
+
 namespace i5.VIAProMa.UI
 {
     /// <summary>

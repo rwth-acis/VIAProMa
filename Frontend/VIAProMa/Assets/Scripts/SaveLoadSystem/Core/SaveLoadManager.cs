@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using VIAProMa.Assets.Scripts.Analytics;
 
 namespace i5.VIAProMa.SaveLoadSystem.Core
 {
