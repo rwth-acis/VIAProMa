@@ -12,7 +12,7 @@ public class SketchfabLinkGenerator : MonoBehaviour
 
     public string Uid;
 
-    public IEnumerator GetDownloadLink()
+    public IEnumerator GetDownloadLink(string Uid)
     {
         string uri = string.Format("https://api.sketchfab.com/v3/model/{0}/download", Uid);
         //Debug.Log(uri);
