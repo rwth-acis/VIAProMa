@@ -45,7 +45,16 @@ public class ImportModel : MonoBehaviour
         //was file deleted?
         if (!System.IO.File.Exists(path))
         {
-            GetComponentInParent<SearchBrowserRefresher>().SearchChanged(model.webLink);
+            //if sketchfab
+            if (!model.webLink.EndsWith(".glb"))
+            {
+                GetComponentInParent<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink);
+            }
+            else
+            //if direct link
+            {
+                GetComponentInParent<SearchBrowserRefresher>().SearchChanged(model.webLink, "");
+            }
             GetComponentInParent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = model.webLink;
             return;
         }

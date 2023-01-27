@@ -87,12 +87,12 @@ public class SearchBrowserRefresher : MonoBehaviour
         sessionItemStartPosition = new Vector3(0, 0.2f, -0.02f);
         sessionItemPositionOffset = new Vector3(0, -0.11f, 0);
 
-        SearchChanged("");
+        SearchChanged("", "");
         searchedObjects = new List<SearchResult>();
         head = 0;
     }
 
-    public void SearchChanged(string searchContent)
+    public void SearchChanged(string searchContent, string Uid)
     {
         UnityEngine.Debug.Log(searchContent);
         //refresh search browser
@@ -132,7 +132,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, fileName);
             if (!System.IO.File.Exists(path))
             {
-                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent));
+                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent, Uid));
                 tempPath = path;
             }
             else
@@ -221,8 +221,8 @@ public class SearchBrowserRefresher : MonoBehaviour
         }
 
 
-        //refresh session browser
-        foreach (Transform child in sessionItemWrapper.transform)
+        //refresh search browser
+        foreach (Transform child in itemWrapper.transform)
         {
             Destroy(child.gameObject);
         }
@@ -270,7 +270,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     }
 
 
-    IEnumerator DownloadFile(string path, string webLink)
+    IEnumerator DownloadFile(string path, string webLink, string Uid)
     {           
         //spawn loading item
         GameObject item = Instantiate(itemPrefab);
@@ -324,10 +324,17 @@ public class SearchBrowserRefresher : MonoBehaviour
         //so that users can import objects from their harddrive, and see where the object originally was downloaded from
         string pathToTXT = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt");
         string pathToPNG = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".png");
+        if (Uid != "")
+        {
+            webLink = Uid;
+        }
         File.WriteAllText(pathToTXT, webLink);
 
         //delete img, if already exists
-        File.Delete(pathToPNG);
+        if (File.Exists(pathToTXT))
+        {
+            File.Delete(pathToPNG);
+        }
 
         //refresh harddrive browser
         GetComponent<HarddriveBrowserRefresher>().RefreshList();
