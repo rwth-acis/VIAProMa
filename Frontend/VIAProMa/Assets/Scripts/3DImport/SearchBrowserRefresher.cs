@@ -70,7 +70,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     public List<SearchResult> searchedObjects;
     public int head;
 
-    private string sketchfabThumbsFolder;
+    public string sketchfabThumbsFolder;
 
     private string searchContentGlobal;
 
