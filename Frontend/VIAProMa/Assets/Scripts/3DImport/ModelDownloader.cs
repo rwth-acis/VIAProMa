@@ -58,7 +58,7 @@ public class ModelDownloader: Singleton<ModelDownloader> {
 		if (download.state == ModelDownloadState.Finished) {
 			downloads.Remove(url);
 			System.IO.File.Delete(download.path);
-			System.IO.File.Delete(Path.Combine(Path.GetDirectoryName(download.path), Path.GetFileNameWithoutExtension(download.path) + ".png"));
+			//System.IO.File.Delete(Path.Combine(Path.GetDirectoryName(download.path), Path.GetFileNameWithoutExtension(download.path) + ".png"));
 			System.IO.File.Delete(Path.Combine(Path.GetDirectoryName(download.path), Path.GetFileNameWithoutExtension(download.path) + ".txt"));
 		}
 		OnModelDeleted(url);

@@ -20,7 +20,15 @@ public class ModelImporter: Singleton<ModelImporter> {
     [SerializeField] private Shader shaderSpecular;
     [SerializeField] private Shader shaderSpecularTransparent;
 
+    public GameObject modelWrapper;
 
+    public void Start()
+    {
+        modelWrapper = new GameObject();
+        modelWrapper.name = "3Dmodels";
+        modelWrapper.transform.position = Vector3.zero;
+        modelWrapper.transform.parent = GameObject.Find("AnchorParent").transform;
+    }
     public GameObject InstantiateModel(string path)
     {
 
@@ -83,9 +91,9 @@ public class ModelImporter: Singleton<ModelImporter> {
 
         
 
-        model.AddComponent<NearInteractionGrabbable>();
-        model.AddComponent<ObjectManipulator>();
-        model.GetComponent<ObjectManipulator>().HostTransform = model.transform;
+        //model.AddComponent<NearInteractionGrabbable>();
+        //model.AddComponent<ObjectManipulator>();
+        //model.GetComponent<ObjectManipulator>().HostTransform = model.transform;
 
         model.name = System.IO.Path.GetFileNameWithoutExtension(path);
 

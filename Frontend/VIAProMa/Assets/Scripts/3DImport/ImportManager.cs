@@ -84,10 +84,7 @@ namespace i5.VIAProMa.UI
         // Start is called before the first frame update
         void Start()
         {
-            modelWrapper = new GameObject();
-            modelWrapper.name = "3Dmodels";
-            modelWrapper.transform.position = Vector3.zero;
-            modelWrapper.transform.parent = GameObject.Find("AnchorParent").transform;
+            
 
 
             // Search Menu as default menu

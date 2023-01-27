@@ -19,10 +19,9 @@ public class ImportedModel : MonoBehaviour
 		}
 	}
 	public string Owner { get; set; }
-    public GameObject modelWrapper;
 
     IEnumerator LoadModel() {
-        modelWrapper = GameObject.Find("AnchorParent").GetComponentInChildren<ImportManager>().modelWrapper;
+        GameObject modelWrapper = GameObject.Find("AnchorParent").GetComponentInChildren<ModelImporter>().modelWrapper;
 
         ModelDownloader downloader = Singleton<ModelDownloader>.Instance;
 		yield return downloader.Download(webLink);
@@ -31,8 +30,8 @@ public class ImportedModel : MonoBehaviour
 
 		ModelImporter importer = Singleton<ModelImporter>.Instance;
 		GameObject model = importer.InstantiateModel(path);
-        //GetComponent<BoxCollider>().size = model.GetComponent<BoxCollider>().size;
-        //GetComponent<BoxCollider>().center = model.GetComponent<BoxCollider>().center;
+        GetComponent<BoxCollider>().size = model.GetComponent<BoxCollider>().size * model.transform.localScale.y;
+        GetComponent<BoxCollider>().center = model.GetComponent<BoxCollider>().center * model.transform.localScale.y;
 		model.transform.SetParent(transform);
 		model.transform.localPosition = Vector3.zero;
         model.transform.localRotation = Quaternion.identity;
@@ -41,11 +40,11 @@ public class ImportedModel : MonoBehaviour
 
 		ImportedModelTracker.LoadedObject(this);
 
-
-        model.transform.eulerAngles += new Vector3(-90, -180, 0);
-
         //use the center of the bounding box to set the object
-        model.transform.position = model.transform.position + (this.gameObject.transform.position - model.transform.TransformPoint(model.GetComponent<BoxCollider>().center));
+        transform.position = transform.position + (this.gameObject.transform.position - transform.TransformPoint(GetComponent<BoxCollider>().center));
+        transform.eulerAngles += new Vector3(-90, -180, 0);
+
+        
         //model.transform.position = model.transform.position - this.gameObject.transform.forward * 0.1f;
         yield break;
 	}
