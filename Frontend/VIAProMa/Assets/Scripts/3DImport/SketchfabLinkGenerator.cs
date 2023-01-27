@@ -1,20 +1,15 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class SketchfabLinkGenerator : MonoBehaviour
 { 
-    private class Result
-    {
-        private string DownloadLink { get; set; } 
-    }
-
     public string Uid;
 
-    public IEnumerator GetDownloadLink()
+    public IEnumerator GetDownloadLink(string uid)
     {
-        string uri = string.Format("https://api.sketchfab.com/v3/model/{0}/download", Uid);
+        string uri = string.Format("https://api.sketchfab.com/v3/models/{0}/download", uid);
         //Debug.Log(uri);
 
         using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
@@ -24,5 +19,23 @@ public class SketchfabLinkGenerator : MonoBehaviour
         webRequest.SetRequestHeader("Authorization", "Token 182f243dcffb4e3e830788ceb1467c33");
 
         yield return webRequest.SendWebRequest();
+
+        string downloadUrl = "";
+        if (webRequest.result == UnityWebRequest.Result.Success)
+        {
+            JObject jsonResponse = JObject.Parse(webRequest.downloadHandler.text);
+            downloadUrl = (string) jsonResponse["glb"]["url"];
+        }
+        else
+        {
+            Debug.Log("Error connecting to sketchfab API: " + webRequest.error);
+        }
+
+        SearchBrowserRefresher.SearchChanged(downloadUrl, uid);
+    }
+
+    public void GetDownloadLink()
+    {
+        StartCoroutine(GetDownloadLink(Uid));
     }
 }
