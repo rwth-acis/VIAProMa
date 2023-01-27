@@ -1,11 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-
-namespace VIAProMa.Assets.Scripts.Analytics
+[Serializable]
+public class AnalyticsSettings
 {
-    [Serializable]
-    public class AnalyticsSettings
-    {
-        public bool AnalyticsEnabled { set; get; }
-    }
+    public bool AnalyticsEnabled {set; get;}
 }
