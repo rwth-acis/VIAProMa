@@ -45,7 +45,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         private GameObject visualizationShelfInstance;
         private GameObject loadShelfInstance;
         private GameObject avatarConfiguratorInstance;
-        private GameObject importModelInstance;
+        private GameObject importMenuInstance;
 
         private void Awake()
         {
@@ -226,8 +226,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowImportModelMenu()
         {
             Vector3 targetPosition = importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position;
-            //WindowManager.Instance.ImportManager.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-            NetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, "SetImportManagerInstance");
+            NetworkInstantiateControl(importModelPrefab, ref importMenuInstance, targetPosition, "SetImportMenuInstance");
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -272,9 +271,9 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 PhotonNetwork.LeaveRoom();
                 AnchorManager.Instance.DisableAnchoring();
-                if (importModelInstance != null)
+                if (importMenuInstance != null)
                 {
-                    importModelInstance.GetComponent<ImportManager>().Refresh3DImportSystem();
+                    importMenuInstance.GetComponent<ImportManager>().Refresh3DImportSystem();
                 }
 
             }
@@ -368,6 +367,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
             PhotonView view = PhotonView.Find(photonId);
             visualizationShelfInstance = view.gameObject;
             Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+        }
+
+        [PunRPC]
+        private void SetImportMenuInstance(int photonId)
+        {
+            PhotonView view = PhotonView.Find(photonId);
+            importMenuInstance = view.gameObject;
+            Debug.Log("RPC: setting import window shelf instance to " + importMenuInstance.name + " (id " + photonId + ")");
         }
     }
 }
