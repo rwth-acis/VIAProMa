@@ -19,6 +19,8 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using WebSocketSharp;
 using UnityEditor.Search;
+using ExitGames.Client.Photon.StructWrapping;
+using static SearchBrowserRefresher;
 
 public class SearchBrowserRefresher : MonoBehaviour
 {
@@ -169,7 +171,7 @@ public class SearchBrowserRefresher : MonoBehaviour
 
         webRequest.SetRequestHeader("Accept", "application/json");
         //webRequest.SetRequestHeader("Host", "api.sketchfab.com");
-        webRequest.SetRequestHeader("Authorization", "Token 3cf292185cd448acaac043a965237e6b");
+        webRequest.SetRequestHeader("Authorization", "Token 182f243dcffb4e3e830788ceb1467c33");
 
         yield return webRequest.SendWebRequest();
 
@@ -182,11 +184,41 @@ public class SearchBrowserRefresher : MonoBehaviour
             foreach(JToken result in results)
             {
                 SearchResult searchResult = result.ToObject<SearchResult>();
+                List <JToken> thumbs = result["thumbnails"]["images"].Children().ToList();
+
+                searchResult.ThumbnailLink = (string)thumbs[0]["url"];
+
                 searchResults.Add(searchResult);
                 Debug.Log(searchResult);
             }
 
+            foreach(SearchResult searchRes in searchResults)
+            {
+                using UnityWebRequest downloadThumb = UnityWebRequest.Get(searchRes.ThumbnailLink);
+                downloadThumb.downloadHandler = new DownloadHandlerBuffer();
 
+                yield return downloadThumb.SendWebRequest();
+
+                if(downloadThumb.result == UnityWebRequest.Result.Success)
+                {
+                    byte[] jpegBytes = downloadThumb.downloadHandler.data;
+
+                    Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+                    thumbImg.LoadImage(jpegBytes);
+                    thumbImg.Apply();
+
+                    byte[] pngBytes = thumbImg.EncodeToPNG();
+
+                    string pathToPNG = Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder, searchRes.Uid + ".png");
+                    File.WriteAllBytes(pathToPNG, pngBytes);
+                }
+                else
+                {
+                    Debug.Log("Error downloading thumbnail via sketchfab API: " + webRequest.error);
+                }
+
+                downloadThumb.downloadHandler.Dispose();
+            }
 
         }
         else
