@@ -146,7 +146,22 @@ public class SearchBrowserRefresher : MonoBehaviour
                 RefreshBrowser(path);
             }
 
-        } 
+        }
+        //if sketchfab link
+        else if (StringStartsWith(searchContent, "Sketchfab: ")) {
+            searchContent = searchContent.Remove(0, 11);
+            string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, Uid);
+            if (!System.IO.File.Exists(path))
+            {
+                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent, Uid));
+                tempPath = path;
+            }
+            else
+            {
+                Debug.Log("File already saved in " + path + ", not downloading");
+                RefreshBrowser(path);
+            }
+        }
         else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
         {
             StartCoroutine(SearchOnSketchfab(searchContent, 10, 10));
@@ -321,7 +336,19 @@ public class SearchBrowserRefresher : MonoBehaviour
 
 
     IEnumerator DownloadFile(string path, string webLink, string Uid)
-    {           
+    {
+        //refresh session browser
+        foreach (Transform child in itemWrapper.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+        headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+        headDownButton.IsEnabled = false;
+        headUpButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
+        headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
+        headUpButton.IsEnabled = false;
+
         //spawn loading item
         GameObject item = Instantiate(itemPrefab);
         item.transform.parent = itemWrapper.transform;
