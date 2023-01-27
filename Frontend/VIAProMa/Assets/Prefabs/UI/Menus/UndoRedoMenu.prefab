@@ -339,7 +339,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ec72a3a105768f746b556a8dfdae61a8, type: 2}
+  - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -410,7 +410,7 @@ GameObject:
   - component: {fileID: 234907213826187310}
   - component: {fileID: 1039304887811424051}
   m_Layer: 0
-  m_Name: PressableButtonHoloLens2_32x96(Clone)
+  m_Name: UIHistory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -610,9 +610,9 @@ MonoBehaviour:
   OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: Increment
+      - m_Target: {fileID: -1392551736516312847}
+        m_TargetAssemblyTypeName: i5.VIAProMa.UI.Chat.UndoRedoMenu, Assembly-CSharp
+        m_MethodName: ShowUIHistory
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -984,7 +984,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ec72a3a105768f746b556a8dfdae61a8, type: 2}
+  - {fileID: 2100000, guid: 3bb0de252bf3e5e44bb096e8f0046165, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7882,6 +7882,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Leiste: {fileID: 7372155237097694846}
   LeisteFollowMeToggle: {fileID: 8671818701975417950}
+  uiHistoryButton: {fileID: 3580930692909534502}
 --- !u!1 &7372155236943476745
 GameObject:
   m_ObjectHideFlags: 0

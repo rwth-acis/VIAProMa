@@ -11,6 +11,7 @@ namespace i5.VIAProMa.UI.Chat
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
         private GameObject UndoRedoManagerGameObject;
         private UndoRedoManager UndoRedoManager;
+        [SerializeField] private Interactable uiHistoryButton;
 
         public bool WindowEnabled { get; set; }
 
@@ -49,6 +50,14 @@ namespace i5.VIAProMa.UI.Chat
         {
             LeisteFollowMeToggle.ToggleFollowMeBehavior();
         }
+
+
+        public void ShowUIHistory()
+        {
+            ICommand createMenu = new CreateMenuCommand(MenuType.UIHistory, transform.position + 1f * transform.right, transform.localEulerAngles);
+            UndoRedoManager.Execute(createMenu);
+        }
+
 
         public void Undo()
         {

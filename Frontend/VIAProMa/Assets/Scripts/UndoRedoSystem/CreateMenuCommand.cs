@@ -39,6 +39,9 @@ public class CreateMenuCommand : ICommand
             case MenuType.UndoRedoMenu:
                 WindowManager.Instance.UndoRedoMenu.Open(position, eulerAngles);
                 break;
+            case MenuType.UIHistory:
+                WindowManager.Instance.UIHistory.Open(position, eulerAngles);
+                break;
         }
     }
 
@@ -66,6 +69,9 @@ public class CreateMenuCommand : ICommand
                 break;
             case MenuType.UndoRedoMenu:
                 WindowManager.Instance.UndoRedoMenu.Close();
+                break;
+            case MenuType.UIHistory:
+                WindowManager.Instance.UIHistory.Close();
                 break;
         }
     }
