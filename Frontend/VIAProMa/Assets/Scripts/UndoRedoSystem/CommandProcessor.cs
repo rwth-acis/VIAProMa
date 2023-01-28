@@ -44,7 +44,7 @@ public class CommandProcessor
         }
         // Undo is now possible, Redo not
         changeColor(true, false);
-        //Debug.Log(currentPosition);
+        Debug.Log(currentPosition);
     }
 
     public void Undo()
@@ -57,7 +57,7 @@ public class CommandProcessor
         ICommand command = commands[currentPosition];
         command.Undo();
         currentPosition--;
-       // Debug.Log(currentPosition);
+        Debug.Log(currentPosition);
 
 
         //Undo only possible if there is still something to undo, redo possible
@@ -87,7 +87,7 @@ public class CommandProcessor
             changeColor(true, true);
         }
         currentPosition++;
-        //Debug.Log(currentPosition);
+        Debug.Log(currentPosition);
         ICommand command = commands[currentPosition];
         command.Redo();
 
