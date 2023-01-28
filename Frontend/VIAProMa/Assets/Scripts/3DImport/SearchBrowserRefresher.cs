@@ -523,7 +523,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             Destroy(child.gameObject);
         }
         
-        string webLink = File.ReadAllText(Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt"));
+        string webLink = File.ReadAllLines(Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt"))[0];
         string truncatedWebLink = webLink.Length > linkOrFileNameLength ? (webLink.Substring(0, linkOrFileNameLength / 2) + "..." + webLink.Substring(webLink.Length - linkOrFileNameLength/2)) : webLink;
         string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
         string truncatedFileName = fileName.Length > linkOrFileNameLength ? (fileName.Substring(0, linkOrFileNameLength) + "...") : fileName;
