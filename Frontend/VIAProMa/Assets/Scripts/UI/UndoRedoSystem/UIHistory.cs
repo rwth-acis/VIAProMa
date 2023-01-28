@@ -28,6 +28,7 @@ namespace i5.VIAProMa.UI.Chat
         private int currentCommandIndex;
         private int lowerRangeIndex = 0;
         private int upperRangeIndex = 0;
+        private bool fillUI = false;
         //private CommandProcessor commandProcessor;
 
         public bool WindowEnabled { get; set; }
@@ -36,11 +37,14 @@ namespace i5.VIAProMa.UI.Chat
 
         public event EventHandler WindowClosed;
 
-
         void Update()
-        {            
+        {
             //lastCommandIndexChecker = commands.Count;
             commands = UndoRedoManager.getCommandList();
+            if(fillUI == false)
+            {
+                fillWithExistingCommands();
+            }
             //addCommandToUI();
             //lastCommandIndex = commands.Count;
             //Debug.Log("commands Count:" + commands.Count);
@@ -58,6 +62,8 @@ namespace i5.VIAProMa.UI.Chat
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
             numberOfTextFields = commandItemsText.Length;
             //lastCommandIndex = 0;
+            currentTextMesh = 0;
+            fillUI = false;
         }
 
 
@@ -98,30 +104,47 @@ namespace i5.VIAProMa.UI.Chat
         }
 
 
-        //TODO: select wenn Menü noch nciht voll geschrieben ist + nicht immer die Anzahl an Undos audführen: Cases abfangen
+        //Frage: wird currentPosition in CommandProcessor schon korrekt verschoben durch die Undo und Redo Aufrufe oder muss ich hier etwas manuell machen????
+
+
+        //NICHT Löschen!!!!!!!! Nur CurrentPosition verschieben, Historie will man ja behalten außer bei RemoveRange
         public void Select(int index)
         {
             selectedCubeIndex = index;
-            int indexInList = lowerRangeIndex + selectedCubeIndex;
-            int stepsToUndo = (lastCommandIndex - indexInList)+1;
-            for (int i = 0; i <= stepsToUndo; i++)
+            //NOTE when adding more textfields: TextFields in Editor prefilled with " " to check if they're empty
+            if (upperRangeIndex >= numberOfTextFields && commandItemsText[selectedCubeIndex].GetComponent<TextMeshPro>().text != " ")
             {
-                UndoRedoManager.Undo();
+                int indexInList = lowerRangeIndex + selectedCubeIndex;
+                int stepsToUndo = lastCommandIndex - indexInList;
+                for (int i = 0; i <= stepsToUndo; i++)
+                {
+                    
+                    UndoRedoManager.Undo();
+                }
+               /* for (int i = selectedCubeIndex; i <= upperRangeIndex; i++)
+                {
+                    commandItemsText[i].GetComponent<TextMeshPro>().text = "";
+                }*/
+                upperRangeIndex = (lowerRangeIndex + selectedCubeIndex) - 1;
             }
-            for(int i = selectedCubeIndex; i <= upperRangeIndex; i++)
+            else if(upperRangeIndex <= numberOfTextFields && commandItemsText[selectedCubeIndex].GetComponent<TextMeshPro>().text != " ")
             {
-                commandItemsText[i].GetComponent<TextMeshPro>().text = "";
+                int stepsToUndo = upperRangeIndex - selectedCubeIndex;
+                for (int i = 0; i <= stepsToUndo; i++)
+                {
+                    UndoRedoManager.Undo();
+                }
             }
-            upperRangeIndex = (lowerRangeIndex + selectedCubeIndex)-1;
 
         }
 
 
-   
+
         public void addCommandToUI()
         {
             //commands = UndoRedoManager.getCommandList();
-            if (lastCommandIndex - 1 <= numberOfTextFields || upperRangeIndex <= numberOfTextFields) {
+            if (lastCommandIndex - 1 <= numberOfTextFields || upperRangeIndex <= numberOfTextFields)
+            {
                 commandItemsText[currentTextMesh].GetComponent<TextMeshPro>().text = commands[lastCommandIndex - 1].GetType().ToString();
                 currentTextMesh++;
                 stoppedAtIndex++;
@@ -140,10 +163,27 @@ namespace i5.VIAProMa.UI.Chat
         }
 
 
+        public void addDirectlyToUI(ICommand command)
+        {
+            commandItemsText[currentTextMesh].GetComponent<TextMeshPro>().text = commands[lastCommandIndex - 1].GetType().ToString();
+            currentTextMesh++;
+        }
+
+
         //TODO
+        //for keeping track of Historybefore UIHistory menu was instanciated
         public void fillWithExistingCommands()
         {
-
+            fillOnce = true;
+            for (int i = 0; i <= numberOfTextFields; i++)
+             {
+                commandItemsText[i].GetComponent<TextMeshPro>().text = commands[i].GetType().ToString();
+                if(currentTextMesh <= numberOfTextFields)
+                {
+                    currentTextMesh++;
+                }
+                lastCommandIndex++;
+             }
         }
 
         public void scrollUp()
@@ -153,7 +193,7 @@ namespace i5.VIAProMa.UI.Chat
                 lowerRangeIndex--;
                 upperRangeIndex--;
                 currentCommandIndex = lowerRangeIndex;
-                for (int i = 0; i<=8; i++)
+                for (int i = 0; i <= 8; i++)
                 {
                     if (currentCommandIndex <= upperRangeIndex)
                     {

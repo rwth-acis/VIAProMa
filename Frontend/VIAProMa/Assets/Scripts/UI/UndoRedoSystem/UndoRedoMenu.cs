@@ -23,6 +23,7 @@ namespace i5.VIAProMa.UI.Chat
         {
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+
         }
 
         public void Open()
@@ -54,8 +55,7 @@ namespace i5.VIAProMa.UI.Chat
 
         public void ShowUIHistory()
         {
-            ICommand createMenu = new CreateMenuCommand(MenuType.UIHistory, transform.position + 1f * transform.right, transform.localEulerAngles);
-            UndoRedoManager.Execute(createMenu);
+            
         }
 
 

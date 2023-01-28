@@ -12,6 +12,16 @@ public class UndoRedoManager : MonoBehaviour
         commandProcessor = new CommandProcessor();
     }
 
+    public void setCurrentPosition(int pCurrPos)
+    {
+        commandProcessor.setCurrentPosition(pCurrPos);
+    }
+
+    public int getCurrentPosition()
+    {
+        return commandProcessor.getCurrentPosition();
+    }
+
     public List<ICommand> getCommandList()
     {
         return commandProcessor.getCommandListCP();

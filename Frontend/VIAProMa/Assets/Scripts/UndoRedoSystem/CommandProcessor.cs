@@ -1,12 +1,31 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using System;
+using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
+using TMPro;
+using i5.VIAProMa.UI.Chat;
 
 public class CommandProcessor
 {
     private List<ICommand> commands = new List<ICommand>();
     private int currentPosition = -1;
     private int range = 0;
+
+    //---------------------------------
+
+
+    public int getCurrentPosition()
+    {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int pCurrentPosition)
+    {
+        currentPosition = pCurrentPosition;
+    }
+
 
     public List<ICommand> getCommandListCP()
     {
@@ -42,7 +61,7 @@ public class CommandProcessor
             state = 1;
         }
 
-        // Undo is now possible, Redo not
+        // Undo is now possible, Redo not(indicated by colors)
         changeColor(true, false);
 
         //TODO Delete Debug.log
