@@ -63,7 +63,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         testModel.transform.parent = this.gameObject.transform;
         this.gameObject.transform.parent = modelWrapper.transform;
 
-        this.gameObject.AddComponent<PhotonTransformView>();
+        //this.gameObject.AddComponent<PhotonTransformView>();
 
         testModel.transform.localPosition = Vector3.zero;
         testModel.transform.localRotation = Quaternion.identity;
