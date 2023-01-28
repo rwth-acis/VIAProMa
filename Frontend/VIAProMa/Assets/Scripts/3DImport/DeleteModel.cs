@@ -5,6 +5,7 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using static SessionBrowserRefresher;
+using Photon.Pun;
 
 public class DeleteModel : MonoBehaviour
 {
@@ -12,12 +13,17 @@ public class DeleteModel : MonoBehaviour
 
     public void DeleteObject()
     {
-        
+        PhotonView viewButton = GetComponent<PhotonView>();
+        viewButton.RPC("DeleteObjectNetwork", RpcTarget.All);       
+    }
 
+    [PunRPC]
+    public void DeleteObjectNetwork()
+    {
         //Refresh session browser correctly and delete actual GameObject
         SessionBrowserRefresher refresher = GetComponentInParent<SessionBrowserRefresher>();
         ImportedObject deleteThisItem = refresher.importedObjects.Find(e => e.gameObject == model);
-        Destroy(model);
+        Destroy(model.transform.parent.gameObject);
         refresher.importedObjects.Remove(deleteThisItem);
 
         //was FILE deleted?
