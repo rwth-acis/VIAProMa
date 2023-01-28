@@ -48,12 +48,12 @@ public class ImportModel : MonoBehaviour
             //if sketchfab
             if (!model.webLink.EndsWith(".glb"))
             {
-                StartCoroutine(GetComponentInParent<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink));
+                StartCoroutine(GetComponentInParent<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink, model.licence));
             }
             else
             //if direct link
             {
-                GetComponentInParent<SearchBrowserRefresher>().SearchChanged(model.webLink, "");
+                GetComponentInParent<SearchBrowserRefresher>().SearchChanged(model.webLink, "", "");
             }
             GetComponentInParent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = model.webLink;
             return;

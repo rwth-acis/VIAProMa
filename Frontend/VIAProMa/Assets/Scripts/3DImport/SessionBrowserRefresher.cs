@@ -2,6 +2,7 @@ using i5.VIAProMa.UI;
 using Microsoft.MixedReality.Toolkit.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using TMPro;
@@ -12,13 +13,14 @@ public class SessionBrowserRefresher : MonoBehaviour
     //Struct that holds any required information for an imported 3D object.
     public struct ImportedObject 
     {
-        public ImportedObject(GameObject GameObject, string WebLink, string FileName, string DateOfDownload, string Size/*, string Creator*/)
+        public ImportedObject(GameObject GameObject, string WebLink, string FileName, string DateOfDownload, string Size, string Licence)
         {
             gameObject = GameObject;
             webLink = WebLink;
             fileName = FileName;
             dateOfDownload = DateOfDownload;
             size = Size;
+            licence = Licence;
             //creator = Creator;
         }
 
@@ -27,6 +29,7 @@ public class SessionBrowserRefresher : MonoBehaviour
         public string fileName;
         public string dateOfDownload;
         public string size;
+        public string licence;
         //public string creator;     
     }
 
@@ -130,6 +133,10 @@ public class SessionBrowserRefresher : MonoBehaviour
             }
             
             thumbRenderer.material.color = Color.white;
+            if (impObj.licence != "")
+            {
+                truncatedWebLink = "Licence: " + impObj.licence;
+            }
             sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
                                                                 "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
             sessItem.GetComponentInChildren<Animator>().enabled = false;
@@ -140,7 +147,7 @@ public class SessionBrowserRefresher : MonoBehaviour
                 sessItem.GetComponentInChildren<ImportModel>().gameObject.GetComponentInChildren<TextMeshPro>().text = "Download";
                 sessItem.GetComponentInChildren<ImportModel>().gameObject.GetComponentInChildren<TextMeshPro>().fontSize = 0.05f;
             }
-            sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
+            sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, impObj.webLink, impObj.fileName, dateOfDownload, fileSize, impObj.licence);
 
             sessItem.GetComponentInChildren<HighlightModel>().model = impObj.gameObject;
             if (impObj.gameObject.tag == "Highlighted") { sessItem.GetComponentInChildren<HighlightModel>().HighlightObject(); }

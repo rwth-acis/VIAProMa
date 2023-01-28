@@ -6,8 +6,9 @@ using UnityEngine.Networking;
 public class SketchfabLinkGenerator : MonoBehaviour
 { 
     public string Uid;
+    public string licence;
 
-    public IEnumerator GetDownloadLink(string uid)
+    public IEnumerator GetDownloadLink(string uid, string licence)
     {
         string uri = string.Format("https://api.sketchfab.com/v3/models/{0}/download", uid);
         //Debug.Log(uri);
@@ -33,16 +34,16 @@ public class SketchfabLinkGenerator : MonoBehaviour
 
         if (GetComponent<SearchBrowserRefresher>() == null)
         {
-            GetComponentInParent<SearchBrowserRefresher>().SearchChanged("Sketchfab:" + downloadUrl, uid);
+            GetComponentInParent<SearchBrowserRefresher>().SearchChanged("Sketchfab:" + downloadUrl, uid, licence);
         }
         else
         {
-            GetComponent<SearchBrowserRefresher>().SearchChanged("Sketchfab:" + downloadUrl, uid);
+            GetComponent<SearchBrowserRefresher>().SearchChanged("Sketchfab:" + downloadUrl, uid, licence);
         }
     }
 
     public void GetDownloadLink()
     {
-        StartCoroutine(GetDownloadLink(Uid));
+        StartCoroutine(GetDownloadLink(Uid, licence));
     }
 }
