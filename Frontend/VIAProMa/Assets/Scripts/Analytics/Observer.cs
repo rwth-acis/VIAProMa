@@ -73,6 +73,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
                 // If the logtype is exportable to a Learning Records Store, export it.
                 if (state is LogpointLRSExportable)
                 {
+                    // At the time of commiting, there is a bug in the i5 toolkit, because of which the next line will always fail. We assume that the code will work when it is fixed. See https://github.com/rwth-acis/i5-Toolkit-for-Unity/issues/21
                     LogpointLRSExportable? lrsState = state as LogpointLRSExportable;
                     WebResponse<string> lrsRes = await lrsClient.SendStatementAsync(lrsState!.GetStatement());
                 }
