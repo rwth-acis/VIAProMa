@@ -103,7 +103,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         private async void SetSettingsOnBackend()
         {
-            string projectID = AnalyticsManager.Instance.ProjectID.ToString()
+            string projectID = AnalyticsManager.Instance.ProjectID.ToString();
             string settingsJSON = JsonConvert.SerializeObject(_settings);
             Response resp =
                     await Rest.PostAsync(
