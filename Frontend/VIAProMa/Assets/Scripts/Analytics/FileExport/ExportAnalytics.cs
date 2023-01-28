@@ -40,9 +40,8 @@ namespace VIAProMa.Assets.Scripts.Analytics.FileExport
                     fileExtension = ".txt";
                     break;
             }
-            Debug.Log("Data is:" + data);
+
             await File.WriteAllBytesAsync(exportPath + now + fileExtension, data);
-           
         }
 
         public async Task<byte[]> FetchAnalyticsDataAsync(ExportSelection format)

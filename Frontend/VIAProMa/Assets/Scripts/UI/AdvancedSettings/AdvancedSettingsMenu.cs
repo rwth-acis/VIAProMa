@@ -3,11 +3,9 @@ using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 using VIAProMa.Assets.Scripts.Analytics;
-using i5.VIAProMa.Shelves.IssueShelf;
 using VIAProMa.Assets.Scripts.Analytics.FileExport;
+using i5.VIAProMa.Analytics.FileExport;
 
 namespace i5.VIAProMa.UI
 {
