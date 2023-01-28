@@ -21,7 +21,9 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         GameObject anch = GameObject.Find("AnchorParent");
         SessionBrowserRefresher refresher = anch.GetComponentInChildren<SessionBrowserRefresher>();
         GameObject modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
-
+        while (modelWrapper == null) {
+            modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
+        }
 
 
         model = new ImportedObject();
@@ -40,7 +42,6 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         Vector3 buttonPosition = (Vector3)instantiationData[5];
         Quaternion buttonRotation = (Quaternion)instantiationData[6];
 
-        this.gameObject.transform.parent = modelWrapper.transform;
 
         GameObject testModel = impModel.LoadModel(path);
         if (testModel == null)
@@ -48,14 +49,14 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
             //if sketchfab
             if (!model.webLink.EndsWith(".glb"))
             {
-                StartCoroutine(GetComponentInParent<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink, model.licence));
+                StartCoroutine(anch.GetComponentInChildren<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink, model.licence));
             }
             else
             //if direct link
             {
-                GetComponentInParent<SearchBrowserRefresher>().SearchChanged(model.webLink, "", "");
+                anch.GetComponentInChildren<SearchBrowserRefresher>().SearchChanged(model.webLink, "", "");
             }
-            GetComponentInParent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = model.webLink;
+            anch.GetComponentInChildren<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = model.webLink;
             while (!System.IO.File.Exists(Path.Combine(Application.persistentDataPath, anch.GetComponentInChildren<ImportManager>().folderName, model.fileName + ".txt")))
             {
 
@@ -84,6 +85,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         this.gameObject.transform.position = this.gameObject.transform.position - (buttonRotation * Vector3.forward) * 0.1f;
 
         testModel.transform.parent = this.gameObject.transform;
+        this.gameObject.transform.parent = modelWrapper.transform;
 
         //this.gameObject.AddComponent<PhotonTransformView>();
 
