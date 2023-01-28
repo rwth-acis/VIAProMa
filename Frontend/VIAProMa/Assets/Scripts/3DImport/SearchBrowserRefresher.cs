@@ -31,11 +31,11 @@ public class SearchBrowserRefresher : MonoBehaviour
         public string PublishedAt { get; set;}
         public string FileSize { get; set;}
         public string ThumbnailLink { get; set; }
-        public string License { get; set; }
+        public string Licence { get; set; }
 
         public override string ToString()
         {
-            return String.Format("Name: {0}, UID: {1}, PublishedAt: {2}, FileSize: {3}, ThumbnailLink: {4}, License: {5}", Name, Uid, PublishedAt, FileSize, ThumbnailLink, License);
+            return String.Format("Name: {0}, UID: {1}, PublishedAt: {2}, FileSize: {3}, ThumbnailLink: {4}, Licence: {5}", Name, Uid, PublishedAt, FileSize, ThumbnailLink, Licence);
         }
     }
 
@@ -97,7 +97,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         head = 0;
     }
 
-    public void SearchChanged(string searchContent, string Uid, string license)
+    public void SearchChanged(string searchContent, string Uid, string licence)
     {
         searchContentGlobal = searchContent;
 
@@ -139,13 +139,13 @@ public class SearchBrowserRefresher : MonoBehaviour
             string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, fileName);
             if (!System.IO.File.Exists(path))
             {
-                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent, Uid, license));
+                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent, Uid, licence));
                 tempPath = path;
             }
             else
             {
                 Debug.Log("File already saved in " + path + ", not downloading");
-                RefreshBrowser(path, license);
+                RefreshBrowser(path, licence);
             }
 
         }
@@ -155,13 +155,13 @@ public class SearchBrowserRefresher : MonoBehaviour
             string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, Uid + ".glb");
             if (!System.IO.File.Exists(path))
             {
-                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent, Uid, license));
+                downloadRoutine = StartCoroutine(DownloadFile(path, searchContent, Uid, licence));
                 tempPath = path;
             }
             else
             {
                 Debug.Log("File already saved in " + path + ", not downloading");
-                RefreshBrowser(path, license);
+                RefreshBrowser(path, licence);
             }
         }
         else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
@@ -217,15 +217,35 @@ public class SearchBrowserRefresher : MonoBehaviour
                 SearchResult searchResult = result.ToObject<SearchResult>();
                 List<JToken> thumbs = result["thumbnails"]["images"].Children().ToList();
 
+                if (result["license"] != null)
+                {
+                    string licenceId = (string)result["license"]["uid"];
+                    using UnityWebRequest licenceReq = UnityWebRequest.Get("https://api.sketchfab.com/v3/licenses/" + licenceId);
+                    licenceReq.SetRequestHeader("Accept", "application/json");
+
+                    yield return licenceReq.SendWebRequest();
+
+                    if (licenceReq.result == UnityWebRequest.Result.Success)
+                    {
+                        JObject licenceRes = JObject.Parse(licenceReq.downloadHandler.text);
+                        searchResult.Licence = ((string)licenceRes["slug"]).ToUpper();
+                    }
+                    else
+                    {
+                        Debug.LogError("Sketchfab License API: " + licenceReq.error);
+                    }
+
+                } 
+                else
+                {
+                    searchResult.Licence = "None";
+                }
+  
                 searchResult.ThumbnailLink = (string)thumbs[0]["url"];
                 searchResult.FileSize = BytesToNiceString((int)result["archives"]["glb"]["size"]);
 
-                //
-                // searchResult.License = ?
-                //
-
                 searchedObjects.Add(searchResult);
-                //Debug.Log(searchResult);
+                Debug.Log(searchResult);
             }
 
             foreach(SearchResult searchRes in searchedObjects)
@@ -347,7 +367,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             searchItem.GetComponentInChildren<Animator>().enabled = false;
 
             searchItem.GetComponentInChildren<SketchfabLinkGenerator>().Uid = searchObj.Uid;
-            searchItem.GetComponentInChildren<SketchfabLinkGenerator>().license = searchObj.License;
+            searchItem.GetComponentInChildren<SketchfabLinkGenerator>().licence = searchObj.Licence;
         }
     }
 
@@ -363,7 +383,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     }
 
 
-    IEnumerator DownloadFile(string path, string webLink, string Uid, string license)
+    IEnumerator DownloadFile(string path, string webLink, string Uid, string licence)
     {
         //refresh session browser
         foreach (Transform child in itemWrapper.transform)
@@ -445,7 +465,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         GetComponent<HarddriveBrowserRefresher>().RefreshList();
 
         //refresh search browser
-        RefreshBrowser(path, license);
+        RefreshBrowser(path, licence);
 
         //refresh session browser
         List<ImportedObject> oldList = GetComponent<SessionBrowserRefresher>().importedObjects;
@@ -489,7 +509,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         return impObj;
     }
 
-    void RefreshBrowser(string path, string license)
+    void RefreshBrowser(string path, string licence)
     {
         //refresh search browser
         foreach (Transform child in itemWrapper.transform)
@@ -503,9 +523,9 @@ public class SearchBrowserRefresher : MonoBehaviour
         string truncatedFileName = fileName.Length > linkOrFileNameLength ? (fileName.Substring(0, linkOrFileNameLength) + "...") : fileName;
         string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
         string fileSize = BytesToNiceString(new System.IO.FileInfo(path).Length);
-        if (license != "")
+        if (licence != "")
         {
-            truncatedWebLink = "License: " + license;
+            truncatedWebLink = "Licence: " + licence;
         }
         
         GameObject item = Instantiate(itemPrefab);
@@ -533,7 +553,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         item.GetComponentInChildren<Animator>().enabled = false;
         item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(true);
         item.GetComponentInChildren<ImportModel>().path = path;
-        item.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, webLink, fileName, dateOfDownload, fileSize, license);
+        item.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, webLink, fileName, dateOfDownload, fileSize, licence);
 
 
 
