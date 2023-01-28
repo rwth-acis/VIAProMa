@@ -23,6 +23,10 @@ namespace i5.VIAProMa.Shelves.ProjectLoadShelf
         private List<File> files;
         private List<Interactable> interactables;
 
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
+        private Vector3 startPosition;
+
         public MessageBadge MessageBadge { get => messageBadge; }
 
         protected override void Awake()
@@ -36,6 +40,9 @@ namespace i5.VIAProMa.Shelves.ProjectLoadShelf
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(shelfBoards));
             }
+
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
 
         private void Start()
@@ -109,7 +116,9 @@ namespace i5.VIAProMa.Shelves.ProjectLoadShelf
 
         public void Close()
         {
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
+            ICommand close = new DeleteObjectCommand(gameObject, null);
+            UndoRedoManager.Execute(close);
         }
 
         public void MoveShelf()
@@ -117,10 +126,13 @@ namespace i5.VIAProMa.Shelves.ProjectLoadShelf
             bool isActive = boundingBox.activeSelf;
             if (isActive)
             {
+                ICommand move = new MoveObjectCommand(startPosition, gameObject.transform.localPosition, gameObject);
+                UndoRedoManager.Execute(move);
                 boundingBox.SetActive(false);
             }
             else
             {
+                startPosition = gameObject.transform.localPosition;
                 boundingBox.SetActive(true);
             }
         }

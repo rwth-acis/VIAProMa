@@ -19,6 +19,11 @@ namespace i5.VIAProMa.Shelves.IssueShelf
         [SerializeField] private IssuesMultiListView issuesMultiListView;
         [SerializeField] private GameObject boundingBox;
 
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
+                private Vector3 startPosition;
+
+
         public MessageBadge MessageBadge { get => messageBadge; }
 
         public event EventHandler SearchFieldChanged;
@@ -62,6 +67,9 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             }
             upButton.IsEnabled = false;
             boundingBox.SetActive(false);
+
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
 
         private void OnEnable()
@@ -76,7 +84,9 @@ namespace i5.VIAProMa.Shelves.IssueShelf
 
         public void Close()
         {
-            gameObject.SetActive(false);
+            ICommand close = new DeleteObjectCommand(gameObject, null);
+            UndoRedoManager.Execute(close);
+            //gameObject.SetActive(false);
         }
 
         private void OnSearchFieldChanged(object sender, EventArgs e)
@@ -179,10 +189,13 @@ namespace i5.VIAProMa.Shelves.IssueShelf
             bool isActive = boundingBox.activeSelf;
             if (isActive)
             {
+                ICommand move = new MoveObjectCommand(startPosition, gameObject.transform.localPosition, gameObject);
+                UndoRedoManager.Execute(move);
                 boundingBox.SetActive(false);
             }
             else
             {
+                startPosition = gameObject.transform.localPosition;
                 boundingBox.SetActive(true);
             }
         } 
