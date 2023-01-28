@@ -209,6 +209,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(issueShelfInstance);
+            UndoRedoManager.Execute(show);
         }
 
         private void IssueShelfCreated(GameObject obj)
@@ -224,6 +226,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(visualizationShelfInstance);
+            UndoRedoManager.Execute(show);
         }
 
         public void ShowLoadShelf()
@@ -232,6 +236,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(loadShelfInstance);
+            UndoRedoManager.Execute(show);
         }
 
         public void ShowLoginMenu()

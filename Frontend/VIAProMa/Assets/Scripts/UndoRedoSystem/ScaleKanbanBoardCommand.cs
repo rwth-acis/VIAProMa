@@ -33,6 +33,11 @@ public class ScaleKanbanBoardCommand : ICommand
         newWidth = snewWidth;
     }
 
+    public i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController getKanbanBoardController()
+    {
+        return kanbanBoardController;
+    }
+
     public void Execute()
     {
         if (xAxis)

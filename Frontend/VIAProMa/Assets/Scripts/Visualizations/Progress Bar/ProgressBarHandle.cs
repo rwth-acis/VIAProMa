@@ -67,5 +67,6 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             ICommand resize = new ProgressBarHandleCommand(prevPointer, finPointer, handleOnPositiveCap, progressBar);
             UndoRedoManager.Execute(resize);
         }
+
     }
 }

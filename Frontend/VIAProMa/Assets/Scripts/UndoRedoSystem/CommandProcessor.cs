@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class CommandProcessor
 {
-    private List<ICommand> commands = new List<ICommand>();
+    public List<ICommand> commands = new List<ICommand>();
     private int currentPosition = -1;
     private int range = 0;
 
@@ -96,7 +96,7 @@ public class CommandProcessor
         {
             ProgressBarHandleCommand progressBarHandleCommand = (ProgressBarHandleCommand)command;
             progressBarHandleCommand.Redo();
-        }
+        } 
 
         command.Execute();
         RefreshColor();
@@ -132,5 +132,9 @@ public class CommandProcessor
         bool redoPossible = (currentPosition <= commands.Count - 2 && commands.Count >= 1);
         bool undoPossible = (currentPosition >= 0);
         ChangeColor(undoPossible, redoPossible);
+    }
+    public List<ICommand> getCommandListCP()
+    {
+        return commands;
     }
 }

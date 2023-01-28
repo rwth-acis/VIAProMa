@@ -38,4 +38,9 @@ public class ProgressBarHandleCommand : ICommand
         progressBar.StartResizing(prevPointer, newHandleOnPositiveCap);
         progressBar.SetHandles(finPointer, newHandleOnPositiveCap);
     }
+
+    public ProgressBarController getProgressBarController()
+    {
+        return progressBar;
+    }
 }
