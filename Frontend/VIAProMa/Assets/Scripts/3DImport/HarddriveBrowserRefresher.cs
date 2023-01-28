@@ -135,7 +135,7 @@ public class HarddriveBrowserRefresher : MonoBehaviour
             string txtPath = Path.Combine(Application.persistentDataPath, GetComponentInParent<ImportManager>().folderName, System.IO.Path.GetFileNameWithoutExtension(path) + ".txt");
             string webLink = System.IO.File.ReadAllText(txtPath);
             sessItem.GetComponentInChildren<ImportModel>().path = path;
-            sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, webLink, impObj.fileName, dateOfDownload, fileSize/*, creator*/);
+            sessItem.GetComponentInChildren<ImportModel>().model = new ImportedObject(null, webLink, impObj.fileName, dateOfDownload, fileSize, impObj.licence);
 
             
         }
