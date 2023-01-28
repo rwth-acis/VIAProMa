@@ -95,6 +95,10 @@ public class ImportModel : MonoBehaviour
     {
         //import into unity scene
         AnimationClip[] animClips;
+        if (!System.IO.File.Exists(path))
+        {
+            return null;
+        }
         GameObject testModel = Importer.LoadFromFile(path, new ImportSettings(), out animClips);
         testModel.transform.SetParent(modelWrapper.transform);
         testModel.transform.position = Vector3.zero;

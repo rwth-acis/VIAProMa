@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -3387796121749859123}
   - component: {fileID: 8525864736921191734}
   - component: {fileID: 191552996729512505}
-  - component: {fileID: 4856279571916943223}
+  - component: {fileID: 6294214938163050755}
   m_Layer: 0
   m_Name: NetworkModel
   m_TagString: Untagged
@@ -152,13 +152,13 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 1
   OwnershipTransfer: 0
-  observableSearch: 0
+  observableSearch: 2
   ObservedComponents:
-  - {fileID: 4856279571916943223}
+  - {fileID: 6294214938163050755}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4856279571916943223
+--- !u!114 &6294214938163050755
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -167,10 +167,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3317997939676681952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: 550f1dffeb579b7418ad5343293f0a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 1
-  m_UseLocal: 1
+  synchronizePosition: 1
+  synchronizeRotation: 1
+  synchronizeScale: 1
+  lerpSpeed: 15
