@@ -21,6 +21,8 @@ public class SketchfabLinkGenerator : MonoBehaviour
 
         yield return webRequest.SendWebRequest();
 
+        //Debug.Log("Uid that is used for link generation: " + uid);
+
         string downloadUrl = "";
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
