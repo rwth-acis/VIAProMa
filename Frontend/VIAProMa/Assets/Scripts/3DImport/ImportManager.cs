@@ -23,12 +23,12 @@ namespace i5.VIAProMa.UI
         [SerializeField] private string currActiveWindow;
 
         [SerializeField] private InputField searchField;
-        [SerializeField] private Interactable loginButton;
 
 
         public GameObject modelWrapper;
 
         public string folderName;
+        public string sketchfabThumbsFolder;
         public bool WindowEnabled { get; set; }
 
         public bool WindowOpen
@@ -41,6 +41,16 @@ namespace i5.VIAProMa.UI
         private void Awake()
         {
             folderName = "3Dobjects";
+            sketchfabThumbsFolder = "SketchfabThumbs";
+
+            if (!Directory.Exists(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)))
+            {
+                Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder));
+            }
+            if (!Directory.Exists(Path.Combine(Application.persistentDataPath, folderName)))
+            {
+                Directory.CreateDirectory(Path.Combine(Application.persistentDataPath, folderName));
+            }
 
             if (searchMenu == null)
             {
@@ -73,10 +83,6 @@ namespace i5.VIAProMa.UI
             else
             {
                 searchField.TextChanged += OnQueryChanged;
-            }
-            if (loginButton == null)
-            {
-                SpecialDebugMessages.LogMissingReferenceError(this, nameof(loginButton));
             }
 
         }
@@ -127,17 +133,14 @@ namespace i5.VIAProMa.UI
                     File.Delete(imagePath);
                 }
             }
-            //refresh thumbs folder
-
-            if (Directory.Exists(Path.Combine(Application.persistentDataPath, GetComponent<SearchBrowserRefresher>().sketchfabThumbsFolder)))
+            //refresh thumbs folder     
+            imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
+            foreach (FileInfo imageFile in imageFiles)
             {
-                imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, GetComponent<SearchBrowserRefresher>().sketchfabThumbsFolder)).GetFiles("*.png");
-                foreach (FileInfo imageFile in imageFiles)
-                {
-                    string imagePath = imageFile.FullName;
-                    File.Delete(imagePath);
-                }
+                string imagePath = imageFile.FullName;
+                File.Delete(imagePath);
             }
+            
         }
 
         private void OnQueryChanged(object sender, EventArgs e)

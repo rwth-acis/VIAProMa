@@ -1624,6 +1624,7 @@ GameObject:
   - component: {fileID: 7058229973621074750}
   - component: {fileID: 7058229973621074749}
   - component: {fileID: 7058229973621074748}
+  - component: {fileID: 2295989099981570175}
   m_Layer: 0
   m_Name: ImportButton
   m_TagString: Untagged
@@ -1825,7 +1826,7 @@ MonoBehaviour:
   OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2295989099981570175}
         m_TargetAssemblyTypeName: ImportModel, Assembly-CSharp
         m_MethodName: LoadModel
         m_Mode: 1
@@ -2138,6 +2139,32 @@ MonoBehaviour:
     type: 2}
   iconSet: {fileID: 11400000, guid: 8b386ef895f7c924f8c4b03d1d3ed683, type: 2}
   defaultIconSet: {fileID: 11400000, guid: 8b386ef895f7c924f8c4b03d1d3ed683, type: 2}
+--- !u!114 &2295989099981570175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7058229973621074690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f78851f4f2a09ec499577cfc3a12a4aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: 
+  modelWrapper: {fileID: 0}
+  GLTFshaderMetallic: {fileID: 4800000, guid: 057d08f5d01be134593d0fe0e40c1759, type: 3}
+  GLTFshaderMetallicTransparent: {fileID: 4800000, guid: 7258d825fa9aac6439f21eb173b880c6,
+    type: 3}
+  GLTFshaderSpecular: {fileID: 4800000, guid: d28fc76bfd3057e4c8f1c6f0b91590c8, type: 3}
+  GLTFshaderSpecularTransparent: {fileID: 4800000, guid: 475158e3052e5c4488fa32f8df9d7be7,
+    type: 3}
+  shaderMetallic: {fileID: 4800000, guid: 672be0871d85ac474ae2f28b1cc68219, type: 3}
+  shaderMetallicTransparent: {fileID: 4800000, guid: 6be2a27d57e9f48a5a68ec89060dc0f4,
+    type: 3}
+  shaderSpecular: {fileID: 4800000, guid: 9adb484ea08a7ce099530278ba5729ba, type: 3}
+  shaderSpecularTransparent: {fileID: 4800000, guid: 61ac09e23983d6389ba39b0485e0cec4,
+    type: 3}
 --- !u!1 &7058229973831034084
 GameObject:
   m_ObjectHideFlags: 0

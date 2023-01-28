@@ -72,15 +72,16 @@ public class SearchBrowserRefresher : MonoBehaviour
     public List<SearchResult> searchedObjects;
     public int head;
 
-    public string sketchfabThumbsFolder;
+    private string sketchfabThumbsFolder;
 
     private string searchContentGlobal;
 
     public Transform mainCamTr;
+
     void Start()
     {
         modelWrapper = this.gameObject.GetComponent<ImportManager>().modelWrapper;
-        sketchfabThumbsFolder = "SketchfabThumbs";
+        sketchfabThumbsFolder = GetComponent<ImportManager>().sketchfabThumbsFolder;
 
         linkOrFileNameLength = 54;
 
@@ -98,7 +99,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     public void SearchChanged(string searchContent, string Uid)
     {
         searchContentGlobal = searchContent;
-        //UnityEngine.Debug.Log(searchContent);
+        UnityEngine.Debug.Log(searchContent);
         //refresh search browser
         foreach (Transform child in itemWrapper.transform)
         {
@@ -148,9 +149,9 @@ public class SearchBrowserRefresher : MonoBehaviour
 
         }
         //if sketchfab link
-        else if (StringStartsWith(searchContent, "Sketchfab: ")) {
-            searchContent = searchContent.Remove(0, 11);
-            string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, Uid);
+        else if (StringStartsWith(searchContent, "Sketchfab:")) {
+            searchContent = searchContent.Remove(0, 10);
+            string path = Path.Combine(Application.persistentDataPath, GetComponent<ImportManager>().folderName, Uid + ".glb");
             if (!System.IO.File.Exists(path))
             {
                 downloadRoutine = StartCoroutine(DownloadFile(path, searchContent, Uid));
@@ -164,18 +165,15 @@ public class SearchBrowserRefresher : MonoBehaviour
         }
         else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
         {
-            //refresh thumbs folder
-            if (Directory.Exists(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)))
+            //refresh thumbs folder            
+            FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
+            foreach (FileInfo imageFile in imageFiles)
             {
-                FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
-                foreach (FileInfo imageFile in imageFiles)
-                {
-                    string imagePath = imageFile.FullName;
-                    File.Delete(imagePath);
-                }
-            }
+                string imagePath = imageFile.FullName;
+                File.Delete(imagePath);
+            }            
 
-            StartCoroutine(SearchOnSketchfab(searchContent, 10, 10));
+            StartCoroutine(SearchOnSketchfab(searchContent, 10, 0));
         }
     }
 
@@ -183,6 +181,19 @@ public class SearchBrowserRefresher : MonoBehaviour
     private IEnumerator SearchOnSketchfab(string query, int range, int cursor)
     {
         searchedObjects = new List<SearchResult>();
+
+        //spawn loading item
+        GameObject item = Instantiate(itemPrefab);
+        item.transform.parent = itemWrapper.transform;
+        item.transform.localPosition = itemStartPosition;
+        item.transform.localRotation = Quaternion.identity;
+        Renderer thumbRenderer = item.transform.GetChild(0).GetComponentInChildren<Renderer>();
+        thumbRenderer.material.mainTexture = loadingSymbolTex;
+        thumbRenderer.material.color = Color.white;
+        item.GetComponentInChildren<TextMeshPro>().text = "Loading...";
+        item.GetComponentInChildren<Animator>().enabled = true;
+        item.GetComponentInChildren<ImportModel>(true).gameObject.SetActive(false);
+
 
         string uri = "https://api.sketchfab.com/v3/search?type=models&count=" + range + "&cursor=" + cursor + "&downloadable=true" + "&q=" + UnityWebRequest.EscapeURL(query);
         //Debug.Log(uri);
@@ -269,7 +280,8 @@ public class SearchBrowserRefresher : MonoBehaviour
             headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
             headUpButton.IsEnabled = false;
 
-            SearchOnSketchfab(searchContentGlobal, searchedObjects.Count() + 10, searchedObjects.Count() + 10);
+            StartCoroutine(SearchOnSketchfab(searchContentGlobal, searchedObjects.Count() + 10, 0));
+            return;
         }
 
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
