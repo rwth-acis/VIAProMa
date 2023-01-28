@@ -61,7 +61,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
                 // Make call to REST API to log state to file
                 string projcetID = AnalyticsManager.Instance.ProjectID.ToString();
                 string json = JsonConvert.SerializeObject(state);
-                string requestUri = ConnectionManager.Instance.BackendAPIBaseURL + "projects/analytics/" + projcetID;
+                string requestUri = ConnectionManager.Instance.BackendAPIBaseURL + "analytics/dummy/" + projcetID;
 
                 Response res = await Rest.PostAsync(requestUri, json);
 

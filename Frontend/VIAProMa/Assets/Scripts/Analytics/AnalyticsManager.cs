@@ -101,7 +101,6 @@ namespace VIAProMa.Assets.Scripts.Analytics
             string projectID = AnalyticsManager.Instance.ProjectID.ToString();
             Response resp =
                     await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/" + projectID,
                         null,
                         -1,
                         null,
@@ -117,7 +116,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
             string settingsJSON = JsonConvert.SerializeObject(_settings);
             Response resp =
                     await Rest.PostAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/" + projectID, settingsJSON);
+                        ConnectionManager.Instance.BackendAPIBaseURL + "project-settings/" + projectID, settingsJSON);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         }
 
