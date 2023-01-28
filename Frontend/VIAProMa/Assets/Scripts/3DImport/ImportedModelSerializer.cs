@@ -34,7 +34,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Serializers
         {
             SerializedObject serializedObject = new SerializedObject();
             serializedObject.Strings.Add(webLinkKey, imported_model.WebLink);
-            serializedObject.Strings.Add(webLinkKey, imported_model.Owner);
+            serializedObject.Strings.Add(ownerKey, imported_model.Owner);
             return serializedObject;
         }
     }
