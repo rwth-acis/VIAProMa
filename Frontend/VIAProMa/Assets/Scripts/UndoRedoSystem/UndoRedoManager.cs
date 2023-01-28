@@ -27,6 +27,8 @@ public class UndoRedoManager : MonoBehaviour
         return commandProcessor.getCommandListCP();
     }
 
+ 
+
 
     public void Execute(ICommand command)
     {

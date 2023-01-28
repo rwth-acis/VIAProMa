@@ -55,7 +55,8 @@ namespace i5.VIAProMa.UI.Chat
 
         public void ShowUIHistory()
         {
-            
+            ICommand createMenu = new CreateMenuCommand(MenuType.UIHistory, transform.position - 0.5f * transform.right, transform.localEulerAngles);
+            UndoRedoManager.Execute(createMenu);
         }
 
 

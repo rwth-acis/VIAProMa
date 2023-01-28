@@ -39,22 +39,18 @@ namespace i5.VIAProMa.UI.Chat
 
         void Update()
         {
-            //lastCommandIndexChecker = commands.Count;
             commands = UndoRedoManager.getCommandList();
             if(fillUI == false)
             {
                 fillWithExistingCommands();
             }
-            //addCommandToUI();
-            //lastCommandIndex = commands.Count;
-            //Debug.Log("commands Count:" + commands.Count);
-            //Debug.Log("lastCommandIndex"+lastCommandIndex);
             if (lastCommandIndex < commands.Count)
             {
                 lastCommandIndex = commands.Count;
                 addCommandToUI();
             }
         }
+
 
         void Awake()
         {
@@ -174,7 +170,7 @@ namespace i5.VIAProMa.UI.Chat
         //for keeping track of Historybefore UIHistory menu was instanciated
         public void fillWithExistingCommands()
         {
-            fillOnce = true;
+            fillUI = true;
             for (int i = 0; i <= numberOfTextFields; i++)
              {
                 commandItemsText[i].GetComponent<TextMeshPro>().text = commands[i].GetType().ToString();
