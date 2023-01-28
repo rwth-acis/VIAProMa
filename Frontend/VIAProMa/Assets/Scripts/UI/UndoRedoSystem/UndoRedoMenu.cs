@@ -59,7 +59,6 @@ namespace i5.VIAProMa.UI.Chat
             UndoRedoManager.Execute(createMenu);
         }
 
-
         public void Undo()
         {
             UndoRedoManager.Undo();
