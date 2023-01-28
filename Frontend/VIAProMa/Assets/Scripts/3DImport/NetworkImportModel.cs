@@ -1,3 +1,4 @@
+using i5.VIAProMa.Multiplayer.Common;
 using i5.VIAProMa.UI;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
@@ -8,7 +9,7 @@ using System.IO;
 using UnityEngine;
 using static SessionBrowserRefresher;
 
-public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
+public class NetworkImportModel : TransformSynchronizer, IPunInstantiateMagicCallback
 {
     public string path;
     public ImportedObject model;
