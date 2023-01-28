@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
@@ -15,8 +13,8 @@ public class GitHubLogin : ProviderLogin
     [SerializeField] public TextMeshPro loginCaption;
     [SerializeField] public TextMeshPro statusCaption;
     [SerializeField] public GameObject statusLed;
-    [SerializeField] public Color loggedInColor = new Color(0f, 135f / 255f, 3f / 255f); // green
-    [SerializeField] public Color loggedOutColor = new Color(188f / 255f, 2f / 255f, 0f); // red
+    [SerializeField] public Color loggedInColor = new Color(0f, 135f / 255f, 3f / 255f); // Green
+    [SerializeField] public Color loggedOutColor = new Color(188f / 255f, 2f / 255f, 0f); // Red
 
 
     public override void Start()
