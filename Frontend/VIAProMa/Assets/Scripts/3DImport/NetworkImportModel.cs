@@ -6,10 +6,11 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using static SessionBrowserRefresher;
 
-public class NetworkImportModel : TransformSynchronizer, IPunInstantiateMagicCallback
+public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
 {
     public string path;
     public ImportedObject model;
@@ -40,6 +41,25 @@ public class NetworkImportModel : TransformSynchronizer, IPunInstantiateMagicCal
         Quaternion buttonRotation = (Quaternion)instantiationData[6];
 
         GameObject testModel = impModel.LoadModel(path);
+        if (testModel == null)
+        {
+            //if sketchfab
+            if (!model.webLink.EndsWith(".glb"))
+            {
+                StartCoroutine(GetComponentInParent<ImportManager>().gameObject.GetComponent<SketchfabLinkGenerator>().GetDownloadLink(model.webLink, model.licence));
+            }
+            else
+            //if direct link
+            {
+                GetComponentInParent<SearchBrowserRefresher>().SearchChanged(model.webLink, "", "");
+            }
+            GetComponentInParent<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = model.webLink;
+            while (!System.IO.File.Exists(Path.Combine(Application.persistentDataPath, anch.GetComponentInChildren<ImportManager>().folderName, model.fileName + ".txt")))
+            {
+
+            }
+            testModel = impModel.LoadModel(path);
+        }
         testModel.name = model.fileName;
         testModel.transform.position = Vector3.zero;
         testModel.transform.rotation = Quaternion.identity;

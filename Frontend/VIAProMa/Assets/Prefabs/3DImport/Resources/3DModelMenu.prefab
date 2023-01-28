@@ -250,6 +250,7 @@ GameObject:
   - component: {fileID: 6768719501157392431}
   - component: {fileID: 2002474396530462202}
   - component: {fileID: 5676499234940757495}
+  - component: {fileID: -6242030291648865008}
   m_Layer: 0
   m_Name: 3DModelMenu
   m_TagString: Untagged
@@ -438,10 +439,27 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: -6242030291648865008}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &-6242030291648865008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481603394222394357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 550f1dffeb579b7418ad5343293f0a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synchronizePosition: 1
+  synchronizeRotation: 1
+  synchronizeScale: 1
+  lerpSpeed: 15
 --- !u!1 &517934351303204759
 GameObject:
   m_ObjectHideFlags: 0
