@@ -69,6 +69,11 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         public async Task Start()
         {
+            // Generate a new GUID for the VIAProMa project that the analytics refer to. If the project ID is already set (for example because the project has been saved and loaded), do nothing and use the old ID.
+            if (_projectGUID.Equals(Guid.Empty))
+                _projectGUID = Guid.NewGuid();
+            Debug.Log("This Project has the ID: " + AnalyticsManager.Instance.ProjectID);
+
             await GetSettingsFromBackendAsync();
             if (_settings.AnalyticsEnabled && !CoreServices.InputSystem.EyeGazeProvider.IsEyeTrackingEnabled)
             {
@@ -76,10 +81,6 @@ namespace VIAProMa.Assets.Scripts.Analytics
                     "https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/eye-tracking/eye-tracking-basic-setup?view=mrtkunity-2022-05#testing-your-unity-app-on-a-hololens-2");
             }
 
-            // Generate a new GUID for the VIAProMa project that the analytics refer to. If the project ID is already set (for example because the project has been saved and loaded), do nothing and use the old ID.
-            if (_projectGUID.Equals(Guid.Empty))
-                _projectGUID = Guid.NewGuid();
-            Debug.Log(_projectGUID);
             TextObject.text = "";
             ShowIsTelemetryEnabledPopup();
             isStartOver = true;
@@ -87,10 +88,10 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         private async Task GetSettingsFromBackendAsync()
         {
-            string projectId = AnalyticsManager.Instance.ProjectID.ToString();
+            string projectID = AnalyticsManager.Instance.ProjectID.ToString();
             Response resp =
                     await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/"+projectId,
+                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/"+ projectID,
                         null,
                         -1,
                         null,
@@ -102,11 +103,11 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         private async void SetSettingsOnBackend()
         {
-            string projectId = AnalyticsManager.Instance.ProjectID.ToString();
+            string projectID = AnalyticsManager.Instance.ProjectID.ToString()
             string settingsJSON = JsonConvert.SerializeObject(_settings);
             Response resp =
                     await Rest.PostAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/" + projectId, settingsJSON);
+                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/settings/" + projectID, settingsJSON);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
         }
 

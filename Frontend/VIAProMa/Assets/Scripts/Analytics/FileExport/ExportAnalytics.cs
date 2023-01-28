@@ -30,7 +30,7 @@ namespace VIAProMa.Assets.Scripts.Analytics.FileExport
 
             Response resp =
                     await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/analytics/json-export/test" ,// + projectID,
+                        ConnectionManager.Instance.BackendAPIBaseURL + "projects/analytics/json-export/" + projectID,
                         null,
                         -1,
                         null,

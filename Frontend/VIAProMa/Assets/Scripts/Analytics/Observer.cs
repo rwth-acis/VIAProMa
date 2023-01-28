@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Newtonsoft.Json;
+using i5.VIAProMa.WebConnection;
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
@@ -49,15 +50,13 @@ namespace VIAProMa.Assets.Scripts.Analytics
                 }
 
                 // Make call to REST API to log state to file
-
-                string requestUri = "http://pmsl.cytexal.com:8080/resources/analytics/viaproma"; // TODO: Use correct URL
+                string projcetID = AnalyticsManager.Instance.ProjectID.ToString();
                 string json = JsonConvert.SerializeObject(state);
-                Response res = await Rest.PostAsync(requestUri, json);
+                string requestUri = ConnectionManager.Instance.BackendAPIBaseURL + "projects/analytics/" + projcetID;
 
-                if (!res.Successful)
-                    throw new Exception("Could not transmit telemetry data to backend!");
-                else
-                    Debug.Log(res.ResponseCode.ToString()); // TODO: Proper handeling
+                Response res = await Rest.PostAsync(requestUri, json);
+                ConnectionManager.Instance.CheckStatusCode(res.ResponseCode);
+                string responseBody = await res.GetResponseBody();
             }
 
             public void Unsubscribe()
