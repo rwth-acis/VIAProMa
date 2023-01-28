@@ -71,11 +71,18 @@ public class ImportModel : MonoBehaviour
         this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
         */
 
-        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, gameObject.transform.position, gameObject.transform.rotation };
-        Debug.Log("I will now spawn the networkObject.");
-        PhotonNetwork.InstantiateRoomObject("networkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
+        StartCoroutine("LoadCoroutine");
 
-        //testModel.AddComponent<PhotonTransformView>();
+        
+
+    }
+
+    IEnumerator LoadCoroutine()
+    {
+        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, gameObject.transform.position, gameObject.transform.rotation };
+        PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
+        yield return new WaitUntil(() => PhotonNetwork.IsMasterClient);
+        PhotonNetwork.InstantiateRoomObject("NetworkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
     }
 
     private void UpdateImpObj(ImportedObject impObj)
