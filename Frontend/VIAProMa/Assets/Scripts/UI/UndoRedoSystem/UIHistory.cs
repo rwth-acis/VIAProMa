@@ -22,7 +22,7 @@ namespace i5.VIAProMa.UI.Chat
         private List<ICommand> commands;
         private int lastCommandIndexChecker;
         private int lastCommandIndex = 0;
-        private int cubeIndex;
+        private int selectedCubeIndex;
         private int currentTextMesh = 0;
         private int stoppedAtIndex = 0;
         private int currentCommandIndex;
@@ -98,11 +98,22 @@ namespace i5.VIAProMa.UI.Chat
         }
 
 
+        //TODO: select wenn Menü noch nciht voll geschrieben ist + nicht immer die Anzahl an Undos audführen: Cases abfangen
         public void Select(int index)
         {
-            //commandItemsText[index].GetComponent<TextMeshPro>().text = commands[0].GetType().ToString();
-            cubeIndex = index;
-            addCommandToUI();
+            selectedCubeIndex = index;
+            int indexInList = lowerRangeIndex + selectedCubeIndex;
+            int stepsToUndo = (lastCommandIndex - indexInList)+1;
+            for (int i = 0; i <= stepsToUndo; i++)
+            {
+                UndoRedoManager.Undo();
+            }
+            for(int i = selectedCubeIndex; i <= upperRangeIndex; i++)
+            {
+                commandItemsText[i].GetComponent<TextMeshPro>().text = "";
+            }
+            upperRangeIndex = (lowerRangeIndex + selectedCubeIndex)-1;
+
         }
 
 
@@ -110,7 +121,7 @@ namespace i5.VIAProMa.UI.Chat
         public void addCommandToUI()
         {
             //commands = UndoRedoManager.getCommandList();
-            if (lastCommandIndex - 1 <= numberOfTextFields) {
+            if (lastCommandIndex - 1 <= numberOfTextFields || upperRangeIndex <= numberOfTextFields) {
                 commandItemsText[currentTextMesh].GetComponent<TextMeshPro>().text = commands[lastCommandIndex - 1].GetType().ToString();
                 currentTextMesh++;
                 stoppedAtIndex++;

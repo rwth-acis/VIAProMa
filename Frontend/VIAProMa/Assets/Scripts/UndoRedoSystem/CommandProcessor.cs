@@ -14,7 +14,6 @@ public class CommandProcessor
     }
 
 
-
     private Color notActiveColor = Color.grey;
     private Color activeColor;
     private GameObject undoButtonBG;
