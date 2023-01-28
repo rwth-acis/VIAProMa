@@ -17,12 +17,19 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
 
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+        StartCoroutine("InstantiateModel", info);     
+    }
+
+    IEnumerator InstantiateModel(PhotonMessageInfo info)
+    {
         Debug.Log("Hello! OnPhotonInstantiate");
         GameObject anch = GameObject.Find("AnchorParent");
         SessionBrowserRefresher refresher = anch.GetComponentInChildren<SessionBrowserRefresher>();
-        //GameObject modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
-        GameObject modelWrapper = GameObject.Find("3DModelMenuClone").GetComponent<ImportManager>().modelWrapper;
-        
+
+        yield return new WaitForSeconds(2);
+
+        GameObject modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
+
 
 
         model = new ImportedObject();
