@@ -224,6 +224,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(visualizationShelfInstance);
+            UndoRedoManager.Execute(show);
         }
 
         public void ShowLoadShelf()

@@ -45,22 +45,28 @@ namespace i5.VIAProMa.UI.AppBar
         /// </summary>
         public void RemoveObject()
         {
+            
+            /*
             if (TargetNetworked)
             {
-                PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
+                appBarPlacer.TargetBoundingBox.Target.SetActive(false);
+                //PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
             }
             else
             {
-                Destroy(appBarPlacer.TargetBoundingBox.Target);
+                appBarPlacer.TargetBoundingBox.Target.SetActive(false);
+                //Destroy(appBarPlacer.TargetBoundingBox.Target);
             }
-
+            
             // check if the bounding box still exists (in this case it was not a child of the target gameobject)
             if (appBarPlacer.TargetBoundingBox == null)
             {
                 Destroy(appBarPlacer.TargetBoundingBox.gameObject);
             }
-            // finally also destroy the app bar
-            Destroy(gameObject);
+            // finally also destroy the app bar*/
+            ICommand destroy = new DeleteObjectCommand(gameObject, appBarPlacer.TargetBoundingBox.Target);
+            UndoRedoManager.Execute(destroy);
+            //Destroy(gameObject);
         }
 
         /// <summary>
