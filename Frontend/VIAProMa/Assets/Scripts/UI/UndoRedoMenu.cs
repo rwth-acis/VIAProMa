@@ -11,6 +11,9 @@ namespace i5.VIAProMa.UI.Chat
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
         private GameObject UndoRedoManagerGameObject;
         private UndoRedoManager UndoRedoManager;
+        private GameObject undoButtonBG;
+        private GameObject redoButtonBG;
+        private Color notActiveColor = Color.grey;
 
         public bool WindowEnabled { get; set; }
 
@@ -22,6 +25,10 @@ namespace i5.VIAProMa.UI.Chat
         {
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+            undoButtonBG = GameObject.Find("UndoRedoMenu/Leiste/Backdrop/Undo Button/BackPlate/Quad");
+            redoButtonBG = GameObject.Find("UndoRedoMenu/Leiste/Backdrop/Redo Button/BackPlate/Quad");
+            undoButtonBG.GetComponent<Renderer>().material.color = notActiveColor;
+            redoButtonBG.GetComponent<Renderer>().material.color = notActiveColor;
         }
 
         public void Open()
