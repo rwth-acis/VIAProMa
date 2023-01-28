@@ -128,11 +128,15 @@ namespace i5.VIAProMa.UI
                 }
             }
             //refresh thumbs folder
-            imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, GetComponent<SearchBrowserRefresher>().sketchfabThumbsFolder)).GetFiles("*.png");
-            foreach (FileInfo imageFile in imageFiles)
+
+            if (Directory.Exists(Path.Combine(Application.persistentDataPath, GetComponent<SearchBrowserRefresher>().sketchfabThumbsFolder)))
             {
-                string imagePath = imageFile.FullName;
-                File.Delete(imagePath);
+                imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, GetComponent<SearchBrowserRefresher>().sketchfabThumbsFolder)).GetFiles("*.png");
+                foreach (FileInfo imageFile in imageFiles)
+                {
+                    string imagePath = imageFile.FullName;
+                    File.Delete(imagePath);
+                }
             }
         }
 

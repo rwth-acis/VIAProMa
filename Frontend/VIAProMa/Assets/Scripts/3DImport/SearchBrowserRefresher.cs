@@ -164,6 +164,17 @@ public class SearchBrowserRefresher : MonoBehaviour
         }
         else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
         {
+            //refresh thumbs folder
+            if (Directory.Exists(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)))
+            {
+                FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
+                foreach (FileInfo imageFile in imageFiles)
+                {
+                    string imagePath = imageFile.FullName;
+                    File.Delete(imagePath);
+                }
+            }
+
             StartCoroutine(SearchOnSketchfab(searchContent, 10, 10));
         }
     }
@@ -171,13 +182,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         
     private IEnumerator SearchOnSketchfab(string query, int range, int cursor)
     {
-        //refresh thumbs folder
-        FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
-        foreach (FileInfo imageFile in imageFiles)
-        {
-            string imagePath = imageFile.FullName;       
-            File.Delete(imagePath);       
-        }
+        searchedObjects = new List<SearchResult>();
 
         string uri = "https://api.sketchfab.com/v3/search?type=models&count=" + range + "&cursor=" + cursor + "&downloadable=true" + "&q=" + UnityWebRequest.EscapeURL(query);
         //Debug.Log(uri);
@@ -195,7 +200,6 @@ public class SearchBrowserRefresher : MonoBehaviour
             JObject jsonResponse = JObject.Parse(webRequest.downloadHandler.text);
             List<JToken> results = jsonResponse["results"].Children().ToList();
 
-            List<SearchResult> searchResults = new List<SearchResult>();
             foreach(JToken result in results)
             {
                 SearchResult searchResult = result.ToObject<SearchResult>();
@@ -203,43 +207,48 @@ public class SearchBrowserRefresher : MonoBehaviour
 
                 searchResult.ThumbnailLink = (string)thumbs[0]["url"];
 
-                searchResults.Add(searchResult);
+                searchedObjects.Add(searchResult);
                 Debug.Log(searchResult);
             }
 
-            foreach(SearchResult searchRes in searchResults)
+            foreach(SearchResult searchRes in searchedObjects)
             {
-                using UnityWebRequest downloadThumb = UnityWebRequest.Get(searchRes.ThumbnailLink);
-                downloadThumb.downloadHandler = new DownloadHandlerBuffer();
-
-                yield return downloadThumb.SendWebRequest();
-
-                if(downloadThumb.result == UnityWebRequest.Result.Success)
+                string pathToPNG = Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder, searchRes.Uid + ".png");
+                if (!File.Exists(pathToPNG))
                 {
-                    byte[] jpegBytes = downloadThumb.downloadHandler.data;
+                    using UnityWebRequest downloadThumb = UnityWebRequest.Get(searchRes.ThumbnailLink);
+                    downloadThumb.downloadHandler = new DownloadHandlerBuffer();
 
-                    Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
-                    thumbImg.LoadImage(jpegBytes);
-                    thumbImg.Apply();
+                    yield return downloadThumb.SendWebRequest();
 
-                    byte[] pngBytes = thumbImg.EncodeToPNG();
+                    if (downloadThumb.result == UnityWebRequest.Result.Success)
+                    {
+                        byte[] jpegBytes = downloadThumb.downloadHandler.data;
 
-                    string pathToPNG = Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder, searchRes.Uid + ".png");
-                    File.WriteAllBytes(pathToPNG, pngBytes);
+                        Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
+                        thumbImg.LoadImage(jpegBytes);
+                        thumbImg.Apply();
+
+                        byte[] pngBytes = thumbImg.EncodeToPNG();
+
+                        File.WriteAllBytes(pathToPNG, pngBytes);
+                    }
+                    else
+                    {
+                        Debug.Log("Error downloading thumbnail via sketchfab API: " + webRequest.error);
+                    }
+
+                    downloadThumb.downloadHandler.Dispose();
                 }
-                else
-                {
-                    Debug.Log("Error downloading thumbnail via sketchfab API: " + webRequest.error);
-                }
-
-                downloadThumb.downloadHandler.Dispose();
             }
 
+            RefreshSearchBrowser(head);
         }
         else
         {
             Debug.Log("Error connecting to sketchfab API: " + webRequest.error);
         }
+
     }
 
 
@@ -297,17 +306,17 @@ public class SearchBrowserRefresher : MonoBehaviour
         {
             SearchResult searchObj = searchedObjects[i];
 
-            string truncatedUID = searchObj.Uid.Length > linkOrFileNameLength ? (searchObj.Uid.Substring(0, linkOrFileNameLength / 2) + "..." + searchObj.Uid.Substring(searchObj.Uid.Length - linkOrFileNameLength / 2)) : searchObj.Uid;
+            string truncatedUID = searchObj.Uid.Length > (linkOrFileNameLength - 15) ? (searchObj.Uid.Substring(0, (linkOrFileNameLength - 15) / 2) + "..." + searchObj.Uid.Substring(searchObj.Uid.Length - (linkOrFileNameLength - 15) / 2)) : searchObj.Uid;
             string truncatedFileName = searchObj.Name.Length > linkOrFileNameLength ? (searchObj.Name.Substring(0, linkOrFileNameLength) + "...") : searchObj.Name;
             string truncatedPublisher = searchObj.PublishedAt;
 
             GameObject searchItem = Instantiate(sketchfabItem);
-            searchItem.transform.parent = sessionItemWrapper.transform;
+            searchItem.transform.parent = itemWrapper.transform;
             searchItem.transform.localPosition = itemStartPosition + itemPositionOffset * (i - headPosition);
             searchItem.transform.localRotation = Quaternion.identity;
             
             Renderer thumbRenderer = searchItem.transform.GetChild(0).GetComponentInChildren<Renderer>();
-            byte[] bytes = File.ReadAllBytes(searchObj.ThumbnailLink);
+            byte[] bytes = File.ReadAllBytes(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder, searchObj.Uid + ".png"));
             Texture2D thumbImg = new Texture2D(256, 256, TextureFormat.RGBA32, false);
             thumbImg.LoadImage(bytes);
             thumbImg.Apply();
@@ -315,7 +324,7 @@ public class SearchBrowserRefresher : MonoBehaviour
 
 
             thumbRenderer.material.color = Color.white;
-            searchItem.GetComponentInChildren<TextMeshPro>().text = truncatedUID + "<br>" + truncatedFileName + "<br>" +
+            searchItem.GetComponentInChildren<TextMeshPro>().text = "Sketchfab UID: " + truncatedUID + "<br>" + truncatedFileName + "<br>" +
                                                                 "Published: " + truncatedPublisher;
             searchItem.GetComponentInChildren<Animator>().enabled = false;
 
