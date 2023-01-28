@@ -66,24 +66,34 @@ namespace i5.VIAProMa.Shelves.Widgets
                 // Clicking the edit or delete button shouldn't spawn a card.
                 && currentPointerTarget.GetComponent<EditButton>() == null && currentPointerTarget.GetComponent<DeleteButton>() == null)
             {
-                // Analytics: Notify the observers that the card has been clicked on.
-                // TODO: Fetch correct values.
-                string objectIRI = "Unknown Issue source!";
+                #region Analytics
+                // Notify the observers that the card has been clicked on.
+
+                // Get meta data about the project (GitHub or Requirements Bazaar) the issue belongs to.
+                ProjectTracker projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
+
+                // Generate the objectIRI. It is composed differently depending on the source of the issue.
+                string objectIRI = "";
                 if (localDataDisplay.Content.Source == DataSource.GITHUB)
                 {
-                    string repository = "TODOGetRepository";
-                    string repositoryOwner = "TODOGetRepositoryOwner";
+                    string repository = projectTracker.currentRepositoryName;
+                    string repositoryOwner = projectTracker.currentRepositoryOwner;
                     objectIRI = string.Format("https://github.com/{0}/{1}/issues/{2}", repositoryOwner, repository, localDataDisplay.Content.Id);
                 }
                 else if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
                 {
-                    string projectID = "TODOGetProjectID";
+                    string projectID = projectTracker.currentProjectID.ToString();
                     objectIRI = string.Format("https://requirements-bazaar.org/projects/{0}/requirements/{1}", projectID, localDataDisplay.Content.Id);
                 }
-                Debug.Log(AnalyticsManager.Instance.UserInfo);
+                else
+                {
+                    // Initialize the IRI of the object in the LRS statement to an unknown source. Will be overwritten unless the DataSource of the issue is neither GITHUB nor REQUIREMENTS_BAZAAR.
+                    objectIRI = "Unknown Issue source!";
+                    Debug.LogError("Unexpected source: " + localDataDisplay.Content.Source);
+                }
                 LogpointLRSExportable logpoint = new LogpointLRSExportable("http://id.tincanapi.com/verb/selected", objectIRI);
-                Debug.Log("Nach initialisierung:" + logpoint.ToString());
                 NotifyObservers(logpoint);
+                #endregion Analytics
 
                 // Pass instantiation data to the copy so that other clients also know which issue is contained in the created copy.
                 object[] instantiationData;
