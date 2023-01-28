@@ -14,6 +14,8 @@ using ExitGames.Client.Photon.StructWrapping;
 using i5.VIAProMa.UI;
 using static SessionBrowserRefresher;
 using TMPro;
+using Photon;
+using Photon.Pun;
 
 public class ImportModel : MonoBehaviour
 {
@@ -59,6 +61,7 @@ public class ImportModel : MonoBehaviour
             return;
         }
 
+        /*
         GameObject testModel = LoadModel(path);
 
         testModel.name = model.fileName;
@@ -66,6 +69,12 @@ public class ImportModel : MonoBehaviour
         model.gameObject = testModel;
 
         this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
+        */
+
+        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, gameObject.transform.position, gameObject.transform.rotation };
+        PhotonNetwork.InstantiateRoomObject("networkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
+
+        //testModel.AddComponent<PhotonTransformView>();
     }
 
     private void UpdateImpObj(ImportedObject impObj)
@@ -154,6 +163,7 @@ public class ImportModel : MonoBehaviour
         testModel.GetComponent<ObjectManipulator>().HostTransform = testModel.transform;
 
         testModel.name = System.IO.Path.GetFileNameWithoutExtension(path);
+        testModel.GetComponent<BoxCollider>().enabled = false;
 
         return testModel;
     }
