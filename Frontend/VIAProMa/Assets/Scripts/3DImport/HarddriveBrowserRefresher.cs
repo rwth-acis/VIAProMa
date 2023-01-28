@@ -51,7 +51,7 @@ public class HarddriveBrowserRefresher : MonoBehaviour
             string dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
             string fileSize = BytesToNiceString(new System.IO.FileInfo(path).Length);
 
-            ImportedObject dowObj = new ImportedObject(null, path, fileName, dateOfDownload, fileSize/*, creator*/);
+            ImportedObject dowObj = new ImportedObject(null, path, fileName, dateOfDownload, fileSize, "Unknown");
             downloadedObjects.Insert(0, dowObj);
             //Debug.Log(dowObj.fileName);
         }

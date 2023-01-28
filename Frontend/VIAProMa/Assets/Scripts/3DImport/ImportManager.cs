@@ -146,7 +146,7 @@ namespace i5.VIAProMa.UI
         private void OnQueryChanged(object sender, EventArgs e)
             {
                 //Search field changed
-                this.gameObject.GetComponent<SearchBrowserRefresher>().SearchChanged(searchField.Text, "");
+                this.gameObject.GetComponent<SearchBrowserRefresher>().SearchChanged(searchField.Text, "", "");
                 //Debug.Log("Import Menu Search Field: " + searchField.Text);
             }
 
