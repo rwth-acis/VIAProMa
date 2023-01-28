@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using VIAProMa.Assets.Scripts.Analytics;
+using i5.VIAProMa.Shelves.IssueShelf;
+using VIAProMa.Assets.Scripts.Analytics.FileExport;
 
 namespace i5.VIAProMa.UI
 {
@@ -17,13 +19,12 @@ namespace i5.VIAProMa.UI
     {
         [Header("UI Elements")]
         [SerializeField] private GameObject advancedSettingsMenu;
+        [SerializeField] private DropdownCapability exportFormatSelection;
 
         public bool WindowOpen { get; private set; }
         public bool WindowEnabled { get; set; } // not used here
 
         public event EventHandler WindowClosed;
-
-        public Text textElement;
 
         [SerializeField] public Interactable AnalyticsToggleBtn;
 
@@ -77,6 +78,10 @@ namespace i5.VIAProMa.UI
         public void ToggleAnalytics()
         {
             AnalyticsManager.Instance.AnalyticsEnabled = AnalyticsToggleBtn.IsToggled;
+        }
+        public void ExportAnalyticsData()
+        {
+            ExportAnalytics.Instance.ExportAsync(exportFormatSelection.ChosenExportSelection);
         }
     }
 }
