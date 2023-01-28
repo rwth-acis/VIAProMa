@@ -26,7 +26,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         GameObject anch = GameObject.Find("AnchorParent");
         SessionBrowserRefresher refresher = anch.GetComponentInChildren<SessionBrowserRefresher>();
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitUntil(() => anch.GetComponentInChildren<ImportManager>().modelWrapper != null);
 
         GameObject modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
 
@@ -63,10 +63,8 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
                 anch.GetComponentInChildren<SearchBrowserRefresher>().SearchChanged(model.webLink, "", "");
             }
             anch.GetComponentInChildren<SearchBrowserRefresher>().searchBarText.GetComponent<TextMeshPro>().text = model.webLink;
-            while (!System.IO.File.Exists(Path.Combine(Application.persistentDataPath, anch.GetComponentInChildren<ImportManager>().folderName, model.fileName + ".txt")))
-            {
+            yield return new WaitUntil(() => System.IO.File.Exists(Path.Combine(Application.persistentDataPath, anch.GetComponentInChildren<ImportManager>().folderName, model.fileName + ".txt")));
 
-            }
             testModel = impModel.LoadModel(path);
         }
         testModel.name = model.fileName;
