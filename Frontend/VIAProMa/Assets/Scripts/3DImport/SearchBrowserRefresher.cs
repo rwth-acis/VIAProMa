@@ -29,12 +29,12 @@ public class SearchBrowserRefresher : MonoBehaviour
         public string Name { get; set;}
         public string Uid { get; set;}
         public string PublishedAt { get; set;}
-
+        public string FileSize { get; set;}
         public string ThumbnailLink { get; set; }
 
         public override string ToString()
         {
-            return String.Format("Name: {0}, UID: {1}, PublishedAt: {2}, ThumbnailLink: {3}", Name, Uid, PublishedAt, ThumbnailLink);
+            return string.Format("Name: {0}, UID: {1}, PublishedAt: {2}, FileSize: {3}, ThumbnailLink: {4}", Name, Uid, PublishedAt, FileSize, ThumbnailLink);
         }
     }
 
@@ -99,7 +99,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     public void SearchChanged(string searchContent, string Uid)
     {
         searchContentGlobal = searchContent;
-        UnityEngine.Debug.Log(searchContent);
+
         //refresh search browser
         foreach (Transform child in itemWrapper.transform)
         {
@@ -214,12 +214,13 @@ public class SearchBrowserRefresher : MonoBehaviour
             foreach(JToken result in results)
             {
                 SearchResult searchResult = result.ToObject<SearchResult>();
-                List <JToken> thumbs = result["thumbnails"]["images"].Children().ToList();
+                List<JToken> thumbs = result["thumbnails"]["images"].Children().ToList();
 
                 searchResult.ThumbnailLink = (string)thumbs[0]["url"];
+                searchResult.FileSize = BytesToNiceString((int)result["archives"]["glb"]["size"]);
 
                 searchedObjects.Add(searchResult);
-                Debug.Log(searchResult);
+                //Debug.Log(searchResult);
             }
 
             foreach(SearchResult searchRes in searchedObjects)

@@ -161,6 +161,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 int issueShelfId = 0;
                 int visualizationShelfId = 0;
+                int importModelMenuId = 0;
                 if (issueShelfInstance != null)
                 {
                     issueShelfId = issueShelfInstance.GetComponent<PhotonView>().ViewID;
@@ -169,9 +170,15 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 {
                     visualizationShelfId = visualizationShelfInstance.GetComponent<PhotonView>().ViewID;
                 }
+                if (importModelInstance != null)
+                {
+                    importModelMenuId = importModelInstance.GetComponent<PhotonView>().ViewID;
+                }
 
-                Debug.Log("Sending main menu initialization data.\nIssueShelfId: " + issueShelfId + "; visualizationShelfId" + visualizationShelfId);
-                photonView.RPC("Initialize", RpcTarget.Others, issueShelfId, visualizationShelfId);
+                Debug.Log("Sending main menu initialization data.\nIssueShelfId: " + issueShelfId + "; visualizationShelfId" + visualizationShelfId
+                            + "; importModelMenuId " + importModelMenuId);
+
+                photonView.RPC("Initialize", RpcTarget.Others, issueShelfId, visualizationShelfId, importModelMenuId);
             }
         }
 
@@ -226,8 +233,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowImportModelMenu()
         {
             Vector3 targetPosition = importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position;
-            //WindowManager.Instance.ImportManager.Open(importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
-            NetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, "SetImportManagerInstance");
+            NetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, "SetImportModelInstance");
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -341,9 +347,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
         }
 
         [PunRPC]
-        private void Initialize(int issueShelfId, int visualizationShelfId)
+        private void Initialize(int issueShelfId, int visualizationShelfId, int importModelMenuId)
         {
-            Debug.Log("RPC: Initialize with issueShelfId " + issueShelfId + " and visualizationShelfId " + visualizationShelfId);
+            Debug.Log("RPC: Initialize with issueShelfId " + issueShelfId + ", visualizationShelfId " + visualizationShelfId +
+                        " and importModelMenuId " + importModelMenuId);         
             if (issueShelfId != 0)
             {
                 SetIssueShelfInstance(issueShelfId);
@@ -351,6 +358,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             if (visualizationShelfId != 0)
             {
                 SetVisualizationShelfInstance(visualizationShelfId);
+            }
+            if (importModelMenuId != 0)
+            {
+                SetImportModelInstance(importModelMenuId);
             }
         }
 
@@ -368,6 +379,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
             PhotonView view = PhotonView.Find(photonId);
             visualizationShelfInstance = view.gameObject;
             Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+        }
+
+        [PunRPC]
+        private void SetImportModelInstance(int photonId)
+        {
+            PhotonView view = PhotonView.Find(photonId);
+            importModelInstance = view.gameObject;
+            Debug.Log("RPC: setting visualization shelf instance to " + importModelInstance.name + " (id " + photonId + ")");
         }
     }
 }
