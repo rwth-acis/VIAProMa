@@ -40,6 +40,8 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         Vector3 buttonPosition = (Vector3)instantiationData[5];
         Quaternion buttonRotation = (Quaternion)instantiationData[6];
 
+        this.gameObject.transform.parent = modelWrapper.transform;
+
         GameObject testModel = impModel.LoadModel(path);
         if (testModel == null)
         {
@@ -82,7 +84,6 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         this.gameObject.transform.position = this.gameObject.transform.position - (buttonRotation * Vector3.forward) * 0.1f;
 
         testModel.transform.parent = this.gameObject.transform;
-        this.gameObject.transform.parent = modelWrapper.transform;
 
         //this.gameObject.AddComponent<PhotonTransformView>();
 
