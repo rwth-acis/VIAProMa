@@ -97,7 +97,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         testModel.transform.localRotation = Quaternion.identity;
         testModel.transform.localScale = Vector3.one;
 
-        model.gameObject = testModel;
+        model.gameObject = this.gameObject;
         refresher.AddItem(model);
     }
 }

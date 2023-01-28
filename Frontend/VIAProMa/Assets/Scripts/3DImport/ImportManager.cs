@@ -266,8 +266,9 @@ namespace i5.VIAProMa.UI
         }
 
         [PunRPC]
-        public void DeleteObjectNetwork(GameObject model)
+        public void DeleteObjectNetwork(int modelViewID)
         {
+            GameObject model = PhotonView.Find(modelViewID).gameObject;
             //Refresh session browser correctly and delete actual GameObject
             SessionBrowserRefresher refresher = GetComponent<SessionBrowserRefresher>();
             ImportedObject deleteThisItem = refresher.importedObjects.Find(e => e.gameObject == model);
