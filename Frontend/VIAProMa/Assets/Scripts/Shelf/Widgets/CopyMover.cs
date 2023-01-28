@@ -80,8 +80,9 @@ namespace i5.VIAProMa.Shelves.Widgets
                     string projectID = "TODOGetProjectID";
                     objectIRI = string.Format("https://requirements-bazaar.org/projects/{0}/requirements/{1}", projectID, localDataDisplay.Content.Id);
                 }
-
+                Debug.Log(AnalyticsManager.Instance.UserInfo);
                 LogpointLRSExportable logpoint = new LogpointLRSExportable("http://id.tincanapi.com/verb/selected", objectIRI);
+                Debug.Log("Nach initialisierung:" + logpoint.ToString());
                 NotifyObservers(logpoint);
 
                 // Pass instantiation data to the copy so that other clients also know which issue is contained in the created copy.

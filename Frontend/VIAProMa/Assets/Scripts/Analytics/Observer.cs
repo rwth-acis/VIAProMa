@@ -70,12 +70,11 @@ namespace VIAProMa.Assets.Scripts.Analytics
                 else
                     Debug.Log(res.ResponseCode.ToString()); // TODO: Proper handeling
 
+                // If the logtype is exportable to a Learning Records Store, export it.
                 if (state is LogpointLRSExportable)
                 {
-                    // Make request to LRS.
                     LogpointLRSExportable? lrsState = state as LogpointLRSExportable;
                     WebResponse<string> lrsRes = await lrsClient.SendStatementAsync(lrsState!.GetStatement());
-                    Debug.Log(lrsRes.Content); // TODO: Remove in production.
                 }
             }
 

@@ -5,6 +5,7 @@ using i5.Toolkit.Core.ServiceCore;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
 using i5.VIAProMa.Login;
+using VIAProMa.Assets.Scripts.Analytics;
 
 public class LearningLayersLogin : ProviderLogin
 {
@@ -45,6 +46,9 @@ public class LearningLayersLogin : ProviderLogin
         statusCaption.text = "You are logged in!";
         Debug.Log("Successful Login to Learning Layers");
         SetLED(true);
+
+        // After log in, store the user data in the AnalyticsManager instance.
+        AnalyticsManager.Instance.FetchLearningLayersUserDataFromServiceManager().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -59,6 +63,9 @@ public class LearningLayersLogin : ProviderLogin
         statusCaption.text = "You are not logged in yet.";
         Debug.Log("Successful Logout from Learning Layers.");
         SetLED(false);
+
+        // Remove user data from the analytics manager to exclude it from logs from now on.
+        AnalyticsManager.Instance.SetUserAnonymous();
     }
 
     /// <summary>
