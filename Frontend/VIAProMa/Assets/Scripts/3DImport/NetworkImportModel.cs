@@ -18,7 +18,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         Debug.Log("Hello! OnPhotonInstantiate");
         GameObject anch = GameObject.Find("AnchorParent");
         SessionBrowserRefresher refresher = anch.GetComponentInChildren<SessionBrowserRefresher>();
-        //GameObject modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
+        GameObject modelWrapper = anch.GetComponentInChildren<ImportManager>().modelWrapper;
 
 
 
@@ -47,6 +47,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         testModel.GetComponent<ObjectManipulator>().enabled = false;
 
         GetComponent<BoxCollider>().size = testModel.GetComponent<BoxCollider>().size;
+        GetComponent<BoxCollider>().center = testModel.GetComponent<BoxCollider>().center;
         testModel.GetComponent<BoxCollider>().enabled = false;
 
         this.gameObject.transform.localScale = testModel.transform.localScale;
@@ -60,8 +61,13 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         this.gameObject.transform.position = this.gameObject.transform.position - (buttonRotation * Vector3.forward) * 0.1f;
 
         testModel.transform.parent = this.gameObject.transform;
+        this.gameObject.transform.parent = modelWrapper.transform;
 
         this.gameObject.AddComponent<PhotonTransformView>();
+
+        testModel.transform.localPosition = Vector3.zero;
+        testModel.transform.localRotation = Quaternion.identity;
+        testModel.transform.localScale = Vector3.one;
 
         model.gameObject = testModel;
         refresher.AddItem(model);

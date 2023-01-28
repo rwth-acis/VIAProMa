@@ -75,6 +75,8 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     private string sketchfabThumbsFolder;
 
+    private int lastListLength;
+
     private string searchContentGlobal;
 
     public Transform mainCamTr;
@@ -95,6 +97,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         SearchChanged("", "", "");
         searchedObjects = new List<SearchResult>();
         head = 0;
+        lastListLength = 0;
     }
 
     public void SearchChanged(string searchContent, string Uid, string licence)
@@ -297,7 +300,8 @@ public class SearchBrowserRefresher : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        if (searchedObjects.Count() - headPosition < 6)
+
+        if ((searchedObjects.Count() - headPosition < 6) && (lastListLength != searchedObjects.Count()))
         {
             headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
             headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
@@ -306,9 +310,11 @@ public class SearchBrowserRefresher : MonoBehaviour
             headUpButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.grey);
             headUpButton.IsEnabled = false;
 
+            lastListLength = searchedObjects.Count();
             StartCoroutine(SearchOnSketchfab(searchContentGlobal, searchedObjects.Count() + 10, 0));
             return;
         }
+
 
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
         headDownButton.GetComponentInChildren<TextMeshPro>().transform.parent.GetChild(1).GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.white);
@@ -363,7 +369,7 @@ public class SearchBrowserRefresher : MonoBehaviour
 
             thumbRenderer.material.color = Color.white;
             searchItem.GetComponentInChildren<TextMeshPro>().text = "Sketchfab UID: " + truncatedUID + "<br>" + truncatedFileName + "<br>" +
-                                                                "Published: " + truncatedPublisher;
+                                                                "Published: " + truncatedPublisher + "<br>" + "Size: " + searchObj.FileSize;
             searchItem.GetComponentInChildren<Animator>().enabled = false;
 
             searchItem.GetComponentInChildren<SketchfabLinkGenerator>().Uid = searchObj.Uid;
@@ -453,7 +459,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         {
             webLink = Uid;
         }
-        File.WriteAllText(pathToTXT, webLink);
+        File.WriteAllLines(pathToTXT, new string[] { webLink, licence });
 
         //delete img, if already exists
         if (File.Exists(pathToTXT))
