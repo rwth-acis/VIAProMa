@@ -23,9 +23,6 @@ namespace i5.VIAProMa.UI.Chat
         private int currentPosition;
         
         //new
-        int lastCommandIndex=0;
-        int fromIndex;
-        int tilIndex;
         //shows commands from commands list in this range in UI 
         int lowerRangeIndex = 0;
         int upperRangeIndex = 0;
@@ -34,6 +31,7 @@ namespace i5.VIAProMa.UI.Chat
         {
             commands = UndoRedoManager.getCommandList();
             currentPosition = UndoRedoManager.getCurrentPosition();
+            //until display is full with 9 commands
             if(commands.Count <= numberOfTextFields)
             {
                 upperRangeIndex = commands.Count-1;
@@ -61,16 +59,13 @@ namespace i5.VIAProMa.UI.Chat
                     commandItemsText[i].GetComponent<TextMeshPro>().text = commands[j].GetType().ToString();
                     i++;
                     j++;
-                    /*if (upperRangeIndex < commands.Count)
-                    {
-                        upperRangeIndex++;
-                    }*/
                 }
         }
 
         void scrollDown()
         {
-            if(upperRangeIndex < commands.Count)
+            //upperRangeIndex < commands.Count
+            if (upperRangeIndex < commands.Count)
             {
                 lowerRangeIndex++;
                 upperRangeIndex++;
@@ -85,7 +80,15 @@ namespace i5.VIAProMa.UI.Chat
 
 
 
-
+        void Select(int selectedCubeIndex)
+        {
+            int stepsToUndo = commands.Count - (lowerRangeIndex + selectedCubeIndex);
+            for (int i = 0; i<= stepsToUndo; i++)
+            {
+                UndoRedoManager.Undo();
+            }
+            UndoRedoManager.setCurrentPosition(stepsToUndo);
+        }
 
 
 
