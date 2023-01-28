@@ -23,7 +23,7 @@ namespace i5.VIAProMa.UI.Chat
         private int currentPosition;
         
         //new
-        //shows commands from commands list in this range in UI 
+        //used as a navigation window through the command list (always max 9 at a time are able to be displayed in the UI)
         int lowerRangeIndex = 0;
         int upperRangeIndex = 0;
 
@@ -36,6 +36,7 @@ namespace i5.VIAProMa.UI.Chat
             {
                 upperRangeIndex = commands.Count-1;
             }
+            //updates what is currently shown, done by correctly setting the lower- & upperRangeIndex variable throughout the code
             showRange(lowerRangeIndex, upperRangeIndex);
         }
 
@@ -49,7 +50,7 @@ namespace i5.VIAProMa.UI.Chat
        
         //-------------------------- for UIHistory display --------------------------
 
-        //zeigt die von vonIndex bis bisIndex aus der commandsliste an
+        //displays the commands in given range
         void showRange(int pFromIndex, int pTilIndex)
         {
                 int i = 0;
@@ -62,6 +63,7 @@ namespace i5.VIAProMa.UI.Chat
                 }
         }
 
+        //up button
         void scrollDown()
         {
             //upperRangeIndex < commands.Count
@@ -72,6 +74,7 @@ namespace i5.VIAProMa.UI.Chat
             }
         }
 
+        /down button
         void scrollUp()
         {
             lowerRangeIndex--;
@@ -79,20 +82,18 @@ namespace i5.VIAProMa.UI.Chat
         }
 
 
-
+        //called when cube button is pressed in UI meaning that the steps until that point will be undone
         void Select(int selectedCubeIndex)
         {
+            //calculates position in command list
             int stepsToUndo = commands.Count - (lowerRangeIndex + selectedCubeIndex);
             for (int i = 0; i<= stepsToUndo; i++)
             {
                 UndoRedoManager.Undo();
             }
+            //repositions currentPosition in CommandProcessor
             UndoRedoManager.setCurrentPosition(stepsToUndo);
         }
-
-
-
-
 
 
 
