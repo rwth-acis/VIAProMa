@@ -2,20 +2,15 @@
 
 using System;
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.Utilities;
-using Newtonsoft.Json;
-using i5.VIAProMa.WebConnection;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
-using i5.Toolkit.Core.ExperienceAPI;
-using i5.Toolkit.Core.Utilities;
 
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
-    ///<summary>
-    ///Abstract base class for reporting analytics data to endpoints.<br>
-    ///All Observers must implement <see cref="OnNext"/>, which is called by the Observers <see cref="System.IObservable{T}"/>
-    ///</summary>
+    /// <summary>
+    /// Abstract base class for reporting analytics data to endpoints.
+    /// All Observers must implement <see cref="OnNext"/>, which is called by the Observers <see cref="System.IObservable{T}"/>
+    /// </summary>
     public abstract class Observer<LogType> : IObserver<LogType> where LogType : Logpoint
     {
         private IDisposable? unsubscriber;
@@ -46,10 +41,10 @@ namespace VIAProMa.Assets.Scripts.Analytics
             Debug.Log(e.Message);
         }
 
-        ///<summary>
-        ///OnNext is called by the Observers <see cref="System.IObservable{T}"/><br>
-        ///This function should use the given <see cref="Logpoint"/> to log the observed analytics event.
-        ///</summary>
+        /// <summary>
+        /// OnNext is called by the Observers <see cref="System.IObservable{T}"/>.
+        /// This function should use the given <see cref="Logpoint"/> to log the observed analytics event.
+        /// </summary>
         public abstract void OnNext(LogType state);
 
         public void Unsubscribe()

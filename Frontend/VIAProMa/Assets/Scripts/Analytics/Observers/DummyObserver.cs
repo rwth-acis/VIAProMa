@@ -6,16 +6,13 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using Newtonsoft.Json;
 using i5.VIAProMa.WebConnection;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
-using i5.Toolkit.Core.ExperienceAPI;
-using i5.Toolkit.Core.Utilities;
-
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
-    ///<summary>
-    ///DummyObserver logs generic <see cref="Logpoint">s into json Files on the VIAProMa backend.<br>
-    ///This Observer is for testing purposes only and the logged data is not part of the analytics database.
-    ///</summary>
+    /// <summary>
+    /// DummyObserver logs generic <see cref="Logpoint">s into json Files on the VIAProMa backend.
+    /// This Observer is for testing purposes only and the logged data is not part of the analytics database.
+    /// </summary>
     public class DummyObserver : Observer<Logpoint>
     {
         public DummyObserver(IObservable<Logpoint> observable) : base(observable)

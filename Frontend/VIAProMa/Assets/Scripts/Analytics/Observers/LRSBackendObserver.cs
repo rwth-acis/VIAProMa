@@ -6,16 +6,14 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using Newtonsoft.Json;
 using i5.VIAProMa.WebConnection;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
-using i5.Toolkit.Core.ExperienceAPI;
-using i5.Toolkit.Core.Utilities;
 
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
-    ///<summary>
-    ///LRSObserver is an <see cref="Observer{Logtype}"> for logging <see cref="LogpointLRSExportable"> events.
-    ///It sends the data to the VIAProMa backend, where it is stored in the analytics database.
-    ///</summary>
+    /// <summary>
+    /// LRSObserver is an <see cref="Observer{Logtype}"> for logging <see cref="LogpointLRSExportable"> events.
+    /// It sends the data to the VIAProMa backend, where it is stored in the analytics database.
+    /// </summary>
     public class LRSBackendObserver : Observer<LogpointLRSExportable>
     {
 
