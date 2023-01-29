@@ -1,12 +1,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
+using i5.VIAProMa.Utilities;
+using Microsoft.MixedReality.Toolkit.UI;
+using TMPro;
+using i5.VIAProMa.UI.Chat;
 
 public class CommandProcessor
 {
     public List<ICommand> commands = new List<ICommand>();
     private int currentPosition = -1;
     private int range = 0;
+
+    //---------------------------------
+
+
+    public int getCurrentPosition()
+    {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int pCurrentPosition)
+    {
+        currentPosition = pCurrentPosition;
+    }
+
+
+    public List<ICommand> getCommandListCP()
+    {
+        return commands;
+    }
+
+
     private Color notActiveColor = Color.grey;
     private Color activeColor;
     private GameObject undoButtonBG;

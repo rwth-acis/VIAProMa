@@ -12,6 +12,7 @@ namespace i5.VIAProMa.UI.Chat
         private GameObject UndoRedoManagerGameObject;
         private UndoRedoManager UndoRedoManager;
         private Color notActiveColor = Color.grey;
+        [SerializeField] private Interactable uiHistoryButton;
 
         public bool WindowEnabled { get; set; }
 
@@ -23,6 +24,7 @@ namespace i5.VIAProMa.UI.Chat
         {
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+
         }
 
         public void Open()
@@ -49,6 +51,13 @@ namespace i5.VIAProMa.UI.Chat
         public void ToggleFollowMeComponent()
         {
             LeisteFollowMeToggle.ToggleFollowMeBehavior();
+        }
+
+
+        public void ShowUIHistory()
+        {
+            ICommand createMenu = new CreateMenuCommand(MenuType.UIHistory, transform.position - 0.5f * transform.right, transform.localEulerAngles);
+            UndoRedoManager.Execute(createMenu);
         }
 
         public void Undo()
