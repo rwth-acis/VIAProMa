@@ -173,7 +173,11 @@ namespace i5.VIAProMa.Shelves.Widgets
 
         protected override void CreateObservers()
         {
+            //Logging LRS-Logpoints to the VIAProMA backend
             _ = new LRSBackendObserver(this);
+
+            //Logging LRS-Logpoints to LRS
+            _ = new LRSObserver(this);
         }
     }
 }
