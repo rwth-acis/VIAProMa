@@ -20,11 +20,11 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
 
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        if (info.photonView.InstantiationData[0] == null)
+        if (info.photonView.InstantiationData == null)
         {
             return;
         }
-        else if (info.photonView.InstantiationData[5] == null)
+        else if (info.photonView.InstantiationData.Length < 6)
         {
             StartCoroutine("InstantiateAfterLoad", info);
         }
@@ -222,33 +222,32 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
 
     public void Deserialize(i5.VIAProMa.SaveLoadSystem.Core.SerializedObject serializedObject)
     {
-        //model = new ImportedObject();
-        PhotonMessageInfo info = new PhotonMessageInfo();
+        model = new ImportedObject();
 
         string web_link = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_webLinkKey", serializedObject.Strings, gameObject, out bool found_web_link);
         if (found_web_link)
         {
-            info.photonView.InstantiationData[0] = web_link;
+            model.webLink = web_link;
         }
         string file_name = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_fileNameKey", serializedObject.Strings, gameObject, out bool found_file_name);
         if (found_file_name)
         {
-            info.photonView.InstantiationData[1] = file_name;
+            model.fileName = file_name;
         }
         string date = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_dateKey", serializedObject.Strings, gameObject, out bool found_date);
         if (found_date)
         {
-            info.photonView.InstantiationData[2] = date;
+            model.dateOfDownload = date;
         }
         string size = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_sizeKey", serializedObject.Strings, gameObject, out bool found_size);
         if (found_size)
         {
-            info.photonView.InstantiationData[3] = size;
+            model.size = size;
         }
         string licence = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_licenceKey", serializedObject.Strings, gameObject, out bool found_licence);
         if (found_licence)
         {
-            info.photonView.InstantiationData[4] = licence;
+            model.licence = licence;
         }
         /*
         Vector3 position = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_positionKey", serializedObject.Vector3s, gameObject, out bool found_position);
@@ -264,8 +263,14 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         */
 
         StopAllCoroutines();
-        OnPhotonInstantiate(info);
+
+        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence};
+        PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
+        PhotonNetwork.InstantiateRoomObject("NetworkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
+        PhotonNetwork.Destroy(this.gameObject);
+
+
     }
 
- 
+
 }
