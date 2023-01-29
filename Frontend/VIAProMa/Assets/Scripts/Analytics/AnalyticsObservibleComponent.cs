@@ -13,7 +13,6 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
         {
             Observers = new List<IObserver<LogType>>();
             CreateObservers();
-            Debug.Log("Observers created");
         }
 
         public IDisposable Subscribe(IObserver<LogType> observer)

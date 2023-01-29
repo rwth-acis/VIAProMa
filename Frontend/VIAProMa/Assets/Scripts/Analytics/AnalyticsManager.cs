@@ -8,19 +8,25 @@ using Newtonsoft.Json;
 using Microsoft.MixedReality.Toolkit;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using i5.Toolkit.Core.OpenIDConnectClient;
+using i5.Toolkit.Core.ServiceCore;
+using i5.VIAProMa.Login;
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
     public class AnalyticsManager : Singleton<AnalyticsManager>
     {
-        // Everything concerned with the Notification PopUp
         private AnalyticsSettings _settings;
         private Guid _projectGUID;
+        private IUserInfo _userInfo;
+
+        #region Everything concerned with the Notification PopUp
         public Text TextObject;
         public GameObject Background;
         public DateTime ExpiresAt;
         private bool isStartOver = false;
         public AudioSource NotificationSound;
+        #endregion Everything concerned with the Notification PopUp
 
         [SerializeField]
         public bool AnalyticsEnabled
@@ -46,6 +52,8 @@ namespace VIAProMa.Assets.Scripts.Analytics
             set { _projectGUID = value; }
         }
 
+        public IUserInfo UserInfo { get; set; }
+
         public void Update()
         {
             bool showPopup = (DateTime.Now < ExpiresAt) && isStartOver;
@@ -56,7 +64,6 @@ namespace VIAProMa.Assets.Scripts.Analytics
         [PunRPC]
         public void ShowIsTelemetryEnabledPopup()
         {
-            // TODO: Remove the boolean parameter alibi. In is not used anywhere but Photon complains if there isn't a boolean parameter here. We have no clue why, but it works this way.
             TextObject.text = AnalyticsManager.Instance.AnalyticsEnabled ? "Telemetry Enabled!" : "Telemetry Disabled!";
             ExpiresAt = DateTime.Now.AddSeconds(2.5);
             NotificationSound.Play();
@@ -69,6 +76,9 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         public async Task Start()
         {
+            // Initialize data about the current user as anonymous (user is neither logged into GitHub nor the RequirementsBazaar).
+            SetUserAnonymous();
+
             // Generate a new GUID for the VIAProMa project that the analytics refer to. If the project ID is already set (for example because the project has been saved and loaded), do nothing and use the old ID.
             if (_projectGUID.Equals(Guid.Empty))
                 _projectGUID = Guid.NewGuid();
@@ -91,7 +101,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
             string projectID = AnalyticsManager.Instance.ProjectID.ToString();
             Response resp =
                     await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "project-settings/"+ projectID,
+                        ConnectionManager.Instance.BackendAPIBaseURL + "project-settings/" + projectID,
                         null,
                         -1,
                         null,
@@ -115,6 +125,18 @@ namespace VIAProMa.Assets.Scripts.Analytics
         private void SetIsAnalyticsEnabled(bool enabled)
         {
             _settings.AnalyticsEnabled = enabled;
+        }
+
+        public async Task FetchLearningLayersUserDataFromServiceManager()
+        {
+            IUserInfo userInfo = await ServiceManager.GetService<LearningLayersOidcService>().GetUserDataAsync();
+            if (userInfo != null)
+                this.UserInfo = userInfo;
+        }
+
+        public void SetUserAnonymous()
+        {
+            this.UserInfo = new LearningLayersUserInfo("AnonymousUser", "anonymoususer@viaproma.com", "Anonymous User");
         }
     }
 }

@@ -21,7 +21,7 @@ namespace i5.VIAProMa.Shelves.Widgets
     /// Does not consume any of the input data since they are redirected to the created copy
     /// </summary>
     [RequireComponent(typeof(IssueDataDisplay))]
-    public class CopyMover : AnalyticsObservibleComponent<LogpointIssueSelected>, IMixedRealityPointerHandler
+    public class CopyMover : AnalyticsObservibleComponent<LogpointLRSExportable>, IMixedRealityPointerHandler
     {
         [Tooltip("The prefab which should be instantiated as a copy")]
         public GameObject copyObject;
@@ -32,7 +32,7 @@ namespace i5.VIAProMa.Shelves.Widgets
         private IssueDataDisplay localDataDisplay;
 
         // A list of all the observers observing the state of this object for the analytics module.
-        private List<IObserver<LogpointIssueSelected>> observers = new List<IObserver<LogpointIssueSelected>>();
+        private List<IObserver<LogpointLRSExportable>> observers = new List<IObserver<LogpointLRSExportable>>();
 
         /// <summary>
         /// Sets the component up
@@ -59,15 +59,39 @@ namespace i5.VIAProMa.Shelves.Widgets
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
             GameObject currentPointerTarget = eventData.Pointer.Result.CurrentPointerTarget;
-            // only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture
+            // Only do this if we are out of selection mode, otherwise this is in conflict with the selection gesture.
             if (!IssueSelectionManager.Instance.SelectionModeActive
-                //clicking the edit or delete button shouldn't spawn a card
+                // Clicking the edit or delete button shouldn't spawn a card.
                 && currentPointerTarget.GetComponent<EditButton>() == null && currentPointerTarget.GetComponent<DeleteButton>() == null)
             {
-                // Analytics: Notify the observers that the card has been clicked on.
-                NotifyObservers(new LogpointIssueSelected(localDataDisplay));
+                // Notify the observers that the card has been clicked on.
 
-                // pass instantiation data to the copy so that other clients also know which issue is contained in the created copy
+                // Get meta data about the project (GitHub or Requirements Bazaar) the issue belongs to.
+                ProjectTracker projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
+
+                // Generate the objectIRI. It is composed differently depending on the source of the issue.
+                string objectIRI = "";
+                if (localDataDisplay.Content.Source == DataSource.GITHUB)
+                {
+                    string repository = projectTracker.currentRepositoryName;
+                    string repositoryOwner = projectTracker.currentRepositoryOwner;
+                    objectIRI = string.Format("https://github.com/{0}/{1}/issues/{2}", repositoryOwner, repository, localDataDisplay.Content.Id);
+                }
+                else if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
+                {
+                    string projectID = projectTracker.currentProjectID.ToString();
+                    objectIRI = string.Format("https://requirements-bazaar.org/projects/{0}/requirements/{1}", projectID, localDataDisplay.Content.Id);
+                }
+                else
+                {
+                    // Initialize the IRI of the object in the LRS statement to an unknown source. Will be overwritten unless the DataSource of the issue is neither GITHUB nor REQUIREMENTS_BAZAAR.
+                    objectIRI = "Unknown Issue source!";
+                    Debug.LogError("Unexpected source: " + localDataDisplay.Content.Source);
+                }
+                LogpointLRSExportable logpoint = new LogpointLRSExportable("http://id.tincanapi.com/verb/selected", "http://activitystrea.ms/schema/1.0/issue", objectIRI);
+                NotifyObservers(logpoint);
+
+                // Pass instantiation data to the copy so that other clients also know which issue is contained in the created copy.
                 object[] instantiationData;
                 if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
                 {
@@ -149,7 +173,7 @@ namespace i5.VIAProMa.Shelves.Widgets
 
         protected override void CreateObservers()
         {
-            _ = new Observer<LogpointIssueSelected>(this);
+            _ = new LRSBackendObserver(this);
         }
     }
 }
