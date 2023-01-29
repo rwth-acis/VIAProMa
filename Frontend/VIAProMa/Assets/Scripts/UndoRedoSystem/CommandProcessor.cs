@@ -26,13 +26,6 @@ public class CommandProcessor
         currentPosition = pCurrentPosition;
     }
 
-
-    public List<ICommand> getCommandListCP()
-    {
-        return commands;
-    }
-
-
     private Color notActiveColor = Color.grey;
     private Color activeColor;
     private GameObject undoButtonBG;
