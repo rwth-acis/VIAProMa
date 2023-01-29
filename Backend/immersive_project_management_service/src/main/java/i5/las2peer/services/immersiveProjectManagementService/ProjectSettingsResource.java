@@ -65,7 +65,11 @@ public class ProjectSettingsResource {
     public Response getSettings(@PathParam("project") String project, String text) {
         String result;
         try {
-            result = new String(Files.readAllBytes(Paths.get(getProjectDirectory(project).getPath() + "/settings.json")));
+            File settings = new File(getProjectDirectory(project), "settings.json");
+            if(settings.exists())
+                result = new String(Files.readAllBytes(settings.toPath()));
+                else
+                    result = "{}";
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
