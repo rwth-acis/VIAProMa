@@ -13,10 +13,12 @@ public class HighlightModel : MonoBehaviour
 
     private void Awake()
     {
-        highlighted = false;
-        
+        highlighted = false;        
     }
 
+    /// <summary>
+    /// Highlight the model.
+    /// </summary>
     public void HighlightObject()
     {
         if (highlighted)

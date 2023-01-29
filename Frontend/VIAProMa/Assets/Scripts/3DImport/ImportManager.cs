@@ -41,7 +41,9 @@ namespace i5.VIAProMa.UI
 
         private void Awake()
         {
+            //this is the folder, where all downloaded objects and their thumbnails/txts are stored
             folderName = "3Dobjects";
+            //this is the folder, where all temporary sketchfab thumbnails are stored
             sketchfabThumbsFolder = "SketchfabThumbs";
 
             if (!Directory.Exists(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)))
@@ -88,7 +90,6 @@ namespace i5.VIAProMa.UI
 
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             modelWrapper = new GameObject();
@@ -105,15 +106,14 @@ namespace i5.VIAProMa.UI
             Camera mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
             mainCamera.nearClipPlane = 0.01f;
             GetComponent<SearchBrowserRefresher>().mainCamTr = mainCamera.transform;
-
-            //finding the keyboard may be too hard...
-            //GameObject keyboard = Resources.FindObjectsOfTypeAll<GameObject>().;
-            //keyboard.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
-
+           
+            //Delete lone image files
             DeleteLoneImageFiles();
         }
 
-        
+        /// <summary>
+        /// This gets called when the 3DImportSystem is first spawned or deleted.
+        /// </summary>
         public void Refresh3DImportSystem()
         {
             DeleteLoneImageFiles();
@@ -121,6 +121,11 @@ namespace i5.VIAProMa.UI
             //delete 3Dmodels
             Destroy(modelWrapper);
         }
+
+        /*
+        This deletes all lonely image files (used for deleted objects that may have
+        still been in the session). This also refreshes the sketchfab thumbs folder.
+        */
         private void DeleteLoneImageFiles()
         {
             //delete lone image files
@@ -134,7 +139,7 @@ namespace i5.VIAProMa.UI
                     File.Delete(imagePath);
                 }
             }
-            //refresh thumbs folder     
+            //refresh sketchfab thumbs folder     
             imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
             foreach (FileInfo imageFile in imageFiles)
             {
@@ -144,14 +149,16 @@ namespace i5.VIAProMa.UI
             
         }
 
+        //This gets called when the searchField is changed.
         private void OnQueryChanged(object sender, EventArgs e)
         {
             //Search field changed
             this.gameObject.GetComponent<SearchBrowserRefresher>().SearchChanged(searchField.Text, "", "");
-            //Debug.Log("Import Menu Search Field: " + searchField.Text);
         }
 
-        // Changes the shown menu and de/-activates tab buttons accordingly
+        /// <summary>
+        /// This sets the menu to either Search, Session or Harddrive.
+        /// </summary>
         public void SetMenuTo(String menuName)
         {
             //set positions of windows and make buttons not greyed out
@@ -242,17 +249,26 @@ namespace i5.VIAProMa.UI
 
         }
 
+        /// <summary>
+        /// This closes the UI.
+        /// </summary>
         public void Close()
         {
             gameObject.SetActive(false);
             WindowClosed?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// This opens the UI.
+        /// </summary>
         public void Open()
         {
             gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// This opens the UI with a given position and rotation.
+        /// </summary>
         public void Open(Vector3 position, Vector3 eulerAngles)
         {
             Open();
@@ -260,11 +276,17 @@ namespace i5.VIAProMa.UI
             transform.localEulerAngles = eulerAngles;
         }
 
+        /// <summary>
+        /// This sets the parent of the UI correctly after initialization by photon.
+        /// </summary>
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             this.gameObject.transform.parent = GameObject.Find("AnchorParent").transform;
         }
 
+        /// <summary>
+        /// This is a networked method that deletes an object from ones session.
+        /// </summary>
         [PunRPC]
         public void DeleteObjectNetwork(int modelViewID)
         {

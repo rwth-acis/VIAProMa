@@ -11,6 +11,9 @@ public class DeleteModel : MonoBehaviour
 {
     public GameObject model;
 
+    /// <summary>
+    /// Deletes the associated model and removes it from the sessionList.
+    /// </summary>
     public void DeleteObject()
     {
         PhotonView viewUI = GameObject.Find("AnchorParent").GetComponentInChildren<ImportManager>().gameObject.GetComponent<PhotonView>();       

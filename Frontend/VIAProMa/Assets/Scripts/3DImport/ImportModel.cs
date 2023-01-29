@@ -42,6 +42,10 @@ public class ImportModel : MonoBehaviour
             modelWrapper = GetComponentInParent<ImportManager>().modelWrapper;
         }
     }
+
+    /// <summary>
+    /// Loads the model or downloads it, if its not available on the local path.
+    /// </summary>
     public void LoadModel()
     {
         //was file deleted?
@@ -61,15 +65,7 @@ public class ImportModel : MonoBehaviour
             return;
         }
 
-        /*
-        GameObject testModel = LoadModel(path);
-
-        testModel.name = model.fileName;
-
-        model.gameObject = testModel;
-
-        this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
-        */
+        
 
         StartCoroutine("LoadCoroutine");
 
@@ -77,6 +73,7 @@ public class ImportModel : MonoBehaviour
 
     }
 
+    //Creates the networked object
     IEnumerator LoadCoroutine()
     {
         object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, gameObject.transform.position, gameObject.transform.rotation };
@@ -85,11 +82,14 @@ public class ImportModel : MonoBehaviour
         PhotonNetwork.InstantiateRoomObject("NetworkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
     }
 
+    /*
+    This is used, when there are objects in the session that are not downloaded.
+    After a download, this method is called.
+    */
     private void UpdateImpObj(ImportedObject impObj)
     {
         impObj.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
         impObj.size = BytesToNiceString(new System.IO.FileInfo(path).Length);
-        //impObj.creator = photonView.Owner.NickName;
 
         Transform tr = impObj.gameObject.transform;
         impObj.gameObject = LoadModel(path);
@@ -98,7 +98,9 @@ public class ImportModel : MonoBehaviour
     }
 
 
-    //function, that only spawns the new GameObject correctly
+    /// <summary>
+    /// This only loads and spawns the object to import correctly.
+    /// </summary>
     public GameObject LoadModel(string path)
     {
         //import into unity scene
@@ -118,8 +120,7 @@ public class ImportModel : MonoBehaviour
         Bounds bounds = rr[0].bounds;
         foreach (Renderer r in rr) { bounds.Encapsulate(r.bounds); }
 
-        //MeshFilter[] ff = testModel.GetComponentsInChildren<MeshFilter>();
-        //foreach (MeshFilter f in ff) { bounds.Encapsulate(f.mesh.bounds); }
+        
 
 
         //add interactables and collider
@@ -164,7 +165,6 @@ public class ImportModel : MonoBehaviour
 
         testModel.transform.rotation = this.gameObject.transform.rotation;
         testModel.transform.eulerAngles += new Vector3(-90, -180, 0);
-        //testModel.transform.position = this.gameObject.transform.position;
 
         //use the center of the bounding box to set the object
         testModel.transform.position = testModel.transform.position + (this.gameObject.transform.position - testModel.transform.TransformPoint(testModel.GetComponent<BoxCollider>().center));
@@ -178,6 +178,8 @@ public class ImportModel : MonoBehaviour
 
         return testModel;
     }
+
+    //convert bytes (in long) to a nice looking string
     static String BytesToNiceString(long byteCount)
     {
         string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };

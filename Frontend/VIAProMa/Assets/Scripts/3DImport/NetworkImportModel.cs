@@ -19,6 +19,11 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
     public string path;
     public ImportedObject model;
 
+    /// <summary>
+    /// After the object is loaded through photon, this method gets called.
+    /// Dependend on how the model was initially spawned (loaded from file or imported through button),
+    /// the respective method is called to initialize the object correctly.
+    /// </summary>
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (info.photonView.InstantiationData == null)
@@ -37,9 +42,9 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
 
     }
 
+    //generates model from button
     IEnumerator InstantiateModel(PhotonMessageInfo info)
     {
-        Debug.Log("Hello! OnPhotonInstantiate");
         GameObject anch = GameObject.Find("AnchorParent");
         SessionBrowserRefresher refresher = anch.GetComponentInChildren<SessionBrowserRefresher>();
 
@@ -108,8 +113,6 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         testModel.transform.parent = this.gameObject.transform;
         this.gameObject.transform.parent = modelWrapper.transform;
 
-        //this.gameObject.AddComponent<PhotonTransformView>();
-
         testModel.transform.localPosition = Vector3.zero;
         testModel.transform.localRotation = Quaternion.identity;
         testModel.transform.localScale = Vector3.one;
@@ -118,9 +121,9 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         refresher.AddItem(model);
     }
 
+    //generates model from file
     IEnumerator InstantiateAfterLoad(PhotonMessageInfo info)
     {
-        Debug.Log("Hello! OnPhotonInstantiate");
         GameObject anch = GameObject.Find("AnchorParent");
         SessionBrowserRefresher refresher = anch.GetComponentInChildren<SessionBrowserRefresher>();
 
@@ -143,8 +146,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
 
         ImportModel impModel = anch.GetComponentInChildren<ImportManager>().gameObject.GetComponent<ImportModel>();
 
-        //Vector3 buttonPosition = (Vector3)instantiationData[5];
-        //Quaternion buttonRotation = (Quaternion)instantiationData[6];
+       
 
 
         GameObject testModel = impModel.LoadModel(path);
@@ -176,20 +178,13 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         GetComponent<BoxCollider>().center = testModel.GetComponent<BoxCollider>().center;
         testModel.GetComponent<BoxCollider>().enabled = false;
 
-        //this.gameObject.transform.localScale = testModel.transform.localScale;
         testModel.transform.localScale = Vector3.one;
 
-        //this.gameObject.transform.position = buttonPosition;
-        //this.gameObject.transform.rotation = buttonRotation;
-        //this.gameObject.transform.eulerAngles += new Vector3(-90, -180, 0);
-        //use the center of the bounding box to set the object
-        //this.gameObject.transform.position = this.gameObject.transform.position + (buttonPosition - this.gameObject.transform.TransformPoint(GetComponent<BoxCollider>().center));
-        //this.gameObject.transform.position = this.gameObject.transform.position - (buttonRotation * Vector3.forward) * 0.1f;
+        
 
         testModel.transform.parent = this.gameObject.transform;
         this.gameObject.transform.parent = modelWrapper.transform;
 
-        //this.gameObject.AddComponent<PhotonTransformView>();
 
         testModel.transform.localPosition = Vector3.zero;
         testModel.transform.localRotation = Quaternion.identity;
@@ -201,11 +196,17 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         refresher.AddItem(model);
     }
 
+    /// <summary>
+    /// Makes oneself the masterclient to be able to spawn a room object.
+    /// </summary>
     public void MakeMasterClient()
     {
         PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
     }
 
+    /// <summary>
+    /// Saves this object.
+    /// </summary>
     public i5.VIAProMa.SaveLoadSystem.Core.SerializedObject Serialize()
     {
         i5.VIAProMa.SaveLoadSystem.Core.SerializedObject serializedObject = new i5.VIAProMa.SaveLoadSystem.Core.SerializedObject();
@@ -224,6 +225,9 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         return serializedObject;
     }
 
+    /// <summary>
+    /// Loads this object.
+    /// </summary>
     public void Deserialize(i5.VIAProMa.SaveLoadSystem.Core.SerializedObject serializedObject)
     {
         model = new ImportedObject();
@@ -277,7 +281,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, localScale};
         PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
         PhotonNetwork.InstantiateRoomObject("NetworkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
-        Debug.Log("Instantiating object at" + gameObject.transform.position + ", " + gameObject.transform.rotation);
+        Debug.Log("Instantiating loaded object at" + gameObject.transform.position + ", " + gameObject.transform.rotation);
         PhotonNetwork.Destroy(this.gameObject);
 
 

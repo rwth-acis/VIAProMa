@@ -100,6 +100,10 @@ public class SearchBrowserRefresher : MonoBehaviour
         lastListLength = 0;
     }
 
+    /// <summary>
+    /// This method is called when the searchField is changed. It either searches for sketchfab models, 
+    /// or downloads from a correct webLink by calling a download routine.
+    /// </summary>
     public void SearchChanged(string searchContent, string Uid, string licence)
     {
         searchContentGlobal = searchContent;
@@ -169,7 +173,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         }
         else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
         {
-            //refresh thumbs folder            
+            //refresh sketchfab thumbs folder            
             FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
             foreach (FileInfo imageFile in imageFiles)
             {
@@ -181,7 +185,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         }
     }
 
-        
+    //this searches for models on sketchfab and saves them in a list    
     private IEnumerator SearchOnSketchfab(string query, int range, int cursor)
     {
         searchedObjects = new List<SearchResult>();
@@ -200,12 +204,10 @@ public class SearchBrowserRefresher : MonoBehaviour
 
 
         string uri = "https://api.sketchfab.com/v3/search?type=models&count=" + range + "&cursor=" + cursor + "&downloadable=true" + "&q=" + UnityWebRequest.EscapeURL(query);
-        //Debug.Log(uri);
 
         using UnityWebRequest webRequest = UnityWebRequest.Get(uri);
 
         webRequest.SetRequestHeader("Accept", "application/json");
-        //webRequest.SetRequestHeader("Host", "api.sketchfab.com");
         webRequest.SetRequestHeader("Authorization", "Token 182f243dcffb4e3e830788ceb1467c33");
 
         yield return webRequest.SendWebRequest();
@@ -248,9 +250,10 @@ public class SearchBrowserRefresher : MonoBehaviour
                 searchResult.FileSize = BytesToNiceString((int)result["archives"]["glb"]["size"]);
 
                 searchedObjects.Add(searchResult);
-                Debug.Log(searchResult);
+                Debug.Log("Found: " + searchResult);
             }
 
+            //download temporary thumbs for the sketchfab models
             foreach(SearchResult searchRes in searchedObjects)
             {
                 string pathToPNG = Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder, searchRes.Uid + ".png");
@@ -291,7 +294,9 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// This refreshes the searchbrowser for display of available sketchfab models.
+    /// </summary>
     public void RefreshSearchBrowser(int headPosition)
     {
         //refresh search browser
@@ -300,7 +305,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-
+        //When one wants to see more models by scrolling far enough, more models are loaded here.
         if ((searchedObjects.Count() - headPosition < 6) && (lastListLength != searchedObjects.Count()))
         {
             headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.grey;
@@ -377,18 +382,30 @@ public class SearchBrowserRefresher : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This increases the head on the list of searched sketchfab models.
+    /// </summary>
     public void IncreaseHead()
     {
         head++;
         RefreshSearchBrowser(head);
     }
+
+    /// <summary>
+    /// This decreases the head on the list of searched sketchfab models.
+    /// </summary>
     public void DecreaseHead()
     {
         head--;
         RefreshSearchBrowser(head);
     }
 
-
+    /*
+    This downloads a file given a correct weblink, creates the according .txt containing the weblink
+    and licence (if available), deletes any leftover lone image file for the model, updates objects
+    in the session that belong to the downloaded file, refreshes all relevant browsers,
+    and finally display the model in the searchbrowser, so that it can be imported directly from there.
+    */
     IEnumerator DownloadFile(string path, string webLink, string Uid, string licence)
     {
         //refresh session browser
@@ -451,8 +468,11 @@ public class SearchBrowserRefresher : MonoBehaviour
         uwr.downloadHandler.Dispose();
         UnityEngine.Debug.Log("File successfully downloaded and saved to " + path);
 
-        //this might seem stupid but must be done: the webLink is saved in a textfile for every object,
-        //so that users can import objects from their harddrive, and see where the object originally was downloaded from
+        /*
+        The webLink is saved in a textfile for every object, so that users can import objects from their harddrive,
+        and still see where the object originally was downloaded from. The licence, if available,
+        is also saved in the file on a new line.
+        */
         string pathToTXT = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".txt");
         string pathToPNG = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + ".png");
         if (Uid != "")
@@ -495,7 +515,7 @@ public class SearchBrowserRefresher : MonoBehaviour
     {
         Transform tr = impObj.gameObject.transform;
         Destroy(impObj.gameObject);
-        //this needs to be tried and catched if uuh the link changes to something unloadable
+        //this needs to be tried and catched if the link changes to something unloadable
         try {            
             impObj.gameObject = GetComponent<ImportModel>().LoadModel(path);           
         }
@@ -511,10 +531,10 @@ public class SearchBrowserRefresher : MonoBehaviour
 
         impObj.dateOfDownload = System.IO.File.GetCreationTime(path).ToString();
         impObj.size = BytesToNiceString(new System.IO.FileInfo(path).Length);
-        //impObj.creator = photonView.Owner.NickName;
         return impObj;
     }
 
+    //this shows the recently downloaded object in the searchbrowser
     void RefreshBrowser(string path, string licence)
     {
         //refresh search browser
@@ -565,6 +585,7 @@ public class SearchBrowserRefresher : MonoBehaviour
 
     }
 
+    //this shows, that the recently downloaded object could not be downloaded correctly
     void RefreshBrowserDownloadError()
     {
         //refresh search browser
@@ -588,6 +609,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         GetComponent<SessionBrowserRefresher>().Refresh(GetComponent<SessionBrowserRefresher>().head);
     }
 
+    //this checks, if a string ends with a certain substring
     private static bool StringEndsWith(string a, string b)
     {
         int ap = a.Length - 1;
@@ -602,6 +624,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         return (bp < 0);
     }
 
+    //this checks, if a string starts with a certain substring
     private static bool StringStartsWith(string a, string b)
     {
         int aLen = a.Length;
@@ -618,6 +641,7 @@ public class SearchBrowserRefresher : MonoBehaviour
         return (bp == bLen);
     }
 
+    //this converts bytes (given in long) to a nice string
     static String BytesToNiceString(long byteCount)
     {
         string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };

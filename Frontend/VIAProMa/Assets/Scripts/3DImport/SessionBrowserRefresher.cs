@@ -108,7 +108,6 @@ public class SessionBrowserRefresher : MonoBehaviour
             string truncatedFileName = impObj.fileName.Length > linkOrFileNameLength ? (impObj.fileName.Substring(0, linkOrFileNameLength) + "...") : impObj.fileName;
             string dateOfDownload = impObj.dateOfDownload;
             string fileSize = impObj.size;
-            //string creator = impObj.creator;
 
             GameObject sessItem = Instantiate(sessionItem);
             sessItem.transform.parent = sessionItemWrapper.transform;
@@ -164,7 +163,7 @@ public class SessionBrowserRefresher : MonoBehaviour
         head = 0;
 
         importedObjects.Insert(head, obj);
-        Refresh(head); //"Refresh Head"... ich sollte wahrscheinlich schlafen gehen
+        Refresh(head);
     }
 
     /// <summary>

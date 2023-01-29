@@ -39,6 +39,9 @@ public class HarddriveBrowserRefresher : MonoBehaviour
         RefreshList();        
     }
 
+    /// <summary>
+    /// Refreshes the list of locally downloaded models on ones harddrive.
+    /// </summary>
     public void RefreshList()
     {
         head = 0;
@@ -53,11 +56,13 @@ public class HarddriveBrowserRefresher : MonoBehaviour
 
             ImportedObject dowObj = new ImportedObject(null, path, fileName, dateOfDownload, fileSize, "Unknown");
             downloadedObjects.Insert(0, dowObj);
-            //Debug.Log(dowObj.fileName);
         }
-        //Debug.Log(downloadedObjects.Count());
         RefreshBrowser(head);
     }
+
+    /// <summary>
+    /// Refreshes the HarddriveBrowser.
+    /// </summary>
     public void RefreshBrowser(int headPosition)
     {
         headDownButton.GetComponentInChildren<TextMeshPro>().color = Color.white;
@@ -101,7 +106,6 @@ public class HarddriveBrowserRefresher : MonoBehaviour
             string truncatedFileName = impObj.fileName.Length > linkOrFileNameLength ? (impObj.fileName.Substring(0, linkOrFileNameLength) + "...") : impObj.fileName;
             string dateOfDownload = impObj.dateOfDownload;
             string fileSize = impObj.size;
-            //string creator = impObj.creator;
 
             GameObject sessItem = Instantiate(hardItem);
             sessItem.transform.parent = hardItemWrapper.transform;
@@ -127,7 +131,7 @@ public class HarddriveBrowserRefresher : MonoBehaviour
 
             thumbRenderer.material.color = Color.white;
             sessItem.GetComponentInChildren<TextMeshPro>().text = truncatedWebLink + "<br>" + truncatedFileName + "<br>" +
-                                                                "Downloaded: " + dateOfDownload + "<br>" + fileSize/*+ "<br>" + creator*/;
+                                                                "Downloaded: " + dateOfDownload + "<br>" + fileSize;
             sessItem.GetComponentInChildren<Animator>().enabled = false;
 
             sessItem.GetComponentInChildren<DeleteFile>().path = path;
@@ -146,17 +150,25 @@ public class HarddriveBrowserRefresher : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Increases the head to move further in the list of downloaded models.
+    /// </summary>
     public void IncreaseHead()
     {
         head++;
         RefreshBrowser(head);
     }
+
+    /// <summary>
+    /// Decreases the head to move back in the list of downloaded models.
+    /// </summary>
     public void DecreaseHead()
     {
         head--;
         RefreshBrowser(head);
     }
 
+    //converts bytes (given in long) to a nice string
     static String BytesToNiceString(long byteCount)
     {
         string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
