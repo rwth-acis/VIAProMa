@@ -8,7 +8,6 @@ using i5.VIAProMa.WebConnection;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
 using VIAProMa.Assets.Scripts.ProjectSettings;
 
-
 namespace VIAProMa.Assets.Scripts.Analytics
 {
     /// <summary>

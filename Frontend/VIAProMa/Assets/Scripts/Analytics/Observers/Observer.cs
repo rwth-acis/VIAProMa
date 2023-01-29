@@ -4,7 +4,6 @@ using System;
 using UnityEngine;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
 
-
 namespace VIAProMa.Assets.Scripts.Analytics
 {
     /// <summary>
