@@ -66,7 +66,6 @@ namespace i5.VIAProMa.UI.AppBar
             // finally also destroy the app bar*/
             ICommand destroy = new DeleteObjectCommand(gameObject, appBarPlacer.TargetBoundingBox.Target);
             UndoRedoManager.Execute(destroy);
-            //Destroy(gameObject);
         }
 
         /// <summary>

@@ -97,11 +97,11 @@ namespace i5.VIAProMa.UI.Chat
 
             if (type == typeof(AppBarTransformCommand))
             {
-                return "Transformed App bar";
+                return "Transformed App Bar";
             }
             else if (type == typeof(CreateMenuCommand))
             {
-                return "Created menu";
+                return "Created Menu";
             }
             else if (type == typeof(ProgressBarHandleCommand))
             {
@@ -110,6 +110,18 @@ namespace i5.VIAProMa.UI.Chat
             else if (type == typeof(ScaleKanbanBoardCommand))
             {
                 return "Scaled Kanban Board";
+            }
+            else if(type == typeof(DeleteObjectCommand))
+            {
+                return "Removed Object";
+            }
+            else if(type == typeof(MoveObjectCommand))
+            {
+                return "Moved Object";
+            }
+            else if(type == typeof(InitiateObjectCommand))
+            {
+                return "Initiated Objecz";
             }
             else
             {

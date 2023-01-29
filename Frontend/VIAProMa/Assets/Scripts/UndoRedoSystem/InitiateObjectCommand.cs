@@ -6,10 +6,12 @@ using UnityEngine;
 public class InitiateObjectCommand : ICommand
 {
     private GameObject initiatedObject;
+    private GameObject objectAppbar;
 
-    public InitiateObjectCommand(GameObject instance)
+    public InitiateObjectCommand(GameObject instance, GameObject instanceAppBar)
     {
         initiatedObject = instance;
+        objectAppbar = instanceAppBar;
     }
 
     /* -------------------------------------------------------------------------- */
@@ -19,6 +21,11 @@ public class InitiateObjectCommand : ICommand
     /// </summary>
     public void Execute()
     {
+        if(objectAppbar != null)
+        {
+            objectAppbar.SetActive(true);
+
+        }
         initiatedObject.SetActive(true);
     }
 
@@ -28,5 +35,9 @@ public class InitiateObjectCommand : ICommand
     public void Undo()
     {
         initiatedObject.SetActive(false);
+        if (objectAppbar != null)
+        {
+            objectAppbar.SetActive(false);
+        }
     }
 }

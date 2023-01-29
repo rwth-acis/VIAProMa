@@ -20,6 +20,9 @@ namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
         private AvatarConfigurationController avatarConfigurationController;
         private AvatarSpineController spineController;
 
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
+
         private void Awake()
         {
             if (avatarParent == null)
@@ -68,6 +71,9 @@ namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
             modelSelector.ItemSelected += ModelItemSelected;
             materialSelector.ItemSelected += MaterialItemSelected;
             colorSelector.ItemSelected += ColorItemSelected;
+
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
 
         private void InitializeCategories()
@@ -94,7 +100,8 @@ namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
 
         public void Close()
         {
-            Destroy(gameObject);
+            ICommand close = new DeleteObjectCommand(gameObject, gameObject.GetComponent<AppBar>().gameObject);
+            UndoRedoManager.Execute(close);
         }
 
         private void EnsureAvatarConfigController()
