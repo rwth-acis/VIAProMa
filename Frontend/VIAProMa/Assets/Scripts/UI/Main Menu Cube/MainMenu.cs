@@ -256,6 +256,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 ref avatarConfiguratorInstance,
                 transform.position - 1f * transform.right);
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(avatarConfiguratorInstance);
+            UndoRedoManager.Execute(show);
         }
 
         public void ShowServerStatusMenu()
