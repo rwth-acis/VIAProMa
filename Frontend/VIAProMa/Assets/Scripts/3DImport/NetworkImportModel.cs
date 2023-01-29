@@ -179,7 +179,6 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
     {
         i5.VIAProMa.SaveLoadSystem.Core.SerializedObject serializedObject = new i5.VIAProMa.SaveLoadSystem.Core.SerializedObject();
 
-
         serializedObject.Strings.Add("importedModel_webLinkKey", model.webLink);
         serializedObject.Strings.Add("importedModel_fileNameKey", model.fileName);
         serializedObject.Strings.Add("importedModel_dateKey", model.dateOfDownload);
