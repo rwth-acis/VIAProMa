@@ -22,17 +22,26 @@ public class ProgressBarHandleCommand : ICommand
         progressBar = sprogressBar;
     }
 
+    /// <summary>
+    /// Due to a special case the method is _________________
+    /// </summary>
     public void Execute()
     {
         
     }
 
+    /// <summary>
+    /// Undos the resizing of a progress bar.
+    /// </summary>
     public void Undo()
     {
         progressBar.StartResizing(finPointer, newHandleOnPositiveCap);
         progressBar.SetHandles(prevPointer, newHandleOnPositiveCap);
     }
 
+    /// <summary>
+    /// Redos the resizing of a progress bar.
+    /// </summary>
     public void Redo()
     {
         progressBar.StartResizing(prevPointer, newHandleOnPositiveCap);

@@ -7,7 +7,6 @@ public class CommandProcessor
     public List<ICommand> commands = new List<ICommand>();
     private int currentPosition = -1;
     private int range = 0;
-
     private Color notActiveColor = Color.grey;
     private Color activeColor;
     private GameObject undoButtonBG;
@@ -15,16 +14,16 @@ public class CommandProcessor
     private GameObject closeButton;
     private string activeSceneName;
 
-    
-
-
+    /// <summary>
+    /// Constructor of the class. The buttons will be greyed out if there is nothing to be undone/redone.
+    /// The paths that are set are dependent on whether the menu is tested in the correspondig testscene or used in the mainscene.
+    /// </summary>
     public CommandProcessor()
     {
         Scene activeScene = SceneManager.GetActiveScene();
         activeSceneName = activeScene.name;
         if (activeSceneName == "MainScene")
         {
-            Debug.Log("mainscene is active scene");
             closeButton = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Close Button/BackPlate/Quad");
             undoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Undo Button/BackPlate/Quad");
             redoButtonBG = GameObject.Find("AnchorParent/Managers/Window Manager/UndoRedoMenu(Clone)/Leiste/Backdrop/Redo Button/BackPlate/Quad");
@@ -39,6 +38,19 @@ public class CommandProcessor
         RefreshColor();
     }
 
+    /// <summary>
+    /// Returns the commandlist.
+    /// </summary>
+    /// <returns></returns>
+    public List<ICommand> getCommandListCP()
+    {
+        return commands;
+    }
+
+    /// <summary>
+    /// Executes the given command. In case multiple actions have been undone and a new action is performed, the ones after the current action are removed to prevent complications.
+    /// </summary>
+    /// <param name="command"></param>
     public void Execute(ICommand command)
     {
         if (currentPosition < commands.Count - 1)
@@ -46,17 +58,15 @@ public class CommandProcessor
             range = commands.Count - (currentPosition + 1); 
             commands.RemoveRange(currentPosition + 1, range);
         }
-
         commands.Add(command);
         currentPosition++;
         command.Execute();
-
         RefreshColor();
-
-        //TODO Delete Debug.log
-        Debug.Log(currentPosition);
     }
 
+    /// <summary>
+    /// Undos an action and adjusts the color of the button.
+    /// </summary>
     public void Undo()
     {
         if (currentPosition < 0)
@@ -64,17 +74,17 @@ public class CommandProcessor
             RefreshColor();
             return;
         }
-
         ICommand command = commands[currentPosition];
         command.Undo();
         currentPosition--;
-
         RefreshColor();
-
-        //TODO Delete Debug.log
-        Debug.Log(currentPosition);
     }
-    
+
+    /// <summary>
+    /// Redos an action and adjusts the color of the button.
+    /// The second if-statement is Special case for the ProgressBarHandleCommand, where instead of Execute() Redo() is used.
+    /// This is done because the dragging of the Handle Bar is continous, while the Redo snaps it to the last position the Handle Bar was let go off.
+    /// </summary>
     public void Redo()
     {
         if (currentPosition >= commands.Count - 1)
@@ -82,22 +92,13 @@ public class CommandProcessor
             RefreshColor();
             return;
         }
-        
         currentPosition++;
-        Debug.Log(currentPosition);
         ICommand command = commands[currentPosition];
-
-        /*
-         * Special case for the ProgressBarHandleCommand, where instead of Execute() Redo() is used.
-         * This is done because the dragging of the Handle Bar is continous, while the Redo snaps it
-         * to the last position the Handle Bar was let go off
-        */
         if (command.GetType() == typeof(ProgressBarHandleCommand))
         {
             ProgressBarHandleCommand progressBarHandleCommand = (ProgressBarHandleCommand)command;
             progressBarHandleCommand.Redo();
         } 
-
         command.Execute();
         RefreshColor();
     }
@@ -127,14 +128,14 @@ public class CommandProcessor
         }
     }
     
+    /// <summary>
+    /// Determines whether the color of the buttons have to be changed.
+    /// </summary>
     public void RefreshColor()
     {
         bool redoPossible = (currentPosition <= commands.Count - 2 && commands.Count >= 1);
         bool undoPossible = (currentPosition >= 0);
         ChangeColor(undoPossible, redoPossible);
     }
-    public List<ICommand> getCommandListCP()
-    {
-        return commands;
-    }
+
 }

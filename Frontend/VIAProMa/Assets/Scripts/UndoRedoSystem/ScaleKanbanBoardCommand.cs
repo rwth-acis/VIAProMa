@@ -20,7 +20,17 @@ public class ScaleKanbanBoardCommand : ICommand
     private float newWidth;
     private float newHeight;
 
-
+    /// <summary>
+    /// Creates a command for the action of resizing the Kanban Board.
+    /// </summary>
+    /// <param name="skanbanBoardColumnStartPosition"></param>
+    /// <param name="sxAxis"></param>
+    /// <param name="skanbanBoardController"></param>
+    /// <param name="soldWidth"></param>
+    /// <param name="soldHeight"></param>
+    /// <param name="snewWidth"></param>
+    /// <param name="snewHeight"></param>
+    /// <param name="skanbanBoardColumnEndPosition"></param>
     public ScaleKanbanBoardCommand(Vector3 skanbanBoardColumnStartPosition, bool sxAxis, i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController skanbanBoardController, float soldWidth, float soldHeight, float snewWidth, float snewHeight, Vector3 skanbanBoardColumnEndPosition)
     {
         xAxis = sxAxis;
@@ -38,6 +48,9 @@ public class ScaleKanbanBoardCommand : ICommand
         return kanbanBoardController;
     }
 
+    /// <summary>
+    /// Resizes a Kanban Board by dragging the handles.
+    /// </summary>
     public void Execute()
     {
         if (xAxis)
@@ -52,6 +65,9 @@ public class ScaleKanbanBoardCommand : ICommand
         }
     }
 
+    /// <summary>
+    /// Undos resizing of a Kanban Board.
+    /// </summary>
     public void Undo()
     {
         if (xAxis)

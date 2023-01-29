@@ -7,6 +7,12 @@ public class CreateMenuCommand : ICommand
     private Vector3 position;
     private Vector3 eulerAngles;
 
+    /// <summary>
+    /// Creates a menucommand.
+    /// </summary>
+    /// <param name="pMenuType"></param>
+    /// <param name="pPosition"></param>
+    /// <param name="pEulerAngles"></param>
     public CreateMenuCommand(MenuType pMenuType, Vector3 pPosition, Vector3 pEulerAngles)
     {
         menuType = pMenuType;
@@ -14,6 +20,9 @@ public class CreateMenuCommand : ICommand
         eulerAngles = pEulerAngles;
     } 
 
+    /// <summary>
+    /// Creates a Menu depending on the type of the menu. The menus are instanciated using the Windowmanager.
+    /// </summary>
     public void Execute()
     {
         switch (menuType)
@@ -42,6 +51,9 @@ public class CreateMenuCommand : ICommand
         }
     }
 
+    /// <summary>
+    /// Closes the window.
+    /// </summary>
     public void Undo()
     {
         switch (menuType)

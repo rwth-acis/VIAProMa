@@ -13,12 +13,20 @@ public class DeleteObjectCommand : ICommand
     private GameObject gameObjectAppBar;
     private GameObject gameObject;
 
-    public DeleteObjectCommand(GameObject givenGameObject, GameObject givenAppBar) {
-    gameObjectAppBar = givenAppBar;
-    gameObject = givenGameObject;
+    /// <summary>
+    /// Creates a command for deleting an object.
+    /// </summary>
+    /// <param name="givenGameObject"></param>
+    /// <param name="givenAppBar"></param>
+    public DeleteObjectCommand(GameObject givenGameObject, GameObject givenAppBar) 
+    {
+        gameObjectAppBar = givenAppBar;
+        gameObject = givenGameObject;
     }
 
-
+    /// <summary>
+    /// Deletes an object by setting in inactive.
+    /// </summary>
     public void Execute()
     {
         if(gameObjectAppBar != null)
@@ -28,6 +36,9 @@ public class DeleteObjectCommand : ICommand
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Resets the deleted object to active.
+    /// </summary>
     public void Undo()
     {
         if (gameObjectAppBar != null)

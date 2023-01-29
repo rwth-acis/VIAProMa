@@ -6,6 +6,9 @@ public class UndoRedoManager : MonoBehaviour
 {
     private CommandProcessor commandProcessor;
 
+    /// <summary>
+    /// Used to have easier access to the Command Processor.
+    /// </summary>
     void Start()
     {
         commandProcessor = new CommandProcessor();
@@ -26,7 +29,7 @@ public class UndoRedoManager : MonoBehaviour
         commandProcessor.Redo();
     }
 
-    public List<ICommand> getCommandList()
+    public List<ICommand> GetCommandList()
     {
         return commandProcessor.getCommandListCP();
 
