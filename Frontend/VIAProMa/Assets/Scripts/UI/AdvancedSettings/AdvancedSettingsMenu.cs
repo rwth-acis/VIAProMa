@@ -1,11 +1,11 @@
+using i5.VIAProMa.Analytics.FileExport;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
 using System;
 using UnityEngine;
-using VIAProMa.Assets.Scripts.Analytics;
 using VIAProMa.Assets.Scripts.Analytics.FileExport;
-using i5.VIAProMa.Analytics.FileExport;
+using VIAProMa.Assets.Scripts.ProjectSettings;
 
 namespace i5.VIAProMa.UI
 {
@@ -43,7 +43,7 @@ namespace i5.VIAProMa.UI
 
         private void Update()
         {
-            AnalyticsToggleBtn.IsToggled = AnalyticsManager.Instance.AnalyticsEnabled;
+            AnalyticsToggleBtn.IsToggled = SettingsManager.Instance.IsAnalyticsEnabled;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace i5.VIAProMa.UI
 
         public void ToggleAnalytics()
         {
-            AnalyticsManager.Instance.AnalyticsEnabled = AnalyticsToggleBtn.IsToggled;
+            SettingsManager.Instance.IsAnalyticsEnabled = AnalyticsToggleBtn.IsToggled;
         }
         public void ExportAnalyticsData()
         {

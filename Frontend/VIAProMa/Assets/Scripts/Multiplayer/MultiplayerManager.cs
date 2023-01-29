@@ -4,6 +4,7 @@ using i5.VIAProMa.Utilities;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using VIAProMa.Assets.Scripts.Analytics;
 
 namespace i5.VIAProMa.Multiplayer
 {
@@ -53,6 +54,11 @@ namespace i5.VIAProMa.Multiplayer
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             Debug.Log(newPlayer.NickName + " joined");
+
+            // The project ID cannot be loaded with the game objects, as it is only known to the master and other people in the room. The master will send the project id to the new player once they entered the room.
+            if (PhotonNetwork.IsMasterClient)
+                AnalyticsManager.Instance.SendProjectIDToNewPlayer(newPlayer);
+                
             ChatManager.Instance.AddLocalMessage(newPlayer.NickName + " joined the room.");
         }
 
