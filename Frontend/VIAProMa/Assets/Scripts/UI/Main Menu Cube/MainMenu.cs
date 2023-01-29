@@ -211,7 +211,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
             foldController.InitalizeNewCloseTimer();
-            ICommand show = new InitiateObjectCommand(issueShelfInstance);
+            ICommand show = new InitiateObjectCommand(issueShelfInstance, null);
             UndoRedoManager.Execute(show);
         }
 
@@ -228,7 +228,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
             foldController.InitalizeNewCloseTimer();
-            ICommand show = new InitiateObjectCommand(visualizationShelfInstance);
+            ICommand show = new InitiateObjectCommand(visualizationShelfInstance, null);
             UndoRedoManager.Execute(show);
         }
 
@@ -238,7 +238,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
             foldController.InitalizeNewCloseTimer();
-            ICommand show = new InitiateObjectCommand(loadShelfInstance);
+            ICommand show = new InitiateObjectCommand(loadShelfInstance, null);
             UndoRedoManager.Execute(show);
         }
 
@@ -256,7 +256,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 ref avatarConfiguratorInstance,
                 transform.position - 1f * transform.right);
             foldController.InitalizeNewCloseTimer();
-            ICommand show = new InitiateObjectCommand(avatarConfiguratorInstance);
+            ICommand show = new InitiateObjectCommand(avatarConfiguratorInstance, null);
             UndoRedoManager.Execute(show);
         }
 

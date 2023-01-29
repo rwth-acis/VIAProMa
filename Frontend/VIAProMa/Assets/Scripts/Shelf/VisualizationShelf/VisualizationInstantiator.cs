@@ -50,7 +50,7 @@ namespace i5.VIAProMa.Shelves.Visualizations
                  initiatedGameObject = instance;
              });
 
-            ICommand initiate = new InitiateObjectCommand(initiatedGameObject);
+            ICommand initiate = new InitiateObjectCommand(initiatedGameObject, null);
             UndoRedoManager.Execute(initiate);
 
         }
