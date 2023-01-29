@@ -121,7 +121,7 @@ namespace i5.VIAProMa.UI.Chat
             }
             else if(type == typeof(InitiateObjectCommand))
             {
-                return "Initiated Objecz";
+                return "Initiated Object";
             }
             else
             {
