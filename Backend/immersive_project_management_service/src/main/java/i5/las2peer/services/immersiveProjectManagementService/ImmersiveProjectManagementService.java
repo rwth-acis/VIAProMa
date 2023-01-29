@@ -51,6 +51,8 @@ public class ImmersiveProjectManagementService extends RESTService {
 		getResourceConfig().register(GitHubResource.class);
 		getResourceConfig().register(NetworkedStringResource.class);
 		getResourceConfig().register(SaveLoadResource.class);
+		getResourceConfig().register(AnalyticsResource.class);
+		getResourceConfig().register(ProjectSettingsResource.class);
 	}
 
 
