@@ -12,6 +12,10 @@ using i5.Toolkit.Core.Utilities;
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
+    ///<summary>
+    ///LRSObserver is an <see cref="Observer{Logtype}"> for logging <see cref="LogpointLRSExportable"> events.
+    ///It sends the data to a Learning Record Store (LRS)
+    ///</summary>
     public class LRSObserver : Observer<LogpointLRSExportable>
     {
         private ExperienceAPIClient lrsClient;
