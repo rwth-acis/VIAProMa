@@ -100,7 +100,7 @@ namespace i5.VIAProMa.Multiplayer.Avatars.Customization.Configurator
 
         public void Close()
         {
-            ICommand close = new DeleteObjectCommand(gameObject, gameObject.GetComponent<AppBar>().gameObject);
+            ICommand close = new DeleteObjectCommand(gameObject, null);
             UndoRedoManager.Execute(close);
         }
 
