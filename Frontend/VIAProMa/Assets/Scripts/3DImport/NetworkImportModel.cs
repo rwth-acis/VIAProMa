@@ -100,4 +100,9 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback
         model.gameObject = this.gameObject;
         refresher.AddItem(model);
     }
+
+    public void MakeMasterClient()
+    {
+        PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
+    }
 }
