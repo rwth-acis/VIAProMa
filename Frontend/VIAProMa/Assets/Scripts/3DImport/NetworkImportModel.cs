@@ -1,6 +1,7 @@
 using i5.VIAProMa.Multiplayer.Common;
 using i5.VIAProMa.SaveLoadSystem.Core;
 using i5.VIAProMa.UI;
+using i5.VIAProMa.UI.MainMenuCube;
 using Microsoft.MixedReality.Toolkit.Input;
 using Microsoft.MixedReality.Toolkit.UI;
 using Photon.Pun;
@@ -270,6 +271,8 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         }
 
         StopAllCoroutines();
+
+        GameObject.Find("AnchorParent").GetComponentInChildren<MainMenu>().ShowImportModelMenu();
 
         object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, localScale};
         PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
