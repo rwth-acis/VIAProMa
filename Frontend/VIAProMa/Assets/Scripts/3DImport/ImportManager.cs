@@ -272,8 +272,8 @@ namespace i5.VIAProMa.UI
             //Refresh session browser correctly and delete actual GameObject
             SessionBrowserRefresher refresher = GetComponent<SessionBrowserRefresher>();
             ImportedObject deleteThisItem = refresher.importedObjects.Find(e => e.gameObject == model);
-            PhotonNetwork.Destroy(model);
             refresher.importedObjects.Remove(deleteThisItem);
+            PhotonNetwork.Destroy(model);
 
 
             refresher.Refresh(refresher.head);
