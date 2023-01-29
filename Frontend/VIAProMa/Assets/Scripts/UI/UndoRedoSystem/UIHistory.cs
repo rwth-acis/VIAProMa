@@ -1,10 +1,9 @@
-using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.UI;
 using TMPro;
+using System.Linq;
 
 namespace i5.VIAProMa.UI.Chat
 {
@@ -14,79 +13,127 @@ namespace i5.VIAProMa.UI.Chat
         [SerializeField] private GameObject[] commandItemsCubes;
         [SerializeField] private Interactable pageUpButton;
         [SerializeField] private Interactable pageDownButton;
-        private UndoRedoManager UndoRedoManager;
+
         [SerializeField] private GameObject Leiste;
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
+
         private GameObject UndoRedoManagerGameObject;
-        private int numberOfTextFields;
+        private UndoRedoManager UndoRedoManager;
+
         private List<ICommand> commands;
+        private List<ICommand> tempCommands;
         private int currentPosition;
         // Used as a navigation window through the command list (always max 9 at a time are able to be displayed in the UI).
         int lowerRangeIndex = 0;
-        int upperRangeIndex = 0;
 
-        void Awake()
+        void Start()
         {
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
-            numberOfTextFields = commandItemsText.Length;
+
+            commands = UndoRedoManager.getCommandList();
         }
 
         void Update()
         {
+            tempCommands = commands;
             commands = UndoRedoManager.getCommandList();
-            currentPosition = UndoRedoManager.getCurrentPosition();
-            //until display is full with 9 commands
-            if(commands.Count <= numberOfTextFields)
+            // checks if a new command has been executed
+            if (!commands.SequenceEqual(tempCommands)) 
             {
-                upperRangeIndex = commands.Count-1;
+                Debug.Log("In Veränderung von CommandList");
+                if (commands.Count > 8)
+                {
+                    lowerRangeIndex = commands.Count - 9;
+                }
+                else
+                {
+                    lowerRangeIndex = 0;
+                }
             }
-            // Updates what is currently shown, done by correctly setting the lower- & upperRangeIndex variable throughout the code.
-            showRange(lowerRangeIndex, upperRangeIndex);
+
+            currentPosition = UndoRedoManager.getCurrentPosition();
+            ShowRange(lowerRangeIndex);
             UpdateColor();
         }
 
         //-------------------------- for UIHistory display --------------------------
 
         /// <summary>
-        /// Used to display the commands in the given range. It overwrites the UI in the Update function.
+        /// Used to display the commands from the given Index in the list.
         /// </summary>
         /// <param name="pFromIndex"></param>
-        /// <param name="pTilIndex"></param>
-        void showRange(int pFromIndex, int pTilIndex)
+        private void ShowRange(int pFromIndex)
         {
-                int i = 0;
-                int j = pFromIndex;
-                while (j <= pTilIndex)
+            for (int i = 0; i <= 8; i++)
+            {
+                if (pFromIndex < commands.Count)
                 {
-                    commandItemsText[i].GetComponent<TextMeshPro>().text = commands[j].GetType().ToString();
-                    i++;
-                    j++;
+                    commandItemsText[i].GetComponent<TextMeshPro>().text = (pFromIndex + 1) + ": " + CreateDescription(pFromIndex);
                 }
+                else
+                {
+                    commandItemsText[i].GetComponent<TextMeshPro>().text = "";
+                }
+                pFromIndex++;
+            }
+        }
+
+        /// <summary>
+        /// Creates a description of the command.
+        /// </summary>
+        /// <param name="i">
+        /// Index of selected command in commands list.
+        /// </param>
+        /// <returns>
+        /// The description of the command.
+        /// </returns>
+        private string CreateDescription(int i)
+        {
+            ICommand command = commands[i];
+            Type type = command.GetType();
+
+            if (type == typeof(AppBarTransformCommand))
+            {
+                return "Transformed App bar"; // (AppBarTransformCommand)command;
+            }
+            else if (type == typeof(CreateMenuCommand))
+            {
+                return "Created menu";
+            }
+            else if (type == typeof(ProgressBarHandleCommand))
+            {
+                return "Moved Progress Bar Handle";
+            }
+            else if (type == typeof(ScaleKanbanBoardCommand))
+            {
+                return "Scaled Kanban Board";
+            }
+            else
+            {
+                return "Executed " + commands[i].GetType().ToString();
+            }
         }
 
         /// <summary>
         ///  Used by the "Down" button to scroll down the displayed command list in the UI.
         /// </summary>
-        void scrollDown()
+        public void ScrollDown()
         {
-            // upperRangeIndex < commands.Count
-            if (upperRangeIndex < commands.Count - 1)
+            if (lowerRangeIndex + 8 < commands.Count - 1)
             {
                 lowerRangeIndex++;
-                upperRangeIndex++;
             }
         }
 
         /// <summary>
         ///  Used by the "Up" button to scroll up the displayed command list in the UI.
         /// </summary>
-        void scrollUp()
+        public void ScrollUp()
         {
             if (lowerRangeIndex > 0)
             {
                 lowerRangeIndex--;
-                upperRangeIndex--;
             }
         }
 
@@ -94,23 +141,32 @@ namespace i5.VIAProMa.UI.Chat
         /// Called when a selection cube is pressed in order to calculate how many steps have to be undone.
         /// </summary>
         /// <param name="selectedCubeIndex"></param>
-        void Select(int selectedCubeIndex)
+        public void Select(int selectedCubeIndex)
         {
-            // calculates position in command list
-            int stepsToUndo = commands.Count - (lowerRangeIndex + selectedCubeIndex);
-            for (int i = 0; i<= stepsToUndo; i++)
+            int amountOfSteps = currentPosition - (selectedCubeIndex + lowerRangeIndex);
+            if (amountOfSteps > 0)
             {
-                UndoRedoManager.Undo();
+                for (int i = 0; i < amountOfSteps; i++)
+                { 
+                    UndoRedoManager.Undo();
+                }
+                UndoRedoManager.setCurrentPosition(currentPosition - amountOfSteps);
+            } else if (amountOfSteps < 0)
+            {
+                for (int i = 0; i < -amountOfSteps; i++)
+                {
+                    UndoRedoManager.Redo();
+                }
+                UndoRedoManager.setCurrentPosition(currentPosition + -amountOfSteps);
             }
-            // repositions currentPosition in CommandProcessor
-            UndoRedoManager.setCurrentPosition(stepsToUndo);
         }
 
         /// <summary>
         /// Checks for all commands which are currently visible in the ItemsText list if they contain the currently selected command.
         /// If it is not currently selected, the text will be colored white, else it will be red.
         /// </summary>
-        private void UpdateColor() {
+        private void UpdateColor()
+        {
             for (int i = 0; i < commandItemsText.Length; i++)
             {
                 if (i != currentPosition - lowerRangeIndex)
@@ -119,7 +175,7 @@ namespace i5.VIAProMa.UI.Chat
                 }
                 else if (0 <= i && i <= 8)
                 {
-                    commandItemsText[i].GetComponent<TextMeshPro>().color = Color.red;
+                    commandItemsText[i].GetComponent<TextMeshPro>().color = Color.blue;
                 }
             }
         }
