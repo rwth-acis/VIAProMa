@@ -80,7 +80,6 @@ namespace i5.VIAProMa.Shelves.Visualizations
 
         public void Close()
         {
-            // gameObject.SetActive(false);
             ICommand close = new DeleteObjectCommand(gameObject, null);
             UndoRedoManager.Execute(close);
         }

@@ -86,7 +86,6 @@ namespace i5.VIAProMa.Shelves.IssueShelf
         {
             ICommand close = new DeleteObjectCommand(gameObject, null);
             UndoRedoManager.Execute(close);
-            //gameObject.SetActive(false);
         }
 
         private void OnSearchFieldChanged(object sender, EventArgs e)
