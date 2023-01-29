@@ -27,6 +27,13 @@ namespace i5.VIAProMa.UI.Chat
         int lowerRangeIndex = 0;
         int upperRangeIndex = 0;
 
+        void Awake()
+        {
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+            numberOfTextFields = commandItemsText.Length;
+        }
+
         void Update()
         {
             commands = UndoRedoManager.getCommandList();
@@ -38,19 +45,12 @@ namespace i5.VIAProMa.UI.Chat
             }
             //updates what is currently shown, done by correctly setting the lower- & upperRangeIndex variable throughout the code
             showRange(lowerRangeIndex, upperRangeIndex);
+            UpdateColor();
         }
 
-        void Awake()
-        {
-            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
-            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
-            numberOfTextFields = commandItemsText.Length;
-        }
-
-       
         //-------------------------- for UIHistory display --------------------------
 
-        //displays the commands in given range
+        // displays the commands in given range
         void showRange(int pFromIndex, int pTilIndex)
         {
                 int i = 0;
@@ -63,42 +63,57 @@ namespace i5.VIAProMa.UI.Chat
                 }
         }
 
-        //up button
+        // up button
         void scrollDown()
         {
-            //upperRangeIndex < commands.Count
-            if (upperRangeIndex < commands.Count)
+            // upperRangeIndex < commands.Count
+            if (upperRangeIndex < commands.Count - 1)
             {
                 lowerRangeIndex++;
                 upperRangeIndex++;
             }
         }
 
-        /down button
+        // down button
         void scrollUp()
         {
-            lowerRangeIndex--;
-            upperRangeIndex--;
+            if (lowerRangeIndex > 0)
+            {
+                lowerRangeIndex--;
+                upperRangeIndex--;
+            }
         }
 
-
-        //called when cube button is pressed in UI meaning that the steps until that point will be undone
+        // called when cube button is pressed in UI meaning that the steps until that point will be undone
         void Select(int selectedCubeIndex)
         {
-            //calculates position in command list
+            // calculates position in command list
             int stepsToUndo = commands.Count - (lowerRangeIndex + selectedCubeIndex);
             for (int i = 0; i<= stepsToUndo; i++)
             {
                 UndoRedoManager.Undo();
             }
-            //repositions currentPosition in CommandProcessor
+            // repositions currentPosition in CommandProcessor
             UndoRedoManager.setCurrentPosition(stepsToUndo);
         }
 
-
-
-
-
+        /// <summary>
+        /// Checks for all commands which are currently visible in the ItemsText list if they contain the currently selected command.
+        /// If it is not currently selected, the text will be colored white, else it will be red.
+        /// </summary>
+        private void UpdateColor() {
+            for (int i = 0; i < commandItemsText.Length; i++)
+            {
+                if (i != currentPosition - lowerRangeIndex)
+                {
+                    commandItemsText[i].GetComponent<TextMeshPro>().color = Color.white;
+                }
+                else if (0 <= i && i <= 8)
+                {
+                    commandItemsText[i].GetComponent<TextMeshPro>().color = Color.red;
+                }
+            }
+        }
 
         //---------------------------- for window interface ---------------------
         public bool WindowEnabled { get; set; }
@@ -142,10 +157,5 @@ namespace i5.VIAProMa.UI.Chat
         {
             UndoRedoManager.Redo();
         }
-
-
-
     }
-
-
 }
