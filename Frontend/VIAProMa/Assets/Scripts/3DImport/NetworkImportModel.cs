@@ -24,7 +24,7 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         {
             return;
         }
-        else if (info.photonView.InstantiationData.Length < 6)
+        else if (info.photonView.InstantiationData.Length < 7)
         {
             StartCoroutine("InstantiateAfterLoad", info);
         }
@@ -194,6 +194,8 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         testModel.transform.localRotation = Quaternion.identity;
         testModel.transform.localScale = Vector3.one;
 
+        gameObject.transform.localScale = (Vector3)instantiationData[5];
+
         model.gameObject = this.gameObject;
         refresher.AddItem(model);
     }
@@ -212,10 +214,11 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         serializedObject.Strings.Add("importedModel_dateKey", model.dateOfDownload);
         serializedObject.Strings.Add("importedModel_sizeKey", model.size);
         serializedObject.Strings.Add("importedModel_licenceKey", model.licence);
-        /*
+        
         serializedObject.Vector3s.Add("importedModel_positionKey", model.gameObject.transform.position);
         serializedObject.Quaternions.Add("importedModel_rotationKey", model.gameObject.transform.rotation);
-        */
+        serializedObject.Vector3s.Add("importedModel_localScaleKey", model.gameObject.transform.localScale);
+
 
         return serializedObject;
     }
@@ -249,24 +252,29 @@ public class NetworkImportModel : MonoBehaviour, IPunInstantiateMagicCallback, i
         {
             model.licence = licence;
         }
-        /*
+        
         Vector3 position = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_positionKey", serializedObject.Vector3s, gameObject, out bool found_position);
         if (found_position)
         {
-            model.gameObject.transform.position = position;
+            gameObject.transform.position = position;
         }
         Quaternion rotation = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_rotationKey", serializedObject.Quaternions, gameObject, out bool found_rotation);
         if (found_rotation)
         {
-            model.gameObject.transform.rotation = rotation;
+            gameObject.transform.rotation = rotation;
         }
-        */
+        Vector3 localScale = i5.VIAProMa.SaveLoadSystem.Core.SerializedObject.TryGet("importedModel_localScaleKey", serializedObject.Vector3s, gameObject, out bool found_localScale);
+        if (found_localScale)
+        {
+            gameObject.transform.localScale = localScale;
+        }
 
         StopAllCoroutines();
 
-        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence};
+        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, localScale};
         PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
         PhotonNetwork.InstantiateRoomObject("NetworkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
+        Debug.Log("Instantiating object at" + gameObject.transform.position + ", " + gameObject.transform.rotation);
         PhotonNetwork.Destroy(this.gameObject);
 
 
