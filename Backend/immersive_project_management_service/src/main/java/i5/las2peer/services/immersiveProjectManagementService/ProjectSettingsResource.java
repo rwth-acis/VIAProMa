@@ -68,8 +68,8 @@ public class ProjectSettingsResource {
             File settings = new File(getProjectDirectory(project), "settings.json");
             if(settings.exists())
                 result = new String(Files.readAllBytes(settings.toPath()));
-                else
-                    result = "{}";
+            else
+                result = "{}";
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
@@ -81,8 +81,6 @@ public class ProjectSettingsResource {
             parentDir.mkdirs();
         return parentDir;
     }
-
-
 }
 
 
