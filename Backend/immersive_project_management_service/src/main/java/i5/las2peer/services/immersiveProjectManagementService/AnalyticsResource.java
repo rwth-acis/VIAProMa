@@ -87,6 +87,7 @@ public class AnalyticsResource {
         Connection con = getConnectionForProject(project);
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         ObjectReader reader = mapper.readerFor(LogPointLRS.class);
 
         try {
