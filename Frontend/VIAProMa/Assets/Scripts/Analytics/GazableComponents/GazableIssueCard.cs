@@ -17,7 +17,7 @@ namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
 
         protected override void CreateObservers()
         {
-            _ = new Observer<LogpointGazedAt>(this);
+            _ = new DummyObserver(this);
         }
     }
 }

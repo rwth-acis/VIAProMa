@@ -6,10 +6,13 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using Newtonsoft.Json;
 using i5.VIAProMa.WebConnection;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
+using i5.Toolkit.Core.ExperienceAPI;
+using i5.Toolkit.Core.Utilities;
+
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
-    public class Observer<LogType> : IObserver<LogType> where LogType : Logpoint
+    public abstract class Observer<LogType> : IObserver<LogType> where LogType : Logpoint
     {
         private IDisposable? unsubscriber;
 
@@ -39,23 +42,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
             Debug.Log(e.Message);
         }
 
-        public async void OnNext(LogType state)
-        {
-            if (!AnalyticsManager.Instance.AnalyticsEnabled)
-            {
-                Debug.LogWarning("Telemetry is disabled!"); // TODO: improve
-                return;
-            }
-
-            // Make call to REST API to log state to file
-            string projcetID = AnalyticsManager.Instance.ProjectID.ToString();
-            string json = JsonConvert.SerializeObject(state);
-            string requestUri = ConnectionManager.Instance.BackendAPIBaseURL + "analytics/dummy/" + projcetID;
-
-            Response res = await Rest.PostAsync(requestUri, json);
-            ConnectionManager.Instance.CheckStatusCode(res.ResponseCode);
-            string responseBody = await res.GetResponseBody();
-        }
+        public abstract void OnNext(LogType state);
 
         public void Unsubscribe()
         {
