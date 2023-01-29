@@ -21,7 +21,7 @@ namespace i5.VIAProMa.Shelves.Widgets
     /// Does not consume any of the input data since they are redirected to the created copy
     /// </summary>
     [RequireComponent(typeof(IssueDataDisplay))]
-    public class CopyMover : MonoBehaviour, IMixedRealityPointerHandler, IObservable<LogpointIssueSelected>
+    public class CopyMover : AnalyticsObservibleComponent<LogpointIssueSelected>, IMixedRealityPointerHandler
     {
         [Tooltip("The prefab which should be instantiated as a copy")]
         public GameObject copyObject;
@@ -37,12 +37,10 @@ namespace i5.VIAProMa.Shelves.Widgets
         /// <summary>
         /// Sets the component up
         /// </summary>
-        private void Awake()
+        protected override void Awake()
         {
             localDataDisplay = GetComponent<IssueDataDisplay>();
-
-            // Add an observer for the analytics for this object.
-            IssueEditingObserver observer = new IssueEditingObserver(this);
+            base.Awake();
         }
 
         /// <summary>
@@ -149,48 +147,9 @@ namespace i5.VIAProMa.Shelves.Widgets
             }
         }
 
-
-        // Implementation of necessary methods for the analytics module
-        #region Observer Implemenations
-        public IDisposable Subscribe(IObserver<LogpointIssueSelected> observer)
+        protected override void CreateObservers()
         {
-            if (!observers.Contains(observer))
-                observers.Add(observer);
-            return new Unsubscriber(observers, observer);
+            _ = new Observer<LogpointIssueSelected>(this);
         }
-
-        public void NotifyObservers(LogpointIssueSelected log)
-        {
-            if (AnalyticsManager.Instance.AnalyticsEnabled)
-                foreach (var observer in observers)
-                    observer.OnNext(log);
-        }
-
-        private class Unsubscriber : IDisposable
-        {
-            private List<IObserver<LogpointIssueSelected>> _observers;
-            private IObserver<LogpointIssueSelected> _observer;
-
-            public Unsubscriber(List<IObserver<LogpointIssueSelected>> observers, IObserver<LogpointIssueSelected> observer)
-            {
-                this._observers = observers;
-                this._observer = observer;
-            }
-
-            public void Dispose()
-            {
-                if (_observer != null && _observers.Contains(_observer))
-                    _observers.Remove(_observer);
-            }
-        }
-
-
-        class IssueEditingObserver : ObserverWrapper<LogpointIssueSelected>.Observer
-        {
-            public IssueEditingObserver(IObservable<LogpointIssueSelected> observable) : base(observable) { }
-        }
-        #endregion Observer Implemenations
-
-
     }
 }
