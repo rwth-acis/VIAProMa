@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
 using VIAProMa.Assets.Scripts.Analytics;
-using VIAProMa.Assets.Scripts.ProjectSettings;
 
 namespace i5.VIAProMa.Shelves.Widgets
 {
@@ -22,7 +21,7 @@ namespace i5.VIAProMa.Shelves.Widgets
     /// Does not consume any of the input data since they are redirected to the created copy
     /// </summary>
     [RequireComponent(typeof(IssueDataDisplay))]
-    public class CopyMover : AnalyticsObservibleComponent<LogpointLRSExportable>, IMixedRealityPointerHandler
+    public class CopyMover : AnalyticsObservableComponent<LogpointLRSExportable>, IMixedRealityPointerHandler
     {
         [Tooltip("The prefab which should be instantiated as a copy")]
         public GameObject copyObject;

@@ -6,7 +6,7 @@ using VIAProMa.Assets.Scripts.ProjectSettings;
 
 namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 {
-    public abstract class AnalyticsObservibleComponent<LogType> : MonoBehaviour, IObservable<LogType> where LogType : Logpoint
+    public abstract class AnalyticsObservableComponent<LogType> : MonoBehaviour, IObservable<LogType> where LogType : Logpoint
     {
         protected List<IObserver<LogType>> Observers { get; private set; }
 

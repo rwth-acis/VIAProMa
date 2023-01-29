@@ -6,7 +6,7 @@ using UnityEngine;
 namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
 {
     [RequireComponent(typeof(IssueDataDisplay))]
-    public class GazableIssueCard : AnalyticsObservibleComponent<LogpointLRSExportable>
+    public class GazableIssueCard : AnalyticsObservableComponent<LogpointLRSExportable>
     {
         public void GazeDetected()
         {
