@@ -499,7 +499,7 @@ public class SearchBrowserRefresher : MonoBehaviour
             ImportedObject impObjChanged = impObj;
             if (impObj.webLink == webLink)
             {
-                impObjChanged = UpdateImpObj(impObj, path);
+                //impObjChanged = UpdateImpObj(impObj, path);
             }
             newList.Add(impObjChanged);
         }
