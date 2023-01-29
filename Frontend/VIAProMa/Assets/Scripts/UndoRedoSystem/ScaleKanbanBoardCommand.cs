@@ -1,52 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
-using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine;
-using i5.VIAProMa.UI;
-using i5.VIAProMa.Visualizations.KanbanBoard;
 
+/// <summary>
+/// Command which scales the Kanban Board.
+/// </summary>
 public class ScaleKanbanBoardCommand : ICommand
 {
     public bool xAxis;
     public bool positiveEnd;
 
-    private Vector3 pointerStartPosition;
     private Vector3 kanbanBoardColumnStartPosition;
     private Vector3 kanbanBoardColumnEndPosition;
     private i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController kanbanBoardController;
-    
+
     private float oldWidth;
     private float oldHeight;
     private float newWidth;
     private float newHeight;
 
-    /// <summary>
-    /// Creates a command for the action of resizing the Kanban Board.
-    /// </summary>
-    /// <param name="skanbanBoardColumnStartPosition"></param>
-    /// <param name="sxAxis"></param>
-    /// <param name="skanbanBoardController"></param>
-    /// <param name="soldWidth"></param>
-    /// <param name="soldHeight"></param>
-    /// <param name="snewWidth"></param>
-    /// <param name="snewHeight"></param>
-    /// <param name="skanbanBoardColumnEndPosition"></param>
-    public ScaleKanbanBoardCommand(Vector3 skanbanBoardColumnStartPosition, bool sxAxis, i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController skanbanBoardController, float soldWidth, float soldHeight, float snewWidth, float snewHeight, Vector3 skanbanBoardColumnEndPosition)
+    public ScaleKanbanBoardCommand(Vector3 sKanbanBoardColumnStartPosition, bool sXAxis, i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController sKanbanBoardController, float sOldWidth, float sOldHeight, float sNewWidth, float sNewHeight, Vector3 sKanbanBoardColumnEndPosition)
     {
-        xAxis = sxAxis;
-        kanbanBoardColumnStartPosition = skanbanBoardColumnStartPosition;
-        kanbanBoardColumnEndPosition = skanbanBoardColumnEndPosition;
-        kanbanBoardController = skanbanBoardController;
-        oldHeight = soldHeight;
-        oldWidth = soldWidth;
-        newHeight = snewHeight;
-        newWidth = snewWidth;
+        xAxis = sXAxis;
+        kanbanBoardColumnStartPosition = sKanbanBoardColumnStartPosition;
+        kanbanBoardColumnEndPosition = sKanbanBoardColumnEndPosition;
+        kanbanBoardController = sKanbanBoardController;
+        oldHeight = sOldHeight;
+        oldWidth = sOldWidth;
+        newHeight = sNewHeight;
+        newWidth = sNewWidth;
     }
 
-    public i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController getKanbanBoardController()
-    {
-        return kanbanBoardController;
-    }
+    /* -------------------------------------------------------------------------- */
 
     /// <summary>
     /// Resizes a Kanban Board by dragging the handles.
@@ -66,7 +49,7 @@ public class ScaleKanbanBoardCommand : ICommand
     }
 
     /// <summary>
-    /// Undos resizing of a Kanban Board.
+    /// Reverses resizing of a Kanban Board.
     /// </summary>
     public void Undo()
     {
@@ -80,5 +63,12 @@ public class ScaleKanbanBoardCommand : ICommand
             kanbanBoardController.Height = oldHeight;
             kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition;
         }
+    }
+
+    /* -------------------------------------------------------------------------- */
+
+    public i5.VIAProMa.Visualizations.KanbanBoard.KanbanBoardColumnVisualController getKanbanBoardController()
+    {
+        return kanbanBoardController;
     }
 }

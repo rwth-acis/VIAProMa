@@ -1,24 +1,23 @@
 using i5.VIAProMa.UI;
 using UnityEngine;
 
+/// <summary>
+/// Command which opens a menu.
+/// </summary>
 public class CreateMenuCommand : ICommand
 {
     private MenuType menuType;
     private Vector3 position;
     private Vector3 eulerAngles;
 
-    /// <summary>
-    /// Creates a menucommand.
-    /// </summary>
-    /// <param name="pMenuType"></param>
-    /// <param name="pPosition"></param>
-    /// <param name="pEulerAngles"></param>
     public CreateMenuCommand(MenuType pMenuType, Vector3 pPosition, Vector3 pEulerAngles)
     {
         menuType = pMenuType;
         position = pPosition;
         eulerAngles = pEulerAngles;
-    } 
+    }
+
+    /* -------------------------------------------------------------------------- */
 
     /// <summary>
     /// Creates a Menu depending on the type of the menu. The menus are instanciated using the Windowmanager.

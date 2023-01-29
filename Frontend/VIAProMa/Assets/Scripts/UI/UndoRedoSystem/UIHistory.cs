@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace i5.VIAProMa.UI.Chat
 {
+    /// <summary>
+    /// Menu which contains a list of the commands. Used to skip between these.
+    /// </summary>
     public class UIHistory : MonoBehaviour, IWindow
     {
         [SerializeField] private TextMeshPro[] commandItemsText;
@@ -23,7 +26,7 @@ namespace i5.VIAProMa.UI.Chat
         private List<ICommand> commands;
         private List<ICommand> tempCommands;
         private int currentPosition;
-        // Used as a navigation window through the command list (always max 9 at a time are able to be displayed in the UI).
+        // Used as a navigation window through the command list (max 9 at a time are able to be displayed in the UI).
         int lowerRangeIndex = 0;
 
         void Start()
@@ -39,7 +42,7 @@ namespace i5.VIAProMa.UI.Chat
             tempCommands = commands;
             commands = UndoRedoManager.getCommandList();
             // checks if a new command has been executed
-            if (!commands.SequenceEqual(tempCommands)) 
+            if (!commands.SequenceEqual(tempCommands))
             {
                 if (commands.Count > 8)
                 {
@@ -56,12 +59,12 @@ namespace i5.VIAProMa.UI.Chat
             UpdateColor();
         }
 
-        //-------------------------- for UIHistory display --------------------------
+        /* -------------------------------------------------------------------------- */
 
         /// <summary>
         /// Used to display the commands from the given Index in the list.
         /// </summary>
-        /// <param name="pFromIndex"></param>
+        /// <param name="pFromIndex">Index of the first command.</param>
         private void ShowRange(int pFromIndex)
         {
             for (int i = 0; i <= 8; i++)
@@ -94,7 +97,7 @@ namespace i5.VIAProMa.UI.Chat
 
             if (type == typeof(AppBarTransformCommand))
             {
-                return "Transformed App bar"; // (AppBarTransformCommand)command;
+                return "Transformed App bar";
             }
             else if (type == typeof(CreateMenuCommand))
             {
@@ -139,18 +142,21 @@ namespace i5.VIAProMa.UI.Chat
         /// <summary>
         /// Called when a selection cube is pressed in order to calculate how many steps have to be undone.
         /// </summary>
-        /// <param name="selectedCubeIndex"></param>
+        /// <param name="selectedCubeIndex">Selected Cube to which point commands need to be undo/redo.</param>
         public void Select(int selectedCubeIndex)
         {
             int amountOfSteps = currentPosition - (selectedCubeIndex + lowerRangeIndex);
+            // if commands need to be reversed
             if (amountOfSteps > 0)
             {
                 for (int i = 0; i < amountOfSteps; i++)
-                { 
+                {
                     UndoRedoManager.Undo();
                 }
                 UndoRedoManager.setCurrentPosition(currentPosition - amountOfSteps);
-            } else if (amountOfSteps < 0)
+            }
+            // if commands need to be repeated
+            else if (amountOfSteps < 0)
             {
                 for (int i = 0; i < -amountOfSteps; i++)
                 {
@@ -161,8 +167,7 @@ namespace i5.VIAProMa.UI.Chat
         }
 
         /// <summary>
-        /// Checks for all commands which are currently visible in the ItemsText list if they contain the currently selected command.
-        /// If it is not currently selected, the text will be colored white, else it will be red.
+        /// Sets the color of the TextMeshPro Components. Blue if current command, else white.
         /// </summary>
         private void UpdateColor()
         {
@@ -178,6 +183,8 @@ namespace i5.VIAProMa.UI.Chat
                 }
             }
         }
+
+        /* -------------------------------------------------------------------------- */
 
         public bool WindowEnabled { get; set; }
 

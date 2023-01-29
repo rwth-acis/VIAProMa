@@ -1,5 +1,4 @@
 ﻿using i5.VIAProMa.Utilities;
-using Photon.Pun;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI.AppBar
@@ -16,7 +15,6 @@ namespace i5.VIAProMa.UI.AppBar
         private Quaternion startRotation;
         private Vector3 startScale;
 
-        //-----------------------
         private GameObject UndoRedoManagerGameObject;
         private UndoRedoManager UndoRedoManager;
 
@@ -39,13 +37,15 @@ namespace i5.VIAProMa.UI.AppBar
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
 
+        /* -------------------------------------------------------------------------- */
+
         /// <summary>
         /// Destroys the object (either networked or not based on the setting TargetNetworked)
         /// This also destroys the bounding box and finally the app bar
         /// </summary>
         public void RemoveObject()
         {
-            
+
             /*
             if (TargetNetworked)
             {

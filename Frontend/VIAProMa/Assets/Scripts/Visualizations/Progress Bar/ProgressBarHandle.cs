@@ -22,7 +22,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
         {
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
-            
+
             if (progressBar == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
@@ -31,6 +31,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void OnPointerClicked(MixedRealityPointerEventData eventData)
         {
+
         }
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
@@ -51,7 +52,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             {
                 progressBar.SetHandles(activePointer.Position, handleOnPositiveCap);
                 eventData.Use();
-            }     
+            }
         }
 
         public void OnPointerUp(MixedRealityPointerEventData eventData)
@@ -67,6 +68,5 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             ICommand resize = new ProgressBarHandleCommand(prevPointer, finPointer, handleOnPositiveCap, progressBar);
             UndoRedoManager.Execute(resize);
         }
-
     }
 }

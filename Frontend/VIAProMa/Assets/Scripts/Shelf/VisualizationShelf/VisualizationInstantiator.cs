@@ -27,25 +27,28 @@ namespace i5.VIAProMa.Shelves.Visualizations
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
 
+        /* -------------------------------------------------------------------------- */
+
         public void OnPointerClicked(MixedRealityPointerEventData eventData)
         {
+
         }
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
         {
 
-           ResourceManager.Instance.SceneNetworkInstantiate(visualizationPrefab, transform.position, transform.rotation, (instance) =>
-            {
-                boxStateController = instance.GetComponentInChildren<BoundingBoxStateController>();
-                if (boxStateController == null)
-                {
-                    SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
-                }
-                boxStateController.BoundingBoxActive = true;
-                handler = instance.GetComponentInChildren<ObjectManipulator>();
-                handler.OnPointerDown(eventData);
-                initiatedGameObject = instance;
-            });
+            ResourceManager.Instance.SceneNetworkInstantiate(visualizationPrefab, transform.position, transform.rotation, (instance) =>
+             {
+                 boxStateController = instance.GetComponentInChildren<BoundingBoxStateController>();
+                 if (boxStateController == null)
+                 {
+                     SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
+                 }
+                 boxStateController.BoundingBoxActive = true;
+                 handler = instance.GetComponentInChildren<ObjectManipulator>();
+                 handler.OnPointerDown(eventData);
+                 initiatedGameObject = instance;
+             });
 
             ICommand initiate = new InitiateObjectCommand(initiatedGameObject);
             UndoRedoManager.Execute(initiate);

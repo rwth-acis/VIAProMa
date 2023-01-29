@@ -51,6 +51,8 @@ namespace i5.VIAProMa.Shelves.ProjectLoadShelf
             boundingBox.SetActive(false);
         }
 
+        /* -------------------------------------------------------------------------- */
+
         public async void LoadContent()
         {
             messageBadge.gameObject.SetActive(true);

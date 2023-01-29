@@ -1,8 +1,6 @@
 ﻿using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine;
-using System.Collections.Generic;
-using System.Collections;
 
 namespace i5.VIAProMa.Visualizations.KanbanBoard
 {
@@ -21,12 +19,12 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         private GameObject UndoRedoManagerGameObject;
         private UndoRedoManager UndoRedoManager;
-        
+
         private float oldHeight;
         private float oldWidth;
         private float newHeight;
         private float newWidth;
-        
+
         float handDelta;
         float newLength;
         float previousWidth;
@@ -45,6 +43,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         public void OnPointerClicked(MixedRealityPointerEventData eventData)
         {
+
         }
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
@@ -92,6 +91,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                     previousWidth = kanbanBoardController.Width;
                     kanbanBoardController.Width = newLength;
                     newWidth = newLength;
+
                     if (kanbanBoardController.Width != previousWidth) // only move if the width was actually changed (it could be unaffected if min or max size was reached)
                     {
                         Vector3 pivotCorrection = new Vector3(handDelta / 2f, 0, 0);

@@ -1,23 +1,52 @@
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 
-
+/// <summary>
+/// Manager of the Undo-Redo-System.
+/// </summary>
 public class UndoRedoManager : MonoBehaviour
 {
     private CommandProcessor commandProcessor;
 
-    /// <summary>
-    /// Used to have easier access to the Command Processor.
-    /// </summary>
     void Start()
     {
         commandProcessor = new CommandProcessor();
     }
 
-    public void setCurrentPosition(int pCurrPos)
+    /* -------------------------------------------------------------------------- */
+
+    /// <summary>
+    /// Executes the given command and integrates it into the Undo-Redo System.
+    /// </summary>
+    /// <param name="command">
+    /// Command which will be executed.
+    /// </param>
+    public void Execute(ICommand command)
     {
-        commandProcessor.setCurrentPosition(pCurrPos);
+        commandProcessor.Execute(command);
+    }
+
+    /// <summary>
+    /// Reverses the last command.
+    /// </summary>
+    public void Undo()
+    {
+        commandProcessor.Undo();
+    }
+
+    /// <summary>
+    /// Repeats the next command.
+    /// </summary>
+    public void Redo()
+    {
+        commandProcessor.Redo();
+    }
+
+    /* -------------------------------------------------------------------------- */
+
+    public List<ICommand> getCommandList()
+    {
+        return commandProcessor.getCommandListCP();
     }
 
     public int getCurrentPosition()
@@ -25,32 +54,8 @@ public class UndoRedoManager : MonoBehaviour
         return commandProcessor.getCurrentPosition();
     }
 
-    public List<ICommand> getCommandList()
+    public void setCurrentPosition(int pCurrPos)
     {
-        return commandProcessor.getCommandListCP();
-    }
-
- 
-
-
-    public void Execute(ICommand command)
-    {
-        commandProcessor.Execute(command);
-    }
-
-    public void Undo()
-    {
-        commandProcessor.Undo();
-    }
-
-    public void Redo()
-    {
-        commandProcessor.Redo();
-    }
-
-    public List<ICommand> GetCommandList()
-    {
-        return commandProcessor.getCommandListCP();
-
+        commandProcessor.setCurrentPosition(pCurrPos);
     }
 }

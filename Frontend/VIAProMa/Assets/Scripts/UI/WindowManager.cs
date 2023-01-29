@@ -1,7 +1,6 @@
 ﻿using HoloToolkit.Unity;
 using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI.Chat;
-using i5.VIAProMa.Anchoring;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI
@@ -28,6 +27,8 @@ namespace i5.VIAProMa.UI
             UndoRedoMenu = (UndoRedoMenu)InstantiateWindow(undoRedoMenuPrefab);
             UIHistory = (UIHistory)InstantiateWindow(uiHistoryPrefab);
         }
+
+        /* -------------------------------------------------------------------------- */
 
         private IWindow InstantiateWindow(GameObject prefab)
         {
@@ -60,6 +61,11 @@ namespace i5.VIAProMa.UI
         public UIHistory UIHistory { get; private set; }
     }
 
+    /* -------------------------------------------------------------------------- */
+
+    /// <summary>
+    /// Used to determine the MenuType when used in the Undo-Redo System
+    /// </summary>
     public enum MenuType
     {
         RoomMenu,

@@ -1,18 +1,19 @@
 ﻿using Microsoft.MixedReality.Toolkit.UI;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI.Chat
 {
+    /// <summary>
+    /// Menu used to interact with the Undo-Redo System
+    /// </summary>
     public class UndoRedoMenu : MonoBehaviour, IWindow
     {
         [SerializeField] private GameObject Leiste;
         [SerializeField] private FollowMeToggle LeisteFollowMeToggle;
+        [SerializeField] private Interactable uiHistoryButton;
         private GameObject UndoRedoManagerGameObject;
         private UndoRedoManager UndoRedoManager;
-        private Color notActiveColor = Color.grey;
-        [SerializeField] private Interactable uiHistoryButton;
 
 
         public bool WindowEnabled { get; set; }
@@ -26,6 +27,8 @@ namespace i5.VIAProMa.UI.Chat
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
+
+        /* -------------------------------------------------------------------------- */
 
         public void Open()
         {
@@ -53,18 +56,23 @@ namespace i5.VIAProMa.UI.Chat
             LeisteFollowMeToggle.ToggleFollowMeBehavior();
         }
 
-
         public void ShowUIHistory()
         {
             ICommand createMenu = new CreateMenuCommand(MenuType.UIHistory, transform.position - 0.5f * transform.up, transform.localEulerAngles);
             UndoRedoManager.Execute(createMenu);
         }
 
+        /// <summary>
+        /// Reverses the current command
+        /// </summary>
         public void Undo()
         {
             UndoRedoManager.Undo();
         }
 
+        /// <summary>
+        /// Repeats the next command
+        /// </summary>
         public void Redo()
         {
             UndoRedoManager.Redo();

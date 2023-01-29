@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Command which initiates shelves and its objects.
+/// </summary>
 public class InitiateObjectCommand : ICommand
 {
     private GameObject initiatedObject;
@@ -11,11 +12,19 @@ public class InitiateObjectCommand : ICommand
         initiatedObject = instance;
     }
 
-        public void Execute()
+    /* -------------------------------------------------------------------------- */
+
+    /// <summary>
+    /// Initiates the object.
+    /// </summary>
+    public void Execute()
     {
         initiatedObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Deletes the object.
+    /// </summary>
     public void Undo()
     {
         initiatedObject.SetActive(false);

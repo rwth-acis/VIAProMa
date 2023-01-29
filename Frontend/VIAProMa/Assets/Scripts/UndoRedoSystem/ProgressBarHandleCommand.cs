@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using Microsoft.MixedReality.Toolkit.Input;
 using UnityEngine;
-using i5.VIAProMa.UI;
-using i5.VIAProMa.Visualizations.KanbanBoard;
 using i5.VIAProMa.Visualizations.ProgressBars;
 
+/// <summary>
+/// Command which allows dragging of the Progress Bar.
+/// </summary>
 public class ProgressBarHandleCommand : ICommand
 {
     private Vector3 prevPointer;
@@ -14,24 +12,26 @@ public class ProgressBarHandleCommand : ICommand
     private bool newHandleOnPositiveCap;
     private ProgressBarController progressBar;
 
-    public ProgressBarHandleCommand(Vector3 spointer, Vector3 finalPointer, bool snewHandleOnPositiveCap, ProgressBarController sprogressBar)
+    public ProgressBarHandleCommand(Vector3 sPointer, Vector3 sFinalPointer, bool sNewHandleOnPositiveCap, ProgressBarController sProgressBar)
     {
-        prevPointer = spointer;
-        finPointer = finalPointer;
-        newHandleOnPositiveCap = snewHandleOnPositiveCap;
-        progressBar = sprogressBar;
+        prevPointer = sPointer;
+        finPointer = sFinalPointer;
+        newHandleOnPositiveCap = sNewHandleOnPositiveCap;
+        progressBar = sProgressBar;
     }
 
+    /* -------------------------------------------------------------------------- */
+
     /// <summary>
-    /// Due to a special case the method is _________________
+    /// Due to a special case the method is left empty and instead Redo() is used.
     /// </summary>
     public void Execute()
     {
-        
+
     }
 
     /// <summary>
-    /// Undos the resizing of a progress bar.
+    /// Reverses the resizing of a progress bar.
     /// </summary>
     public void Undo()
     {
@@ -40,13 +40,15 @@ public class ProgressBarHandleCommand : ICommand
     }
 
     /// <summary>
-    /// Redos the resizing of a progress bar.
+    /// Repeats the resizing of a progress bar.
     /// </summary>
     public void Redo()
     {
         progressBar.StartResizing(prevPointer, newHandleOnPositiveCap);
         progressBar.SetHandles(finPointer, newHandleOnPositiveCap);
     }
+
+    /* -------------------------------------------------------------------------- */
 
     public ProgressBarController getProgressBarController()
     {

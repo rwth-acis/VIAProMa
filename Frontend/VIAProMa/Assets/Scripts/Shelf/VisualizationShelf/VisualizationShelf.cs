@@ -19,7 +19,6 @@ namespace i5.VIAProMa.Shelves.Visualizations
         private UndoRedoManager UndoRedoManager;
         private Vector3 startPosition;
 
-
         private List<GameObject> widgetInstances;
 
         protected override void Awake()
@@ -43,6 +42,8 @@ namespace i5.VIAProMa.Shelves.Visualizations
             UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
             UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
+
+        /* -------------------------------------------------------------------------- */
 
         private void DisplayWidgets()
         {
