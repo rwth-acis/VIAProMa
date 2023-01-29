@@ -1,7 +1,7 @@
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
-using i5.VIAProMa.SaveLoadSystem.Core;
 using i5.VIAProMa.UI.ListView.Issues;
 using i5.VIAProMa.DataModel.API;
+using UnityEngine;
 
 namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
 {
