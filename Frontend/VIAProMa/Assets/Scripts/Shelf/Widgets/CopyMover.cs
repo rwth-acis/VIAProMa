@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
 using VIAProMa.Assets.Scripts.Analytics;
+using VIAProMa.Assets.Scripts.ProjectSettings;
 
 namespace i5.VIAProMa.Shelves.Widgets
 {

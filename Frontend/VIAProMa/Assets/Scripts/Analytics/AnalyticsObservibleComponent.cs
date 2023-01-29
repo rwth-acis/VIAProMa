@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using UnityEngine;
+using VIAProMa.Assets.Scripts.ProjectSettings;
 
 namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 {
@@ -24,7 +25,7 @@ namespace VIAProMa.Assets.Scripts.Analytics.LogTypes
 
         protected void NotifyObservers(LogType log)
         {
-            if (AnalyticsManager.Instance.AnalyticsEnabled)
+            if (SettingsManager.Instance.IsAnalyticsEnabled)
                 foreach (var observer in Observers)
                     observer.OnNext(log);
         }

@@ -5,7 +5,7 @@ using UnityEngine;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
 using i5.Toolkit.Core.ExperienceAPI;
 using i5.Toolkit.Core.Utilities;
-
+using VIAProMa.Assets.Scripts.ProjectSettings;
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
@@ -29,7 +29,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         public override async void OnNext(LogpointLRSExportable state)
         {
-            if (!AnalyticsManager.Instance.AnalyticsEnabled)
+            if (!SettingsManager.Instance.IsAnalyticsEnabled)
             {
                 Debug.LogWarning("Telemetry is disabled!"); // TODO: improve
                 return;

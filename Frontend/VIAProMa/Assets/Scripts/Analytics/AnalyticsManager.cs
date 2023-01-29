@@ -1,130 +1,95 @@
 using System;
 using HoloToolkit.Unity;
-using Photon.Pun;
-using Microsoft.MixedReality.Toolkit.Utilities;
-using i5.VIAProMa.WebConnection;
 using UnityEngine;
-using Newtonsoft.Json;
 using Microsoft.MixedReality.Toolkit;
-using System.Threading.Tasks;
-using UnityEngine.UI;
+using i5.VIAProMa.Login;
+using VIAProMa.Assets.Scripts.ProjectSettings;
+using Photon.Pun;
+using Photon.Realtime;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
-using i5.VIAProMa.Login;
+using System.Threading.Tasks;
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
     public class AnalyticsManager : Singleton<AnalyticsManager>
     {
-        private AnalyticsSettings _settings;
-        private Guid _projectGUID;
-        private IUserInfo _userInfo;
+        Guid _projectID = Guid.Empty;
 
-        #region Everything concerned with the Notification PopUp
-        public Text TextObject;
-        public GameObject Background;
-        public DateTime ExpiresAt;
-        private bool isStartOver = false;
-        public AudioSource NotificationSound;
-        #endregion Everything concerned with the Notification PopUp
-
-        [SerializeField]
-        public bool AnalyticsEnabled
+        /// <summary>
+        /// This ID identifies a VIAProMA project. It is initialized with entering the VIAProMa application for the first time, preserved across saving and loading and used to reference the <c>ProjectSettings</c> as well as any <c>Logpoint</c>s that are recorded in the project.
+        /// It is important to differentiate a VIAProMa project (contains (serialized) <c>GameObject</c>s, savable, persistant ID) from Photon Rooms (manage Players, ephemeral).
+        /// </summary>
+        public Guid ProjectID
         {
-            get { return _settings.AnalyticsEnabled; }
+            get { return _projectID; }
             set
             {
-                // Let other players pull the new settings.
-                PhotonView.Get(this).RPC("SetIsAnalyticsEnabled", RpcTarget.Others, value);
-                _settings.AnalyticsEnabled = value;
+                if (!(_projectID == value))
+                {
+                    _projectID = value;
+                    Debug.Log("Loaded VIAProMa project with ID: " + value);
 
-                ShowIsTelemetryEnabledPopup();
-                // Let other players display the new telemetry enabled state popup.
-                PhotonView.Get(this).RPC("ShowIsTelemetryEnabledPopup", RpcTarget.Others);
-
-                SetSettingsOnBackend();
+                    // Fetch settings for new project.
+                    SettingsManager.Instance.GetSettingsFromBackendAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    Debug.LogWarning("Attempted to load project ID " + value + ", but it was already loaded. Project ID if kept.");
+                }
             }
         }
 
-        public Guid ProjectID
-        {
-            get { return _projectGUID; }
-            set { _projectGUID = value; }
-        }
+
 
         public IUserInfo UserInfo { get; set; }
 
-        public void Update()
-        {
-            bool showPopup = (DateTime.Now < ExpiresAt) && isStartOver;
-            Background.SetActive(showPopup);
-            TextObject.enabled = showPopup;
-        }
-
-        [PunRPC]
-        public void ShowIsTelemetryEnabledPopup()
-        {
-            TextObject.text = AnalyticsManager.Instance.AnalyticsEnabled ? "Telemetry Enabled!" : "Telemetry Disabled!";
-            ExpiresAt = DateTime.Now.AddSeconds(2.5);
-            NotificationSound.Play();
-        }
-
-        public AnalyticsManager()
-        {
-            _settings = new AnalyticsSettings();
-        }
-
-        public async Task Start()
+        public void Start()
         {
             // Initialize data about the current user as anonymous (user is neither logged into GitHub nor the RequirementsBazaar).
             SetUserAnonymous();
 
             // Generate a new GUID for the VIAProMa project that the analytics refer to. If the project ID is already set (for example because the project has been saved and loaded), do nothing and use the old ID.
-            if (_projectGUID.Equals(Guid.Empty))
-                _projectGUID = Guid.NewGuid();
-            Debug.Log("This Project has the ID: " + AnalyticsManager.Instance.ProjectID);
+            if (ProjectID.Equals(Guid.Empty))
+                ProjectID = Guid.NewGuid();
 
-            await GetSettingsFromBackendAsync();
-            if (_settings.AnalyticsEnabled && !CoreServices.InputSystem.EyeGazeProvider.IsEyeTrackingEnabled)
+            if (SettingsManager.Instance.IsAnalyticsEnabled && !CoreServices.InputSystem.EyeGazeProvider.IsEyeTrackingEnabled)
             {
                 Debug.LogError("Eye tracking is disabled! Instuctions: " +
                     "https://learn.microsoft.com/en-us/windows/mixed-reality/mrtk-unity/mrtk2/features/input/eye-tracking/eye-tracking-basic-setup?view=mrtkunity-2022-05#testing-your-unity-app-on-a-hololens-2");
             }
 
-            TextObject.text = "";
-            ShowIsTelemetryEnabledPopup();
-            isStartOver = true;
+
+            // When the user starts VIAProMa, display whether analytics are disabled.
+            StartCoroutine(SettingsManager.Instance.ShowAnalyticsPopup());
         }
 
-        private async Task GetSettingsFromBackendAsync()
-        {
-            string projectID = AnalyticsManager.Instance.ProjectID.ToString();
-            Response resp =
-                    await Rest.GetAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "project-settings/" + projectID,
-                        null,
-                        -1,
-                        null,
-                        true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
-            _settings = JsonConvert.DeserializeObject<AnalyticsSettings>(responseBody); // TODO: Edit to only get Analytics enabled key, when updating to project based analytics.
-        }
-
-        private async void SetSettingsOnBackend()
-        {
-            string projectID = AnalyticsManager.Instance.ProjectID.ToString();
-            string settingsJSON = JsonConvert.SerializeObject(_settings);
-            Response resp =
-                    await Rest.PostAsync(
-                        ConnectionManager.Instance.BackendAPIBaseURL + "project-settings/" + projectID, settingsJSON);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-        }
-
+        /// <summary>
+        /// Sets the project ID for the current player/client to the parameter. This method is called via RPC by the Photon Master client (the one loading the VIAProMa project) when a new project is loaded from the saves shelf.
+        /// </summary>
+        /// <param name="projectID">The project ID to be set.</param>
         [PunRPC]
-        private void SetIsAnalyticsEnabled(bool enabled)
+        private void SetProjectID(string projectID)
         {
-            _settings.AnalyticsEnabled = enabled;
+            ProjectID = Guid.Parse(projectID);
+        }
+
+        /// <summary>
+        /// Sends the project id that has just been loaded to the specified player. This method is executed when a new player joins the room.
+        /// </summary>
+        /// <param name="newPlayer">The player to send the project ID to.</param>
+        public void SendProjectIDToNewPlayer(Player newPlayer)
+        {
+            PhotonView.Get(this).RPC("SetProjectID", newPlayer, ProjectID.ToString());
+        }
+
+        /// <summary>
+        /// Sets the project ID for all other players/clients to the parameter. This method is executed by the Photon Master client (the one loading the VIAProMa project) when a new project is loaded from the saves shelf.
+        /// </summary>
+        /// <param name="projectID">The project ID to be set.</param>
+        public void SetProjectIDAllOtherPlayers(string projectID)
+        {
+            PhotonView.Get(this).RPC("SetProjectID", RpcTarget.Others, ProjectID.ToString());
         }
 
         public async Task FetchLearningLayersUserDataFromServiceManager()

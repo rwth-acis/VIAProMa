@@ -38,7 +38,7 @@ This implementation uses the observer pattern. [Learn the pattern](https://en.wi
 
         public void NotifyObservers(LogType log)
         {
-            if (AnalyticsManager.Instance.AnalyticsEnabled)
+            if (SettingsManager.Instance.AnalyticsEnabled)
                 foreach (var observer in observers)
                     observer.OnNext(log);
         }

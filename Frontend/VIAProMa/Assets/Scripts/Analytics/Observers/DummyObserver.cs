@@ -6,6 +6,8 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using Newtonsoft.Json;
 using i5.VIAProMa.WebConnection;
 using VIAProMa.Assets.Scripts.Analytics.LogTypes;
+using VIAProMa.Assets.Scripts.ProjectSettings;
+
 
 namespace VIAProMa.Assets.Scripts.Analytics
 {
@@ -21,7 +23,7 @@ namespace VIAProMa.Assets.Scripts.Analytics
 
         public override async void OnNext(Logpoint state)
         {
-            if (!AnalyticsManager.Instance.AnalyticsEnabled)
+            if (!SettingsManager.Instance.IsAnalyticsEnabled)
             {
                 Debug.LogWarning("Telemetry is disabled!"); // TODO: improve
                 return;

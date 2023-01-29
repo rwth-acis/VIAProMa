@@ -99,6 +99,12 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 if (res.Successful)
                 {
                     DeserializeSaveGame(res.Value);
+
+                    // After deserialization, the master client updates all other clients with the project id that has just been retrieved from loading the project save.
+                    if(PhotonNetwork.IsMasterClient) {
+                        AnalyticsManager.Instance.SetProjectIDAllOtherPlayers(AnalyticsManager.Instance.ProjectID.ToString());
+                    }
+                    
                     return true;
                 }
             }

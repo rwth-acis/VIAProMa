@@ -5,11 +5,10 @@ using HoloToolkit.Unity;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.WebConnection;
 using Microsoft.MixedReality.Toolkit.Utilities;
-using UnityEngine;
 
 namespace VIAProMa.Assets.Scripts.Analytics.FileExport
 {
-    public class ExportAnalytics : Singleton<ExportAnalytics> 
+    public class ExportAnalytics : Singleton<ExportAnalytics>
     {
         public async void ExportAsync(ExportSelection format)
         {
