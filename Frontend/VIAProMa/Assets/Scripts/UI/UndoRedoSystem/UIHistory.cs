@@ -41,7 +41,6 @@ namespace i5.VIAProMa.UI.Chat
             // checks if a new command has been executed
             if (!commands.SequenceEqual(tempCommands)) 
             {
-                Debug.Log("In Veränderung von CommandList");
                 if (commands.Count > 8)
                 {
                     lowerRangeIndex = commands.Count - 9;
@@ -80,7 +79,7 @@ namespace i5.VIAProMa.UI.Chat
         }
 
         /// <summary>
-        /// Creates a description of the command.
+        /// Creates a description of the commandto be shown in the UI.
         /// </summary>
         /// <param name="i">
         /// Index of selected command in commands list.
