@@ -21,9 +21,7 @@ namespace i5.VIAProMa.UI.Chat
         private int numberOfTextFields;
         private List<ICommand> commands;
         private int currentPosition;
-        
-        //new
-        //used as a navigation window through the command list (always max 9 at a time are able to be displayed in the UI)
+        // Used as a navigation window through the command list (always max 9 at a time are able to be displayed in the UI).
         int lowerRangeIndex = 0;
         int upperRangeIndex = 0;
 
@@ -43,14 +41,18 @@ namespace i5.VIAProMa.UI.Chat
             {
                 upperRangeIndex = commands.Count-1;
             }
-            //updates what is currently shown, done by correctly setting the lower- & upperRangeIndex variable throughout the code
+            // Updates what is currently shown, done by correctly setting the lower- & upperRangeIndex variable throughout the code.
             showRange(lowerRangeIndex, upperRangeIndex);
             UpdateColor();
         }
 
         //-------------------------- for UIHistory display --------------------------
 
-        // displays the commands in given range
+        /// <summary>
+        /// Used to display the commands in the given range. It overwrites the UI in the Update function.
+        /// </summary>
+        /// <param name="pFromIndex"></param>
+        /// <param name="pTilIndex"></param>
         void showRange(int pFromIndex, int pTilIndex)
         {
                 int i = 0;
@@ -63,7 +65,9 @@ namespace i5.VIAProMa.UI.Chat
                 }
         }
 
-        // up button
+        /// <summary>
+        ///  Used by the "Down" button to scroll down the displayed command list in the UI.
+        /// </summary>
         void scrollDown()
         {
             // upperRangeIndex < commands.Count
@@ -74,7 +78,9 @@ namespace i5.VIAProMa.UI.Chat
             }
         }
 
-        // down button
+        /// <summary>
+        ///  Used by the "Up" button to scroll up the displayed command list in the UI.
+        /// </summary>
         void scrollUp()
         {
             if (lowerRangeIndex > 0)
@@ -84,7 +90,10 @@ namespace i5.VIAProMa.UI.Chat
             }
         }
 
-        // called when cube button is pressed in UI meaning that the steps until that point will be undone
+        /// <summary>
+        /// Called when a selection cube is pressed in order to calculate how many steps have to be undone.
+        /// </summary>
+        /// <param name="selectedCubeIndex"></param>
         void Select(int selectedCubeIndex)
         {
             // calculates position in command list
@@ -115,7 +124,6 @@ namespace i5.VIAProMa.UI.Chat
             }
         }
 
-        //---------------------------- for window interface ---------------------
         public bool WindowEnabled { get; set; }
 
         public bool WindowOpen { get; private set; }
