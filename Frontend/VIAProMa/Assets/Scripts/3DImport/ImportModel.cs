@@ -61,7 +61,7 @@ public class ImportModel : MonoBehaviour
             return;
         }
 
-        
+        /*
         GameObject testModel = LoadModel(path);
 
         testModel.name = model.fileName;
@@ -69,12 +69,20 @@ public class ImportModel : MonoBehaviour
         model.gameObject = testModel;
 
         this.gameObject.GetComponentInParent<SessionBrowserRefresher>().AddItem(model);
+        */
+
+        StartCoroutine("LoadCoroutine");
+
         
 
-        //object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, gameObject.transform.position, gameObject.transform.rotation };
-        //PhotonNetwork.InstantiateRoomObject("networkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
+    }
 
-        //testModel.AddComponent<PhotonTransformView>();
+    IEnumerator LoadCoroutine()
+    {
+        object[] objs = { model.webLink, model.fileName, model.dateOfDownload, model.size, model.licence, gameObject.transform.position, gameObject.transform.rotation };
+        PhotonNetwork.SetMasterClient(PhotonNetwork.LocalPlayer);
+        yield return new WaitUntil(() => PhotonNetwork.IsMasterClient);
+        PhotonNetwork.InstantiateRoomObject("NetworkModel", gameObject.transform.position, gameObject.transform.rotation, 0, objs);
     }
 
     private void UpdateImpObj(ImportedObject impObj)
@@ -95,6 +103,10 @@ public class ImportModel : MonoBehaviour
     {
         //import into unity scene
         AnimationClip[] animClips;
+        if (!System.IO.File.Exists(path))
+        {
+            return null;
+        }
         GameObject testModel = Importer.LoadFromFile(path, new ImportSettings(), out animClips);
         testModel.transform.SetParent(modelWrapper.transform);
         testModel.transform.position = Vector3.zero;
@@ -163,7 +175,6 @@ public class ImportModel : MonoBehaviour
         testModel.GetComponent<ObjectManipulator>().HostTransform = testModel.transform;
 
         testModel.name = System.IO.Path.GetFileNameWithoutExtension(path);
-        //testModel.GetComponent<BoxCollider>().enabled = false;
 
         return testModel;
     }

@@ -233,8 +233,15 @@ namespace i5.VIAProMa.UI.MainMenuCube
         public void ShowImportModelMenu()
         {
             Vector3 targetPosition = importModelButton.transform.position + 1f * transform.right - AnchorManager.Instance.AnchorParent.transform.position;
-            NetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, "SetImportModelInstance");
+            SceneNetworkInstantiateControl(importModelPrefab, ref importModelInstance, targetPosition, ImportModelMenuCreated);
             foldController.InitalizeNewCloseTimer();
+        }
+
+        private void ImportModelMenuCreated(GameObject obj)
+        {
+            importModelInstance = obj;
+            PhotonView view = obj.GetComponent<PhotonView>();
+            photonView.RPC("SetImportModelInstance", RpcTarget.Others, view.ViewID);
         }
 
         public void ShowLoadShelf()
@@ -378,7 +385,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             PhotonView view = PhotonView.Find(photonId);
             visualizationShelfInstance = view.gameObject;
-            Debug.Log("RPC: setting visualization shelf instance to " + issueShelfInstance.name + " (id " + photonId + ")");
+            Debug.Log("RPC: setting visualization shelf instance to " + visualizationShelfInstance.name + " (id " + photonId + ")");
         }
 
         [PunRPC]
@@ -386,7 +393,7 @@ namespace i5.VIAProMa.UI.MainMenuCube
         {
             PhotonView view = PhotonView.Find(photonId);
             importModelInstance = view.gameObject;
-            Debug.Log("RPC: setting visualization shelf instance to " + importModelInstance.name + " (id " + photonId + ")");
+            Debug.Log("RPC: setting import model menu instance to " + importModelInstance.name + " (id " + photonId + ")");
         }
     }
 }
