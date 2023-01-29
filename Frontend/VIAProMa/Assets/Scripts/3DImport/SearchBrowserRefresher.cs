@@ -17,8 +17,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
-using WebSocketSharp;
-using UnityEditor.Search;
 using ExitGames.Client.Photon.StructWrapping;
 using static SearchBrowserRefresher;
 
@@ -171,7 +169,7 @@ public class SearchBrowserRefresher : MonoBehaviour
                 RefreshBrowser(path, licence);
             }
         }
-        else if (!searchContent.IsNullOrEmpty()) // if not empty, then search for it on sketchfab
+        else if (!string.IsNullOrEmpty(searchContent)) // if not empty, then search for it on sketchfab
         {
             //refresh sketchfab thumbs folder            
             FileInfo[] imageFiles = new DirectoryInfo(Path.Combine(Application.persistentDataPath, sketchfabThumbsFolder)).GetFiles("*.png");
@@ -250,7 +248,7 @@ public class SearchBrowserRefresher : MonoBehaviour
                 searchResult.FileSize = BytesToNiceString((int)result["archives"]["glb"]["size"]);
 
                 searchedObjects.Add(searchResult);
-                Debug.Log("Found: " + searchResult);
+                Debug.Log("Found model: " + searchResult);
             }
 
             //download temporary thumbs for the sketchfab models
