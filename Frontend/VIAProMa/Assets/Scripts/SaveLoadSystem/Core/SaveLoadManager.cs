@@ -4,9 +4,11 @@ using i5.VIAProMa.ResourceManagagement;
 using i5.VIAProMa.Utilities;
 using i5.VIAProMa.WebConnection;
 using Photon.Pun;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using VIAProMa.Assets.Scripts.Analytics;
 
 namespace i5.VIAProMa.SaveLoadSystem.Core
 {
@@ -19,7 +21,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
         [SerializeField] private float autoSaveInterval = 5f;
 
         [Header("Version")]
-        [SerializeField] private int saveDataVersion = 1;
+        [SerializeField] private int saveDataVersion = 2; // Unity UI overrides the standard value => This value must be updated in Unity as well.
 
         private static bool savedOnQuit = false;
 
@@ -97,6 +99,12 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 if (res.Successful)
                 {
                     DeserializeSaveGame(res.Value);
+
+                    // After deserialization, the master client updates all other clients with the project id that has just been retrieved from loading the project save.
+                    if(PhotonNetwork.IsMasterClient) {
+                        AnalyticsManager.Instance.SetProjectIDAllOtherPlayers(AnalyticsManager.Instance.ProjectID.ToString());
+                    }
+                    
                     return true;
                 }
             }
@@ -122,7 +130,10 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 serializedObjects.Add(data);
             }
 
-            SaveData saveData = new SaveData(saveDataVersion);
+            // Get VIAProMa project ID.
+            Guid projectID = AnalyticsManager.Instance.ProjectID;
+
+            SaveData saveData = new SaveData(saveDataVersion, projectID);
             saveData.Data = serializedObjects;
 
             return JsonUtility.ToJson(saveData);
@@ -143,6 +154,11 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                     + saveDataVersion + " but save data has version " + data.AppVersion + ")");
                 return;
             }
+
+            // Set the VIAProMa project version.
+            AnalyticsManager.Instance.ProjectID = Guid.Parse(data.ProjectVersion);
+
+            // Deserialize objects.
             List<SerializedObject> serializedObjects = data.Data;
             for (int i = 0; i < serializedObjects.Count; i++)
             {
@@ -150,17 +166,19 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
 
                 int indexInTrackedIds = trackedIds.IndexOf(serializedObjects[i].Id);
 
-                if (indexInTrackedIds >= 0) // the object already exists in the scene
+                if (indexInTrackedIds >= 0) // The object already exists in the scene.
                 {
-                    usedIds[indexInTrackedIds] = true; // set the index as true
+                    usedIds[indexInTrackedIds] = true; // Set the index to true.
                     Serializer serializer = GetSerializer(serializedObjects[i].Id);
+
                     if (serializer != null)
                     {
                         serializer.Deserialize(serializedObjects[i]);
                     }
                 }
-                else // the object does not yet exist in the scene => instantiate it
+                else
                 {
+                    // The object does not yet exist in the scene => instantiate it.
                     GameObject instantiated = ResourceManager.Instance.NetworkInstantiate(serializedObjects[i].PrefabName, Vector3.zero, Quaternion.identity);
                     Singleton<AnchorManager>.Instance.AttachToAnchor(instantiated);
                     Serializer serializer = instantiated?.GetComponent<Serializer>();
@@ -177,7 +195,7 @@ namespace i5.VIAProMa.SaveLoadSystem.Core
                 }
             }
 
-            // destroy other tracked serializers which were not part of the save data
+            // Destroy other tracked serializers which were not part of the save data.
             for (int i = 0; i < usedIds.Length; i++)
             {
                 if (!usedIds[i])
