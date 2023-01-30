@@ -11,19 +11,15 @@ namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
         public void GazeDetected()
         {
             // Get meta data about the project (GitHub or Requirements Bazaar) the issue belongs to.
-            ProjectTracker projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
-
             IssueDataDisplay localDataDisplay = GetComponent<IssueDataDisplay>();
             string objectIRI = "";
             if (localDataDisplay.Content.Source == DataSource.GITHUB)
             {
-                string repository = projectTracker.currentRepositoryName;
-                string repositoryOwner = projectTracker.currentRepositoryOwner;
-                objectIRI = string.Format("https://github.com/{0}/{1}/issues/{2}", repositoryOwner, repository, localDataDisplay.Content.Id);
+                objectIRI = string.Format("https://api.github.com/repositories/{0}/issues/{1}", localDataDisplay.Content.ProjectId, localDataDisplay.Content.Id);
             }
             else if (localDataDisplay.Content.Source == DataSource.REQUIREMENTS_BAZAAR)
             {
-                string projectID = projectTracker.currentProjectID.ToString();
+                string projectID = localDataDisplay.Content.ProjectId.ToString();
                 objectIRI = string.Format("https://requirements-bazaar.org/projects/{0}/requirements/{1}", projectID, localDataDisplay.Content.Id);
             }
             else
@@ -38,10 +34,10 @@ namespace VIAProMa.Assets.Scripts.Analytics.GazableComponents
 
         protected override void CreateObservers()
         {
-            //Logging LRS-Logpoints to the VIAProMA backend
+            // Logging LRS-Logpoints to the VIAProMA backend.
             _ = new LRSBackendObserver(this);
 
-            //Logging LRS-Logpoints to LRS
+            // Logging LRS-Logpoints to LRS.
             _ = new LRSObserver(this);
         }
     }
