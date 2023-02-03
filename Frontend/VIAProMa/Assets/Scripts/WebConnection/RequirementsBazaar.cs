@@ -3,6 +3,7 @@ using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.DataModel.ReqBaz;
 using i5.VIAProMa.Login;
 using i5.VIAProMa.Utilities;
+using i5.Toolkit.Core.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using Org.Requirements_Bazaar.API;
 using System;
@@ -18,31 +19,29 @@ namespace i5.VIAProMa.WebConnection
     /// </summary>
     public static class RequirementsBazaar
     {
+
+        public static IRestConnector RestConnector = new UnityWebRequestRestConnector();
+        public static IJsonSerializer JsonSerializer = new JsonUtilityAdapter();
         /// <summary>
         /// Gets the available projects of the Requirements Bazaar
         /// </summary>
         /// <returns></returns>
         public static async Task<ApiResult<Project[]>> GetProjects()
         {
+            RestConnector = new UnityWebRequestRestConnector();
             Debug.Log("Requirements Baazar: GetProjects");
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Response resp = await Rest.GetAsync(
-                    ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
-                    null,
-                    -1,
-                    null,
-                    true);
-                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                string responseBody = await resp.GetResponseBody();
+                WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects", null);
+                ConnectionManager.Instance.CheckStatusCode(resp.Code);
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                    return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
+                    Debug.LogError(resp.Code + ": " + resp.Content);
+                    return new ApiResult<Project[]>(resp.Code, resp.Content);
                 }
                 else
                 {
-                    Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
+                    Project[] projects = Utilities.JsonArrayUtility.FromJson<Project>(resp.Content);
                     List<Project> visibleProjects = new List<Project>();
                     foreach (Project project in projects)
                     {
@@ -79,24 +78,17 @@ namespace i5.VIAProMa.WebConnection
                     headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
                     try
                     {
-                        Response resp = await Rest.GetAsync(
-                    //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/?state=all&per_page=500",
-                    "https://requirements-bazaar.org/bazaar/projects/?state=all&per_page=500",
-                    headers,
-                    -1,
-                    null,
-                    true);
-                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                        string responseBody = await resp.GetResponseBody();
+                        WebResponse<string> resp = await RestConnector.GetAsync("https://requirements-bazaar.org/bazaar/projects/?state=all&per_page=500", headers);
+                        ConnectionManager.Instance.CheckStatusCode(resp.Code);
                         if (!resp.Successful)
                         {
-                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                            return new ApiResult<Project[]>(resp.ResponseCode, responseBody);
+                            Debug.LogError(resp.Code + ": " + resp.Content);
+                            return new ApiResult<Project[]>(resp.Code, resp.Content);
                         }
                         else
                         {
-                            responseBody = "{\"array\":" + responseBody + "}";
-                            Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
+                            string responseBody = "{\"array\":" + resp.Content + "}";
+                            Project[] projects = Utilities.JsonArrayUtility.FromJson<Project>(responseBody);
                             return new ApiResult<Project[]>(projects);
                         }
                     }
@@ -118,22 +110,16 @@ namespace i5.VIAProMa.WebConnection
         {
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
-                null,
-                -1,
-                null,
-                true);
-                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                string responseBody = await resp.GetResponseBody();
+                WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories", null);
+                ConnectionManager.Instance.CheckStatusCode(resp.Code);
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                    return new ApiResult<Category[]>(resp.ResponseCode, responseBody);
+                    Debug.LogError(resp.Code + ": " + resp.Content);
+                    return new ApiResult<Category[]>(resp.Code, resp.Content);
                 }
                 else
                 {
-                    Category[] categories = JsonArrayUtility.FromJson<Category>(responseBody);
+                    Category[] categories = Utilities.JsonArrayUtility.FromJson<Category>(resp.Content);
                     return new ApiResult<Category[]>(categories);
                 }
             }
@@ -165,24 +151,17 @@ namespace i5.VIAProMa.WebConnection
 
                     try
                     {
-                        Response resp = await Rest.GetAsync(
-                //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
-                "https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories?state=all&per_page=500",
-                headers,
-                -1,
-                null,
-                true);
-                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                        string responseBody = await resp.GetResponseBody();
-                        responseBody = "{\"array\":" + responseBody + "}";
+                        WebResponse<string> resp = await RestConnector.GetAsync("https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories?state=all&per_page=500", headers);
+                        ConnectionManager.Instance.CheckStatusCode(resp.Code);
+                        string responseBody = "{\"array\":" + resp.Content + "}";
                         if (!resp.Successful)
                         {
-                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                            return new ApiResult<Category[]>(resp.ResponseCode, responseBody);
+                            Debug.LogError(resp.Code + ": " + responseBody);
+                            return new ApiResult<Category[]>(resp.Code, responseBody);
                         }
                         else
                         {
-                            Category[] categories = JsonArrayUtility.FromJson<Category>(responseBody);
+                            Category[] categories = Utilities.JsonArrayUtility.FromJson<Category>(responseBody);
                             return new ApiResult<Category[]>(categories);
                         }
                     }
@@ -207,22 +186,16 @@ namespace i5.VIAProMa.WebConnection
                 return new ApiResult<Issue>(cached);
             }
 
-            Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId,
-                null,
-                -1,
-                null,
-                true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId, null);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<Issue>(resp.ResponseCode, responseBody);
+                Debug.LogError(resp.Code + ": " + resp.Content);
+                return new ApiResult<Issue>(resp.Code, resp.Content);
             }
             else
             {
-                Issue issue = JsonUtility.FromJson<Issue>(responseBody);
+                Issue issue = JsonSerializer.FromJson<Issue>(resp.Content);
                 IssueCache.AddIssue(issue);
                 return new ApiResult<Issue>(issue);
             }
@@ -259,17 +232,16 @@ namespace i5.VIAProMa.WebConnection
 
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Response resp = await Rest.GetAsync(path, null, -1, null, true);
-                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                string responseBody = await resp.GetResponseBody();
+                WebResponse<string> resp = await RestConnector.GetAsync(path, null);
+                ConnectionManager.Instance.CheckStatusCode(resp.Code);
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                    return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                    Debug.LogError(resp.Code + ": " + resp.Content);
+                    return new ApiResult<Issue[]>(resp.Code, resp.Content);
                 }
                 else
                 {
-                    Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                    Issue[] requirements = Utilities.JsonArrayUtility.FromJson<Issue>(resp.Content);
                     // add to cache
                     foreach (Issue req in requirements)
                     {
@@ -307,18 +279,17 @@ namespace i5.VIAProMa.WebConnection
                     try
                     {
                         path = "https://requirements-bazaar.org/bazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
-                        Response resp = await Rest.GetAsync(path, headers, -1, null, true);
-                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                        string responseBody = await resp.GetResponseBody();
-                        responseBody = "{\"array\":" + responseBody + "}";
+                        WebResponse<string> resp = await RestConnector.GetAsync(path, headers);
+                        ConnectionManager.Instance.CheckStatusCode(resp.Code);
+                        string responseBody = "{\"array\":" + resp.Content + "}";
                         if (!resp.Successful)
                         {
-                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                            return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                            Debug.LogError(resp.Code + ": " + responseBody);
+                            return new ApiResult<Issue[]>(resp.Code, responseBody);
                         }
                         else
                         {
-                            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                            Issue[] requirements = Utilities.JsonArrayUtility.FromJson<Issue>(responseBody);
                             // add to cache
                             foreach (Issue req in requirements)
                             {
@@ -366,17 +337,16 @@ namespace i5.VIAProMa.WebConnection
 
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Response resp = await Rest.GetAsync(path, null, -1, null, true);
-                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                string responseBody = await resp.GetResponseBody();
+                WebResponse<string> resp = await RestConnector.GetAsync(path, null);
+                ConnectionManager.Instance.CheckStatusCode(resp.Code);
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                    return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                    Debug.LogError(resp.Code + ": " + resp.Content);
+                    return new ApiResult<Issue[]>(resp.Code, resp.Content);
                 }
                 else
                 {
-                    Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                    Issue[] requirements = Utilities.JsonArrayUtility.FromJson<Issue>(resp.Content);
                     foreach (Issue req in requirements)
                     {
                         IssueCache.AddIssue(req);
@@ -413,18 +383,17 @@ namespace i5.VIAProMa.WebConnection
                     try
                     {
                         path = "https://requirements-bazaar.org/bazaar/" + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
-                        Response resp = await Rest.GetAsync(path, headers, -1, null, true);
-                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                        string responseBody = await resp.GetResponseBody();
-                        responseBody = "{\"array\":" + responseBody + "}";
+                        WebResponse<string> resp = await RestConnector.GetAsync(path, headers);
+                        ConnectionManager.Instance.CheckStatusCode(resp.Code);
+                        string responseBody = "{\"array\":" + resp.Content + "}";
                         if (!resp.Successful)
                         {
-                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                            return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                            Debug.LogError(resp.Code + ": " + responseBody);
+                            return new ApiResult<Issue[]>(resp.Code, responseBody);
                         }
                         else
                         {
-                            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                            Issue[] requirements = Utilities.JsonArrayUtility.FromJson<Issue>(responseBody);
                             foreach (Issue req in requirements)
                             {
                                 IssueCache.AddIssue(req);

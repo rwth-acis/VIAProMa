@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using i5.Toolkit.Core.Utilities;
 
 namespace i5.VIAProMa.WebConnection
 {
@@ -12,6 +13,8 @@ namespace i5.VIAProMa.WebConnection
     /// </summary>
     public static class NetworkedStringManager
     {
+        public static IRestConnector RestConnector = new UnityWebRequestRestConnector();
+        public static IJsonSerializer JsonSerializer = new JsonUtilityAdapter();
         private const string serviceEndpoint = "networkedStrings";
 
         /// <summary>
@@ -29,20 +32,14 @@ namespace i5.VIAProMa.WebConnection
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("Content-Type", "text/plain"); // overwrite the content type
             headers.Add("Accept", "text/plain"); // overwrite the accept type
-            Response resp = await Rest.PostAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint,
-                text,
-                headers,
-                -1,
-                true);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint, text, headers);
             if (resp.Successful)
              {
-                 return short.Parse(responseBody);
+                 return short.Parse(resp.Content);
              }
              else
              {
-                 Debug.LogError(responseBody);
+                 Debug.LogError(resp.Content);
                  return -1;
              }
         }
@@ -59,20 +56,14 @@ namespace i5.VIAProMa.WebConnection
                 return "";
             }
 
-            Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id,
-                null,
-                -1,
-                null,
-                true);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + serviceEndpoint + "/" + id, null);
             if (resp.Successful)
             {
-                return responseBody;
+                return resp.Content;
             }
             else
             {
-                Debug.LogError(responseBody);
+                Debug.LogError(resp.Content);
                 return "";
             }
         }
