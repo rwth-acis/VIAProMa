@@ -2,6 +2,7 @@
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ namespace i5.VIAProMa.WebConnection
     /// </summary>
     public static class GitHub
     {
+
+        public static event EventHandler RequestSent;
+
         /// <summary>
         /// Gets the issues of a GitHub repository on the given page
         /// </summary>
@@ -29,6 +33,7 @@ namespace i5.VIAProMa.WebConnection
                 -1,
                 null,
                 true);
+            RequestSent?.Invoke(resp, EventArgs.Empty);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
             string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
@@ -67,6 +72,7 @@ namespace i5.VIAProMa.WebConnection
                 -1,
                 null,
                 true);
+            RequestSent?.Invoke(resp, EventArgs.Empty);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
             string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
@@ -90,6 +96,7 @@ namespace i5.VIAProMa.WebConnection
                 -1,
                 null,
                 true);
+            RequestSent?.Invoke(resp, EventArgs.Empty);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
             string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
