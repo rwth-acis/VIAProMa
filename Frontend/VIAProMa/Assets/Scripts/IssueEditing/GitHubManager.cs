@@ -79,7 +79,6 @@ namespace Org.Git_Hub.API
                 Debug.Log("Service not null");
             }
             headers.Add("Authorization", "token " + ServiceManager.GetService<GitHubOidcService>().AccessToken);
-            Debug.Log(ServiceManager.GetService<GitHubOidcService>().AccessToken);
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + newName + "\", \"body\": \"" + newDescription + "\" }";
 
@@ -124,7 +123,6 @@ namespace Org.Git_Hub.API
             else
             {
                 String json = "{ \"data\": " + responseBody + " }";
-                Debug.Log(json);
                 Issue[] issues = JsonArrayUtility.FromJson<Issue>(json);
                 if (issues == null || issues.Length == 0)
                 {
