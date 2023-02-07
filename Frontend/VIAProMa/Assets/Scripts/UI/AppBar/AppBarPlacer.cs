@@ -68,7 +68,6 @@ namespace i5.VIAProMa.UI.AppBar
             Vector3 finalPosition = Vector3.zero;
             Vector3 headPosition = Camera.main.transform.position;
             boundsPoints.Clear();
-
             helper.GetRawBoundsCorners(boundsControl.TargetBounds);
             helper.UpdateNonAABoundsCornerPositions(boundsControl.TargetBounds, boundsPoints);
             int followingFaceIndex = helper.GetIndexOfForwardFace(headPosition);

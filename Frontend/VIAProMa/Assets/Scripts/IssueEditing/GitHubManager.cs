@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
+using i5.Toolkit.Core.Utilities;
 using System;
 using i5.VIAProMa.WebConnection;
 using i5.VIAProMa.DataModel.API;
@@ -17,6 +18,9 @@ namespace Org.Git_Hub.API
 
     public static class GitHubManager
     {
+
+        public static IRestConnector RestConnector = new UnityWebRequestRestConnector();
+        public static IJsonSerializer JsonSerializer = new JsonUtilityAdapter();
 
         /// <summary>
         /// Creates and posts a new issue
@@ -37,18 +41,13 @@ namespace Org.Git_Hub.API
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + name + "\", \"body\": \"" + description + "\" }";
 
-            Response resp = await Rest.PostAsync(
-                "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues",
-                json,
-                headers,
-                -1,
-                true);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.PostAsync(
+                "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues", json, headers);
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                Debug.LogError(resp.Code + ": " + resp.Content);
             }
-            Issue issue = JsonUtility.FromJson<Issue>(responseBody);
+            Issue issue = JsonSerializer.FromJson<Issue>(resp.Content);
             return issue;
         }
 
@@ -107,23 +106,17 @@ namespace Org.Git_Hub.API
         /// <returns>An array of issues in the repository</returns>
         public static async Task<Issue[]> GetIssuesFromRepository(string owner, string repositoryName)
         {
-            Response resp = await Rest.GetAsync(
-                "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues",
-                null,
-                -1,
-                null,
-                true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync("https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues", null);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                Debug.LogError(resp.Code + ": " + resp.Content);
                 return null;
             }
             else
             {
-                String json = "{ \"data\": " + responseBody + " }";
-                Issue[] issues = JsonArrayUtility.FromJson<Issue>(json);
+                String json = "{ \"data\": " + resp.Content + " }";
+                Issue[] issues = i5.Toolkit.Core.Utilities.JsonArrayUtility.FromJson<Issue>(json);
                 if (issues == null || issues.Length == 0)
                 {
                     Debug.Log("Array empty!");

@@ -4,6 +4,7 @@ using i5.VIAProMa.Utilities;
 using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Threading.Tasks;
 using UnityEngine;
+using i5.Toolkit.Core.Utilities;
 
 namespace i5.VIAProMa.WebConnection
 {
@@ -13,6 +14,10 @@ namespace i5.VIAProMa.WebConnection
     /// </summary>
     public static class GitHub
     {
+
+        public static IRestConnector RestConnector = new UnityWebRequestRestConnector();
+        public static IJsonSerializer JsonSerializer = new JsonUtilityAdapter();
+
         /// <summary>
         /// Gets the issues of a GitHub repository on the given page
         /// </summary>
@@ -23,22 +28,16 @@ namespace i5.VIAProMa.WebConnection
         /// <returns>An array of issues in the repository; contained in an APIResult object</returns>
         public static async Task<ApiResult<Issue[]>> GetIssuesInRepository(string owner, string repositoryName, int page, int itemsPerPage)
         {
-            Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues?page=" + page + "&per_page=" + itemsPerPage,
-                null,
-                -1,
-                null,
-                true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues?page=" + page + "&per_page=" + itemsPerPage, null);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<Issue[]>(resp.ResponseCode, responseBody);
+                Debug.LogError(resp.Code + ": " + resp.Content);
+                return new ApiResult<Issue[]>(resp.Code, resp.Content);
             }
             else
             {
-                Issue[] issues = JsonArrayUtility.FromJson<Issue>(responseBody);
+                Issue[] issues = Utilities.JsonArrayUtility.FromJson<Issue>(resp.Content);
                 foreach (Issue issue in issues)
                 {
                     IssueCache.AddIssue(issue);
@@ -61,22 +60,16 @@ namespace i5.VIAProMa.WebConnection
                 return new ApiResult<Issue>(cached);
             }
 
-            Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repositories/" + repositoryId + "/issues/" + issueNumber,
-                null,
-                -1,
-                null,
-                true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repositories/" + repositoryId + "/issues/" + issueNumber, null);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<Issue>(resp.ResponseCode, responseBody);
+                Debug.LogError(resp.Code + ": " + resp.Content);
+                return new ApiResult<Issue>(resp.Code, resp.Content);
             }
             else
             {
-                Issue issue = JsonUtility.FromJson<Issue>(responseBody);
+                Issue issue = JsonSerializer.FromJson<Issue>(resp.Content);
                 IssueCache.AddIssue(issue);
                 return new ApiResult<Issue>(issue);
             }
@@ -84,22 +77,16 @@ namespace i5.VIAProMa.WebConnection
 
         public static async Task<ApiResult<PunchCardEntry[]>> GetGitHubPunchCard(string owner, string repository)
         {
-            Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "githubPunchCard/" + owner + "/" + repository,
-                null,
-                -1,
-                null,
-                true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "githubPunchCard/" + owner + "/" + repository, null);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<PunchCardEntry[]>(resp.ResponseCode, responseBody);
+                Debug.LogError(resp.Code + ": " + resp.Content);
+                return new ApiResult<PunchCardEntry[]>(resp.Code, resp.Content);
             }
             else
             {
-                PunchCardEntry[] gitHubPunchCard = JsonArrayUtility.FromJson<PunchCardEntry>(responseBody);
+                PunchCardEntry[] gitHubPunchCard = Utilities.JsonArrayUtility.FromJson<PunchCardEntry>(resp.Content);
                 return new ApiResult<PunchCardEntry[]>(gitHubPunchCard);
             }
         }
