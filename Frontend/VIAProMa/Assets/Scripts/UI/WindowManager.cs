@@ -1,7 +1,6 @@
 ﻿using HoloToolkit.Unity;
 using i5.VIAProMa.Multiplayer;
 using i5.VIAProMa.UI.Chat;
-using i5.VIAProMa.Anchoring;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI
@@ -14,6 +13,8 @@ namespace i5.VIAProMa.UI
         [SerializeField] private GameObject saveProjectMenuPrefab;
         [SerializeField] private GameObject loginMenuPrefab;
         [SerializeField] private GameObject anchorMenuPrefab;
+        [SerializeField] private GameObject undoRedoMenuPrefab;
+        [SerializeField] private GameObject uiHistoryPrefab;
 
         private void Start()
         {
@@ -23,7 +24,11 @@ namespace i5.VIAProMa.UI
             SaveProjectWindow = (SaveProjectWindow)InstantiateWindow(saveProjectMenuPrefab);
             LoginMenu = (LoginMenu)InstantiateWindow(loginMenuPrefab);
             AnchorMenu = (AnchoringMenu)InstantiateWindow(anchorMenuPrefab);
+            UndoRedoMenu = (UndoRedoMenu)InstantiateWindow(undoRedoMenuPrefab);
+            UIHistory = (UIHistory)InstantiateWindow(uiHistoryPrefab);
         }
+
+        /* -------------------------------------------------------------------------- */
 
         private IWindow InstantiateWindow(GameObject prefab)
         {
@@ -50,5 +55,26 @@ namespace i5.VIAProMa.UI
         public LoginMenu LoginMenu { get; private set; }
 
         public AnchoringMenu AnchorMenu { get; private set; }
+
+        public UndoRedoMenu UndoRedoMenu { get; private set; }
+
+        public UIHistory UIHistory { get; private set; }
+    }
+
+    /* -------------------------------------------------------------------------- */
+
+    /// <summary>
+    /// Used to determine the MenuType when used in the Undo-Redo System
+    /// </summary>
+    public enum MenuType
+    {
+        RoomMenu,
+        ServerStatusMenu,
+        ChatMenu,
+        SaveProjectWindow,
+        LoginMenu,
+        AnchorMenu,
+        UndoRedoMenu,
+        UIHistory
     }
 }

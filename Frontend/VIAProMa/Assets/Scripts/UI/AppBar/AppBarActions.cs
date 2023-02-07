@@ -1,5 +1,4 @@
 ﻿using i5.VIAProMa.Utilities;
-using Photon.Pun;
 using UnityEngine;
 
 namespace i5.VIAProMa.UI.AppBar
@@ -16,6 +15,9 @@ namespace i5.VIAProMa.UI.AppBar
         private Quaternion startRotation;
         private Vector3 startScale;
 
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
+
         /// <summary>
         /// True if the target to which the app bar belongs is a networed object (with a PhotonView)
         /// </summary>
@@ -31,7 +33,11 @@ namespace i5.VIAProMa.UI.AppBar
             {
                 SpecialDebugMessages.LogComponentNotFoundError(this, nameof(AppBarPlacer), gameObject);
             }
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
+
+        /* -------------------------------------------------------------------------- */
 
         /// <summary>
         /// Destroys the object (either networked or not based on the setting TargetNetworked)
@@ -39,22 +45,27 @@ namespace i5.VIAProMa.UI.AppBar
         /// </summary>
         public void RemoveObject()
         {
+
+            /*
             if (TargetNetworked)
             {
-                PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
+                appBarPlacer.TargetBoundingBox.Target.SetActive(false);
+                //PhotonNetwork.Destroy(appBarPlacer.TargetBoundingBox.Target);
             }
             else
             {
-                Destroy(appBarPlacer.TargetBoundingBox.Target);
+                appBarPlacer.TargetBoundingBox.Target.SetActive(false);
+                //Destroy(appBarPlacer.TargetBoundingBox.Target);
             }
-
+            
             // check if the bounding box still exists (in this case it was not a child of the target gameobject)
             if (appBarPlacer.TargetBoundingBox == null)
             {
                 Destroy(appBarPlacer.TargetBoundingBox.gameObject);
             }
-            // finally also destroy the app bar
-            Destroy(gameObject);
+            // finally also destroy the app bar*/
+            ICommand destroy = new DeleteObjectCommand(gameObject, appBarPlacer.TargetBoundingBox.Target);
+            UndoRedoManager.Execute(destroy);
         }
 
         /// <summary>
@@ -65,6 +76,8 @@ namespace i5.VIAProMa.UI.AppBar
             startPosition = appBarPlacer.TargetBoundingBox.Target.transform.localPosition;
             startRotation = appBarPlacer.TargetBoundingBox.Target.transform.localRotation;
             startScale = appBarPlacer.TargetBoundingBox.Target.transform.localScale;
+            ICommand transform = new AppBarTransformCommand(startPosition, startRotation, startScale, appBarPlacer);
+            UndoRedoManager.Execute(transform);
         }
 
         /// <summary>

@@ -9,7 +9,6 @@ using System;
 using TMPro;
 using UnityEngine;
 
-
 namespace i5.VIAProMa.UI.MainMenuCube
 {
     [RequireComponent(typeof(FoldController))]
@@ -28,13 +27,15 @@ namespace i5.VIAProMa.UI.MainMenuCube
         [SerializeField] private TextMeshPro roomButtonText;
         [SerializeField] private Interactable chatButton;
         [SerializeField] private Interactable microphoneButton;
+        [SerializeField] private Interactable undoRedoButton;
 
         [Header("References")]
         [SerializeField] private GameObject issueShelfPrefab;
         [SerializeField] private GameObject visualizationShelfPrefab;
         [SerializeField] private GameObject loadShelfPrefab;
         [SerializeField] private GameObject avatarConfiguratorPrefab;
-
+        [SerializeField] private GameObject undoRedoMenuPrefab;
+        [SerializeField] private UndoRedoManager UndoRedoManager;
 
         private FoldController foldController;
 
@@ -90,6 +91,10 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(microphoneButton));
             }
+            if (undoRedoButton == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(undoRedoButton));
+            }
 
             if (issueShelfPrefab == null)
             {
@@ -107,9 +112,15 @@ namespace i5.VIAProMa.UI.MainMenuCube
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(avatarConfiguratorPrefab));
             }
+            if (undoRedoMenuPrefab == null)
+            {
+                SpecialDebugMessages.LogMissingReferenceError(this, nameof(undoRedoMenuPrefab));
+            }
 
             foldController = gameObject.GetComponent<FoldController>();
         }
+
+        /* -------------------------------------------------------------------------- */
 
         public override void OnEnable()
         {
@@ -182,13 +193,15 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ShowSaveMenu()
         {
-            WindowManager.Instance.SaveProjectWindow.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            ICommand createMenu = new CreateMenuCommand(MenuType.SaveProjectWindow, saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
         public void ShowAnchorMenu()
         {
-            WindowManager.Instance.AnchorMenu.Open(saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            ICommand createMenu = new CreateMenuCommand(MenuType.AnchorMenu, saveButton.transform.position + 0.4f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -198,6 +211,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             SceneNetworkInstantiateControl(issueShelfPrefab, ref issueShelfInstance, targetPosition, IssueShelfCreated);
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(issueShelfInstance, null);
+            UndoRedoManager.Execute(show);
         }
 
         private void IssueShelfCreated(GameObject obj)
@@ -213,6 +228,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             NetworkInstantiateControl(visualizationShelfPrefab, ref visualizationShelfInstance, targetPosition, "SetVisualizationShelfInstance");
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(visualizationShelfInstance, null);
+            UndoRedoManager.Execute(show);
         }
 
         public void ShowLoadShelf()
@@ -221,11 +238,14 @@ namespace i5.VIAProMa.UI.MainMenuCube
             targetPosition.y = 0f + AnchorManager.Instance.AnchorParent.transform.position.y;
             InstantiateControl(loadShelfPrefab, ref loadShelfInstance, targetPosition);
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(loadShelfInstance, null);
+            UndoRedoManager.Execute(show);
         }
 
         public void ShowLoginMenu()
         {
-            WindowManager.Instance.LoginMenu.Open(loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
+            ICommand createMenu = new CreateMenuCommand(MenuType.LoginMenu, loginButton.transform.position - AnchorManager.Instance.AnchorParent.transform.position, loginButton.transform.eulerAngles);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -236,11 +256,23 @@ namespace i5.VIAProMa.UI.MainMenuCube
                 ref avatarConfiguratorInstance,
                 transform.position - 1f * transform.right);
             foldController.InitalizeNewCloseTimer();
+            ICommand show = new InitiateObjectCommand(avatarConfiguratorInstance, null);
+            UndoRedoManager.Execute(show);
         }
 
         public void ShowServerStatusMenu()
         {
-            WindowManager.Instance.ServerStatusMenu.Open(serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            ICommand createMenu = new CreateMenuCommand(MenuType.ServerStatusMenu, serverConnectionButton.transform.position - 0.5f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+            UndoRedoManager.Execute(createMenu);
+            foldController.InitalizeNewCloseTimer();
+        }
+
+        /// <remarks>
+        /// The UndoRedoMenu is excluded on purpose from the Undo/Redo System, as else it would cut of all commands from before opening the menu
+        /// </remarks>
+        public void ShowUndoRedoMenu()
+        {
+            WindowManager.Instance.UndoRedoMenu.Open(undoRedoButton.transform.position - 0.3f * transform.right + 0.15f * transform.up - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
             foldController.InitalizeNewCloseTimer();
         }
 
@@ -250,7 +282,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
             // otherwise: leave the current room
             if (PhotonNetwork.InLobby)
             {
-                WindowManager.Instance.RoomMenu.Open(roomButton.transform.position - 0.6f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+                ICommand createMenu = new CreateMenuCommand(MenuType.RoomMenu, roomButton.transform.position - 0.6f * transform.right - AnchorManager.Instance.AnchorParent.transform.position, transform.localEulerAngles);
+                UndoRedoManager.Execute(createMenu);
             }
             else
             {
@@ -263,7 +296,8 @@ namespace i5.VIAProMa.UI.MainMenuCube
 
         public void ChatButtonClicked()
         {
-            WindowManager.Instance.ChatMenu.Open(chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            ICommand createMenu = new CreateMenuCommand(MenuType.ChatMenu, chatButton.transform.position - 0.6f * transform.right, transform.localEulerAngles);
+            UndoRedoManager.Execute(createMenu);
             foldController.InitalizeNewCloseTimer();
         }
 
