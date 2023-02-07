@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3409,6 +3409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 177bddf229f8d8445a70c0652f03b7df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DisconnectAfterKeepAlive: 0
   KeepAliveInBackground: 60000
   ApplyDontDestroyOnLoad: 1
 --- !u!4 &1452304941
@@ -3481,7 +3482,7 @@ GameObject:
   - component: {fileID: 1787620552}
   - component: {fileID: 1787620551}
   - component: {fileID: 1787620550}
-  - component: {fileID: 1787620549}
+  - component: {fileID: 1787620554}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3504,29 +3505,6 @@ Transform:
   m_Father: {fileID: 911172082}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1787620549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1787620547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf98dd1206224111a38765365e98e207, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lockCursorWhenFocusLocked: 1
-  setCursorInvisibleWhenFocusLocked: 0
-  maxGazeCollisionDistance: 10
-  raycastLayerMasks:
-  - serializedVersion: 2
-    m_Bits: 4294967291
-  stabilizer:
-    storedStabilitySamples: 60
-  gazeTransform: {fileID: 0}
-  minHeadVelocityThreshold: 0.5
-  maxHeadVelocityThreshold: 2
 --- !u!114 &1787620550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3613,6 +3591,29 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1787620554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1787620547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf98dd1206224111a38765365e98e207, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lockCursorWhenFocusLocked: 1
+  setCursorInvisibleWhenFocusLocked: 0
+  maxGazeCollisionDistance: 10
+  raycastLayerMasks:
+  - serializedVersion: 2
+    m_Bits: 4294967291
+  stabilizer:
+    storedStabilitySamples: 60
+  gazeTransform: {fileID: 0}
+  minHeadVelocityThreshold: 0.5
+  maxHeadVelocityThreshold: 2
 --- !u!1001 &1826346970
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4028,6 +4029,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1280728483097826057, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: targetTransform
+      value: 
+      objectReference: {fileID: 2077605940}
     - target: {fileID: 1280728483929472781, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: m_Mesh
@@ -4335,6 +4341,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5983900532637349593, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: voiceCommand
+      value: Rooms
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983900532637349593, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: RoomButtonClicked
       objectReference: {fileID: 0}
@@ -4343,6 +4354,11 @@ PrefabInstance:
       propertyPath: VoiceCommand
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5983900532850170092, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: voiceCommand
+      value: Select
+      objectReference: {fileID: 0}
     - target: {fileID: 5983900532921013253, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: VoiceCommand
@@ -4351,7 +4367,7 @@ PrefabInstance:
     - target: {fileID: 5983900532921013253, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: voiceCommand
-      value: 
+      value: Select
       objectReference: {fileID: 0}
     - target: {fileID: 5983900532926680452, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
@@ -4361,17 +4377,37 @@ PrefabInstance:
     - target: {fileID: 5983900532926680452, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: voiceCommand
-      value: 
+      value: Login
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983900533250837627, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: voiceCommand
+      value: Chat
       objectReference: {fileID: 0}
     - target: {fileID: 5983900533371530399, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: VoiceCommand
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5983900533371530399, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: voiceCommand
+      value: Settings
+      objectReference: {fileID: 0}
     - target: {fileID: 5983900533466477040, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: VoiceCommand
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983900533466477040, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: voiceCommand
+      value: Connection
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983900533502194398, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: voiceCommand
+      value: Microphone
       objectReference: {fileID: 0}
     - target: {fileID: 5983900533502194398, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
@@ -4408,7 +4444,12 @@ PrefabInstance:
     - target: {fileID: 5983900533955748886, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: voiceCommand
-      value: 
+      value: Avatar
+      objectReference: {fileID: 0}
+    - target: {fileID: 5983900534418686009, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: voiceCommand
+      value: Save Project
       objectReference: {fileID: 0}
     - target: {fileID: 6149896736291648801, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
@@ -4435,6 +4476,11 @@ PrefabInstance:
       propertyPath: anchoringManager
       value: 
       objectReference: {fileID: 1310721815}
+    - target: {fileID: 6370807215101265121, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: voiceCommand
+      value: Anchor
+      objectReference: {fileID: 0}
     - target: {fileID: 6436379608399288069, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: profiles.Array.size
@@ -4663,6 +4709,16 @@ PrefabInstance:
       propertyPath: targetBoundsControl
       value: 
       objectReference: {fileID: 1588813046}
+    - target: {fileID: 7004556447662642214, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_text
+      value: Say "Anchor"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7004556447662642214, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 7638515306710568479, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
       propertyPath: targetObject
@@ -4680,6 +4736,11 @@ PrefabInstance:
       objectReference: {fileID: 2035175867}
     - target: {fileID: 7662765117604094263, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: m_text
+      value: Say "Connection"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765117604094263, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
@@ -4730,6 +4791,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7662765118965348091, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: m_text
+      value: Say "Load Project"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765118965348091, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765118965348091, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
@@ -4750,6 +4821,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7662765119135270955, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: m_text
+      value: Say "Select"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765119135270955, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765119135270955, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
@@ -4760,6 +4841,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7662765119222760642, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
+      propertyPath: m_text
+      value: Say "Select"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765119222760642, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765119222760642, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
       objectReference: {fileID: 0}
@@ -4787,6 +4878,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765119656475736, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_text
+      value: Say "Settings"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7662765119656475736, guid: 8c93205eb542a734dbe333bde16fe4ad,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 7662765119656475736, guid: 8c93205eb542a734dbe333bde16fe4ad,
         type: 3}
