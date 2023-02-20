@@ -13,6 +13,7 @@ using i5.Toolkit.Core.OpenIDConnectClient;
 using i5.Toolkit.Core.ServiceCore;
 using i5.VIAProMa.Login;
 using System.Text;
+using i5.VIAProMa.WebConnection;
 
 namespace Org.Requirements_Bazaar.API
 {
@@ -30,17 +31,67 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "projects/" + projectId.ToString();
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
-            string responseBody = await response.GetResponseBody();
-            if (!response.Successful)
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Debug.LogError(responseBody);
-                return null;
+                Response response = await Rest.GetAsync(url, null, -1, null, true);
+                string responseBody = await response.GetResponseBody();
+                if (!response.Successful)
+                {
+                    Debug.LogError(responseBody);
+                    return null;
+                }
+                else
+                {
+                    Project project = JsonUtility.FromJson<Project>(responseBody);
+                    return project;
+                }
             }
             else
             {
-                Project project = JsonUtility.FromJson<Project>(responseBody);
-                return project;
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
+                {
+                    Debug.Log("Service not null");
+                }
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        Response resp = await Rest.GetAsync(url, headers, -1, null, true);
+                        string responseBody = await resp.GetResponseBody();
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(responseBody);
+                            return null;
+                        }
+                        else
+                        {
+                            Project project = JsonUtility.FromJson<Project>(responseBody);
+                            return project;
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
             }
         }
 
@@ -111,18 +162,70 @@ namespace Org.Requirements_Bazaar.API
                 url += "&sort=" + sortMode.ToString().ToLower();
             }
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
-            string responseBody = await response.GetResponseBody();
-            if (!response.Successful)
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Debug.LogError(responseBody);
-                return null;
+                Response response = await Rest.GetAsync(url, null, -1, null, true);
+                string responseBody = await response.GetResponseBody();
+                if (!response.Successful)
+                {
+                    Debug.LogError(responseBody);
+                    return null;
+                }
+                else
+                {
+                    string json = JsonHelper.EncapsulateInWrapper(responseBody);
+                    Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
+                    return requirements;
+                }
             }
             else
             {
-                string json = JsonHelper.EncapsulateInWrapper(responseBody);
-                Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
-                return requirements;
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
+                {
+                    Debug.Log("Service not null");
+                }
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        Response resp = await Rest.GetAsync(url, headers, -1, null, true);
+                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                        string responseBody = await resp.GetResponseBody();
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(responseBody);
+                            return null;
+                        }
+                        else
+                        {
+                            string json = JsonHelper.EncapsulateInWrapper(responseBody);
+                            Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
+                            return requirements;
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
             }
         }
 
@@ -141,18 +244,71 @@ namespace Org.Requirements_Bazaar.API
                 url += "&sort=" + sortMode.ToString().ToLower();
             }
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
-            string responseBody = await response.GetResponseBody();
-            if (!response.Successful)
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Debug.LogError(responseBody);
-                return null;
+                Response response = await Rest.GetAsync(url, null, -1, null, true);
+                string responseBody = await response.GetResponseBody();
+                if (!response.Successful)
+                {
+                    Debug.LogError(responseBody);
+                    return null;
+                }
+                else
+                {
+                    string json = JsonHelper.EncapsulateInWrapper(responseBody);
+                    Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
+                    return requirements;
+                }
             }
             else
             {
-                string json = JsonHelper.EncapsulateInWrapper(responseBody);
-                Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
-                return requirements;
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
+                {
+                    Debug.Log("Service not null");
+                }
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        Response resp = await Rest.GetAsync(url, headers, -1, null, true);
+                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                        string responseBody = await resp.GetResponseBody();
+                        responseBody = "{\"array\":" + responseBody + "}";
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(responseBody);
+                            return null;
+                        }
+                        else
+                        {
+                            string json = JsonHelper.EncapsulateInWrapper(responseBody);
+                            Requirement[] requirements = JsonHelper.FromJson<Requirement>(json);
+                            return requirements;
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
             }
         }
 

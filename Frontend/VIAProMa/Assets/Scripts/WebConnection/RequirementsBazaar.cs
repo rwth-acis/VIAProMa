@@ -18,6 +18,8 @@ namespace i5.VIAProMa.WebConnection
     /// </summary>
     public static class RequirementsBazaar
     {
+        private const string baseUrl = "https://requirements-bazaar.org/bazaar/";
+
         /// <summary>
         /// Gets the available projects of the Requirements Bazaar
         /// </summary>
@@ -28,13 +30,15 @@ namespace i5.VIAProMa.WebConnection
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
                 Response resp = await Rest.GetAsync(
-                    ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
+                    baseUrl + "projects/?state=all&per_page=500",
+                    //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects",
                     null,
                     -1,
                     null,
                     true);
                 ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                 string responseBody = await resp.GetResponseBody();
+                Debug.Log(responseBody);
                 if (!resp.Successful)
                 {
                     Debug.LogError(resp.ResponseCode + ": " + responseBody);
@@ -42,6 +46,7 @@ namespace i5.VIAProMa.WebConnection
                 }
                 else
                 {
+                    responseBody = "{\"array\":" + responseBody + "}";
                     Project[] projects = JsonArrayUtility.FromJson<Project>(responseBody);
                     List<Project> visibleProjects = new List<Project>();
                     foreach (Project project in projects)
@@ -81,7 +86,7 @@ namespace i5.VIAProMa.WebConnection
                     {
                         Response resp = await Rest.GetAsync(
                     //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/?state=all&per_page=500",
-                    "https://requirements-bazaar.org/bazaar/projects/?state=all&per_page=500",
+                    baseUrl + "projects/?state=all&per_page=500",
                     headers,
                     -1,
                     null,
@@ -119,13 +124,15 @@ namespace i5.VIAProMa.WebConnection
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
                 Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
+                baseUrl + "projects/" + projectId + "/categories?state=all&per_page=500",
+                //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
                 null,
                 -1,
                 null,
                 true);
                 ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                 string responseBody = await resp.GetResponseBody();
+                responseBody = "{\"array\":" + responseBody + "}";
                 if (!resp.Successful)
                 {
                     Debug.LogError(resp.ResponseCode + ": " + responseBody);
@@ -167,7 +174,7 @@ namespace i5.VIAProMa.WebConnection
                     {
                         Response resp = await Rest.GetAsync(
                 //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/categories",
-                "https://requirements-bazaar.org/bazaar/projects/" + projectId + "/categories?state=all&per_page=500",
+                baseUrl + "projects/" + projectId + "/categories?state=all&per_page=500",
                 headers,
                 -1,
                 null,
@@ -208,7 +215,8 @@ namespace i5.VIAProMa.WebConnection
             }
 
             Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId,
+                baseUrl + "requirements/" + requirementId,
+                //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/requirements/" + requirementId,
                 null,
                 -1,
                 null,
@@ -235,7 +243,7 @@ namespace i5.VIAProMa.WebConnection
         /// <param name="page">Page of the content (the overall list is divided into pages)</param>
         /// <param name="itemsPerPage">Specifies how many items should be on one page</param>
         /// <returns>The list of requirements in the project on the given page, contained in the APIResult object</returns>
-        public static async Task<ApiResult<Issue[]>> GetRequirementsInProject(int projectId, int page, int itemsPerPage)
+        public static async Task<ApiResult<Issue[]>> GetRequirementsInProject(int projectId, int page = 0, int itemsPerPage = 10)
         {
             return await GetRequirementsInProject(projectId, page, itemsPerPage, "");
         }
@@ -250,7 +258,8 @@ namespace i5.VIAProMa.WebConnection
         /// <returns>The list of requirements in the project on the given page, contained in the APIResult object</returns>
         public static async Task<ApiResult<Issue[]>> GetRequirementsInProject(int projectId, int page, int itemsPerPage, string search)
         {
-            string path = ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+            //string path = ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+            string path = baseUrl + "projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
             search = StringUtilities.RemoveSpecialCharacters(search);
             if (!string.IsNullOrEmpty(search))
             {
@@ -262,6 +271,7 @@ namespace i5.VIAProMa.WebConnection
                 Response resp = await Rest.GetAsync(path, null, -1, null, true);
                 ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                 string responseBody = await resp.GetResponseBody();
+                responseBody = "{\"array\":" + responseBody + "}";
                 if (!resp.Successful)
                 {
                     Debug.LogError(resp.ResponseCode + ": " + responseBody);
@@ -306,7 +316,7 @@ namespace i5.VIAProMa.WebConnection
 
                     try
                     {
-                        path = "https://requirements-bazaar.org/bazaar/projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+                        path = baseUrl + "projects/" + projectId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
                         Response resp = await Rest.GetAsync(path, headers, -1, null, true);
                         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                         string responseBody = await resp.GetResponseBody();
@@ -357,7 +367,8 @@ namespace i5.VIAProMa.WebConnection
         /// <returns>The list of requirements in the category on hte given page, contained in the APIResult object</returns>
         public static async Task<ApiResult<Issue[]>> GetRequirementsInCategory(int categoryId, int page, int itemsPerPage, string search)
         {
-            string path = ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+            //string path = ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+            string path = baseUrl + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
             search = StringUtilities.RemoveSpecialCharacters(search);
             if (!string.IsNullOrEmpty(search))
             {
@@ -369,6 +380,7 @@ namespace i5.VIAProMa.WebConnection
                 Response resp = await Rest.GetAsync(path, null, -1, null, true);
                 ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                 string responseBody = await resp.GetResponseBody();
+                responseBody = "{\"array\":" + responseBody + "}";
                 if (!resp.Successful)
                 {
                     Debug.LogError(resp.ResponseCode + ": " + responseBody);
@@ -412,7 +424,7 @@ namespace i5.VIAProMa.WebConnection
 
                     try
                     {
-                        path = "https://requirements-bazaar.org/bazaar/" + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
+                        path = baseUrl + "categories/" + categoryId + "/requirements?page=" + page + "&per_page=" + itemsPerPage;
                         Response resp = await Rest.GetAsync(path, headers, -1, null, true);
                         ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                         string responseBody = await resp.GetResponseBody();
