@@ -13,11 +13,12 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         public string name;
         public string description;
         public int projectId;
-        public ReqBazUser leader;
+        public ReqBazUser creator;
         public string creationDate;
-        public string lastUpdatedDate;
+        public string lastActivity;
         public int numberOfRequirements;
         public int numberOfFollowers;
+        //public Context userContext;
 
         public Category()
         {

@@ -6,8 +6,9 @@ namespace i5.VIAProMa.DataModel.ReqBaz
     [Serializable]
     public class Contributors : IListViewItemData, IUninitializable
     {
+        public int id;
         public ReqBazUser creator;
-        public ReqBazUser leadDeveloper;
+        //public ReqBazUser leadDeveloper;
         public ReqBazUser[] developers;
         public ReqBazUser[] commentCreator;
         public ReqBazUser[] attachmentCreator;
@@ -16,7 +17,7 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         {
             get
             {
-                if (creator.IsUninitialized && leadDeveloper.IsUninitialized && developers.Length == 0 && commentCreator.Length == 0 && attachmentCreator.Length == 0)
+                if (id == 0 && creator.IsUninitialized && developers.Length == 0 && commentCreator.Length == 0 && attachmentCreator.Length == 0)
                 {
                     return true;
                 }

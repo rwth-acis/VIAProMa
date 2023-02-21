@@ -230,7 +230,9 @@ namespace i5.VIAProMa.WebConnection
             }
             else
             {
-                Issue issue = JsonUtility.FromJson<Issue>(responseBody);
+                Requirement req = JsonUtility.FromJson<Requirement>(responseBody);
+                req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                Issue issue = Issue.fromRequirement(req);
                 IssueCache.AddIssue(issue);
                 return new ApiResult<Issue>(issue);
             }
@@ -279,13 +281,20 @@ namespace i5.VIAProMa.WebConnection
                 }
                 else
                 {
-                    Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                    Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
+                    Debug.Log(responseBody);
+                    Debug.Log(requirements);
+                    foreach (Requirement req in requirements)
+                    {
+                        req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                    }
+                    Issue[] issues = Issue.fromRequirements(requirements);
                     // add to cache
-                    foreach (Issue req in requirements)
+                    foreach (Issue req in issues)
                     {
                         IssueCache.AddIssue(req);
                     }
-                    return new ApiResult<Issue[]>(requirements);
+                    return new ApiResult<Issue[]>(issues);
                 }
             }
             else
@@ -328,13 +337,18 @@ namespace i5.VIAProMa.WebConnection
                         }
                         else
                         {
-                            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
+                            Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
+                            foreach (Requirement req in requirements)
+                            {
+                                req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                            }
+                            Issue[] issues = Issue.fromRequirements(requirements);
                             // add to cache
-                            foreach (Issue req in requirements)
+                            foreach (Issue req in issues)
                             {
                                 IssueCache.AddIssue(req);
                             }
-                            return new ApiResult<Issue[]>(requirements);
+                            return new ApiResult<Issue[]>(issues);
                         }
                     }
                     catch (ArgumentNullException)
@@ -388,12 +402,18 @@ namespace i5.VIAProMa.WebConnection
                 }
                 else
                 {
-                    Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
-                    foreach (Issue req in requirements)
+                    Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
+                    foreach (Requirement req in requirements)
+                    {
+                        req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                    }
+                    Issue[] issues = Issue.fromRequirements(requirements);
+                    // add to cache
+                    foreach (Issue req in issues)
                     {
                         IssueCache.AddIssue(req);
                     }
-                    return new ApiResult<Issue[]>(requirements);
+                    return new ApiResult<Issue[]>(issues);
                 }
             }
             else
@@ -436,12 +456,89 @@ namespace i5.VIAProMa.WebConnection
                         }
                         else
                         {
-                            Issue[] requirements = JsonArrayUtility.FromJson<Issue>(responseBody);
-                            foreach (Issue req in requirements)
+                            Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
+                            foreach (Requirement req in requirements)
+                            {
+                                req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                            }
+                            Issue[] issues = Issue.fromRequirements(requirements);
+                            // add to cache
+                            foreach (Issue req in issues)
                             {
                                 IssueCache.AddIssue(req);
                             }
-                            return new ApiResult<Issue[]>(requirements);
+                            return new ApiResult<Issue[]>(issues);
+                        }
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        return null;
+                    }
+                }
+            }
+        }
+
+        public static async Task<ApiResult<Contributors>> GetRequirementContributors(int requirementId)
+        {
+            string path = baseUrl + "requirements/" + requirementId + "/contributors";
+
+            if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
+            {
+                Response resp = await Rest.GetAsync(path, null, -1, null, true);
+                ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                string responseBody = await resp.GetResponseBody();
+                if (!resp.Successful)
+                {
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                    return new ApiResult<Contributors>(resp.ResponseCode, responseBody);
+                }
+                else
+                {
+                    Contributors contributors = JsonUtility.FromJson<Contributors>(responseBody);
+                    return new ApiResult<Contributors>(contributors);
+                }
+            }
+            else
+            {
+                Dictionary<string, string> headers = new Dictionary<string, string>();
+                if (ServiceManager.GetService<LearningLayersOidcService>() != null)
+                {
+                    Debug.Log("Service not null");
+                }
+
+                // decode the access token
+                string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                if (decodedToken == "")
+                {
+                    Debug.LogError("Invalid Access Token for Decoding.");
+                    return null;
+                }
+                else
+                {
+
+                    // extract sub and preferred username information and encode for the header
+                    string authentificationInfoInfo = GetBasicAuthentificationInfo(decodedToken);
+                    byte[] authentificationInfoInfoBytes = System.Text.Encoding.UTF8.GetBytes(authentificationInfoInfo);
+                    string encodedAuthentificationInfo = Convert.ToBase64String(authentificationInfoInfoBytes);
+
+                    headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
+                    headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                    try
+                    {
+                        path = baseUrl + "requirements/" + requirementId + "/contributors";
+                        Response resp = await Rest.GetAsync(path, headers, -1, null, true);
+                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+                        string responseBody = await resp.GetResponseBody();
+                        if (!resp.Successful)
+                        {
+                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                            return new ApiResult<Contributors>(resp.ResponseCode, responseBody);
+                        }
+                        else
+                        {
+                            Contributors contributors = JsonUtility.FromJson<Contributors>(responseBody);
+                            return new ApiResult<Contributors>(contributors);
                         }
                     }
                     catch (ArgumentNullException)

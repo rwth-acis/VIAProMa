@@ -16,9 +16,11 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         public ReqBazUser leader;
         public string creationDate;
         public string lastUpdatedDate;
+        public string lastActivity;
         public int numberOfCategories;
         public int numberOfRequirements;
         public int numberOfFollowers;
         public bool isFollower;
+        //public Context userContext;
     }
 }

@@ -3,6 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.DataModel.GitHub;
+using i5.VIAProMa.WebConnection;
 
 namespace i5.VIAProMa.DataModel.API
 {
@@ -57,6 +60,10 @@ namespace i5.VIAProMa.DataModel.API
         /// The array containing all users who have commented on the issue
         /// </summary>
         [SerializeField] private User[] commenters;
+        /// <summary>
+        /// The array containing all contributors
+        /// </summary>
+        [SerializeField] private Contributors contributors;
 
         /// <summary>
         /// The data source of the issue
@@ -102,6 +109,10 @@ namespace i5.VIAProMa.DataModel.API
         /// The array of users who have commented on the issue
         /// </summary>
         public User[] Commenters { get => commenters; }
+        /// <summary>
+        /// The array of users who have commented on the issue
+        /// </summary>
+        public Contributors Contributors { get => contributors; set => contributors = value; }
 
         /// <summary>
         /// Creates an issue
@@ -139,7 +150,104 @@ namespace i5.VIAProMa.DataModel.API
             this.commenters = commenters;
         }
 
+        /**
+     * Generates a CrossIssue object from a Requirement (from the Requirements Bazaar)
+     * @param req The requirement from the requirements bazaar
+     * @return corresponding CrossIssue
+     */
+        public static Issue fromRequirement(Requirement req)
+        {
+            // we need the contributors in order to determine the developers and the issue status;
+            if (req.Contributors != null)
+            {
+                Contributors contributors = null;//req.contributors;
+                User[] developers;
+                // construct the list of developers
+                developers = User.fromReqBazUsers(contributors.developers);
 
+                Issue issue = new Issue(DataSource.REQUIREMENTS_BAZAAR,
+                        req.getId(),
+                        req.getName(),
+                        req.getDescription(),
+                        req.getProjectId(),
+                        User.fromReqBazUser(req.getCreator()),
+                        determineIssueStatusFromRequirement(req, contributors),
+                        req.getCreationDate(),
+                        req.getLastUpdatedDate(),
+                        //req.getRealized(),
+                        developers,
+                        User.fromReqBazUsers(contributors.commentCreator)
+                        );
+                return issue;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static Issue[] fromRequirements(Requirement[] reqs)
+        {
+            Issue[] issues = new Issue[reqs.Length];
+            for (int i = 0; i < reqs.Length; i++)
+            {
+                issues[i] = fromRequirement(reqs[i]);
+            }
+            return issues;
+        }
+
+        /**
+     * Determines the issue status based on a requirement and its contributors
+     * @param req The requirement from the Requirements Bazaar
+     * @param contributors The contributors of the requirement
+     * @return The status of the corresponding issue
+     */
+        private static IssueStatus determineIssueStatusFromRequirement(Requirement req, Contributors contributors)
+        {
+            if (req.getRealized() != null)
+            {
+                return IssueStatus.CLOSED;
+            }
+            else
+            {
+                if (contributors.developers.Length > 0)
+                {
+                    return IssueStatus.IN_PROGRESS;
+                }
+                else
+                {
+                    return IssueStatus.OPEN;
+                }
+            }
+        }
+
+        public static Issue fromGitHubIssue(GitHubIssue gitHubIssue, int repositoryId)
+        {
+            Issue issue = new Issue(
+                    DataSource.GITHUB,
+                    gitHubIssue.getNumber(),
+                    gitHubIssue.getTitle(),
+                    gitHubIssue.getBody(),
+                    repositoryId,
+                    User.fromGitHubUser(gitHubIssue.getUser()),
+                    gitHubIssue.getIssueStatus(),
+                    gitHubIssue.getCreated_at(),
+                    //gitHubIssue.getUpdated_at(),
+                    gitHubIssue.getClosed_at(),
+                    User.fromGitHubUsers(gitHubIssue.getAssignees()),
+                    null);
+            return issue;
+        }
+
+        public static Issue[] fromGitHubIssues(GitHubIssue[] gitHubIssues, int repositoryId)
+        {
+            Issue[] issues = new Issue[gitHubIssues.Length];
+            for (int i = 0; i < gitHubIssues.Length; i++)
+            {
+                issues[i] = Issue.fromGitHubIssue(gitHubIssues[i], repositoryId);
+            }
+            return issues;
+        }
 
         /// <summary>
         /// Deep-comparion between this issue and obj based on the issue's source and id
