@@ -177,7 +177,7 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     {
         anchorManager.moveAnchorAloneEnabled = true;
         moveAnchorAloneCheckbox.IsToggled = true;
-        anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorObject.transform;
+        anchorObject.GetComponent<Microsoft.MixedReality.Toolkit.UI.ObjectManipulator>().HostTransform = anchorObject.transform;
         Debug.Log("Individual moving mode enabled.");
     }
 
@@ -188,7 +188,7 @@ public class AnchoringMenu : MonoBehaviour, IWindow
     {
         anchorManager.moveAnchorAloneEnabled = false;
         moveAnchorAloneCheckbox.IsToggled = false;
-        anchorObject.GetComponent<ObjectManipulator>().HostTransform = anchorParent.transform;
+        anchorObject.GetComponent<Microsoft.MixedReality.Toolkit.UI.ObjectManipulator>().HostTransform = anchorParent.transform;
         Debug.Log("Individual moving mode disabled.");
     
     }

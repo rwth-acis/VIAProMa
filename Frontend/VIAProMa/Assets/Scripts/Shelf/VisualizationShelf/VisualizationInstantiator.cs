@@ -11,7 +11,7 @@ namespace i5.VIAProMa.Shelves.Visualizations
         [SerializeField] private GameObject visualizationPrefab;
 
         private BoundingBoxStateController boxStateController;
-        private ObjectManipulator handler;
+        private Microsoft.MixedReality.Toolkit.UI.ObjectManipulator handler;
 
         private void Awake()
         {
@@ -35,7 +35,7 @@ namespace i5.VIAProMa.Shelves.Visualizations
                     SpecialDebugMessages.LogComponentNotFoundError(this, nameof(BoundingBoxStateController), instance);
                 }
                 boxStateController.BoundingBoxActive = true;
-                handler = instance.GetComponentInChildren<ObjectManipulator>();
+                handler = instance.GetComponentInChildren<Microsoft.MixedReality.Toolkit.UI.ObjectManipulator>();
                 handler.OnPointerDown(eventData);
             });
         }

@@ -23,7 +23,7 @@ namespace i5.VIAProMa.Shelves.Widgets
         public GameObject copyObject;
 
         private GameObject copyInstance;
-        private ObjectManipulator handlerOnCopy;
+        private Microsoft.MixedReality.Toolkit.UI.ObjectManipulator handlerOnCopy;
 
         private IssueDataDisplay localDataDisplay;
 
@@ -80,7 +80,7 @@ namespace i5.VIAProMa.Shelves.Widgets
                     (obj) =>
                     {
                         copyInstance = obj;
-                        handlerOnCopy = copyInstance?.GetComponentInChildren<ObjectManipulator>();
+                        handlerOnCopy = copyInstance?.GetComponentInChildren<Microsoft.MixedReality.Toolkit.UI.ObjectManipulator>();
                         IssueDataDisplay remoteDataDisplay = copyInstance?.GetComponent<IssueDataDisplay>();
                         if (handlerOnCopy == null || remoteDataDisplay == null)
                         {
