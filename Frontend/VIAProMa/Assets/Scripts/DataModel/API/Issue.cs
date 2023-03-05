@@ -158,7 +158,7 @@ namespace i5.VIAProMa.DataModel.API
         public static Issue fromRequirement(Requirement req)
         {
             // we need the contributors in order to determine the developers and the issue status;
-            if (req.Contributors != null)
+            if (true/*req.Contributors != null*/)
             {
                 Contributors contributors = null;//req.contributors;
                 User[] developers;
@@ -204,7 +204,7 @@ namespace i5.VIAProMa.DataModel.API
      */
         private static IssueStatus determineIssueStatusFromRequirement(Requirement req, Contributors contributors)
         {
-            if (req.getRealized() != null)
+            if (false/*req.getRealized() != null*/)
             {
                 return IssueStatus.CLOSED;
             }

@@ -231,7 +231,7 @@ namespace i5.VIAProMa.WebConnection
             else
             {
                 Requirement req = JsonUtility.FromJson<Requirement>(responseBody);
-                req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                //req.Contributors = (await GetRequirementContributors(req.Id)).Value;
                 Issue issue = Issue.fromRequirement(req);
                 IssueCache.AddIssue(issue);
                 return new ApiResult<Issue>(issue);
@@ -273,7 +273,7 @@ namespace i5.VIAProMa.WebConnection
                 Response resp = await Rest.GetAsync(path, null, -1, null, true);
                 ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
                 string responseBody = await resp.GetResponseBody();
-                responseBody = "{\"array\":" + responseBody + "}";
+                //responseBody = "{\"array\":" + responseBody + "}";
                 if (!resp.Successful)
                 {
                     Debug.LogError(resp.ResponseCode + ": " + responseBody);
@@ -281,12 +281,15 @@ namespace i5.VIAProMa.WebConnection
                 }
                 else
                 {
-                    Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
+                    Debug.Log(responseBody);
+                    //Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
+                    Requirement[] requirements = Newtonsoft.Json.JsonConvert.DeserializeObject<Requirement[]>(responseBody);
                     Debug.Log(responseBody);
                     Debug.Log(requirements);
                     foreach (Requirement req in requirements)
                     {
-                        req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                        Debug.Log(req.Id);
+                        //req.Contributors = (await GetRequirementContributors(req.Id)).Value;
                     }
                     Issue[] issues = Issue.fromRequirements(requirements);
                     // add to cache
@@ -340,7 +343,7 @@ namespace i5.VIAProMa.WebConnection
                             Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
                             foreach (Requirement req in requirements)
                             {
-                                req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                                //req.Contributors = (await GetRequirementContributors(req.Id)).Value;
                             }
                             Issue[] issues = Issue.fromRequirements(requirements);
                             // add to cache
@@ -405,7 +408,7 @@ namespace i5.VIAProMa.WebConnection
                     Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
                     foreach (Requirement req in requirements)
                     {
-                        req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                        //req.Contributors = (await GetRequirementContributors(req.Id)).Value;
                     }
                     Issue[] issues = Issue.fromRequirements(requirements);
                     // add to cache
@@ -459,7 +462,7 @@ namespace i5.VIAProMa.WebConnection
                             Requirement[] requirements = JsonArrayUtility.FromJson<Requirement>(responseBody);
                             foreach (Requirement req in requirements)
                             {
-                                req.Contributors = (await GetRequirementContributors(req.Id)).Value;
+                                //req.Contributors = (await GetRequirementContributors(req.Id)).Value;
                             }
                             Issue[] issues = Issue.fromRequirements(requirements);
                             // add to cache

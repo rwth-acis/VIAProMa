@@ -11,7 +11,7 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         [SerializeField] private int id;
         [SerializeField] private string name;
         [SerializeField] private string description;
-        [SerializeField] private string realized; // the date when the requirement was realized
+        //[SerializeField] private string realized; // the date when the requirement was realized
         [SerializeField] private int projectId;
         [SerializeField] private ReqBazUser creator;
         [SerializeField] private int[] categories;
@@ -26,16 +26,16 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         [SerializeField] private int numberOfFollowers;
         [SerializeField] private int upVotes;
         [SerializeField] private int downVotes;
-        //public Context userContext;
-        //public Context _context;
-        [SerializeField] private string userVoted;
+        public Context userContext;
+        public Context _context;
+        //[SerializeField] private string userVoted;
 
-        [SerializeField] private Contributors contributors;
+        //[SerializeField] private Contributors contributors;
 
         public int Id { get => id; }
         public string Name { get => name; }
         public string Description { get => description; }
-        public string Realized { get => realized; } // the date when the requirement was realized
+        //public string Realized { get => realized; } // the date when the requirement was realized
         public int ProjectId { get => projectId; }
         public ReqBazUser Creator { get => creator; }
         public int[] Categories { get => categories; }
@@ -52,9 +52,9 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         public int DownVotes { get => downVotes; }
         //public Context userContext;
         //public Context _context;
-        public string UserVoted { get => userVoted; }
+        //public string UserVoted { get => userVoted; }
 
-        public Contributors Contributors { get => contributors; set => contributors = value; }
+        //public Contributors Contributors { get => contributors; set => contributors = value; }
 
         public int getId()
         {
@@ -71,10 +71,10 @@ namespace i5.VIAProMa.DataModel.ReqBaz
             return description;
         }
 
-        public string getRealized()
+        /*public string getRealized()
         {
             return realized;
-        }
+        }*/
 
         public int getProjectId()
         {
@@ -146,7 +146,7 @@ namespace i5.VIAProMa.DataModel.ReqBaz
             return downVotes;
         }
 
-        public string getUserVoted()
+        /*public string getUserVoted()
         {
             return userVoted;
         }
@@ -154,7 +154,7 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         public bool IsRealized
         {
             get { return !string.IsNullOrEmpty(realized); }
-        }
+        }*/
 
         public bool IsUninitialized
         {

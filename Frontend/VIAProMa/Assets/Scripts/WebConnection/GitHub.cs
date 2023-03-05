@@ -24,7 +24,7 @@ namespace i5.VIAProMa.WebConnection
         public static async Task<ApiResult<Issue[]>> GetIssuesInRepository(string owner, string repositoryName, int page, int itemsPerPage)
         {
             Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repos/" + owner + "/" + repositoryName + "/issues?page=" + page + "&per_page=" + itemsPerPage,
+                "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues?page=" + page + "&per_page=" + itemsPerPage,
                 null,
                 -1,
                 null,
@@ -62,7 +62,7 @@ namespace i5.VIAProMa.WebConnection
             }
 
             Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "gitHub/repositories/" + repositoryId + "/issues/" + issueNumber,
+                "https://api.github.com/" + "repositories/" + repositoryId + "/issues/" + issueNumber,
                 null,
                 -1,
                 null,
@@ -85,7 +85,7 @@ namespace i5.VIAProMa.WebConnection
         public static async Task<ApiResult<PunchCardEntry[]>> GetGitHubPunchCard(string owner, string repository)
         {
             Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "githubPunchCard/" + owner + "/" + repository,
+                "https://api.github.com/" + "repos/" + owner + "/" + repository + "/stats/punch_card",
                 null,
                 -1,
                 null,

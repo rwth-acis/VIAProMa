@@ -71,8 +71,8 @@ namespace i5.VIAProMa.DataModel.API
                     DataSource.REQUIREMENTS_BAZAAR,
                     rbUser.id,
                     rbUser.userName,
-                    rbUser.firstName,
-                    rbUser.lastName,
+                    "",//rbUser.firstName,
+                    "",//rbUser.lastName,
                     rbUser.profileImage,
                     ""
             );
