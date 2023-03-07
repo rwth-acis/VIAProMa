@@ -1,4 +1,5 @@
-﻿using i5.VIAProMa.UI.ListView.Core;
+﻿using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.UI.ListView.Core;
 using System;
 using UnityEngine;
 
@@ -61,6 +62,25 @@ namespace i5.VIAProMa.DataModel.API
             this.lastName = lastName;
             this.profileImageUrl = profileImageUrl;
             this.eMail = eMail;
+        }
+
+        public static User fromReqBazUser(ReqBazUser reqBazUser)
+        {
+            return new User(DataSource.REQUIREMENTS_BAZAAR, reqBazUser.id, reqBazUser.userName, reqBazUser.userName, "", reqBazUser.profileImage, "");
+        }
+
+        public static User[] fromReqBazUsers(ReqBazUser[] reqBazUsers)
+        {
+            if(reqBazUsers == null)
+            {
+                return new User[0];
+            }
+            User[] users = new User[reqBazUsers.Length];
+            for (int i = 0; i < reqBazUsers.Length; i++)
+            {
+                users[i] = fromReqBazUser(reqBazUsers[i]);
+            }
+            return users;
         }
     }
 }
