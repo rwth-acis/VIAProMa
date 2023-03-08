@@ -1,4 +1,6 @@
-﻿using i5.VIAProMa.UI.ListView.Core;
+﻿using i5.VIAProMa.DataModel.GitHub;
+using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.UI.ListView.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,6 +47,10 @@ namespace i5.VIAProMa.DataModel.API
         /// Timestamp string when the issue was created
         /// </summary>
         [SerializeField] private string creationDate;
+        /*/// <summary>
+        /// Timestamp string when the issue was last updated
+        /// </summary>
+        [SerializeField] private string lastUpdatedDate;*/
         /// <summary>
         /// Timestamp string when the issue was closed
         /// </summary>
@@ -90,6 +96,10 @@ namespace i5.VIAProMa.DataModel.API
         /// The string representation of the point in time when the issue was created
         /// </summary>
         public string CreationDateString { get => creationDate; }
+        /*/// <summary>
+        /// The string representation of the point in time when the issue was last updated
+        /// </summary>
+        public string LastUpdatedDateString { get => lastUpdatedDate; }*/
         /// <summary>
         /// The string representation of the point in time when the issue was closed
         /// </summary>
@@ -124,7 +134,7 @@ namespace i5.VIAProMa.DataModel.API
         /// <param name="closedDate">The string representation of the point in time when the issue was closed</param>
         /// <param name="developers">The array of developers who are assigned to the issue and are working on it</param>
         /// <param name="commenters">The array of users who have commented on the issue</param>
-        public Issue(DataSource source, int id, string name, string description, int projectId, User creator, IssueStatus status, string creationDate, string closedDate, User[] developers, User[] commenters)
+        public Issue(DataSource source, int id, string name, string description, int projectId, User creator, IssueStatus status, string creationDate, /*string lastUpdatedDate, */string closedDate, User[] developers, User[] commenters)
         {
             this.source = source;
             this.id = id;
@@ -134,12 +144,90 @@ namespace i5.VIAProMa.DataModel.API
             this.creator = creator;
             this.status = status;
             this.creationDate = creationDate;
+            //this.lastUpdatedDate = lastUpdatedDate;
             this.closedDate = closedDate;
             this.developers = developers;
             this.commenters = commenters;
         }
 
+        /**
+     * Generates a CrossIssue object from a Requirement (from the Requirements Bazaar)
+     * @param req The requirement from the requirements bazaar
+     * @return corresponding CrossIssue
+     */
+        public static Issue fromRequirement(RequirementIssue req, User[] contributors, User[] developers)
+        {
+            string closedDate = "";
+            IssueStatus state = req.Status;
+            if (state == IssueStatus.CLOSED)
+                closedDate = req.LastUpdatedDateString;
+            if (state == IssueStatus.OPEN && developers.Length > 0)
+                state = IssueStatus.IN_PROGRESS;
+            Issue issue = new Issue(DataSource.REQUIREMENTS_BAZAAR,
+                        req.Id,
+                        req.Name,
+                        req.Description,
+                        req.ProjectId,
+                        User.fromReqBazUser(req.Creator),
+                        state,
+                        req.CreationDateString,
+                        //req.LastUpdatedDateString,
+                        closedDate,
+                        developers,
+                        contributors
+                        );
+                return issue;
+        }
 
+        public static Issue[] fromRequirements(RequirementIssue[] reqs, ReqBazUser[][] contributors, ReqBazUser[][] developers)
+        {
+            Issue[] issues = new Issue[reqs.Length];
+            for (int i = 0; i < reqs.Length; i++)
+            {
+                issues[i] = fromRequirement(reqs[i], User.fromReqBazUsers(contributors[i]), User.fromReqBazUsers(developers[i]));
+            }
+            return issues;
+        }
+
+        /**
+     * Generates a CrossIssue object from a Requirement (from the Requirements Bazaar)
+     * @param req The requirement from the requirements bazaar
+     * @return corresponding CrossIssue
+     */
+        public static Issue fromGitHubIssue(GitHubIssue ghi)
+        {
+            IssueStatus status;
+            if (ghi.State.Equals("closed"))
+                status = IssueStatus.CLOSED;
+            else if (ghi.Assignees != null && ghi.Assignees.Length > 0)
+                status = IssueStatus.IN_PROGRESS;
+            else
+                status = IssueStatus.OPEN;
+            Issue issue = new Issue(DataSource.GITHUB,
+                        ghi.Number,
+                        ghi.Title,
+                        ghi.Body,
+                        ghi.ProjectId,
+                        User.fromGitHubUser(ghi.User),
+                        status,
+                        ghi.CreationDateString,
+                        //ghi.LastUpdatedDateString,
+                        "",
+                        User.fromGitHubUsers(ghi.Assignees),
+                        new User[0]
+                        );
+            return issue;
+        }
+
+        public static Issue[] fromGitHubIssues(GitHubIssue[] ghis)
+        {
+            Issue[] issues = new Issue[ghis.Length];
+            for (int i = 0; i < ghis.Length; i++)
+            {
+                issues[i] = fromGitHubIssue(ghis[i]);
+            }
+            return issues;
+        }
 
         /// <summary>
         /// Deep-comparion between this issue and obj based on the issue's source and id

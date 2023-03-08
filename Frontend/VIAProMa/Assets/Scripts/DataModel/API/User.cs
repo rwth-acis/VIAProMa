@@ -1,4 +1,6 @@
-﻿using i5.VIAProMa.UI.ListView.Core;
+﻿using i5.VIAProMa.DataModel.GitHub;
+using i5.VIAProMa.DataModel.ReqBaz;
+using i5.VIAProMa.UI.ListView.Core;
 using System;
 using UnityEngine;
 
@@ -61,6 +63,44 @@ namespace i5.VIAProMa.DataModel.API
             this.lastName = lastName;
             this.profileImageUrl = profileImageUrl;
             this.eMail = eMail;
+        }
+
+        public static User fromReqBazUser(ReqBazUser reqBazUser)
+        {
+            return new User(DataSource.REQUIREMENTS_BAZAAR, reqBazUser.id, reqBazUser.userName, reqBazUser.userName, "", reqBazUser.profileImage, "");
+        }
+
+        public static User[] fromReqBazUsers(ReqBazUser[] reqBazUsers)
+        {
+            if(reqBazUsers == null)
+            {
+                return new User[0];
+            }
+            User[] users = new User[reqBazUsers.Length];
+            for (int i = 0; i < reqBazUsers.Length; i++)
+            {
+                users[i] = fromReqBazUser(reqBazUsers[i]);
+            }
+            return users;
+        }
+
+        public static User fromGitHubUser(GitHubUser gitHubUser)
+        {
+            return new User(DataSource.GITHUB, gitHubUser.Id, gitHubUser.UserName, gitHubUser.UserName, "", gitHubUser.ProfileImageUrl, "");
+        }
+
+        public static User[] fromGitHubUsers(GitHubUser[] gitHubUsers)
+        {
+            if (gitHubUsers == null)
+            {
+                return new User[0];
+            }
+            User[] users = new User[gitHubUsers.Length];
+            for (int i = 0; i < gitHubUsers.Length; i++)
+            {
+                users[i] = fromGitHubUser(gitHubUsers[i]);
+            }
+            return users;
         }
     }
 }
