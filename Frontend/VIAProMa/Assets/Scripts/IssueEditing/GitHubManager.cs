@@ -40,13 +40,14 @@ namespace Org.Git_Hub.API
             headers.Add("Accept", "application/vnd.github.v3+json");
             string json = "{ \"title\": \"" + name + "\", \"body\": \"" + description + "\" }";
 
-            WebResponse<string> resp = await RestConnector.PostAsync(
+            Response resp = await Rest.PostAsync(
                 "https://api.github.com/" + "repos/" + owner + "/" + repositoryName + "/issues", json, headers);
+            string responseBody = await resp.GetResponseBody();
             if (!resp.Successful)
             {
-                Debug.LogError(resp.Code + ": " + resp.Content);
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
             }
-            Issue issue = JsonSerializer.FromJson<Issue>(resp.Content);
+            Issue issue = JsonSerializer.FromJson<Issue>(responseBody);
             return issue;
         }
 

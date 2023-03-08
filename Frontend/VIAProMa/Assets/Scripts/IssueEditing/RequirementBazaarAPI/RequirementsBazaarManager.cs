@@ -572,16 +572,16 @@ namespace Org.Requirements_Bazaar.API
                 Debug.Log("Authorization : Basic " + encodedAuthentificationInfo);
                 Debug.Log("access-token : " + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
-                WebResponse<string> resp = await RestConnector.PostAsync(url, json, headers);
-                string responseBody = resp.Content;
+                Response resp = await Rest.PostAsync(url, json, headers);
+                string responseBody = await resp.GetResponseBody();
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.Code + ": " + responseBody);
+                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
                     return null;
                 }
                 else
                 {
-                    Requirement requirement = JsonUtility.FromJson<Requirement>(responseBody);
+                    Requirement requirement = JsonSerializer.FromJson<Requirement>(responseBody);
                     return requirement;
                 }
             }
