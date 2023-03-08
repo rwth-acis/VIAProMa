@@ -103,7 +103,7 @@ public class LearningLayersLogin : ProviderLogin
             }
 
             //To start the login process, call the OpenLoginPage() method of the OpenIDConnectService
-            ServiceManager.GetService<LearningLayersOidcService>().OpenLoginPage();
+            ServiceManager.GetService<LearningLayersOidcService>().OpenLoginPageAsync();
         }
         else
         {

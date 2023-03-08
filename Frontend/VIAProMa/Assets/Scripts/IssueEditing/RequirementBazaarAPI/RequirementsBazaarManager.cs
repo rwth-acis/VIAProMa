@@ -14,12 +14,15 @@ using i5.Toolkit.Core.ServiceCore;
 using i5.VIAProMa.Login;
 using System.Text;
 using i5.VIAProMa.WebConnection;
+using i5.Toolkit.Core.Utilities;
 
 namespace Org.Requirements_Bazaar.API
 {
 
     public static class RequirementsBazaarManager
     {
+        public static IRestConnector RestConnector = new UnityWebRequestRestConnector();
+        public static IJsonSerializer JsonSerializer = new JsonUtilityAdapter();
         private const string baseUrl = "https://requirements-bazaar.org/bazaar/";
 
         /// <summary>
@@ -33,8 +36,8 @@ namespace Org.Requirements_Bazaar.API
 
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Response response = await Rest.GetAsync(url, null, -1, null, true);
-                string responseBody = await response.GetResponseBody();
+                WebResponse<string> response = await RestConnector.GetAsync(url, null);
+                string responseBody = response.Content;
                 if (!response.Successful)
                 {
                     Debug.LogError(responseBody);
@@ -74,9 +77,9 @@ namespace Org.Requirements_Bazaar.API
 
                     try
                     {
-                        Response resp = await Rest.GetAsync(url, headers, -1, null, true);
-                        string responseBody = await resp.GetResponseBody();
-                        if (!resp.Successful)
+                        WebResponse<string> response = await RestConnector.GetAsync(url, headers);
+                        string responseBody = response.Content;
+                        if (!response.Successful)
                         {
                             Debug.LogError(responseBody);
                             return null;
@@ -118,8 +121,8 @@ namespace Org.Requirements_Bazaar.API
                 url += "&search=" + searchFilter;
             }
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
-            string responseBody = await response.GetResponseBody();
+            WebResponse<string> response = await RestConnector.GetAsync(url, null);
+            string responseBody = response.Content;
             if (!response.Successful)
             {
                 Debug.LogError(responseBody);
@@ -164,8 +167,8 @@ namespace Org.Requirements_Bazaar.API
 
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Response response = await Rest.GetAsync(url, null, -1, null, true);
-                string responseBody = await response.GetResponseBody();
+                WebResponse<string> response = await RestConnector.GetAsync(url, null);
+                string responseBody = response.Content;
                 if (!response.Successful)
                 {
                     Debug.LogError(responseBody);
@@ -206,10 +209,9 @@ namespace Org.Requirements_Bazaar.API
 
                     try
                     {
-                        Response resp = await Rest.GetAsync(url, headers, -1, null, true);
-                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                        string responseBody = await resp.GetResponseBody();
-                        if (!resp.Successful)
+                        WebResponse<string> response = await RestConnector.GetAsync(url, headers);
+                        string responseBody = response.Content;
+                        if (!response.Successful)
                         {
                             Debug.LogError(responseBody);
                             return null;
@@ -246,8 +248,8 @@ namespace Org.Requirements_Bazaar.API
 
             if (ServiceManager.GetService<LearningLayersOidcService>().AccessToken == null || ServiceManager.GetService<LearningLayersOidcService>().AccessToken == "")
             {
-                Response response = await Rest.GetAsync(url, null, -1, null, true);
-                string responseBody = await response.GetResponseBody();
+                WebResponse<string> response = await RestConnector.GetAsync(url, null);
+                string responseBody = response.Content;
                 if (!response.Successful)
                 {
                     Debug.LogError(responseBody);
@@ -288,11 +290,10 @@ namespace Org.Requirements_Bazaar.API
 
                     try
                     {
-                        Response resp = await Rest.GetAsync(url, headers, -1, null, true);
-                        ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-                        string responseBody = await resp.GetResponseBody();
+                        WebResponse<string> response = await RestConnector.GetAsync(url, headers);
+                        string responseBody = response.Content;
                         responseBody = "{\"array\":" + responseBody + "}";
-                        if (!resp.Successful)
+                        if (!response.Successful)
                         {
                             Debug.LogError(responseBody);
                             return null;
@@ -321,8 +322,8 @@ namespace Org.Requirements_Bazaar.API
         {
             string url = baseUrl + "categories/" + categoryId.ToString();
 
-            Response response = await Rest.GetAsync(url, null, -1, null, true);
-            string responseBody = await response.GetResponseBody();
+            WebResponse<string> response = await RestConnector.GetAsync(url, null);
+            string responseBody = response.Content;
 
             if (!response.Successful)
             {
@@ -371,17 +372,17 @@ namespace Org.Requirements_Bazaar.API
 
                 try
                 {
-                    Response resp = await Rest.DeleteAsync(url, headers, -1, true);
-                    string responseBody = await resp.GetResponseBody();
-                    if (!resp.Successful)
+                    WebResponse<string> response = await RestConnector.DeleteAsync(url, headers);
+                    string responseBody = response.Content;
+                    if (!response.Successful)
                     {
-                        if (resp.ResponseCode == 401)
+                        if (response.Code == 401)
                         {
                             Debug.LogError("You are not authorized to delete this requirement.");
                         }
                         else
                         {
-                            Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                            Debug.LogError(response.Code + ": " + responseBody);
                         }
                         return null;
                     }
@@ -447,11 +448,11 @@ namespace Org.Requirements_Bazaar.API
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
-                Response resp = await Rest.DeleteAsync(url, headers, -1, true);
-                string responseBody = await resp.GetResponseBody();
+                WebResponse<string> resp = await RestConnector.DeleteAsync(url, headers);
+                string responseBody = resp.Content;
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                    Debug.LogError(resp.Code + ": " + responseBody);
                     return null;
                 }
                 else
@@ -539,6 +540,10 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(toCreate);
 
+            //string json = "{ \"name\": \"" + name + "\", \"description\": \"" + description + "\", \"projectId\": \"" + projectId + "\", \"categories\": \"" + categories + "\" }";
+            Debug.Log(json);
+            Debug.Log(url);
+
             Dictionary<string, string> headers = new Dictionary<string, string>();
             if (ServiceManager.GetService<LearningLayersOidcService>() != null)
             {
@@ -562,12 +567,16 @@ namespace Org.Requirements_Bazaar.API
 
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+                headers.Add("Accept", "application/json");
 
-                Response resp = await Rest.PostAsync(url, json, headers, -1, true);
-                string responseBody = await resp.GetResponseBody();
+                Debug.Log("Authorization : Basic " + encodedAuthentificationInfo);
+                Debug.Log("access-token : " + ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
+
+                WebResponse<string> resp = await RestConnector.PostAsync(url, json, headers);
+                string responseBody = resp.Content;
                 if (!resp.Successful)
                 {
-                    Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                    Debug.LogError(resp.Code + ": " + responseBody);
                     return null;
                 }
                 else
@@ -641,11 +650,11 @@ namespace Org.Requirements_Bazaar.API
                 headers.Add("Authorization", "Basic " + encodedAuthentificationInfo);
                 headers.Add("access-token", ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
 
-                Response response = await Rest.PutAsync(url, json, headers, -1, true);
-                string responseBody = await response.GetResponseBody();
+                WebResponse<string> response = await RestConnector.PutAsync(url, json, headers);
+                string responseBody = response.Content;
                 if (!response.Successful)
                 {
-                    Debug.LogError(response.ResponseCode + ": " + responseBody);
+                    Debug.LogError(response.Code + ": " + responseBody);
                     return null;
                 }
                 else
@@ -671,11 +680,11 @@ namespace Org.Requirements_Bazaar.API
 
             string json = JsonUtility.ToJson(uploadableRequirement);
 
-            Response response = await Rest.PutAsync(url, json, null, -1, true);
-            string responseBody = await response.GetResponseBody();
+            WebResponse<string> response = await RestConnector.PutAsync(url, json);
+            string responseBody = response.Content;
             if (!response.Successful)
             {
-                Debug.LogError(response.ResponseCode + ": " + responseBody);
+                Debug.LogError(response.Code + ": " + responseBody);
                 return null;
             }
             else
