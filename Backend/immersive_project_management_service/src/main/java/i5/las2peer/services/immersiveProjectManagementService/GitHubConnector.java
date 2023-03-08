@@ -19,6 +19,7 @@ public class GitHubConnector {
 
     private static String baseUrl = "https://api.github.com";
 
+
     public static Response requestRepository(String owner, String repository)
     {
         String statusString;
@@ -34,7 +35,7 @@ public class GitHubConnector {
     public static APIResult<GitHubRepository> getRepository(String owner, String repositoryName)
     {
         try {
-
+            
             Response response = requestRepository(owner, repositoryName);
 
             if (response.getStatus() != 200 && response.getStatus() != 201) {
@@ -67,12 +68,13 @@ public class GitHubConnector {
 
         URI uri = uriBuilder.build(owner, repository);
         return Utilities.getResponse(uri);
+
     }
 
     public static APIResult<GitHubIssue[]> getIssuesInRepository(String owner, String repository, int page, int per_page)
     {
         try {
-
+            
             Response response = requestIssuesInRepository(owner, repository, page, per_page);
 
             if (response.getStatus() != 200 && response.getStatus() != 201) {
@@ -85,6 +87,7 @@ public class GitHubConnector {
             ObjectMapper mapper = new ObjectMapper();
             GitHubIssue[] issues = mapper.readValue(origJson, GitHubIssue[].class);
             return new APIResult<GitHubIssue[]>(response.getStatus(), issues);
+        
         }
         catch (IOException e)
         {
@@ -100,12 +103,14 @@ public class GitHubConnector {
 
         URI uri = uriBuilder.build(owner, repository, issueNumber);
         return Utilities.getResponse(uri);
+        
     }
 
     public static APIResult<GitHubIssue> getIssue(String owner, String repository, int issueNumber)
     {
         try {
 
+            
             Response response = requestIssue(owner, repository, issueNumber);
 
             if (response.getStatus() != 200 && response.getStatus() != 201) {
