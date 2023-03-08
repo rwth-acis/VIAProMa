@@ -280,16 +280,14 @@ namespace i5.VIAProMa.WebConnection
                 else
                 {
                     RequirementIssue[] requirements = JsonArrayUtility.FromJson<RequirementIssue>(responseBody);
-                    Debug.Log(requirements[0].Name);
                     ReqBazUser[][] contributors = (await GetContributorsFromRequirements(requirements)).Value;
-                    Debug.Log(contributors);
-                    foreach (ReqBazUser[] cont in contributors)
+                    ReqBazUser[][] developers = (await GetDevelopersFromRequirements(requirements)).Value;
+                    /*foreach (ReqBazUser[] cont in contributors)
                     {
-                        if(cont != null && cont[0] != null)
-                            Debug.Log(cont[0].userName);
-                    }
-                    Issue[] issues = Issue.fromRequirements(requirements, contributors);
-                    Debug.Log(issues[0].ClosedDateString);
+                        if(cont != null && cont.Length != 0)
+                            Debug.Log("Contributor " + cont[0].userName);
+                    }*/
+                    Issue[] issues = Issue.fromRequirements(requirements, contributors, developers);
                     // add to cache
                     foreach (Issue issue in issues)
                     {
@@ -480,7 +478,6 @@ namespace i5.VIAProMa.WebConnection
             Response resp = await Rest.GetAsync(path, null, -1, null, true);
             ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
             string responseBody = await resp.GetResponseBody();
-            responseBody = "{\"array\":" + responseBody + "}";
             if (!resp.Successful)
             {
                 Debug.LogError(resp.ResponseCode + ": " + responseBody);
@@ -490,6 +487,36 @@ namespace i5.VIAProMa.WebConnection
             {
                 Contributors contributors = JsonUtility.FromJson<Contributors>(responseBody);
                 return new ApiResult<ReqBazUser[]>(contributors.commentCreator);
+            }
+        }
+
+        public static async Task<ApiResult<ReqBazUser[][]>> GetDevelopersFromRequirements(RequirementIssue[] requirements)
+        {
+            ReqBazUser[][] developers = new ReqBazUser[requirements.Length][];
+            int i = 0;
+            foreach (RequirementIssue req in requirements)
+            {
+                developers[i] = (await GetDevelopersFromRequirement(req)).Value;
+                i++;
+            }
+            return new ApiResult<ReqBazUser[][]>(developers);
+        }
+
+        public static async Task<ApiResult<ReqBazUser[]>> GetDevelopersFromRequirement(RequirementIssue requirement)
+        {
+            string path = baseUrl + "requirements/" + requirement.Id + "/contributors";
+            Response resp = await Rest.GetAsync(path, null, -1, null, true);
+            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            string responseBody = await resp.GetResponseBody();
+            if (!resp.Successful)
+            {
+                Debug.LogError(resp.ResponseCode + ": " + responseBody);
+                return new ApiResult<ReqBazUser[]>(resp.ResponseCode, responseBody);
+            }
+            else
+            {
+                Contributors contributors = JsonUtility.FromJson<Contributors>(responseBody);
+                return new ApiResult<ReqBazUser[]>(contributors.developers);
             }
         }
 

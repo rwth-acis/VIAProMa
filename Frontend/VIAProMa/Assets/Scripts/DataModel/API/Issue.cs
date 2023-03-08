@@ -1,4 +1,5 @@
-﻿using i5.VIAProMa.DataModel.ReqBaz;
+﻿using i5.VIAProMa.DataModel.GitHub;
+using i5.VIAProMa.DataModel.ReqBaz;
 using i5.VIAProMa.UI.ListView.Core;
 using System;
 using System.Collections;
@@ -154,33 +155,76 @@ namespace i5.VIAProMa.DataModel.API
      * @param req The requirement from the requirements bazaar
      * @return corresponding CrossIssue
      */
-        public static Issue fromRequirement(RequirementIssue req, User[] contributors)
+        public static Issue fromRequirement(RequirementIssue req, User[] contributors, User[] developers)
         {
             string closedDate = "";
-            if (req.Status == IssueStatus.CLOSED)
+            IssueStatus state = req.Status;
+            if (state == IssueStatus.CLOSED)
                 closedDate = req.LastUpdatedDateString;
+            if (state == IssueStatus.OPEN && developers.Length > 0)
+                state = IssueStatus.IN_PROGRESS;
             Issue issue = new Issue(DataSource.REQUIREMENTS_BAZAAR,
                         req.Id,
                         req.Name,
                         req.Description,
                         req.ProjectId,
                         User.fromReqBazUser(req.Creator),
-                        req.Status,
+                        state,
                         req.CreationDateString,
                         //req.LastUpdatedDateString,
                         closedDate,
-                        contributors,
+                        developers,
                         contributors
                         );
                 return issue;
         }
 
-        public static Issue[] fromRequirements(RequirementIssue[] reqs, ReqBazUser[][] contributors)
+        public static Issue[] fromRequirements(RequirementIssue[] reqs, ReqBazUser[][] contributors, ReqBazUser[][] developers)
         {
             Issue[] issues = new Issue[reqs.Length];
             for (int i = 0; i < reqs.Length; i++)
             {
-                issues[i] = fromRequirement(reqs[i], User.fromReqBazUsers(contributors[i]));
+                issues[i] = fromRequirement(reqs[i], User.fromReqBazUsers(contributors[i]), User.fromReqBazUsers(developers[i]));
+            }
+            return issues;
+        }
+
+        /**
+     * Generates a CrossIssue object from a Requirement (from the Requirements Bazaar)
+     * @param req The requirement from the requirements bazaar
+     * @return corresponding CrossIssue
+     */
+        public static Issue fromGitHubIssue(GitHubIssue ghi)
+        {
+            IssueStatus status;
+            if (ghi.State.Equals("closed"))
+                status = IssueStatus.CLOSED;
+            else if (ghi.Assignees != null && ghi.Assignees.Length > 0)
+                status = IssueStatus.IN_PROGRESS;
+            else
+                status = IssueStatus.OPEN;
+            Issue issue = new Issue(DataSource.GITHUB,
+                        ghi.Number,
+                        ghi.Title,
+                        ghi.Body,
+                        ghi.ProjectId,
+                        User.fromGitHubUser(ghi.User),
+                        status,
+                        ghi.CreationDateString,
+                        //ghi.LastUpdatedDateString,
+                        "",
+                        User.fromGitHubUsers(ghi.Assignees),
+                        new User[0]
+                        );
+            return issue;
+        }
+
+        public static Issue[] fromGitHubIssues(GitHubIssue[] ghis)
+        {
+            Issue[] issues = new Issue[ghis.Length];
+            for (int i = 0; i < ghis.Length; i++)
+            {
+                issues[i] = fromGitHubIssue(ghis[i]);
             }
             return issues;
         }

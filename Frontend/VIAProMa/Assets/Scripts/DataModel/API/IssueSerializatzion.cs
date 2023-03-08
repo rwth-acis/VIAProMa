@@ -39,7 +39,7 @@ namespace i5.VIAProMa.DataModel.API
             }
             else // GitHub
             {
-                res = await GitHub.GetIssue(projectId, issueId);
+                res = await WebConnection.GitHub.GetIssue(projectId, issueId);
             }
             if (res.Successful)
             {
