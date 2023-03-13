@@ -124,15 +124,16 @@ namespace i5.VIAProMa.DataModel.GitHub
         /// Creats an issue with the given parameters
         /// </summary>
         /// <param name="source">The data source of the issue</param>
-        /// <param name="id">The id of the issue</param>
-        /// <param name="name">The name/ title of the issue</param>
-        /// <param name="description">A longer description of the issue's content</param>
+        /// <param name="number">The id of the issue</param>
+        /// <param name="title">The name/ title of the issue</param>
+        /// <param name="body">A longer description of the issue's content</param>
         /// <param name="projectId">The id of the project to which this issue belongs</param>
-        /// <param name="creator">The user that created the issue</param>
-        /// <param name="status">The status of the issue (open, in progress or closed)</param>
-        /// <param name="creationDate">The string representation of the point in time when the issue was created</param>
-        /// <param name="closedDate">The string representation of the point in time when the issue was closed</param>
-        /// <param name="developers">The array of developers who are assigned to the issue and are working on it</param>
+        /// <param name="user">The user that created the issue</param>
+        /// <param name="state">The status of the issue (open, in progress or closed)</param>
+        /// <param name="created_at">The string representation of the point in time when the issue was created</param>
+        /// <param name="updated_at">The string representation of the point in time when the issue was last updated</param>
+        /// <param name="closed_at">The string representation of the point in time when the issue was closed</param>
+        /// <param name="assignees">The array of developers who are assigned to the issue and are working on it</param>
         /// <param name="commenters">The array of users who have commented on the issue</param>
         public GitHubIssue(DataSource source, int number, string title, string body, int projectId, GitHubUser user, string state, string created_at, string updated_at, string closed_at, GitHubUser[] assignees, GitHubUser[] commenters)
         {

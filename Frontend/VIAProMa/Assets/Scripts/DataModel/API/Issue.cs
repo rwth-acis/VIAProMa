@@ -150,11 +150,11 @@ namespace i5.VIAProMa.DataModel.API
             this.commenters = commenters;
         }
 
-        /**
-     * Generates a CrossIssue object from a Requirement (from the Requirements Bazaar)
-     * @param req The requirement from the requirements bazaar
-     * @return corresponding CrossIssue
-     */
+        /// <summary>
+        /// Generates an Issue object from a Requirement (from the Requirements Bazaar)
+        /// </summary>
+        /// <param name="req">The requirement from the requirements bazaar</param>
+        /// <returns>The generic Issue</returns>
         public static Issue fromRequirement(RequirementIssue req, User[] contributors, User[] developers)
         {
             string closedDate = "";
@@ -179,6 +179,11 @@ namespace i5.VIAProMa.DataModel.API
                 return issue;
         }
 
+        /// <summary>
+        /// Generates an Issue object array from a Requirement array (from the Requirements Bazaar)
+        /// </summary>
+        /// <param name="req">The requirement array from the requirements bazaar</param>
+        /// <returns>The generic Issue array</returns>
         public static Issue[] fromRequirements(RequirementIssue[] reqs, ReqBazUser[][] contributors, ReqBazUser[][] developers)
         {
             Issue[] issues = new Issue[reqs.Length];
@@ -189,11 +194,11 @@ namespace i5.VIAProMa.DataModel.API
             return issues;
         }
 
-        /**
-     * Generates a CrossIssue object from a Requirement (from the Requirements Bazaar)
-     * @param req The requirement from the requirements bazaar
-     * @return corresponding CrossIssue
-     */
+        /// <summary>
+        /// Generates an Issue object from a GitHub Issue (from GitHub)
+        /// </summary>
+        /// <param name="ghi">The issue from github</param>
+        /// <returns>The generic</returns>
         public static Issue fromGitHubIssue(GitHubIssue ghi)
         {
             IssueStatus status;
@@ -219,6 +224,11 @@ namespace i5.VIAProMa.DataModel.API
             return issue;
         }
 
+        /// <summary>
+        /// Generates an Issue object array from a GitHub Issue array (from GitHub)
+        /// </summary>
+        /// <param name="ghis">The issue array from github</param>
+        /// <returns>The generic Issue array</returns>
         public static Issue[] fromGitHubIssues(GitHubIssue[] ghis)
         {
             Issue[] issues = new Issue[ghis.Length];

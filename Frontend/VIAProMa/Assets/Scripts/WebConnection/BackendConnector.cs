@@ -3,11 +3,15 @@ using Microsoft.MixedReality.Toolkit.Utilities;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using i5.Toolkit.Core.Utilities;
 
 namespace i5.VIAProMa.WebConnection
 {
     public static class BackendConnector
     {
+        public static IRestConnector RestConnector = new UnityWebRequestRestConnector();
+        public static IJsonSerializer JsonSerializer = new JsonUtilityAdapter();
+
         /// <summary>
         /// Sends the save data to the backend
         /// </summary>
@@ -16,8 +20,8 @@ namespace i5.VIAProMa.WebConnection
         /// <returns>Asynchronous operation</returns>
         public static async Task<bool> Save(string saveName, string saveJson)
         {
-            Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName, saveJson);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            WebResponse<string> resp = await RestConnector.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName, saveJson);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (resp.Successful)
             {
                 return true;
@@ -35,22 +39,15 @@ namespace i5.VIAProMa.WebConnection
         /// <returns>The save data</returns>
         public static async Task<ApiResult<string>> Load(string saveName)
         {
-            Response resp =
-                await Rest.GetAsync(
-                    ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName,
-                    null,
-                    -1,
-                    null,
-                    true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData/" + saveName, null);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (resp.Successful)
             {
-                return new ApiResult<string>(responseBody);
+                return new ApiResult<string>(resp.Content);
             }
             else
             {
-                return new ApiResult<string>(resp.ResponseCode, responseBody);
+                return new ApiResult<string>(resp.Code, resp.Content);
             }
         }
 
@@ -60,9 +57,9 @@ namespace i5.VIAProMa.WebConnection
         /// <returns>returns true if the server is reachable, false otherwise</returns>
         public static async Task<bool> Ping()
         {
-            Response resp = await Rest.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "ping");
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            if (resp.ResponseCode == 0)
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "ping");
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
+            if (resp.Code == 0)
             {
                 return false;
             }
@@ -74,8 +71,8 @@ namespace i5.VIAProMa.WebConnection
 
         public static async void SendLogs(string log)
         {
-            Response resp = await Rest.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "consoleLog", new UTF8Encoding().GetBytes(log));
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
+            WebResponse<string> resp = await RestConnector.PostAsync(ConnectionManager.Instance.BackendAPIBaseURL + "consoleLog", new UTF8Encoding().GetBytes(log));
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
         }
 
         /// <summary>
@@ -84,22 +81,16 @@ namespace i5.VIAProMa.WebConnection
         /// <returns></returns>
         public static async Task<ApiResult<string[]>> GetProjects()
         {
-            Response resp = await Rest.GetAsync(
-                ConnectionManager.Instance.BackendAPIBaseURL + "saveData",
-                null,
-                -1,
-                null,
-                true);
-            ConnectionManager.Instance.CheckStatusCode(resp.ResponseCode);
-            string responseBody = await resp.GetResponseBody();
+            WebResponse<string> resp = await RestConnector.GetAsync(ConnectionManager.Instance.BackendAPIBaseURL + "saveData", null);
+            ConnectionManager.Instance.CheckStatusCode(resp.Code);
             if (!resp.Successful)
             {
-                Debug.LogError(resp.ResponseCode + ": " + responseBody);
-                return new ApiResult<string[]>(resp.ResponseCode, responseBody);
+                Debug.LogError(resp.Code + ": " + resp.Content);
+                return new ApiResult<string[]>(resp.Code, resp.Content);
             }
             else
             {
-                string[] projects = JsonArrayUtility.FromJson<string>(responseBody);
+                string[] projects = Utilities.JsonArrayUtility.FromJson<string>(resp.Content);
                 return new ApiResult<string[]>(projects);
             }
         }
