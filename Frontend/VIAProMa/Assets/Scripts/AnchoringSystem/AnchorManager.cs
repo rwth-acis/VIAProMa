@@ -12,7 +12,7 @@ namespace i5.VIAProMa.Anchoring
         private bool useAnchor = true;
 
         /// <summary>
-        /// variables storing the corrent status of the anchoring settings
+        /// variables storing the current status of the anchoring settings
         /// </summary>
         public bool anchorLocked = false;
         public bool anchoringEnabled = false;

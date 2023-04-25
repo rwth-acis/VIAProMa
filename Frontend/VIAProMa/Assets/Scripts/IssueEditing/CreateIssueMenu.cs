@@ -6,6 +6,9 @@ using i5.VIAProMa.Shelves.IssueShelf;
 using TMPro;
 using i5.VIAProMa.DataModel.API;
 
+/// <summary>
+/// Contains the functionalities of the create button for the issue shelf
+/// </summary>
 public class CreateIssueMenu : MonoBehaviour
 {
     private IssuesLoader issueLoader;
@@ -22,7 +25,7 @@ public class CreateIssueMenu : MonoBehaviour
         projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
     }
 
-    // Called when the CreateIssue button on theCreateIssue Window is pressed
+    // Called when the CreateIssue button on the CreateIssue Window is pressed, creates an issue for the currently open project
     public async void CreateIssue()
     {
         switch (configurationMenu.ShelfConfiguration.SelectedSource)

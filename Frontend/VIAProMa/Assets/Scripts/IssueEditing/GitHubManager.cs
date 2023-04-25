@@ -14,7 +14,6 @@ using System.Linq;
 
 namespace Org.Git_Hub.API
 {
-
     public static class GitHubManager
     {
         public static event EventHandler RequestSent; 

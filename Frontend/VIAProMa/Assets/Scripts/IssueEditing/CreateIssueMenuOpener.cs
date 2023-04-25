@@ -7,6 +7,9 @@ using System.Collections;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Login;
 
+/// <summary>
+/// Manages the active state of the create button of issue shelf
+/// </summary>
 public class CreateIssueMenuOpener : MonoBehaviour
 {
     [Header("UI Elements")]

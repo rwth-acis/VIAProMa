@@ -6,6 +6,7 @@ using Org.Git_Hub.API;
 using i5.VIAProMa.UI.InputFields;
 using System;
 
+// Manages the Edit-Window for Issue Cards allowing users to update title and description of issues
 public class EditIssueMenu : MonoBehaviour
 {
     [SerializeField] private TextMeshPro requirement_title;
@@ -64,7 +65,7 @@ public class EditIssueMenu : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Called when the confirm button on the issue edit window is pressed - Requirement Bazaar UI
+    // Called when the confirm button on the issue edit window is pressed, updates values - Requirement Bazaar UI
     public async void EditRequirement()
     {
         await RequirementsBazaarManager.EditRequirement(issueID, projectTracker.currentProjectID, requirement_title.text, requirement_description.text);
@@ -74,7 +75,7 @@ public class EditIssueMenu : MonoBehaviour
         Close();
     }
 
-    // Called when the confirm button on the issue edit window is pressed - GitHub UI
+    // Called when the confirm button on the issue edit window is pressed, updates values - GitHub UI
     public async void EditIssue()
     {
         await GitHubManager.EditIssue(issueID, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);
