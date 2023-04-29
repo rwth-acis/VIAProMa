@@ -6,6 +6,9 @@ using i5.VIAProMa.Login;
 using System.Collections.Generic;
 using i5.VIAProMa.Shelves.IssueShelf;
 
+/// <summary>
+/// Contains the functionalities of the edit button for issue cards
+/// </summary>
 public class EditButton : IssueButton
 {
     [SerializeField] private TextMeshPro issueName;
@@ -18,7 +21,7 @@ public class EditButton : IssueButton
     private ProjectTracker projectTracker;
 
     /// <summary>
-    /// Determines whether the issue card is a child of the issue shelf
+    /// Determines whether the issue card is a child of the issue shelf or if it has been dragged out of the shelf
     /// </summary>
     public bool BelongsToShelf
     {
@@ -27,7 +30,9 @@ public class EditButton : IssueButton
             return this.transform.parent.GetComponentInParent<IssuesLoader>() != null;
         }
     }
-
+    /// <summary>
+    /// Sets up the shelf and disables edit buttons for freely placed issue cards
+    /// </summary>
     public void Start()
     {
         if (!BelongsToShelf)
@@ -45,8 +50,9 @@ public class EditButton : IssueButton
         }
     }
 
-
-    // Close the EditIssue Window
+    /// <summary>
+    /// Close the EditIssue Window
+    /// </summary>
     public void CloseMenu()
     {
         if (editMenu != null)
@@ -58,8 +64,9 @@ public class EditButton : IssueButton
         isOpen = false;
     }
 
-
-    // Open the EditIssue Window
+    /// <summary>
+    /// Open the EditIssue Window for the corresponding Data source
+    /// </summary>
     public void OpenMenu()
     {
         if (editMenu != null)
@@ -84,8 +91,9 @@ public class EditButton : IssueButton
         isOpen = true;
     }
 
-
-    // Either open or close the Edit Issue Window depending on the current state
+    /// <summary>
+    /// Either open or close the Edit Issue Window depending on the current state
+    /// </summary>
     public void OpenEditIssueMenu()
     {
         if (editMenu != null)

@@ -8,6 +8,9 @@ using i5.VIAProMa.Login;
 using i5.VIAProMa.DataModel.API;
 using System.Collections.Generic;
 
+/// <summary>
+/// Contains the functionalities of the delete button for issue cards
+/// </summary>
 public class DeleteButton : IssueButton, IMixedRealityInputHandler
 {
     [SerializeField] GameObject indicator;
@@ -31,6 +34,9 @@ public class DeleteButton : IssueButton, IMixedRealityInputHandler
         }
     }
 
+    /// <summary>
+    /// Sets up the shelf and disables delete buttons for freely placed issue cards
+    /// </summary>
     public void Start()
     {
         if (!BelongsToShelf)
@@ -45,7 +51,9 @@ public class DeleteButton : IssueButton, IMixedRealityInputHandler
         }
     }
 
-    // On Input, start timer until the issue is deleted or the input has stopped, size of indicator is adjusted to delta time
+    /// <summary>
+    /// On Input, start timer until the issue is deleted or the input has stopped, size of indicator is adjusted to delta time
+    /// </summary>
     private void Update()
     {
         if (holding)
@@ -60,8 +68,9 @@ public class DeleteButton : IssueButton, IMixedRealityInputHandler
         }
         indicator.transform.localScale = new Vector3(4.5f * timer, 4.5f * timer, 0);
     }
-
-    // Called when the delete button on the issue bar is pressed
+    /// <summary>
+    /// Called when the delete button on the issue card is pressed, deletes the issue card
+    /// </summary>
     public async void DeleteRequirement()
     {
         projectTracker.OnlastDeletedChanged(resourceID);

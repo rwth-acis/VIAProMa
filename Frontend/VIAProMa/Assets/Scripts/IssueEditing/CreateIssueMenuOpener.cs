@@ -7,6 +7,9 @@ using System.Collections;
 using i5.VIAProMa.DataModel.API;
 using i5.VIAProMa.Login;
 
+/// <summary>
+/// Manages the active state of the create button of issue shelf
+/// </summary>
 public class CreateIssueMenuOpener : MonoBehaviour
 {
     [Header("UI Elements")]
@@ -181,7 +184,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
         }
     }
 
-    //Close the CreateIssue Window
+    /// <summary>
+    /// Close the CreateIssue Window
+    /// </summary>
     public void CloseMenu()
     {
         if(createIssueMenu != null)
@@ -191,7 +196,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
         isOpen = false;
     }
 
-    //Open the CreateIssue Window if the configuration of project and category is valid, otherwise enable the notification
+    /// <summary>
+    /// Open the CreateIssue Window if the configuration of project and category is valid, otherwise enable the notification
+    /// </summary>
     public void OpenMenu()
     {
         if (createIssueMenu != null)
@@ -201,7 +208,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
         isOpen = true;
     }
 
-    //Set the notification to enabled for 3 seconds
+    /// <summary>
+    /// Set the notification to enabled for 3 seconds
+    /// </summary>
     public void EnableNotification()
     {
         if (notification != null)
@@ -211,6 +220,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
         StartCoroutine(WaitUntilDeactivate());
     }
 
+    /// <summary>
+    /// Enables the notification after 3 seconds
+    /// </summary>
     IEnumerator WaitUntilDeactivate()
     {
         yield return new WaitForSeconds(3f);
@@ -220,7 +232,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
         }
     }
 
-    //Disable the Create Issue Button
+    /// <summary>
+    /// Disable the Create Issue Button
+    /// </summary>
     public void DisableButton()
     {
         if (gameObject != null)
@@ -236,12 +250,17 @@ public class CreateIssueMenuOpener : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Disables the button 
+    /// </summary>
     public void OnDestroy()
     {
         DisableButton();
     }
 
-    //Enable the Create Issue Button
+    /// <summary>
+    /// Enable the Create Issue Button
+    /// </summary>
     public void EnableButton()
     {
         gameObject.GetComponent<Interactable>().IsEnabled = true;
@@ -251,7 +270,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
         }
     }
 
-    //Either open or close the Create Issue Window depending on the current state
+    /// <summary>
+    /// Either open or close the Create Issue Window depending on the current state
+    /// </summary>
     public void OpenCreateIssueMenu()
     {
         if(createIssueMenu != null)
@@ -267,7 +288,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
         }
     }
 
-    //Checks if the Button should be Enabled if a RequirementBazaar Configuration is enabled
+    /// <summary>
+    /// Checks if the Button should be Enabled if a RequirementBazaar Configuration is enabled
+    /// </summary>
     private void RequirementBazaarCheck()
     {
         if (isloggedIn_RequirementBazaar && isProjectLoaded_RequirementBazaar)
@@ -276,7 +299,9 @@ public class CreateIssueMenuOpener : MonoBehaviour
             DisableButton();
     }
 
-    //Checks if the Button should be Enabled if a GitHub Configuration is enabled
+    /// <summary>
+    /// Checks if the Button should be Enabled if a GitHub Configuration is enabled
+    /// </summary>
     private void GitHubCheck()
     {
         if (isloggedIn_GitHub && isProjectLoaded_GitHub)

@@ -8,6 +8,9 @@ namespace i5.VIAProMa.DataModel.ReqBaz
     [Serializable]
     public class Project
     {
+        /// <summary>
+        /// The values of a project
+        /// </summary>
         public int id;
         public string name;
         public string description;

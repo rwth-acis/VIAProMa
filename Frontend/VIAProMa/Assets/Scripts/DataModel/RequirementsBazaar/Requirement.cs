@@ -7,6 +7,9 @@ namespace i5.VIAProMa.DataModel.ReqBaz
     /// </summary>
     public class Requirement : IListViewItemData, IUninitializable
     {
+        /// <summary>
+        /// The values of the requirement
+        /// </summary>
         public int id;
         public string name;
         public string description;
@@ -23,11 +26,17 @@ namespace i5.VIAProMa.DataModel.ReqBaz
         public int downVotes;
         public string userVoted;
 
+        /// <summary>
+        /// Whether or not the requirement has been marked as realized
+        /// </summary>
         public bool IsRealized
         {
             get { return !string.IsNullOrEmpty(realized); }
         }
 
+        /// <summary>
+        /// Whether or not the requirement has been initialized
+        /// </summary>
         public bool IsUninitialized
         {
             get

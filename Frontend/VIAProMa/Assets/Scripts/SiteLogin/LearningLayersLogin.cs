@@ -12,12 +12,15 @@ using i5.VIAProMa.UI.InputFields;
 using i5.VIAProMa.UI.DropdownMenu;
 using i5.VIAProMa.DataModel.ReqBaz;
 
+/// <summary>
+/// Provides functionalities to login into GitHub and updating the coupled UI according to the login status
+/// </summary>
 public class LearningLayersLogin : ProviderLogin
 {
     [Header("Client Credentials")]
     [SerializeField] public ClientDataObject clientDataObject;
 
-    [Header("UI")]
+    [Header("UI Elements")]
     [SerializeField] public TextMeshPro loginCaption;
     [SerializeField] public TextMeshPro statusCaption;
     [SerializeField] public GameObject statusLed;
@@ -28,10 +31,14 @@ public class LearningLayersLogin : ProviderLogin
     [SerializeField] private CategoryDropdownMenu reqBazCategoryDropdownMenu;
     [SerializeField] private ShelfConfigurationMenu configurationMenu;
 
+    // Stores the references to the shelf and currently open project
     private ShelfConfigurationMenu scm;
     private IssuesLoader issueLoader;
     private ProjectTracker projectTracker;
 
+    /// <summary>
+    /// Subscribes to the login events and initializes LED and references
+    /// </summary>
     public override void Start()
     {
         issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
@@ -43,7 +50,9 @@ public class LearningLayersLogin : ProviderLogin
         scm = this.transform.parent.parent.GetComponent<ShelfConfigurationMenu>();
     }
 
-
+    /// <summary>
+    /// Stores relevant references
+    /// </summary>
     public override void Awake()
     {
         statusLedRenderer = statusLed?.GetComponent<Renderer>();

@@ -4,6 +4,9 @@ using i5.VIAProMa.DataModel.ReqBaz;
 using i5.VIAProMa.DataModel.API;
 using System;
 
+/// <summary>
+/// Stores all values of the project that is currently open on the shelf
+/// </summary>
 public class ProjectTracker : MonoBehaviour
 {
     [Header("References")]

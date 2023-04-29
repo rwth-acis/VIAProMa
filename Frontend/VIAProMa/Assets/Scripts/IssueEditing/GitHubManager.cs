@@ -14,7 +14,6 @@ using System.Linq;
 
 namespace Org.Git_Hub.API
 {
-
     public static class GitHubManager
     {
         public static event EventHandler RequestSent; 
@@ -102,6 +101,7 @@ namespace Org.Git_Hub.API
             }
         }
 
+        /// <summary>
         /// Gets the issues of a GitHub repository on the given page
         /// </summary>
         /// <param name="owner">The owner of the repository</param>
@@ -162,6 +162,9 @@ namespace Org.Git_Hub.API
 
         #endregion PATCH
 
+        /// <summary>
+        /// Processes the sending and answer of a webrequest
+        /// </summary>
         private static async Task<Response> ProcessRequestAsync(UnityWebRequest webRequest, int timeout, Dictionary<string, string> headers = null, bool readResponseData = false, CertificateHandler certificateHandler = null, bool disposeCertificateHandlerOnDispose = true)
         {
             if (timeout > 0)

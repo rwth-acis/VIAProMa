@@ -12,6 +12,9 @@ namespace Org.Requirements_Bazaar.DataModel
     [Serializable]
     public class Requirement
     {
+        /// <summary>
+        /// The values of the requirement
+        /// </summary>
         [SerializeField] private int id;
         [SerializeField] private string name;
         [SerializeField] private string description;

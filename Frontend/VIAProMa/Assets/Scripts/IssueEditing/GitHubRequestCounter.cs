@@ -12,11 +12,18 @@ public class GitHubRequestCounter : MonoBehaviour
 {
     [SerializeField] NotificationSystem notificationWidget;
     [SerializeField] bool outputRequestNumberIntoLog;
+
+    /// <summary>
+    /// Initial counter values
+    /// </summary>
     private int requestLimit = 60;
     private int requestCount = 0;
     
     DateTime firstRequestAt;
 
+    /// <summary>
+    /// Initializes counter
+    /// </summary>
     public void Start()
     {
         ServiceManager.GetService<GitHubOidcService>().LoginCompleted += LoginCompleted;
@@ -27,6 +34,9 @@ public class GitHubRequestCounter : MonoBehaviour
         ResetCount();
     }
 
+    /// <summary>
+    /// Increases a counter for each web request send to GitHub, prints the counter of every 5 requests
+    /// </summary>
     public void RequestSent(object sender, System.EventArgs e)
     {
         DateTime now = DateTime.Now;
@@ -49,6 +59,9 @@ public class GitHubRequestCounter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Reminds the user to log into GitHub to increase the number of allowed requests per hour
+    /// </summary>
     IEnumerator ShowMessage()
     {
         notificationWidget.ShowMessage("It is recommended to log into GitHub.");
@@ -56,6 +69,9 @@ public class GitHubRequestCounter : MonoBehaviour
         notificationWidget.HideMessage();
     }
 
+    /// <summary>
+    /// Resets the counter
+    /// </summary>
     public void ResetCount()
     {
         requestCount = 0;

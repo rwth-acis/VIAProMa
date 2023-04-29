@@ -6,11 +6,21 @@ using i5.VIAProMa.Shelves.IssueShelf;
 using TMPro;
 using i5.VIAProMa.DataModel.API;
 
+/// <summary>
+/// Contains the functionalities of the create button for the issue shelf
+/// </summary>
 public class CreateIssueMenu : MonoBehaviour
 {
+
+    /// <summary>
+    /// References to the project that is currently open
+    /// </summary>
     private IssuesLoader issueLoader;
     private ProjectTracker projectTracker;
 
+    /// <summary>
+    /// UI components and the configuration menu
+    /// </summary>
     [SerializeField] private ShelfConfigurationMenu configurationMenu;
     [SerializeField] private CreateIssueMenuOpener opener;
     [SerializeField] private TextMeshPro issueName;
@@ -22,7 +32,9 @@ public class CreateIssueMenu : MonoBehaviour
         projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
     }
 
-    // Called when the CreateIssue button on theCreateIssue Window is pressed
+    /// <summary>
+    /// Called when the CreateIssue button on the CreateIssue Window is pressed, creates an issue for the currently open project
+    /// </summary>
     public async void CreateIssue()
     {
         switch (configurationMenu.ShelfConfiguration.SelectedSource)
