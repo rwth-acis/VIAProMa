@@ -83,13 +83,13 @@ namespace Org.Requirements_Bazaar.API
         }
 
         /// <summary>
-        /// Retrieves the requirements of a project
+        /// Retrieves the requirements of a project per page
         /// </summary>
         /// <param name="projectId">The id of the project which contains the requirements</param>
         /// <param name="page">The page number of the requirements list</param>
         /// <param name="per_page">The number of requirements on one page</param>
         /// <param name="searchFilter">A search query string</param>
-        /// <param name="sortingMode">How the requirements should be sorteds</param>
+        /// <param name="sortingMode">How the requirements should be sorted</param>
         /// <returns></returns>
         public static async Task<Requirement[]> GetProjectRequirements (int projectId, int page = 0, int per_page = 10, string search = "", RequirementState filterState = RequirementState.ALL, RequirementsSortingMode sortMode = RequirementsSortingMode.DEFAULT)
         {
@@ -126,6 +126,14 @@ namespace Org.Requirements_Bazaar.API
             }
         }
 
+        /// <summary>
+        /// Retrieves the requirements of a project based on a search query
+        /// </summary>
+        /// <param name="projectId">The id of the project which contains the requirements</param>
+        /// <param name="search">A search query string</param>
+        /// <param name="filterState">The state of the filter</param>
+        /// <param name="sortMode">How the requirements should be sorted</param>
+        /// <returns></returns>
         public static async Task<Requirement[]> GetAllProjectRequirements(int projectId, string search = "", RequirementState filterState = RequirementState.ALL, RequirementsSortingMode sortMode = RequirementsSortingMode.DEFAULT)
         {
             string url = baseUrl + "projects/" + projectId.ToString() + "/requirements";

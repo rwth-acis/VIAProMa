@@ -27,7 +27,9 @@ public abstract class IssueButton : MonoBehaviour
         InitialLoginStatusCheck(sources);
     }
 
-    // Subscribes to the login/out events corresponding to sources
+    /// <summary>
+    /// Subscribes to the login/out events corresponding to sources
+    /// </summary>
     private void SubscribeToServices(List<DataSource> sources)
     {
         foreach (var dataSource in sources)
@@ -42,7 +44,9 @@ public abstract class IssueButton : MonoBehaviour
         }
     }
 
-    // Sets this GameObject active when the provided datasource equals the datasource of this GameObject. For handling login events.
+    /// <summary>
+    /// Sets this GameObject active when the provided datasource equals the datasource of this GameObject. For handling login events.
+    /// </summary>
     private EventHandler RecieveLoginEvent(DataSource dataSource)
     {
         return (x, y) =>
@@ -52,7 +56,9 @@ public abstract class IssueButton : MonoBehaviour
         };
     }
 
-    //Sets this GameObject inactive when the provided datasource equals the datasource of this GameObject. For handling logout events.
+    /// <summary>
+    /// Sets this GameObject inactive when the provided datasource equals the datasource of this GameObject. For handling logout events.
+    /// </summary>
     private EventHandler RecieveLogoutEvent(DataSource dataSource)
     {
         return (x, y) =>
@@ -62,7 +68,9 @@ public abstract class IssueButton : MonoBehaviour
         };
     }
 
-    // Sets the button active status corresponding to the current source status
+    /// <summary>
+    /// Sets the button active status corresponding to the current source status
+    /// </summary>
     private void InitialLoginStatusCheck(List<DataSource> sources)
     {
         if (sources.Contains(source.Content.Source))
@@ -75,7 +83,9 @@ public abstract class IssueButton : MonoBehaviour
         }
     }
 
-    // Converts the source enum to the corresponding service
+    /// <summary>
+    /// Converts the source enum to the corresponding service
+    /// </summary>
     private OpenIDConnectService DataSourceToService(DataSource dataSource)
     {
         switch (dataSource)
@@ -96,7 +106,9 @@ public abstract class IssueButton : MonoBehaviour
         return null;
     }
 
-    // Unsubscribes from all login/out events that where subscribed to in the setup.
+    /// <summary>
+    /// Unsubscribes from all login/out events that where subscribed to in the setup.
+    /// </summary>
     private void UnsubscribeFromAllServices()
     {
         foreach (var handlerPair in subscribedEventHandlers)

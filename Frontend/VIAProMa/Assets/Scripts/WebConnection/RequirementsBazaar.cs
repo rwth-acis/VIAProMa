@@ -21,7 +21,9 @@ namespace i5.VIAProMa.WebConnection
         /// <summary>
         /// Gets the available projects of the Requirements Bazaar
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// The result of the request
+        /// </returns>
         public static async Task<ApiResult<Project[]>> GetProjects()
         {
             Debug.Log("Requirements Baazar: GetProjects");
@@ -60,7 +62,7 @@ namespace i5.VIAProMa.WebConnection
                     Debug.Log("Service not null");
                 }
 
-                // decode the access token
+                // decodes the access token
                 string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
                 if (decodedToken == "")
                 {
@@ -80,7 +82,6 @@ namespace i5.VIAProMa.WebConnection
                     try
                     {
                         Response resp = await Rest.GetAsync(
-                    //ConnectionManager.Instance.BackendAPIBaseURL + "requirementsBazaar/projects/?state=all&per_page=500",
                     "https://requirements-bazaar.org/bazaar/projects/?state=all&per_page=500",
                     headers,
                     -1,
@@ -145,7 +146,7 @@ namespace i5.VIAProMa.WebConnection
                     Debug.Log("Service not null");
                 }
 
-                // decode the access token
+                // decodes the access token
                 string decodedToken = JWT_Decoding(ServiceManager.GetService<LearningLayersOidcService>().AccessToken);
                 if (decodedToken == "")
                 {

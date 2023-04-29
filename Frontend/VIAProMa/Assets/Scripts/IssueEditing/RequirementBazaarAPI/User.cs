@@ -9,6 +9,10 @@ namespace Org.Requirements_Bazaar.DataModel
     [Serializable]
     public class User
     {
+
+        /// <summary>
+        /// The values of the user
+        /// </summary>
         [SerializeField] private int id;
         [SerializeField] private string userName;
         [SerializeField] private string firstName;

@@ -7,8 +7,12 @@ using i5.VIAProMa.UI;
 
 namespace i5.VIAProMa.Anchoring
 {
+    /// <summary>
+    /// Stores and mananges the status and settings of the anchoring system
+    /// </summary>
     public class AnchorManager : Singleton<AnchorManager>
     {
+        // Whether or not the anchoring system is enabled
         private bool useAnchor = true;
 
         /// <summary>
@@ -28,8 +32,9 @@ namespace i5.VIAProMa.Anchoring
         AnchoringMenu menu;
 
         /// <summary>
-        /// Adds a game object to the anchor as a child
+        /// Called to add game objects to the anchor as a child
         /// </summary>
+        /// <param name="objectToAttach">The object to be attached</param>
         public void AttachToAnchor(GameObject objectToAttach)
         {
             if (useAnchor)

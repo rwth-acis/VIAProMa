@@ -50,8 +50,9 @@ public class EditButton : IssueButton
         }
     }
 
-
-    // Close the EditIssue Window
+    /// <summary>
+    /// Close the EditIssue Window
+    /// </summary>
     public void CloseMenu()
     {
         if (editMenu != null)
@@ -63,8 +64,9 @@ public class EditButton : IssueButton
         isOpen = false;
     }
 
-
-    // Open the EditIssue Window
+    /// <summary>
+    /// Open the EditIssue Window for the corresponding Data source
+    /// </summary>
     public void OpenMenu()
     {
         if (editMenu != null)
@@ -89,8 +91,9 @@ public class EditButton : IssueButton
         isOpen = true;
     }
 
-
-    // Either open or close the Edit Issue Window depending on the current state
+    /// <summary>
+    /// Either open or close the Edit Issue Window depending on the current state
+    /// </summary>
     public void OpenEditIssueMenu()
     {
         if (editMenu != null)

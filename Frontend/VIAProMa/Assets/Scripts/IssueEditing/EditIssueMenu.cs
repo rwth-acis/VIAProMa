@@ -6,7 +6,9 @@ using Org.Git_Hub.API;
 using i5.VIAProMa.UI.InputFields;
 using System;
 
-// Manages the Edit-Window for Issue Cards allowing users to update title and description of issues
+/// <summary>
+/// Manages the Edit-Window for Issue Cards allowing users to update title and description of issues
+/// </summary>
 public class EditIssueMenu : MonoBehaviour
 {
     [SerializeField] private TextMeshPro requirement_title;
@@ -17,7 +19,7 @@ public class EditIssueMenu : MonoBehaviour
     [SerializeField] public GameObject requirementBazaar_UI;
     [SerializeField] public GameObject gitHub_UI;
 
-
+    // References to the project that is currently open
     private ProjectTracker projectTracker;
     private IssuesLoader issueLoader;
 
@@ -34,14 +36,18 @@ public class EditIssueMenu : MonoBehaviour
     /// </summary>
     public event EventHandler<IssueEditedArgs> IssueEdited;
 
-    //Set references
+    /// <summary>
+    /// Set references
+    /// </summary>
     public void Start()
     {
         issueLoader = GameObject.FindObjectOfType<IssuesLoader>();
         projectTracker = GameObject.FindObjectOfType<ProjectTracker>();
     }
 
-    //Sets the default text to the current requirement information of the Requirement Bazaar UI
+    /// <summary>
+    /// Sets the default text to the current requirement information of the Requirement Bazaar UI
+    /// </summary>
     public void SetText_RequirementBazaar()
     {
         requirement_title.text = issueName.text;
@@ -50,7 +56,9 @@ public class EditIssueMenu : MonoBehaviour
         inputField_Description_ReqBaz.Text = issueDescription.text;
     }
 
-    //Sets the default text to the current requirement information of the Requirement Bazaar UI
+    /// <summary>
+    /// Sets the default text to the current requirement information of the Requirement Bazaar UI
+    /// </summary>
     public void SetText_GitHub()
     {
         issue_title.text = issueName.text;
@@ -59,13 +67,17 @@ public class EditIssueMenu : MonoBehaviour
         inputField_Description_GitHub.Text = issueDescription.text;
     }
 
-    //Closes the issue edit window
+    /// <summary>
+    /// Closes the issue edit window
+    /// </summary>
     public void Close()
     {
         gameObject.SetActive(false);
     }
 
-    // Called when the confirm button on the issue edit window is pressed, updates values - Requirement Bazaar UI
+    /// <summary>
+    /// Called when the confirm button on the issue edit window is pressed, updates values - Requirement Bazaar UI
+    /// </summary>
     public async void EditRequirement()
     {
         await RequirementsBazaarManager.EditRequirement(issueID, projectTracker.currentProjectID, requirement_title.text, requirement_description.text);
@@ -75,7 +87,9 @@ public class EditIssueMenu : MonoBehaviour
         Close();
     }
 
-    // Called when the confirm button on the issue edit window is pressed, updates values - GitHub UI
+    /// <summary>
+    /// Called when the confirm button on the issue edit window is pressed, updates values - GitHub UI
+    /// </summary>
     public async void EditIssue()
     {
         await GitHubManager.EditIssue(issueID, projectTracker.currentRepositoryOwner,projectTracker.currentRepositoryName, issue_title.text, issue_description.text);

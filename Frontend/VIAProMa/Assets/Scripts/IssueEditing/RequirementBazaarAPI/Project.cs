@@ -7,9 +7,16 @@ using UnityEngine;
 namespace Org.Requirements_Bazaar.DataModel
 {
 
+    /// <summary>
+    /// Represents a project in the Requirements Bazaar
+    /// </summary>
     [Serializable]
     public class Project
     {
+
+        /// <summary>
+        /// The values of a project
+        /// </summary>
         [SerializeField] private int id;
         [SerializeField] private string name;
         [SerializeField] private string description;

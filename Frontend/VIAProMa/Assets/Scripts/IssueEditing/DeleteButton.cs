@@ -68,8 +68,9 @@ public class DeleteButton : IssueButton, IMixedRealityInputHandler
         }
         indicator.transform.localScale = new Vector3(4.5f * timer, 4.5f * timer, 0);
     }
-
-    // Called when the delete button on the issue card is pressed, deletes the issue card
+    /// <summary>
+    /// Called when the delete button on the issue card is pressed, deletes the issue card
+    /// </summary>
     public async void DeleteRequirement()
     {
         projectTracker.OnlastDeletedChanged(resourceID);

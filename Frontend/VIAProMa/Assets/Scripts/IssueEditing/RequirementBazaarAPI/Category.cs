@@ -6,9 +6,16 @@ using UnityEngine;
 namespace Org.Requirements_Bazaar.DataModel
 {
 
+    /// <summary>
+    /// Represents a category in the Requirements Bazaar
+    /// </summary>
     [Serializable]
     public class Category
     {
+
+        /// <summary>
+        /// The values for a category
+        /// </summary>
         [SerializeField] private int id;
         [SerializeField] private string name;
         [SerializeField] private string description;
@@ -124,6 +131,13 @@ namespace Org.Requirements_Bazaar.DataModel
 
         #endregion
 
+
+        /// <summary>
+        /// The Instantiator of a category
+        /// </summary>
+        /// <param name="name">The name of the category</param>
+        /// <param name="description">the description for the category</param>
+        /// <param name="projectId">the id for the category</param>
         public Category(string name, string description, int projectId)
         {
             this.name = name;

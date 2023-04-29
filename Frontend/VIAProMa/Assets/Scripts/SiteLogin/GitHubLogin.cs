@@ -6,12 +6,15 @@ using i5.Toolkit.Core.OpenIDConnectClient;
 using TMPro;
 using i5.VIAProMa.Login;
 
+/// <summary>
+/// Provides functionalities to login into GitHub and updating the coupled UI according to the login status
+/// </summary>
 public class GitHubLogin : ProviderLogin
 {
     [Header("Client Credentials")]
     [SerializeField] public ClientDataObject clientDataObject;
 
-    [Header("UI")]
+    [Header("UI Elements")]
     [SerializeField] public TextMeshPro loginCaption;
     [SerializeField] public TextMeshPro statusCaption;
     [SerializeField] public GameObject statusLed;
@@ -19,6 +22,9 @@ public class GitHubLogin : ProviderLogin
     [SerializeField] public Color loggedOutColor = new Color(188f / 255f, 2f / 255f, 0f); // red
 
 
+    /// <summary>
+    /// Subscribes to the login events and initializes LED
+    /// </summary>
     public override void Start()
     {
         ServiceManager.GetService<GitHubOidcService>().LoginCompleted += LoginScript_LoginCompleted;
@@ -26,7 +32,9 @@ public class GitHubLogin : ProviderLogin
         SetLED(false);
     }
 
-
+    /// <summary>
+    /// Stores relevant references
+    /// </summary>
     public override void Awake()
     {
         statusLedRenderer = statusLed?.GetComponent<Renderer>();
@@ -34,7 +42,7 @@ public class GitHubLogin : ProviderLogin
     }
 
     /// <summary>
-    /// Adjusts the interface to the logged in status
+    /// Adjusts the interface to the logged in status, setting the caption text and LED color
     /// </summary>
     /// <param name="sender">Sender of event</param>
     /// <param name="e">Event arguments</param>
