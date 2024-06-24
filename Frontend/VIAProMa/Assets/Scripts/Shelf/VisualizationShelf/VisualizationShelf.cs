@@ -15,6 +15,10 @@ namespace i5.VIAProMa.Shelves.Visualizations
         [SerializeField] private GridObjectCollection shelfGrid;
         [SerializeField] private GameObject boundingBox;
 
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
+        private Vector3 startPosition;
+
         private List<GameObject> widgetInstances;
 
         protected override void Awake()
@@ -35,7 +39,11 @@ namespace i5.VIAProMa.Shelves.Visualizations
 
             DisplayWidgets();
             boundingBox.SetActive(false);
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
         }
+
+        /* -------------------------------------------------------------------------- */
 
         private void DisplayWidgets()
         {
@@ -72,7 +80,8 @@ namespace i5.VIAProMa.Shelves.Visualizations
 
         public void Close()
         {
-            gameObject.SetActive(false);
+            ICommand close = new DeleteObjectCommand(gameObject, null);
+            UndoRedoManager.Execute(close);
         }
 
         public void MoveShelf()
@@ -80,10 +89,13 @@ namespace i5.VIAProMa.Shelves.Visualizations
             bool isActive = boundingBox.activeSelf;
             if (isActive)
             {
+                ICommand move = new MoveObjectCommand(startPosition, gameObject.transform.localPosition, gameObject);
+                UndoRedoManager.Execute(move);
                 boundingBox.SetActive(false);
             }
             else
             {
+                startPosition = gameObject.transform.localPosition;
                 boundingBox.SetActive(true);
             }
         }

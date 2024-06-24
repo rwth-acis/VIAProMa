@@ -14,10 +14,27 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
         private IMixedRealityPointer activePointer;
         private Vector3 pointerStartPosition;
         private Vector3 kanbanBoardColumnStartPosition;
+        private Vector3 kanbanBoardColumnEndPosition;
         private float startLength;
+
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
+
+        private float oldHeight;
+        private float oldWidth;
+        private float newHeight;
+        private float newWidth;
+
+        float handDelta;
+        float newLength;
+        float previousWidth;
+        float previousHeight;
 
         private void Awake()
         {
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+
             if (kanbanBoardController == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(kanbanBoardController));
@@ -26,6 +43,7 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
 
         public void OnPointerClicked(MixedRealityPointerEventData eventData)
         {
+
         }
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
@@ -54,7 +72,6 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 Vector3 delta = activePointer.Position - pointerStartPosition;
-                float handDelta;
                 if (xAxis)
                 {
                     handDelta = Vector3.Dot(kanbanBoardController.transform.right, delta);
@@ -69,9 +86,12 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                 }
                 if (xAxis)
                 {
-                    float newLength = startLength + handDelta;
-                    float previousWidth = kanbanBoardController.Width;
+                    newLength = startLength + handDelta;
+                    oldWidth = startLength;
+                    previousWidth = kanbanBoardController.Width;
                     kanbanBoardController.Width = newLength;
+                    newWidth = newLength;
+
                     if (kanbanBoardController.Width != previousWidth) // only move if the width was actually changed (it could be unaffected if min or max size was reached)
                     {
                         Vector3 pivotCorrection = new Vector3(handDelta / 2f, 0, 0);
@@ -80,13 +100,16 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                             pivotCorrection *= -1;
                         }
                         kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition - kanbanBoardController.transform.localRotation * pivotCorrection;
+                        kanbanBoardColumnEndPosition = kanbanBoardController.transform.localPosition;
                     }
                 }
                 else
                 {
-                    float newLength = startLength + handDelta;
-                    float previousHeight = kanbanBoardController.Height;
+                    newLength = startLength + handDelta;
+                    oldHeight = startLength;
+                    previousHeight = kanbanBoardController.Height;
                     kanbanBoardController.Height = newLength;
+                    newHeight = newLength;
                     if (kanbanBoardController.Height != previousHeight) // only move if the height was actually changed (it could be unaffected if min or max size was reached)
                     {
                         Vector3 pivotCorrection = new Vector3(0, handDelta / 2f, 0);
@@ -95,16 +118,19 @@ namespace i5.VIAProMa.Visualizations.KanbanBoard
                             pivotCorrection *= -1;
                         }
                         kanbanBoardController.transform.localPosition = kanbanBoardColumnStartPosition - kanbanBoardController.transform.localRotation * pivotCorrection;
+                        kanbanBoardColumnEndPosition = kanbanBoardController.transform.localPosition;
                     }
                 }
 
-                // mark pointer data as used
+                // Mark pointer data as used
                 eventData.Use();
             }
         }
 
         public void OnPointerUp(MixedRealityPointerEventData eventData)
         {
+            ICommand drag = new ScaleKanbanBoardCommand(kanbanBoardColumnStartPosition, xAxis, kanbanBoardController, oldWidth, oldHeight, newWidth, newHeight, kanbanBoardColumnEndPosition);
+            UndoRedoManager.Execute(drag);
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 activePointer = null;

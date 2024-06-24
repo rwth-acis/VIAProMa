@@ -12,8 +12,17 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         private IMixedRealityPointer activePointer;
 
+        private Vector3 prevPointer;
+        private Vector3 finPointer;
+
+        private GameObject UndoRedoManagerGameObject;
+        private UndoRedoManager UndoRedoManager;
+
         private void Awake()
         {
+            UndoRedoManagerGameObject = GameObject.Find("UndoRedo Manager");
+            UndoRedoManager = UndoRedoManagerGameObject.GetComponent<UndoRedoManager>();
+
             if (progressBar == null)
             {
                 SpecialDebugMessages.LogMissingReferenceError(this, nameof(progressBar));
@@ -22,6 +31,7 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
 
         public void OnPointerClicked(MixedRealityPointerEventData eventData)
         {
+
         }
 
         public void OnPointerDown(MixedRealityPointerEventData eventData)
@@ -29,6 +39,8 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             if (activePointer == null && !eventData.used)
             {
                 activePointer = eventData.Pointer;
+                prevPointer = activePointer.Position;
+
                 progressBar.StartResizing(activePointer.Position, handleOnPositiveCap);
                 eventData.Use();
             }
@@ -40,16 +52,21 @@ namespace i5.VIAProMa.Visualizations.ProgressBars
             {
                 progressBar.SetHandles(activePointer.Position, handleOnPositiveCap);
                 eventData.Use();
-            }     
+            }
         }
 
         public void OnPointerUp(MixedRealityPointerEventData eventData)
         {
+            finPointer = activePointer.Position;
+
             if (eventData.Pointer == activePointer && !eventData.used)
             {
                 activePointer = null;
                 eventData.Use();
             }
+
+            ICommand resize = new ProgressBarHandleCommand(prevPointer, finPointer, handleOnPositiveCap, progressBar);
+            UndoRedoManager.Execute(resize);
         }
     }
 }
